@@ -154,7 +154,7 @@ public class OvsInterfaceStateUpdateHelper {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                 .interfaces.rev140508.interfaces.Interface iface,
             boolean opStateModified) {
-        return opStateModified && (iface == null || iface != null && iface.isEnabled());
+        return opStateModified && (iface == null || iface.isEnabled());
     }
 
     public static boolean isTunnelInterface(

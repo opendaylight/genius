@@ -123,7 +123,7 @@ public class InterfaceInventoryStateListener
             FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
         boolean isNodePresent = interfaceManagerCommonUtils.isNodePresent(nodeConnectorIdNew);
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
-                nodeConnectorIdOld, fcNodeConnectorNew, portName, portName, isNodePresent, isNetworkEvent, true);
+                nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -268,7 +268,6 @@ public class InterfaceInventoryStateListener
         private NodeConnectorId nodeConnectorIdOld;
         FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
-        private final String parentInterface;
         private final IdManagerService idManager;
         private final boolean isNodePresent;
         private final boolean isNetworkEvent;
@@ -276,12 +275,11 @@ public class InterfaceInventoryStateListener
 
         InterfaceStateRemoveWorker(IdManagerService idManager, NodeConnectorId nodeConnectorIdNew,
                 NodeConnectorId nodeConnectorIdOld, FlowCapableNodeConnector fcNodeConnectorOld, String interfaceName,
-                String parentInterface, boolean isNodePresent, boolean isNetworkEvent, boolean isParentInterface) {
+                boolean isNodePresent, boolean isNetworkEvent, boolean isParentInterface) {
             this.nodeConnectorIdNew = nodeConnectorIdNew;
             this.nodeConnectorIdOld = nodeConnectorIdOld;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.interfaceName = interfaceName;
-            this.parentInterface = parentInterface;
             this.idManager = idManager;
             this.isNodePresent = isNodePresent;
             this.isNetworkEvent = isNetworkEvent;
@@ -312,7 +310,7 @@ public class InterfaceInventoryStateListener
                 // for each of them
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                         nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld,
-                        interfaceChildEntry.getChildInterface(), interfaceName, isNodePresent, isNetworkEvent, false);
+                        interfaceChildEntry.getChildInterface(), isNodePresent, isNetworkEvent, false);
                 coordinator.enqueueJob(interfaceName, interfaceStateRemoveWorker);
             }
             return futures;
@@ -354,7 +352,7 @@ public class InterfaceInventoryStateListener
                 }
                 // remove ingress flow only for northbound configured interfaces
                 // skip this check for non-unique ports(Ex: br-int,br-ex)
-                if (iface != null || iface == null && !interfaceName.contains(fcNodeConnectorOld.getName())) {
+                if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
                     FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
                 }
 

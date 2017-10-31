@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.commons;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.JdkFutureAdapters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +19,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -116,7 +118,11 @@ public final class AlivenessMonitorUtils {
             String interfaceName = getInterfaceFromMonitorId(monitorId);
             if (interfaceName != null) {
                 MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
-                alivenessMonitorService.monitorStop(input);
+
+                Future<RpcResult<Void>> future = alivenessMonitorService.monitorStop(input);
+                ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
+                        LOG, "Stop LLDP monitoring for {}", trunkInterface);
+
                 removeMonitorIdInterfaceMap(monitorId);
                 removeMonitorIdFromInterfaceMonitorIdMap(interfaceName, monitorId);
                 return;
@@ -189,7 +195,10 @@ public final class AlivenessMonitorUtils {
                         EtherTypes.Lldp);
                 MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder()
                         .setProfileId(profileId).build();
-                alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
+
+                Future<RpcResult<Void>> future = alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
+                ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
+                        LOG, "Delete monitor profile {}", interfaceName);
             }
         }
     }

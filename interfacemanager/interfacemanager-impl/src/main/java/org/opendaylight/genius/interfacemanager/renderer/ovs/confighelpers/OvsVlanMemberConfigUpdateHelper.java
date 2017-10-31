@@ -89,7 +89,7 @@ public class OvsVlanMemberConfigUpdateHelper {
             return futures;
         }
 
-        if (interfaceNew.isEnabled() == interfaceOld.isEnabled()) {
+        if (Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
             return futures;
         }
 

@@ -7,32 +7,5 @@
  */
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class CounterForOFPortPacketSent implements CounterForOFPortPacketSentMBean {
-
-    Map<String, Integer> counterCache = new HashMap<>();
-    public static Map counterMap = new HashMap<String, String>();
-
-    @Override
-    public void invokePMManagedObjects(Map<String, Integer> map) {
-        setCounterDetails(map);
-    }
-
-    @Override
-    public Map<String, Integer> getCounterDetails() {
-        return counterCache;
-    }
-
-    @Override
-    public synchronized void setCounterDetails(Map<String, Integer> map) {
-        counterCache = map;
-    }
-
-    @Override
-    public Map<String, String> retrieveCounterMap() {
-        counterMap = counterCache;
-        return counterMap;
-    }
+public class CounterForOFPortPacketSent extends AbstractCounterMBeanImpl implements CounterForOFPortPacketSentMBean {
 }

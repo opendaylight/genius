@@ -175,10 +175,14 @@ public class SouthboundUtils {
     }
 
     public static void addStateEntry(Interface interfaceInfo, IfTunnel ifTunnel, WriteTransaction transaction) {
-        LOG.debug("adding tep interface state for {}", interfaceInfo.getName());
+        LOG.debug("adding tep interface state for {}", interfaceInfo);
+        if (interfaceInfo == null) {
+            return;
+        }
+
         OperStatus operStatus = OperStatus.Up;
         AdminStatus adminStatus = AdminStatus.Up;
-        if (interfaceInfo != null && !interfaceInfo.isEnabled()) {
+        if (!interfaceInfo.isEnabled()) {
             operStatus = OperStatus.Down;
         }
         List<String> childLowerLayerIfList = new ArrayList<>();
@@ -187,9 +191,8 @@ public class SouthboundUtils {
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setAdminStatus(adminStatus).setOperStatus(operStatus)
                 .setLowerLayerIf(childLowerLayerIfList);
 
-        if (interfaceInfo != null) {
-            ifaceBuilder.setType(interfaceInfo.getType());
-        }
+        ifaceBuilder.setType(interfaceInfo.getType());
+
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceInfo.getName());

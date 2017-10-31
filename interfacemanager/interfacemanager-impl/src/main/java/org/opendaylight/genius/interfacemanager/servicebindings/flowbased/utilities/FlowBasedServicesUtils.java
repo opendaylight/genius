@@ -8,12 +8,15 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -94,8 +97,8 @@ public final class FlowBasedServicesUtils {
             .build();
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
-    public static final List<String> INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS =
-            Arrays.asList(org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_INTERNAL,
+    public static final Collection<String> INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS =
+            ImmutableSet.of(org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_INTERNAL,
                     org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_EXTERNAL,
                     org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_MPLS_OVER_GRE);
 
@@ -130,15 +133,16 @@ public final class FlowBasedServicesUtils {
         return null;
     }
 
+    @Nullable
     public static BigInteger getDpnIdFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        NodeConnectorId nodeConnectorId = null;
         if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
-            nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
+            NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
+            return IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         }
-        return IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        return null;
     }
 
     public static List<MatchInfo> getMatchInfoForVlanPortAtIngressTable(BigInteger dpId, long portNo, Interface iface) {
@@ -155,6 +159,7 @@ public final class FlowBasedServicesUtils {
         return matches;
     }
 
+    @Nonnull
     public static List<MatchInfo> getMatchInfoForTunnelPortAtIngressTable(BigInteger dpId, long portNo) {
         List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInPort(dpId, portNo));
@@ -179,7 +184,7 @@ public final class FlowBasedServicesUtils {
             WriteTransaction writeTransaction, List<MatchInfo> matches, int lportTag, short tableId) {
         List<Instruction> instructions = boundServiceNew.getAugmentation(StypeOpenflow.class).getInstruction();
 
-        int serviceInstructionsSize = instructions.size();
+        int serviceInstructionsSize = instructions != null ? instructions.size() : 0;
         List<Instruction> instructionSet = new ArrayList<>();
         int vlanId = 0;
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
@@ -255,7 +260,7 @@ public final class FlowBasedServicesUtils {
         // instruction
         StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
         List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
-        int instructionSize = serviceInstructions.size();
+        int instructionSize = serviceInstructions != null ? serviceInstructions.size() : 0;
         BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
         BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex,
                 metadataValues[0]);
@@ -578,13 +583,15 @@ public final class FlowBasedServicesUtils {
      */
     public static BoundServices[] getHighAndLowPriorityService(List<BoundServices> serviceInfos,
             BoundServices currentServiceInfo) {
+        if (serviceInfos == null || serviceInfos.isEmpty()) {
+            return new BoundServices[] { null, null };
+        }
+
         // This will be used to hold the immediate higher service priority with respect to the currentServiceInfo
         BoundServices higher = null;
         // This will be used to hold the immediate lower service priority with respect to the currentServiceInfo
         BoundServices lower = null;
-        if (serviceInfos == null || serviceInfos.isEmpty()) {
-            return new BoundServices[] { lower, higher };
-        }
+
         List<BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
         Collections.sort(availableServiceInfos, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
                 .compareTo(serviceInfo2.getServicePriority()));
@@ -631,13 +638,13 @@ public final class FlowBasedServicesUtils {
         final SplitHorizon splitHorizon = iface.getAugmentation(SplitHorizon.class);
         boolean overrideSplitHorizonProtection = splitHorizon != null
                 && splitHorizon.isOverrideSplitHorizonProtection();
-        int actionKey = 0;
+        int actionKey = -1;
         List<Action> actions = new ArrayList<>();
         if (vlanId != 0 && !isVlanTransparent) {
-            actions.add(MDSALUtil.createPopVlanAction(actionKey++));
+            actions.add(MDSALUtil.createPopVlanAction(++actionKey));
         }
         if (overrideSplitHorizonProtection) {
-            actions.add(MDSALUtil.createNxOfInPortAction(actionKey++, 0));
+            actions.add(MDSALUtil.createNxOfInPortAction(++actionKey, 0));
         }
         if (!actions.isEmpty()) {
             instructions.add(MDSALUtil.buildApplyActionsInstruction(actions, instructionKey++));

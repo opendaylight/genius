@@ -140,7 +140,7 @@ public class FlowBasedServicesInterfaceStateListener
         }
     }
 
-    private class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         Interface iface;
         FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
         Class<? extends ServiceModeBase> serviceMode;
