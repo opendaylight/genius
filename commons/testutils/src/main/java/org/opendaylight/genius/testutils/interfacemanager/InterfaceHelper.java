@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.testutils.interfacemanager;
 
+import java.math.BigInteger;
 import java.util.Collections;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -94,4 +95,42 @@ public final class InterfaceHelper {
                 .addAugmentation(IfTunnel.class, tunnel)
                 .build();
     }
+
+    public static InterfaceInfo buildVlanInterfaceInfo(final String interfaceName,
+                                                       final BigInteger dpId,
+                                                       final int portNo,
+                                                       final int lportTag,
+                                                       final String mac) {
+        return InterfaceHelper.buildInterfaceInfo(interfaceName, dpId, portNo, lportTag, mac,
+                InterfaceInfo.InterfaceType.VLAN_INTERFACE);
+    }
+
+    public static InterfaceInfo buildVxlanInterfaceInfo(final String interfaceName,
+                                                        final BigInteger dpId,
+                                                        final int portNo,
+                                                        final int lportTag,
+                                                        final String mac) {
+        return InterfaceHelper.buildInterfaceInfo(interfaceName, dpId, portNo, lportTag, mac,
+                InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE);
+    }
+
+    public static InterfaceInfo buildInterfaceInfo(final String interfaceName,
+                                                   final BigInteger dpId,
+                                                   final int portNo,
+                                                   final int lportTag,
+                                                   final String mac,
+                                                   final InterfaceInfo.InterfaceType interfaceType) {
+        InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
+        interfaceInfo.setInterfaceName(interfaceName);
+        interfaceInfo.setDpId(dpId);
+        interfaceInfo.setPortNo(portNo);
+        interfaceInfo.setAdminState(InterfaceInfo.InterfaceAdminState.ENABLED);
+        interfaceInfo.setOpState(InterfaceInfo.InterfaceOpState.UP);
+        interfaceInfo.setInterfaceTag(lportTag);
+        interfaceInfo.setInterfaceType(interfaceType);
+        interfaceInfo.setGroupId(0);
+        interfaceInfo.setMacAddress(mac);
+        return interfaceInfo;
+    }
+    
 }
