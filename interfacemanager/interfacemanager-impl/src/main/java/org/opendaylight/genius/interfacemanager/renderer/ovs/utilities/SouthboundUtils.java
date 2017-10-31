@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,10 +147,11 @@ public class SouthboundUtils {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
                         addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
-                    }
-                    if (SouthboundUtils.isOfTunnel(ifTunnel)) {
-                        LOG.debug("Using OFTunnel. Only one tunnel port will be added");
-                        return;
+
+                        if (isOfTunnel(ifTunnel)) {
+                            LOG.debug("Using OFTunnel. Only one tunnel port will be added");
+                            return;
+                        }
                     }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
@@ -326,6 +328,7 @@ public class SouthboundUtils {
         return TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
 
+    @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
         String sourceKey = new String(ifTunnel.getTunnelSource().getValue());
         String remoteKey = new String(ifTunnel.getTunnelDestination().getValue());

@@ -63,9 +63,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
             // Remove default entry from Lport Dispatcher Table.
             FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(),
                 boundServiceOld, tx, NwConstants.DEFAULT_SERVICE_INDEX);
-            if (tx != null) {
-                futures.add(tx.submit());
-            }
+            futures.add(tx.submit());
             return;
         }
         BoundServices[] highLow = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, boundServiceOld);
@@ -126,9 +124,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         if (boundServices.isEmpty()) {
             // Remove entry from Ingress Table.
             FlowBasedServicesUtils.removeIngressFlow(boundServicesState.getInterfaceName(), boundServiceOld, dpId, tx);
-            if (tx != null) {
-                futures.add(tx.submit());
-            }
+            futures.add(tx.submit());
             return;
         }
 
@@ -144,9 +140,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         if (highestPriority < boundServiceOld.getServicePriority()) {
             FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(),
                 boundServiceOld, tx, boundServiceOld.getServicePriority());
-            if (tx != null) {
-                futures.add(tx.submit());
-            }
+            futures.add(tx.submit());
             return;
         }
 
@@ -162,9 +156,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), toBeMoved, tx,
                 toBeMoved.getServicePriority());
 
-        if (tx != null) {
-            futures.add(tx.submit());
-        }
+        futures.add(tx.submit());
     }
 
     @Override
