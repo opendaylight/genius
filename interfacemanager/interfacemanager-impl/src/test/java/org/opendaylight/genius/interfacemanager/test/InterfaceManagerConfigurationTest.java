@@ -188,6 +188,7 @@ public class InterfaceManagerConfigurationTest {
     @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     @Inject AsyncEventsWaiter asyncEventsWaiter;
     @Inject InterfaceMetaUtils interfaceMetaUtils;
+    @Inject BatchingUtils batchingUtils;
 
     @Before
     public void start() throws InterruptedException, TransactionCommitFailedException {
@@ -416,7 +417,7 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.createFlowCapableNodeConnector(dataBroker, TUNNEL_INTERFACE_NAME, Tunnel.class);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         Thread.sleep(3000);
-        TestableQueues.awaitEmpty(BatchingUtils.getQueue(DEFAULT_OPERATIONAL), 1, MINUTES);
+        TestableQueues.awaitEmpty(batchingUtils.getQueue(DEFAULT_OPERATIONAL), 1, MINUTES);
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the tunnel interface

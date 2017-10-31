@@ -65,13 +65,15 @@ public final class InterfaceMetaUtils {
 
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
+    private final BatchingUtils batchingUtils;
     private final ConcurrentMap<BigInteger, BridgeEntry> bridgeEntryMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<BigInteger, BridgeRefEntry> bridgeRefEntryMap = new ConcurrentHashMap<>();
 
     @Inject
-    public InterfaceMetaUtils(DataBroker dataBroker, IdManagerService idManager) {
+    public InterfaceMetaUtils(DataBroker dataBroker, IdManagerService idManager, BatchingUtils batchingUtils) {
         this.dataBroker = dataBroker;
         this.idManager = idManager;
+        this.batchingUtils = batchingUtils;
     }
 
     public static InstanceIdentifier<BridgeRefEntry> getBridgeRefEntryIdentifier(BridgeRefEntryKey bridgeRefEntryKey) {
@@ -167,15 +169,14 @@ public final class InterfaceMetaUtils {
 
     }
 
-    public static void createBridgeInterfaceEntryInConfigDS(BigInteger dpId,
-                                                            String childInterface) {
+    public void createBridgeInterfaceEntryInConfigDS(BigInteger dpId, String childInterface) {
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(childInterface);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey, bridgeInterfaceEntryKey);
         BridgeInterfaceEntryBuilder entryBuilder = new BridgeInterfaceEntryBuilder().setKey(bridgeInterfaceEntryKey)
                 .setInterfaceName(childInterface);
-        BatchingUtils.write(bridgeInterfaceEntryIid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
+        batchingUtils.write(bridgeInterfaceEntryIid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     public static InstanceIdentifier<InterfaceParentEntry> getInterfaceParentEntryIdentifier(
@@ -225,13 +226,13 @@ public final class InterfaceMetaUtils {
         return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker).orNull();
     }
 
-    public static void createLportTagInterfaceMap(String infName, Integer ifIndex) {
+    public void createLportTagInterfaceMap(String infName, Integer ifIndex) {
         LOG.debug("creating lport tag to interface map for {} ifIndex {}",infName, ifIndex);
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         IfIndexInterface ifIndexInterface = new IfIndexInterfaceBuilder().setIfIndex(ifIndex)
                 .setKey(new IfIndexInterfaceKey(ifIndex)).setInterfaceName(infName).build();
-        BatchingUtils.write(id, ifIndexInterface, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        batchingUtils.write(id, ifIndexInterface, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
     public int removeLportTagInterfaceMap(WriteTransaction tx, String infName) {
@@ -317,7 +318,7 @@ public final class InterfaceMetaUtils {
                 TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
-    public static void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
+    public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
             List<BridgeInterfaceEntry> bridgeInterfaceEntries, InstanceIdentifier<BridgeEntry> bridgeEntryIid,
             String interfaceName) {
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
@@ -327,11 +328,11 @@ public final class InterfaceMetaUtils {
                         bridgeInterfaceEntryKey);
 
         if (bridgeInterfaceEntries.size() <= 1) {
-            BatchingUtils.delete(bridgeEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
+            batchingUtils.delete(bridgeEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
         } else {
             // No point deleting interface individually if bridge entry is being deleted
             // Note: Will this cause issue in listener code? Does it expect separate notifications for two?
-            BatchingUtils.delete(bridgeInterfaceEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
+            batchingUtils.delete(bridgeInterfaceEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
         }
     }
 

@@ -58,11 +58,13 @@ public final class OvsInterfaceConfigRemoveHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final SouthboundUtils southboundUtils;
 
     @Inject
     public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils, InterfaceMetaUtils interfaceMetaUtils) {
+            InterfaceManagerCommonUtils interfaceManagerCommonUtils, InterfaceMetaUtils interfaceMetaUtils,
+            SouthboundUtils southboundUtils) {
         this.dataBroker = dataBroker;
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
@@ -70,6 +72,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.southboundUtils = southboundUtils;
     }
 
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
@@ -160,7 +163,7 @@ public final class OvsInterfaceConfigRemoveHelper {
                 : interfaceName;
         boolean deleteTunnel = canDeleteTunnelPort(bridgeInterfaceEntries, ifTunnel);
         if (ovsdbBridgeRef != null && deleteTunnel) {
-            SouthboundUtils.removeTerminationEndPoint(ovsdbBridgeRef.getValue(), tunnelName);
+            southboundUtils.removeTerminationEndPoint(ovsdbBridgeRef.getValue(), tunnelName);
         }
         if (SouthboundUtils.isOfTunnel(ifTunnel)) {
             if (deleteTunnel) {
@@ -174,7 +177,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         removeTunnelIngressFlow(interfaceName, ifTunnel, dpId);
 
         // delete bridge to tunnel interface mappings
-        InterfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
+        interfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
                 interfaceName);
         int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(defaultOperationalShardTransaction, interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, dataBroker,

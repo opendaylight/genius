@@ -9,6 +9,10 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
@@ -16,52 +20,56 @@ import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class BatchingUtils {
-    private static final Logger LOG = LoggerFactory.getLogger(BatchingUtils.class);
-    public static final int BATCH_SIZE = 1000;
-    public static final int PERIODICITY = 500;
-    public static Integer batchSize;
-    public static Integer batchInterval;
-    private static DataBroker dataBroker;
-    private static BlockingQueue<ActionableResource> topologyConfigShardBufferQ;
-    private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
-    private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
-
+@Singleton
+public class BatchingUtils implements AutoCloseable {
     public enum EntityType {
-        DEFAULT_CONFIG, DEFAULT_OPERATIONAL, TOPOLOGY_CONFIG
+        DEFAULT_CONFIG,
+        DEFAULT_OPERATIONAL,
+        TOPOLOGY_CONFIG
     }
 
-    public static DataBroker getBroker() {
-        return dataBroker;
+    private static final String DEFAULT_OPERATIONAL_RES_TYPE = "INTERFACEMGR-DEFAULT-OPERATIONAL";
+    private static final String DEFAULT_CONFIG_RES_TYPE = "INTERFACEMGR-DEFAULT-CONFIG";
+    private static final String TOPOLOGY_CONFIG_RES_TYPE = "INTERFACEMGR-TOPOLOGY-CONFIG";
+
+    private static final int DEFAULT_BATCH_SIZE = 1000;
+    private static final int DEFAULT_BATCH_INTERVAL = 500;
+
+    private final BlockingQueue<ActionableResource> topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ActionableResource> defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ActionableResource> defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
+
+    private final DataBroker dataBroker;
+    private final ResourceBatchingManager resourceBatchingManager = ResourceBatchingManager.getInstance();
+
+    @Inject
+    public BatchingUtils(DataBroker dataBroker) {
+        this.dataBroker = dataBroker;
     }
 
-    public static void setBroker(DataBroker broker) {
-        dataBroker = broker;
+    @PostConstruct
+    public void init() {
+        int batchSize = Integer.getInteger("batch.size", DEFAULT_BATCH_SIZE);
+        int batchInterval = Integer.getInteger("batch.wait.time", DEFAULT_BATCH_INTERVAL);
+
+        resourceBatchingManager.registerBatchableResource(TOPOLOGY_CONFIG_RES_TYPE, topologyConfigShardBufferQ,
+                new InterfaceBatchHandler(dataBroker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
+        resourceBatchingManager.registerBatchableResource(DEFAULT_CONFIG_RES_TYPE, defaultConfigShardBufferQ,
+                new InterfaceBatchHandler(dataBroker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
+        resourceBatchingManager.registerBatchableResource(DEFAULT_OPERATIONAL_RES_TYPE, defaultOperationalShardBufferQ,
+                new InterfaceBatchHandler(dataBroker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
     }
 
-    public static void registerWithBatchManager(DataBroker dataBroker) {
-        BatchingUtils.setBroker(dataBroker);
-        batchSize = 1000;
-        if (Integer.getInteger("batch.size") != null) {
-            batchSize = Integer.getInteger("batch.size");
-        }
-        batchInterval = 500;
-        if (Integer.getInteger("batch.wait.time") != null) {
-            batchInterval = Integer.getInteger("batch.wait.time");
-        }
-        ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-TOPOLOGY-CONFIG", topologyConfigShardBufferQ,
-                new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-CONFIG", defaultConfigShardBufferQ,
-                new InterfaceBatchHandler(LogicalDatastoreType.CONFIGURATION));
-        resBatchingManager.registerBatchableResource("INTERFACEMGR-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ,
-                new InterfaceBatchHandler(LogicalDatastoreType.OPERATIONAL));
+    @Override
+    @PreDestroy
+    public void close() {
+        resourceBatchingManager.deregisterBatchableResource(TOPOLOGY_CONFIG_RES_TYPE);
+        resourceBatchingManager.deregisterBatchableResource(DEFAULT_CONFIG_RES_TYPE);
+        resourceBatchingManager.deregisterBatchableResource(DEFAULT_OPERATIONAL_RES_TYPE);
     }
 
-    static <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {
+    <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.UPDATE);
         actResource.setInstanceIdentifier(path);
@@ -69,7 +77,7 @@ public class BatchingUtils {
         getQueue(entityType).add(actResource);
     }
 
-    public static <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
+    public <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.CREATE);
         actResource.setInstanceIdentifier(path);
@@ -77,7 +85,7 @@ public class BatchingUtils {
         getQueue(entityType).add(actResource);
     }
 
-    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
+    public BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
         switch (entityType) {
             case DEFAULT_CONFIG:
                 return defaultConfigShardBufferQ;
@@ -90,17 +98,11 @@ public class BatchingUtils {
         }
     }
 
-    public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
+    public <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
         ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
         actResource.setAction(ActionableResource.DELETE);
         actResource.setInstanceIdentifier(path);
         actResource.setInstance(null);
         getQueue(entityType).add(actResource);
-    }
-
-    static {
-        topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
-        defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
-        defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
     }
 }
