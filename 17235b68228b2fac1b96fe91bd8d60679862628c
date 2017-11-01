@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_170b0e26",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractDataTreeChangeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-01T15:38:55Z",
+      "side": 1,
+      "message": "As close() cannot be final, the separate close() / shutdown() from the initial design is really a bit pointless  now, and will only confuse implementator of this, so my vote would be to remove the shutdown() method again, and just let implementations @Override closer() { super.close(); after all... sorry for the back and forth!",
+      "revId": "17235b68228b2fac1b96fe91bd8d60679862628c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
