@@ -70,6 +70,24 @@
       "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f7391a42",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-01T20:40:08Z",
+      "side": 1,
+      "message": "Yeah this is the only usage of this; so far, no other RPC has been converted to FutureRpcResults, yet. More is coming e.g. in https://git.opendaylight.org/gerrit/#/c/64450/ and hopefully more after.  \n\nThe point you\u0027re making about not just suppressing ALL error logging is absolutely fair;  let me push an amendment which takes care of this specific case, so that we can get this in ASAP.\n\nBut when using this new FutureRpcResults util, we cannot just not throw IllegalArgumentException - and that was an intentional design choice I made; I\u0027ll start an email thread to properly discuss this further.  I would suggest we get this in ASAP anyway.",
+      "parentUuid": "9a245df4_77724a4a",
+      "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
