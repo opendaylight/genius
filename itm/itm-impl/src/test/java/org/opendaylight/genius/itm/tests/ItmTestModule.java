@@ -15,6 +15,8 @@ import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
+import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerServiceImpl;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmProvider;
@@ -80,6 +82,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(DataBroker.class).toInstance(DataBrokerTestModule.dataBroker());
+        bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 
         // Bindings to test infra (fakes & mocks)
