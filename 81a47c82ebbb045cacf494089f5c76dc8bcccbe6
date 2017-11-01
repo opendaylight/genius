@@ -34,6 +34,24 @@
       "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_d7bb36e3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-01T18:37:02Z",
+      "side": 1,
+      "message": "No we dont want to suppress all logs. there were some specific cases where ERROR logs were avoided and made DEBUGs.. If any of them were changed as part of the previous patchset, please put that back.",
+      "parentUuid": "9a245df4_f7e11aff",
+      "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
