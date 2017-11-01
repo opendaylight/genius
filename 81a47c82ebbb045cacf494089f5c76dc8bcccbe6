@@ -52,6 +52,24 @@
       "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_77724a4a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T18:56:32Z",
+      "side": 1,
+      "message": "I think we just want to suppress ERROR for the IllegalArgumentException above correct? If so then we should do what I mentioned above, ie not throw it",
+      "parentUuid": "9a245df4_d7bb36e3",
+      "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
