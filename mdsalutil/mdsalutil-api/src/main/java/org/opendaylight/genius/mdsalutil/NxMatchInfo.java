@@ -7,10 +7,8 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.io.Serializable;
-
 /**
  *  This class defines the Nicira extension matches.
  */
-public interface NxMatchInfo extends Serializable, MatchInfoBase {
+public interface NxMatchInfo extends MatchInfoBase {
 }

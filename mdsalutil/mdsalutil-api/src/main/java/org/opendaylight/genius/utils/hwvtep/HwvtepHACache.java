@@ -22,7 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public class HwvtepHACache {
-
     private static final int MAX_EVENT_BUFFER_SIZE = 500000;
     private static final int EVENT_DRAIN_BUFFER_SIZE = 100000;
 
@@ -44,14 +43,12 @@ public class HwvtepHACache {
         return instance;
     }
 
-    public  synchronized void addChild(InstanceIdentifier<Node> parent, InstanceIdentifier<Node> child) {
+    public synchronized void addChild(InstanceIdentifier<Node> parent, InstanceIdentifier<Node> child) {
         if (parent == null || child == null) {
             return;
         }
-        if (parentToChildMap.get(parent) == null) {
-            parentToChildMap.put(parent, new HashSet<>());
-        }
-        parentToChildMap.get(parent).add(child);
+
+        parentToChildMap.computeIfAbsent(parent, key -> new HashSet<>()).add(child);
         childToParentMap.put(child, parent);
         String childNodeId = child.firstKeyOf(Node.class).getNodeId().getValue();
         childNodeIds.put(childNodeId, Boolean.TRUE);
@@ -75,30 +72,30 @@ public class HwvtepHACache {
         return parentToChildMap.containsKey(node);
     }
 
-    public  Set<InstanceIdentifier<Node>> getChildrenForHANode(InstanceIdentifier<Node> parent) {
+    public Set<InstanceIdentifier<Node>> getChildrenForHANode(InstanceIdentifier<Node> parent) {
         if (parent != null && parentToChildMap.containsKey(parent)) {
-            return new HashSet(parentToChildMap.get(parent));
+            return new HashSet<>(parentToChildMap.get(parent));
         } else {
             return Collections.emptySet();
         }
     }
 
-    public  Set<InstanceIdentifier<Node>> getHAParentNodes() {
+    public Set<InstanceIdentifier<Node>> getHAParentNodes() {
         return parentToChildMap.keySet();
     }
 
-    public  Set<InstanceIdentifier<Node>> getHAChildNodes() {
+    public Set<InstanceIdentifier<Node>> getHAChildNodes() {
         return childToParentMap.keySet();
     }
 
-    public  InstanceIdentifier<Node> getParent(InstanceIdentifier<Node> child) {
+    public InstanceIdentifier<Node> getParent(InstanceIdentifier<Node> child) {
         if (child != null) {
             return childToParentMap.get(child);
         }
         return null;
     }
 
-    public  synchronized void cleanupParent(InstanceIdentifier<Node> parent) {
+    public synchronized void cleanupParent(InstanceIdentifier<Node> parent) {
         if (parent == null) {
             return;
         }
@@ -139,7 +136,7 @@ public class HwvtepHACache {
             Collection<DebugEvent> list = new ArrayList<>();
             //do not clear all events , make some place by clearing few old events
             debugEvents.drainTo(list, EVENT_DRAIN_BUFFER_SIZE);
-            debugEvents.offer(debugEvent);
+            addDebugEvent(debugEvent);
         }
     }
 
