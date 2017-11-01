@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_576e2630",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T21:00:17Z",
+      "side": 1,
+      "message": "OK - since this is an RPC and we need to report why we couldn\u0027t get the requested data hence throwing the ISE. So the only way to propagate a failure to the FutureRpcResults is by throwing a exception. This is OK but there may be cases  where a user wants to report an error message w/o an exception or with a specific tag or error info but we can cross that bridge if/when.",
+      "revId": "a78cb0bacfdbd40735af0f618fef234f032995a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
