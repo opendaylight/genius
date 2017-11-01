@@ -87,7 +87,14 @@ public final class FutureRpcResults {
     }
 
     public enum LogLevel {
-        ERROR, WARN, INFO, DEBUG, TRACE, NONE;
+        ERROR, WARN, INFO, DEBUG, TRACE,
+        /**
+         * Note that when using LogLevel NONE, then you should set a
+         * {@link FutureRpcResultBuilder#onFailure(Consumer)} which does better logging,
+         * or be 100% sure that all callers of the RPC check the returned Future RpcResult appropriately;
+         * otherwise you will lose error messages.
+         */
+        NONE;
 
         public void log(Logger logger, String format, Object... arguments) {
             switch (this) {
@@ -135,6 +142,13 @@ public final class FutureRpcResults {
             this.onFailureConsumer = throwable -> { };
         }
 
+        /**
+         * Builds the Future RpcResult.
+         *
+         * @return Future RpcResult. Note that this will NEVER be a failed Future; any
+         *         errors are reported as !{@link RpcResult#isSuccessful()}, with
+         *         details in {@link RpcResult#getErrors()}, and not the Future itself.
+         */
         @Override
         @CheckReturnValue
         @SuppressWarnings("checkstyle:IllegalCatch")
