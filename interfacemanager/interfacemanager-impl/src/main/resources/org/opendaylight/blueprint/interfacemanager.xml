@@ -45,6 +45,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <service ref="interfacemgrProvider"
              interface="org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager" />
 
+    <service ref="interfaceManagerServiceImpl"
+             interface="org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService" />
+
     <bean id="entityOwnershipUtils" class="org.opendaylight.genius.utils.clustering.EntityOwnershipUtils">
       <argument ref="entityOwnershipService"/>
     </bean>
