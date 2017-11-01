@@ -23,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Move source/destination IPv6 action.
  */
 public class ActionMoveSourceDestinationIpv6 extends ActionInfo {
+
     public ActionMoveSourceDestinationIpv6() {
         this(0);
     }
@@ -36,15 +37,16 @@ public class ActionMoveSourceDestinationIpv6 extends ActionInfo {
         return buildAction(getActionKey());
     }
 
+    @Override
     public Action buildAction(int newActionKey) {
         ActionBuilder ab = new ActionBuilder();
         NxRegMove regMove = new NxRegMoveBuilder()
             .setSrc(new SrcBuilder()
-                .setSrcChoice((new SrcNxIpv6SrcCaseBuilder()).setNxIpv6Src(Boolean.TRUE).build())
+                .setSrcChoice(new SrcNxIpv6SrcCaseBuilder().setNxIpv6Src(Boolean.TRUE).build())
                 .setStart(0)
                 .build())
             .setDst(new DstBuilder()
-                .setDstChoice((new DstNxIpv6DstCaseBuilder()).setNxIpv6Dst(Boolean.TRUE).build())
+                .setDstChoice(new DstNxIpv6DstCaseBuilder().setNxIpv6Dst(Boolean.TRUE).build())
                 .setStart(0)
                 .setEnd(127)
                 .build())

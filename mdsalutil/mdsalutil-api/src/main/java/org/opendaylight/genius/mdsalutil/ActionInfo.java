@@ -7,12 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.io.Serializable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 
-public abstract class ActionInfo implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class ActionInfo {
 
     private final int actionKey;
 

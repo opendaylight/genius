@@ -21,7 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * NX load in port action.
  */
 public class ActionNxLoadInPort extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     private final BigInteger value;
 
