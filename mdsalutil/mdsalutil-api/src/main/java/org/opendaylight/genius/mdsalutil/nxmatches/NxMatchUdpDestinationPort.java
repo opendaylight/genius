@@ -17,6 +17,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension UDP destination port match.
  */
 public class NxMatchUdpDestinationPort extends NxMatchInfoHelper<NxmOfUdpDst, NxmOfUdpDstBuilder> {
+    private static final long serialVersionUID = 8931310673505991810L;
+
     private final int port;
     private final int mask;
 

@@ -17,6 +17,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension tunnel source IP match.
  */
 public class NxMatchTunnelSourceIp extends NxMatchInfoHelper<NxmNxTunIpv4Src, NxmNxTunIpv4SrcBuilder> {
+    private static final long serialVersionUID = 5362944613004965226L;
+
     private final Ipv4Address address;
 
     public NxMatchTunnelSourceIp(String address) {

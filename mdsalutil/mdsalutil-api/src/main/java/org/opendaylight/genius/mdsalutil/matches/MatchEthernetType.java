@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Ethernet type match.
  */
 public class MatchEthernetType extends MatchInfoHelper<EthernetMatch, EthernetMatchBuilder> {
+    private static final long serialVersionUID = -3618187282862692415L;
 
     public static final MatchEthernetType IPV4 = new MatchEthernetType(0x0800L);
     public static final MatchEthernetType ARP = new MatchEthernetType(0x0806L);

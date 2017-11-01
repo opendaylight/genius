@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * UDP destination port match.
  */
 public class MatchUdpDestinationPort extends MatchInfoHelper<UdpMatch, UdpMatchBuilder> {
+    private static final long serialVersionUID = 6379646487876243876L;
 
     private final int port;
 

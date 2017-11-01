@@ -29,6 +29,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
  * downstream users).
  */
 public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<T>> implements NxMatchInfo {
+    private static final long serialVersionUID = 4716688744092498324L;
+
     private final Class<B> builderClass;
     // The key class can't be a type parameter, it varies in some subclasses
     private final Class<? extends ExtensionKey> keyClass;

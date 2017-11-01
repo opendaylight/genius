@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.nxmatches;
 
 import com.google.common.collect.ImmutableBiMap;
 import java.util.Map;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg3;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg4;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg5;
@@ -29,6 +28,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension register match.
  */
 public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder> {
+    private static final long serialVersionUID = 1239288149045800413L;
+
     private static final Map<Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match
             .rev140421.NxmNxReg>, Class<? extends ExtensionKey>> KEYS =
             ImmutableBiMap.of(
@@ -112,7 +113,7 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (register != null ? register.hashCode() : 0);
-        result = 31 * result + (int) (value ^ (value >>> 32));
+        result = 31 * result + (int) (value ^ value >>> 32);
         result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
     }

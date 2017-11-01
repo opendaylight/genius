@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ARP OP match.
  */
 public class MatchArpOp extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+    private static final long serialVersionUID = -2425999612387545525L;
 
     public static final MatchArpOp REQUEST = new MatchArpOp(NwConstants.ARP_REQUEST);
     public static final MatchArpOp REPLY = new MatchArpOp(NwConstants.ARP_REPLY);

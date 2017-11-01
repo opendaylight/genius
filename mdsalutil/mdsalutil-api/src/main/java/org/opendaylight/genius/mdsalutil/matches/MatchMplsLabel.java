@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * MPLS label match.
  */
 public class MatchMplsLabel extends MatchInfoHelper<ProtocolMatchFields, ProtocolMatchFieldsBuilder> {
+    private static final long serialVersionUID = 4562319077487310945L;
 
     private final long label;
 

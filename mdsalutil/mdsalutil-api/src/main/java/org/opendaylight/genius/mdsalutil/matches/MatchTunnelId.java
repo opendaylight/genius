@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Tunnel identifier match.
  */
 public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
+    private static final long serialVersionUID = 4273396654495745436L;
 
     private final BigInteger tunnelId;
     private final BigInteger tunnelMask;

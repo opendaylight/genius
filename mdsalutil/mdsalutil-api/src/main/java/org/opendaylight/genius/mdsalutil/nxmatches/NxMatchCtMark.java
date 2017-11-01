@@ -16,6 +16,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension CT mark match.
  */
 public class NxMatchCtMark extends NxMatchInfoHelper<NxmNxCtMark, NxmNxCtMarkBuilder> {
+    private static final long serialVersionUID = 4620053690500668749L;
+
     private final long ctMark;
     private final long mask;
 
@@ -67,8 +69,8 @@ public class NxMatchCtMark extends NxMatchInfoHelper<NxmNxCtMark, NxmNxCtMarkBui
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) (ctMark ^ (ctMark >>> 32));
-        result = 31 * result + (int) (mask ^ (mask >>> 32));
+        result = 31 * result + (int) (ctMark ^ ctMark >>> 32);
+        result = 31 * result + (int) (mask ^ mask >>> 32);
         return result;
     }
 }

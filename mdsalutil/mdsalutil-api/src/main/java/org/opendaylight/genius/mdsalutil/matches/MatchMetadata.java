@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Metadata match.
  */
 public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
+    private static final long serialVersionUID = -7159655597194445374L;
 
     private final BigInteger metadata;
     private final BigInteger mask;

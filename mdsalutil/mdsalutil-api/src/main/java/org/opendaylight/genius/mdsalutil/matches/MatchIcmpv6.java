@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ICMPv6 match.
  */
 public class MatchIcmpv6 extends MatchInfoHelper<Icmpv6Match, Icmpv6MatchBuilder> {
+    private static final long serialVersionUID = -3950935400381748445L;
 
     private final short type;
     private final short code;

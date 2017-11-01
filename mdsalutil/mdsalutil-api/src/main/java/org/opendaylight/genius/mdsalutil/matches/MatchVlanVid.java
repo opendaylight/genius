@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * VLAN identifier match.
  */
 public class MatchVlanVid extends MatchInfoHelper<VlanMatch, VlanMatchBuilder> {
+    private static final long serialVersionUID = -2010730742794775975L;
 
     private final int vlanId;
 

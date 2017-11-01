@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * TCP destination port match.
  */
 public class MatchTcpDestinationPort extends MatchInfoHelper<TcpMatch, TcpMatchBuilder> {
+    private static final long serialVersionUID = 3207416827575349278L;
 
     private final int port;
 

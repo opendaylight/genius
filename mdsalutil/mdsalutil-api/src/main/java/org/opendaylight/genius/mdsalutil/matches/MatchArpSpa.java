@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ARP source transport address match.
  */
 public class MatchArpSpa extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+    private static final long serialVersionUID = -2758380170787667924L;
 
     private final Ipv4Prefix address;
 

@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Ethernet source match.
  */
 public class MatchEthernetSource extends MatchInfoHelper<EthernetMatch, EthernetMatchBuilder> {
+    private static final long serialVersionUID = -247129785116599254L;
 
     private final MacAddress address;
     private final MacAddress mask;
