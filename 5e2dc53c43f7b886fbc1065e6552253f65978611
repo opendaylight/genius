@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_061126ac",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T02:27:40Z",
+      "side": 1,
+      "message": "Added to avoid FB violation \"result must be non-null but is marked as nullable\". The FutureCallback interface marks the param as @Nullable but it can\u0027t actually be null.",
+      "range": {
+        "startLine": 228,
+        "startChar": 35,
+        "endLine": 228,
+        "endChar": 42
+      },
+      "revId": "5e2dc53c43f7b886fbc1065e6552253f65978611",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_66274213",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T02:27:40Z",
+      "side": 1,
+      "message": "Commented out to avoid \"Dead store to responsePendingCount\" violation",
+      "revId": "5e2dc53c43f7b886fbc1065e6552253f65978611",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_4622fe01",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/HwVtepTunnelsStateHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T02:27:40Z",
+      "side": 1,
+      "message": "Avoids \"Possible null pointer dereference of tunnelBfdParams\"",
+      "range": {
+        "startLine": 245,
+        "startChar": 12,
+        "endLine": 245,
+        "endChar": 18
+      },
+      "revId": "5e2dc53c43f7b886fbc1065e6552253f65978611",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
