@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * ARP target hardware address match.
  */
 public class MatchArpTha extends MatchInfoHelper<ArpMatch, ArpMatchBuilder> {
+    private static final long serialVersionUID = -4114734627300250384L;
 
     private final MacAddress address;
 

@@ -16,6 +16,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension CT zone match.
  */
 public class NxMatchCtZone extends NxMatchInfoHelper<NxmNxCtZone, NxmNxCtZoneBuilder> {
+    private static final long serialVersionUID = -5228218838614645182L;
+
     private final int zone;
 
     public NxMatchCtZone(int zone) {

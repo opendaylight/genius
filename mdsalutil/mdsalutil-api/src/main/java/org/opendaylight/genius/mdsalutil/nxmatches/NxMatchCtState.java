@@ -16,6 +16,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension CT state match.
  */
 public class NxMatchCtState extends NxMatchInfoHelper<NxmNxCtState, NxmNxCtStateBuilder> {
+    private static final long serialVersionUID = -7826294515459398837L;
+
     private final long state;
     private final long mask;
 
@@ -67,8 +69,8 @@ public class NxMatchCtState extends NxMatchInfoHelper<NxmNxCtState, NxmNxCtState
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (int) (state ^ (state >>> 32));
-        result = 31 * result + (int) (mask ^ (mask >>> 32));
+        result = 31 * result + (int) (state ^ state >>> 32);
+        result = 31 * result + (int) (mask ^ mask >>> 32);
         return result;
     }
 }

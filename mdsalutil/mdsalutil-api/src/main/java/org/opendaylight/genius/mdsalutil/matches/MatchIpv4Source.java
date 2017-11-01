@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IPv4 source match.
  */
 public class MatchIpv4Source extends MatchInfoHelper<Ipv4Match, Ipv4MatchBuilder> {
+    private static final long serialVersionUID = 3942500713322606472L;
 
     private final Ipv4Prefix prefix;
 

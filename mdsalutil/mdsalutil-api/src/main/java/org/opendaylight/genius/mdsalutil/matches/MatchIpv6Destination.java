@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IPv6 destination match.
  */
 public class MatchIpv6Destination extends MatchInfoHelper<Ipv6Match, Ipv6MatchBuilder> {
+    private static final long serialVersionUID = -7921403906024639394L;
 
     private final Ipv6Prefix prefix;
 

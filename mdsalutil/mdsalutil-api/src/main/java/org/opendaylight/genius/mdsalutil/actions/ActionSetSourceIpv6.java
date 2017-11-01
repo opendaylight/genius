@@ -20,6 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set source IPv6 action.
  */
 public class ActionSetSourceIpv6 extends ActionInfo {
+    private static final long serialVersionUID = -5359553453836825432L;
+
     private final Ipv6Prefix source;
 
     public ActionSetSourceIpv6(String sourceIp) {

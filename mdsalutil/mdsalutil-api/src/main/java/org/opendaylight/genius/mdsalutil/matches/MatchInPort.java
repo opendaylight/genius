@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
  * In port match.
  */
 public class MatchInPort extends MatchInfo {
+    private static final long serialVersionUID = 3821890928390054329L;
 
     private final BigInteger dpId;
     private final long portNumber;

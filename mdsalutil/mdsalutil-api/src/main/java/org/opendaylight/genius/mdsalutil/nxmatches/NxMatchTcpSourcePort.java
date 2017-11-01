@@ -17,6 +17,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Nicira extension TCP source port match.
  */
 public class NxMatchTcpSourcePort extends NxMatchInfoHelper<NxmOfTcpSrc, NxmOfTcpSrcBuilder> {
+    private static final long serialVersionUID = -894312236092962175L;
+
     private final int port;
     private final int mask;
 

@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * PBB ISID match.
  */
 public class MatchPbbIsid extends MatchInfoHelper<ProtocolMatchFields, ProtocolMatchFieldsBuilder> {
+    private static final long serialVersionUID = -3892452639988430283L;
 
     private final long isid;
 

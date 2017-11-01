@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * IP protocol match.
  */
 public class MatchIpProtocol extends MatchInfoHelper<IpMatch, IpMatchBuilder> {
+    private static final long serialVersionUID = 6050181624776409340L;
 
     public static final MatchIpProtocol TCP = new MatchIpProtocol(IPProtocols.TCP.shortValue());
     public static final MatchIpProtocol UDP = new MatchIpProtocol(IPProtocols.UDP.shortValue());

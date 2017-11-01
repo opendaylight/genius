@@ -15,6 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * TCP flags match.
  */
 public class MatchTcpFlags extends MatchInfoHelper<TcpFlagsMatch, TcpFlagsMatchBuilder> {
+    private static final long serialVersionUID = -2805788931166901765L;
 
     public static final MatchTcpFlags SYN = new MatchTcpFlags(1 << 1);
     public static final MatchTcpFlags ACK = new MatchTcpFlags(1 << 4);
