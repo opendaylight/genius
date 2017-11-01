@@ -19,7 +19,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set ICMP type action.
  */
 public class ActionSetIcmpType extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     private final short type;
 

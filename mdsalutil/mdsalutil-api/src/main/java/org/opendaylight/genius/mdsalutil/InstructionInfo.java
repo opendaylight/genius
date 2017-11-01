@@ -7,10 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.io.Serializable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
-public interface InstructionInfo extends Serializable {
+public interface InstructionInfo {
 
     Instruction buildInstruction(int instructionKey);
 

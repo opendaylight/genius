@@ -21,7 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set tunnel id field action.
  */
 public class ActionSetFieldTunnelId extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     private final BigInteger tunnelId;
     @Nullable private final BigInteger tunnelMask;

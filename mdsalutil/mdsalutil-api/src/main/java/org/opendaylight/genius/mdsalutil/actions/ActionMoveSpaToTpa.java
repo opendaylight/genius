@@ -23,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * response need to be addressed to.
  */
 public class ActionMoveSpaToTpa extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     public ActionMoveSpaToTpa() {
         this(0);

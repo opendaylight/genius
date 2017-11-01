@@ -7,10 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.io.Serializable;
-
-public abstract class MatchInfo implements Serializable, MatchInfoBase {
-    private static final long serialVersionUID = 1L;
+public abstract class MatchInfo implements MatchInfoBase {
 
     @Override
     public abstract boolean equals(Object other);
