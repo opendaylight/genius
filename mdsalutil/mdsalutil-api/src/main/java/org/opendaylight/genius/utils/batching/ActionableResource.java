@@ -16,9 +16,9 @@ public interface ActionableResource {
     short UPDATE = 2;
     short DELETE = 3;
 
-    InstanceIdentifier getInstanceIdentifier();
+    InstanceIdentifier<?> getInstanceIdentifier();
 
-    void setInstanceIdentifier(InstanceIdentifier identifier);
+    void setInstanceIdentifier(InstanceIdentifier<?> identifier);
 
     Object getInstance();
 

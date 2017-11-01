@@ -11,6 +11,7 @@ package org.opendaylight.genius.mdsalutil.packet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.liblldp.BitBufferHelper;
@@ -31,10 +32,9 @@ public class Ethernet extends Packet {
     // TODO: This has to be outside and it should be possible for osgi
     // to add new coming packet classes
     @SuppressWarnings("checkstyle:ConstantName") // public constant is used in other projects; too late to rename easily
-    public static final Map<Short, Class<? extends Packet>> etherTypeClassMap;
+    public static final Map<Short, Class<? extends Packet>> etherTypeClassMap = new ConcurrentHashMap<>();
 
     static {
-        etherTypeClassMap = new HashMap<>();
         etherTypeClassMap.put(EtherTypes.ARP.shortValue(), ARP.class);
         etherTypeClassMap.put(EtherTypes.LLDP.shortValue(), LLDP.class);
         etherTypeClassMap.put(EtherTypes.IPv4.shortValue(), IPv4.class);

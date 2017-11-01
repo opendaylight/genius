@@ -100,11 +100,9 @@ public class DataStoreCache {
         ConcurrentHashMap<Object, Object> map = (ConcurrentHashMap<Object, Object>) DataStoreCache.getCache(cacheName);
         List<Object> values = null;
         if (map != null) {
-            if (map.entrySet() != null) {
-                values = new ArrayList<>();
-                for (Map.Entry<Object, Object> entry : map.entrySet()) {
-                    values.add(entry.getValue());
-                }
+            values = new ArrayList<>();
+            for (Map.Entry<Object, Object> entry : map.entrySet()) {
+                values.add(entry.getValue());
             }
         }
         return values;
@@ -114,9 +112,7 @@ public class DataStoreCache {
         ConcurrentHashMap<Object, Object> map = (ConcurrentHashMap<Object, Object>) DataStoreCache.getCache(cacheName);
         List<Object> keys = null;
         if (map != null) {
-            if (map.keys() != null) {
-                keys = Collections.list(map.keys());
-            }
+            keys = Collections.list(map.keys());
         }
         return keys;
     }
