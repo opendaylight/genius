@@ -17,6 +17,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -136,7 +137,7 @@ public class NWUtil {
         StringBuilder sb = new StringBuilder(18);
 
         for (byte macAddres : macAddress) {
-            String tmp = UnsignedBytes.toString(macAddres, 16).toUpperCase();
+            String tmp = UnsignedBytes.toString(macAddres, 16).toUpperCase(Locale.getDefault());
             if (tmp.length() == 1 || macAddres == (byte) 0) {
                 sb.append("0");
             }

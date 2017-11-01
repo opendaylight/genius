@@ -8,12 +8,12 @@
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serializable;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
-public class BucketInfo extends ActionInfoList implements Serializable {
+public class BucketInfo extends ActionInfoList {
 
     private static final long serialVersionUID = 1L;
 
@@ -68,6 +68,9 @@ public class BucketInfo extends ActionInfoList implements Serializable {
     }
 
     @Override
+    // EvenMoreObjects does check that the type of the argument is compatible with the type of the this object but FB
+    // doesn't know that.
+    @SuppressFBWarnings("EQ_UNUSUAL")
     public boolean equals(Object obj) {
         return EvenMoreObjects.equalsHelper(this, obj,
             (self, other) -> Objects.equals(self.getActionInfos(), other.getActionInfos())

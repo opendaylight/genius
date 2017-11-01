@@ -8,7 +8,6 @@
 package org.opendaylight.genius.utils.batching;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
@@ -23,13 +22,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -76,7 +73,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    private final ConcurrentHashMap<String, Pair<BlockingQueue, ResourceHandler>>
+    private final ConcurrentHashMap<String, Pair<BlockingQueue<ActionableResource>, ResourceHandler>>
             resourceHandlerMapper = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledThreadPoolExecutor>
@@ -102,7 +99,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             String resourceType, final BlockingQueue<ActionableResource> resQueue, final ResourceHandler resHandler) {
         Preconditions.checkNotNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
         Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
-        if (resourceHandlerMapper.contains(resourceType)) {
+        if (resourceHandlerMapper.containsKey(resourceType)) {
             throw new RuntimeException("Resource type already registered");
         }
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
@@ -133,7 +130,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier identifier,
+    public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier<?> identifier,
                                         DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
@@ -147,7 +144,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                         + shardResource.name()));
     }
 
-    public void merge(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
+    public void merge(String resourceType, InstanceIdentifier<?> identifier, DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
@@ -156,7 +153,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    public ListenableFuture<Void> delete(ShardResource shardResource, InstanceIdentifier identifier) {
+    public ListenableFuture<Void> delete(ShardResource shardResource, InstanceIdentifier<?> identifier) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
@@ -169,7 +166,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                         + shardResource.name()));
     }
 
-    public void delete(String resourceType, InstanceIdentifier identifier) {
+    public void delete(String resourceType, InstanceIdentifier<?> identifier) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
@@ -178,7 +175,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    public ListenableFuture<Void> put(ShardResource shardResource, InstanceIdentifier identifier,
+    public ListenableFuture<Void> put(ShardResource shardResource, InstanceIdentifier<?> identifier,
                                       DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
@@ -192,7 +189,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                         + shardResource.name()));
     }
 
-    public void put(String resourceType, InstanceIdentifier identifier, DataObject updatedData) {
+    public void put(String resourceType, InstanceIdentifier<?> identifier, DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
@@ -227,7 +224,8 @@ public class ResourceBatchingManager implements AutoCloseable {
             List<ActionableResource> resList = new ArrayList<>();
 
             try {
-                Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
+                Pair<BlockingQueue<ActionableResource>, ResourceHandler> resMapper =
+                        resourceHandlerMapper.get(resourceType);
                 if (resMapper == null) {
                     LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
                     return;
@@ -277,11 +275,9 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
 
         public void process() {
-            InstanceIdentifier<T> identifier;
-            Object instance;
-
             LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
-            Pair<BlockingQueue, ResourceHandler> resMapper = resourceHandlerMapper.get(resourceType);
+            Pair<BlockingQueue<ActionableResource>, ResourceHandler> resMapper =
+                    resourceHandlerMapper.get(resourceType);
             if (resMapper == null) {
                 LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
                 return;
@@ -291,25 +287,23 @@ public class ResourceBatchingManager implements AutoCloseable {
             LogicalDatastoreType dsType = resHandler.getDatastoreType();
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             List<SubTransaction> transactionObjects = new ArrayList<>();
-            Map<SubTransaction, SettableFuture> txMap = new HashMap();
+            Map<SubTransaction, SettableFuture<Void>> txMap = new HashMap<>();
             for (ActionableResource actResource : actResourceList) {
                 int startSize = transactionObjects.size();
                 switch (actResource.getAction()) {
                     case ActionableResource.CREATE:
-                        identifier = actResource.getInstanceIdentifier();
-                        instance = actResource.getInstance();
-                        resHandler.create(tx, dsType, identifier, instance,transactionObjects);
+                        resHandler.create(tx, dsType, actResource.getInstanceIdentifier(), actResource.getInstance(),
+                                transactionObjects);
                         break;
                     case ActionableResource.UPDATE:
-                        identifier = actResource.getInstanceIdentifier();
                         Object updated = actResource.getInstance();
                         Object original = actResource.getOldInstance();
-                        resHandler.update(tx, dsType, identifier, original, updated,transactionObjects);
+                        resHandler.update(tx, dsType, actResource.getInstanceIdentifier(), original,
+                                updated,transactionObjects);
                         break;
                     case ActionableResource.DELETE:
-                        identifier = actResource.getInstanceIdentifier();
-                        instance = actResource.getInstance();
-                        resHandler.delete(tx, dsType, identifier, instance,transactionObjects);
+                        resHandler.delete(tx, dsType, actResource.getInstanceIdentifier(), actResource.getInstance(),
+                                transactionObjects);
                         break;
                     default:
                         LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
@@ -317,17 +311,18 @@ public class ResourceBatchingManager implements AutoCloseable {
                 }
                 int endSize = transactionObjects.size();
                 if (endSize > startSize) {
-                    txMap.put(transactionObjects.get(endSize - 1), (SettableFuture) actResource.getResultFuture());
+                    txMap.put(transactionObjects.get(endSize - 1),
+                            (SettableFuture<Void>) actResource.getResultFuture());
                 }
             }
 
             long start = System.currentTimeMillis();
-            CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
+            ListenableFuture<Void> futures = tx.submit();
 
             try {
                 futures.get();
-                actResourceList.forEach((actionableResource) ->
-                        ((SettableFuture) actionableResource.getResultFuture()).set(null));
+                actResourceList.forEach(actionableResource ->
+                        ((SettableFuture<Void>)actionableResource.getResultFuture()).set(null));
                 long time = System.currentTimeMillis() - start;
                 LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
 
@@ -352,8 +347,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                             LOG.error("Unable to determine Action for transaction object with id {}",
                                     object.getInstanceIdentifier());
                     }
-                    CheckedFuture<Void, TransactionCommitFailedException> futureOperation = writeTransaction
-                            .submit();
+                    ListenableFuture<Void> futureOperation = writeTransaction.submit();
                     try {
                         futureOperation.get();
                         if (txMap.containsKey(object)) {

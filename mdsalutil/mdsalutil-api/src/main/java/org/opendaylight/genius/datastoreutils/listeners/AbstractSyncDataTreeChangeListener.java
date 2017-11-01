@@ -11,7 +11,6 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -29,7 +28,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> extends
-        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T>, DataTreeChangeListener<T> {
+        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T> {
 
     @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {

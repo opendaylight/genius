@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,9 +18,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  *
  * @author Michael Vorburger
  */
-public class ActionInfoList {
+public class ActionInfoList implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    private final List<ActionInfo> actionInfos = new ArrayList<>();
+    private final ArrayList<ActionInfo> actionInfos = new ArrayList<>();
 
     public ActionInfoList(List<ActionInfo> actionInfos) {
         if (actionInfos != null) {

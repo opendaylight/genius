@@ -31,11 +31,11 @@ public class ARP extends Packet {
     private static final String TARGETHWADDR = "TargetHardwareAddress";
     private static final String TARGETPADDR = "TargetProtocolAddress";
 
-    public static short HW_TYPE_ETHERNET = (short) 0x1;
-    public static short REQUEST = (short) 0x1;
-    public static short REPLY = (short) 0x2;
+    public static final short HW_TYPE_ETHERNET = (short) 0x1;
+    public static final short REQUEST = (short) 0x1;
+    public static final short REPLY = (short) 0x2;
 
-    public static short PROTO_TYPE_IP = 0x800;
+    public static final short PROTO_TYPE_IP = 0x800;
 
     @SuppressWarnings("serial")
     private static Map<String, Pair<Integer, Integer>> fieldCoordinates

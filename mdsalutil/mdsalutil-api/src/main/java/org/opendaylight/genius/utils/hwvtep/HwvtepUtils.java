@@ -11,6 +11,7 @@ package org.opendaylight.genius.utils.hwvtep;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -646,9 +647,9 @@ public final class HwvtepUtils {
         for (PhysAddress mac : macAddresses) {
             // TODO: Query ARP cache to get IP address corresponding to
             // the MAC
-            IpAddress ipAddress = null;
-            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId, mac.getValue().toLowerCase(),
-                    ipAddress, logicalSwitchName, phyLocatorAug));
+            //IpAddress ipAddress = null;
+            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId, mac.getValue().toLowerCase(Locale.getDefault()),
+                    /*ipAddress*/ null, logicalSwitchName, phyLocatorAug));
         }
         return HwvtepUtils.addRemoteUcastMacs(broker, nodeId, macs);
     }
