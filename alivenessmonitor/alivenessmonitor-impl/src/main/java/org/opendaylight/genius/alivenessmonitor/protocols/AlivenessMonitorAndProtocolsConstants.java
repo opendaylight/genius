@@ -10,8 +10,7 @@ package org.opendaylight.genius.alivenessmonitor.protocols;
 /**
  * Constants shared between alivenessmonitor.internal and alivenessmonitor.protocols.internal.
  */
-public class AlivenessMonitorAndProtocolsConstants {
+public interface AlivenessMonitorAndProtocolsConstants {
 
-    public static final String SEPERATOR = ".";
-
+    String SEPERATOR = ".";
 }

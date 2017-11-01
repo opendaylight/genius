@@ -13,10 +13,13 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.liblldp.Packet;
@@ -36,7 +39,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepPhysicalLocatorRef;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.TunnelsBuilder;
@@ -64,7 +66,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVtepTunnelsStateHandler>
-        implements AlivenessProtocolHandler, AutoCloseable {
+        implements AlivenessProtocolHandler<Packet> {
 
     private static final Logger LOG = LoggerFactory.getLogger(HwVtepTunnelsStateHandler.class);
     private final DataBroker dataBroker;
@@ -114,7 +116,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         final String monitorKey = getBfdMonitorKey(interfaceName);
         LOG.debug("Processing monitorKey: {} for received Tunnels update DCN", monitorKey);
 
-        final Semaphore lock = alivenessMonitor.lockMap.get(monitorKey);
+        final Semaphore lock = alivenessMonitor.getLock(monitorKey);
         LOG.debug("Acquiring lock for monitor key : {} to process monitor DCN", monitorKey);
         alivenessMonitor.acquireLock(lock);
 
@@ -125,7 +127,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         Futures.addCallback(stateResult, new FutureCallback<Optional<MonitoringState>>() {
 
             @Override
-            public void onSuccess(Optional<MonitoringState> optState) {
+            public void onSuccess(@Nonnull Optional<MonitoringState> optState) {
                 if (optState.isPresent()) {
                     final MonitoringState currentState = optState.get();
                     if (currentState.getState() == newTunnelOpState) {
@@ -162,7 +164,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
                                 LOG.trace("Error in writing monitoring state: {} to Datastore", state);
                             }
                         }
-                    });
+                    }, MoreExecutors.directExecutor());
                 } else {
                     LOG.warn("Monitoring State not available for key: {} to process the Packet received", monitorKey);
                     // Complete the transaction
@@ -179,7 +181,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
                 tx.cancel();
                 alivenessMonitor.releaseLock(lock);
             }
-        });
+        }, MoreExecutors.directExecutor());
     }
 
     private LivenessState getTunnelOpState(List<BfdStatus> tunnelBfdStatus) {
@@ -208,8 +210,8 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     }
 
     @Override
-    public Class<?> getPacketClass() {
-        return null;
+    public Class<Packet> getPacketClass() {
+        return Packet.class;
     }
 
     @Override
@@ -217,10 +219,16 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         return null;
     }
 
+    // tunnelKey, nodeId, topologyId are initialized to null and immediately passed to getTunnelIdentifier which
+    // FindBugs as a "Load of known null value" violation. Not sure sure what the intent...
+    @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
     void resetMonitoringTask(boolean isEnable) {
         // TODO: get the corresponding hwvtep tunnel from the sourceInterface
         // once InterfaceMgr
         // implments renderer for hwvtep vxlan tunnels
+
+        // tunnelKey, nodeId, topologyId are initialized to null and immediately passed to getTunnelIdentifier which
+        // FindBugs flags as a "Load of known null value" violation. Not sure sure what the intent...
         TunnelsKey tunnelKey = null;
         String nodeId = null;
         String topologyId = null;
@@ -234,7 +242,9 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         List<BfdParams> tunnelBfdParams = tunnel.getBfdParams();
         if (tunnelBfdParams == null || tunnelBfdParams.isEmpty()) {
             LOG.debug("there is no bfd params available for the tunnel {}", tunnel);
+            return;
         }
+
         Iterator<BfdParams> tunnelBfdParamsInterator = tunnelBfdParams.iterator();
         while (tunnelBfdParamsInterator.hasNext()) {
             BfdParams bfdParam = tunnelBfdParamsInterator.next();
@@ -275,15 +285,16 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         String tunnelLocalMacAddress = "<TODO>";
         String tunnelLocalIpAddress = "<TODO>";
         String tunnelRemoteMacAddress = "<TODO>";
-        String tunnelRemoteIpAddress = "<TODO>";
         List<BfdParams> bfdParams = new ArrayList<>();
         fillBfdParams(bfdParams, profile);
         List<BfdLocalConfigs> bfdLocalConfigs = new ArrayList<>();
         fillBfdLocalConfigs(bfdLocalConfigs, tunnelLocalMacAddress, tunnelLocalIpAddress);
         List<BfdRemoteConfigs> bfdRemoteConfigs = new ArrayList<>();
         fillBfdRemoteConfigs(bfdRemoteConfigs, tunnelRemoteMacAddress);
-        TunnelsKey tunnelKey = null;
-        Tunnels tunnelWithBfd = new TunnelsBuilder().setKey(tunnelKey).setBfdParams(bfdParams)
+        // tunnelKey is initialized to null and passed to setKey which FindBugs flags as a
+        // "Load of known null value" violation. Not sure sure what the intent is...
+        //TunnelsKey tunnelKey = null;
+        Tunnels tunnelWithBfd = new TunnelsBuilder().setKey(/*tunnelKey*/ null).setBfdParams(bfdParams)
                 .setBfdLocalConfigs(bfdLocalConfigs).setBfdRemoteConfigs(bfdRemoteConfigs).build();
         // TODO: get the following parameters from the interface and use it to
         // update hwvtep datastore
@@ -292,12 +303,13 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         // into hwvtep datastore. if tunnels are not created during that time,
         // then start monitoring has to
         // be done as part of tunnel add DCN handling.
-        HwvtepPhysicalLocatorRef remoteRef = null;
-        HwvtepPhysicalLocatorRef localRef = null;
+//        HwvtepPhysicalLocatorRef remoteRef = null;
+//        HwvtepPhysicalLocatorRef localRef = null;
         String topologyId = "";
         String nodeId = "";
         MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
-                getTunnelIdentifier(topologyId, nodeId, new TunnelsKey(localRef, remoteRef)), tunnelWithBfd);
+                getTunnelIdentifier(topologyId, nodeId, new TunnelsKey(/*localRef*/ null, /*remoteRef*/ null)),
+                tunnelWithBfd);
     }
 
     private void fillBfdRemoteConfigs(List<BfdRemoteConfigs> bfdRemoteConfigs, String tunnelRemoteMacAddress) {
