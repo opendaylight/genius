@@ -9,6 +9,7 @@
 package org.opendaylight.genius.interfacemanager.rpcservice;
 
 import static org.opendaylight.genius.infra.FutureRpcResults.LogLevel.DEBUG;
+import static org.opendaylight.genius.infra.FutureRpcResults.LogLevel.NONE;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
@@ -125,7 +126,8 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
             }
             return Futures.immediateFuture(new GetDpidFromInterfaceOutputBuilder().setDpid(dpId).build());
         }).withRpcErrorMessage(e -> getDpidFromInterfaceErrorMessage(interfaceName, e.getMessage()))
-          .onFailure(e -> { /* do not LOG error here */ }).build();
+          .onFailureLogLevel(NONE) // do not LOG error in this case!
+          .build();
     }
 
     private String getDpidFromInterfaceErrorMessage(final String interfaceName, final String dueTo) {
