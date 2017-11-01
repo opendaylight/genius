@@ -23,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * Move source/destination IP action.
  */
 public class ActionMoveSourceDestinationIp extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     public ActionMoveSourceDestinationIp() {
         this(0);

@@ -20,7 +20,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.Output
  * Punt to controller action.
  */
 public class ActionPuntToController extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     public ActionPuntToController() {
         this(0);

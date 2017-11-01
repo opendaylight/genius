@@ -21,7 +21,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
  * NX load metadata action.
  */
 public class ActionNxLoadMetadata extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     private final BigInteger value;
     private final Integer startBit;
@@ -76,9 +75,9 @@ public class ActionNxLoadMetadata extends ActionInfo {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((endBit == null) ? 0 : endBit.hashCode());
-        result = prime * result + ((startBit == null) ? 0 : startBit.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
+        result = prime * result + (endBit == null ? 0 : endBit.hashCode());
+        result = prime * result + (startBit == null ? 0 : startBit.hashCode());
+        result = prime * result + (value == null ? 0 : value.hashCode());
         return result;
     }
 

@@ -19,7 +19,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
  * Drop action.
  */
 public class ActionDrop extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     public ActionDrop() {
         this(0);

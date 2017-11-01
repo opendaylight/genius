@@ -8,14 +8,11 @@
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.MoreObjects;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import org.opendaylight.yangtools.util.EvenMoreObjects;
 
-public class BucketInfo extends ActionInfoList implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class BucketInfo extends ActionInfoList {
 
     private Integer weight = 0;
     private Long watchPort = 0xffffffffL;

@@ -19,6 +19,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
  * Set ICMPv6 type action.
  */
 public class ActionSetIcmpv6Type extends ActionInfo {
+
     private final short type;
 
     public ActionSetIcmpv6Type(short type) {

@@ -19,7 +19,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
 
 public class ActionSetFieldMeta extends ActionInfo {
-    private static final long serialVersionUID = 1L;
 
     private final BigInteger metadataValue;
 
