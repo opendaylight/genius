@@ -1,0 +1,238 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_06eda68b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "Redundant implements",
+      "range": {
+        "startLine": 48,
+        "startChar": 87,
+        "endLine": 48,
+        "endChar": 109
+      },
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_6603c242",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractSyncDataTreeChangeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "Redundant implements",
+      "range": {
+        "startLine": 32,
+        "startChar": 87,
+        "endLine": 32,
+        "endChar": 109
+      },
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a6fdba3c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "\"Use of non-localized String.toLowerCase()\"",
+      "range": {
+        "startLine": 139,
+        "startChar": 63,
+        "endLine": 139,
+        "endChar": 74
+      },
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c699ce20",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/ARP.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "These fields should be final",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_06a48655",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "\"String is incompatible with expected argument type \nPair\u003cjava.util.concurrent.BlockingQueue,org.opendaylight.genius.utils.batching.ResourceHandler\u003e\" - contains checks if a Map value exists, should use containsKey here",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_668aa2c0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 281,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "inline these below",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_4685deab",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 325,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "Reference ListenableFuture instead of deprecated CheckedFuture",
+      "range": {
+        "startLine": 325,
+        "startChar": 12,
+        "endLine": 325,
+        "endChar": 25
+      },
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a6949ae2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/cache/DataStoreCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "\"Redundant nullcheck of java.util.concurrent.ConcurrentHashMap.entrySet(), which is known to be non-null in getValues\"",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_868fd6cb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/cache/DataStoreCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "Same here",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_e6bdf269",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "\"Sequence of calls to java.util.concurrent.ConcurrentHashMap may not be atomic\"",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c6c0aee2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "\"Exceptional return value of java.util.concurrent.LinkedBlockingQueue.offer(Object) ignored\" - make recursive call to try again",
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_26b8aa75",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 651,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T05:02:00Z",
+      "side": 0,
+      "message": "\"Load of known null value\" - not sure what the intent here is passing known null",
+      "range": {
+        "startLine": 651,
+        "startChar": 20,
+        "endLine": 651,
+        "endChar": 29
+      },
+      "revId": "3183d03e02582b9c15f65446e44356663537f6df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
