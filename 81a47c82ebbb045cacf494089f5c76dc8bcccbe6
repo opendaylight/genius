@@ -16,6 +16,24 @@
       "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f7e11aff",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-01T18:33:41Z",
+      "side": 1,
+      "message": "Are we sure we want to suppress all error logging? Perhaps another error other than the IllegalArgumentException above could be raised that might be significant? Perhaps log to DEBUG? Or don\u0027t throw IllegalArgumentException exception above and log to debug. I like that the best - it\u0027s usually not best practice to use exceptions for expected behavior (performance-wise).",
+      "parentUuid": "9a245df4_371c5213",
+      "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
