@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Singleton;
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -27,36 +26,38 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 @ThreadSafe
 public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHandlerRegistry {
 
-    private final Map<EtherTypes, AlivenessProtocolHandler> ethTypeToProtocolHandler = new EnumMap<>(EtherTypes.class);
-    private final Map<Class<?>, AlivenessProtocolHandler> packetTypeToProtocolHandler = new HashMap<>();
+    private final Map<EtherTypes, AlivenessProtocolHandler<?>> ethTypeToProtocolHandler =
+            new EnumMap<>(EtherTypes.class);
+    private final Map<Class<?>, AlivenessProtocolHandler<?>> packetTypeToProtocolHandler = new HashMap<>();
 
     @Override
-    public synchronized void register(EtherTypes etherType, AlivenessProtocolHandler protocolHandler) {
+    public synchronized void register(EtherTypes etherType, AlivenessProtocolHandler<?> protocolHandler) {
         ethTypeToProtocolHandler.put(etherType, protocolHandler);
         packetTypeToProtocolHandler.put(protocolHandler.getPacketClass(), protocolHandler);
     }
 
     @Override
-    public synchronized @Nullable AlivenessProtocolHandler getOpt(EtherTypes etherType) {
+    public synchronized AlivenessProtocolHandler<?> getOpt(EtherTypes etherType) {
         return ethTypeToProtocolHandler.get(etherType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public synchronized @Nullable AlivenessProtocolHandler getOpt(Class<?> packetClass) {
-        return packetTypeToProtocolHandler.get(packetClass);
+    public synchronized <T extends Packet> AlivenessProtocolHandler<T> getOpt(Class<T> packetClass) {
+        return (AlivenessProtocolHandler<T>) packetTypeToProtocolHandler.get(packetClass);
     }
 
     @Override
-    public @NonNull AlivenessProtocolHandler get(EtherTypes etherType) {
-        AlivenessProtocolHandler handler = getOpt(etherType);
+    public AlivenessProtocolHandler<?> get(EtherTypes etherType) {
+        AlivenessProtocolHandler<?> handler = getOpt(etherType);
         if (handler == null) {
             throw new IllegalStateException("No handler registered for etherType: " + etherType);
         }
         return handler;
     }
 
-    public @NonNull AlivenessProtocolHandler get(Class<?> packetClass) {
-        AlivenessProtocolHandler handler = getOpt(packetClass);
+    public AlivenessProtocolHandler<?> get(Class<?> packetClass) {
+        AlivenessProtocolHandler<?> handler = packetTypeToProtocolHandler.get(packetClass);
         if (handler == null) {
             throw new IllegalStateException("No handler registered for packetClass: " + packetClass);
         }

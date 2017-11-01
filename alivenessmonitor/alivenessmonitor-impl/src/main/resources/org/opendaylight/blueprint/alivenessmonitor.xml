@@ -27,5 +27,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService" />
 
   <odl:rpc-implementation ref="alivenessMonitor" />
+  <odl:notification-listener ref="alivenessMonitor"/>
 
 </blueprint>

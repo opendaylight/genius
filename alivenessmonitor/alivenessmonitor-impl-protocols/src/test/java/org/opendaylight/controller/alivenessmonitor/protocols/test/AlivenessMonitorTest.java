@@ -11,11 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -170,7 +170,7 @@ public class AlivenessMonitorTest {
 
         AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistryImpl();
         alivenessMonitor = new AlivenessMonitor(dataBroker, idManager,
-                notificationPublishService, notificationService, alivenessProtocolHandlerRegistry);
+                notificationPublishService, alivenessProtocolHandlerRegistry);
         arpHandler = new AlivenessProtocolHandlerARP(dataBroker,
                 interfaceManager, alivenessProtocolHandlerRegistry, arpService);
         lldpHandler = new AlivenessProtocolHandlerLLDP(dataBroker,
