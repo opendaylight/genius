@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -617,6 +618,8 @@ public class MDSALUtil {
         }
     }
 
+    // "Consider returning a zero length array rather than null" - too late to change behavior plus it's deprecated.
+    @SuppressFBWarnings("PZLA_PREFER_ZERO_LENGTH_ARRAYS")
     public static byte[] getMacAddressForNodeConnector(DataBroker broker,
             InstanceIdentifier<NodeConnector> nodeConnectorId)  {
         Optional<NodeConnector> optNc = MDSALDataStoreUtils.read(broker,

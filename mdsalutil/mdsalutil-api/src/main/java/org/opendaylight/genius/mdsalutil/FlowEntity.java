@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
@@ -38,11 +39,15 @@ public abstract class FlowEntity extends AbstractSwitchEntity {
     public abstract @Nullable String getFlowName();
 
     @Default
+    // Confusing to have methods getHardTimeOut() and ActionLearn.getHardTimeout()
+    @SuppressFBWarnings("NM_CONFUSING")
     public int getHardTimeOut() {
         return 0;
     }
 
     @Default
+    // Confusing to have methods getIdleTimeOut() and ActionLearn.getIdleTimeout()
+    @SuppressFBWarnings("NM_CONFUSING")
     public int getIdleTimeOut() {
         return 0;
     }

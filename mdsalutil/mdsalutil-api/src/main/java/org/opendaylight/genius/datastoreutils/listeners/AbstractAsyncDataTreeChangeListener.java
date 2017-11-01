@@ -12,7 +12,6 @@ import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -45,7 +44,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> extends
-        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T>, DataTreeChangeListener<T> {
+        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T> {
 
     private final ExecutorService executorService;
 
