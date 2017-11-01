@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_371c5213",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-01T18:22:56Z",
+      "side": 1,
+      "message": "is this the only case? I remember there are similar logs in the same file for other RPCs as well. Can you have a quick look?",
+      "revId": "81a47c82ebbb045cacf494089f5c76dc8bcccbe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
