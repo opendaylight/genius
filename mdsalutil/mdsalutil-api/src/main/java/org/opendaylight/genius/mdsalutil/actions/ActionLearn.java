@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -192,11 +193,13 @@ public class ActionLearn extends ActionInfo {
                 + flowMods + "]";
     }
 
-    public interface FlowMod {
+    public interface FlowMod extends Serializable {
         FlowMods buildFlowMod();
     }
 
     public static class MatchFromField implements FlowMod {
+        private static final long serialVersionUID = 1L;
+
         private final long sourceField;
         private final long destField;
         private final int bits;
@@ -270,6 +273,8 @@ public class ActionLearn extends ActionInfo {
     }
 
     public static class MatchFromValue implements FlowMod {
+        private static final long serialVersionUID = 1L;
+
         private final int value;
         private final long sourceField;
         private final int bits;
@@ -342,6 +347,8 @@ public class ActionLearn extends ActionInfo {
     }
 
     public static class CopyFromField implements FlowMod {
+        private static final long serialVersionUID = 1L;
+
         private final long sourceField;
         private final long destField;
         private final int bits;
@@ -415,6 +422,8 @@ public class ActionLearn extends ActionInfo {
     }
 
     public static class CopyFromValue implements FlowMod {
+        private static final long serialVersionUID = 1L;
+
         private final int value;
         private final long destField;
         private final int bits;
@@ -487,6 +496,8 @@ public class ActionLearn extends ActionInfo {
     }
 
     public static class OutputToPort implements FlowMod {
+        private static final long serialVersionUID = 1L;
+
         private final long sourceField;
         private final int bits;
 

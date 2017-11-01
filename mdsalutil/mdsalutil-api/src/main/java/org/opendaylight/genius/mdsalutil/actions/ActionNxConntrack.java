@@ -7,11 +7,11 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -148,11 +148,13 @@ public class ActionNxConntrack extends ActionInfo {
                 + "]";
     }
 
-    public interface NxCtAction {
+    public interface NxCtAction extends Serializable {
         CtActions buildCtActions();
     }
 
     public static class NxNat implements NxCtAction {
+        private static final long serialVersionUID = 1L;
+
         private final int flags;
         private final int rangePresent;
         private final IpAddress ipAddressMin;
@@ -259,6 +261,8 @@ public class ActionNxConntrack extends ActionInfo {
     }
 
     public static class NxCtMark implements NxCtAction {
+        private static final long serialVersionUID = 1L;
+
         private final long ctMark;
 
         public NxCtMark(long ctMark) {
@@ -293,7 +297,7 @@ public class ActionNxConntrack extends ActionInfo {
 
         @Override
         public int hashCode() {
-            return 31 * (int) (ctMark ^ (ctMark >>> 32));
+            return 31 * (int) (ctMark ^ ctMark >>> 32);
         }
     }
 }
