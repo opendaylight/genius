@@ -16,6 +16,24 @@
       "revId": "11e01f7abfa0204c5efdc894be48dfd41937d023",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1f3b2039",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-02T15:02:29Z",
+      "side": 1,
+      "message": "this will not cause any problem else where, just that one listener wont be registered, and the whole functionality will not work :)",
+      "parentUuid": "9a245df4_5fee38b5",
+      "revId": "11e01f7abfa0204c5efdc894be48dfd41937d023",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
