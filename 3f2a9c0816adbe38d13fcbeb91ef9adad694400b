@@ -33,6 +33,24 @@
       "revId": "3f2a9c0816adbe38d13fcbeb91ef9adad694400b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_55ed79ee",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-02T22:03:34Z",
+      "side": 1,
+      "message": "I disagree with this obviously (otherwise would not have implemented it like this in the first place), because I think catching unintentional double onSuccess has value to catch subtle errors; inspired by how immutables.org Builders do this.\n\nThe use case of previously-set handler is remote; I don\u0027t see  (the settings of users of) this class shared outside individual RPC implementations.\n\nThe use of Optional instead of a boolean isXYZSet field is an implementation detail.  I don\u0027t see what\u0027s wrong with it, in this case; I don\u0027t like \"absolute dogmatic rules\", such as \"NEVER have an Optional in a field\" - for a Builder to track whether something has been set or not, it\u0027s seems perfectly OK to me.  There is no noteworthy \"cost\" IMHO.\n\nHaving said all of the above, my primary goal is to get this, and everything else I come up with, merge in within reasonable timeframes.  The entire process is MUCH too slow for my taste.  Therefore, just in the interest of getting your +1 without which I would not want to merge this, I\u0027ve adjusted things as suggested anyway.  Can we get this in now? (After running CSIT for the next 3 weeks, probably.)",
+      "parentUuid": "9a245df4_a930e69e",
+      "revId": "3f2a9c0816adbe38d13fcbeb91ef9adad694400b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
