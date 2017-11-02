@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -67,6 +68,7 @@ public class InterfaceConfigListener
                 mdsalApiManager, coordinator, interfaceManagerCommonUtils);
         this.ovsInterfaceConfigUpdateHelper = new OvsInterfaceConfigUpdateHelper(ovsInterfaceConfigAddHelper,
                 ovsInterfaceConfigRemoveHelper);
+        this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
     @Override
