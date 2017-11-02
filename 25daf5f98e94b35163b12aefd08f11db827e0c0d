@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a245df4_8604f1c0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-02T08:12:34Z",
+      "side": 1,
+      "message": "David, what is the reason why Async is changed to Sync here?",
+      "revId": "25daf5f98e94b35163b12aefd08f11db827e0c0d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c600a903",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
         "patchSetId": 3
