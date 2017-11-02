@@ -36,14 +36,12 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private final DataBroker dataBroker;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
-    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
-            JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            JobCoordinator coordinator) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
-        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     /*
@@ -74,7 +72,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             futures.add(writeTransaction.submit());
             return futures;
         }
-        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, interfaceManagerCommonUtils, bridgeIid, bridgeNew);
+        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew);
 
         futures.add(writeTransaction.submit());
         return futures;
@@ -83,7 +81,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     public List<ListenableFuture<Void>> updateTunnelState(OvsdbTerminationPointAugmentation terminationPointNew) {
         final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         final String interfaceName = terminationPointNew.getName();
-        interfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
+        InterfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return Collections.emptyList();
@@ -92,8 +90,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         coordinator.enqueueJob(interfaceName, () -> {
             // update opstate of interface if TEP has gone down/up as a result
             // of BFD monitoring
-            final Interface interfaceState = interfaceManagerCommonUtils
-                    .getInterfaceStateFromOperDS(terminationPointNew.getName());
+            final Interface interfaceState = InterfaceManagerCommonUtils
+                    .getInterfaceStateFromOperDS(terminationPointNew.getName(), dataBroker);
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);

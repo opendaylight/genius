@@ -18,11 +18,13 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -39,13 +41,15 @@ public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
     private final DataBroker dataBroker;
-    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final IdManagerService idManager;
+    private final IMdsalApiManager mdsalApiManager;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
-    public OvsInterfaceStateAddHelper(DataBroker dataBroker, AlivenessMonitorService alivenessMonitorService,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+    public OvsInterfaceStateAddHelper(DataBroker dataBroker, IdManagerService idManager,
+            IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService) {
         this.dataBroker = dataBroker;
-        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+        this.idManager = idManager;
+        this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorUtils = new AlivenessMonitorUtils(alivenessMonitorService, dataBroker);
     }
 
@@ -88,16 +92,16 @@ public final class OvsInterfaceStateAddHelper {
         // Fetch the interface from config DS if exists
         InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
-                .getInterfaceFromConfigDS(interfaceKey);
+            .interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
+                .getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
         if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
                 && !validateTunnelPortAttributes(nodeConnectorId, iface)) {
             return futures;
         }
 
-        Interface ifState = interfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
-                defaultOperationalShardTransaction, physAddress, operStatus, adminStatus, nodeConnectorId);
+        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
+                defaultOperationalShardTransaction, idManager, physAddress, operStatus, adminStatus, nodeConnectorId);
 
         // If this interface is a tunnel interface, create the tunnel ingress
         // flow,and start tunnel monitoring
@@ -127,7 +131,7 @@ public final class OvsInterfaceStateAddHelper {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        interfaceManagerCommonUtils.addTunnelIngressFlow(
+        InterfaceManagerCommonUtils.addTunnelIngressFlow(mdsalApiManager,
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
         FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);

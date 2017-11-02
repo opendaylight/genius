@@ -100,7 +100,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
     private final JobCoordinator coordinator;
-    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceStatusMonitor interfaceStatusMonitor = new InterfaceStatusMonitor();
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
@@ -111,14 +110,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
             final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final JobCoordinator coordinator) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
         this.coordinator = coordinator;
-        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @PostConstruct
@@ -223,22 +221,22 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfaceInfo getInterfaceInfo(String interfaceName) {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
-                .getInterfaceState(interfaceName);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceState(interfaceName, dataBroker);
 
         if (ifState == null) {
             LOG.debug("Interface {} is not present", interfaceName);
             return null;
         }
 
-        Interface intf = interfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName));
+        Interface intf = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName),
+                dataBroker);
         if (intf == null) {
             LOG.error("Interface {} doesn't exist in config datastore", interfaceName);
             return null;
         }
 
-        NodeConnectorId ncId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(intf.getName(),
-                interfaceManagerCommonUtils);
+        NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(intf.getName(), dataBroker);
         InterfaceInfo.InterfaceType interfaceType = IfmUtil.getInterfaceType(intf);
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         BigInteger dpId = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_DPID;
@@ -285,7 +283,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         org.opendaylight.yang.gen.v1.urn
             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
-                interfaceManagerCommonUtils.getInterfaceState(interfaceName);
+                InterfaceManagerCommonUtils
+                .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.debug("Interface {} is not present", interfaceName);
             return null;
@@ -321,8 +320,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
-                .getInterfaceState(interfaceName);
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
+                .getInterfaceState(interfaceName, dataBroker);
         if (ifState == null) {
             LOG.debug("Interface {} is not present", interfaceName);
             return null;
@@ -340,7 +339,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             if (Tunnel.class.equals(ifState.getType())) {
                 interfaceInfo.setPortName(interfaceName);
             } else {
-                Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
+                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
                 if (iface != null) {
                     ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
                     interfaceInfo.setPortName(parentRefs.getParentInterface());
@@ -375,7 +374,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceStateFromCache(interfaceName);
         if (ifState == null) {
             LOG.warn("Interface {} is not present", interfaceName);
@@ -386,7 +385,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public Interface getInterfaceInfoFromConfigDataStore(String interfaceName) {
-        return interfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName));
+        return InterfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
     }
 
     @Override
@@ -414,8 +413,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             throws InterfaceAlreadyExistsException {
 
         LOG.info("Create VLAN interface : {}", interfaceName);
-        Interface interfaceOptional = interfaceManagerCommonUtils
-                .getInterfaceFromConfigDS(new InterfaceKey(interfaceName));
+        Interface interfaceOptional = InterfaceManagerCommonUtils
+                .getInterfaceFromConfigDS(new InterfaceKey(interfaceName), dataBroker);
         if (interfaceOptional != null) {
             LOG.debug("VLAN interface is already exist", interfaceOptional.getDescription());
             throw new InterfaceAlreadyExistsException(interfaceOptional.getName());
@@ -431,7 +430,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (isExternal) {
             interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
         }
-        InstanceIdentifier<Interface> interfaceInstanceIdentifier = interfaceManagerCommonUtils
+        InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
         // TODO Do something with the future...
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(
@@ -525,17 +524,17 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public List<ActionInfo> getInterfaceEgressActions(String ifName) {
-        return IfmUtil.getEgressActionInfosForInterface(ifName, 0, interfaceManagerCommonUtils, false);
+        return IfmUtil.getEgressActionInfosForInterface(ifName, 0, dataBroker, false);
     }
 
     @Override
     public List<Interface> getVlanInterfaces() {
-        return interfaceManagerCommonUtils.getAllVlanInterfacesFromCache();
+        return InterfaceManagerCommonUtils.getAllVlanInterfacesFromCache();
     }
 
     @Override
     public List<Interface> getVxlanInterfaces() {
-        return interfaceManagerCommonUtils.getAllTunnelInterfacesFromCache();
+        return InterfaceManagerCommonUtils.getAllTunnelInterfacesFromCache();
     }
 
     @Override
@@ -556,7 +555,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         List<Interface> childInterfaces = new ArrayList<>();
         for (InterfaceChildEntry childEntry : childEntries) {
             String interfaceName = childEntry.getChildInterface();
-            Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
+            Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
             if (iface != null) {
                 childInterfaces.add(iface);
             } else {
@@ -737,7 +736,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
             if (readInterfaceBeforeWrite) {
-                Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
+                Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName, dataBroker);
                 if (iface == null) {
                     LOG.debug("Interface doesn't exist in config DS - no need to update parentRef, skipping");
                     return null;

@@ -33,13 +33,9 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedIngressServicesConfigBindHelper.class);
 
-    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
-
     @Inject
-    public FlowBasedIngressServicesConfigBindHelper(final DataBroker dataBroker,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+    public FlowBasedIngressServicesConfigBindHelper(final DataBroker dataBroker) {
         super(dataBroker);
-        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     @Override
@@ -64,7 +60,8 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
         LOG.info("binding ingress service {} for tunnel port: {}", boundServiceNew.getServiceName(),
                 boundServiceState.getInterfaceName());
         WriteTransaction transaction = getDataBroker().newWriteOnlyTransaction();
-        Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName());
+        Interface iface = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName(),
+            getDataBroker());
         if (allServices.size() == 1) {
             // If only one service present, install instructions in table 0.
             List<MatchInfo> matches = null;
