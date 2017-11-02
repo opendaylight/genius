@@ -34,6 +34,24 @@
       "revId": "11e01f7abfa0204c5efdc894be48dfd41937d023",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bf13f4b6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-02T15:07:32Z",
+      "side": 1,
+      "message": "I think they all use blueprint but some might still be Activators (there\u0027s no CSS anymore). Maybe SFC\u0027s issue failed a unit test in a downstream that was using it.",
+      "parentUuid": "9a245df4_5fee38b5",
+      "revId": "11e01f7abfa0204c5efdc894be48dfd41937d023",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
