@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_6951ced7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-11-02T09:56:48Z",
+      "side": 1,
+      "message": "I much prefer\n\n        private Function\u003cThrowable, String\u003e rpcErrorMessageFunction \u003d Throwable::getMessage;\n        private Consumer\u003cO\u003e onSuccessConsumer \u003d result -\u003e { };\n        private Consumer\u003cThrowable\u003e onFailureConsumer \u003d throwable -\u003e { };\n\nwhich has the added benefit of avoiding the debate over whether Optional is acceptable for fields. Losing the ability to detect multiple setter calls seems like a minor issue to me (and if you *really* want to provide that, it can be implemented differently).",
+      "revId": "3f2a9c0816adbe38d13fcbeb91ef9adad694400b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a930e69e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-11-02T09:56:48Z",
+      "side": 1,
+      "message": "I’m not sure this is all *that* useful. I do see why it can be useful, but I can also imagine situations where you would want to override a previously-set handler (for any of the handlers here): for example, you inherit some builder from a piece of code you can’t rewrite (say because it’s eventually in infrautils, and you’re in netvirt), and you want to re-use the sophisticated onFailure but give your own onSuccess...\n\nBasically I think forbidding multiple calls is premature, we should wait to see how this ends up being used. I also think the cost to implement this is too great (using Optional anywya).",
+      "revId": "3f2a9c0816adbe38d13fcbeb91ef9adad694400b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
