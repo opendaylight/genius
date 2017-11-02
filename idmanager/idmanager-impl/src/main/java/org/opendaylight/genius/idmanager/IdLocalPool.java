@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.idmanager;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class IdLocalPool {
 
     private final String poolName;
@@ -109,9 +111,9 @@ public class IdLocalPool {
         newAvailableIds.setCur(tempAvailableIdHolder.getCur().longValue());
         clonedIdPool.setAvailableIds(newAvailableIds);
 
-        ReleasedIdHolder newReleasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME,
-                tempReleaseIdHolder.getDelayedEntries());
+        ReleasedIdHolder newReleasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
         newReleasedIds.setAvailableIdCount(tempReleaseIdHolder.getAvailableIdCount());
+        newReleasedIds.setDelayedEntries(new CopyOnWriteArrayList<>(tempReleaseIdHolder.getDelayedEntries()));
         clonedIdPool.setReleasedIds(newReleasedIds);
 
         return clonedIdPool;

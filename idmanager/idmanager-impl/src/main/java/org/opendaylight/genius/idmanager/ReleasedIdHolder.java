@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.annotation.Nonnull;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 
 public class ReleasedIdHolder implements IdHolder, Serializable {
@@ -23,19 +22,15 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     private final AtomicLong availableIdCount = new AtomicLong();
 
     private final long timeDelaySec;
-    private final IdUtils idUtils;
+    private List<DelayedIdEntry> delayedEntries;
 
-    private volatile List<DelayedIdEntry> delayedEntries = new CopyOnWriteArrayList<>();
+    private final IdUtils idUtils;
 
     public ReleasedIdHolder(IdUtils idUtils, long timeDelaySec) {
         this.idUtils = idUtils;
         this.timeDelaySec = timeDelaySec;
+        this.delayedEntries = new CopyOnWriteArrayList<>();
         availableIdCount.set(0);
-    }
-
-    public ReleasedIdHolder(IdUtils idUtils, long timeDelaySec, List<DelayedIdEntry> delayedEntries) {
-        this(idUtils, timeDelaySec);
-        this.delayedEntries.addAll(delayedEntries);
     }
 
     public static class DelayedIdEntry implements Serializable {
@@ -89,6 +84,9 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
     public void addId(long id) {
         long curTimeSec = System.currentTimeMillis() / 1000;
         DelayedIdEntry entry = new DelayedIdEntry(id, curTimeSec + timeDelaySec);
+        if (delayedEntries == null) {
+            delayedEntries = new CopyOnWriteArrayList<>();
+        }
         availableIdCount.incrementAndGet();
         delayedEntries.add(entry);
     }
@@ -123,13 +121,12 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
         return timeDelaySec;
     }
 
-    @Nonnull
     public List<DelayedIdEntry> getDelayedEntries() {
         return delayedEntries;
     }
 
-    public void replaceDelayedEntries(List<DelayedIdEntry> newDelayedEntries) {
-        this.delayedEntries = new CopyOnWriteArrayList<>(newDelayedEntries);
+    public void setDelayedEntries(List<DelayedIdEntry> delayedEntries) {
+        this.delayedEntries = delayedEntries;
     }
 
     public void setAvailableIdCount(long availableIdCount) {

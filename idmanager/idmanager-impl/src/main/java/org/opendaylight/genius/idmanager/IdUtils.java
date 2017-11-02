@@ -61,35 +61,14 @@ public class IdUtils {
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
 
-    private final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
+    public final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
 
     private final int bladeId;
 
     public IdUtils() throws UnknownHostException {
         bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
-    }
-
-    public CompletableFuture<List<Long>> removeAllocatedIds(String uniqueIdKey) {
-        return allocatedIdMap.remove(uniqueIdKey);
-    }
-
-    public CompletableFuture<List<Long>> putAllocatedIdsIfAbsent(String uniqueIdKey,
-            CompletableFuture<List<Long>> futureIdValues) {
-        return allocatedIdMap.putIfAbsent(uniqueIdKey, futureIdValues);
-    }
-
-    public void putReleaseIdLatch(String uniqueIdKey, CountDownLatch latch) {
-        releaseIdLatchMap.put(uniqueIdKey, latch);
-    }
-
-    public CountDownLatch getReleaseIdLatch(String uniqueIdKey) {
-        return releaseIdLatchMap.get(uniqueIdKey);
-    }
-
-    public CountDownLatch removeReleaseIdLatch(String uniqueIdKey) {
-        return releaseIdLatchMap.remove(uniqueIdKey);
     }
 
     public InstanceIdentifier<IdEntries> getIdEntry(InstanceIdentifier<IdPool> poolName, String idKey) {
