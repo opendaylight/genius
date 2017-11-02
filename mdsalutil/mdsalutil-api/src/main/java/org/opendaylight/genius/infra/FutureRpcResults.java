@@ -89,7 +89,7 @@ public final class FutureRpcResults {
     public enum LogLevel {
         ERROR, WARN, INFO, DEBUG, TRACE,
         /**
-         * Note that when using LogLevel NONE, then you should set a
+         * Note that when using LogLevel NONE for failures, then you should set a
          * {@link FutureRpcResultBuilder#onFailure(Consumer)} which does better logging,
          * or be 100% sure that all callers of the RPC check the returned Future RpcResult appropriately;
          * otherwise you will lose error messages.
