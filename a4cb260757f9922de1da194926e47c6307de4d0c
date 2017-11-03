@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_da7191a9",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-03T12:17:19Z",
+      "side": 1,
+      "message": "White",
+      "range": {
+        "startLine": 117,
+        "startChar": 0,
+        "endLine": 117,
+        "endChar": 2
+      },
+      "revId": "a4cb260757f9922de1da194926e47c6307de4d0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
