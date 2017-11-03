@@ -16,3 +16,4 @@ Contents:
    pipeline
    genius-design-doc
    specs/index
+   testplan/index
