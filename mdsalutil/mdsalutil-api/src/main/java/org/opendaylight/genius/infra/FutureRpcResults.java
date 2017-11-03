@@ -134,6 +134,10 @@ public final class FutureRpcResults {
     @NotThreadSafe
     public static final class FutureRpcResultBuilder<I, O> implements Builder<Future<RpcResult<O>>> {
 
+        private static final Function<Throwable, String> DEFAULT_ERROR_MESSAGE_FUNCTION = Throwable::getMessage;
+        private static final Consumer<Throwable> DEFAULT_ON_FAILURE = throwable -> { };
+        private final Consumer<O> DEFAULT_ON_SUCCESS = result -> { };
+
         // fixed (final) builder values
         private final Logger logger;
         private final String rpcMethodName;
@@ -141,9 +145,9 @@ public final class FutureRpcResults {
         private final Callable<ListenableFuture<O>> callable;
 
         // optional builder values, which can be overridden by users
-        private Function<Throwable, String> rpcErrorMessageFunction = Throwable::getMessage;
-        private Consumer<O> onSuccessConsumer = result -> { };
-        private Consumer<Throwable> onFailureConsumer = throwable -> { };
+        private Function<Throwable, String> rpcErrorMessageFunction = DEFAULT_ERROR_MESSAGE_FUNCTION;
+        private Consumer<O> onSuccessConsumer = DEFAULT_ON_SUCCESS;
+        private Consumer<Throwable> onFailureConsumer = DEFAULT_ON_FAILURE;
 
         // defaulted builder values, which can be overridden by users
         private LogLevel onEnterLogLevel = LogLevel.TRACE;
@@ -205,6 +209,9 @@ public final class FutureRpcResults {
          * Sets a custom on-failure action, for a given exception.
          */
         public FutureRpcResultBuilder<I,O> onFailure(Consumer<Throwable> newOnFailureConsumer) {
+            if (onFailureConsumer != DEFAULT_ON_FAILURE) {
+                throw new IllegalStateException("onFailure can only be set once");
+            }
             this.onFailureConsumer = newOnFailureConsumer;
             return this;
         }
@@ -244,6 +251,9 @@ public final class FutureRpcResults {
          * By default, the message is just {@link Throwable#getMessage()}.
          */
         public FutureRpcResultBuilder<I,O> withRpcErrorMessage(Function<Throwable, String> newRpcErrorMessageFunction) {
+            if (rpcErrorMessageFunction != DEFAULT_ERROR_MESSAGE_FUNCTION) {
+                throw new IllegalStateException("rpcErrorMessage can only be set once");
+            }
             this.rpcErrorMessageFunction = newRpcErrorMessageFunction;
             return this;
         }
@@ -252,6 +262,9 @@ public final class FutureRpcResults {
          * Sets a custom on-success action, for a given output.
          */
         public FutureRpcResultBuilder<I,O> onSuccess(Consumer<O> newOnSuccessFunction) {
+            if (onSuccessConsumer != DEFAULT_ON_SUCCESS) {
+                throw new IllegalStateException("onSuccess can only be set once");
+            }
             this.onSuccessConsumer = newOnSuccessFunction;
             return this;
         }
