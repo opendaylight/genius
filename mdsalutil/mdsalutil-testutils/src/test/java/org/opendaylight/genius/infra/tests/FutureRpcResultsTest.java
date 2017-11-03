@@ -13,6 +13,7 @@ import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static org.opendaylight.genius.infra.FutureRpcResults.LogLevel.NONE;
 import static org.opendaylight.genius.infra.FutureRpcResults.fromListenableFuture;
 
+import com.google.common.util.concurrent.Futures;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Rule;
@@ -97,6 +98,26 @@ public class FutureRpcResultsTest {
         TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(LOG, null, () -> {
             throw new IllegalArgumentException("bam");
         }).withRpcErrorMessage(e -> "tra la la").build(), IllegalArgumentException.class, "tra la la");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testExtraOnFailureThrowsException() throws Exception {
+        FutureRpcResults.fromListenableFuture(LOG, null, () -> Futures.immediateFuture(null)).onFailure(failure -> {
+        }).onFailure(failure -> {
+        });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testExtraOnSuccessThrowsException() throws Exception {
+        FutureRpcResults.fromListenableFuture(LOG, null, () -> Futures.immediateFuture(null)).onSuccess(result -> {
+        }).onSuccess(result -> {
+        });
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testExtraWithRpcErrorMessageThrowsException() throws Exception {
+        FutureRpcResults.fromListenableFuture(LOG, null, () -> Futures.immediateFuture(null)).withRpcErrorMessage(
+            error -> null).withRpcErrorMessage(error -> null);
     }
 
 }
