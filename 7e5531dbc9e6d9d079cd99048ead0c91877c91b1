@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_8604e418",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/AbstractCounterMBeanImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-11-04T17:29:59Z",
+      "side": 1,
+      "message": "it is perfect now :)",
+      "revId": "7e5531dbc9e6d9d079cd99048ead0c91877c91b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
