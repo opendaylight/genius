@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_c606dc85",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-04T12:04:17Z",
+      "side": 1,
+      "message": "Eclipse put that in :)  But making vars final is used to enforce that it shouldn\u0027t be changed.",
+      "parentUuid": "9a245df4_a696483d",
+      "revId": "6844f187120af2546a419c0b74f9ad0671acb5b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_068114fb",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/AbstractCounterMBeanImpl.java",
         "patchSetId": 2
@@ -47,6 +65,24 @@
       "writtenOn": "2017-11-04T07:39:33Z",
       "side": 1,
       "message": "doesn\u0027t it lead to cocurrentmodification exception ? I think we should make counterCache as a threadsafe one.",
+      "revId": "6844f187120af2546a419c0b74f9ad0671acb5b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a60be88c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/AbstractCounterMBeanImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-04T12:04:17Z",
+      "side": 1,
+      "message": "The counterCache  Map is never mutated - just the reference is set which I made volatile to be thread-safe. It\u0027s possible the caller invokePMManagedObjects or setCounterDetails could mutate the Map later unbeknownst  but I assume that\u0027s unlikely. To safe we would make counterCache an immutable copy.",
+      "parentUuid": "9a245df4_a68f6829",
       "revId": "6844f187120af2546a419c0b74f9ad0671acb5b4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
