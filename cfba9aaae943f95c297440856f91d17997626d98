@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_86b7c439",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 438,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-04T00:52:57Z",
+      "side": 1,
+      "message": "remove TODO, still",
+      "parentUuid": "9a245df4_92042cc1",
+      "revId": "cfba9aaae943f95c297440856f91d17997626d98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_5755864e",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 1

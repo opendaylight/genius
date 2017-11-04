@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_46b14c46",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-04T00:52:57Z",
+      "side": 0,
+      "message": "whoa - what?  Either I\u0027m really stupid and tired here, or this is dangerous / changes behaviour.. what am I missing?  AND there is the same in the line just above as well, and that\u0027s OK - huh?",
+      "parentUuid": "9a245df4_3d3b9939",
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_bd1669a5",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
@@ -93,6 +111,30 @@
       "writtenOn": "2017-10-31T14:49:04Z",
       "side": 0,
       "message": "\"String is incompatible with expected argument type InterfaceChildEntry\" - contains lookup doesn\u0027t work. Move the check inside loop below and move the IfL2vlan.L2vlanMode.Trunk  check appropriately",
+      "range": {
+        "startLine": 537,
+        "startChar": 80,
+        "endLine": 537,
+        "endChar": 94
+      },
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_668bb068",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 537,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-04T00:52:57Z",
+      "side": 0,
+      "message": "Right. Faseela you want to double check this, perhaps learn something interesting here, and +1 from your side?",
+      "parentUuid": "9a245df4_7d1cf1c1",
       "range": {
         "startLine": 537,
         "startChar": 80,
