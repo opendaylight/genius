@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_a6a2c8fa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-04T00:43:06Z",
+      "side": 0,
+      "message": "LGTM (it\u0027s replaced by @PostConstruct init() in newly @Singleton BatchingUtils",
+      "revId": "32d6d40636217a92a50bcc7f5b2d3eb9a13e08a6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
