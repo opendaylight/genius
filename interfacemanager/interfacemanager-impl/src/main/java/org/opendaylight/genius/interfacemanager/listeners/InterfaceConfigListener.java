@@ -95,82 +95,85 @@ public class InterfaceConfigListener
         return;
     }
 
-    private void runOnlyInOwnerNode(String jobDesc, Runnable job) {
-        entityOwnershipUtils.runOnlyInOwnerNode(IfmConstants.INTERFACE_CONFIG_ENTITY,
-                IfmConstants.INTERFACE_CONFIG_ENTITY, coordinator, jobDesc, job);
-    }
-
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
         interfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
-        runOnlyInOwnerNode("Remove Config Interface If Entity Owner", () -> {
-            LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
-            ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
-            if (parentRefs == null
-                    || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.debug("parent refs not specified for {}", interfaceOld.getName());
-                return;
-            }
-            boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
-            RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
-                    interfaceOld.getName(), parentRefs);
-            String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
-                    : parentRefs.getParentInterface();
-            coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
-        });
+
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
+        ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
+        if (parentRefs == null
+                || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            LOG.debug("parent refs not specified for {}", interfaceOld.getName());
+            return;
+        }
+        boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
+        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
+                interfaceOld.getName(), parentRefs);
+        String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
+                : parentRefs.getParentInterface();
+        coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
         interfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
-        runOnlyInOwnerNode("Update Config Interface If Entity Owner", () -> {
-            LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
-            ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getParentInterface() == null
-                    && !InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew)) {
-                // If parentRefs are missing, try to find a matching parent and
-                // update - this will trigger another DCN
-                updateInterfaceParentRefs(interfaceNew);
-            }
 
-            String ifNameNew = interfaceNew.getName();
-            if (parentRefs == null
-                    || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.debug("parent refs not specified for {}, or parentRefs {} missing DPN/parentInterface",
-                        interfaceNew.getName(), parentRefs);
-                return;
-            }
-            RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew,
-                    interfaceNew.getName());
-            String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
-            coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
+        ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
+        if (parentRefs == null || parentRefs.getParentInterface() == null
+                && !InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew)) {
+            // If parentRefs are missing, try to find a matching parent and
+            // update - this will trigger another DCN
+            updateInterfaceParentRefs(interfaceNew);
+        }
 
-        });
+        String ifNameNew = interfaceNew.getName();
+        if (parentRefs == null
+                || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            LOG.debug("parent refs not specified for {}, or parentRefs {} missing DPN/parentInterface",
+                    interfaceNew.getName(), parentRefs);
+            return;
+        }
+        RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew,
+                interfaceNew.getName());
+        String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
+        coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
         interfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
-        runOnlyInOwnerNode("Add Config Interface If Entity Owner", () -> {
-            LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
-            ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
-            if (parentRefs == null || parentRefs.getParentInterface() == null) {
-                // If parentRefs are missing, try to find a matching parent and
-                // update - this will trigger another DCN
-                updateInterfaceParentRefs(interfaceNew);
-            }
 
-            if (parentRefs == null
-                    || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
-                LOG.debug("parent refs not specified for {}", interfaceNew.getName());
-                return;
-            }
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
+        LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
+        ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
+        if (parentRefs == null || parentRefs.getParentInterface() == null) {
+            // If parentRefs are missing, try to find a matching parent and
+            // update - this will trigger another DCN
+            updateInterfaceParentRefs(interfaceNew);
+        }
 
-            RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs,
-                    interfaceNew.getName());
-            String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
-            coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
-        });
+        if (parentRefs == null
+                || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
+            LOG.debug("parent refs not specified for {}", interfaceNew.getName());
+            return;
+        }
+
+        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs,
+                interfaceNew.getName());
+        String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
+        coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private String getSynchronizationKey(Interface theInterface, ParentRefs theParentRefs) {
