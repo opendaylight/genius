@@ -16,6 +16,24 @@
       "revId": "2b38e7227778555f58c251a90d3550705f882135",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a6892877",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/BatchingUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-04T00:50:47Z",
+      "side": 1,
+      "message": "What\u0027s the problem here - can you elaborate?",
+      "parentUuid": "9a245df4_c69d3cbe",
+      "revId": "2b38e7227778555f58c251a90d3550705f882135",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
