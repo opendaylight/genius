@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_46df8c69",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-04T01:01:41Z",
+      "side": 0,
+      "message": "The ++ on line 364 is needed but the one on line 366 isn\u0027t b/c actionKeyStart isn\u0027t used after that. Think of it like this:\n\n  result.add(...actionKeyStart...);\n  // What\u0027s the point in adding 1 below - it\u0027s never used \n  actionKeyStart \u003d actionKeyStart + 1;\n  return;",
+      "parentUuid": "9a245df4_46b14c46",
+      "revId": "37ea13f1b34f9064bfbcdfed7f11e1cec4952e8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_bd1669a5",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 1
