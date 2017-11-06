@@ -155,6 +155,15 @@ public final class NwConstants {
     public static final short QOS_DSCP_TABLE = 90;
     public static final short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     public static final short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
+    public static final short INGRESS_ACL_ANTI_SPOOFING_TABLE = 210;
+    public static final short INGRESS_ACL_CONNTRACK_CLASSIFIER_TABLE = 211;
+    public static final short INGRESS_ACL_CONNTRACK_SENDER_TABLE = 212;
+    public static final short INGRESS_ACL_FOR_EXISTING_TRAFFIC_TABLE = 213;
+    public static final short INGRESS_ACL_FILTER_CUM_DISPATCHER_TABLE = 214;
+    public static final short INGRESS_ACL_RULE_BASED_FILTER_TABLE = 215;
+    public static final short INGRESS_REMOTE_ACL_TABLE = 216;
+    public static final short INGRESS_ACL_COMMITTER_TABLE = 217;
+    // TODO: Remove below unused old ACL constants.
     public static final short INGRESS_ACL_TABLE = 211;
     public static final short INGRESS_ACL_REMOTE_ACL_TABLE = 212;
     public static final short INGRESS_ACL_FILTER_TABLE = 213;
@@ -168,6 +177,16 @@ public final class NwConstants {
     public static final short EGRESS_SFC_CLASSIFIER_EGRESS_TABLE = 223;
     public static final short EGRESS_POLICY_CLASSIFIER_TABLE = 230;
     public static final short EGRESS_POLICY_ROUTING_TABLE = 231;
+    public static final short EGRESS_ACL_DUMMY_TABLE = 239;
+    public static final short EGRESS_ACL_ANTI_SPOOFING_TABLE = 240;
+    public static final short EGRESS_ACL_CONNTRACK_CLASSIFIER_TABLE = 241;
+    public static final short EGRESS_ACL_CONNTRACK_SENDER_TABLE = 242;
+    public static final short EGRESS_ACL_FOR_EXISTING_TRAFFIC_TABLE = 243;
+    public static final short EGRESS_ACL_FILTER_CUM_DISPATCHER_TABLE = 244;
+    public static final short EGRESS_ACL_RULE_BASED_FILTER_TABLE = 245;
+    public static final short EGRESS_REMOTE_ACL_TABLE = 246;
+    public static final short EGRESS_ACL_COMMITTER_TABLE = 247;
+    // TODO: Remove below unused old ACL constants.
     public static final short EGRESS_ACL_TABLE = 241;
     public static final short EGRESS_ACL_REMOTE_ACL_TABLE = 242;
     public static final short EGRESS_ACL_FILTER_TABLE = 243;
