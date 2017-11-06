@@ -15,6 +15,7 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
     public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADATA_MASK_REMOTE_ACL_ID = new BigInteger("0000000000FFFFFE", 16);
+    public static final BigInteger METADATA_MASK_REMOTE_ACL_TAG = new BigInteger("0000000000FFFFF0", 16);
     public static final BigInteger METADATA_MASK_POLICY_CLASSIFER_ID = new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID
         = new BigInteger("08000000FFFFFF00", 16);
@@ -25,6 +26,7 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SH_FLAG = new BigInteger("0000000000000001", 16);
     public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("000000FFFFFFFFFE", 16);
+    public static final BigInteger METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE = new BigInteger("0000000000000002", 16);
 
     private MetaDataUtil() { }
 
@@ -105,6 +107,23 @@ public final class MetaDataUtil {
 
     public static long getNatRouterIdFromMetadata(BigInteger metadata) {
         return getVpnIdFromMetadata(metadata);
+    }
+
+    /**
+     * Gets the ACL conntrack classifier type from meta data.<br>
+     * Second bit in metadata is used for this purpose.<br>
+     *
+     * <p>
+     * Conntrack supported traffic is identified by value 0 (0000 in binary)
+     * i.e., 0x0/0x2<br>
+     * Non-conntrack supported traffic is identified by value 2 (0010 in binary)
+     * i.e., 0x2/0x2
+     *
+     * @param conntrackClassifierType the conntrack classifier flag
+     * @return the acl conntrack classifier flag from meta data
+     */
+    public static BigInteger getAclConntrackClassifierTypeFromMetaData(BigInteger conntrackClassifierType) {
+        return METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE.and(conntrackClassifierType.shiftLeft(1));
     }
 
     public static BigInteger getVpnIdMetadata(long vrfId) {
