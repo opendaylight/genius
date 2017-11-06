@@ -5,32 +5,30 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.lockmanager.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.genius.infra.FutureRpcResults;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.slf4j.Logger;
@@ -49,12 +47,14 @@ public class LockManagerServiceImpl implements LockManagerService {
     private static final Logger LOG = LoggerFactory.getLogger(LockManagerServiceImpl.class);
 
     private final DataBroker broker;
+    private final RetryingManagedNewTransactionRunner txRunner;
     private final LockManagerUtils lockManagerUtils;
 
     @Inject
     public LockManagerServiceImpl(final DataBroker dataBroker, final LockManagerUtils lockManagerUtils) {
         this.broker = dataBroker;
         this.lockManagerUtils = lockManagerUtils;
+        this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
     }
 
     @Override
@@ -110,35 +110,16 @@ public class LockManagerServiceImpl implements LockManagerService {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
-        RpcResultBuilder<Void> lockRpcBuilder = unlock(lockName, lockInstanceIdentifier, DEFAULT_RETRY_COUNT);
-        return Futures.immediateFuture(lockRpcBuilder.build());
-    }
-
-    private RpcResultBuilder<Void> unlock(final String lockName, final InstanceIdentifier<Lock> lockInstanceIdentifier,
-            int retry) {
-        RpcResultBuilder<Void> lockRpcBuilder;
-        try {
-            ReadWriteTransaction tx = broker.newReadWriteTransaction();
-            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
-            if (!result.isPresent()) {
-                LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
-                tx.cancel();
-            } else {
-                tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
-                tx.submit().get();
-            }
-            lockRpcBuilder = RpcResultBuilder.success();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("In unlock unable to unlock {} due to {}, retryCount {}", lockName, e.getMessage(), retry);
-            // try to unlock again
-            if (retry > 0) {
-                lockRpcBuilder = unlock(lockName, lockInstanceIdentifier, --retry);
-            } else {
-                lockRpcBuilder = RpcResultBuilder.failed();
-                lockRpcBuilder.withError(ErrorType.APPLICATION, "unlock() failed: " + lockName, e);
-            }
-        }
-        return lockRpcBuilder;
+        return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
+            return txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+                if (!result.isPresent()) {
+                    LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
+                } else {
+                    tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+                }
+            });
+        }).build();
     }
 
     public CompletableFuture<Void> getSynchronizerForLock(String lockName) {
