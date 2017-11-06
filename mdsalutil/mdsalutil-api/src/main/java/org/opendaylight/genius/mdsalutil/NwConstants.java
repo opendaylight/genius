@@ -176,6 +176,25 @@ public final class NwConstants {
     public static final short EGRESS_LEARN_ACL_FILTER_TABLE = 244;
     public static final short EGRESS_COUNTERS_TABLE = 249;
 
+    public static final short INGRESS_ACL_ANTI_SPOOFING_TABLE = 210;
+    public static final short INGRESS_ACL_CONNTRACK_CLASSIFIER_TABLE = 211;
+    public static final short INGRESS_ACL_CONNTRACK_SENDER_TABLE = 212;
+    public static final short INGRESS_ACL_FOR_EXISTING_TRAFFIC_TABLE = 213;
+    public static final short INGRESS_ACL_FILTER_CUM_DISPATCHER_TABLE = 214;
+    public static final short INGRESS_ACL_RULE_BASED_FILTER_TABLE = 215;
+    public static final short INGRESS_REMOTE_ACL_TABLE = 216;
+    public static final short INGRESS_ACL_COMMITTER_TABLE = 217;
+
+    public static final short EGRESS_ACL_DUMMY_TABLE = 239;
+    public static final short EGRESS_ACL_ANTI_SPOOFING_TABLE = 240;
+    public static final short EGRESS_ACL_CONNTRACK_CLASSIFIER_TABLE = 241;
+    public static final short EGRESS_ACL_CONNTRACK_SENDER_TABLE = 242;
+    public static final short EGRESS_ACL_FOR_EXISTING_TRAFFIC_TABLE = 243;
+    public static final short EGRESS_ACL_FILTER_CUM_DISPATCHER_TABLE = 244;
+    public static final short EGRESS_ACL_RULE_BASED_FILTER_TABLE = 245;
+    public static final short EGRESS_REMOTE_ACL_TABLE = 246;
+    public static final short EGRESS_ACL_COMMITTER_TABLE = 247;
+
     public enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
         NXM_OF_ETH_DST(0x0000, 1, 6, 48),
