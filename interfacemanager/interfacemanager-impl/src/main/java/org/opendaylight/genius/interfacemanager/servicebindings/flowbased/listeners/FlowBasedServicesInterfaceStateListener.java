@@ -80,7 +80,7 @@ public class FlowBasedServicesInterfaceStateListener
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
-        LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
+        // Do nothing
     }
 
     @Override
