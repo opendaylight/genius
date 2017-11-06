@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_6f989cc0",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-06T23:54:06Z",
+      "side": 1,
+      "message": "IMHO if it\u0027s an OptimisticLock exception then it should not LOG.error? If it\u0027s anything else, then it should not even retry? https://jira.opendaylight.org/browse/GENIUS-86 mentions an AskTimeException - but that\u0027s lower-level Akka, if those happen, then there\u0027s a bigger problem, and I\u0027m not sure we should be dealing with those here?",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_2f7b447c",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-06T23:54:06Z",
+      "side": 1,
+      "message": "how about https://git.opendaylight.org/gerrit/#/c/65233/ instead of this?",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_4f95d885",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-06T23:54:06Z",
+      "side": 1,
+      "message": "do you think it would be possible to practice real TDD, and extend LockManagerTest with a real reproducer for https://jira.opendaylight.org/browse/GENIUS-86, which would fail on master but pass with this change?  Using the new DataBrokerFailures utility, you CAN now (easily) simulate DB failures...",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_cf542801",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManagerUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-06T23:54:06Z",
+      "side": 1,
+      "message": "https://jira.opendaylight.org/browse/GENIUS-98 (just FYI, I\u0027m *NOT* suggesting that we hold this up because of that, as it\u0027s already like this in other places; but for some reason I don\u0027t like seeing this much)",
+      "range": {
+        "startLine": 37,
+        "startChar": 15,
+        "endLine": 37,
+        "endChar": 16
+      },
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
