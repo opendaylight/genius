@@ -50,6 +50,10 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     @Override
     public boolean awaitEventsConsumption() throws ConditionTimeoutException {
+        long initialIncompleteTaskCount = incompleteTaskCountSupplier.get();
+        if (initialIncompleteTaskCount == 0) {
+            return false;
+        }
         try {
             Awaitility.await("TestableJobCoordinatorEventsWaiter")
                 .atMost(120, SECONDS)
