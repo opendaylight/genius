@@ -34,6 +34,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="diagStatusService"
                interface="org.opendaylight.infrautils.diagstatus.DiagStatusService" />
 
+    <reference id="cacheProvider"
+               interface="org.opendaylight.infrautils.caches.CacheProvider" />
+
     <reference id="notificationService"
                interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
 
