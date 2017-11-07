@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.lockmanager;
+package org.opendaylight.genius.lockmanager.impl;
 
 import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
@@ -25,10 +25,10 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
         implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(LockListener.class);
-    private final LockManager lockManager;
+    private final LockManagerServiceImpl lockManager;
 
     @Inject
-    public LockListener(DataBroker broker, LockManager lockManager) {
+    public LockListener(DataBroker broker, LockManagerServiceImpl lockManager) {
         super(Lock.class, LockListener.class);
         this.lockManager = lockManager;
         registerListener(LogicalDatastoreType.OPERATIONAL, broker);

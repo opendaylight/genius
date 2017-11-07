@@ -26,7 +26,7 @@ import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBro
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailures;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresModule;
-import org.opendaylight.genius.lockmanager.LockManager;
+import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
@@ -43,7 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Test for {@link LockManager}.
+ * Test for {@link LockManagerServiceImpl}.
  * @author Michael Vorburger.ch
  */
 public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
