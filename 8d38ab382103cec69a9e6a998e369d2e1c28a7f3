@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a245df4_8f74eb68",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-11-07T19:04:29Z",
+      "side": 1,
+      "message": "this should be .robot",
+      "range": {
+        "startLine": 95,
+        "startChar": 48,
+        "endLine": 95,
+        "endChar": 50
+      },
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_4c084128",
         "filename": "docs/testplans/interface-manager.rst",
         "patchSetId": 5
@@ -31,6 +54,75 @@
       "side": 1,
       "message": "If you look at validation steps, they\u0027re actually asy to understand. RST will be easier to read once generated. So, wanted to keep the steps etc. here along with code pulled from robot. My aim with current approach is that anyone wanting to understand existing tests should be able to do so from generated versions of this RST without needing to browse robot code in integration/test.\n\nWith your approach, we can discard this altogether and just do it all in Robot file itself. Only am not sure how easy to read documentation will be from that. Also, other sections like topology diagram etc. are easier here. \n\nAim here is two fold: process to add tests, and documenting all tests. If Documentation section in .robot is enough, we can just go with it and not require separate RST at all.",
       "parentUuid": "9a245df4_4c084128",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_cf6a6380",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-11-07T19:04:29Z",
+      "side": 1,
+      "message": "remove this line",
+      "range": {
+        "startLine": 136,
+        "startChar": 4,
+        "endLine": 136,
+        "endChar": 47
+      },
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0f08fbd8",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-11-07T19:04:29Z",
+      "side": 1,
+      "message": "remove this line",
+      "range": {
+        "startLine": 138,
+        "startChar": 4,
+        "endLine": 138,
+        "endChar": 42
+      },
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ef0c87ef",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-11-07T19:04:29Z",
+      "side": 1,
+      "message": "remove this line",
+      "range": {
+        "startLine": 141,
+        "startChar": 4,
+        "endLine": 141,
+        "endChar": 52
+      },
       "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
