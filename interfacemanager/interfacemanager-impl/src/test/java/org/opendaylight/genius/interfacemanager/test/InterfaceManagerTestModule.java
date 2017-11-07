@@ -31,8 +31,8 @@ import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListen
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
-import org.opendaylight.genius.lockmanager.LockListener;
-import org.opendaylight.genius.lockmanager.LockManager;
+import org.opendaylight.genius.lockmanager.impl.LockListener;
+import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
@@ -64,7 +64,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
 
-        bind(LockManagerService.class).to(LockManager.class);
+        bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
         bind(IdManagerService.class).to(IdManager.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);

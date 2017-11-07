@@ -30,7 +30,7 @@ import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
 import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
-import org.opendaylight.genius.lockmanager.LockManager;
+import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -78,7 +78,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         // Bindings for external services to "real" implementations
         bind(EntityOwnershipService.class).toInstance(mock(EntityOwnershipService.class));
         bind(IdManagerService.class).to(IdManager.class);
-        bind(LockManagerService.class).to(LockManager.class);
+        bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(DataBroker.class).toInstance(DataBrokerTestModule.dataBroker());
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 

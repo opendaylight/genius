@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.genius.lockmanager;
+package org.opendaylight.genius.lockmanager.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
@@ -37,7 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class LockManager implements LockManagerService {
+public class LockManagerServiceImpl implements LockManagerService {
 
     private static final int DEFAULT_NUMBER_LOCKING_ATTEMPS = 30;
     private static final int DEFAULT_RETRY_COUNT = 3;
@@ -46,12 +46,12 @@ public class LockManager implements LockManagerService {
     private final ConcurrentHashMap<String, CompletableFuture<Void>> lockSynchronizerMap =
             new ConcurrentHashMap<>();
 
-    private static final Logger LOG = LoggerFactory.getLogger(LockManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LockManagerServiceImpl.class);
 
     private final DataBroker broker;
 
     @Inject
-    public LockManager(final DataBroker dataBroker) {
+    public LockManagerServiceImpl(final DataBroker dataBroker) {
         this.broker = dataBroker;
     }
 

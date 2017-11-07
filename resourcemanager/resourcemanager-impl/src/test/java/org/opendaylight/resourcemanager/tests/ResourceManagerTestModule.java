@@ -11,8 +11,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
-import org.opendaylight.genius.lockmanager.LockListener;
-import org.opendaylight.genius.lockmanager.LockManager;
+import org.opendaylight.genius.lockmanager.impl.LockListener;
+import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.resourcemanager.ResourceManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -37,7 +37,7 @@ public class ResourceManagerTestModule extends AbstractGuiceJsr250Module {
 
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
 
-        bind(LockManagerService.class).to(LockManager.class);
+        bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
 
         bind(IdManagerService.class).to(IdManager.class);
