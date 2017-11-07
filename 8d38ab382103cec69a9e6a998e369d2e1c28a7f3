@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_2ca98ddf",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-11-07T15:02:10Z",
+      "side": 1,
+      "message": "If you look at validation steps, they\u0027re actually asy to understand. RST will be easier to read once generated. So, wanted to keep the steps etc. here along with code pulled from robot. My aim with current approach is that anyone wanting to understand existing tests should be able to do so from generated versions of this RST without needing to browse robot code in integration/test.\n\nWith your approach, we can discard this altogether and just do it all in Robot file itself. Only am not sure how easy to read documentation will be from that. Also, other sections like topology diagram etc. are easier here. \n\nAim here is two fold: process to add tests, and documenting all tests. If Documentation section in .robot is enough, we can just go with it and not require separate RST at all.",
+      "parentUuid": "9a245df4_4c084128",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c904231a",
         "filename": "docs/testplans/interface-manager.rst",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2017-11-07T14:42:39Z",
       "side": 1,
       "message": "Should include the test case name in the code block so it is easy to cut and paste in one shot to the robot file.",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_8cb19949",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-11-07T15:02:10Z",
+      "side": 1,
+      "message": "I did that way first, modified to reduce indentation. Agree with your point, will allow direct copy paste.",
+      "parentUuid": "9a245df4_c904231a",
       "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_cc1b9171",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-11-07T15:02:10Z",
+      "side": 1,
+      "message": "Yeah, though for at least one suit those standards should also be captured. Say, Basic Nttvirt Suite captures all, rest mention/link to it, unless they hav any specific extras like HWVTEP/L2GW one.",
+      "parentUuid": "9a245df4_c92d43aa",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_091bdb81",
         "filename": "docs/testplans/testplan-template.rst",
         "patchSetId": 5
@@ -64,6 +118,24 @@
       "writtenOn": "2017-11-07T14:38:16Z",
       "side": 1,
       "message": "In most cases the base robot file is already there and the feature is just adding a test case. Should we modify this section to indicate the latter? Or just not reference the robot stuff outside Test Cases?",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ec2db596",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-11-07T15:02:10Z",
+      "side": 1,
+      "message": "Aim is to convert all existing suites and TCs to this format too for documentation. So, addition of TCs would be update to existing Test Plan.",
+      "parentUuid": "9a245df4_091bdb81",
       "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -98,6 +170,24 @@
       "writtenOn": "2017-11-07T14:38:16Z",
       "side": 1,
       "message": "This block didn\u0027t come out right in the rendered html",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_8c3cf9c9",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-11-07T15:02:10Z",
+      "side": 1,
+      "message": "ya, missed a newline, will fix it, but you can look at interface-managr one for reference.",
+      "parentUuid": "9a245df4_29169f55",
       "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
