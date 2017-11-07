@@ -53,13 +53,11 @@ public class InterfaceStateListener
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
         interfaceManagerCommonUtils.removeFromInterfaceStateCache(interfaceStateOld);
-        LOG.debug("Received interface state remove event for {}, ignoring", interfaceStateOld.getName());
     }
 
     @Override
     protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
         interfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
-        LOG.debug("Received interface state update event for {},ignoring...", interfaceStateOld.getName());
     }
 
     @Override
