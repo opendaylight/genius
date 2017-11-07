@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Preconditions;
@@ -35,18 +34,24 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
 
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
-
-    private final ExecutorService dataTreeChangeHandlerExecutor =
-            Executors.newSingleThreadExecutor("AsyncDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
+    private final ExecutorService dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
 
     protected AsyncDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+        this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
     }
 
     @Deprecated
     public AsyncDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+        this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
+    }
+
+    private static ExecutorService newThreadPoolExecutor(Class<?> clazz) {
+        return Executors.newSingleThreadExecutor(
+                // class name first so it shows up in logs' prefix, but fixed length
+                clazz.getName() + "_AsyncDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
     }
 
     @Override
