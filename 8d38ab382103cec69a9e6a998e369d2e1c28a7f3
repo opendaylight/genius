@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_c92d43aa",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-11-07T14:38:16Z",
+      "side": 1,
+      "message": "Should we mention or reference that the Test {Setup,Teardown} is a common section that already collects most debug? In some cases that may be all that is needed so a comment like, \"common debug keywords already collect expected details\"",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_091bdb81",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-11-07T14:38:16Z",
+      "side": 1,
+      "message": "In most cases the base robot file is already there and the feature is just adding a test case. Should we modify this section to indicate the latter? Or just not reference the robot stuff outside Test Cases?",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_4911535c",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-11-07T14:38:16Z",
+      "side": 1,
+      "message": "Here is where we should have a example block for a proper test case: well named, good documentation, args, etc.",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_29169f55",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-11-07T14:38:16Z",
+      "side": 1,
+      "message": "This block didn\u0027t come out right in the rendered html",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
