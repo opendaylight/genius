@@ -10,7 +10,7 @@ package org.opendaylight.genius.lockmanager.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -24,6 +24,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.genius.infra.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
@@ -61,19 +62,11 @@ public class LockManagerServiceImpl implements LockManagerService {
     public Future<RpcResult<Void>> lock(LockInput input) {
         String lockName = input.getLockName();
         String owner = lockManagerUtils.getUniqueID();
-        LOG.debug("Locking {}, owner {}" , lockName, owner);
-        InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
-        Lock lockData = lockManagerUtils.buildLock(lockName, owner);
-        try {
-            getLock(lockInstanceIdentifier, lockData);
-            RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.success();
-            LOG.debug("Acquired lock {} by owner {}" , lockName, owner);
-            return Futures.immediateFuture(lockRpcBuilder.build());
-        } catch (InterruptedException e) {
-            RpcResultBuilder<Void> lockRpcBuilder = RpcResultBuilder.failed();
-            LOG.error("Failed to get lock {} for {}", lockName, owner, e);
-            return Futures.immediateFuture(lockRpcBuilder.build());
-        }
+        return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
+            InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
+            Lock lockData = lockManagerUtils.buildLock(lockName, owner);
+            return getLock(lockInstanceIdentifier, lockData);
+        }).build();
     }
 
     @Override
@@ -148,7 +141,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     /**
      * Try to acquire lock indefinitely until it is successful.
      */
-    private void getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
+    private ListenableFuture<Void> getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
         String lockName = lockData.getLockName();
@@ -156,7 +149,7 @@ public class LockManagerServiceImpl implements LockManagerService {
             try {
                 lockSynchronizerMap.putIfAbsent(lockName, new CompletableFuture<>());
                 if (readWriteLock(lockInstanceIdentifier, lockData)) {
-                    return;
+                    return Futures.immediateFuture(null);
                 } else {
                     if (retry < DEFAULT_NUMBER_LOCKING_ATTEMPS) {
                         LOG.debug("Already locked for {} after waiting {}ms, try {}",
@@ -168,6 +161,9 @@ public class LockManagerServiceImpl implements LockManagerService {
                 }
             } catch (ExecutionException e) {
                 logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
+                if (!(e.getCause() instanceof OptimisticLockFailedException)) {
+                    return Futures.immediateFailedFuture(e.getCause());
+                }
             }
             CompletableFuture<Void> future = lockSynchronizerMap.get(lockName);
             if (future != null) {
@@ -212,7 +208,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     private void logUnlessCauseIsOptimisticLockFailedException(String name, int retry, ExecutionException exception) {
         // Log anything else than OptimisticLockFailedException with level error.
         // Bug 8059: We do not log OptimisticLockFailedException, as those are "normal" in the current design,
-        //           and this class is explicitly designed to retry obtained a lock in case of an
+        //           and this class is explicitly designed to retry obtaining a lock in case of an
         //           OptimisticLockFailedException, so we do not flood the log with events in case it's "just" that.
         // TODO This class may be completely reviewed in the future to work entirely differently;
         //      e.g. using an EntityOwnershipService, as proposed in Bug 8224.
