@@ -194,11 +194,13 @@ public final class FutureRpcResults {
                 public void onFailure(Throwable cause) {
                     onFailureLogLevel.log(logger, "RPC {}() failed; input = {}", rpcMethodName, input, cause);
                     onFailureConsumer.accept(cause);
-                    RpcResultBuilder<O> rpcResultBuilder = RpcResultBuilder.<O>failed().withError(APPLICATION,
-                            rpcErrorMessageFunction.apply(cause), cause);
-                    // IdManager's buildFailedRpcResultFuture() had this, and it seems a nice idea in general:
+                    RpcResultBuilder<O> rpcResultBuilder =  RpcResultBuilder.<O>failed();
                     if (cause instanceof OperationFailedException) {
+                        // NB: This looses (not not propagate) the cause, and only preserves the error list
+                        // But we did log the cause above, so it can still be found.
                         rpcResultBuilder.withRpcErrors(((OperationFailedException) cause).getErrorList());
+                    } else {
+                        rpcResultBuilder.withError(APPLICATION, rpcErrorMessageFunction.apply(cause), cause);
                     }
                     futureRpcResult.set(rpcResultBuilder.build());
                 }
