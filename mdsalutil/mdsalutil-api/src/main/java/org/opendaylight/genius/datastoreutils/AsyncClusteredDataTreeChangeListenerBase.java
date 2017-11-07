@@ -43,28 +43,32 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
-
-    private final ThreadPoolExecutor dataTreeChangeHandlerExecutor = new ThreadPoolExecutor(
-            DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
-            DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
-            DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
-            TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>(),
-            ThreadFactoryProvider.builder()
-                .namePrefix("AsyncClusteredDataTreeChangeListenerBase-DataTreeChangeHandler")
-                .logger(LOG)
-                .build().get(),
-            new LoggingRejectedExecutionHandler());
-
+    private final ThreadPoolExecutor dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
 
     protected AsyncClusteredDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+        this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
     }
 
     @Deprecated
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+        this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
+    }
+
+    private static ThreadPoolExecutor newThreadPoolExecutor(Class<?> clazz) {
+        return new ThreadPoolExecutor(
+                    DATATREE_CHANGE_HANDLER_THREAD_POOL_CORE_SIZE,
+                    DATATREE_CHANGE_HANDLER_THREAD_POOL_MAX_SIZE,
+                    DATATREE_CHANGE_HANDLER_THREAD_POOL_KEEP_ALIVE_TIME_SECS,
+                    TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>(),
+                    ThreadFactoryProvider.builder()
+                        .namePrefix("AsyncClusteredDataTreeChangeListenerBase-DataTreeChangeHandler")
+                        .logger(LOG)
+                        .build().get(),
+                    new LoggingRejectedExecutionHandler());
     }
 
     @Override
