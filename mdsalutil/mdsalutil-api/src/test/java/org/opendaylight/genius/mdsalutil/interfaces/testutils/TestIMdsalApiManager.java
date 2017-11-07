@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Red Hat, Inc. and others. All rights reserved.
+ * Copyright (c) 2016, 2017 Red Hat, Inc. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -29,6 +29,7 @@ import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +45,14 @@ import org.slf4j.LoggerFactory;
  * of it using it's static {@link #newInstance()} method.
  *
  * @author Michael Vorburger
+ * @autor Faseela K
  */
 public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(TestIMdsalApiManager.class);
 
     private List<FlowEntity> flows;
+    private List<Group> groups;
 
     public static TestIMdsalApiManager newInstance() {
         return Mockito.mock(TestIMdsalApiManager.class, realOrException());
@@ -69,6 +72,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             flows = new ArrayList<>();
         }
         return flows;
+    }
+
+    private synchronized List<Group> getOrNewGroups() {
+        if (groups == null) {
+            groups = new ArrayList<>();
+        }
+        return groups;
     }
 
     public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
@@ -186,4 +196,18 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         getOrNewFlows().remove(flowEntity);
     }
 
+    @Override
+    public void syncInstallGroup(BigInteger dpId, Group group, long delayTime) {
+        getOrNewGroups().add(group);
+    }
+
+    @Override
+    public void syncInstallGroup(BigInteger dpId, Group group) {
+        getOrNewGroups().add(group);
+    }
+
+    @Override
+    public void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
+        getOrNewGroups().remove(groupEntity);
+    }
 }
