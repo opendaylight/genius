@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a245df4_4c084128",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-11-07T14:42:39Z",
+      "side": 1,
+      "message": "Might be good idea to include the steps and pass criteria in the documentation so that it can also be in the robot itself. That might go along with Jamo\u0027s thinking. So actually check in a robot file here and link to it.",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c904231a",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-11-07T14:42:39Z",
+      "side": 1,
+      "message": "Should include the test case name in the code block so it is easy to cut and paste in one shot to the robot file.",
+      "revId": "8d38ab382103cec69a9e6a998e369d2e1c28a7f3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c92d43aa",
         "filename": "docs/testplans/testplan-template.rst",
         "patchSetId": 5
