@@ -41,19 +41,24 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
     private ListenerRegistration<K> listenerRegistration;
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
-
-    private final ExecutorService dataTreeChangeHandlerExecutor =
-            Executors.newSingleThreadExecutor("AsyncClusteredDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
-
+    private final ExecutorService dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
 
     protected AsyncClusteredDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+        this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
     }
 
     @Deprecated
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+        this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
+    }
+
+    private static ExecutorService newThreadPoolExecutor(Class<?> clazz) {
+        return Executors.newSingleThreadExecutor(
+                // class name first so it shows up in logs' prefix, but fixed length
+                clazz.getName() + "_AsyncClusteredDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
     }
 
     @Override
