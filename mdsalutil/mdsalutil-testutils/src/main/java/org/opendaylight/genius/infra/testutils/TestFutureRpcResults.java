@@ -42,20 +42,34 @@ public class TestFutureRpcResults {
         return getResult(futureRpcResult.get(1, MINUTES));
     }
 
-    private static <T> void assertRpcErrorCause(RpcResult<T> rpcResult, Class<?> expectedExceptionClass,
-            String expectedRpcErrorMessage) {
+    public static void assertVoidRpcSuccess(Future<RpcResult<Void>> futureRpcResult)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        RpcResult<Void> rpcResult = futureRpcResult.get(1, MINUTES);
+        assertThat(rpcResult.isSuccessful()).isTrue();
+        assertThat(rpcResult.getErrors()).isEmpty();
+    }
+
+    public static <T> void assertRpcErrorWithoutCausesOrMessages(Future<RpcResult<T>> futureRpcResult)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        RpcResult<T> rpcResult = futureRpcResult.get(1, MINUTES);
         assertThat(rpcResult.isSuccessful()).named("rpcResult.isSuccessful").isFalse();
-        Collection<RpcError> errors = rpcResult.getErrors();
-        assertThat(errors).named("rpcResult.errors").hasSize(1);
-        RpcError firstError = errors.iterator().next();
-        assertThat(firstError.getErrorType()).named("rpcResult.errors[0].errorType").isEqualTo(ErrorType.APPLICATION);
-        assertThat(firstError.getCause()).named("rpcResult.errors[0].cause").isInstanceOf(expectedExceptionClass);
-        assertThat(firstError.getMessage()).named("rpcResult.errors[0].message").isEqualTo(expectedRpcErrorMessage);
+        assertThat(rpcResult.getErrors()).named("rpcResult.errors").isEmpty();
     }
 
     public static <T> void assertRpcErrorCause(Future<RpcResult<T>> futureRpcResult, Class<?> expectedExceptionClass,
             String expectedRpcErrorMessage) throws InterruptedException, ExecutionException, TimeoutException {
         assertRpcErrorCause(futureRpcResult.get(1, MINUTES), expectedExceptionClass, expectedRpcErrorMessage);
+    }
+
+    private static <T> void assertRpcErrorCause(RpcResult<T> rpcResult, Class<?> expected1stExceptionClass,
+            String expected1stRpcErrorMessage) {
+        assertThat(rpcResult.isSuccessful()).named("rpcResult.isSuccessful").isFalse();
+        Collection<RpcError> errors = rpcResult.getErrors();
+        assertThat(errors).named("rpcResult.errors").hasSize(1);
+        RpcError firstError = errors.iterator().next();
+        assertThat(firstError.getErrorType()).named("rpcResult.errors[0].errorType").isEqualTo(ErrorType.APPLICATION);
+        assertThat(firstError.getCause()).named("rpcResult.errors[0].cause").isInstanceOf(expected1stExceptionClass);
+        assertThat(firstError.getMessage()).named("rpcResult.errors[0].message").isEqualTo(expected1stRpcErrorMessage);
     }
 
 }
