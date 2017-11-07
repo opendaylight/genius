@@ -22,7 +22,6 @@ import java.util.function.Function;
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.NotThreadSafe;
-import org.opendaylight.infrautils.utils.StackTraces;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
@@ -194,11 +193,11 @@ public final class FutureRpcResults {
                 public void onFailure(Throwable cause) {
                     onFailureLogLevel.log(logger, "RPC {}() failed; input = {}", rpcMethodName, input, cause);
                     onFailureConsumer.accept(cause);
-                    RpcResultBuilder<O> rpcResultBuilder = RpcResultBuilder.<O>failed().withError(APPLICATION,
-                            rpcErrorMessageFunction.apply(cause), cause);
-                    // IdManager's buildFailedRpcResultFuture() had this, and it seems a nice idea in general:
+                    RpcResultBuilder<O> rpcResultBuilder =  RpcResultBuilder.<O>failed();
                     if (cause instanceof OperationFailedException) {
                         rpcResultBuilder.withRpcErrors(((OperationFailedException) cause).getErrorList());
+                    } else {
+                        rpcResultBuilder.withError(APPLICATION, rpcErrorMessageFunction.apply(cause), cause);
                     }
                     futureRpcResult.set(rpcResultBuilder.build());
                 }
