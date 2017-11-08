@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_585d9746",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T15:45:55Z",
+      "side": 1,
+      "message": "and actually please do use the AbstractClusteredSyncDataTreeChangeListener instead of the AbstractClusteredAsyncDataTreeChangeListener, because we have to stop and start fighting hard against this crazy over use of async listeners so prevalent in genius and netvirt - this is setting a boolean for #*@ sake - there\u0027s really no need for something like this (and much else) to run in a separate thread from the CDS notification thread! ;)",
+      "parentUuid": "9a245df4_f8be0b64",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_b89133f3",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 1
