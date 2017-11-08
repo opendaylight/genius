@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_328724d9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-08T03:31:04Z",
+      "side": 1,
+      "message": "no specific reason - as I said eclipse put that in when I refactored to create a local var - doesn\u0027t need to be final - doesn\u0027t matter either way. I think Michael\u0027s patch that made a similar change here was merged so mine will be discarded anyway.",
+      "parentUuid": "9a245df4_e63e80d9",
+      "revId": "6844f187120af2546a419c0b74f9ad0671acb5b4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_068114fb",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/AbstractCounterMBeanImpl.java",
         "patchSetId": 2
