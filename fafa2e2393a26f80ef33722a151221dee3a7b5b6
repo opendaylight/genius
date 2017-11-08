@@ -16,6 +16,24 @@
       "revId": "fafa2e2393a26f80ef33722a151221dee3a7b5b6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3898a369",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T14:35:29Z",
+      "side": 1,
+      "message": "erm.. how do you mean? The file is *Impl.java because it\u0027s for class LockManagerServiceImpl implements LockManagerService - makes sense?",
+      "parentUuid": "9a245df4_122e60fb",
+      "revId": "fafa2e2393a26f80ef33722a151221dee3a7b5b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
