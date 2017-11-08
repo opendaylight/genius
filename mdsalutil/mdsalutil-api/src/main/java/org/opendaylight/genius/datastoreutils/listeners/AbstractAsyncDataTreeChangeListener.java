@@ -27,12 +27,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * <p>The {@link ExecutorService} passed to the constructor will depend on the use case. Here we have some examples:
  *
  * <p>- If the listener is fast enough and non-blocking: MoreExecutors.directExecutor might be used, or even better,
- *  just use the {@link AbstractSyncDataTreeChangeListener}.
+ * just use the {@link AbstractSyncDataTreeChangeListener}.  Please carefully consider whether you do really need an
+ * async listener, or if sync wouldn't work just fine for your use case.
  *
- * <p>- If the listener is heavy or could be blocked: use the multi-thereaded executor.
+ * <p>- If the listener is heavy or could be blocked: use a multi-threaded executor.
+ * We recommend using one of the factory methods in {@link org.opendaylight.yangtools.util.concurrent.SpecialExecutors}.
+ * You could and probably should share such an Executor among several listeners in your project.
  *
- * <p>- If the listener needs to preserve the order of notifications: use a single thread executor typically an
- * {@link org.opendaylight.infrautils.utils.concurrent.Executors#newSingleThreadExecutor(String, org.slf4j.Logger)}.
+ * <p>- If the listener needs to preserve the order of notifications, then (only) use a single thread executor typically
+ * an {@link org.opendaylight.infrautils.utils.concurrent.Executors#newSingleThreadExecutor(String, org.slf4j.Logger)}.
  *
  * <p>- If there are multiple listeners: they could even share a executor as the ones in {@link SpecialExecutors},
  *

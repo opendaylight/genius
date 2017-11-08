@@ -10,6 +10,5 @@
  * upstream projects once merged and proven to be useful here for a while.
  *
  * @author David Suárez (david.suarez.fuentes@gmail.com)
- *
  */
 package org.opendaylight.genius.datastoreutils.listeners;
