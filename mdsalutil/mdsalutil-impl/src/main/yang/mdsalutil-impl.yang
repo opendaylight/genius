@@ -1,0 +1,16 @@
+module genius-mdsalutil-impl {
+    yang-version 1.1;
+    namespace "urn:opendaylight:params:xml:ns:yang:mdsalutil-impl";
+    prefix "genius-mdsalutil-impl";
+
+    revision "2017-08-30" { // TODO change revision to date of model creation
+        description "Initial revision of upgrade-mgr model";
+    }
+
+    container config {
+        leaf upgradeInProgress {
+            type boolean;
+            default false;
+        }
+    }
+}

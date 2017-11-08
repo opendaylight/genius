@@ -20,4 +20,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <service ref="mDSALManager"
            interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
 
+  <service id="upgradeState" interface="org.opendaylight.genius.mdsalutil.internal.UpgradeState">
+    <bean class="org.opendaylight.genius.mdsalutil.internal.UpgradeStateListener">
+      <argument ref="dataBroker"/>
+    </bean>
+  </service>
+
 </blueprint>
