@@ -1,0 +1,163 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_233fd8d7",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "nit: minor typo, TIme instead of Time",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_632430c5",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "according to what you wrote on https://jira.opendaylight.org/browse/GENIUS-86 these AskTimeoutException causes are in TransactionCommitFailedException, so why test with a OptimisticLockFailedException here?  Those mean something else, no?  And that is already tested in testOptimisticLockFailedException()",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_630b902a",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "even though (space, not one work)",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c304fc19",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "\"a TransactionCommitFailedException (caused by akka.pattern.AskTimeoutException) it eventually succeeds.\"",
+      "range": {
+        "startLine": 43,
+        "startChar": 19,
+        "endLine": 44,
+        "endChar": 52
+      },
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3e1feb5c",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "better method naming.. just so that it makes sense for future users?  submitButFails() VS the existing failSubmits() seems not that clear.. how do you like something like failButSubmitsAnyway?",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a3010808",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "are there cases when you want this pretty special case with a subclass of TransactionCommitFailedException, like DataValidationFailedException or OptimisticLockFailedException or TransactionCommitDeadlockException? From what I understood about this, I doubt it, and wonder if therefore we don\u0027t just want submitButFails() without argument and hard-code new TransactionCommitFailedException(\"caused by simulated AskTimeoutException\") instead?",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_de068f1c",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "the DataBrokerFailuresTest must be extended to cover for what this adds",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fe01d305",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "whatever ends up being the final solution below should be repeated in newWriteOnlyTransaction() ?",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fe28b387",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "Erm.. are you sure this is correct?  In this case, wouldn\u0027t you rather do:\n\n  return Futures.immediateFailedCheckedFuture(e);\n\nOr if you think this is the right thing to do then I would find this code a bit easier to understand if it did not have this return, because that\u0027s the same as the one in the other case.. so just put a comment here like something like this:\n\n  // ignore and fall through to return below",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
