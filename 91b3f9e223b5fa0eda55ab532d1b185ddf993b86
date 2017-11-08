@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_7e432342",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "not sure how you\u0027re \"Done\" here ;) with no logging if it\u0027s an OptimisticLock, but if you like we can try to wrap this up and then get this point addressed via https://git.opendaylight.org/gerrit/#/c/65233/, if you have a chance to review that?",
+      "parentUuid": "9a245df4_b818131f",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_2f7b447c",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
         "patchSetId": 7
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "I will take a look into RetryingManagedNewTransactionRunner and then update.",
       "parentUuid": "9a245df4_2f7b447c",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3e56cb06",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "Cool - thanks!  Or, if you prefer, we could just get this in as is, and then immediately change it again in c/65233/ if you want to help review and +1 that once this is in.",
+      "parentUuid": "9a245df4_98154fe7",
       "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -107,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_5e40df33",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "Great.  Review provided.  But more importantly, I want to make sure to underline the value of TDD - and admit to you that only now that I saw the test I really understood what you\u0027re doing here.. ;) and it made me wonder more generally if this is right, so I\u0027ve asked on https://lists.opendaylight.org/pipermail/controller-dev/2017-November/014047.html - let\u0027s see what they say over there, and then pick this up in function of that?",
+      "parentUuid": "9a245df4_38dc2346",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_cf542801",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManagerUtils.java",
         "patchSetId": 7
@@ -142,6 +196,30 @@
       "side": 1,
       "message": "I\u0027m not sure what else could be used instead of host ip.",
       "parentUuid": "9a245df4_cf542801",
+      "range": {
+        "startLine": 37,
+        "startChar": 15,
+        "endLine": 37,
+        "endChar": 16
+      },
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_de54cf00",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManagerUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T20:26:52Z",
+      "side": 1,
+      "message": "Yeah just ignore ;) this, it\u0027s a general doubt I have, not something holding up this Gerrit.",
+      "parentUuid": "9a245df4_58e63716",
       "range": {
         "startLine": 37,
         "startChar": 15,
