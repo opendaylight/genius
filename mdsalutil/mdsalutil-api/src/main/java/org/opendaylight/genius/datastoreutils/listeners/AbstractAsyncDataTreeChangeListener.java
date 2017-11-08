@@ -26,14 +26,16 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * <p>The {@link ExecutorService} passed to the constructor will depend on the use case. Here we have some examples:
  *
  * <p>- If the listener is fast enough and non-blocking: MoreExecutors.directExecutor might be used, or even better,
- *  just use the {@link AbstractSyncDataTreeChangeListener}.
+ * just use the {@link AbstractSyncDataTreeChangeListener}.
  *
- * <p>- If the listener is heavy or could be blocked: use the multi-thereaded executor.
+ * <p>- If the listener is heavy or could be blocked: use a multi-threaded executor.
+ * We recommend using one of the factory methods in {@link org.opendaylight.yangtools.util.concurrent.SpecialExecutors}.
+ * You could and probably should share such an Executor among several listeners in your project.
  *
- * <p>- If the listener needs to preserve the order of notifications: use a single thread executor typically an
- * {@link org.opendaylight.infrautils.utils.concurrent.Executors#newSingleThreadExecutor(String, org.slf4j.Logger)}.
+ * <p>- If the listener needs to preserve the order of notifications, then (only) use a single thread executor typically
+ * an {@link org.opendaylight.infrautils.utils.concurrent.Executors#newSingleThreadExecutor(String, org.slf4j.Logger)}.
  *
- * <p>- If there are multiple listeners: they could even share a executor as the ones in {@link SpecialExecutors},
+ * <p>- If there are multiple listeners: they could even share an Executor as the ones in {@link SpecialExecutors},
  *
  * <p>Subclasses are also encouraged to, in addition to passing the ExecutorService for use in
  * production (by Blueprint wiring) based on above via super(), expose a public constructor letting tests specify
