@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_5888f7c4",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T15:39:44Z",
+      "side": 1,
+      "message": "hang on, I\u0027m pretty sure you don\u0027t want this to be in bundle mdsalutils-impl package internal, but in bundle mdsalutils-api and for clarify perhaps in package genius.mdsalutil.upgrade ?  BTW: can\u0027we find a better name than Upgrade?  The essence of this is.. what, OutOfOrder?  Or is what Upgrade everyone thinks of, so best to keep that naming for clarity.. hm.",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f8be0b64",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T15:39:44Z",
+      "side": 1,
+      "message": "plz use the new AbstractClusteredSyncDataTreeChangeListener instead of this @Deprecated AsyncClusteredDataTreeChangeListenerBase now (ask David Suarez any Qs you have about it)",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b89133f3",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T15:39:44Z",
+      "side": 1,
+      "message": "AFAIK this needs to be volatile or (better AFAIK) an AtomicBoolean, because it will access from multiple threads.",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_98f70f59",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/yang/mdsalutil-impl.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T15:39:44Z",
+      "side": 1,
+      "message": "enact TODO, and remove? ;)",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
