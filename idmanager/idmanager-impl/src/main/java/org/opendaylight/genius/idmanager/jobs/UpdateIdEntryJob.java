@@ -20,8 +20,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.IdUtils;
+import org.opendaylight.genius.lockmanager.LockManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +34,11 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     private final List<Long> newIdValues = new ArrayList<>();
     private final DataBroker broker;
     private final IdUtils idUtils;
-    private final LockManagerService lockManager;
+    private final LockManager lockManager;
 
     public UpdateIdEntryJob(String parentPoolName, String localPoolName, String idKey,
             List<Long> newIdValues, DataBroker broker, IdUtils idUtils,
-            LockManagerService lockManager) {
+            LockManager lockManager) {
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
         this.idKey = idKey;
@@ -71,7 +71,6 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
             }
             // Once the id is written to DS, removing the id value from map.
             idUtils.removeAllocatedIds(uniqueIdKey);
-            idUtils.unlock(lockManager, uniqueIdKey);
         }
         return Collections.emptyList();
     }
