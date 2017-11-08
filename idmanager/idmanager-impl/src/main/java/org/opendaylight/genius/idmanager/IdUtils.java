@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -41,13 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntriesBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,42 +226,6 @@ public class IdUtils {
             return availableIds.getEnd() - availableIds.getCursor();
         }
         return 0;
-    }
-
-    public void lock(LockManagerService lockManager, String poolName) throws IdManagerException {
-        LockInput input = new LockInputBuilder().setLockName(poolName).build();
-        Future<RpcResult<Void>> result = lockManager.lock(input);
-        try {
-            if (result != null && result.get().isSuccessful()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Acquired lock {}", poolName);
-                }
-            } else {
-                throw new IdManagerException(String.format("Unable to getLock for pool %s", poolName));
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Unable to getLock for pool {}", poolName, e);
-            throw new RuntimeException(String.format("Unable to getLock for pool %s", poolName), e);
-        }
-    }
-
-    public void unlock(LockManagerService lockManager, String poolName) {
-        UnlockInput input = new UnlockInputBuilder().setLockName(poolName).build();
-        Future<RpcResult<Void>> result = lockManager.unlock(input);
-        try {
-            if (result != null && result.get().isSuccessful()) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unlocked {}", poolName);
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Unable to unlock pool {}", poolName);
-                }
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Unable to unlock for pool {}", poolName, e);
-            throw new RuntimeException(String.format("Unable to unlock pool %s", poolName), e);
-        }
     }
 
     public InstanceIdentifier<IdPools> getIdPools() {
