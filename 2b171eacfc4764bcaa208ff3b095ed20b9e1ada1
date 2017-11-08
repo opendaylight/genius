@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_a34908b9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-08T19:14:39Z",
+      "side": 0,
+      "message": "Careful - the removal of this TODO as part of this change means that with this change, this operation has been made properly async!  That is great, but is worth pointing out explicitly to everyone reviewing... before, the submit().get() would block the return until the DS was fully done.  With this, thanks to how nicely ;) FutureRpcResults and ManagedNewTransactionRunner fit together, it will \"return immediately\" - which is great, and the way it should be! But if ANY caller does not check the returned Future and just ignores it instead of doing e.g. a blocking get() on the caller side instead of in here, then this will change the timing.  Long story short: Can we confirm that all callers of this operation either do a blocking get() or correctly handle async (via JdkFutureAdapters; see https://lists.opendaylight.org/pipermail/mdsal-dev/2017-November/001421.html)",
+      "revId": "2b171eacfc4764bcaa208ff3b095ed20b9e1ada1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
