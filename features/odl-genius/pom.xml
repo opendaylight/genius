@@ -189,6 +189,7 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+
       <!-- finalname="etc/opendaylight/datastore/initial/config/genius-itm-config.xml" -->
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>itm-impl</artifactId>
@@ -204,6 +205,11 @@
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>srm-shell</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>infrautils</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
