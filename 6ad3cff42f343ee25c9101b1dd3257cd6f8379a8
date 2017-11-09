@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_485b042e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T12:42:31Z",
+      "side": 1,
+      "message": "So weird. I saw that and could have sworn I had fixed it but I guess I missed it. Thanks! Fixed.",
+      "parentUuid": "9a245df4_1552c53a",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_7543416c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_a843a040",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T12:42:31Z",
+      "side": 1,
+      "message": "ditto",
+      "parentUuid": "9a245df4_7543416c",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_5548bd86",
         "filename": "mdsalutil/mdsalutil-api/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
         "patchSetId": 4
@@ -47,6 +83,24 @@
       "writtenOn": "2017-11-09T11:19:22Z",
       "side": 1,
       "message": "is this needed? Can\u0027t we just @Inject in the listener?",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c82ff486",
+        "filename": "mdsalutil/mdsalutil-api/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T12:42:31Z",
+      "side": 1,
+      "message": "I thought it would simplify things if the service was defined here so that it can be referenced in other places without having to worry about @inject\u0027ing the dataBroker. I\u0027m still not %100 familiar with blueprint but I\u0027m pretty sure this saves the users of this service that step.",
+      "parentUuid": "9a245df4_5548bd86",
       "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
