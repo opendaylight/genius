@@ -16,6 +16,24 @@
       "revId": "04b9620bc67d1a24b8c1bd1f294f7b8feff50e9a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ab227a4f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-09T16:52:41Z",
+      "side": 1,
+      "message": "I think we are already using the DJC here, right?",
+      "parentUuid": "9a245df4_2b3a0a99",
+      "revId": "04b9620bc67d1a24b8c1bd1f294f7b8feff50e9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
