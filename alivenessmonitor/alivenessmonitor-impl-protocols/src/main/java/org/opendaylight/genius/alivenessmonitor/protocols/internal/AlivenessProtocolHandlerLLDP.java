@@ -7,9 +7,10 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
+import static org.opendaylight.infrautils.utils.concurrent.JdkFutures.addErrorLogging;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.util.concurrent.JdkFutureAdapters;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.liblldp.EtherTypes;
@@ -35,7 +35,6 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
@@ -46,7 +45,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,10 +154,8 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             }
             TransmitPacketInput transmitPacketInput = MDSALUtil.getPacketOut(actions, ethenetLLDPPacket.serialize(),
                     nodeId, MDSALUtil.getNodeConnRef(BigInteger.valueOf(nodeId), "0xfffffffd"));
-            Future<RpcResult<Void>> futureResult = packetProcessingService.transmitPacket(transmitPacketInput);
-            // TODO This is too ugly and there will be a new util in infrautils to significantly shorten this ASAP:
-            ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(futureResult), LOG,
-                    "transmitPacket() failed: {}", transmitPacketInput);
+            addErrorLogging(packetProcessingService.transmitPacket(transmitPacketInput),
+                    LOG, "transmitPacket() failed: {}", transmitPacketInput);
         } catch (InterruptedException | ExecutionException | PacketException e) {
             LOG.error("Error while sending LLDP Packet", e);
         }
