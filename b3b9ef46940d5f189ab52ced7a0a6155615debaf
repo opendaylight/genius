@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_c8fed4ad",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-09T14:27:38Z",
+      "side": 1,
+      "message": "b) Understood and fine with me to call this \"Upgrade\" then!",
+      "parentUuid": "9a245df4_72aa3786",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_f8be0b64",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 1
