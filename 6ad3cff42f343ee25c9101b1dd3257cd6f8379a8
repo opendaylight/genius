@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_1552c53a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-09T11:19:22Z",
+      "side": 1,
+      "message": "log should say remove",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7543416c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-09T11:19:22Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5548bd86",
+        "filename": "mdsalutil/mdsalutil-api/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-09T11:19:22Z",
+      "side": 1,
+      "message": "is this needed? Can\u0027t we just @Inject in the listener?",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
