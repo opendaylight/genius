@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_52861314",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "Yes, it should have been a TransactionCommitFailedException.",
+      "parentUuid": "9a245df4_632430c5",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_630b902a",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
         "patchSetId": 9
@@ -47,6 +65,24 @@
       "writtenOn": "2017-11-08T20:26:52Z",
       "side": 1,
       "message": "even though (space, not one work)",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b27e6f17",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_630b902a",
       "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -76,6 +112,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_927b6b27",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_c304fc19",
+      "range": {
+        "startLine": 43,
+        "startChar": 19,
+        "endLine": 44,
+        "endChar": 52
+      },
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_3e1feb5c",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
         "patchSetId": 9
@@ -87,6 +147,24 @@
       "writtenOn": "2017-11-08T20:26:52Z",
       "side": 1,
       "message": "better method naming.. just so that it makes sense for future users?  submitButFails() VS the existing failSubmits() seems not that clear.. how do you like something like failButSubmitsAnyway?",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_d2716345",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "failButSubmitsAnyways is way better :)",
+      "parentUuid": "9a245df4_3e1feb5c",
       "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -110,6 +188,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_d24963b8",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "Yes, it can be hard-coded inside failButSubmitsAnyways().",
+      "parentUuid": "9a245df4_a3010808",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_de068f1c",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
         "patchSetId": 9
@@ -121,6 +217,24 @@
       "writtenOn": "2017-11-08T20:26:52Z",
       "side": 1,
       "message": "the DataBrokerFailuresTest must be extended to cover for what this adds",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_8895fc88",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "I have added one more test case, this just checks if it throws an exception like in the other test cases. I\u0027m not sure how we verify if the submit did get successful as well since we are not returning the future for that.",
+      "parentUuid": "9a245df4_de068f1c",
       "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -144,6 +258,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_c88b7466",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_fe01d305",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_fe28b387",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
         "patchSetId": 9
@@ -155,6 +287,24 @@
       "writtenOn": "2017-11-08T20:26:52Z",
       "side": 1,
       "message": "Erm.. are you sure this is correct?  In this case, wouldn\u0027t you rather do:\n\n  return Futures.immediateFailedCheckedFuture(e);\n\nOr if you think this is the right thing to do then I would find this code a bit easier to understand if it did not have this return, because that\u0027s the same as the one in the other case.. so just put a comment here like something like this:\n\n  // ignore and fall through to return below",
+      "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_b52819e3",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "We can return only TransactionCommitFailedException.",
+      "parentUuid": "9a245df4_fe28b387",
       "revId": "900f2f8b5c25f2f2de201c86e49b6583672d375b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
