@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_72aa3786",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeState.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T08:50:42Z",
+      "side": 1,
+      "message": "a) Ha! I also thought it should be in API but I understood you were suggesting to put it in impl so that\u0027s what I did. Happy to move it.\nb) The essence of this is _upgrade_, not out of order. Any out of order that can happen at all during regular application use should not depend on this flag. It happens to be, incidentally, that the actual issue is ordering, but that is incidental. What I was thinking is that there should be like run levels or run \"modes\" (for other reasons also) and that this would be a good fit for there but...not now.",
+      "parentUuid": "9a245df4_5888f7c4",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_f8be0b64",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 1
@@ -54,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_126bfbf2",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T08:50:42Z",
+      "side": 1,
+      "message": "Changed to AbstractClusteredSyncDataTreeChangeListener",
+      "parentUuid": "9a245df4_585d9746",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_b89133f3",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 1
@@ -71,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_726cf708",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T08:50:42Z",
+      "side": 1,
+      "message": "done",
+      "parentUuid": "9a245df4_b89133f3",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_98f70f59",
         "filename": "mdsalutil/mdsalutil-impl/src/main/yang/mdsalutil-impl.yang",
         "patchSetId": 1
@@ -82,6 +136,24 @@
       "writtenOn": "2017-11-08T15:39:44Z",
       "side": 1,
       "message": "enact TODO, and remove? ;)",
+      "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9276cbd5",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/yang/mdsalutil-impl.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T08:50:42Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_98f70f59",
       "revId": "b3b9ef46940d5f189ab52ced7a0a6155615debaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
