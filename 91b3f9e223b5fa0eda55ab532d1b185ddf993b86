@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_92940b44",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "I will go through RetryingManagerNewTrasactionRunner tomorrow.",
+      "parentUuid": "9a245df4_7e432342",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_2f7b447c",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
         "patchSetId": 7
@@ -108,6 +126,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_f29d8767",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "Will go through it tomorrow.",
+      "parentUuid": "9a245df4_3e56cb06",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_4f95d885",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
         "patchSetId": 7
@@ -155,6 +191,24 @@
       "side": 1,
       "message": "Great.  Review provided.  But more importantly, I want to make sure to underline the value of TDD - and admit to you that only now that I saw the test I really understood what you\u0027re doing here.. ;) and it made me wonder more generally if this is right, so I\u0027ve asked on https://lists.opendaylight.org/pipermail/controller-dev/2017-November/014047.html - let\u0027s see what they say over there, and then pick this up in function of that?",
       "parentUuid": "9a245df4_38dc2346",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_728197fa",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-09T13:14:56Z",
+      "side": 1,
+      "message": "I had sent mail to controller-dev sometime back regarding the same. https://lists.opendaylight.org/pipermail/controller-dev/2017-August/013757.html",
+      "parentUuid": "9a245df4_5e40df33",
       "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
