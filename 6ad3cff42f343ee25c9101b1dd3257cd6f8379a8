@@ -104,6 +104,24 @@
       "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_887b3c27",
+        "filename": "mdsalutil/mdsalutil-api/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-09T14:27:38Z",
+      "side": 1,
+      "message": "wait this a bit confusing .. what we want is simple: The UpgradeStateListener should be created as a bean registered as a Service implementing the UpgradeState interface, right? \n\nSo I think the way Josh has it here is actually absolutely correct - this should work AFAIK.  What\u0027s a bit unusual compared to the XML in other places iis perhaps the nested \u003cservice\u003e\u003cbean\u003e - I think if you look elesewhere what we usually do is have a \u003cbean id\u003dabc\u003e first on top and then have a \u003cservice\u003e with a ref\u003dabc to that, kind of thing?  I can\u0027t remember having seen it nested like this, but I\u0027m guessing BP supports this as well.\n\nBUT having said all that.. the BP XML is the old way anyway now, I don\u0027t recommend that anymore for new code, but annotations... see doc on https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines. \n\nSo if you want to have fun (and learn about this), then here\u0027s the TL;DR of exactly what you could do:\n\n- add that javax.inject dependency from Wiki to the (only) impl POM\n- add that pax-cdi-api dependency from Wiki to the (only) impl POM\n- add that blueprint-maven-plugin from Wiki to the (only) impl POM\n- slap  @Singleton @OsgiServiceProvider(classes \u003d UpgradeState.class) on the UpgradeStateListener\n- slap an @Inject on the UpgradeStateListener constructor \n- slap an @OsgiService on the DataBroker argument of the UpgradeStateListener constructor\n- rm this mdsalutil.xml, not needed\n- mvn clean package\n- verify that the generated autowire.xml you\u0027ll find in the JAR looks good\n\nHTH ?",
+      "parentUuid": "9a245df4_c82ff486",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
