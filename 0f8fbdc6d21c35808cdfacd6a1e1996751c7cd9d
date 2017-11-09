@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_ab98bac0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeState.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T16:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_6825285b",
+      "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_68dc0847",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2017-11-09T14:27:38Z",
       "side": 1,
       "message": "sorry we misunderstood each other, this has to stay in mdsal-impl, didn\u0027t need to move to api... e.g. in package org.opendaylight.genius.mdsalutil.upgrade.impl (plz DO use the .impl suffix, it\u0027s important not to use the same package in api and impl bundle, and use .impl makes it automatically an OSGi private package)",
+      "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0bf10602",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T16:22:25Z",
+      "side": 1,
+      "message": "I moved it to the impl component internal package. Is that good enough or does it actually need to be in ...upgrade.impl? Not sure I understand you here.",
+      "parentUuid": "9a245df4_68dc0847",
       "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_6bf24207",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T16:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_88cdfc87",
+      "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_e8c63867",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
         "patchSetId": 5
@@ -64,6 +118,24 @@
       "writtenOn": "2017-11-09T14:27:38Z",
       "side": 1,
       "message": "remove this, not required by new listener parent class",
+      "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_abdf1a68",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T16:22:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_e8c63867",
       "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_4b801e46",
+        "filename": "mdsalutil/mdsalutil-api/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T16:22:25Z",
+      "side": 1,
+      "message": "Erased it instead. @Singleton instead",
+      "parentUuid": "9a245df4_e8ef58e7",
+      "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c8ec14f6",
         "filename": "mdsalutil/mdsalutil-api/src/main/yang/mdsalutil.yang",
         "patchSetId": 5
@@ -98,6 +188,24 @@
       "writtenOn": "2017-11-09T14:27:38Z",
       "side": 1,
       "message": "mv (back, sorry) to impl",
+      "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0bd8e679",
+        "filename": "mdsalutil/mdsalutil-api/src/main/yang/mdsalutil.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-09T16:22:25Z",
+      "side": 1,
+      "message": "That does not make sense to me. This is the config which is certainly part of the \"api\" as external elements, e.g., an installer, would update this config via rest or config file. Shouldn\u0027t this stay here?",
+      "parentUuid": "9a245df4_c8ec14f6",
       "revId": "0f8fbdc6d21c35808cdfacd6a1e1996751c7cd9d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
