@@ -9,12 +9,10 @@
 package org.opendaylight.genius.srm;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.util.concurrent.CheckedFuture;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.ServiceOps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.Services;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.ServicesKey;
@@ -57,9 +55,13 @@ import org.slf4j.LoggerFactory;
 public final class SrmRpcUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(SrmRpcUtils.class);
+
     private static final boolean REINSTALL_FAILED = false;
     private static final boolean REINSTALL_SUCCESS = true;
     private static final boolean CREATE_MISSING_PARENT = true;
+
+    private SrmRpcUtils() {
+    }
 
     private static final ImmutableMap<Class<? extends EntityNameBase>,Class<? extends EntityTypeBase>>
         NAME_TO_TYPE_MAP = new ImmutableMap
@@ -96,7 +98,7 @@ public final class SrmRpcUtils {
         RecoverOutputBuilder outputBuilder = new RecoverOutputBuilder();
         if (input.getEntityName() == null) {
             outputBuilder.setResponse(RpcFailEntityName.class)
-                .setMessage(String.format("EntityName is null", input.getEntityName().getSimpleName()));
+                .setMessage("EntityName is null");
             return outputBuilder.build();
         }
         if (input.getEntityType() == null) {
@@ -104,7 +106,7 @@ public final class SrmRpcUtils {
                 .setMessage(String.format("EntityType for %s can't be null", input.getEntityName().getSimpleName()));
             return outputBuilder.build();
         }
-        String entityId = null;
+        String entityId;
         if (EntityTypeInstance.class.equals(input.getEntityType()) && input.getEntityId() ==  null) {
             outputBuilder.setResponse(RpcFailEntityId.class)
                 .setMessage(String.format("EntityId can't be null for %s", input.getEntityName().getSimpleName()));
@@ -138,9 +140,8 @@ public final class SrmRpcUtils {
         InstanceIdentifier<Operations> opsIid = getInstanceIdentifier(operation, serviceName);
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, opsIid, operation, CREATE_MISSING_PARENT);
-        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
         try {
-            futures.get();
+            tx.submit().get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Error writing RecoveryOp to datastore. path:{}, data:{}", opsIid, operation);
             outputBuilder.setResponse(RpcFailUnknown.class).setMessage(e.getMessage());
@@ -154,7 +155,7 @@ public final class SrmRpcUtils {
         ReinstallOutputBuilder outputBuilder = new ReinstallOutputBuilder();
         if (input.getEntityName() == null) {
             outputBuilder.setSuccessful(REINSTALL_FAILED)
-                .setMessage(String.format("EntityName is null", input.getEntityName().getSimpleName()));
+                .setMessage("EntityName is null");
             return outputBuilder.build();
         }
         if (input.getEntityType() == null) {
@@ -166,7 +167,7 @@ public final class SrmRpcUtils {
         if (!EntityTypeService.class.equals(input.getEntityType())) {
             outputBuilder.setSuccessful(REINSTALL_FAILED)
                 .setMessage(String.format("EntityType is %s, Reinstall is only for EntityTypeService",
-                    input.getEntityName().getSimpleName(), input.getEntityType()));
+                                          input.getEntityType()));
             return outputBuilder.build();
         }
 
@@ -194,9 +195,8 @@ public final class SrmRpcUtils {
         InstanceIdentifier<Operations> opsIid = getInstanceIdentifier(operation, serviceName);
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, opsIid, operation, CREATE_MISSING_PARENT);
-        CheckedFuture<Void, TransactionCommitFailedException> futures = tx.submit();
         try {
-            futures.get();
+            tx.submit().get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Error writing RecoveryOp to datastore. path:{}, data:{}", opsIid, operation);
             outputBuilder.setSuccessful(REINSTALL_FAILED).setMessage(e.getMessage());
@@ -212,5 +212,4 @@ public final class SrmRpcUtils {
             .child(Services.class, new ServicesKey(serviceName))
             .child(Operations.class, operation.getKey());
     }
-
 }
