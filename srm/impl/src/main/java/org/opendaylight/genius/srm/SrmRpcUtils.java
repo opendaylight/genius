@@ -61,6 +61,9 @@ public final class SrmRpcUtils {
     private static final boolean REINSTALL_SUCCESS = true;
     private static final boolean CREATE_MISSING_PARENT = true;
 
+    private SrmRpcUtils() {
+    }
+
     private static final ImmutableMap<Class<? extends EntityNameBase>,Class<? extends EntityTypeBase>>
         NAME_TO_TYPE_MAP = new ImmutableMap
         .Builder<Class<? extends EntityNameBase>,Class<? extends EntityTypeBase>>()
@@ -96,7 +99,7 @@ public final class SrmRpcUtils {
         RecoverOutputBuilder outputBuilder = new RecoverOutputBuilder();
         if (input.getEntityName() == null) {
             outputBuilder.setResponse(RpcFailEntityName.class)
-                .setMessage(String.format("EntityName is null", input.getEntityName().getSimpleName()));
+                .setMessage(String.format("EntityName is null"));
             return outputBuilder.build();
         }
         if (input.getEntityType() == null) {
@@ -154,7 +157,7 @@ public final class SrmRpcUtils {
         ReinstallOutputBuilder outputBuilder = new ReinstallOutputBuilder();
         if (input.getEntityName() == null) {
             outputBuilder.setSuccessful(REINSTALL_FAILED)
-                .setMessage(String.format("EntityName is null", input.getEntityName().getSimpleName()));
+                .setMessage(String.format("EntityName is null"));
             return outputBuilder.build();
         }
         if (input.getEntityType() == null) {
@@ -166,7 +169,7 @@ public final class SrmRpcUtils {
         if (!EntityTypeService.class.equals(input.getEntityType())) {
             outputBuilder.setSuccessful(REINSTALL_FAILED)
                 .setMessage(String.format("EntityType is %s, Reinstall is only for EntityTypeService",
-                    input.getEntityName().getSimpleName(), input.getEntityType()));
+                                          input.getEntityType()));
             return outputBuilder.build();
         }
 
@@ -212,5 +215,4 @@ public final class SrmRpcUtils {
             .child(Services.class, new ServicesKey(serviceName))
             .child(Operations.class, operation.getKey());
     }
-
 }
