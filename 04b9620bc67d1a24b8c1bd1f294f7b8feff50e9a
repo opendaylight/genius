@@ -52,6 +52,24 @@
       "revId": "04b9620bc67d1a24b8c1bd1f294f7b8feff50e9a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bcb47e35",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-10T12:18:41Z",
+      "side": 1,
+      "message": "So you want to separate this work on separate threads? I think that\u0027s wasteful. Either do it all on the DJC or all on an Executor. However what is really complicated and time consuming enough such that it needs to be off-loaded? Remember that the data store is invoking this DTCL from an akka actor so it\u0027s already on a fork-join thread pool and each actor has it\u0027s own unbounded queue. So it\u0027s similar to DJC. My point is that you shouldn\u0027t be afraid to do some processing on the listener\u0027s thread. I don\u0027t think the comparison of 2 objects needs to be  off-loaded to a separate queue/thread - it would be redundant since you\u0027re already on a multi-threaded pool from a dedicated queue. In fact it may be that ItmTepAddWorker doesn\u0027t need to off-loaded either. \n\nThe problem that I\u0027ve seen throughout genius/netvirt is that there is a lot of blocking reads and writes. That is problematic no matter what thread pool you put it on. We really need to make these listeners completely async w.r.t. reads and writes. Then we may not need to use separate queues/threads at all (or at  least we\u0027d cut it down).",
+      "parentUuid": "9a245df4_1c778aa1",
+      "revId": "04b9620bc67d1a24b8c1bd1f294f7b8feff50e9a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
