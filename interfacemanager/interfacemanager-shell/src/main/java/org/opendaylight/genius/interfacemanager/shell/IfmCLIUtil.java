@@ -21,7 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
 
-public class IfmCLIUtil {
+public final class IfmCLIUtil {
     private static final String VLAN_OUTPUT_FORMAT_LINE1 = "%-55s";
     private static final String VLAN_OUTPUT_FORMAT = "%-24s %-20s %-15s %-24s";
     private static final String VXLAN_OUTPUT_FORMAT = "%-24s %-24s %-18s %-5s";
@@ -34,7 +34,10 @@ public class IfmCLIUtil {
     private static final String UNSET = "N/A";
     private static final int IFTYPE_LEN = "InterfaceType".length();
 
-    public static void showVlanHeaderOutput(CommandSession session) {
+    private IfmCLIUtil() {
+    }
+
+    static void showVlanHeaderOutput(CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1, "Name"));
@@ -53,7 +56,7 @@ public class IfmCLIUtil {
         fmt.close();
     }
 
-    public static void showVlanOutput(InterfaceInfo ifaceInfo, Interface iface, CommandSession session) {
+    static void showVlanOutput(InterfaceInfo ifaceInfo, Interface iface, CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
@@ -71,13 +74,13 @@ public class IfmCLIUtil {
                 ifaceInfo == null ? UNSET : ifaceInfo.getAdminState(),
                 ifaceInfo == null ? UNSET : ifaceInfo.getOpState()));
         sb.setLength(0);
-        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT + "\n",
+        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT + "%n",
                 iface.getDescription(), "", "", ""));
         sb.setLength(0);
         fmt.close();
     }
 
-    public static void showVxlanHeaderOutput(CommandSession session) {
+    static void showVxlanHeaderOutput(CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt
@@ -94,7 +97,7 @@ public class IfmCLIUtil {
         fmt.close();
     }
 
-    public static void showVxlanOutput(Interface iface, InterfaceInfo interfaceInfo, CommandSession session) {
+    static void showVxlanOutput(Interface iface, InterfaceInfo interfaceInfo, CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT_LINE1,
@@ -118,7 +121,7 @@ public class IfmCLIUtil {
     }
 
     //TODO: Capture more information and cleaner display for TerminationPoint
-    public static void showInterfaceToTpHeader(CommandSession session) {
+    static void showInterfaceToTpHeader(CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt
@@ -132,7 +135,7 @@ public class IfmCLIUtil {
         fmt.close();
     }
 
-    public static void showInterfaceToTpOutput(String ifName, OvsdbTerminationPointAugmentation port,
+    static void showInterfaceToTpOutput(String ifName, OvsdbTerminationPointAugmentation port,
                     CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
@@ -144,7 +147,7 @@ public class IfmCLIUtil {
         fmt.close();
     }
 
-    public static void showBridgePortsHeader(CommandSession session, BigInteger dpnId) {
+    static void showBridgePortsHeader(CommandSession session, BigInteger dpnId) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt
@@ -164,7 +167,7 @@ public class IfmCLIUtil {
         fmt.close();
     }
 
-    public static void showBridgePortsOutput(CommandSession session, OvsdbTerminationPointAugmentation port) {
+    static void showBridgePortsOutput(CommandSession session, OvsdbTerminationPointAugmentation port) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt
