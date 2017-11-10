@@ -59,10 +59,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <artifactId>blueprint-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-          <propertyExpansion>checkstyle.violationSeverity=error</propertyExpansion>
+          <failOnError>true</failOnError>
         </configuration>
       </plugin>
     </plugins>
