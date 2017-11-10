@@ -122,6 +122,24 @@
       "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_46bad56e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-10T03:59:49Z",
+      "side": 1,
+      "message": "you did half but not all of this, as I said:\n\n* add that pax-cdi-api dependency from Wiki to the (only) impl POM\n* slap  @Singleton @OsgiServiceProvider(classes \u003d UpgradeState.class) on the UpgradeStateListener\n* slap an @OsgiService on the DataBroker argument of the UpgradeStateListener constructor\n* mvn clean package\n* verify that the generated autowire.xml you\u0027ll find in the JAR looks good",
+      "parentUuid": "9a245df4_887b3c27",
+      "revId": "6ad3cff42f343ee25c9101b1dd3257cd6f8379a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
