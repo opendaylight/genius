@@ -48,4 +48,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <bean id="entityOwnershipUtils" class="org.opendaylight.genius.utils.clustering.EntityOwnershipUtils">
       <argument ref="entityOwnershipService"/>
     </bean>
+
+    <odl:clustered-app-config id="interfacemanagerConfig"
+                              binding-class="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IntefacemanagerConfig"
+                              default-config-file-name="genius-interfacemanger-config.xml"
+                              update-strategy="none">
+    </odl:clustered-app-config>
 </blueprint>

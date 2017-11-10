@@ -1,0 +1,3 @@
+<itm-config xmlns="urn:opendaylight:genius:interfacemanager:config">
+    <service-binding-enabled>false</service-binding-enabled>
+</itm-config>

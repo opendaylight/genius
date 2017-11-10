@@ -39,6 +39,7 @@ import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Mod
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev700101.InterfaceConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 
@@ -68,6 +69,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(LockListener.class);
         bind(IdManagerService.class).to(IdManager.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
+        bind(InterfaceConfig.class).toInstance(mock(InterfaceConfig.class));
 
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
         bind(IMdsalApiManager.class).toInstance(mdsalManager);

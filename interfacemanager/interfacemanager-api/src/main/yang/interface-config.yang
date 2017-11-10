@@ -1,0 +1,15 @@
+module interface-config {
+
+    namespace "urn:opendaylight:genius:interfacemanager:config";
+
+    prefix inteface-config;
+
+    /* to enable service binding on tunnels */
+    container interface-config {
+        config true;
+        leaf service-binding-enabled {
+            type boolean;
+            default false;
+        }
+    }
+}
