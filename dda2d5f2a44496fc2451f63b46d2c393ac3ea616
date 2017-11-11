@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_136018ce",
+        "filename": "srm/impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-11T12:22:17Z",
+      "side": 0,
+      "message": "You replaced checkstyle  - I assume that was a mistake?",
+      "revId": "dda2d5f2a44496fc2451f63b46d2c393ac3ea616",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
