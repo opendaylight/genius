@@ -35,18 +35,21 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
     default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
         for (final DataTreeModification<T> dataTreeModification : collection) {
             final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
+            final T dataBefore = dataObjectModification.getDataBefore();
+            final T dataAfter = dataObjectModification.getDataAfter();
+
             switch (dataObjectModification.getModificationType()) {
                 case SUBTREE_MODIFIED:
-                    update(dataObjectModification.getDataBefore(), dataObjectModification.getDataAfter());
+                    update(dataBefore, dataAfter);
                     break;
                 case DELETE:
-                    remove(dataObjectModification.getDataBefore());
+                    remove(dataBefore);
                     break;
                 case WRITE:
-                    if (dataObjectModification.getDataBefore() == null) {
-                        add(dataObjectModification.getDataAfter());
+                    if (dataBefore == null) {
+                        add(dataAfter);
                     } else {
-                        update(dataObjectModification.getDataBefore(), dataObjectModification.getDataAfter());
+                        update(dataBefore, dataAfter);
                     }
                     break;
                 default:
@@ -75,5 +78,5 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * @param originalDataObject existing object being modified
      * @param updatedDataObject  modified data object
      */
-    void update(@Nonnull T originalDataObject, T updatedDataObject);
+    void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject);
 }
