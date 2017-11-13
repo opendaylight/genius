@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_cd0a5925",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T13:36:03Z",
+      "side": 1,
+      "message": "I want to get this change in ASAP, and have therefore gone ahead and removed this single new sentence from me again, just because that appears to be the only reason that this is -1?  There are other things in this change, notably the @Deprecated note on the old one with the pointer to this new one, which I feel is important to get in front of people\u0027s eyes ASAP, before we have time to re-write more here.",
+      "parentUuid": "9a245df4_063f3d89",
+      "range": {
+        "startLine": 30,
+        "startChar": 61,
+        "endLine": 31,
+        "endChar": 72
+      },
+      "revId": "99e736f9650a458b7cd9a08b0d87fe00fa4e45b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_55af1d94",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
         "patchSetId": 1
@@ -71,6 +95,24 @@
       "side": 1,
       "message": "As I say on may previous comment, the three factors are described by each of the bullets, it is just a matter of moving the highlighted sentence to the introduction paragraph.",
       "parentUuid": "9a245df4_55af1d94",
+      "revId": "99e736f9650a458b7cd9a08b0d87fe00fa4e45b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0d011106",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T13:36:03Z",
+      "side": 1,
+      "message": "Is this moot with having removed the contentious sentence? I would prefer not touching more here and opening bigger discussions, but get this in ASAP..  Anyone wanting to contribute further enhancement on top of this is more than welcome to do that! ;)",
+      "parentUuid": "9a245df4_6640b907",
       "revId": "99e736f9650a458b7cd9a08b0d87fe00fa4e45b9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
