@@ -2,6 +2,74 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a245df4_28fa0343",
+        "filename": "features/odl-genius/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "infra instead of infrautils ?",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_284cc3c7",
+        "filename": "infrautils/infrautils/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "as there are currently no CLI commands in this new bundle, and because this (below) is in process of being removed in https://git.opendaylight.org/gerrit/#/c/65316/, we should not be adding more of this here - can you remove this entire \u003cplugin\u003e section? You don\u0027t need it.",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_289163f1",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "I DO vaguely rememeber ;) that I\u0027m probably the one who initially suggested this to Faseela, BUT upon seeing this \"genius.infrautils\" IRL here in this change, I\u0027m now concerned that this could be causing confusion in the future.. I\u0027m sorry, but would you terribly mind to adapt this change to not use \"infrautils\" anyhere here for the new artifacts you\u0027re introducting?  \n\nWe could perhaps call this simply \"genius.infra\" instead of \"genius.infrautils\", I think that would already be better and hopefully lead to less confusion by anyone between this and infrautils as in the infrautils projects.  \n\nI would use the package org.opendaylight.genius.infra.diagstatus for this class here - just in anticipation of in the future there possibly going to be other genius.infra that are not diagstatus related.",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a8cf1328",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "@OsgiService DiagStatusService diagStatusService\n\nand remove the final, that\u0027s not required (FYI in https://git.opendaylight.org/gerrit/#/c/65151/ I\u0027m about to add a new tool called error-prone, which enforces this, differently)",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_e1abf372",
         "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
         "patchSetId": 3
@@ -13,6 +81,91 @@
       "writtenOn": "2017-11-10T08:37:00Z",
       "side": 1,
       "message": "add register service here. In case OSgiServiceProvider does not work, it will help us understand whether the service was atleast registered",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_48ce572f",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "how about making this Boolean instead of Object here, and avoid the (boolean) cast you have a few lines below?  (If it doesn\u0027t match, you get a ClassCastException either way.)",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c8d9a7f4",
+        "filename": "infrautils/infrautils/src/main/resources/org/opendaylight/blueprint/infrautils.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "with @OsgiService DiagStatusService diagStatusService inline at the place where you @Inject, you do not need this BP XML at all, and can just delete it (after you added @OsgiService DiagStatusService diagStatusService in DatastoreServiceStatusProvider)",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_088e1fd0",
+        "filename": "infrautils/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "infra-aggregator instead of infrautils",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_28e323a5",
+        "filename": "infrautils/pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "we don\u0027t need this entire section anymore, you can just remove it",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_88b96f7b",
+        "filename": "pom.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-13T14:36:42Z",
+      "side": 1,
+      "message": "infra instead of infrautils",
       "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
