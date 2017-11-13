@@ -66,6 +66,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_08e29f2e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-13T13:47:01Z",
+      "side": 1,
+      "message": "Yeah, as Vishal would say, it is just a soft -1 :). It is much more important to deprecate the old listeners.",
+      "parentUuid": "9a245df4_cd0a5925",
+      "range": {
+        "startLine": 30,
+        "startChar": 61,
+        "endLine": 31,
+        "endChar": 72
+      },
+      "revId": "99e736f9650a458b7cd9a08b0d87fe00fa4e45b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_55af1d94",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
         "patchSetId": 1
@@ -113,6 +137,24 @@
       "side": 1,
       "message": "Is this moot with having removed the contentious sentence? I would prefer not touching more here and opening bigger discussions, but get this in ASAP..  Anyone wanting to contribute further enhancement on top of this is more than welcome to do that! ;)",
       "parentUuid": "9a245df4_6640b907",
+      "revId": "99e736f9650a458b7cd9a08b0d87fe00fa4e45b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_68d23b5d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-13T13:47:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_0d011106",
       "revId": "99e736f9650a458b7cd9a08b0d87fe00fa4e45b9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
