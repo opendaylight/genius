@@ -8,8 +8,11 @@
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
@@ -20,10 +23,10 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class PacketInCounterHandler implements PacketProcessingListener {
     private static final Logger LOG = LoggerFactory.getLogger(PacketInCounterHandler.class);
-    private static ConcurrentHashMap<String, AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
-    private static HashMap<String, String> packetInMap = new HashMap<>();
-    private static final Integer FIRST_VALUE = 1;
+    private static final Long FIRST_VALUE = 0L;
+
     private final PMAgent agent;
+    private final ConcurrentMap<String, AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
 
     @Inject
     public PacketInCounterHandler(final PMAgent agent) {
@@ -32,9 +35,6 @@ public class PacketInCounterHandler implements PacketProcessingListener {
 
     @Override
     public void onPacketReceived(PacketReceived notification) {
-        String dpnId;
-        String nodeListEgressStr;
-        String nodekey;
         LOG.debug("Ingress packet notification received");
         if (notification.getIngress() == null) {
             if (LOG.isWarnEnabled()) {
@@ -42,31 +42,23 @@ public class PacketInCounterHandler implements PacketProcessingListener {
             }
             return;
         }
-        dpnId = getDpnId(notification.getIngress().getValue().toString());
-        if (dpnId != null) {
-            nodeListEgressStr = "dpnId_" + dpnId + "_InjectedOFMessagesSent";
-            nodekey = "InjectedOFMessagesSent:" + nodeListEgressStr;
-            if (ingressPacketMap.containsKey(dpnId)) {
-                ingressPacketMap.put(dpnId, new AtomicLong(ingressPacketMap.get(dpnId).incrementAndGet()));
-                packetInMap.put(nodekey, "" + ingressPacketMap.get(dpnId));
-            } else {
-                ingressPacketMap.put(dpnId, new AtomicLong(FIRST_VALUE));
-                packetInMap.put(nodekey, "" + FIRST_VALUE);
-            }
-            connectToPMAgent();
-        } else {
-            LOG.error("DpnId is null");
-        }
+        String dpnId = getDpnId(notification.getIngress().getValue().toString());
+        ingressPacketMap.putIfAbsent(dpnId, new AtomicLong(FIRST_VALUE)).incrementAndGet();
+        connectToPMAgent();
     }
 
     private void connectToPMAgent() {
+        Map<String, String> packetInMap = new HashMap<>();
+        ingressPacketMap.forEach((dpnId, count) -> packetInMap
+                .put("InjectedOFMessagesSent:" + "dpnId_" + dpnId + "_InjectedOFMessagesSent", String.valueOf(count)));
         agent.sendPacketInCounterUpdate(packetInMap);
     }
 
     /*
      * Method to extract DpnId
      */
-    public static String getDpnId(String id) {
+    @Nonnull
+    private String getDpnId(@Nonnull String id) {
         String[] nodeNo = id.split(":");
         String[] dpnId = nodeNo[1].split("]");
         return dpnId[0];
@@ -77,13 +69,8 @@ public class PacketInCounterHandler implements PacketProcessingListener {
             dpnId = dpnId.split(":")[1];
             LOG.debug("Dpnvalue Id {}", dpnId);
             if (ingressPacketMap.containsKey(dpnId)) {
-                String nodeListEgressStr = "dpnId_" + dpnId + "_InjectedOFMessagesSent";
-                String nodekey = "InjectedOFMessagesSent:" + nodeListEgressStr;
-                synchronized (this) {
-                    ingressPacketMap.remove(dpnId);
-                    packetInMap.remove(nodekey);
-                    connectToPMAgent();
-                }
+                ingressPacketMap.remove(dpnId);
+                connectToPMAgent();
                 LOG.debug("Node {} Removed for PacketIn counter", dpnId);
             }
         } else {
