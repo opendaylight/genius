@@ -10,6 +10,7 @@ package org.opendaylight.genius.fcapsapp;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -59,7 +60,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
     }
 
     @Override
-    public void onDataTreeChanged(Collection<DataTreeModification<D>> changes) {
+    public void onDataTreeChanged(@Nonnull Collection<DataTreeModification<D>> changes) {
         for (DataTreeModification<D> change : changes) {
             final InstanceIdentifier<D> key = change.getRootPath().getRootIdentifier();
             final DataObjectModification<D> mod = change.getRootNode();
@@ -75,46 +76,42 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
             }
             LOG.debug("retrieved hostname {}", hostName);
             String nodeId = getDpnId(String.valueOf(nodeConnIdent.firstKeyOf(Node.class).getId()));
-            if (nodeId != null) {
-                switch (mod.getModificationType()) {
-                    case DELETE:
-                        LOG.debug("NodeRemoved {} notification is received on host {}", nodeId, hostName);
-                        if (nodeUpdateCounter.isDpnConnectedLocal(nodeId)) {
-                            alarmAgent.raiseControlPathAlarm(nodeId, hostName);
-                            nodeUpdateCounter.nodeRemovedNotification(nodeId, hostName);
-                        }
-                        packetInCounterHandler.nodeRemovedNotification(nodeId);
-                        break;
-                    case SUBTREE_MODIFIED:
+            switch (mod.getModificationType()) {
+                case DELETE:
+                    LOG.debug("NodeRemoved {} notification is received on host {}", nodeId, hostName);
+                    if (nodeUpdateCounter.isDpnConnectedLocal(nodeId)) {
+                        alarmAgent.raiseControlPathAlarm(nodeId, hostName);
+                        nodeUpdateCounter.nodeRemovedNotification(nodeId, hostName);
+                    }
+                    packetInCounterHandler.nodeRemovedNotification(nodeId);
+                    break;
+                case SUBTREE_MODIFIED:
+                    if (isNodeOwner(nodeId)) {
+                        LOG.debug("NodeUpdated {} notification is received", nodeId);
+                    } else {
+                        LOG.debug("UPDATE: Node {} is not connected to host {}", nodeId, hostName);
+                    }
+                    break;
+                case WRITE:
+                    if (mod.getDataBefore() == null) {
                         if (isNodeOwner(nodeId)) {
-                            LOG.debug("NodeUpdated {} notification is received", nodeId);
+                            LOG.debug("NodeAdded {} notification is received on host {}", nodeId, hostName);
+                            alarmAgent.clearControlPathAlarm(nodeId, hostName);
+                            nodeUpdateCounter.nodeAddedNotification(nodeId, hostName);
                         } else {
-                            LOG.debug("UPDATE: Node {} is not connected to host {}", nodeId, hostName);
+                            LOG.debug("ADD: Node {} is not connected to host {}", nodeId, hostName);
                         }
-                        break;
-                    case WRITE:
-                        if (mod.getDataBefore() == null) {
-                            if (isNodeOwner(nodeId)) {
-                                LOG.debug("NodeAdded {} notification is received on host {}", nodeId, hostName);
-                                alarmAgent.clearControlPathAlarm(nodeId, hostName);
-                                nodeUpdateCounter.nodeAddedNotification(nodeId, hostName);
-                            } else {
-                                LOG.debug("ADD: Node {} is not connected to host {}", nodeId, hostName);
-                            }
-                        }
-                        break;
-                    default:
-                        LOG.debug("Unhandled Modification type {}", mod.getModificationType());
-                        throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
-
-                }
-            } else {
-                LOG.error("DpnID is null");
+                    }
+                    break;
+                default:
+                    LOG.debug("Unhandled Modification type {}", mod.getModificationType());
+                    throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
             }
         }
     }
 
-    private String getDpnId(String node) {
+    @Nonnull
+    private String getDpnId(@Nonnull String node) {
         // Uri [_value=openflow:1]
         String[] temp = node.split("=");
         return temp[1].substring(0, temp[1].length() - 1);

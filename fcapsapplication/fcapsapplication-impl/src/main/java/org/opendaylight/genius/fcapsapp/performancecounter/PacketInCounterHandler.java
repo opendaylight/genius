@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,10 +20,11 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class PacketInCounterHandler implements PacketProcessingListener {
     private static final Logger LOG = LoggerFactory.getLogger(PacketInCounterHandler.class);
-    private static ConcurrentHashMap<String, AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
-    private static HashMap<String, String> packetInMap = new HashMap<>();
     private static final Integer FIRST_VALUE = 1;
+
     private final PMAgent agent;
+    private final ConcurrentMap<String, AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, String> packetInMap = new ConcurrentHashMap<>();
 
     @Inject
     public PacketInCounterHandler(final PMAgent agent) {
@@ -32,9 +33,6 @@ public class PacketInCounterHandler implements PacketProcessingListener {
 
     @Override
     public void onPacketReceived(PacketReceived notification) {
-        String dpnId;
-        String nodeListEgressStr;
-        String nodekey;
         LOG.debug("Ingress packet notification received");
         if (notification.getIngress() == null) {
             if (LOG.isWarnEnabled()) {
@@ -42,16 +40,13 @@ public class PacketInCounterHandler implements PacketProcessingListener {
             }
             return;
         }
-        dpnId = getDpnId(notification.getIngress().getValue().toString());
+        String dpnId = getDpnId(notification.getIngress().getValue().toString());
         if (dpnId != null) {
-            nodeListEgressStr = "dpnId_" + dpnId + "_InjectedOFMessagesSent";
-            nodekey = "InjectedOFMessagesSent:" + nodeListEgressStr;
-            if (ingressPacketMap.containsKey(dpnId)) {
-                ingressPacketMap.put(dpnId, new AtomicLong(ingressPacketMap.get(dpnId).incrementAndGet()));
-                packetInMap.put(nodekey, "" + ingressPacketMap.get(dpnId));
-            } else {
-                ingressPacketMap.put(dpnId, new AtomicLong(FIRST_VALUE));
-                packetInMap.put(nodekey, "" + FIRST_VALUE);
+            String nodekey = "InjectedOFMessagesSent:" + "dpnId_" + dpnId + "_InjectedOFMessagesSent";
+
+            synchronized (this) {
+                ingressPacketMap.putIfAbsent(dpnId, new AtomicLong(FIRST_VALUE)).incrementAndGet();
+                packetInMap.put(nodekey, String.valueOf(ingressPacketMap.getOrDefault(dpnId, new AtomicLong(FIRST_VALUE))));
             }
             connectToPMAgent();
         } else {
@@ -66,7 +61,7 @@ public class PacketInCounterHandler implements PacketProcessingListener {
     /*
      * Method to extract DpnId
      */
-    public static String getDpnId(String id) {
+    private static String getDpnId(String id) {
         String[] nodeNo = id.split(":");
         String[] dpnId = nodeNo[1].split("]");
         return dpnId[0];
