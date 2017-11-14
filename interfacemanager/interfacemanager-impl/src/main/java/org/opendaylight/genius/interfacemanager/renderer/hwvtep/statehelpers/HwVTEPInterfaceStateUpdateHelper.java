@@ -9,10 +9,12 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
@@ -30,6 +32,7 @@ public class HwVTEPInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceStateUpdateHelper.class);
 
     public static List<ListenableFuture<Void>> updatePhysicalSwitch(DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew, Tunnels tunnelsOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.debug("updating physical switch for tunnels");
@@ -41,11 +44,9 @@ public class HwVTEPInterfaceStateUpdateHelper {
 
         // update opstate of interface if TEP has gone down/up as a result of
         // BFD monitoring
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName,
-                getTunnelOpState(tunnelsNew.getBfdStatus()));
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName,
+                    getTunnelOpState(tunnelsNew.getBfdStatus()))));
     }
 
     private static OperStatus getTunnelOpState(List<BfdStatus> tunnelBfdStatus) {
@@ -66,7 +67,7 @@ public class HwVTEPInterfaceStateUpdateHelper {
         return livenessState;
     }
 
-    public static List<ListenableFuture<Void>> startBfdMonitoring(DataBroker dataBroker,
+    public static List<ListenableFuture<Void>> startBfdMonitoring(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
         final List<ListenableFuture<Void>> futures = new ArrayList<>();
 
@@ -79,9 +80,8 @@ public class HwVTEPInterfaceStateUpdateHelper {
         List<BfdParams> bfdParams = new ArrayList<>();
         SouthboundUtils.fillBfdParameters(bfdParams, null);
         tunnelsBuilder.setBfdParams(bfdParams);
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        transaction.put(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier, tunnelsBuilder.build(), true);
-        futures.add(transaction.submit());
-        return futures;
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier, tunnelsBuilder.build(),
+                    WriteTransaction.CREATE_MISSING_PARENTS)));
     }
 }

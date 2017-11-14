@@ -10,10 +10,10 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
@@ -83,61 +83,54 @@ public class FlowBasedIngressServicesStateUnbindHelper implements FlowBasedServi
             return futures;
         }
 
+        ManagedNewTransactionRunner txRunner = interfaceMgrProvider.getTransactionRunner();
         if (L2vlan.class.equals(ifaceState.getType())) {
-            return unbindServiceOnVlan(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
+            return unbindServiceOnVlan(allServices, ifaceState, txRunner);
         } else if (Tunnel.class.equals(ifaceState.getType())) {
-            return unbindServiceOnTunnel(allServices, ifaceState, ifaceState.getIfIndex(), dataBroker);
+            return unbindServiceOnTunnel(allServices, ifaceState, txRunner);
         }
         return futures;
     }
 
     private static List<ListenableFuture<Void>> unbindServiceOnTunnel(List<BoundServices> allServices, Interface iface,
-            Integer ifIndex, DataBroker dataBroker) {
+            ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        LOG.info("unbinding all services on tunnel interface {}", iface.getName());
-        List<String> ofportIds = iface.getLowerLayerIf();
-        NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if (nodeConnectorId == null) {
-            return futures;
-        }
-        BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            LOG.info("unbinding all services on tunnel interface {}", iface.getName());
+            List<String> ofportIds = iface.getLowerLayerIf();
+            NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
+            BoundServices highestPriorityBoundService = FlowBasedServicesUtils.getHighestPriorityService(allServices);
 
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, writeTransaction);
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            FlowBasedServicesUtils.removeIngressFlow(iface.getName(), highestPriorityBoundService, dpId, tx);
 
-        for (BoundServices boundService : allServices) {
-            if (!boundService.equals(highestPriorityBoundService)) {
-                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), boundService, writeTransaction,
-                        boundService.getServicePriority());
+            for (BoundServices boundService : allServices) {
+                if (!boundService.equals(highestPriorityBoundService)) {
+                    FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, iface.getName(), boundService, tx,
+                            boundService.getServicePriority());
+                }
             }
-        }
-
-        futures.add(writeTransaction.submit());
+        }));
         return futures;
     }
 
     private static List<ListenableFuture<Void>> unbindServiceOnVlan(List<BoundServices> allServices,
-            Interface ifaceState, Integer ifIndex, DataBroker dataBroker) {
+            Interface ifaceState, ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("unbinding all services on vlan interface {}", ifaceState.getName());
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        List<String> ofportIds = ifaceState.getLowerLayerIf();
-        NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
-        if (nodeConnectorId == null) {
-            return futures;
-        }
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
-                .compareTo(serviceInfo2.getServicePriority()));
-        BoundServices highestPriority = allServices.remove(0);
-        FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, writeTransaction,
-                NwConstants.DEFAULT_SERVICE_INDEX);
-        for (BoundServices boundService : allServices) {
-            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, writeTransaction,
-                    boundService.getServicePriority());
-        }
-        futures.add(writeTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            List<String> ofportIds = ifaceState.getLowerLayerIf();
+            NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
+            BoundServices highestPriority = allServices.remove(0);
+            FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), highestPriority, tx,
+                    NwConstants.DEFAULT_SERVICE_INDEX);
+            for (BoundServices boundService : allServices) {
+                FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, ifaceState.getName(), boundService, tx,
+                        boundService.getServicePriority());
+            }
+        }));
         return futures;
     }
 }

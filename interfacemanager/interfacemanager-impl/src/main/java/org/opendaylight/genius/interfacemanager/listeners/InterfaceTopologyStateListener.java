@@ -16,6 +16,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateAddHelper;
@@ -36,6 +38,7 @@ public class InterfaceTopologyStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfacemgrProvider interfaceMgrProvider;
 
     @Inject
@@ -43,6 +46,7 @@ public class InterfaceTopologyStateListener
                                           final InterfacemgrProvider interfaceMgrProvider) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
@@ -130,7 +134,8 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier, bridgeNew, dataBroker);
+            return OvsInterfaceTopologyStateAddHelper.addPortToBridge(instanceIdentifier, bridgeNew, dataBroker,
+                    txRunner);
         }
     }
 
@@ -147,7 +152,7 @@ public class InterfaceTopologyStateListener
         @Override
         public List<ListenableFuture<Void>> call() {
             return OvsInterfaceTopologyStateRemoveHelper.removePortFromBridge(instanceIdentifier, bridgeNew,
-                    dataBroker);
+                    txRunner);
         }
     }
 
@@ -166,7 +171,7 @@ public class InterfaceTopologyStateListener
         @Override
         public List<ListenableFuture<Void>> call() {
             return OvsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld,
-                    dataBroker);
+                    dataBroker, txRunner);
         }
     }
 }

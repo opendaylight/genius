@@ -9,10 +9,10 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -59,41 +59,41 @@ public class FlowBasedEgressServicesStateBindHelper implements FlowBasedServices
                                                                 Interface ifaceState, List<BoundServices> allServices) {
         LOG.debug("binding services on interface {}", ifaceState.getName());
         if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            bindServices(futures, allServices, ifaceState, interfaceMgrProvider.getDataBroker());
+            bindServices(futures, allServices, ifaceState, interfaceMgrProvider.getDataBroker(),
+                    interfaceMgrProvider.getTransactionRunner());
         }
     }
 
     private static void bindServices(List<ListenableFuture<Void>> futures,
-                                                             List<BoundServices> allServices, Interface ifState,
-                                                             DataBroker dataBroker) {
+                                     List<BoundServices> allServices, Interface ifState,
+                                     DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
         LOG.info("binding all egress services on interface: {}", ifState.getName());
 
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        Collections.sort(allServices, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
-                .compareTo(serviceInfo2.getServicePriority()));
-        BoundServices highestPriority = allServices.remove(0);
-        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
-                : highestPriority.getServicePriority() + 1);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
-                .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
-        FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), writeTransaction,
-                ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
-        BoundServices prev = null;
-        for (BoundServices boundService : allServices) {
-            if (prev != null) {
-                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), writeTransaction,
-                        ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority(), iface);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
+            BoundServices highestPriority = allServices.remove(0);
+            short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
+                    : highestPriority.getServicePriority() + 1);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                    .ietf.interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
+                    .getInterfaceFromConfigDS(ifState.getName(), dataBroker);
+            FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), tx,
+                    ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);
+            BoundServices prev = null;
+            for (BoundServices boundService : allServices) {
+                if (prev != null) {
+                    FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), tx,
+                            ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority(), iface);
+                }
+                prev = boundService;
             }
-            prev = boundService;
-        }
-        if (prev != null) {
-            FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), writeTransaction,
-                    ifState.getIfIndex(),
-                    prev.getServicePriority(), (short) (prev.getServicePriority() + 1), iface);
-        }
-        futures.add(writeTransaction.submit());
+            if (prev != null) {
+                FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), tx,
+                        ifState.getIfIndex(),
+                        prev.getServicePriority(), (short) (prev.getServicePriority() + 1), iface);
+            }
+        }));
     }
 }

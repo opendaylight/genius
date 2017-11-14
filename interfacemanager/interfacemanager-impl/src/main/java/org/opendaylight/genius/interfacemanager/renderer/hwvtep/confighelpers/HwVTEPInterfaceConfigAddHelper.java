@@ -10,9 +10,9 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -32,24 +32,26 @@ import org.slf4j.LoggerFactory;
 public class HwVTEPInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceConfigAddHelper.class);
 
-    public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker,
+    public static List<ListenableFuture<Void>> addConfiguration(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
             Interface interfaceNew, IfTunnel ifTunnel) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
         // create hwvtep through ovsdb plugin
-        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
-        WriteTransaction topologyConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
-        InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId,
-            defaultOperShardTransaction, ifTunnel);
+        // Default operational
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(operTx -> {
+            InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId,
+                    operTx, ifTunnel);
+            if (globalNodeId != null) {
+                SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.getAugmentation(IfTunnel.class), operTx);
+            }
+        }));
+        // Topology config
         if (globalNodeId != null) {
-            addTerminationPoints(topologyConfigShardTransaction, futures, globalNodeId,ifTunnel);
-            SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.getAugmentation(IfTunnel.class),
-                defaultOperShardTransaction);
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                configTx -> addTerminationPoints(configTx, futures, globalNodeId, ifTunnel)));
         }
-        futures.add(defaultOperShardTransaction.submit());
-        futures.add(topologyConfigShardTransaction.submit());
         return futures;
     }
 

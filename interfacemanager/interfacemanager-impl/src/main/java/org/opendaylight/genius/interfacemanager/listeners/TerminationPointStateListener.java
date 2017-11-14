@@ -16,6 +16,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -36,6 +38,7 @@ public class TerminationPointStateListener extends
         AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfacemgrProvider interfaceMgrProvider;
 
     @Inject
@@ -43,6 +46,7 @@ public class TerminationPointStateListener extends
     public TerminationPointStateListener(DataBroker dataBroker,
                                          final InterfacemgrProvider interfaceMgrProvider) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, this.dataBroker);
     }
@@ -138,7 +142,7 @@ public class TerminationPointStateListener extends
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, terminationPointNew);
+            return OvsInterfaceTopologyStateUpdateHelper.updateTunnelState(dataBroker, txRunner, terminationPointNew);
         }
     }
 

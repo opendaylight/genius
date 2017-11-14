@@ -12,7 +12,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
@@ -26,7 +26,7 @@ public class OvsInterfaceTopologyStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateAddHelper.class);
 
     public static List<ListenableFuture<Void>> addPortToBridge(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-            OvsdbBridgeAugmentation bridgeNew, DataBroker dataBroker) {
+            OvsdbBridgeAugmentation bridgeNew, DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         if (bridgeNew.getDatapathId() == null) {
@@ -35,19 +35,18 @@ public class OvsInterfaceTopologyStateAddHelper {
         }
         BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
         LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
-        // create bridge reference entry in interface meta operational DS
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        InterfaceMetaUtils.createBridgeRefEntry(dpnId, bridgeIid, writeTransaction);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            // create bridge reference entry in interface meta operational DS
+            InterfaceMetaUtils.createBridgeRefEntry(dpnId, bridgeIid, tx);
 
-        // handle pre-provisioning of tunnels for the newly connected dpn
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
-        if (bridgeEntry == null) {
-            LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
-            futures.add(writeTransaction.submit());
-            return futures;
-        }
-        futures.add(writeTransaction.submit());
-        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
+            // handle pre-provisioning of tunnels for the newly connected dpn
+            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId, dataBroker);
+            if (bridgeEntry == null) {
+                LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
+                return;
+            }
+            SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
+        }));
         return futures;
     }
 }
