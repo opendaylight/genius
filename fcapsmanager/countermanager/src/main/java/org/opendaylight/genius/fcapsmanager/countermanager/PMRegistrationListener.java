@@ -9,9 +9,9 @@ package org.opendaylight.genius.fcapsmanager.countermanager;
 
 import java.lang.management.ManagementFactory;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
 import javax.management.MBeanServerNotification;
@@ -25,29 +25,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PMRegistrationListener implements Runnable {
-    private static final Logger LOG = LoggerFactory.getLogger(PMRegistrationListener.class);
-    private static MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-    private boolean shouldContinue = true;
     private static final String DOMAIN = "SDNC.PM";
     private static final String MBEAN_REGISTERED = "JMX.mbean.registered";
     private static final String MBEAN_UNREGISTERED = "JMX.mbean.unregistered";
-    protected static Collection<ObjectName> beanNames = new HashSet<>();
-    private BundleContext context = null;
 
-    public PMRegistrationListener(BundleContext context) {
-        this.context = context;
+    private static final Logger LOG = LoggerFactory.getLogger(PMRegistrationListener.class);
+
+    private final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+    private boolean shouldContinue = true;
+    private final Set<ObjectName> beanNames = ConcurrentHashMap.newKeySet();
+    private final BundleContext bundleContext;
+
+    public PMRegistrationListener(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
     public void setShouldContinue(boolean shouldContinue) {
         this.shouldContinue = shouldContinue;
     }
 
+    public Collection<ObjectName> getBeanNames() {
+        return beanNames;
+    }
+
     /**
      * Gets register notification when a mbean is registered in platform
      * Mbeanserver and checks if it is counter mbean and add it to the map.
      */
-    public static class DelegateListener implements NotificationListener {
+    private class DelegateListener implements NotificationListener {
 
         @Override
         public void handleNotification(Notification notification, Object obj) {
@@ -75,7 +81,7 @@ public class PMRegistrationListener implements Runnable {
     public void run() {
         queryMbeans();
         DelegateListener delegateListener = new DelegateListener();
-        ObjectName delegate = null;
+        ObjectName delegate;
         try {
             delegate = new ObjectName("JMImplementation:type=MBeanServerDelegate");
         } catch (MalformedObjectNameException e) {
@@ -94,7 +100,7 @@ public class PMRegistrationListener implements Runnable {
             LOG.error("Instance not found: {}", e);
             return;
         }
-        Poller poller = new Poller(this.context);
+        Poller poller = new Poller(bundleContext, this);
         poller.polling();
         waitforNotification();
     }
@@ -104,7 +110,7 @@ public class PMRegistrationListener implements Runnable {
      * the installation of framework bundle Queries the platform Mbeanserver to
      * retrieve registered counter mbean and add it to the map.
      */
-    public void queryMbeans() {
+    private void queryMbeans() {
         Set<ObjectName> names = new TreeSet<>(mbs.queryNames(null, null));
         LOG.debug("\nQueried MBeanServer for MBeans:");
         for (ObjectName name : names) {

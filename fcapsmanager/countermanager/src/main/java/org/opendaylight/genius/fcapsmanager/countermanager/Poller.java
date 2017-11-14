@@ -24,41 +24,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Poller {
-    private static BundleContext context;
     private static final Logger LOG = LoggerFactory.getLogger(Poller.class);
 
-    public Poller() {
-    }
+    private final BundleContext bundleContext;
+    private final PMRegistrationListener pmRegistrationListener;
 
-    public Poller(BundleContext bundleContext) {
-        context = bundleContext;
+    public Poller(BundleContext bundleContext, PMRegistrationListener pmRegistrationListener) {
+        this.bundleContext = bundleContext;
+        this.pmRegistrationListener = pmRegistrationListener;
     }
 
     /**
-     * This method do the Polling every 5 second and retrieves the the counter
-     * details.
+     * This method do the Polling every 5 second and retrieves the counter details.
      */
     public void polling() {
-        LOG.debug("Poller Polling Mbean List and the content is {}", PMRegistrationListener.beanNames);
+        LOG.debug("Poller Polling Mbean List and the content is {}", pmRegistrationListener.getBeanNames());
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(new PollerThread(), 0, 5, TimeUnit.SECONDS);
+        service.scheduleAtFixedRate(new PollerTask(), 0, 5, TimeUnit.SECONDS);
     }
 
     /**
-     * Platform dependent bundle injects its handle and it is retrieved in the
-     * method.
+     * Platform dependent bundle injects its handle and it is retrieved in the method.
      */
     protected PMServiceFacade getPMServiceSPI() {
         PMServiceFacade service = null;
-        if (context != null) {
-            ServiceReference<?> serviceReference = context.getServiceReference(PMServiceFacade.class.getName());
-            service = (PMServiceFacade) context.getService(serviceReference);
+        if (bundleContext != null) {
+            ServiceReference<?> serviceReference = bundleContext.getServiceReference(PMServiceFacade.class.getName());
+            service = (PMServiceFacade) bundleContext.getService(serviceReference);
         }
         return service;
     }
 
-    private class PollerThread implements Runnable {
-        private final Poller poller = new Poller();
+    private class PollerTask implements Runnable {
         private final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 
         /**
@@ -66,12 +63,13 @@ public class Poller {
          */
         @Override
         public void run() {
-            for (ObjectName objectName : PMRegistrationListener.beanNames) {
+            for (ObjectName objectName : pmRegistrationListener.getBeanNames()) {
                 try {
                     Map<String, String> counters = (Map<String, String>) mbs.invoke(objectName, "retrieveCounterMap",
                             null, null);
-                    if (poller.getPMServiceSPI() != null) {
-                        poller.getPMServiceSPI().connectToPMFactory(counters);
+                    PMServiceFacade pmServiceFacade = getPMServiceSPI();
+                    if (pmServiceFacade != null) {
+                        getPMServiceSPI().connectToPMFactory(counters);
                     } else {
                         LOG.debug("PM service not available");
                     }
