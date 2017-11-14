@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -21,20 +20,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
  * AbstractFlowBasedServicesConfigBindHelper to enable flow based ingress/egress service binding for interfaces.
  */
 public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
-
-    private final DataBroker dataBroker;
-
-    /**
-     * Create instance.
-     * @param dataBroker instance of interfaceMgrProvider
-     */
-    protected AbstractFlowBasedServicesConfigUnbindHelper(final DataBroker dataBroker) {
-        this.dataBroker = dataBroker;
-    }
-
-    protected DataBroker getDataBroker() {
-        return dataBroker;
-    }
 
     @Override
     public final void unbindService(List<ListenableFuture<Void>> futures, String interfaceName,
