@@ -9,10 +9,12 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -32,7 +34,8 @@ public class OvsInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateUpdateHelper.class);
 
     public static List<ListenableFuture<Void>> updateState(InstanceIdentifier<FlowCapableNodeConnector> key,
-            AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker, String interfaceName,
+            AlivenessMonitorService alivenessMonitorService, DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner, String interfaceName,
             FlowCapableNodeConnector flowCapableNodeConnectorNew,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         LOG.debug("Updating interface state information for interface: {}", interfaceName);
@@ -44,14 +47,8 @@ public class OvsInterfaceStateUpdateHelper {
         Interface.OperStatus operStatusOld = InterfaceManagerCommonUtils.getOpState(flowCapableNodeConnectorOld);
         MacAddress macAddressOld = flowCapableNodeConnectorOld.getHardwareAddress();
 
-        boolean opstateModified = false;
-        boolean hardwareAddressModified = false;
-        if (!operStatusNew.equals(operStatusOld)) {
-            opstateModified = true;
-        }
-        if (!macAddressNew.equals(macAddressOld)) {
-            hardwareAddressModified = true;
-        }
+        boolean opstateModified = !operStatusNew.equals(operStatusOld);
+        boolean hardwareAddressModified = !macAddressNew.equals(macAddressOld);
 
         if (!opstateModified && !hardwareAddressModified) {
             LOG.debug("If State entry for port: {} Not Modified.", interfaceName);
@@ -78,19 +75,26 @@ public class OvsInterfaceStateUpdateHelper {
             PhysAddress physAddress = new PhysAddress(macAddressNew.getValue());
             ifaceBuilder.setPhysAddress(physAddress);
         }
-        // modify the attributes in interface operational DS
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        handleInterfaceStateUpdates(iface, transaction, dataBroker, ifaceBuilder, opstateModified, interfaceName,
-                flowCapableNodeConnectorNew.getName(), operStatusNew);
 
-        // start/stop monitoring based on opState
-        if (isTunnelInterface(iface) && opstateModified) {
-            handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker, iface.getAugmentation(IfTunnel.class),
-                    iface.getName(), operStatusNew);
+        if (opstateModified) {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                // modify the attributes in interface operational DS
+                handleInterfaceStateUpdates(iface, tx, dataBroker, ifaceBuilder, true, interfaceName,
+                        flowCapableNodeConnectorNew.getName(), operStatusNew);
+
+                // start/stop monitoring based on opState
+                if (isTunnelInterface(iface)) {
+                    handleTunnelMonitoringUpdates(alivenessMonitorService, dataBroker,
+                            iface.getAugmentation(IfTunnel.class), iface.getName(), operStatusNew);
+                }
+            }));
+        } else {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                // modify the attributes in interface operational DS
+                handleInterfaceStateUpdates(iface, tx, dataBroker, ifaceBuilder, false, interfaceName,
+                        flowCapableNodeConnectorNew.getName(), operStatusNew);
+            }));
         }
-
-        futures.add(transaction.submit());
-        return futures;
     }
 
     public static void updateInterfaceStateOnNodeRemove(String interfaceName,

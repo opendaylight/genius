@@ -10,9 +10,9 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
@@ -28,21 +28,23 @@ import org.slf4j.LoggerFactory;
 public class HwVTEPConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPConfigRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, Interface interfaceOld,
-            InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchNodeId) {
+    public static List<ListenableFuture<Void>> removeConfiguration(ManagedNewTransactionRunner txRunner,
+            Interface interfaceOld, InstanceIdentifier<Node> globalNodeId,
+            InstanceIdentifier<Node> physicalSwitchNodeId) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
-        WriteTransaction topologyConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
         LOG.info("removing hwvtep configuration for {}", interfaceOld.getName());
         if (globalNodeId != null) {
             IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
             //removeTunnelTableEntry(defaultOperShardTransaction, ifTunnel, physicalSwitchNodeId);
-            removeTerminationEndPoint(topologyConfigShardTransaction, ifTunnel, globalNodeId);
-            InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), defaultOperShardTransaction);
-            InterfaceMetaUtils.removeTunnelToInterfaceMap(physicalSwitchNodeId, defaultOperShardTransaction, ifTunnel);
+            // Topology config
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> removeTerminationEndPoint(tx, ifTunnel, globalNodeId)));
+            // Default operational
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), tx);
+                InterfaceMetaUtils.removeTunnelToInterfaceMap(physicalSwitchNodeId, tx, ifTunnel);
+            }));
         }
-        futures.add(defaultOperShardTransaction.submit());
-        futures.add(topologyConfigShardTransaction.submit());
         return futures;
     }
 

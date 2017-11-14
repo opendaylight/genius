@@ -9,14 +9,16 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
@@ -30,11 +32,11 @@ import org.slf4j.LoggerFactory;
 public class InterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public InterfaceStateListener(DataBroker dataBroker) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -73,9 +75,8 @@ public class InterfaceStateListener
                 // update opstate of interface if TEP has gone down/up as a
                 // result of BFD monitoring
                 LOG.debug("updating tunnel state for interface {}", interfaceStateNew.getName());
-                WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceStateNew.getName(), bfdState);
-                futures.add(transaction.submit());
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                    tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceStateNew.getName(), bfdState)));
             }
             return futures;
         });
