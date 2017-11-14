@@ -25,6 +25,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="dataBroker"
                interface="org.opendaylight.controller.md.sal.binding.api.DataBroker" />
 
+    <bean id="txRunner" class="org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl">
+        <argument ref="dataBroker" />
+    </bean>
+
     <reference id="entityOwnershipService"
                interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService" />
 
