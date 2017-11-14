@@ -9,16 +9,16 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class InterfaceTopologyStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
@@ -59,7 +59,7 @@ public class InterfaceTopologyStateListener
             final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
             final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
@@ -154,29 +154,25 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-
             if (bridgeNew.getDatapathId() == null) {
                 LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
-                return futures;
+                return Collections.emptyList();
             }
             BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
             LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
             // create bridge reference entry in interface meta operational DS
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            InterfaceMetaUtils.createBridgeRefEntry(dpnId, instanceIdentifier, writeTransaction);
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                InterfaceMetaUtils.createBridgeRefEntry(dpnId, instanceIdentifier, tx);
 
-            // handle pre-provisioning of tunnels for the newly connected dpn
-            BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId);
-            if (bridgeEntry == null) {
-                LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
-                futures.add(writeTransaction.submit());
-                return futures;
-            }
-            futures.add(writeTransaction.submit());
-            southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, instanceIdentifier,
-                    bridgeNew);
-            return futures;
+                // handle pre-provisioning of tunnels for the newly connected dpn
+                BridgeEntry bridgeEntry = interfaceMetaUtils.getBridgeEntryFromConfigDS(dpnId);
+                if (bridgeEntry == null) {
+                    LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
+                } else {
+                    southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, instanceIdentifier,
+                            bridgeNew);
+                }
+            }));
         }
     }
 
@@ -199,19 +195,18 @@ public class InterfaceTopologyStateListener
                 return Collections.emptyList();
             }
 
-            WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-            LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
-            // delete bridge reference entry in interface meta operational DS
-            InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, transaction);
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+                // delete bridge reference entry in interface meta operational DS
+                InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, tx);
 
-            // the bridge reference is copied to dpn-tunnel interfaces map, so that
-            // whenever a northbound delete
-            // happens when bridge is not connected, we need the bridge reference to
-            // clean up the topology config DS
-            InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(instanceIdentifier),
-                    transaction);
-
-            return Collections.singletonList(transaction.submit());
+                // the bridge reference is copied to dpn-tunnel interfaces map, so that
+                // whenever a northbound delete
+                // happens when bridge is not connected, we need the bridge reference to
+                // clean up the topology config DS
+                InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(instanceIdentifier),
+                        tx);
+            }));
         }
     }
 

@@ -19,6 +19,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -27,12 +29,10 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -60,6 +60,7 @@ public class InterfaceInventoryStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
@@ -71,7 +72,6 @@ public class InterfaceInventoryStateListener
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
@@ -80,6 +80,7 @@ public class InterfaceInventoryStateListener
             final InterfaceMetaUtils interfaceMetaUtils) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManagerService;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
@@ -321,7 +322,6 @@ public class InterfaceInventoryStateListener
                 boolean isNodePresent) {
             LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
             //VM Migration: Use old nodeConnectorId to delete the interface entry
             NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
@@ -329,38 +329,37 @@ public class InterfaceInventoryStateListener
             // delete the port entry from interface operational DS
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
-            //VM Migration: Update the interface state to unknown only if remove event received for same switch
-            if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
-                //Remove event is because of connection lost between controller and switch, or switch shutdown.
-                // Hence, don't remove the interface but set the status as "unknown"
-                ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
-                        defaultOperationalShardTransaction);
-            } else {
-                InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
-                    .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                //VM Migration: Update the interface state to unknown only if remove event received for same switch
+                if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+                    //Remove event is because of connection lost between controller and switch, or switch shutdown.
+                    // Hence, don't remove the interface but set the status as "unknown"
+                    ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
+                            tx);
+                } else {
+                    InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, tx);
+                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                            .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
 
-                if (iface != null) {
-                    // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP monitoring
                     if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                        interfaceMetaUtils.removeLportTagInterfaceMap(defaultOperationalShardTransaction,
-                                interfaceName);
+                        // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
+                        // monitoring
+                        interfaceMetaUtils.removeLportTagInterfaceMap(tx, interfaceName);
                         handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.getAugmentation(IfTunnel.class),
-                                defaultOperationalShardTransaction, futures);
-                        return futures;
+                                tx, futures);
+                        return;
                     }
-                }
-                // remove ingress flow only for northbound configured interfaces
-                // skip this check for non-unique ports(Ex: br-int,br-ex)
-                if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
-                    FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
-                }
+                    // remove ingress flow only for northbound configured interfaces
+                    // skip this check for non-unique ports(Ex: br-int,br-ex)
+                    if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
+                        FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
+                    }
 
-                // Delete the Vpn Interface from DpnToInterface Op DS.
-                interfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName,
-                        defaultOperationalShardTransaction);
-            }
-            futures.add(defaultOperationalShardTransaction.submit());
+                    // Delete the Vpn Interface from DpnToInterface Op DS.
+                    interfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, tx);
+                }
+            }));
+
             return futures;
         }
 
