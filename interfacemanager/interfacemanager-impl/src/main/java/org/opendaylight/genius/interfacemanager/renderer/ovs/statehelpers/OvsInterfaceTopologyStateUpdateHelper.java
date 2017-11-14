@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -38,35 +38,32 @@ public class OvsInterfaceTopologyStateUpdateHelper {
      */
     public static List<ListenableFuture<Void>> updateBridgeRefEntry(
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
-            OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker) {
+            OvsdbBridgeAugmentation bridgeOld, DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+            BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
-        BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
-        BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
+            LOG.debug("updating bridge references for bridge: {}, dpnNew: {}, dpnOld: {}", bridgeNew,
+                    dpnIdNew, dpnIdOld);
+            // delete bridge reference entry for the old dpn in interface meta
+            // operational DS
+            InterfaceMetaUtils.deleteBridgeRefEntry(dpnIdOld, tx);
 
-        LOG.debug("updating bridge references for bridge: {}, dpnNew: {}, dpnOld: {}", bridgeNew,
-                dpnIdNew, dpnIdOld);
-        // delete bridge reference entry for the old dpn in interface meta
-        // operational DS
-        InterfaceMetaUtils.deleteBridgeRefEntry(dpnIdOld, writeTransaction);
+            // create bridge reference entry in interface meta operational DS
+            InterfaceMetaUtils.createBridgeRefEntry(dpnIdNew, bridgeIid, tx);
 
-        // create bridge reference entry in interface meta operational DS
-        InterfaceMetaUtils.createBridgeRefEntry(dpnIdNew, bridgeIid, writeTransaction);
-
-        // handle pre-provisioning of tunnels for the newly connected dpn
-        BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnIdNew, dataBroker);
-        if (bridgeEntry == null) {
-            futures.add(writeTransaction.submit());
-            return futures;
-        }
-        SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
-
-        futures.add(writeTransaction.submit());
+            // handle pre-provisioning of tunnels for the newly connected dpn
+            BridgeEntry bridgeEntry = InterfaceMetaUtils.getBridgeEntryFromConfigDS(dpnIdNew, dataBroker);
+            if (bridgeEntry != null) {
+                SouthboundUtils.addAllPortsToBridge(bridgeEntry, dataBroker, bridgeIid, bridgeNew, futures);
+            }
+        }));
         return futures;
     }
 
     public static List<ListenableFuture<Void>> updateTunnelState(final DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner,
             OvsdbTerminationPointAugmentation terminationPointNew) {
         final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
         final String interfaceName = terminationPointNew.getName();
@@ -84,9 +81,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
-                WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                InterfaceManagerCommonUtils.updateOpState(transaction, interfaceName, interfaceBfdStatus);
-                return Collections.singletonList(transaction.submit());
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                    tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName, interfaceBfdStatus)));
             }
             return Collections.emptyList();
         });

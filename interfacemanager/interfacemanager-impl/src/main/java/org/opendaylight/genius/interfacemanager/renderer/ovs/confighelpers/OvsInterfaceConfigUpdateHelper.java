@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -39,6 +40,7 @@ public class OvsInterfaceConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
 
     public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner,
             AlivenessMonitorService alivenessMonitorService, IdManagerService idManager,
             IMdsalApiManager mdsalApiManager, Interface interfaceNew, Interface interfaceOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -47,9 +49,10 @@ public class OvsInterfaceConfigUpdateHelper {
         if (portAttributesModified(interfaceOld, interfaceNew)) {
             LOG.info("port attributes modified, requires a delete and recreate of {} configuration", interfaceNew
                     .getName());
-            futures.addAll(OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService,
+            futures.addAll(
+                    OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, txRunner, alivenessMonitorService,
                     interfaceOld, idManager, mdsalApiManager, interfaceOld.getAugmentation(ParentRefs.class)));
-            futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
+            futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, txRunner,
                     interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
                     mdsalApiManager));
             return futures;
@@ -61,24 +64,22 @@ public class OvsInterfaceConfigUpdateHelper {
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceState(interfaceNew.getName(), dataBroker);
         if (ifState == null) {
-            futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker,
+            futures.addAll(OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, txRunner,
                     interfaceNew.getAugmentation(ParentRefs.class), interfaceNew, idManager, alivenessMonitorService,
                     mdsalApiManager));
             return futures;
         }
 
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
-            handleTunnelMonitorUpdates(futures, transaction, alivenessMonitorService, interfaceNew, interfaceOld,
-                    dataBroker);
-            return futures;
-        }
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
+                handleTunnelMonitorUpdates(tx, alivenessMonitorService, interfaceNew, interfaceOld, dataBroker);
+            }
 
-        if (interfaceNew.isEnabled() != interfaceOld.isEnabled()) {
-            handleInterfaceAdminStateUpdates(futures, transaction, interfaceNew, dataBroker, ifState);
-        }
+            if (interfaceNew.isEnabled() != interfaceOld.isEnabled()) {
+                handleInterfaceAdminStateUpdates(tx, interfaceNew, dataBroker, txRunner, ifState);
+            }
+        }));
 
-        futures.add(transaction.submit());
         return futures;
     }
 
@@ -120,7 +121,7 @@ public class OvsInterfaceConfigUpdateHelper {
      * tunnel type. As of now internal vxlan tunnels use LLDP monitoring and
      * external tunnels use BFD monitoring.
      */
-    private static void handleTunnelMonitorUpdates(List<ListenableFuture<Void>> futures, WriteTransaction transaction,
+    private static void handleTunnelMonitorUpdates(WriteTransaction transaction,
             AlivenessMonitorService alivenessMonitorService, Interface interfaceNew, Interface interfaceOld,
             DataBroker dataBroker) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
@@ -137,13 +138,12 @@ public class OvsInterfaceConfigUpdateHelper {
             AlivenessMonitorUtils.handleTunnelMonitorUpdates(alivenessMonitorService, dataBroker, interfaceOld,
                     interfaceNew);
         }
-        futures.add(transaction.submit());
     }
 
-    private static void handleInterfaceAdminStateUpdates(List<ListenableFuture<Void>> futures,
-            WriteTransaction transaction, Interface interfaceNew, DataBroker dataBroker,
+    private static void handleInterfaceAdminStateUpdates(WriteTransaction transaction, Interface interfaceNew,
+            DataBroker dataBroker, ManagedNewTransactionRunner txRunner,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                    .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
@@ -160,7 +160,7 @@ public class OvsInterfaceConfigUpdateHelper {
         }
 
         DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-        VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(dataBroker,
+        VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(txRunner,
                 operStatus, interfaceParentEntry.getInterfaceChildEntry());
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
@@ -175,26 +175,25 @@ public class OvsInterfaceConfigUpdateHelper {
 
     private static class VlanMemberStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
 
-        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
         private final OperStatus operStatus;
         private final List<InterfaceChildEntry> interfaceChildEntries;
 
-        VlanMemberStateUpdateWorker(DataBroker dataBroker, OperStatus operStatus,
+        VlanMemberStateUpdateWorker(ManagedNewTransactionRunner txRunner, OperStatus operStatus,
                 List<InterfaceChildEntry> interfaceChildEntries) {
-            this.dataBroker = dataBroker;
+            this.txRunner = txRunner;
             this.operStatus = operStatus;
             this.interfaceChildEntries = interfaceChildEntries;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
-                InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
-                        operShardTransaction);
-            }
-
-            return Collections.singletonList(operShardTransaction.submit());
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                    InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
+                            tx);
+                }
+            }));
         }
 
         @Override
