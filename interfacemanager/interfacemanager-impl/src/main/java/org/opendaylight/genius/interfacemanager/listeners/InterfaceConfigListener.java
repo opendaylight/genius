@@ -17,6 +17,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -43,6 +45,7 @@ public class InterfaceConfigListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final AlivenessMonitorService alivenessMonitorService;
     private final IMdsalApiManager mdsalApiManager;
@@ -54,6 +57,7 @@ public class InterfaceConfigListener
             final AlivenessMonitorService alivenessMonitorService) {
         super(Interface.class, InterfaceConfigListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManager;
         this.mdsalApiManager = mdsalApiManager;
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -182,8 +186,8 @@ public class InterfaceConfigListener
         public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg: another OpenFlow based switch) needs to be supported, check
             // can be performed here to call the respective helpers.
-            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, idManager,
-                    alivenessMonitorService, mdsalApiManager);
+            return OvsInterfaceConfigAddHelper.addConfiguration(dataBroker, txRunner, parentRefs, interfaceNew,
+                    idManager, alivenessMonitorService, mdsalApiManager);
         }
 
         @Override
@@ -211,8 +215,8 @@ public class InterfaceConfigListener
         public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg: another OpenFlow based switch) needs to be supported, check
             // can be performed here to call the respective helpers.
-            return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService, idManager,
-                    mdsalApiManager, interfaceNew, interfaceOld);
+            return OvsInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, txRunner, alivenessMonitorService,
+                    idManager, mdsalApiManager, interfaceNew, interfaceOld);
         }
 
         @Override
@@ -240,8 +244,8 @@ public class InterfaceConfigListener
         public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg: HWVTEP) needs to be supported, check
             // can be performed here to call the respective helpers.
-            return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, alivenessMonitorService, interfaceOld,
-                    idManager, mdsalApiManager, parentRefs);
+            return OvsInterfaceConfigRemoveHelper.removeConfiguration(dataBroker, txRunner, alivenessMonitorService,
+                    interfaceOld, idManager, mdsalApiManager, parentRefs);
         }
 
         @Override

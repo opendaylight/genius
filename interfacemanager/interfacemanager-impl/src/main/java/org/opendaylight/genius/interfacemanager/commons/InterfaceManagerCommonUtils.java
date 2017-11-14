@@ -19,11 +19,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -143,6 +145,7 @@ public final class InterfaceManagerCommonUtils {
      *            data tree store to start searching for the interface
      * @return the Interface object
      */
+    @Nullable
     public static Interface getInterfaceFromConfigDS(String interfaceName, DataBroker dataBroker) {
         Interface iface = interfaceConfigMap.get(interfaceName);
         if (iface != null) {
@@ -346,16 +349,15 @@ public final class InterfaceManagerCommonUtils {
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifChildStateId, ifaceBuilderChild.build());
     }
 
-    public static void addStateEntry(String interfaceName, DataBroker dataBroker,
+    public static void addStateEntry(String interfaceName, DataBroker dataBroker, ManagedNewTransactionRunner txRunner,
                                      IdManagerService idManager, List<ListenableFuture<Void>> futures,
                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                                      .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        WriteTransaction interfaceOperShardTransaction = dataBroker.newWriteOnlyTransaction();
-        addStateEntry(interfaceName, dataBroker, interfaceOperShardTransaction, idManager, futures, ifState);
-        futures.add(interfaceOperShardTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> addStateEntry(interfaceName, dataBroker, txRunner, tx, idManager, futures, ifState)));
     }
 
-    public static void addStateEntry(String interfaceName, DataBroker dataBroker,
+    public static void addStateEntry(String interfaceName, DataBroker dataBroker, ManagedNewTransactionRunner txRunner,
             WriteTransaction interfaceOperShardTransaction,
             IdManagerService idManager, List<ListenableFuture<Void>> futures,
                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -412,8 +414,8 @@ public final class InterfaceManagerCommonUtils {
         if (interfaceInfo != null && interfaceInfo.isEnabled() && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn
                 .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, dataBroker, ifIndex);
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures,
+            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, txRunner, ifIndex);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures,
                         interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
         }
 

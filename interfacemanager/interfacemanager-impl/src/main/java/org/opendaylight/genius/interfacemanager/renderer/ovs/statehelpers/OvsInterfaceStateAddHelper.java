@@ -12,7 +12,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
-    public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, IdManagerService idManager,
+    public static List<ListenableFuture<Void>> addState(DataBroker dataBroker, ManagedNewTransactionRunner txRunner,
+            IdManagerService idManager,
             IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
             NodeConnectorId nodeConnectorId, String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew) {
         // Retrieve Port No from nodeConnectorId
@@ -55,70 +56,70 @@ public class OvsInterfaceStateAddHelper {
         // Retrieve PbyAddress & OperState from the DataObject
         LOG.info("adding interface state to Oper DS for interface: {}", interfaceName);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
-        PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
 
-        Interface.OperStatus operStatus = Interface.OperStatus.Up;
-        Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
+            Interface.OperStatus operStatus = Interface.OperStatus.Up;
+            Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
 
-        // Fetch the interface from config DS if exists
-        InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
-                .getInterfaceFromConfigDS(interfaceKey, dataBroker);
+            // Fetch the interface from config DS if exists
+            InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                    .interfaces.rev140508.interfaces.Interface iface = InterfaceManagerCommonUtils
+                    .getInterfaceFromConfigDS(interfaceKey, dataBroker);
 
-        if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
-                && !validateTunnelPortAttributes(nodeConnectorId, iface, interfaceName)) {
-            return futures;
-        }
+            if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
+                    && !validateTunnelPortAttributes(nodeConnectorId, iface)) {
+                return;
+            }
 
-        Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
-                defaultOperationalShardTransaction, idManager, physAddress, operStatus, adminStatus, nodeConnectorId);
+            Interface ifState = InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
+                    tx, idManager, physAddress, operStatus, adminStatus, nodeConnectorId);
 
-        // If this interface is a tunnel interface, create the tunnel ingress
-        // flow,and start tunnel monitoring
-        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-            handleTunnelMonitoringAddition(futures, dataBroker, mdsalApiManager, alivenessMonitorService,
-                    nodeConnectorId, defaultOperationalShardTransaction, ifState.getIfIndex(), iface, interfaceName,
-                    portNo);
-            return futures;
-        }
+            // If this interface is a tunnel interface, create the tunnel ingress
+            // flow,and start tunnel monitoring
+            if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                handleTunnelMonitoringAddition(futures, dataBroker, txRunner, mdsalApiManager, alivenessMonitorService,
+                        nodeConnectorId, ifState.getIfIndex(), iface, interfaceName,
+                        portNo);
+                return;
+            }
 
-        // install ingress flow if this is an l2vlan interface
-        if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
-                .getOperStatus() == org.opendaylight.yang.gen.v1.urn
+            // install ingress flow if this is an l2vlan interface
+            if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
+                    .getOperStatus() == org.opendaylight.yang.gen.v1.urn
                     .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker,
-                    ifState.getIfIndex());
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo),
-                    interfaceName, ifState.getIfIndex());
-        }
+                BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, txRunner,
+                        ifState.getIfIndex());
+                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, iface,
+                        Long.toString(portNo), interfaceName, ifState.getIfIndex());
+            }
+        }));
 
-        futures.add(defaultOperationalShardTransaction.submit());
         return futures;
     }
 
-    public static void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
+    private static void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner,
             IMdsalApiManager mdsalApiManager, AlivenessMonitorService alivenessMonitorService,
-            NodeConnectorId nodeConnectorId, WriteTransaction transaction, Integer ifIndex,
+            NodeConnectorId nodeConnectorId, Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo,
+                    .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo,
             String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex,
                 NwConstants.ADD_FLOW);
-        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
+        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);
-        futures.add(transaction.submit());
         AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
                 interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
     }
 
-    public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
+    private static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface, String interfaceName) {
+                    .ietf.interfaces.rev140508.interfaces.Interface iface) {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
             ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);

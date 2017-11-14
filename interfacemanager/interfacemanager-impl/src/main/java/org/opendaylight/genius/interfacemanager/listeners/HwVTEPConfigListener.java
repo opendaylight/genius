@@ -16,6 +16,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPInterfaceConfigAddHelper;
@@ -35,12 +37,12 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interface, HwVTEPConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPConfigListener.class);
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public HwVTEPConfigListener(final DataBroker dataBroker) {
         super(Interface.class, HwVTEPConfigListener.class);
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
@@ -141,7 +143,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPInterfaceConfigAddHelper.addConfiguration(dataBroker, physicalSwitchNodeId, globalNodeId,
+            return HwVTEPInterfaceConfigAddHelper.addConfiguration(txRunner, physicalSwitchNodeId, globalNodeId,
                     interfaceNew, ifTunnel);
         }
     }
@@ -165,7 +167,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPInterfaceConfigUpdateHelper.updateConfiguration(dataBroker, physicalSwitchNodeId, globalNodeId,
+            return HwVTEPInterfaceConfigUpdateHelper.updateConfiguration(txRunner, physicalSwitchNodeId, globalNodeId,
                     interfaceNew, ifTunnel);
         }
     }
@@ -186,7 +188,7 @@ public class HwVTEPConfigListener extends AsyncDataTreeChangeListenerBase<Interf
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return HwVTEPConfigRemoveHelper.removeConfiguration(dataBroker, interfaceOld, globalNodeId,
+            return HwVTEPConfigRemoveHelper.removeConfiguration(txRunner, interfaceOld, globalNodeId,
                     physicalSwitchNodeId);
         }
     }

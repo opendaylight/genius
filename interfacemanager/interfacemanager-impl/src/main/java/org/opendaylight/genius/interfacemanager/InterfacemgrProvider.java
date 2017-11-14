@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -28,9 +27,10 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.clustering.EntityOwnershipService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
@@ -44,6 +44,7 @@ import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcSe
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -94,6 +95,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
     private static final InterfaceStatusMonitor INTERFACE_STATUS_MONITOR = InterfaceStatusMonitor.getInstance();
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final InterfaceManagerRpcService interfaceManagerRpcService;
     private final EntityOwnershipService entityOwnershipService;
@@ -105,6 +107,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
             final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
         this.idManager = idManager;
         this.interfaceManagerRpcService = interfaceManagerRpcService;
@@ -142,6 +145,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     public DataBroker getDataBroker() {
         return this.dataBroker;
+    }
+
+    public ManagedNewTransactionRunner getTransactionRunner() {
+        return txRunner;
     }
 
     private void createIdPool() {
@@ -392,10 +399,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
-                true);
-        writeTransaction.submit();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, interfaceInstanceIdentifier, interfaceBuilder.build(),
+                    WriteTransaction.CREATE_MISSING_PARENTS));
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
@@ -430,17 +436,19 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo, WriteTransaction tx) {
-        WriteTransaction writeTransaction = tx != null ? tx : dataBroker.newWriteOnlyTransaction();
-        IfmUtil.bindService(writeTransaction, interfaceName, serviceInfo, serviceMode);
         if (tx == null) {
-            writeTransaction.submit();
+            ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                wtx -> IfmUtil.bindService(wtx, interfaceName, serviceInfo, serviceMode)), LOG,
+                "Error binding the InterfacemgrProvider service");
+        } else {
+            IfmUtil.bindService(tx, interfaceName, serviceInfo, serviceMode);
         }
     }
 
     @Override
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo) {
-        IfmUtil.unbindService(dataBroker, interfaceName,
+        IfmUtil.unbindService(txRunner, interfaceName,
                 FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
     }
 
@@ -703,12 +711,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                     return null;
                 }
             }
-            WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-            IfmUtil.updateInterfaceParentRef(writeTransaction, interfaceName, parentInterfaceName);
-            CheckedFuture<Void, TransactionCommitFailedException> submitFuture = writeTransaction.submit();
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(submitFuture);
-            return futures;
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> IfmUtil.updateInterfaceParentRef(tx, interfaceName, parentInterfaceName)));
         }
     }
 
