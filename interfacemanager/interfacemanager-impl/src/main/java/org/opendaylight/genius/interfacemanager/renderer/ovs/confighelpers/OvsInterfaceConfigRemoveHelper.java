@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -28,7 +30,6 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
@@ -52,8 +53,8 @@ public final class OvsInterfaceConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigRemoveHelper.class);
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IMdsalApiManager mdsalApiManager;
-    private final IdManagerService idManager;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
@@ -62,12 +63,12 @@ public final class OvsInterfaceConfigRemoveHelper {
 
     @Inject
     public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
-            IMdsalApiManager mdsalApiManager, IdManagerService idManager, JobCoordinator coordinator,
+            IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils, InterfaceMetaUtils interfaceMetaUtils,
             SouthboundUtils southboundUtils) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.mdsalApiManager = mdsalApiManager;
-        this.idManager = idManager;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
@@ -77,31 +78,27 @@ public final class OvsInterfaceConfigRemoveHelper {
 
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
-        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
-
-        IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
-        if (ifTunnel != null) {
-            removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, defaultOperationalShardTransaction);
-        } else {
-            removeVlanConfiguration(parentRefs, interfaceOld.getName(),
-                    interfaceOld.getAugmentation(IfL2vlan.class), defaultOperationalShardTransaction,
-                    futures);
-        }
-        futures.add(defaultConfigShardTransaction.submit());
-        futures.add(defaultOperationalShardTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
+            if (ifTunnel != null) {
+                removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, tx);
+            } else {
+                removeVlanConfiguration(parentRefs, interfaceOld.getName(),
+                        interfaceOld.getAugmentation(IfL2vlan.class), tx, futures);
+            }
+        }));
         return futures;
     }
 
     private void removeVlanConfiguration(ParentRefs parentRefs, String interfaceName,
-            IfL2vlan ifL2vlan, WriteTransaction defaultOperationalShardTransaction,
+            IfL2vlan ifL2vlan, WriteTransaction tx,
             List<ListenableFuture<Void>> futures) {
         if (parentRefs == null || ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
         LOG.info("removing vlan configuration for interface {}", interfaceName);
-        interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, defaultOperationalShardTransaction);
+        interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, tx);
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
@@ -112,10 +109,9 @@ public final class OvsInterfaceConfigRemoveHelper {
                     + "removal event, proceeding with remaining config cleanups", interfaceName);
         }
 
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null,
-                defaultOperationalShardTransaction);
+        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, tx);
         BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
-        FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, dataBroker, futures);
+        FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
 
         interfaceManagerCommonUtils.deleteParentInterfaceEntry(parentRefs.getParentInterface());
 
@@ -128,7 +124,7 @@ public final class OvsInterfaceConfigRemoveHelper {
             return;
         }
 
-        VlanMemberStateRemoveWorker vlanMemberStateRemoveWorker = new VlanMemberStateRemoveWorker(dataBroker,
+        VlanMemberStateRemoveWorker vlanMemberStateRemoveWorker = new VlanMemberStateRemoveWorker(txRunner,
                 interfaceManagerCommonUtils, dpId, interfaceName, interfaceParentEntry);
         coordinator.enqueueJob(interfaceName, vlanMemberStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
 
@@ -180,8 +176,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         interfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
                 interfaceName);
         int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(defaultOperationalShardTransaction, interfaceName);
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel,
-                defaultOperationalShardTransaction);
+        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, defaultOperationalShardTransaction);
         // stop LLDP monitoring for the tunnel interface
         alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
 
@@ -229,15 +224,16 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private static class VlanMemberStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
         private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
         private final BigInteger dpId;
         private final String interfaceName;
         private final InterfaceParentEntry interfaceParentEntry;
 
-        VlanMemberStateRemoveWorker(DataBroker dataBroker, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+        VlanMemberStateRemoveWorker(ManagedNewTransactionRunner txRunner,
+                InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                 BigInteger dpId, String interfaceName, InterfaceParentEntry interfaceParentEntry) {
-            this.dataBroker = dataBroker;
+            this.txRunner = txRunner;
             this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
             this.dpId = dpId;
             this.interfaceName = interfaceName;
@@ -247,17 +243,18 @@ public final class OvsInterfaceConfigRemoveHelper {
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
-            // FIXME: If the no. of child entries exceeds 100, perform txn
-            // updates in batches of 100.
-            for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
-                LOG.debug("removing interface state for vlan trunk member {}", interfaceChildEntry.getChildInterface());
-                interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),
-                        operShardTransaction);
-                FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, dataBroker,
-                        futures);
-            }
-            futures.add(operShardTransaction.submit());
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                // FIXME: If the no. of child entries exceeds 100, perform txn
+                // updates in batches of 100.
+                for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
+                    LOG.debug("removing interface state for vlan trunk member {}",
+                            interfaceChildEntry.getChildInterface());
+                    interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),
+                            tx);
+                    FlowBasedServicesUtils.removeIngressFlow(interfaceChildEntry.getChildInterface(), dpId, txRunner,
+                            futures);
+                }
+            }));
             return futures;
         }
 

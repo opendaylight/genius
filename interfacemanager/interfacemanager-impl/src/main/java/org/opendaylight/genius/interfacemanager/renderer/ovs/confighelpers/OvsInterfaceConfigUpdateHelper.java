@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -39,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
@@ -52,7 +54,7 @@ public class OvsInterfaceConfigUpdateHelper {
             InterfaceManagerCommonUtils interfaceManagerCommonUtils, AlivenessMonitorUtils alivenessMonitorUtils,
             OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
             OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper, InterfaceMetaUtils interfaceMetaUtils) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
@@ -86,17 +88,14 @@ public class OvsInterfaceConfigUpdateHelper {
             return futures;
         }
 
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
-            handleTunnelMonitorUpdates(futures, transaction, interfaceNew, interfaceOld);
-            return futures;
-        }
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
+                handleTunnelMonitorUpdates(tx, interfaceNew, interfaceOld);
+            } else if (!Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
+                handleInterfaceAdminStateUpdates(tx, interfaceNew, ifState);
+            }
+        }));
 
-        if (!Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
-            handleInterfaceAdminStateUpdates(transaction, interfaceNew, ifState);
-        }
-
-        futures.add(transaction.submit());
         return futures;
     }
 
@@ -138,7 +137,7 @@ public class OvsInterfaceConfigUpdateHelper {
      * tunnel type. As of now internal vxlan tunnels use LLDP monitoring and
      * external tunnels use BFD monitoring.
      */
-    private void handleTunnelMonitorUpdates(List<ListenableFuture<Void>> futures, WriteTransaction transaction,
+    private void handleTunnelMonitorUpdates(WriteTransaction transaction,
             Interface interfaceNew, Interface interfaceOld) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
         // update termination point on switch, if switch is connected
@@ -153,7 +152,6 @@ public class OvsInterfaceConfigUpdateHelper {
             // tunnel interface
             alivenessMonitorUtils.handleTunnelMonitorUpdates(interfaceOld, interfaceNew);
         }
-        futures.add(transaction.submit());
     }
 
     private void handleInterfaceAdminStateUpdates(WriteTransaction transaction, Interface interfaceNew,
@@ -173,7 +171,7 @@ public class OvsInterfaceConfigUpdateHelper {
             return;
         }
 
-        VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(dataBroker,
+        VlanMemberStateUpdateWorker vlanMemberStateUpdateWorker = new VlanMemberStateUpdateWorker(txRunner,
                 operStatus, interfaceParentEntry.getInterfaceChildEntry());
         coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
@@ -188,26 +186,25 @@ public class OvsInterfaceConfigUpdateHelper {
 
     private static class VlanMemberStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
 
-        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
         private final OperStatus operStatus;
         private final List<InterfaceChildEntry> interfaceChildEntries;
 
-        VlanMemberStateUpdateWorker(DataBroker dataBroker, OperStatus operStatus,
+        VlanMemberStateUpdateWorker(ManagedNewTransactionRunner txRunner, OperStatus operStatus,
                 List<InterfaceChildEntry> interfaceChildEntries) {
-            this.dataBroker = dataBroker;
+            this.txRunner = txRunner;
             this.operStatus = operStatus;
             this.interfaceChildEntries = interfaceChildEntries;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            WriteTransaction operShardTransaction = dataBroker.newWriteOnlyTransaction();
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
-                InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
-                        operShardTransaction);
-            }
-
-            return Collections.singletonList(operShardTransaction.submit());
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                    InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
+                            tx);
+                }
+            }));
         }
 
         @Override
