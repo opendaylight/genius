@@ -24,6 +24,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
@@ -53,6 +55,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver;
@@ -64,6 +67,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesRendererFactoryResolver = flowBasedServicesRendererFactoryResolver;
@@ -229,7 +233,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                     return null;
                 }
                 boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
-                FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, interfaceName,boundServicesState);
+                FlowBasedServicesUtils.addBoundServicesState(futures, txRunner, interfaceName,boundServicesState);
             }
             flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
                     boundServicesState);
@@ -267,7 +271,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             if (boundServicesList.isEmpty()) {
-                FlowBasedServicesUtils.removeBoundServicesState(futures, dataBroker, interfaceName, serviceMode);
+                FlowBasedServicesUtils.removeBoundServicesState(futures, txRunner, interfaceName, serviceMode);
             }
             flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew, boundServicesList,
                     boundServiceState);
