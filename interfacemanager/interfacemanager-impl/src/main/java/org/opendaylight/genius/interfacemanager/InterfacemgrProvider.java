@@ -463,10 +463,12 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo, WriteTransaction tx) {
-        WriteTransaction writeTransaction = tx != null ? tx : dataBroker.newWriteOnlyTransaction();
-        IfmUtil.bindService(writeTransaction, interfaceName, serviceInfo, serviceMode);
         if (tx == null) {
-            writeTransaction.submit();
+            ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                wtx -> IfmUtil.bindService(wtx, interfaceName, serviceInfo, serviceMode)), LOG,
+                "Error binding the InterfacemgrProvider service");
+        } else {
+            IfmUtil.bindService(tx, interfaceName, serviceInfo, serviceMode);
         }
     }
 

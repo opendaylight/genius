@@ -51,6 +51,7 @@ public class FlowBasedServicesInterfaceStateListener
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
@@ -66,6 +67,7 @@ public class FlowBasedServicesInterfaceStateListener
                                                    final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
@@ -155,7 +157,7 @@ public class FlowBasedServicesInterfaceStateListener
             }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
+            FlowBasedServicesUtils.addBoundServicesState(futures, txRunner, iface.getName(),
                 FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
             flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
             return futures;

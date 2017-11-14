@@ -13,7 +13,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -26,23 +27,22 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
     public OvsVlanMemberConfigAddHelper(DataBroker dataBroker,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
     }
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        interfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName(),
-                writeTransaction);
-        futures.add(writeTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> interfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(),
+                    interfaceNew.getName(), tx)));
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
