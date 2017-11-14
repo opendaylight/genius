@@ -11,6 +11,7 @@ import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CR
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -474,12 +475,16 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
+    // TODO Pass the txRunner future back somewhere
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED")
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo, WriteTransaction tx) {
-        WriteTransaction writeTransaction = tx != null ? tx : dataBroker.newWriteOnlyTransaction();
-        IfmUtil.bindService(writeTransaction, interfaceName, serviceInfo, serviceMode);
         if (tx == null) {
-            writeTransaction.submit();
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(wtx -> {
+                IfmUtil.bindService(wtx, interfaceName, serviceInfo, serviceMode);
+            });
+        } else {
+            IfmUtil.bindService(tx, interfaceName, serviceInfo, serviceMode);
         }
     }
 
