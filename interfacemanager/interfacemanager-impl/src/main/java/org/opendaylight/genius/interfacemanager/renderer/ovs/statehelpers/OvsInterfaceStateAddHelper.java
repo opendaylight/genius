@@ -14,7 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -40,14 +41,14 @@ import org.slf4j.LoggerFactory;
 public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
     @Inject
     public OvsInterfaceStateAddHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
     }
@@ -83,7 +84,6 @@ public final class OvsInterfaceStateAddHelper {
         }
 
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         Interface.OperStatus operStatus = Interface.OperStatus.Up;
         Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
@@ -99,42 +99,42 @@ public final class OvsInterfaceStateAddHelper {
             return futures;
         }
 
-        Interface ifState = interfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
-                defaultOperationalShardTransaction, physAddress, operStatus, adminStatus, nodeConnectorId);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            Interface ifState = interfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
+                    tx, physAddress, operStatus, adminStatus, nodeConnectorId);
 
-        // If this interface is a tunnel interface, create the tunnel ingress
-        // flow,and start tunnel monitoring
-        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-            handleTunnelMonitoringAddition(futures, nodeConnectorId, defaultOperationalShardTransaction,
-                    ifState.getIfIndex(), iface, interfaceName, portNo);
-            return futures;
-        }
+            // If this interface is a tunnel interface, create the tunnel ingress
+            // flow,and start tunnel monitoring
+            if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                handleTunnelMonitoringAddition(futures, nodeConnectorId, ifState.getIfIndex(), iface, interfaceName,
+                        portNo);
+                return;
+            }
 
-        // install ingress flow if this is an l2vlan interface
-        if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
-                .getOperStatus() == org.opendaylight.yang.gen.v1.urn
+            // install ingress flow if this is an l2vlan interface
+            if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
+                    .getOperStatus() == org.opendaylight.yang.gen.v1.urn
                     .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, dataBroker,
-                    ifState.getIfIndex());
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, iface, Long.toString(portNo),
-                    interfaceName, ifState.getIfIndex());
-        }
+                BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, txRunner,
+                        ifState.getIfIndex());
+                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, iface,
+                        Long.toString(portNo), interfaceName, ifState.getIfIndex());
+            }
+        }));
 
-        futures.add(defaultOperationalShardTransaction.submit());
         return futures;
     }
 
     public void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, NodeConnectorId nodeConnectorId,
-            WriteTransaction transaction, Integer ifIndex,
+            Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
+                    .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         interfaceManagerCommonUtils.addTunnelIngressFlow(
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
-        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
+        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);
-        futures.add(transaction.submit());
         alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
     }
 
