@@ -13,6 +13,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -79,7 +81,9 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(EntityOwnershipService.class).toInstance(mock(EntityOwnershipService.class));
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
-        bind(DataBroker.class).toInstance(DataBrokerTestModule.dataBroker());
+        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+        bind(DataBroker.class).toInstance(dataBroker);
+        bind(ManagedNewTransactionRunner.class).toInstance(new ManagedNewTransactionRunnerImpl(dataBroker));
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 
         // Bindings to test infra (fakes & mocks)

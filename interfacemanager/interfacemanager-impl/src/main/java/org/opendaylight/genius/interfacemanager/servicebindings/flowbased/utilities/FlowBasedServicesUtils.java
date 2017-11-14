@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -435,53 +436,56 @@ public final class FlowBasedServicesUtils {
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), ServiceModeEgress.class);
     }
 
-    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
-                                                          Interface interfaceInfo, String portNo,
-                                                          String interfaceName, int ifIndex) {
+    public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            List<ListenableFuture<Void>> futures, Interface interfaceInfo, String portNo, String interfaceName,
+            int ifIndex) {
         List<Instruction> instructions =
                 IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex, 0);
-        bindDefaultEgressDispatcherService(dataBroker, futures, interfaceName, instructions);
+        bindDefaultEgressDispatcherService(txRunner, futures, interfaceName, instructions);
     }
 
-    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
-            Interface interfaceInfo, String interfaceName, int ifIndex, long groupId) {
+    public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            List<ListenableFuture<Void>> futures, Interface interfaceInfo, String interfaceName, int ifIndex,
+            long groupId) {
         List<Instruction> instructions =
              IfmUtil.getEgressInstructionsForInterface(interfaceInfo, StringUtils.EMPTY, null, true, ifIndex, groupId);
-        bindDefaultEgressDispatcherService(dataBroker, futures, interfaceName, instructions);
+        bindDefaultEgressDispatcherService(txRunner, futures, interfaceName, instructions);
     }
 
-    public static void bindDefaultEgressDispatcherService(DataBroker dataBroker, List<ListenableFuture<Void>> futures,
+    public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            List<ListenableFuture<Void>> futures,
             String interfaceName, List<Instruction> instructions) {
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
-                                             NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
-        BoundServices
-                serviceInfo =
-                getBoundServices(String.format("%s.%s", "default", interfaceName),
-                        ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
-                                              NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
-                        priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
-        IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
-        futures.add(tx.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                    NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
+            BoundServices
+                    serviceInfo =
+                    getBoundServices(String.format("%s.%s", "default", interfaceName),
+                            ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                                    NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
+                            priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
+            IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
+        }));
     }
 
-    public static void removeIngressFlow(String interfaceName, BigInteger dpId, DataBroker dataBroker,
+    public static void removeIngressFlow(String interfaceName, BigInteger dpId, ManagedNewTransactionRunner txRunner,
             List<ListenableFuture<Void>> futures) {
         if (dpId == null) {
             return;
         }
         LOG.debug("Removing Ingress Flows for {}", interfaceName);
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        String flowKeyStr = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, interfaceName);
-        FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
-        Node nodeDpn = buildInventoryDpnNode(dpId);
-        InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
-                .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, flowKey)
-                .build();
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            String flowKeyStr = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, interfaceName);
+            FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
+            Node nodeDpn = buildInventoryDpnNode(dpId);
+            InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
+                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                    .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class,
+                            flowKey)
+                    .build();
 
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
-        futures.add(writeTransaction.submit());
+            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        }));
     }
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId,
@@ -622,7 +626,7 @@ public final class FlowBasedServicesUtils {
     }
 
     public static void installLportIngressFlow(BigInteger dpId, long portNo, Interface iface,
-            List<ListenableFuture<Void>> futures, DataBroker dataBroker, int lportTag) {
+            List<ListenableFuture<Void>> futures, ManagedNewTransactionRunner txRunner, int lportTag) {
         int vlanId = 0;
         boolean isVlanTransparent = false;
 
@@ -663,9 +667,7 @@ public final class FlowBasedServicesUtils {
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef,
                 0, 0, NwConstants.VLAN_TABLE_COOKIE, matches, instructions);
         LOG.debug("Installing ingress flow {} for {}", flowRef, iface.getName());
-        WriteTransaction inventoryConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
-        installFlow(dpId, ingressFlow, inventoryConfigShardTransaction);
-        futures.add(inventoryConfigShardTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> installFlow(dpId, ingressFlow, tx)));
     }
 
     public static BoundServicesState buildBoundServicesState(
@@ -689,28 +691,27 @@ public final class FlowBasedServicesUtils {
     }
 
     public static void addBoundServicesState(List<ListenableFuture<Void>> futures,
-                                             DataBroker dataBroker, String interfaceName,
+                                             ManagedNewTransactionRunner txRunner, String interfaceName,
                                              BoundServicesState interfaceBoundServicesState) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
             interfaceBoundServicesState.getInterfaceName(), interfaceBoundServicesState.getServiceMode().getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState, true);
-        futures.add(writeTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState,
+                    WriteTransaction.CREATE_MISSING_PARENTS)));
     }
 
     public static  void removeBoundServicesState(List<ListenableFuture<Void>> futures,
-                                                 DataBroker dataBroker,
+                                                 ManagedNewTransactionRunner txRunner,
                                                  String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
             serviceMode.getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.delete(LogicalDatastoreType.OPERATIONAL, id);
-        futures.add(writeTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.delete(LogicalDatastoreType.OPERATIONAL, id)));
     }
 
     public static boolean isInterfaceTypeBasedServiceBinding(String interfaceName) {
