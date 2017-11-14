@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_2bd7984c",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 3630
+      },
+      "writtenOn": "2017-11-14T12:58:52Z",
+      "side": 1,
+      "message": "We can move the runUnderLock[line#647] in checkForIdInIdEntries outside the method and include all the remaining lines of this method\n\nBut with this we need to ensure the idValue is persisted in the DS which is done as part of UpdateIdEntryJob.\nThat is why the unlock was done in UpdateIdEntryJob.",
+      "revId": "4a929d00fcfc11877638d79c49fe493eb3c105bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
