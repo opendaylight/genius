@@ -14,8 +14,9 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigUpdateHelper.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper;
     private final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper;
@@ -48,7 +49,7 @@ public class OvsVlanMemberConfigUpdateHelper {
             OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
             OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper,
             InterfaceMetaUtils interfaceMetaUtils) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsVlanMemberConfigAddHelper = ovsVlanMemberConfigAddHelper;
         this.ovsVlanMemberConfigRemoveHelper = ovsVlanMemberConfigRemoveHelper;
@@ -97,21 +98,18 @@ public class OvsVlanMemberConfigUpdateHelper {
             .interfaces.rev140508.interfaces.state.Interface pifState = interfaceManagerCommonUtils.getInterfaceState(
                     parentRefsNew.getParentInterface());
         if (pifState != null) {
-            OperStatus operStatus = OperStatus.Down;
-            if (interfaceNew.isEnabled()) {
-                operStatus = pifState.getOperStatus();
-            }
+            OperStatus operStatus = interfaceNew.isEnabled() ? pifState.getOperStatus() : OperStatus.Down;
             LOG.info("admin-state modified for interface {}", interfaceNew.getName());
-            WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
-                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                    .buildStateInterfaceId(interfaceNew.getName());
-            InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
-            ifaceBuilder.setOperStatus(operStatus);
-            ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
+                        .rev140508.interfaces.state.Interface>
+                        ifStateId = IfmUtil.buildStateInterfaceId(interfaceNew.getName());
+                InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
+                ifaceBuilder.setOperStatus(operStatus);
+                ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
 
-            tx.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
-            futures.add(tx.submit());
+                tx.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+            }));
         }
 
         return futures;

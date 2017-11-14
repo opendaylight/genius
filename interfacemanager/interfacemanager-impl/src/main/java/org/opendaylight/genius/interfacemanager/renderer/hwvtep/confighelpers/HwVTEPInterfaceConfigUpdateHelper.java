@@ -11,10 +11,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -35,14 +34,14 @@ public final class HwVTEPInterfaceConfigUpdateHelper {
     private HwVTEPInterfaceConfigUpdateHelper() {
     }
 
-    public static List<ListenableFuture<Void>> updateConfiguration(DataBroker dataBroker,
+    public static List<ListenableFuture<Void>> updateConfiguration(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
             Interface interfaceNew, IfTunnel ifTunnel) {
         LOG.info("updating hwvtep configuration for {}", interfaceNew.getName());
 
         // Create hwvtep through OVSDB plugin
         if (globalNodeId != null) {
-            return updateBfdMonitoring(dataBroker, globalNodeId, physicalSwitchNodeId, ifTunnel);
+            return updateBfdMonitoring(txRunner, globalNodeId, physicalSwitchNodeId, ifTunnel);
         } else {
             LOG.debug("specified physical switch is not connected {}", physicalSwitchNodeId);
             return Collections.emptyList();
@@ -52,7 +51,7 @@ public final class HwVTEPInterfaceConfigUpdateHelper {
     /*
      * BFD monitoring interval and enable/disable attributes can be modified
      */
-    public static List<ListenableFuture<Void>> updateBfdMonitoring(DataBroker dataBroker,
+    public static List<ListenableFuture<Void>> updateBfdMonitoring(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Node> globalNodeId, InstanceIdentifier<Node> physicalSwitchId, IfTunnel ifTunnel) {
         TunnelsBuilder tunnelsBuilder = new TunnelsBuilder();
         InstanceIdentifier<TerminationPoint> localTEPInstanceIdentifier = SouthboundUtils
@@ -68,9 +67,8 @@ public final class HwVTEPInterfaceConfigUpdateHelper {
         List<BfdParams> bfdParams = new ArrayList<>();
         SouthboundUtils.fillBfdParameters(bfdParams, ifTunnel);
         tunnelsBuilder.setBfdParams(bfdParams);
-        return Collections.singletonList(
-                new ManagedNewTransactionRunnerImpl(dataBroker).callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.merge(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier,
-                            tunnelsBuilder.build(), WriteTransaction.CREATE_MISSING_PARENTS)));
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.merge(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier,
+                    tunnelsBuilder.build(), WriteTransaction.CREATE_MISSING_PARENTS)));
     }
 }
