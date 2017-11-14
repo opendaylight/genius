@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -110,6 +112,7 @@ public final class InterfaceManagerCommonUtils {
         .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
             new ConcurrentHashMap<>();
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
     private final InterfaceMetaUtils interfaceMetaUtils;
@@ -123,6 +126,7 @@ public final class InterfaceManagerCommonUtils {
     public InterfaceManagerCommonUtils(DataBroker dataBroker, IMdsalApiManager mdsalApiManager,
             IdManagerService idManager, InterfaceMetaUtils interfaceMetaUtils, BatchingUtils batchingUtils) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.mdsalApiManager = mdsalApiManager;
         this.idManager = idManager;
         this.interfaceMetaUtils = interfaceMetaUtils;
@@ -171,6 +175,7 @@ public final class InterfaceManagerCommonUtils {
      *            name of the interface to search for
      * @return the Interface object
      */
+    @Nullable
     public Interface getInterfaceFromConfigDS(String interfaceName) {
         Interface iface = interfaceConfigMap.get(interfaceName);
         if (iface != null) {
@@ -444,8 +449,8 @@ public final class InterfaceManagerCommonUtils {
         if (interfaceInfo != null && interfaceInfo.isEnabled() && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn
                 .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, dataBroker, ifIndex);
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures,
+            FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, txRunner, ifIndex);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures,
                         interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
         }
 

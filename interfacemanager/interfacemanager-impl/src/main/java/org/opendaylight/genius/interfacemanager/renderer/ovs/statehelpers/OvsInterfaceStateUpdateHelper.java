@@ -15,6 +15,8 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -33,14 +35,14 @@ import org.slf4j.LoggerFactory;
 public class OvsInterfaceStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateUpdateHelper.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
     @Inject
     public OvsInterfaceStateUpdateHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils =  interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;
     }
@@ -56,14 +58,8 @@ public class OvsInterfaceStateUpdateHelper {
         Interface.OperStatus operStatusOld = InterfaceManagerCommonUtils.getOpState(flowCapableNodeConnectorOld);
         MacAddress macAddressOld = flowCapableNodeConnectorOld.getHardwareAddress();
 
-        boolean opstateModified = false;
-        boolean hardwareAddressModified = false;
-        if (!operStatusNew.equals(operStatusOld)) {
-            opstateModified = true;
-        }
-        if (!macAddressNew.equals(macAddressOld)) {
-            hardwareAddressModified = true;
-        }
+        boolean opstateModified = !operStatusNew.equals(operStatusOld);
+        boolean hardwareAddressModified = !macAddressNew.equals(macAddressOld);
 
         if (!opstateModified && !hardwareAddressModified) {
             LOG.debug("If State entry for port: {} Not Modified.", interfaceName);
@@ -90,17 +86,26 @@ public class OvsInterfaceStateUpdateHelper {
             PhysAddress physAddress = new PhysAddress(macAddressNew.getValue());
             ifaceBuilder.setPhysAddress(physAddress);
         }
-        // modify the attributes in interface operational DS
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        handleInterfaceStateUpdates(iface, transaction, ifaceBuilder, opstateModified, interfaceName,
-                flowCapableNodeConnectorNew.getName(), operStatusNew);
 
-        // start/stop monitoring based on opState
-        if (isTunnelInterface(iface) && opstateModified) {
-            handleTunnelMonitoringUpdates(iface.getAugmentation(IfTunnel.class), iface.getName(), operStatusNew);
+        if (opstateModified) {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                // modify the attributes in interface operational DS
+                handleInterfaceStateUpdates(iface, tx, ifaceBuilder, true, interfaceName,
+                        flowCapableNodeConnectorNew.getName(), operStatusNew);
+
+                // start/stop monitoring based on opState
+                if (isTunnelInterface(iface)) {
+                    handleTunnelMonitoringUpdates(iface.getAugmentation(IfTunnel.class), iface.getName(),
+                            operStatusNew);
+                }
+            }));
+        } else {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                // modify the attributes in interface operational DS
+                handleInterfaceStateUpdates(iface, tx, ifaceBuilder, false, interfaceName,
+                        flowCapableNodeConnectorNew.getName(), operStatusNew);
+            }));
         }
-
-        return Collections.singletonList(transaction.submit());
     }
 
     public void updateInterfaceStateOnNodeRemove(String interfaceName,

@@ -16,6 +16,8 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers.HwVTEPInterfaceConfigAddHelper;
@@ -37,14 +39,14 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
 
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPConfigListener.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator coordinator;
 
     @Inject
     public HwVTEPConfigListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(Interfaces.class).child(Interface.class));
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
     }
 
@@ -60,7 +62,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(removedInterface.getName(), () -> HwVTEPConfigRemoveHelper
-                                                       .removeConfiguration(dataBroker, removedInterface,
+                                                       .removeConfiguration(txRunner, removedInterface,
                                                                             createPhysicalSwitchInstanceIdentifier(
                                                                                     nodeIdentifier.getNodeId()),
                                                                             createGlobalNodeInstanceIdentifier(
@@ -84,7 +86,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(originalInterface.getName(), () -> HwVTEPInterfaceConfigUpdateHelper
-                                .updateConfiguration(dataBroker,
+                                .updateConfiguration(txRunner,
                                                      createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                                      createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
                                                      updatedInterface, ifTunnel), IfmConstants.JOB_MAX_RETRIES);
@@ -106,7 +108,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(newInterface.getName(), () -> HwVTEPInterfaceConfigAddHelper
-                                .addConfiguration(dataBroker,
+                                .addConfiguration(txRunner,
                                                   createPhysicalSwitchInstanceIdentifier(nodeIdentifier.getNodeId()),
                                                   createGlobalNodeInstanceIdentifier(nodeIdentifier.getNodeId()),
                                                   newInterface, ifTunnel), IfmConstants.JOB_MAX_RETRIES);
