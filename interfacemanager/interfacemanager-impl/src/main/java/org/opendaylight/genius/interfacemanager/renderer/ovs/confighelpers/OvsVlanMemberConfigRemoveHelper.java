@@ -12,8 +12,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -33,12 +33,11 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigRemoveHelper.class);
 
-    public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
+    public static List<ListenableFuture<Void>> removeConfiguration(DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner, ParentRefs parentRefs,
             Interface interfaceOld, IfL2vlan ifL2vlan, IdManagerService idManager) {
         LOG.debug("remove vlan member configuration {}", interfaceOld.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
-        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentRefs.getParentInterface());
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid = InterfaceMetaUtils
@@ -50,30 +49,33 @@ public class OvsVlanMemberConfigRemoveHelper {
             return futures;
         }
 
-        // Delete the interface child information
-        List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
-        InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
-        InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
-                .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-        defaultConfigShardTransaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
-        // If this is the last child, remove the interface parent info as well.
-        if (interfaceChildEntries.size() <= 1) {
-            defaultConfigShardTransaction.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
-        }
+        // Configuration changes
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            // Delete the interface child information
+            List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
+            InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
+            InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
+                    .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
+            tx.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
+            // If this is the last child, remove the interface parent info as well.
+            if (interfaceChildEntries.size() <= 1) {
+                tx.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
+            }
+        }));
 
+        // Operational changes
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
         if (ifState != null) {
             LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
             BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
-            InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(),
-                defaultOperShardTransaction,idManager);
-            FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, dataBroker, futures);
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> InterfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(), tx,
+                        idManager)));
+            FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, txRunner, futures);
         }
 
-        futures.add(defaultConfigShardTransaction.submit());
-        futures.add(defaultOperShardTransaction.submit());
         return futures;
     }
 }

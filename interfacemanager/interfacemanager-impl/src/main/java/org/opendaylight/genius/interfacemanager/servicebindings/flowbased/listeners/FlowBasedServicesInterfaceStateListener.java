@@ -20,6 +20,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.IfmClusterUtils;
@@ -45,7 +46,8 @@ import org.slf4j.LoggerFactory;
 public class FlowBasedServicesInterfaceStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public FlowBasedServicesInterfaceStateListener(final InterfacemgrProvider interfacemgrProvider,
@@ -53,6 +55,7 @@ public class FlowBasedServicesInterfaceStateListener
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         initializeFlowBasedServiceStateBindHelpers(interfacemgrProvider);
         this.dataBroker = interfacemgrProvider.getDataBroker();
+        this.txRunner = interfacemgrProvider.getTransactionRunner();
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -154,7 +157,7 @@ public class FlowBasedServicesInterfaceStateListener
             }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
+            FlowBasedServicesUtils.addBoundServicesState(futures, txRunner, iface.getName(),
                 FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
             flowBasedServicesStateAddable.bindServicesOnInterface(futures, iface, allServices);
             return futures;

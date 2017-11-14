@@ -20,6 +20,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -58,6 +60,7 @@ public class InterfaceInventoryStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final IMdsalApiManager mdsalApiManager;
     private final AlivenessMonitorService alivenessMonitorService;
@@ -67,6 +70,7 @@ public class InterfaceInventoryStateListener
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
@@ -190,7 +194,7 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
+            List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, txRunner, idManager,
                     mdsalApiManager, alivenessMonitorService, nodeConnectorId, interfaceName, fcNodeConnectorNew);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
@@ -226,7 +230,8 @@ public class InterfaceInventoryStateListener
         @Override
         public Object call() {
             List<ListenableFuture<Void>> futures = OvsInterfaceStateUpdateHelper.updateState(key,
-                    alivenessMonitorService, dataBroker, interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
+                    alivenessMonitorService, dataBroker, txRunner, interfaceName, fcNodeConnectorNew,
+                    fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
@@ -283,8 +288,8 @@ public class InterfaceInventoryStateListener
             }
 
             futures = OvsInterfaceStateRemoveHelper.removeInterfaceStateConfiguration(idManager, mdsalApiManager,
-                    alivenessMonitorService, nodeConnectorIdNew, nodeConnectorIdOld, dataBroker, interfaceName,
-                    fcNodeConnectorOld, isNodePresent, parentInterface);
+                    alivenessMonitorService, nodeConnectorIdNew, nodeConnectorIdOld, dataBroker, txRunner,
+                    interfaceName, fcNodeConnectorOld, isNodePresent, parentInterface);
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(dataBroker, interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {

@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -24,14 +24,14 @@ import org.slf4j.LoggerFactory;
 public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
 
-    public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker, ParentRefs parentRefs,
+    public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker,
+            ManagedNewTransactionRunner txRunner, ParentRefs parentRefs,
             Interface interfaceNew, IfL2vlan ifL2vlan, IdManagerService idManager) {
         LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(), interfaceNew.getName(),
-                writeTransaction);
-        futures.add(writeTransaction.submit());
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> InterfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(),
+                    interfaceNew.getName(), tx)));
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = InterfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey, dataBroker);
@@ -50,7 +50,8 @@ public class OvsVlanMemberConfigAddHelper {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = InterfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface(), dataBroker);
-        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, idManager, futures, ifState);
+        InterfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), dataBroker, txRunner, idManager, futures,
+                ifState);
         return futures;
     }
 }

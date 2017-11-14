@@ -16,6 +16,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigRemoveHelper;
@@ -35,6 +37,7 @@ import org.slf4j.LoggerFactory;
 public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<Interface, VlanMemberConfigListener> {
     private static final Logger LOG = LoggerFactory.getLogger(VlanMemberConfigListener.class);
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
     private final AlivenessMonitorService alivenessMonitorService;
     private final IMdsalApiManager mdsalApiManager;
@@ -44,6 +47,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
             final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService) {
         super(Interface.class, VlanMemberConfigListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.alivenessMonitorService = alivenessMonitorService;
@@ -172,8 +176,8 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, parentRefs, interfaceNew, ifL2vlan,
-                    idManager);
+            return OvsVlanMemberConfigAddHelper.addConfiguration(dataBroker, txRunner, parentRefs, interfaceNew,
+                    ifL2vlan, idManager);
         }
     }
 
@@ -195,7 +199,7 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigUpdateHelper.updateConfiguration(dataBroker, alivenessMonitorService,
+            return OvsVlanMemberConfigUpdateHelper.updateConfiguration(dataBroker, txRunner, alivenessMonitorService,
                     parentRefsNew, interfaceOld, ifL2vlanNew, interfaceNew, idManager, mdsalApiManager);
         }
     }
@@ -216,8 +220,8 @@ public class VlanMemberConfigListener extends AsyncDataTreeChangeListenerBase<In
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, parentRefs, interfaceOld, ifL2vlan,
-                    idManager);
+            return OvsVlanMemberConfigRemoveHelper.removeConfiguration(dataBroker, txRunner, parentRefs, interfaceOld,
+                    ifL2vlan, idManager);
         }
     }
 }
