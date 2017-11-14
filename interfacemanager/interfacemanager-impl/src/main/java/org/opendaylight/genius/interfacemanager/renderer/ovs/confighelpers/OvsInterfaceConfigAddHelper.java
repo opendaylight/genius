@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -47,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public final class OvsInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigAddHelper.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final IMdsalApiManager mdsalApiManager;
     private final JobCoordinator coordinator;
     private final AlivenessMonitorUtils alivenessMonitorUtils;
@@ -62,7 +64,7 @@ public final class OvsInterfaceConfigAddHelper {
             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
             InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.mdsalApiManager = mdsalApiManager;
         this.coordinator = coordinator;
@@ -74,18 +76,17 @@ public final class OvsInterfaceConfigAddHelper {
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction defaultConfigShardTransaction = dataBroker.newWriteOnlyTransaction();
-        WriteTransaction defaultOperShardTransaction = dataBroker.newWriteOnlyTransaction();
-        IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
-        if (ifTunnel != null) {
-            addTunnelConfiguration(parentRefs, interfaceNew, ifTunnel, defaultConfigShardTransaction,
-                    defaultOperShardTransaction, futures);
-        } else {
-            addVlanConfiguration(interfaceNew, parentRefs, defaultConfigShardTransaction,
-                    defaultOperShardTransaction, futures);
-        }
-        futures.add(defaultConfigShardTransaction.submit());
-        futures.add(defaultOperShardTransaction.submit());
+        // TODO Disentangle the transactions
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(configTx -> {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(operTx -> {
+                IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+                if (ifTunnel != null) {
+                    addTunnelConfiguration(parentRefs, interfaceNew, ifTunnel, configTx, operTx, futures);
+                } else {
+                    addVlanConfiguration(interfaceNew, parentRefs, configTx, operTx, futures);
+                }
+            }));
+        }));
         return futures;
     }
 
@@ -188,7 +189,7 @@ public final class OvsInterfaceConfigAddHelper {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
                     interfaceManagerCommonUtils.addTunnelIngressFlow(ifTunnel, dpId, portNo,
                             interfaceNew.getName(), ifState.getIfIndex());
-                    FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceNew,
+                    FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceNew,
                             Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
                     // start LLDP monitoring for the tunnel interface
                     alivenessMonitorUtils.startLLDPMonitoring(ifTunnel, interfaceNew.getName());
@@ -219,7 +220,7 @@ public final class OvsInterfaceConfigAddHelper {
                     null /*nodeConnectorId*/);
         long groupId = createLogicalTunnelSelectGroup(IfmUtil.getDpnFromInterface(ifState),
                                                       itfNew.getName(), ifState.getIfIndex());
-        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, itfNew,
+        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, itfNew,
                                                                   ifaceName, ifState.getIfIndex(), groupId);
     }
 
