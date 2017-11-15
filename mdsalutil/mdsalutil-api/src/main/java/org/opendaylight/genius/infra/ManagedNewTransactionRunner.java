@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 
 /**
  * Managed transactions utility to simplify handling of new transactions and ensure they are always closed
@@ -58,7 +59,8 @@ public interface ManagedNewTransactionRunner {
      *         or a failed future with an application specific exception (not from submit())
      */
     @CheckReturnValue
-    ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction> txRunner);
+    <E extends Exception>
+        ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -86,8 +88,10 @@ public interface ManagedNewTransactionRunner {
      *         or a failed future with an application specific exception (not from submit())
      */
     @CheckReturnValue
-    ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction> txRunner);
+    <E extends Exception> ListenableFuture<Void>
+        callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction, E> txRunner);
 
-    void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner) throws Exception;
+    <E extends Exception>
+        void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction, E> txRunner) throws E;
 
 }

@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,13 +38,15 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction> txCnsmr) {
+    public <E extends Exception> ListenableFuture<Void>
+            callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txCnsmr) {
         WriteTransaction realTx = broker.newWriteOnlyTransaction();
         WriteTransaction wrappedTx = new NonSubmitCancelableWriteTransaction(realTx);
         try {
             txCnsmr.accept(wrappedTx);
             return realTx.submit();
         } catch (Exception e) {
+            // not E ^^^ so that we also catch RuntimeException
             if (!realTx.cancel()) {
                 LOG.error("Transaction.cancel() return false - this should never happen (here)");
             }
@@ -53,14 +56,15 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
-            CheckedConsumer<ReadWriteTransaction> txRunner) {
+    public <E extends Exception> ListenableFuture<Void>
+            callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         ReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
         try {
             txRunner.accept(wrappedTx);
             return realTx.submit();
         } catch (Exception e) {
+            // not E ^^^ so that we also catch RuntimeException
             if (!realTx.cancel()) {
                 LOG.error("Transaction.cancel() returned false, which should never happen here");
             }
@@ -69,7 +73,8 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     }
 
     @Override
-    public void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner) throws Exception {
+    public <E extends Exception> void
+            callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction, E> txRunner) throws E {
         try (ReadOnlyTransaction realTx = broker.newReadOnlyTransaction()) {
             @SuppressWarnings("resource")
             NonCloseableReadOnlyTransaction wrappedTx = new NonCloseableReadOnlyTransaction(realTx);

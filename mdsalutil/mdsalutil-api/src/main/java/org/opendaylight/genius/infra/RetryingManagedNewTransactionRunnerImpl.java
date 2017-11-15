@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
@@ -78,12 +79,16 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
     }
 
     @Override
-    public ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction> txRunner) {
+    public <E extends Exception> ListenableFuture<Void>
+        callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner) {
+
         return callWithNewWriteOnlyTransactionAndSubmit(txRunner, MAX_RETRIES);
     }
 
-    private ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction> txRunner,
-            final int tries) {
+
+    private <E extends Exception> ListenableFuture<Void>
+        callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner, final int tries) {
+
         ListenableFuture<Void> future = Objects.requireNonNull(
                  delegate.callWithNewWriteOnlyTransactionAndSubmit(txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null");
@@ -99,13 +104,13 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
     }
 
     @Override
-    public ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
-            CheckedConsumer<ReadWriteTransaction> txRunner) {
+    public <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
+            CheckedConsumer<ReadWriteTransaction, E> txRunner) {
         return callWithNewReadWriteTransactionAndSubmit(txRunner, MAX_RETRIES);
     }
 
-    private ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
-            CheckedConsumer<ReadWriteTransaction> txRunner, final int tries) {
+    private <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
+            CheckedConsumer<ReadWriteTransaction, E> txRunner, final int tries) {
         ListenableFuture<Void> future = Objects.requireNonNull(
                  delegate.callWithNewReadWriteTransactionAndSubmit(txRunner),
                 "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
@@ -119,7 +124,8 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
     }
 
     @Override
-    public void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner) throws Exception {
+    public <E extends Exception> void callWithNewReadOnlyTransactionAndClose(
+            CheckedConsumer<ReadOnlyTransaction, E> txRunner) throws E {
         delegate.callWithNewReadOnlyTransactionAndClose(txRunner);
     }
 
