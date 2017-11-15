@@ -131,6 +131,13 @@ public final class FutureRpcResults {
         return fromListenableFuture(logger, rpcMethodName, input, callable);
     }
 
+    @CheckReturnValue
+    public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, @Nullable I input,
+            Callable<Builder<O>> builder) {
+        Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
+        return fromListenableFuture(logger, StackTraces.getCallersCallerMethodName(), input, callable);
+    }
+
     @NotThreadSafe
     public static final class FutureRpcResultBuilder<I, O> implements Builder<Future<RpcResult<O>>> {
 
