@@ -88,6 +88,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_cecd25b9",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-15T17:24:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_a8cf1328",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_e1abf372",
         "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
         "patchSetId": 3
@@ -99,6 +117,42 @@
       "writtenOn": "2017-11-10T08:37:00Z",
       "side": 1,
       "message": "add register service here. In case OSgiServiceProvider does not work, it will help us understand whether the service was atleast registered",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_eec8e9a9",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-15T17:24:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_e1abf372",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_2ec6819a",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-15T17:24:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_352d37ff",
       "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
