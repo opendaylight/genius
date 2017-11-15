@@ -19,9 +19,9 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
@@ -41,13 +41,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmInternalTunnelDeleteWorker {
+
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelDeleteWorker.class) ;
 
+    private final JobCoordinator jobCoordinator;
+
+    public ItmInternalTunnelDeleteWorker(JobCoordinator jobCoordinator) {
+        this.jobCoordinator = jobCoordinator;
+    }
+
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker,
-                                                             IMdsalApiManager mdsalManager,
-                                                             List<DPNTEPsInfo> dpnTepsList,
-                                                             List<DPNTEPsInfo> meshedDpnList) {
+    public List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IMdsalApiManager mdsalManager,
+                                                      List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("TEPs to be deleted {} " , dpnTepsList);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
@@ -179,9 +184,8 @@ public class ItmInternalTunnelDeleteWorker {
         return futures ;
     }
 
-    private static void removeTrunkInterface(DataBroker dataBroker,
-                                             TunnelEndPoints srcTep, TunnelEndPoints dstTep, BigInteger srcDpnId,
-                                             BigInteger dstDpnId, WriteTransaction transaction) {
+    private void removeTrunkInterface(DataBroker dataBroker, TunnelEndPoints srcTep, TunnelEndPoints dstTep,
+                                      BigInteger srcDpnId, BigInteger dstDpnId, WriteTransaction transaction) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
@@ -234,17 +238,16 @@ public class ItmInternalTunnelDeleteWorker {
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
     }
 
-    private static void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
+    private void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
                                                  DataBroker dataBroker) {
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {
             return;
         }
         String logicTunnelName = ItmUtils.getLogicalTunnelGroupName(srcDpnId, dstDpnId);
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         ItmTunnelAggregationDeleteWorker addWorker =
                 new ItmTunnelAggregationDeleteWorker(logicTunnelName, srcDpnId, dstDpnId, dataBroker);
-        coordinator.enqueueJob(logicTunnelName, addWorker);
+        jobCoordinator.enqueueJob(logicTunnelName, addWorker);
     }
 
     private static class ItmTunnelAggregationDeleteWorker implements Callable<List<ListenableFuture<Void>>> {

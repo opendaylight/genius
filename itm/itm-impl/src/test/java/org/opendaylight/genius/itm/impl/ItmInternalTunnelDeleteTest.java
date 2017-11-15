@@ -30,6 +30,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -105,8 +106,9 @@ public class ItmInternalTunnelDeleteTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
+    @Mock JobCoordinator jobCoordinator;
 
-    ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker();
+    ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(jobCoordinator);
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
