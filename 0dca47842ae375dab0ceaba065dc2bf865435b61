@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_1460ecff",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-15T22:53:43Z",
+      "side": 1,
+      "message": "Now that this is a non-static singleton, these services can be properly injected. But in a later patch...",
+      "range": {
+        "startLine": 123,
+        "startChar": 83,
+        "endLine": 124,
+        "endChar": 72
+      },
+      "revId": "0dca47842ae375dab0ceaba065dc2bf865435b61",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f45c384d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-15T22:53:43Z",
+      "side": 1,
+      "message": "The jobCoordinator isn\u0027t actually used",
+      "range": {
+        "startLine": 68,
+        "startChar": 33,
+        "endLine": 68,
+        "endChar": 47
+      },
+      "revId": "0dca47842ae375dab0ceaba065dc2bf865435b61",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5456e42a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-15T22:53:43Z",
+      "side": 1,
+      "message": "It isn\u0027t actually used in this class",
+      "range": {
+        "startLine": 42,
+        "startChar": 33,
+        "endLine": 42,
+        "endChar": 47
+      },
+      "revId": "0dca47842ae375dab0ceaba065dc2bf865435b61",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
