@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_347c10b5",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-15T23:02:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_451598e3",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_e18da1d4",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
         "patchSetId": 1
@@ -83,6 +101,24 @@
       "side": 1,
       "message": "I assume the \"OrDefault\" part is in case the entry just added on line 48 is removed in between. However this would lead to a discrepancy in the 2 maps. It seems packetInMap is a mirror of ingressPacketMap with key and values in a different form. Seems odd. The nodeRemovedNotification method below update the 2 maps atomically via synchronized so this should as well.\n\nThe other option is to eliminate the packetInMap. It is only used in connectToPMAgent so it can be constructed on demand from the ingressPacketMap. I prefer that approach - simplifies the code.",
       "parentUuid": "9a245df4_c1b17d90",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9f019507",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-15T23:02:48Z",
+      "side": 1,
+      "message": "Yes, I do not fully get the point of mimic the ingressPacketMap, it looks like the packetInMap is just used to expose the ingressPacketMap with the appropriate keys. I do not dare to just remove it, they might be consumed by some tool via JMX. I think these, and other \"counters\" need some refactoring or even better, being replaced by the ones in infrautils.",
+      "parentUuid": "9a245df4_85c15056",
       "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
