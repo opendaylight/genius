@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_e18da1d4",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T00:28:36Z",
+      "side": 1,
+      "message": "NOK: I\u0027ve no idea what this code really does, but it seems to me that the transformation you\u0027re doing here is not a 1:1 equivalent?  Because in the original the incrementAndGet() would not have happend in the else, IfAbsent, right? So doesn\u0027t this lead to it being off +1? Doesn\u0027t matter? (If this is intentional and I\u0027m missing, then a comment here for reviewers would help to clarify...)",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c1b17d90",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T00:28:36Z",
+      "side": 1,
+      "message": "OK: This puts a new AtomicLong(FIRST_VALUE) instead of a FIRST_VALUE in the Map, which you then take the String.valueOf() so this seems a little bit pointless.. but I can see it\u0027s because ingressPacketMap get will give you an AtomicLong; so OK..",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
