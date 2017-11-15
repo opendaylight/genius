@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
@@ -115,6 +116,11 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
                 throw optimisticLockFailedException;
             }
         }, executor);
+    }
+
+    @Override
+    public void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner) throws Exception {
+        delegate.callWithNewReadOnlyTransactionAndClose(txRunner);
     }
 
 }

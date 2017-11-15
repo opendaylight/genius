@@ -37,6 +37,8 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
             writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
         }).get();
-        singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH);
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(readTx -> {
+            readTx.read(OPERATIONAL, TEST_PATH).get().get();
+        });
     }
 }

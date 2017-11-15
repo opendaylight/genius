@@ -24,7 +24,6 @@ import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresImpl;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -50,7 +49,6 @@ public class ManagedNewTransactionRunnerImplTest {
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
     protected DataBrokerFailuresImpl testableDataBroker;
-    protected SingleTransactionDataBroker singleTransactionDataBroker;
     protected ManagedNewTransactionRunner managedNewTransactionRunner;
 
     protected ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(DataBroker dataBroker) {
@@ -61,7 +59,6 @@ public class ManagedNewTransactionRunnerImplTest {
     public void beforeTest() {
         testableDataBroker = new DataBrokerFailuresImpl(new DataBrokerTestModule(true).getDataBroker());
         managedNewTransactionRunner = createManagedNewTransactionRunnerToTest(testableDataBroker);
-        singleTransactionDataBroker = new SingleTransactionDataBroker(testableDataBroker);
     }
 
     @Test
@@ -75,7 +72,9 @@ public class ManagedNewTransactionRunnerImplTest {
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
             writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
         }).get();
-        singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH);
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(readTx -> {
+            readTx.read(OPERATIONAL, TEST_PATH).get().get();
+        });
         // Nothing to assert here: Failure in *Runner will cause Exception which will fail this test
     }
 
@@ -97,7 +96,9 @@ public class ManagedNewTransactionRunnerImplTest {
         } catch (ExecutionException e) {
             assertThat(e.getCause() instanceof IOException).isTrue();
         }
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(readTx -> {
+            assertThat(readTx.read(OPERATIONAL, TEST_PATH).get()).isAbsent();
+        });
     }
 
     @Test
@@ -111,7 +112,9 @@ public class ManagedNewTransactionRunnerImplTest {
         } catch (ExecutionException e) {
             assertThat(e.getCause() instanceof TransactionCommitFailedException).isTrue();
         }
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(readTx -> {
+            assertThat(readTx.read(OPERATIONAL, TEST_PATH).get()).isAbsent();
+        });
     }
 
     @Test
@@ -125,7 +128,9 @@ public class ManagedNewTransactionRunnerImplTest {
         } catch (ExecutionException e) {
             assertThat(e.getCause() instanceof OptimisticLockFailedException).isTrue();
         }
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(readTx -> {
+            assertThat(readTx.read(OPERATIONAL, TEST_PATH).get()).isAbsent();
+        });
     }
 
     @Test(expected = ExecutionException.class)
@@ -148,6 +153,13 @@ public class ManagedNewTransactionRunnerImplTest {
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
             writeTx.commit();
         }).get();
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCallWithNewReadOnlyTransactionCannotClose() throws Exception {
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(readTx -> {
+            readTx.close();
+        });
     }
 
 }

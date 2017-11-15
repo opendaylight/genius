@@ -14,6 +14,7 @@ import io.netty.util.concurrent.Future;
 import java.util.concurrent.CompletionStage;
 import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
@@ -87,6 +88,6 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction> txRunner);
 
-    // TODO void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner);
+    void callWithNewReadOnlyTransactionAndClose(CheckedConsumer<ReadOnlyTransaction> txRunner) throws Exception;
 
 }
