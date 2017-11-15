@@ -140,6 +140,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_0e01fd37",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T14:38:05Z",
+      "side": 1,
+      "message": "that makes no sense, you can nul check a Boolean as well?",
+      "parentUuid": "9a245df4_cb299738",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c8d9a7f4",
         "filename": "infrautils/infrautils/src/main/resources/org/opendaylight/blueprint/infrautils.xml",
         "patchSetId": 3
