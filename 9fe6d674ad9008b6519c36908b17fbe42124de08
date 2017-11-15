@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_d91e8d5e",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-15T15:36:56Z",
+      "side": 0,
+      "message": "Interesting... a Poller creates this instance which creates its own Poller instance but w/o the BundleContext. Makes no sense...",
+      "revId": "9fe6d674ad9008b6519c36908b17fbe42124de08",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_59329df2",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-15T15:36:56Z",
+      "side": 0,
+      "message": "So this call never executed before since the local Poller instance didn\u0027t have a BundleContext so getPMServiceSPI always returned null. I wonder what can of worms this will open up now that it will actually execute :)",
+      "range": {
+        "startLine": 74,
+        "startChar": 49,
+        "endLine": 74,
+        "endChar": 67
+      },
+      "revId": "9fe6d674ad9008b6519c36908b17fbe42124de08",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
