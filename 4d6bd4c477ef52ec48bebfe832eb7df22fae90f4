@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_c15fbd3f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T00:43:00Z",
+      "side": 1,
+      "message": "I was confused why you remove the \u003d false here, but only for this one but not others, and what this has to do with changing the listener.. then I realized that this local variable is only used in line 202 \u0026 204.. so if I were you I would just get rid of it here and instead inline it like so in line 202-204:\n\n   if (isTepIpUpdated(oldTepIp, newTepIp)) {",
+      "revId": "4d6bd4c477ef52ec48bebfe832eb7df22fae90f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_414c6d9e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T00:43:00Z",
+      "side": 1,
+      "message": "didn\u0027t you loose the \"\u0026\u0026 tzName \u003d\u003d null\" for the 3rd ||OR condition here?  Or is this intentional (done by tooling or manually by you?) because it\u0027s not required? You 100% sure? ;)",
+      "revId": "4d6bd4c477ef52ec48bebfe832eb7df22fae90f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

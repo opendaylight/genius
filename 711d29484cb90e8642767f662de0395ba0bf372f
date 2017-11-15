@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_4133cd13",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T00:43:00Z",
+      "side": 0,
+      "message": "I\u0027m not sure what this clean up has to do with changing the lister, but I can see that it\u0027s not used after this anymore anyway, so this should cause no harm. In general I think it\u0027s safer to raise smaller separate changes for such clean ups.\n\nHaving said that, I\u0027ll merge this anyway, as Hema has +1 it already, and this cannot break anything (because it\u0027s not used after this null-ing)",
+      "revId": "711d29484cb90e8642767f662de0395ba0bf372f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
