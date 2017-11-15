@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_f57effad",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-15T09:35:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_289163f1",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_a8cf1328",
         "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
         "patchSetId": 3
@@ -98,6 +116,24 @@
       "writtenOn": "2017-11-13T14:36:42Z",
       "side": 1,
       "message": "how about making this Boolean instead of Object here, and avoid the (boolean) cast you have a few lines below?  (If it doesn\u0027t match, you get a ClassCastException either way.)",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_cb299738",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-15T09:35:05Z",
+      "side": 1,
+      "message": "it is specified as Object, so that we can check for null and return appropriate error message",
+      "parentUuid": "9a245df4_48ce572f",
       "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
