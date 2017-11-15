@@ -122,6 +122,24 @@
       "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ff3891d4",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-15T23:07:07Z",
+      "side": 1,
+      "message": "But it\u0027s only actually used in connectToPMAgent - passed to sendPacketInCounterUpdate. It can be created on the fly. Easier than trying to keep 2 maps in sync when one can be derived from the other.",
+      "parentUuid": "9a245df4_9f019507",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
