@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_74896874",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-11-15T18:57:54Z",
+      "side": 1,
+      "message": "When I was thinking about this, I was wondering if we shouldn’t allow the method to return a value... ISTM in many cases we do want the value outside the transaction scope.",
+      "revId": "6c69188a607c708a884d5e0a2b48cd3f2eca25ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
