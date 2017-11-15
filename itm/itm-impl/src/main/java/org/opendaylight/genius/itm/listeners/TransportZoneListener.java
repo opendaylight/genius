@@ -26,8 +26,9 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
+import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
+import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedMoveWorker;
@@ -36,6 +37,7 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -66,24 +68,32 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<TransportZone, TransportZoneListener>
         implements AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(TransportZoneListener.class);
+
     private final DataBroker dataBroker;
+    private final JobCoordinator jobCoordinator;
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final ITMManager itmManager;
     private final ItmConfig itmConfig;
+    private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
+    private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
                                  final IMdsalApiManager mdsalManager,final ITMManager itmManager,
-                                 final ItmConfig itmConfig) {
+                                 final ItmConfig itmConfig, JobCoordinator jobCoordinator) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
+        this.jobCoordinator = jobCoordinator;
         this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
         this.itmManager = itmManager;
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
+        this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(jobCoordinator);
+        this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(jobCoordinator);
     }
 
     @PostConstruct
@@ -160,12 +170,11 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             List<HwVtep> hwVtepList = createhWVteps(tzOld);
             LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
             if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
-                LOG.trace("Delete: Invoking ItmManager with hwVtep List {} " , hwVtepList);
-                DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-                ItmTepRemoveWorker removeWorker =
-                        new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker,
-                                idManagerService, mdsalManager);
-                coordinator.enqueueJob(tzOld.getZoneName(), removeWorker);
+                LOG.trace("Delete: Invoking ItmManager with hwVtep List {} ", hwVtepList);
+                jobCoordinator.enqueueJob(tzOld.getZoneName(),
+                                          new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker,
+                                                                 idManagerService, mdsalManager,
+                                                                 itmInternalTunnelDeleteWorker));
             }
         }
     }
@@ -181,7 +190,6 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<>();
         newDpnTepsListcopy.addAll(newDpnTepsList);
         LOG.trace("newcopy0 {}", newDpnTepsListcopy);
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         oldDpnTepsList.removeAll(newDpnTepsListcopy);
         newDpnTepsList.removeAll(oldDpnTepsListcopy);
@@ -194,15 +202,17 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("newcopy Size {}", newDpnTepsList.size());
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
-                    idManagerService, mdsalManager, itmConfig);
-            coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
+            jobCoordinator.enqueueJob(tzNew.getZoneName(),
+                                      new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
+                                                          idManagerService, mdsalManager, itmConfig,
+                                                          itmInternalTunnelAddWorker));
         }
         if (!oldDpnTepsList.isEmpty()) {
             LOG.trace("Removing TEPs ");
-            ItmTepRemoveWorker removeWorker = new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(),
-                    tzOld, dataBroker, idManagerService, mdsalManager);
-            coordinator.enqueueJob(tzNew.getZoneName(), removeWorker);
+            jobCoordinator.enqueueJob(tzNew.getZoneName(),
+                                      new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), tzOld, dataBroker,
+                                                             idManagerService, mdsalManager,
+                                                             itmInternalTunnelDeleteWorker));
         }
         List<HwVtep> oldHwList = createhWVteps(tzOld);
         List<HwVtep> newHwList = createhWVteps(tzNew);
@@ -221,15 +231,17 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("newHwListcopy {}", newHwListcopy);
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
-                    idManagerService, mdsalManager, itmConfig);
-            coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
+            jobCoordinator.enqueueJob(tzNew.getZoneName(),
+                                      new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
+                                                          idManagerService, mdsalManager, itmConfig,
+                                                          itmInternalTunnelAddWorker));
         }
         if (!oldHwList.isEmpty()) {
             LOG.trace("Removing HW TEPs ");
-            ItmTepRemoveWorker removeWorker = new ItmTepRemoveWorker(Collections.emptyList(), oldHwList,
-                    tzOld, dataBroker, idManagerService, mdsalManager);
-            coordinator.enqueueJob(tzNew.getZoneName(), removeWorker);
+            jobCoordinator.enqueueJob(tzNew.getZoneName(),
+                                      new ItmTepRemoveWorker(Collections.emptyList(), oldHwList, tzOld, dataBroker,
+                                                             idManagerService, mdsalManager,
+                                                             itmInternalTunnelDeleteWorker));
         }
     }
 
@@ -243,10 +255,9 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
             LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            ItmTepAddWorker addWorker = new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService,
-                    mdsalManager, itmConfig);
-            coordinator.enqueueJob(tzNew.getZoneName(), addWorker);
+            jobCoordinator.enqueueJob(tzNew.getZoneName(),
+                                      new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, idManagerService,
+                                                          mdsalManager, itmConfig, itmInternalTunnelAddWorker));
         }
     }
 
@@ -264,7 +275,6 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         String newZoneName = tzNew.getZoneName();
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
         Class<? extends TunnelTypeBase> tunnelType  = tzNew.getTunnelType();
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
 
         TepsNotHostedInTransportZone tepNotHostedTransportZone = getNotHostedTransportZone(newZoneName).get();
         if (tepNotHostedTransportZone == null) {
@@ -303,7 +313,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
                 // into DataStoreJobCoordinator
                 ItmTepsNotHostedRemoveWorker
                     removeWorker = new ItmTepsNotHostedRemoveWorker(newZoneName, ipAddress, dpnID, dataBroker);
-                coordinator.enqueueJob(newZoneName, removeWorker);
+                jobCoordinator.enqueueJob(newZoneName, removeWorker);
             }
         }
 
@@ -311,7 +321,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         // into DataStoreJobCoordinator
         ItmTepsNotHostedMoveWorker
             moveWorker = new ItmTepsNotHostedMoveWorker(vtepsList, newZoneName, dataBroker);
-        coordinator.enqueueJob(newZoneName, moveWorker);
+        jobCoordinator.enqueueJob(newZoneName, moveWorker);
 
         if (mapNotHostedDPNToTunnelEndpt.size() > 0) {
             Set<BigInteger> keys = mapNotHostedDPNToTunnelEndpt.keySet();

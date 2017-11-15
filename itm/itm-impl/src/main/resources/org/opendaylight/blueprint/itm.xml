@@ -25,6 +25,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="diagStatusService"
                interface="org.opendaylight.infrautils.diagstatus.DiagStatusService" />
 
+    <reference id="jobCoordinator"
+               interface="org.opendaylight.infrautils.jobcoordinator.JobCoordinator"/>
+
     <odl:rpc-implementation ref="itmManagerRpcService" />
 
     <odl:clustered-app-config id="itmConfig"

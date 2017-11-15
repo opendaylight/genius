@@ -32,16 +32,18 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private final IMdsalApiManager mdsalManager;
     private final List<HwVtep> cfgdHwVteps;
     private final ItmConfig itmConfig;
+    private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
 
     public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker,
                            IdManagerService idManagerService, IMdsalApiManager mdsalManager,
-                           ItmConfig itmConfig) {
+                           ItmConfig itmConfig, ItmInternalTunnelAddWorker itmInternalTunnelAddWorker) {
         this.cfgdDpnList = cfgdDpnList ;
         this.dataBroker = broker ;
         this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = hwVtepList;
         this.itmConfig = itmConfig;
+        this.itmInternalTunnelAddWorker = itmInternalTunnelAddWorker;
         LOG.trace("ItmTepAddWorker initialized with  DpnList {}",cfgdDpnList);
         LOG.trace("ItmTepAddWorker initialized with  hwvteplist {}",hwVtepList);
     }
@@ -52,7 +54,7 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
         LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
                 cfgdDpnList, meshedDpnList);
-        futures.addAll(ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalManager,
+        futures.addAll(itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalManager,
                 cfgdDpnList, meshedDpnList, itmConfig)) ;
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);

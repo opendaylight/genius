@@ -14,13 +14,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.itm.commons.OvsdbExternalIdsInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
@@ -42,13 +42,15 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbNodeListener.class);
 
     private final DataBroker dataBroker;
+    private final JobCoordinator jobCoordinator;
     private final ItmConfig itmConfig;
 
     @Inject
-    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig) {
+    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class));
         this.dataBroker = dataBroker;
+        this.jobCoordinator = jobCoordinator;
         this.itmConfig = itmConfig;
     }
 
@@ -120,8 +122,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
                     // Enqueue 'add TEP received from southbound OVSDB into ITM config DS' operation
                     // into DataStoreJobCoordinator
-                    DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-                    coordinator.enqueueJob(newTepIp,
+                    jobCoordinator.enqueueJob(newTepIp,
                                            new OvsdbTepAddWorker(newTepIp, strDpnId, tzName, ofTunnel, dataBroker));
                 } else {
                     LOG.trace("TEP ({}) would be added later when bridge ({}) gets added into Ovs Node [{}].", newTepIp,
@@ -257,8 +258,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                       oldTzName, oldDpnBridgeName, strOldDpnId);
 
             // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            coordinator.enqueueJob(oldTepIp, new OvsdbTepRemoveWorker(oldTepIp, strOldDpnId, oldTzName, dataBroker));
+            jobCoordinator.enqueueJob(oldTepIp, new OvsdbTepRemoveWorker(oldTepIp, strOldDpnId, oldTzName, dataBroker));
         }
         // handle TEP-add in add case, TZ change case, Bridge change case
         if (isTepIpAdded || isTzChanged || isDpnBrChanged) {
@@ -285,8 +285,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                     newTepIp, tzName, newDpnBridgeName, strNewDpnId, newOfTunnel);
 
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-            coordinator.enqueueJob(newTepIp,
+            jobCoordinator.enqueueJob(newTepIp,
                                    new OvsdbTepAddWorker(newTepIp, strNewDpnId, tzName, newOfTunnel, dataBroker));
         }
     }

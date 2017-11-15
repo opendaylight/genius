@@ -61,6 +61,7 @@ import org.slf4j.LoggerFactory;
 public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
+
     private final ITMManager itmManager;
     private final DataBroker dataBroker;
     private final ItmManagerRpcService itmRpcService ;

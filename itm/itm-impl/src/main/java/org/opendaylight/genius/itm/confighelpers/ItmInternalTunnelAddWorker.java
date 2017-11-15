@@ -16,10 +16,10 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -60,14 +60,15 @@ public final class ItmInternalTunnelAddWorker {
         }
     };
 
-    private ItmInternalTunnelAddWorker() {
+    private final JobCoordinator jobCoordinator;
+
+    public ItmInternalTunnelAddWorker(JobCoordinator jobCoordinator) {
+        this.jobCoordinator = jobCoordinator;
     }
 
-    public static List<ListenableFuture<Void>> buildAllTunnels(DataBroker dataBroker,
-                                                               IMdsalApiManager mdsalManager,
-                                                               List<DPNTEPsInfo> cfgdDpnList,
-                                                               List<DPNTEPsInfo> meshedDpnList,
-                                                               ItmConfig itmConfig) {
+    public List<ListenableFuture<Void>> buildAllTunnels(DataBroker dataBroker, IMdsalApiManager mdsalManager,
+                                                        List<DPNTEPsInfo> cfgdDpnList, List<DPNTEPsInfo> meshedDpnList,
+                                                        ItmConfig itmConfig) {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
         monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
@@ -103,9 +104,8 @@ public final class ItmInternalTunnelAddWorker {
         ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    private static void buildTunnelFrom(DPNTEPsInfo srcDpn, List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
-                                        IMdsalApiManager mdsalManager,
-                                        WriteTransaction transaction) {
+    private void buildTunnelFrom(DPNTEPsInfo srcDpn, List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
+                                 IMdsalApiManager mdsalManager, WriteTransaction transaction) {
         LOG.trace("Building tunnels from DPN {} " , srcDpn);
         if (null == meshedDpnList || meshedDpnList.isEmpty()) {
             LOG.debug("No DPN in the mesh ");
@@ -120,9 +120,8 @@ public final class ItmInternalTunnelAddWorker {
 
     }
 
-    private static void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, DataBroker dataBroker,
-                                                  IMdsalApiManager mdsalManager,
-                                                  WriteTransaction transaction) {
+    private void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, DataBroker dataBroker,
+                                           IMdsalApiManager mdsalManager, WriteTransaction transaction) {
         LOG.trace("Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn);
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
         List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
@@ -145,10 +144,9 @@ public final class ItmInternalTunnelAddWorker {
         }
     }
 
-    private static void wireUpBidirectionalTunnel(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
-            BigInteger dstDpnId, DataBroker dataBroker,
-            IMdsalApiManager mdsalManager,
-            WriteTransaction transaction) {
+    private void wireUpBidirectionalTunnel(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
+                                           BigInteger dstDpnId, DataBroker dataBroker, IMdsalApiManager mdsalManager,
+                                           WriteTransaction transaction) {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
 
         if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
@@ -169,9 +167,8 @@ public final class ItmInternalTunnelAddWorker {
         }
     }
 
-    private static boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte,
-                                  BigInteger srcDpnId, BigInteger dstDpnId,
-                                  DataBroker dataBroker, WriteTransaction transaction) {
+    private boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
+                           DataBroker dataBroker, WriteTransaction transaction) {
         // Wire Up logic
         LOG.trace("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
         String interfaceName = srcte.getInterfaceName();
@@ -241,17 +238,16 @@ public final class ItmInternalTunnelAddWorker {
         ItmUtils.ITM_CACHE.addInternalTunnel(tnl);
     }
 
-    private static String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId, DataBroker dataBroker) {
+    private String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId, DataBroker dataBroker) {
         String logicTunnelGroupName = null;
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {
             return logicTunnelGroupName;
         }
         logicTunnelGroupName = ItmUtils.getLogicalTunnelGroupName(srcDpnId, dstDpnId);
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         ItmTunnelAggregationWorker addWorker =
                 new ItmTunnelAggregationWorker(logicTunnelGroupName, srcDpnId, dstDpnId, dataBroker);
-        coordinator.enqueueJob(logicTunnelGroupName, addWorker);
+        jobCoordinator.enqueueJob(logicTunnelGroupName, addWorker);
         return logicTunnelGroupName;
     }
 

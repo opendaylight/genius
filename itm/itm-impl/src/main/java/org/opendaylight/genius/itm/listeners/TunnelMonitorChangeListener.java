@@ -15,10 +15,10 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.ItmMonitorToggleWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
@@ -31,15 +31,17 @@ import org.slf4j.LoggerFactory;
 public class TunnelMonitorChangeListener
         extends AsyncDataTreeChangeListenerBase<TunnelMonitorParams, TunnelMonitorChangeListener>
         implements  AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorChangeListener.class);
+
     private final DataBroker broker;
+    private final JobCoordinator jobCoordinator;
 
     @Inject
-    public TunnelMonitorChangeListener(final DataBroker dataBroker) {
+    public TunnelMonitorChangeListener(final DataBroker dataBroker, JobCoordinator jobCoordinator) {
         super(TunnelMonitorParams.class, TunnelMonitorChangeListener.class);
         this.broker = dataBroker;
-        // interfaceManager = ifManager;
-        // registerListener(db);
+        this.jobCoordinator = jobCoordinator;
     }
 
     @PostConstruct
@@ -60,7 +62,6 @@ public class TunnelMonitorChangeListener
 
     @Override
     protected void remove(InstanceIdentifier<TunnelMonitorParams> key, TunnelMonitorParams dataObjectModification) {
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
@@ -75,13 +76,13 @@ public class TunnelMonitorChangeListener
                         tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
                         false,monitorProtocol, broker);
-                coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
 
-
-    @Override protected void update(InstanceIdentifier<TunnelMonitorParams> key,
+    @Override
+    protected void update(InstanceIdentifier<TunnelMonitorParams> key,
                                     TunnelMonitorParams dataObjectModificationBefore,
                                     TunnelMonitorParams dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorChangeListener called with {}",dataObjectModificationAfter.isEnabled());
@@ -90,7 +91,6 @@ public class TunnelMonitorChangeListener
         Class<? extends TunnelMonitoringTypeBase> monitorProtocolAfter =
                 dataObjectModificationAfter.getMonitorProtocol();
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
@@ -112,7 +112,7 @@ public class TunnelMonitorChangeListener
                         tzone.getZoneName(),dataObjectModificationAfter.isEnabled(), monitorProtocol);
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
                         dataObjectModificationAfter.isEnabled(), monitorProtocol, broker);
-                coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
@@ -122,7 +122,6 @@ public class TunnelMonitorChangeListener
         LOG.debug("Add - TunnelMonitorToggleWorker with Enable = {}, MonitorProtocol = {}",
                 dataObjectModification.isEnabled(), dataObjectModification.getMonitorProtocol());
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional =
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
@@ -137,7 +136,7 @@ public class TunnelMonitorChangeListener
                         dataObjectModification.getMonitorProtocol());
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
                         dataObjectModification.isEnabled(), monitorProtocol, broker);
-                coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
@@ -145,5 +144,4 @@ public class TunnelMonitorChangeListener
     @Override protected TunnelMonitorChangeListener getDataTreeChangeListener() {
         return TunnelMonitorChangeListener.this;
     }
-
 }
