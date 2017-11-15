@@ -31,6 +31,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -145,9 +146,13 @@ public class ItmInternalTunnelAddTest {
     @Mock IdManagerService idManagerService;
     @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
+    @Mock JobCoordinator jobCoordinator;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional;
+
+    private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(
+            jobCoordinator);
 
     @Before
     public void setUp() {
@@ -165,7 +170,6 @@ public class ItmInternalTunnelAddTest {
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
-
     }
 
     @After
@@ -242,7 +246,7 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
-        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
+        itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
                 meshDpnListVxlan, itmConfig);
 
         //Add some verifications
@@ -275,7 +279,7 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListGre,
+        itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListGre,
                 meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
@@ -308,7 +312,7 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        ItmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
+        itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
                 meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,

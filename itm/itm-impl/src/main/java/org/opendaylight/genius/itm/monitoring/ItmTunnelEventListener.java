@@ -20,9 +20,9 @@ import javax.management.JMException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
@@ -37,13 +37,16 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         ItmTunnelEventListener> implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelEventListener.class);
+
     private final DataBroker broker;
+    private final JobCoordinator jobCoordinator;
     private JMXAlarmAgent alarmAgent;
 
     @Inject
-    public ItmTunnelEventListener(final DataBroker dataBroker) {
+    public ItmTunnelEventListener(final DataBroker dataBroker, JobCoordinator jobCoordinator) {
         super(StateTunnelList.class, ItmTunnelEventListener.class);
         this.broker = dataBroker;
+        this.jobCoordinator = jobCoordinator;
         try {
             this.alarmAgent = new JMXAlarmAgent();
         } catch (JMException e) {
@@ -96,7 +99,6 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     @Override
     protected void remove(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList del) {
         LOG.trace("Tunnel Interface added: {}", del.getTunnelInterfaceName());
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         ItmTunnelRemoveAlarmWorker itmTunnelRemoveAlarmWorker = new ItmTunnelRemoveAlarmWorker(del);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelRemoveAlarmWorker);
@@ -109,7 +111,6 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         TunnelOperStatus operStatus = update.getOperState();
         if (!Objects.equals(original.getOperState(), update.getOperState())) {
             LOG.debug("Tunnel Interface {} changed state to {}", original.getTunnelInterfaceName(), operStatus);
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelUpdateAlarmWorker itmTunnelUpdateAlarmWorker = new ItmTunnelUpdateAlarmWorker(original, update);
             jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelUpdateAlarmWorker);
         }
@@ -118,7 +119,6 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     @Override
     protected void add(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList add) {
         LOG.debug("Tunnel Interface of type Tunnel added: {}", add.getTunnelInterfaceName());
-        DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
         ItmTunnelAddAlarmWorker itmTunnelAddAlarmWorker = new ItmTunnelAddAlarmWorker(add);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelAddAlarmWorker);

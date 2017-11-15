@@ -33,15 +33,18 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private final IMdsalApiManager mdsalManager;
     private final List<HwVtep> cfgdHwVteps;
     private final TransportZone originalTZone;
+    private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
-                              DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager) {
+                              DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager,
+                              ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker) {
         this.delDpnList = delDpnList;
         this.dataBroker = broker;
         this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
         this.originalTZone = originalTZone;
+        this.itmInternalTunnelDeleteWorker = itmInternalTunnelDeleteWorker;
         LOG.trace("ItmTepRemoveWorker initialized with  DpnList {}", delDpnList);
         LOG.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}", delHwList);
     }
@@ -50,7 +53,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        futures.addAll(ItmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, mdsalManager,
+        futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, mdsalManager,
                 delDpnList, meshedDpnList));
         LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",
                 delDpnList, meshedDpnList);

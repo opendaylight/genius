@@ -23,6 +23,7 @@ import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
 import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 
 public class ItmProviderTest {
@@ -43,6 +44,7 @@ public class ItmProviderTest {
     @Mock TransportZoneListener transportZoneListener;
     @Mock VtepConfigSchemaListener vtepConfigSchemaListener;
     @Mock OvsdbNodeListener ovsdbNodeListener;
+    @Mock JobCoordinator jobCoordinator;
 
     @Test
     public void testClose() {
@@ -50,7 +52,7 @@ public class ItmProviderTest {
                 interfaceStateListener, itmManager, itmManagerRpcService, itmMonitoringListener,
                 itmMonitoringIntervalListener, itmTunnelEventListener, stateTunnelListListener,
                 tepCommandHelper, tunnelMonitorChangeListener, tunnelMonitorIntervalListener,
-                transportZoneListener, vtepConfigSchemaListener, ovsdbNodeListener);
+                transportZoneListener, vtepConfigSchemaListener, ovsdbNodeListener, jobCoordinator);
         // ensure no exceptions
         // currently this method is empty
         provider.close();

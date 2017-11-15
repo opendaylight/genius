@@ -25,7 +25,6 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
@@ -36,6 +35,7 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
@@ -75,14 +75,19 @@ public class ItmTunnelAggregationHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelAggregationHelper.class);
     private static boolean tunnelAggregationEnabled;
+
     private final IInterfaceManager interfaceManager;
     private final IMdsalApiManager mdsalManager;
+    private final JobCoordinator jobCoordinator;
 
     @Inject
     public ItmTunnelAggregationHelper(final IInterfaceManager interfaceMngr,
-                                      final IMdsalApiManager mdsalMngr, final ItmConfig itmConfig) {
-        interfaceManager = interfaceMngr;
-        mdsalManager = mdsalMngr;
+                                      final IMdsalApiManager mdsalMngr,
+                                      final ItmConfig itmConfig,
+                                      final JobCoordinator jobCoordinator) {
+        this.interfaceManager = interfaceMngr;
+        this.mdsalManager = mdsalMngr;
+        this.jobCoordinator = jobCoordinator;
         initTunnelAggregationConfig(itmConfig);
     }
 
@@ -109,10 +114,9 @@ public class ItmTunnelAggregationHelper {
             return;
         }
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: updateLogicalTunnelSelectGroup name {}", logicTunnelName);
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         TunnelAggregationUpdateWorker worker =
                 new TunnelAggregationUpdateWorker(null, null, ifaceConfig, entry, MOD_GROUP_TUNNEL, broker);
-        coordinator.enqueueJob(logicTunnelName, worker);
+        jobCoordinator.enqueueJob(logicTunnelName, worker);
     }
 
     public void updateLogicalTunnelState(Interface ifaceState, int tunnelAction, DataBroker broker) {
@@ -121,7 +125,6 @@ public class ItmTunnelAggregationHelper {
 
     public void updateLogicalTunnelState(Interface ifStateOrigin, Interface ifStateUpdated,
                                                 int tunnelAction, DataBroker broker) {
-        boolean tunnelAggregationEnabled = isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled || ifStateUpdated == null) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: updateLogicalTunnelState - wrong configuration -"
                     + " tunnelAggregationEnabled {} ifStateUpdated {}", tunnelAggregationEnabled, ifStateUpdated);
@@ -145,10 +148,9 @@ public class ItmTunnelAggregationHelper {
             }
         }
         if (logicTunnelName != null) {
-            DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
             TunnelAggregationUpdateWorker worker =
                     new TunnelAggregationUpdateWorker(ifStateOrigin, ifStateUpdated, iface, null, tunnelAction, broker);
-            coordinator.enqueueJob(logicTunnelName, worker);
+            jobCoordinator.enqueueJob(logicTunnelName, worker);
         }
     }
 
@@ -415,10 +417,10 @@ public class ItmTunnelAggregationHelper {
             if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
                 String logicTunnelIfaceName = ifStateUpdated.getName();
                 return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                    final InterfaceParentEntry parentEntry = getInterfaceParentEntry(logicTunnelIfaceName, tx);
-                    updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, parentEntry, tx);
+                    final InterfaceParentEntry interfaceParentEntry = getInterfaceParentEntry(logicTunnelIfaceName, tx);
+                    updateLogicalTunnelGroupOperStatus(logicTunnelIfaceName, ifStateUpdated, interfaceParentEntry, tx);
                     updateLogicalTunnelAdminStatus(logicTunnelIfaceName, ifStateOrigin, ifStateUpdated,
-                                                        parentEntry, tx);
+                                                        interfaceParentEntry, tx);
                 }));
             }
             if (!ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {

@@ -19,7 +19,6 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
@@ -27,6 +26,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateUpdateHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -41,22 +41,22 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
     private final DataBroker broker;
+    private final JobCoordinator jobCoordinator;
     private final IInterfaceManager ifaceManager;
     private final ItmTunnelAggregationHelper tunnelAggregationHelper;
 
     @Inject
-    public InterfaceStateListener(final DataBroker dataBroker,IInterfaceManager iinterfacemanager,
-            final ItmTunnelAggregationHelper tunnelAggregation) {
-
+    public InterfaceStateListener(final DataBroker dataBroker, IInterfaceManager iinterfacemanager,
+            final ItmTunnelAggregationHelper tunnelAggregation, JobCoordinator jobCoordinator) {
         super(Interface.class, InterfaceStateListener.class);
         this.broker = dataBroker;
+        this.jobCoordinator = jobCoordinator;
         this.ifaceManager = iinterfacemanager;
         this.tunnelAggregationHelper = tunnelAggregation;
     }
 
     @PostConstruct
     public void start() {
-
         registerListener(this.broker);
         LOG.info("Interface state listener Started");
     }
@@ -90,11 +90,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
     @Override
     protected void add(InstanceIdentifier<Interface> identifier, Interface iface) {
-
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelAddWorker itmTunnelAddWorker = new ItmTunnelAddWorker(iface);
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelAddWorker);
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
@@ -105,11 +103,9 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
 
     @Override
     protected void remove(InstanceIdentifier<Interface> identifier, Interface iface) {
-
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
-            DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
             ItmTunnelRemoveWorker itmTunnelRemoveWorker = new ItmTunnelRemoveWorker(iface);
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelRemoveWorker);
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
@@ -129,7 +125,6 @@ public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Inte
             OperStatus operStatus = update.getOperStatus();
             if (!Objects.equals(original.getOperStatus(), update.getOperStatus())) {
                 LOG.debug("Tunnel Interface {} changed state to {}", original.getName(), operStatus);
-                DataStoreJobCoordinator jobCoordinator = DataStoreJobCoordinator.getInstance();
                 ItmTunnelUpdateWorker itmTunnelUpdateWorker = new ItmTunnelUpdateWorker(original, update);
                 jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + original.getName(), itmTunnelUpdateWorker);
             }

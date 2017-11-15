@@ -40,6 +40,7 @@ import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
@@ -61,8 +62,10 @@ import org.slf4j.LoggerFactory;
 public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
+
     private final ITMManager itmManager;
     private final DataBroker dataBroker;
+    private final JobCoordinator jobCoordinator;
     private final ItmManagerRpcService itmRpcService ;
     private final IdManagerService idManager;
     private final TepCommandHelper tepCommandHelper;
@@ -97,7 +100,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        TunnelMonitorIntervalListener tunnelMonitorIntervalListener,
                        TransportZoneListener transportZoneListener,
                        VtepConfigSchemaListener vtepConfigSchemaListener,
-                       OvsdbNodeListener ovsdbNodeListener) {
+                       OvsdbNodeListener ovsdbNodeListener,
+                       JobCoordinator jobCoordinator) {
         LOG.info("ItmProvider Before register MBean");
         ITM_STAT_MON.registerMbean();
         this.dataBroker = dataBroker;
@@ -116,6 +120,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.tzChangeListener = transportZoneListener;
         this.vtepConfigSchemaListener = vtepConfigSchemaListener;
         this.ovsdbChangeListener = ovsdbNodeListener;
+        this.jobCoordinator = jobCoordinator;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 

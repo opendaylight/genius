@@ -15,9 +15,9 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.itm.confighelpers.ItmMonitorIntervalWorker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -29,13 +29,17 @@ import org.slf4j.LoggerFactory;
 public class TunnelMonitorIntervalListener
         extends AsyncDataTreeChangeListenerBase<TunnelMonitorInterval, TunnelMonitorIntervalListener>
         implements  AutoCloseable {
+
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorIntervalListener.class);
+
     private final DataBroker broker;
+    private final JobCoordinator jobCoordinator;
 
     @Inject
-    public TunnelMonitorIntervalListener(DataBroker dataBroker) {
+    public TunnelMonitorIntervalListener(DataBroker dataBroker, JobCoordinator jobCoordinator) {
         super(TunnelMonitorInterval.class, TunnelMonitorIntervalListener.class);
         this.broker = dataBroker;
+        this.jobCoordinator = jobCoordinator;
     }
 
     @PostConstruct
@@ -57,7 +61,6 @@ public class TunnelMonitorIntervalListener
     @Override
     protected void remove(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
         LOG.debug("remove TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
@@ -69,7 +72,7 @@ public class TunnelMonitorIntervalListener
                         tzone.getZoneName(),dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModification.getInterval(), broker);
-                coordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
     }
@@ -78,7 +81,6 @@ public class TunnelMonitorIntervalListener
                                     TunnelMonitorInterval dataObjectModificationBefore,
                                     TunnelMonitorInterval dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorIntervalListener called with {}",dataObjectModificationAfter.getInterval());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
@@ -89,7 +91,7 @@ public class TunnelMonitorIntervalListener
                         tzone.getZoneName(),dataObjectModificationAfter.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModificationAfter.getInterval(), broker);
-                coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
+                jobCoordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
         }
     }
@@ -97,7 +99,6 @@ public class TunnelMonitorIntervalListener
     @Override
     protected void add(InstanceIdentifier<TunnelMonitorInterval> key, TunnelMonitorInterval dataObjectModification) {
         LOG.debug("Add TunnelMonitorIntervalListener called with {}",dataObjectModification.getInterval());
-        DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
@@ -109,7 +110,7 @@ public class TunnelMonitorIntervalListener
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModification.getInterval(), broker);
                 //conversion to milliseconds done while writing to i/f-mgr config DS
-                coordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
+                jobCoordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
         }
     }
