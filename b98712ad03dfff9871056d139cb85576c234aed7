@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_eee629af",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/diagstatus/DatastoreServiceStatusProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T14:38:05Z",
+      "side": 1,
+      "message": "sorry but it would be better to name this diagstatus.internal, not because I\u0027m a pain, but because if you do that then the maven-bundle-plugin (via BND) automatically make this an OSGi \"private package\" (which cannot be access from other bundles), because it\u0027s called \"internal\", which is good for sometting like this - private package guarantee means that you can condifidently change it later, being sure that nobody is depending on it.",
+      "revId": "b98712ad03dfff9871056d139cb85576c234aed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_2e04c148",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/diagstatus/DatastoreServiceStatusProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-15T14:38:05Z",
+      "side": 1,
+      "message": "are you 100% sure that this MBeanUtils.readMBeanAttribute() will NEVER return null? What if there is ever a change in controller? Because if it ever does, then this will lead to a NullPointerException NPE, because of the what\u0027s called \"autoboxing\".\n\nIf would be much safer to cast to an upper-case Boolean object instead of a lower case boolean primitive, and then null check that.\n\nAlso, can you sync up Faseela - she\u0027s just about to move the diagstatus.MBeanUtils to somewhere else, and will either remove or @deprecate diagstatus.MBeanUtils very soon, in https://git.opendaylight.org/gerrit/#/c/65153/",
+      "revId": "b98712ad03dfff9871056d139cb85576c234aed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
