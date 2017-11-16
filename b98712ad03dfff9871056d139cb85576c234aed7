@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_9ad5231e",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/diagstatus/DatastoreServiceStatusProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-16T06:18:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_eee629af",
+      "revId": "b98712ad03dfff9871056d139cb85576c234aed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_2e04c148",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/diagstatus/DatastoreServiceStatusProvider.java",
         "patchSetId": 4
@@ -47,6 +65,24 @@
       "writtenOn": "2017-11-15T14:57:06Z",
       "side": 1,
       "message": "The controller MBean is boolean getSyncStatus();",
+      "parentUuid": "9a245df4_2e04c148",
+      "revId": "b98712ad03dfff9871056d139cb85576c234aed7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7adaef4c",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/diagstatus/DatastoreServiceStatusProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-16T06:18:14Z",
+      "side": 1,
+      "message": "Done",
       "parentUuid": "9a245df4_2e04c148",
       "revId": "b98712ad03dfff9871056d139cb85576c234aed7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
