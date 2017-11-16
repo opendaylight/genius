@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static java.util.Collections.singletonList;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -267,31 +269,31 @@ public final class ItmInternalTunnelAddWorker {
         private final String logicTunnelGroupName;
         private final BigInteger srcDpnId;
         private final BigInteger dstDpnId;
-        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
 
         ItmTunnelAggregationWorker(String logicGroupName, BigInteger srcDpnId, BigInteger dstDpnId, DataBroker broker) {
             this.logicTunnelGroupName = logicGroupName;
             this.srcDpnId = srcDpnId;
             this.dstDpnId = dstDpnId;
-            this.dataBroker = broker;
+            this.txRunner = new ManagedNewTransactionRunnerImpl(broker);
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            //The logical tunnel interface be created only when the first tunnel interface on each OVS is created
-            InternalTunnel tunnel = ItmUtils.itmCache.getInternalTunnel(logicTunnelGroupName);
-            if (tunnel == null) {
-                WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-                LOG.info("MULTIPLE_VxLAN_TUNNELS: add the logical tunnel group {} because a first tunnel"
-                        + " interface on srcDpnId {} dstDpnId {} is created", logicTunnelGroupName, srcDpnId, dstDpnId);
-                createLogicalTunnelInterface(srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName);
-                createInternalTunnel(srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName, tx);
-                futures.add(tx.submit());
-            } else {
-                LOG.debug("MULTIPLE_VxLAN_TUNNELS: not first tunnel on srcDpnId {} dstDpnId {}", srcDpnId, dstDpnId);
-            }
-            return futures;
+            return singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                //The logical tunnel interface be created only when the first tunnel interface on each OVS is created
+                InternalTunnel tunnel = ItmUtils.itmCache.getInternalTunnel(logicTunnelGroupName);
+                if (tunnel == null) {
+                    LOG.info("MULTIPLE_VxLAN_TUNNELS: add the logical tunnel group {} because a first tunnel interface"
+                            + " on srcDpnId {} dstDpnId {} is created", logicTunnelGroupName, srcDpnId, dstDpnId);
+                    createLogicalTunnelInterface(srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class,
+                            logicTunnelGroupName);
+                    createInternalTunnel(srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName, tx);
+                } else {
+                    LOG.debug("MULTIPLE_VxLAN_TUNNELS: not first tunnel on srcDpnId {} dstDpnId {}", srcDpnId,
+                            dstDpnId);
+                }
+            }));
         }
     }
 }
