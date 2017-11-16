@@ -15,9 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nonnull;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 
-public class ReleasedIdHolder implements IdHolder, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ReleasedIdHolder implements IdHolder {
     private static final int INITIAL_INDEX = 0;
 
     private final AtomicLong availableIdCount = new AtomicLong();
@@ -128,7 +126,7 @@ public class ReleasedIdHolder implements IdHolder, Serializable {
         return delayedEntries;
     }
 
-    public void replaceDelayedEntries(List<DelayedIdEntry> newDelayedEntries) {
+    public void replaceDelayedEntries(@Nonnull List<DelayedIdEntry> newDelayedEntries) {
         this.delayedEntries = new CopyOnWriteArrayList<>(newDelayedEntries);
     }
 
