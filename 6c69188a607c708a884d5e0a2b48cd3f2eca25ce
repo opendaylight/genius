@@ -16,6 +16,24 @@
       "revId": "6c69188a607c708a884d5e0a2b48cd3f2eca25ce",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ae0f0c87",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T11:29:56Z",
+      "side": 1,
+      "message": "I\u0027m in for that, BUT wondering if we can come up with some smart (generics?) way to let it OPTIONALLY return something, but not enforce it - because I *HATE* (in capital letters) those artificial \"return null\" lines you have to add when you have nothing to return in APIs which a Callable (or rather infrautils\u0027 CheckedCallable, BTW see parallel https://git.opendaylight.org/gerrit/#/c/65566/)... got any ideas for that?  Or... just two different methods? Bit ugly, that. Hm...",
+      "parentUuid": "9a245df4_74896874",
+      "revId": "6c69188a607c708a884d5e0a2b48cd3f2eca25ce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
