@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_a2e0bdfa",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T22:31:27Z",
+      "side": 0,
+      "message": "\"Dead store to delayedIdEntryInCache\"",
+      "range": {
+        "startLine": 166,
+        "startChar": 29,
+        "endLine": 166,
+        "endChar": 50
+      },
+      "revId": "3579cba83a4d2e5c498e12aa05ccc35055ccaf78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_02e9c9e5",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T22:31:27Z",
+      "side": 0,
+      "message": "\"Load of known null value existingFutureIdValue\" - checkForIdInIdEntries merely checks for null so pass as a boolean instead.",
+      "range": {
+        "startLine": 307,
+        "startChar": 20,
+        "endLine": 307,
+        "endChar": 41
+      },
+      "revId": "3579cba83a4d2e5c498e12aa05ccc35055ccaf78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_e2e59509",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 339,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T22:31:27Z",
+      "side": 0,
+      "message": "\"Dead store of releasedId:\"",
+      "range": {
+        "startLine": 339,
+        "startChar": 27,
+        "endLine": 339,
+        "endChar": 37
+      },
+      "revId": "3579cba83a4d2e5c498e12aa05ccc35055ccaf78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_42ef41e9",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T22:31:27Z",
+      "side": 0,
+      "message": "\"removeAll used to clear a collection - use c.clear(), not c.removeAll(c) as removeAll is less clear, susceptible to errors from typos, less efficient and for some collections, might throw a ConcurrentModificationException.\"",
+      "range": {
+        "startLine": 448,
+        "startChar": 38,
+        "endLine": 448,
+        "endChar": 47
+      },
+      "revId": "3579cba83a4d2e5c498e12aa05ccc35055ccaf78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_22eccdf2",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 540,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T22:31:27Z",
+      "side": 0,
+      "message": "\"Method ignores return value\"",
+      "range": {
+        "startLine": 540,
+        "startChar": 22,
+        "endLine": 540,
+        "endChar": 27
+      },
+      "revId": "3579cba83a4d2e5c498e12aa05ccc35055ccaf78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_82bc99dd",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/ReleasedIdHolder.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T22:31:27Z",
+      "side": 0,
+      "message": "\"Class ReleasedIdHolder defines non-transient non-serializable instance field idUtils\" - why is this class Serializable anyway... remove it since it would fail anyway",
+      "range": {
+        "startLine": 18,
+        "startChar": 51,
+        "endLine": 18,
+        "endChar": 63
+      },
+      "revId": "3579cba83a4d2e5c498e12aa05ccc35055ccaf78",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
