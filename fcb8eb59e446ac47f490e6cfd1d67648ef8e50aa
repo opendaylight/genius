@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_e46645ec",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-16T14:44:21Z",
+      "side": 1,
+      "message": "Yeah, by setting the initial value to 0L the behavior is the same.",
+      "parentUuid": "9a245df4_31537d3a",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c1b17d90",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
         "patchSetId": 1
