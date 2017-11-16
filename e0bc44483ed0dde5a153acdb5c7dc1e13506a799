@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_9a2d2301",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T08:38:22Z",
+      "side": 1,
+      "message": "This method can be @Nonnull I believe - surprised FB doesn\u0027t flag the null check as redundant ...  oh well the null check doesn\u0027t hurt",
+      "range": {
+        "startLine": 44,
+        "startChar": 23,
+        "endLine": 44,
+        "endChar": 31
+      },
+      "revId": "e0bc44483ed0dde5a153acdb5c7dc1e13506a799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1a6f732c",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T08:38:22Z",
+      "side": 1,
+      "message": "As Michael pointed out, the IfAbsent path will result in an extra +1. To preserve existing behavior set FIRST_VALUE to 0.",
+      "range": {
+        "startLine": 46,
+        "startChar": 77,
+        "endLine": 46,
+        "endChar": 92
+      },
+      "revId": "e0bc44483ed0dde5a153acdb5c7dc1e13506a799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
