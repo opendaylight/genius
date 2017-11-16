@@ -11,11 +11,14 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -61,10 +64,12 @@ public final class ItmInternalTunnelAddWorker {
     };
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
     }
 
@@ -75,25 +80,22 @@ public final class ItmInternalTunnelAddWorker {
         monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
         monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         itmCfg = itmConfig;
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             LOG.error(" Build Tunnels was invoked with empty list");
-            return futures;
+            return Collections.emptyList();
         }
 
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        for (DPNTEPsInfo dpn : cfgdDpnList) {
-            //#####if dpn is not in meshedDpnList
-            buildTunnelFrom(dpn, meshedDpnList, dataBroker, mdsalManager, transaction);
-            if (null == meshedDpnList) {
-                meshedDpnList = new ArrayList<>();
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(transaction -> {
+            for (DPNTEPsInfo dpn : cfgdDpnList) {
+                //#####if dpn is not in meshedDpnList
+                buildTunnelFrom(dpn, meshedDpnList, dataBroker, mdsalManager, transaction);
+                if (meshedDpnList != null) {
+                    meshedDpnList.add(dpn);
+                }
+                // Update the config datastore -- FIXME -- Error Handling
+                updateDpnTepInfoToConfig(dpn);
             }
-            meshedDpnList.add(dpn);
-            // Update the config datastore -- FIXME -- Error Handling
-            updateDpnTepInfoToConfig(dpn);
-        }
-        futures.add(transaction.submit()) ;
-        return futures ;
+        }));
     }
 
     private static void updateDpnTepInfoToConfig(DPNTEPsInfo dpn) {
