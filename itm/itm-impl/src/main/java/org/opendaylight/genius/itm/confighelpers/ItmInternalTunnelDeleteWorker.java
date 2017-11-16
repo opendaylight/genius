@@ -7,11 +7,14 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static java.util.Collections.singletonList;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -19,6 +22,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -49,17 +54,16 @@ public class ItmInternalTunnelDeleteWorker {
                                                              List<DPNTEPsInfo> dpnTepsList,
                                                              List<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("TEPs to be deleted {} " , dpnTepsList);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        try {
+        ManagedNewTransactionRunner txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTransaction -> {
             if (dpnTepsList == null || dpnTepsList.size() == 0) {
                 LOG.debug("no vtep to delete");
-                return futures ;
+                return;
             }
 
             if (meshedDpnList == null || meshedDpnList.size() == 0) {
                 LOG.debug("No Meshed Vteps");
-                return futures ;
+                return;
             }
             for (DPNTEPsInfo srcDpn : dpnTepsList) {
                 LOG.trace("Processing srcDpn {}", srcDpn);
@@ -67,7 +71,7 @@ public class ItmInternalTunnelDeleteWorker {
                 List<TunnelEndPoints> meshedEndPtCache = ItmUtils.getTEPsForDpn(srcDpn.getDPNID(), meshedDpnList);
                 if (meshedEndPtCache == null) {
                     LOG.debug("No Tunnel End Point configured for this DPN {}", srcDpn.getDPNID());
-                    continue ;
+                    continue;
                 }
                 LOG.debug("Entries in meshEndPointCache {} for DPN Id{} ",
                         meshedEndPtCache.size(), srcDpn.getDPNID());
@@ -94,7 +98,7 @@ public class ItmInternalTunnelDeleteWorker {
                                             LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                     + "Destination TEP {} ", srcTep, dstTep);
                                             removeTrunkInterface(dataBroker, idManagerService, srcTep, dstTep, srcDpn
-                                                    .getDPNID(), dstDpn.getDPNID(), writeTransaction, futures);
+                                                    .getDPNID(), dstDpn.getDPNID(), writeTransaction);
                                         }
                                     }
                                 }
@@ -173,17 +177,12 @@ public class ItmInternalTunnelDeleteWorker {
                     }
                 }
             }
-            futures.add(writeTransaction.submit());
-        } catch (Exception e1) {
-            LOG.error("exception while deleting tep", e1);
-        }
-        return futures ;
+        }));
     }
 
     private static void removeTrunkInterface(DataBroker dataBroker, IdManagerService idManagerService,
                                              TunnelEndPoints srcTep, TunnelEndPoints dstTep, BigInteger srcDpnId,
-                                             BigInteger dstDpnId, WriteTransaction transaction,
-                                             List<ListenableFuture<Void>> futures) {
+                                             BigInteger dstDpnId, WriteTransaction transaction) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(idManagerService, srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
@@ -254,13 +253,13 @@ public class ItmInternalTunnelDeleteWorker {
         private final String logicTunnelName;
         private final BigInteger srcDpnId;
         private final BigInteger dstDpnId;
-        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
 
         ItmTunnelAggregationDeleteWorker(String groupName, BigInteger srcDpnId, BigInteger dstDpnId, DataBroker db) {
             this.logicTunnelName = groupName;
             this.srcDpnId = srcDpnId;
             this.dstDpnId = dstDpnId;
-            this.dataBroker = db;
+            this.txRunner = new ManagedNewTransactionRunnerImpl(db);
         }
 
         @Override
@@ -285,18 +284,18 @@ public class ItmInternalTunnelDeleteWorker {
                 }
             }
             if (emptyTunnelGroup && foundLogicGroupIface) {
-                WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-                LOG.debug("MULTIPLE_VxLAN_TUNNELS: remove the logical tunnel group {} because a last tunnel"
-                    + " interface on srcDpnId {} dstDpnId {} is removed", logicTunnelName, srcDpnId, dstDpnId);
-                InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(logicTunnelName);
-                tx.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
-                ItmUtils.itmCache.removeInterface(logicTunnelName);
-                InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
-                        .child(InternalTunnel.class,
-                                new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
-                tx.delete(LogicalDatastoreType.CONFIGURATION, path);
-                ItmUtils.itmCache.removeInternalTunnel(logicTunnelName);
-                futures.add(tx.submit());
+                return singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                    LOG.debug("MULTIPLE_VxLAN_TUNNELS: remove the logical tunnel group {} because a last tunnel"
+                        + " interface on srcDpnId {} dstDpnId {} is removed", logicTunnelName, srcDpnId, dstDpnId);
+                    InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(logicTunnelName);
+                    tx.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
+                    ItmUtils.itmCache.removeInterface(logicTunnelName);
+                    InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
+                            .child(InternalTunnel.class,
+                                    new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
+                    tx.delete(LogicalDatastoreType.CONFIGURATION, path);
+                    ItmUtils.itmCache.removeInternalTunnel(logicTunnelName);
+                }));
             } else if (!emptyTunnelGroup) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not last tunnel in logical tunnel group {}", logicTunnelName);
             }
