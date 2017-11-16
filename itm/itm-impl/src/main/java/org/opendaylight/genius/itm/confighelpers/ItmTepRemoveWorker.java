@@ -29,7 +29,6 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private final DataBroker dataBroker;
     private final List<DPNTEPsInfo> delDpnList ;
     private List<DPNTEPsInfo> meshedDpnList ;
-    private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final List<HwVtep> cfgdHwVteps;
     private final TransportZone originalTZone;
@@ -40,7 +39,6 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
                               ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker) {
         this.delDpnList = delDpnList;
         this.dataBroker = broker;
-        this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
         this.originalTZone = originalTZone;

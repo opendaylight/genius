@@ -26,7 +26,6 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepAddWorker.class);
 
     private final DataBroker dataBroker;
-    private final IdManagerService idManagerService;
     private List<DPNTEPsInfo> meshedDpnList;
     private final List<DPNTEPsInfo> cfgdDpnList ;
     private final IMdsalApiManager mdsalManager;
@@ -39,7 +38,6 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
                            ItmConfig itmConfig, ItmInternalTunnelAddWorker itmInternalTunnelAddWorker) {
         this.cfgdDpnList = cfgdDpnList ;
         this.dataBroker = broker ;
-        this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = hwVtepList;
         this.itmConfig = itmConfig;
