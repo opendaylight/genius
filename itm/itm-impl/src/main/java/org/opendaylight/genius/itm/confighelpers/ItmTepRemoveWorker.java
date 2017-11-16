@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -29,18 +28,16 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private final DataBroker dataBroker;
     private final List<DPNTEPsInfo> delDpnList ;
     private List<DPNTEPsInfo> meshedDpnList ;
-    private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final List<HwVtep> cfgdHwVteps;
     private final TransportZone originalTZone;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
-                              DataBroker broker, IdManagerService idManagerService, IMdsalApiManager mdsalManager,
+                              DataBroker broker, IMdsalApiManager mdsalManager,
                               ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker) {
         this.delDpnList = delDpnList;
         this.dataBroker = broker;
-        this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
         this.originalTZone = originalTZone;
