@@ -92,8 +92,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         this.itmManager = itmManager;
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
-        this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(jobCoordinator);
-        this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(jobCoordinator);
+        this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator);
+        this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator);
     }
 
     @PostConstruct
@@ -152,7 +152,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             // Get TunnelTypeBase object for tunnel-type configured in config file
             Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(itmConfig.getDefTzTunnelType());
 
-            if ((!itmConfig.isDefTzEnabled()) || (!tzOld.getTunnelType().equals(tunType))) {
+            if (!itmConfig.isDefTzEnabled() || !tzOld.getTunnelType().equals(tunType)) {
                 allowTunnelDeletion = true;
             } else {
                 // this is case when def-tz removal request is from Northbound.
@@ -281,7 +281,7 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             return notHostedDpnTepInfo;
         }
         List<UnknownVteps> unVtepsLst = tepNotHostedTransportZone.getUnknownVteps();
-        List<Vteps> vtepsList = new ArrayList<Vteps>();
+        List<Vteps> vtepsList = new ArrayList<>();
         if (unVtepsLst != null && !unVtepsLst.isEmpty()) {
             for (UnknownVteps vteps : unVtepsLst) {
                 BigInteger dpnID = vteps.getDpnId();
