@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_a77f2f65",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "Doesn\u0027t look like you\u0027ve had a chance to review https://git.opendaylight.org/gerrit/#/c/65290/ yet, but let us first get this in now, and then I\u0027m hoping you\u0027ll help to get that in... ;-)",
+      "parentUuid": "9a245df4_92940b44",
+      "revId": "91b3f9e223b5fa0eda55ab532d1b185ddf993b86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_2f7b447c",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/LockManager.java",
         "patchSetId": 7
