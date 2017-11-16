@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -26,7 +25,6 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepAddWorker.class);
 
     private final DataBroker dataBroker;
-    private final IdManagerService idManagerService;
     private List<DPNTEPsInfo> meshedDpnList;
     private final List<DPNTEPsInfo> cfgdDpnList ;
     private final IMdsalApiManager mdsalManager;
@@ -35,11 +33,10 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
 
     public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker,
-                           IdManagerService idManagerService, IMdsalApiManager mdsalManager,
+                           IMdsalApiManager mdsalManager,
                            ItmConfig itmConfig, ItmInternalTunnelAddWorker itmInternalTunnelAddWorker) {
         this.cfgdDpnList = cfgdDpnList ;
         this.dataBroker = broker ;
-        this.idManagerService = idManagerService;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = hwVtepList;
         this.itmConfig = itmConfig;

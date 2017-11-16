@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
 
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -52,18 +51,6 @@ public final class ItmInternalTunnelAddWorker {
     private static Integer monitorInterval;
     private static ItmConfig itmCfg;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
-
-    private static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
-        @Override
-        public void onSuccess(Void result) {
-            LOG.debug("Success in Datastore operation");
-        }
-
-        @Override
-        public void onFailure(Throwable error) {
-            LOG.error("Error in Datastore operation", error);
-        }
-    };
 
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
