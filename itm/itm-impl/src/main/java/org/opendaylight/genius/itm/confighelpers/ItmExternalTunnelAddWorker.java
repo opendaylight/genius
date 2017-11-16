@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -49,23 +48,8 @@ import org.slf4j.LoggerFactory;
 public class ItmExternalTunnelAddWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmExternalTunnelAddWorker.class);
 
-    private static Boolean monitorEnabled;
     private static Integer monitorInterval;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
-
-    private static final FutureCallback<Void> DEFAULT_CALLBACK =
-        new FutureCallback<Void>() {
-            @Override
-            public void onSuccess(Void result) {
-                LOG.debug("Success in Datastore operation");
-            }
-
-            @Override
-            public void onFailure(Throwable error) {
-                LOG.error("Error in Datastore operation", error);
-            }
-
-    };
 
     public static List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(DataBroker dataBroker,
                                                                               List<DPNTEPsInfo> cfgDpnList,
@@ -135,7 +119,6 @@ public class ItmExternalTunnelAddWorker {
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
         monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-        monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         if (null != cfgdDpnList && !cfgdDpnList.isEmpty()) {
             LOG.trace("calling tunnels from css {}",cfgdDpnList);
             tunnelsFromCSS(cfgdDpnList, writeTransaction , dataBroker);
@@ -154,8 +137,6 @@ public class ItmExternalTunnelAddWorker {
     private static void tunnelsFromCSS(List<DPNTEPsInfo> cfgdDpnList,
                                        WriteTransaction transaction,
                                        DataBroker dataBroker) {
-        Boolean monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
-        Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         for (DPNTEPsInfo dpn : cfgdDpnList) {
             LOG.trace("processing dpn {}" , dpn);
             if (dpn.getTunnelEndPoints() != null && !dpn.getTunnelEndPoints().isEmpty()) {
@@ -224,8 +205,6 @@ public class ItmExternalTunnelAddWorker {
             Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                     tzonePath, dataBroker);
             Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-            Boolean monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
-            Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
             if (transportZoneOptional.isPresent()) {
                 TransportZone tzone = transportZoneOptional.get();
                 //do we need to check tunnel type?
