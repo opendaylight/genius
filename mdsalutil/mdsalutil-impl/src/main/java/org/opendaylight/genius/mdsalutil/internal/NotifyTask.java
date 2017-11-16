@@ -7,9 +7,13 @@
  */
 package org.opendaylight.genius.mdsalutil.internal;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// This class invokes notifyAll() but doesn't actually do anything hence the "Naked notify" violation. Perhaps it is
+// intended to do something in the future so suppress the violation.
+@SuppressFBWarnings("NN_NAKED_NOTIFY")
 class NotifyTask implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(NotifyTask.class);
 
