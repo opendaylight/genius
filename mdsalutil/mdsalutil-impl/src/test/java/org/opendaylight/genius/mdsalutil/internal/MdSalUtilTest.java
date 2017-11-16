@@ -64,7 +64,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
     @Before
     public void setUp() throws Exception {
         dataBroker = getDataBroker();
-        mdSalMgr = new MDSALManager(dataBroker, ppS);
+        mdSalMgr = new MDSALManager(dataBroker, ppS, new FlowBatchingUtils());
         flowFwder = new MockFlowForwarder(dataBroker);
         grpFwder = new MockGroupForwarder(dataBroker);
 
