@@ -60,15 +60,16 @@ public final class ItmInternalTunnelAddWorker {
         }
     };
 
+    private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
 
-    public ItmInternalTunnelAddWorker(JobCoordinator jobCoordinator) {
+    public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+        this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
     }
 
-    public List<ListenableFuture<Void>> buildAllTunnels(DataBroker dataBroker, IMdsalApiManager mdsalManager,
-                                                        List<DPNTEPsInfo> cfgdDpnList, List<DPNTEPsInfo> meshedDpnList,
-                                                        ItmConfig itmConfig) {
+    public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
+                                                        List<DPNTEPsInfo> meshedDpnList, ItmConfig itmConfig) {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
         monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
