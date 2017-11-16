@@ -140,6 +140,30 @@
       "revId": "0dca47842ae375dab0ceaba065dc2bf865435b61",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ff937158",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T01:50:58Z",
+      "side": 1,
+      "message": "right - the local var was also called jobCoordinator",
+      "parentUuid": "9a245df4_ff3ff1b1",
+      "range": {
+        "startLine": 42,
+        "startChar": 33,
+        "endLine": 42,
+        "endChar": 47
+      },
+      "revId": "0dca47842ae375dab0ceaba065dc2bf865435b61",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
