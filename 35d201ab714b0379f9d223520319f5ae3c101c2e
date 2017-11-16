@@ -22,6 +22,30 @@
       "revId": "35d201ab714b0379f9d223520319f5ae3c101c2e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_2e1b1ccb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T11:30:03Z",
+      "side": 1,
+      "message": "as in \"above (^^^) catch not E but Exception\".. maybe not clear? ;) I can clarify it without funky symbols, once https://git.opendaylight.org/gerrit/#/c/65565/ (which this is built on top of) is agreed \u0026 gone in...",
+      "parentUuid": "9a245df4_f400b835",
+      "range": {
+        "startLine": 49,
+        "startChar": 19,
+        "endLine": 49,
+        "endChar": 24
+      },
+      "revId": "35d201ab714b0379f9d223520319f5ae3c101c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
