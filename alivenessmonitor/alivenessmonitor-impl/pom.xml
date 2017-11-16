@@ -71,7 +71,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   </dependencies>
   <build>
     <plugins>
-<!-- TODO HwVtepTunnelsStateHandler should not implements AlivenessProtocolHandler but have NOOP return null handlePacketIn() ...
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
@@ -79,7 +78,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
           <failOnError>true</failOnError>
         </configuration>
       </plugin>
-  -->
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
