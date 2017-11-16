@@ -16,6 +16,24 @@
       "revId": "b1214f958b89f6e1af57e8e1014952abb1781c74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a4860dd9",
+        "filename": "mdsalutil/mdsalutil-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2017-11-16T16:14:55Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "9a245df4_04fb99c1",
+      "revId": "b1214f958b89f6e1af57e8e1014952abb1781c74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
