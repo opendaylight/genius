@@ -7,10 +7,10 @@
  */
 package org.opendaylight.genius.lockmanager.impl;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -21,8 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock, LockListener>
-        implements AutoCloseable {
+public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock, LockListener> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LockListener.class);
     private final LockManagerServiceImpl lockManager;
@@ -40,11 +39,16 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
     }
 
     @Override
+    @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
     protected void remove(InstanceIdentifier<Lock> key, Lock remove) {
         String lockName = remove.getLockName();
         LOG.debug("Received remove for lock {} : {}", lockName, remove);
         CompletableFuture<Void> lock = lockManager.getSynchronizerForLock(lockName);
         if (lock != null) {
+            // FindBugs flags a false violation here - "passes a null value as the parameter of a method which must be
+            // non-null. Either this parameter has been explicitly marked as @Nonnull, or analysis has determined that
+            // this parameter is always dereferenced.". However neither is true. The type param is Void so you have to
+            // pas null.
             lock.complete(null);
         }
     }
