@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a245df4_baebc776",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-16T08:41:18Z",
+      "side": 1,
+      "message": "Not sure why this is Integer but should be long",
+      "range": {
+        "startLine": 25,
+        "startChar": 25,
+        "endLine": 25,
+        "endChar": 32
+      },
+      "revId": "e0bc44483ed0dde5a153acdb5c7dc1e13506a799",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_9a2d2301",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
         "patchSetId": 3
