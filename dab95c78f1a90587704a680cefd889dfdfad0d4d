@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_c7c863aa",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "GENIUS-86: LockManager fixes\n\nsee https://jira.opendaylight.org/browse/GENIUS-86",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a7cd6fb9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 14
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "remove this?",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a7444f1b",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "shall we reference what we learnt on the controller-dev discussion here?  Specifically, https://git.opendaylight.org/gerrit/#/c/61002/ is very relevant and interesting here, so I would suggest we add (something like) this:\n\n\"This is a problem typically seen in a scaled cluster under load due to timeouts, configurable in etc/ org.opendaylight.controller.cluster.datastore.cfg.  The new tell-based protocol, which will soon be enabled by default (c/61002), adds internal retries for transactions, making it unnecessary for application code to handle this scenario.\"",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a7f60ff7",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "sorry to have to be a PITA but this made me laugh - when do you expect new TransactionCommitFailedException to possibly ever be null and have a requireNonNull check here? ;-) You can and should, of course, remove this requireNonNull.",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_27e21f2f",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "there now doesn\u0027t seem to be a way anymore to ever reset this submitAndThrowException... which could be a problem for future tests using this, hope you agree? \n\nSo I think we should set submitAndThrowException \u003d false; in unfailSubmits() ? That\u0027s simplest and probably clearer to use than adding yet another method to DataBrokerFailures.  Could you please also cover this problem for non-regression in the DataBrokerFailuresTest?",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_87d2eb59",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "could you please LOG.warn() it anyway? Tx.",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_67d7f74b",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailuresImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T18:28:30Z",
+      "side": 1,
+      "message": "could you please LOG.warn() it anyway? Tx.",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
