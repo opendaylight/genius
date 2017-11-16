@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_31537d3a",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-16T14:34:35Z",
+      "side": 1,
+      "message": "David, did you want to take this into account?  Because in current change set you have not... oh but you change FIRST_VALUE from 1 to 0, so that does the trick? Ok then.",
+      "parentUuid": "9a245df4_e5dbec4c",
+      "revId": "fcb8eb59e446ac47f490e6cfd1d67648ef8e50aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_c1b17d90",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
         "patchSetId": 1
