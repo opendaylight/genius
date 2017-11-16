@@ -12,7 +12,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
@@ -22,10 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -45,6 +43,7 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.inject.AbstractLifecycle;
+import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.Table;
@@ -71,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
+import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,17 +78,20 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager {
 
-    private static final long FIXED_DELAY_IN_MILLISECONDS = 5000;
     private static final Logger LOG = LoggerFactory.getLogger(MDSALManager.class);
 
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
+    private final FlowBatchingUtils flowBatchingUtils = new FlowBatchingUtils();
 
     private final PacketProcessingService packetProcessingService;
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final SingleTransactionDataBroker singleTxDb;
+    private final FlowListener flowListener = new FlowListener();
+    private final FlowConfigListener flowConfigListener = new FlowConfigListener();
+    private final GroupListener groupListener = new GroupListener();
 
     /**
      * Writes the flows and Groups to the MD SAL DataStore which will be sent to
@@ -113,32 +116,23 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @Override
     protected void start() throws Exception {
         LOG.info("{} start", getClass().getSimpleName());
-        registerListener(dataBroker);
+
+        int batchSize = Integer.getInteger("batch.size", 1000);
+        int batchInterval = Integer.getInteger("batch.wait.time", 500);
+
+        flowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(dataBroker, batchSize, batchInterval));
+        flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        flowConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @Override
     protected void stop() throws Exception {
         LOG.info("{} stop", getClass().getSimpleName());
-    }
 
-    private void registerListener(DataBroker db) {
-        FlowListener flowListener = new FlowListener();
-        FlowConfigListener flowConfigListener = new FlowConfigListener();
-        final GroupListener groupListener = new GroupListener();
-        FlowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(), db);
-        flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
-        flowConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, db);
-        groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, db);
-    }
-
-    private InstanceIdentifier<Group> getWildCardGroupPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
-                .child(Group.class);
-    }
-
-    private InstanceIdentifier<Flow> getWildCardFlowPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
-                .child(Table.class).child(Flow.class);
+        flowListener.close();
+        flowConfigListener.close();
+        groupListener.close();
     }
 
     public CheckedFuture<Void, TransactionCommitFailedException> installFlowInternal(FlowEntity flowEntity) {
@@ -170,7 +164,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                     LOG.error("Install Flow -- Some other type of TransactionCommitFailedException", throwable);
                 }
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         return submitFuture;
     }
@@ -198,7 +192,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     public void batchedAddFlowInternal(BigInteger dpId, Flow flow) {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId(), flowKey);
-        FlowBatchingUtils.write(flowInstanceId, flow);
+        flowBatchingUtils.write(flowInstanceId, flow);
     }
 
     public void batchedRemoveFlowInternal(BigInteger dpId, Flow flow) {
@@ -206,7 +200,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         short tableId = flow.getTableId();
         if (flowExists(dpId, tableId, flowKey)) {
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-            FlowBatchingUtils.delete(flowInstanceId);
+            flowBatchingUtils.delete(flowInstanceId);
         } else {
             LOG.debug("Flow {} does not exist for dpn {}", flowKey, dpId);
         }
@@ -238,7 +232,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                     LOG.error("Install Group -- Some other type of TransactionCommitFailedException", throwable);
                 }
             }
-        });
+        }, MoreExecutors.directExecutor());
 
         return submitFuture;
     }
@@ -368,8 +362,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     public void sendPacketOutWithActionsInternal(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfos) {
-        packetProcessingService.transmitPacket(
+        Future<RpcResult<Void>> future = packetProcessingService.transmitPacket(
                 MDSALUtil.getPacketOut(actionInfos, payload, dpnId, getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
+        JdkFutures.addErrorLogging(future, LOG, "Transmit packet");
     }
 
     public void sendARPPacketOutWithActionsInternal(BigInteger dpnId, byte[] payload, List<ActionInfo> actions) {
