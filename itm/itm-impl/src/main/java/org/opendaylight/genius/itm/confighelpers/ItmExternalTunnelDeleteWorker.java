@@ -39,9 +39,7 @@ import org.slf4j.LoggerFactory;
 public class ItmExternalTunnelDeleteWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmExternalTunnelDeleteWorker.class);
 
-    private ItmExternalTunnelDeleteWorker() {
-        throw new IllegalStateException("Utility class");
-    }
+    private ItmExternalTunnelDeleteWorker() { }
 
     public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IdManagerService idManagerService,
             List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList, IpAddress extIp,
