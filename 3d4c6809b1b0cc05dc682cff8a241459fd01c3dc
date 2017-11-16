@@ -258,6 +258,30 @@
       "revId": "3d4c6809b1b0cc05dc682cff8a241459fd01c3dc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_87602ba6",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-11-16T18:29:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_6789b774",
+      "range": {
+        "startLine": 71,
+        "startChar": 42,
+        "endLine": 71,
+        "endChar": 60
+      },
+      "revId": "3d4c6809b1b0cc05dc682cff8a241459fd01c3dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
