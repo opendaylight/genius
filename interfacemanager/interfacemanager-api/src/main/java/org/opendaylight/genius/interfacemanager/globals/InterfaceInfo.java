@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -91,6 +92,9 @@ public class InterfaceInfo implements Serializable {
         return isUntaggedVlan;
     }
 
+    // "Confusing to have methods getDpId() and BridgeEntryBuilder.getDpid" - BridgeEntryBuilder is generated so can't
+    // change it.
+    @SuppressFBWarnings("NM_CONFUSING")
     public BigInteger getDpId() {
         return dpId;
     }
@@ -143,6 +147,9 @@ public class InterfaceInfo implements Serializable {
         this.portName = portName;
     }
 
+    // Confusing to have methods getPortName() and GetPortFromInterfaceOutputBuilder.getPortname()" -
+    // GetPortFromInterfaceOutputBuilder is generated so can't change it.
+    @SuppressFBWarnings("NM_CONFUSING")
     public String getPortName() {
         return this.portName;
     }
