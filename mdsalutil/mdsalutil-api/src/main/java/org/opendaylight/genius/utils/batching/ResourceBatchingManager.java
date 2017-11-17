@@ -204,12 +204,12 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     public void deregisterBatchableResource(String resourceType) {
-        resourceHandlerMapper.remove(resourceType);
-        resourceBatchingThreadMapper.remove(resourceType);
         ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = resourceBatchingThreadMapper.get(resourceType);
         if (scheduledThreadPoolExecutor != null) {
             scheduledThreadPoolExecutor.shutdown();
         }
+        resourceHandlerMapper.remove(resourceType);
+        resourceBatchingThreadMapper.remove(resourceType);
     }
 
     private class Batcher implements Runnable {
