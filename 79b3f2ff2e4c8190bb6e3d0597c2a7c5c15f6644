@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_7ffbf778",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-17T18:44:08Z",
+      "side": 1,
+      "message": "why is idManagerService being passed here, then?",
+      "revId": "79b3f2ff2e4c8190bb6e3d0597c2a7c5c15f6644",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
