@@ -22,8 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -73,8 +71,8 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    private final ConcurrentHashMap<String, Pair<BlockingQueue<ActionableResource>, ResourceHandler>>
-            resourceHandlerMapper = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, BlockingQueue<ActionableResource>> resourceQueues =
+            new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledThreadPoolExecutor>
             resourceBatchingThreadMapper = new ConcurrentHashMap<>();
@@ -100,17 +98,15 @@ public class ResourceBatchingManager implements AutoCloseable {
         Preconditions.checkNotNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
         Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
 
-        resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
+        resourceQueues.put(resourceType, resQueue);
         ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor)
                 Executors.newScheduledThreadPool(1, ThreadFactoryProvider.builder()
                         .namePrefix("ResourceBatchingManager").logger(LOG).build().get());
+        resDelegatorService.scheduleWithFixedDelay(new Batcher(resourceType, resQueue, resHandler), INITIAL_DELAY,
+                resHandler.getBatchInterval(), TIME_UNIT);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
-        if (resDelegatorService.getPoolSize() == 0) {
-            resDelegatorService.scheduleWithFixedDelay(
-                    new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
-        }
     }
 
     public void registerDefaultBatchHandlers(DataBroker broker) {
@@ -119,7 +115,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         Integer batchInterval = Integer.getInteger("resource.manager.batch.periodicity.ms", PERIODICITY_IN_MS);
 
         for (ShardResource shardResource : ShardResource.values()) {
-            if (resourceHandlerMapper.containsKey(shardResource.name())) {
+            if (resourceQueues.containsKey(shardResource.name())) {
                 continue;
             }
             DefaultBatchHandler batchHandler = new DefaultBatchHandler(broker, shardResource.datastoreType, batchSize,
@@ -197,10 +193,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     private BlockingQueue<ActionableResource> getQueue(String resourceType) {
-        if (resourceHandlerMapper.containsKey(resourceType)) {
-            return resourceHandlerMapper.get(resourceType).getLeft();
-        }
-        return null;
+        return resourceQueues.get(resourceType);
     }
 
     public void deregisterBatchableResource(String resourceType) {
@@ -208,15 +201,19 @@ public class ResourceBatchingManager implements AutoCloseable {
         if (scheduledThreadPoolExecutor != null) {
             scheduledThreadPoolExecutor.shutdown();
         }
-        resourceHandlerMapper.remove(resourceType);
+        resourceQueues.remove(resourceType);
         resourceBatchingThreadMapper.remove(resourceType);
     }
 
     private class Batcher implements Runnable {
         private final String resourceType;
+        private final BlockingQueue<ActionableResource> resourceQueue;
+        private final ResourceHandler resourceHandler;
 
-        Batcher(String resourceType) {
+        Batcher(String resourceType, BlockingQueue<ActionableResource> resourceQueue, ResourceHandler resourceHandler) {
             this.resourceType = resourceType;
+            this.resourceQueue = resourceQueue;
+            this.resourceHandler = resourceHandler;
         }
 
         @Override
@@ -224,34 +221,26 @@ public class ResourceBatchingManager implements AutoCloseable {
             List<ActionableResource> resList = new ArrayList<>();
 
             try {
-                Pair<BlockingQueue<ActionableResource>, ResourceHandler> resMapper =
-                        resourceHandlerMapper.get(resourceType);
-                if (resMapper == null) {
-                    LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
-                    return;
-                }
-                BlockingQueue<ActionableResource> resQueue = resMapper.getLeft();
-                ResourceHandler resHandler = resMapper.getRight();
-                resList.add(resQueue.take());
-                resQueue.drainTo(resList);
+                resList.add(resourceQueue.take());
+                resourceQueue.drainTo(resList);
 
                 long start = System.currentTimeMillis();
-                int batchSize = resHandler.getBatchSize();
+                int batchSize = resourceHandler.getBatchSize();
 
                 int batches = resList.size() / batchSize;
                 if (resList.size() > batchSize) {
                     LOG.info("Batched up resources of size {} into batches {} for resourcetype {}",
                             resList.size(), batches, resourceType);
                     for (int i = 0, j = 0; i < batches; j = j + batchSize,i++) {
-                        new MdsalDsTask<>(resourceType, resList.subList(j, j + batchSize)).process();
+                        process(resList.subList(j, j + batchSize));
                     }
                     // process remaining routes
                     LOG.trace("Picked up 1 size {} ", resList.subList(batches * batchSize, resList.size()).size());
-                    new MdsalDsTask<>(resourceType, resList.subList(batches * batchSize, resList.size())).process();
+                    process(resList.subList(batches * batchSize, resList.size()));
                 } else {
                     // process less than OR == batchsize routes
                     LOG.trace("Picked up 2 size {}", resList.size());
-                    new MdsalDsTask<>(resourceType, resList).process();
+                    process(resList);
                 }
 
                 long timetaken = System.currentTimeMillis() - start;
@@ -263,28 +252,11 @@ public class ResourceBatchingManager implements AutoCloseable {
             }
 
         }
-    }
 
-    private class MdsalDsTask<T extends DataObject> {
-        String resourceType;
-        List<ActionableResource> actResourceList;
-
-        MdsalDsTask(String resourceType, List<ActionableResource> actResourceList) {
-            this.resourceType = resourceType;
-            this.actResourceList = actResourceList;
-        }
-
-        public void process() {
+        public void process(List<ActionableResource> actResourceList) {
             LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
-            Pair<BlockingQueue<ActionableResource>, ResourceHandler> resMapper =
-                    resourceHandlerMapper.get(resourceType);
-            if (resMapper == null) {
-                LOG.error("Unable to find resourceMapper for batching the ResourceType {}", resourceType);
-                return;
-            }
-            ResourceHandler resHandler = resMapper.getRight();
-            DataBroker broker = resHandler.getResourceBroker();
-            LogicalDatastoreType dsType = resHandler.getDatastoreType();
+            DataBroker broker = resourceHandler.getResourceBroker();
+            LogicalDatastoreType dsType = resourceHandler.getDatastoreType();
             WriteTransaction tx = broker.newWriteOnlyTransaction();
             List<SubTransaction> transactionObjects = new ArrayList<>();
             Map<SubTransaction, SettableFuture<Void>> txMap = new HashMap<>();
@@ -292,18 +264,18 @@ public class ResourceBatchingManager implements AutoCloseable {
                 int startSize = transactionObjects.size();
                 switch (actResource.getAction()) {
                     case ActionableResource.CREATE:
-                        resHandler.create(tx, dsType, actResource.getInstanceIdentifier(), actResource.getInstance(),
-                                transactionObjects);
+                        resourceHandler.create(tx, dsType, actResource.getInstanceIdentifier(),
+                                actResource.getInstance(), transactionObjects);
                         break;
                     case ActionableResource.UPDATE:
                         Object updated = actResource.getInstance();
                         Object original = actResource.getOldInstance();
-                        resHandler.update(tx, dsType, actResource.getInstanceIdentifier(), original,
+                        resourceHandler.update(tx, dsType, actResource.getInstanceIdentifier(), original,
                                 updated,transactionObjects);
                         break;
                     case ActionableResource.DELETE:
-                        resHandler.delete(tx, dsType, actResource.getInstanceIdentifier(), actResource.getInstance(),
-                                transactionObjects);
+                        resourceHandler.delete(tx, dsType, actResource.getInstanceIdentifier(),
+                                actResource.getInstance(), transactionObjects);
                         break;
                     default:
                         LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
