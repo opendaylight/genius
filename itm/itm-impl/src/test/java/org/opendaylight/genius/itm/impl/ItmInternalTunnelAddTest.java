@@ -147,10 +147,12 @@ public class ItmInternalTunnelAddTest {
     @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
     @Mock JobCoordinator jobCoordinator;
-    ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional;
+
+    private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(
+            jobCoordinator);
 
     @Before
     public void setUp() {
@@ -168,8 +170,6 @@ public class ItmInternalTunnelAddTest {
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
-
-        itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator);
     }
 
     @After
@@ -246,8 +246,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListVxlan,
-                itmConfig);
+        itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
+                meshDpnListVxlan, itmConfig);
 
         //Add some verifications
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
@@ -279,8 +279,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListGre, meshDpnListGre,
-                itmConfig);
+        itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListGre,
+                meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
                 internalTunnel1,true);
@@ -312,8 +312,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre,
-                itmConfig);
+        itmInternalTunnelAddWorker.buildAllTunnels(dataBroker, mdsalApiManager, cfgdDpnListVxlan,
+                meshDpnListGre, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
                 internalTunnel1,true);

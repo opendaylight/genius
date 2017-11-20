@@ -107,7 +107,8 @@ public class ItmInternalTunnelDeleteTest {
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock JobCoordinator jobCoordinator;
-    ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
+
+    ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(jobCoordinator);
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
@@ -131,7 +132,6 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier);
 
-        itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator);
     }
 
     @After
@@ -191,7 +191,8 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,dpnEndpointsIdentifier);
 
-        itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
+        itmInternalTunnelDeleteWorker.deleteTunnels(dataBroker, mdsalApiManager,cfgdDpnListVxlan,
+                meshDpnListVxlan);
 
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,dpntePsInfoIdentifier);

@@ -44,17 +44,15 @@ public class ItmInternalTunnelDeleteWorker {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelDeleteWorker.class) ;
 
-    private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
 
-    public ItmInternalTunnelDeleteWorker(DataBroker dataBroker, JobCoordinator jobCoordinator) {
-        this.dataBroker = dataBroker;
+    public ItmInternalTunnelDeleteWorker(JobCoordinator jobCoordinator) {
         this.jobCoordinator = jobCoordinator;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public List<ListenableFuture<Void>> deleteTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> dpnTepsList,
-                                                      List<DPNTEPsInfo> meshedDpnList) {
+    public List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker, IMdsalApiManager mdsalManager,
+                                                      List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("TEPs to be deleted {} " , dpnTepsList);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
