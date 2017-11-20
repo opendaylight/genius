@@ -146,7 +146,9 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
-        LOG.info("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
+        LOG.info("Service Binding Entry removed for Interface: {}, ServiceName: {}, ServicePriority {}",
+                serviceKey.getInterfaceName(), boundServiceOld.getServiceName(), boundServiceOld.getServicePriority());
+        LOG.trace("Service Binding Entry removed for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
             boundServiceOld);
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable = flowBasedServicesRendererFactoryResolver
             .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesRemoveRenderer();
@@ -170,9 +172,10 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 LOG.info("Bound services flow update for service {}", boundServiceNew.getServiceName());
                 add(serviceKey, boundServiceNew, boundServicesList);
             } else {
-                LOG.warn("Service Binding entry update not allowed for: {}, Data: {}",
-                        InstanceIdentifier.keyOf(key.firstIdentifierOf(ServicesInfo.class)).getInterfaceName(),
-                        boundServiceNew);
+                LOG.warn("Service Binding entry update not allowed for: {}, ServiceName: {}",
+                        serviceKey.getInterfaceName(), boundServiceNew.getServiceName());
+                LOG.trace("Service Binding Entry update not allowed for Interface: {}, Old Data: {}, New Data: {}",
+                        serviceKey.getInterfaceName(), boundServiceNew, boundServiceOld);
             }
         }
     }
@@ -183,7 +186,10 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
-        LOG.info("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
+        LOG.info("Service Binding Entry created for Interface: {}, ServiceName: {}, ServicePriority {}",
+                serviceKey.getInterfaceName(), boundServicesNew.getServiceName(),
+                boundServicesNew.getServicePriority());
+        LOG.trace("Service Binding Entry created for Interface: {}, Data: {}", serviceKey.getInterfaceName(),
             boundServicesNew);
         FlowBasedServicesConfigAddable flowBasedServicesAddable = flowBasedServicesRendererFactoryResolver
             .getFlowBasedServicesRendererFactory(serviceKey.getServiceMode()).getFlowBasedServicesAddRenderer();
