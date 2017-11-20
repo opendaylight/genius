@@ -16,6 +16,24 @@
       "revId": "79b3f2ff2e4c8190bb6e3d0597c2a7c5c15f6644",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_74db167c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-20T18:13:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_7ffbf778",
+      "revId": "79b3f2ff2e4c8190bb6e3d0597c2a7c5c15f6644",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
