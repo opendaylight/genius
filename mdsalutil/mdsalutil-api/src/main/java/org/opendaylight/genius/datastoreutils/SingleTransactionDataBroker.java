@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -173,9 +174,10 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
             throws TransactionCommitFailedException {
 
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        tx.submit().checkedGet();
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+        runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            tx.put(datastoreType, path, data, true);
+        }).get();
     }
 
     public <T extends DataObject> void syncUpdate(
@@ -188,9 +190,10 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
             throws TransactionCommitFailedException {
 
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(datastoreType, path, data, true);
-        tx.submit().checkedGet();
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+        runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            tx.merge(datastoreType, path, data, true);
+        }).get();
     }
 
     public <T extends DataObject> void syncDelete(
