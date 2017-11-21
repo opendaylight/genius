@@ -7,14 +7,18 @@
  */
 package org.opendaylight.genius.datastoreutils;
 
+import static com.google.common.util.concurrent.Futures.makeChecked;
+
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -29,6 +33,15 @@ import org.slf4j.LoggerFactory;
 public class SingleTransactionDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionDataBroker.class);
+
+    private static final Function<? super Exception, TransactionCommitFailedException> EX_FN = exception -> {
+        if (exception instanceof ExecutionException) {
+            ExecutionException executionException = (ExecutionException) exception;
+            return new TransactionCommitFailedException("submit() failed", executionException.getCause());
+        } else {
+            return new TransactionCommitFailedException("submit() failed", exception);
+        }
+    };
 
     private final DataBroker broker;
 
@@ -173,9 +186,10 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
             throws TransactionCommitFailedException {
 
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        tx.submit().checkedGet();
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+        makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            tx.put(datastoreType, path, data, true);
+        }), EX_FN).checkedGet();
     }
 
     public <T extends DataObject> void syncUpdate(
@@ -188,9 +202,10 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
             throws TransactionCommitFailedException {
 
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(datastoreType, path, data, true);
-        tx.submit().checkedGet();
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+        makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            tx.merge(datastoreType, path, data, true);
+        }), EX_FN).checkedGet();
     }
 
     public <T extends DataObject> void syncDelete(
@@ -203,9 +218,10 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
             throws TransactionCommitFailedException {
 
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(datastoreType, path);
-        tx.submit().checkedGet();
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+        makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            tx.delete(datastoreType, path);
+        }), EX_FN).checkedGet();
     }
 
     // TODO Move asyncWrite/asyncUpdate/asyncRemove from org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils to here
