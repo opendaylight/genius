@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_bcb29049",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-21T13:43:37Z",
+      "side": 1,
+      "message": "This suggestion was ignored, without any comment; but I\u0027ll +1 it anyway.",
+      "parentUuid": "9a245df4_a7128f06",
+      "revId": "dab95c78f1a90587704a680cefd889dfdfad0d4d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_a7444f1b",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/DataBrokerFailures.java",
         "patchSetId": 14
