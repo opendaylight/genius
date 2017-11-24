@@ -8,17 +8,13 @@
 
 package org.opendaylight.genius.itm.listeners;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Callable;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
@@ -35,147 +31,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class InterfaceStateListener extends AsyncDataTreeChangeListenerBase<Interface, InterfaceStateListener>
-        implements AutoCloseable {
+public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<Interface> {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
 
-    private final DataBroker broker;
+    private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
-    private final IInterfaceManager ifaceManager;
+    private final IInterfaceManager interfaceManager;
     private final ItmTunnelAggregationHelper tunnelAggregationHelper;
 
     @Inject
     public InterfaceStateListener(final DataBroker dataBroker, IInterfaceManager iinterfacemanager,
             final ItmTunnelAggregationHelper tunnelAggregation, JobCoordinator jobCoordinator) {
-        super(Interface.class, InterfaceStateListener.class);
-        this.broker = dataBroker;
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+              InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
+        this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
-        this.ifaceManager = iinterfacemanager;
+        this.interfaceManager = iinterfacemanager;
         this.tunnelAggregationHelper = tunnelAggregation;
     }
 
-    @PostConstruct
-    public void start() {
-        registerListener(this.broker);
-        LOG.info("Interface state listener Started");
-    }
-
     @Override
-    @PreDestroy
-    public void close() {
-        LOG.info("Interface state listener Closed");
-    }
-
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    private void registerListener(final DataBroker db) {
-
-        try {
-            registerListener(LogicalDatastoreType.OPERATIONAL,db);
-        } catch (final Exception e) {
-            LOG.error("ITM Interfaces State listener registration fail!", e);
-            throw new IllegalStateException("ITM Interfaces State listener registration failed.", e);
-        }
-    }
-
-    @Override
-    protected InstanceIdentifier<Interface> getWildCardPath() {
-        return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
-    }
-
-    @Override
-    protected InterfaceStateListener getDataTreeChangeListener() {
-        return this;
-    }
-
-    @Override
-    protected void add(InstanceIdentifier<Interface> identifier, Interface iface) {
+    public void add(@Nonnull Interface iface) {
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
-            ItmTunnelAddWorker itmTunnelAddWorker = new ItmTunnelAddWorker(iface);
-            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelAddWorker);
+            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), () -> ItmTunnelStateAddHelper
+                    .addTunnel(iface, interfaceManager, dataBroker));
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
-                tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.ADD_TUNNEL, broker);
+                tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.ADD_TUNNEL,
+                                                                 dataBroker);
             }
         }
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Interface> identifier, Interface iface) {
+    public void remove(@Nonnull Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
-            ItmTunnelRemoveWorker itmTunnelRemoveWorker = new ItmTunnelRemoveWorker(iface);
-            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), itmTunnelRemoveWorker);
+            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(),
+                () -> ItmTunnelStateRemoveHelper.removeTunnel(iface, dataBroker));
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
-                tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.DEL_TUNNEL, broker);
+                tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.DEL_TUNNEL,
+                                                                 dataBroker);
             }
         }
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> identifier, Interface original, Interface update) {
+    public void update(@Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
         /*
          * update contains only delta, may not include iftype Note: This assumes
          * type can't be edited on the fly
          */
-        if (ItmUtils.isItmIfType(original.getType())) {
-            LOG.trace("Interface updated. Old: {} New: {}", original, update);
-            OperStatus operStatus = update.getOperStatus();
-            if (!Objects.equals(original.getOperStatus(), update.getOperStatus())) {
-                LOG.debug("Tunnel Interface {} changed state to {}", original.getName(), operStatus);
-                ItmTunnelUpdateWorker itmTunnelUpdateWorker = new ItmTunnelUpdateWorker(original, update);
-                jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + original.getName(), itmTunnelUpdateWorker);
+        if (ItmUtils.isItmIfType(originalInterface.getType())) {
+            LOG.trace("Interface updated. Old: {} New: {}", originalInterface, updatedInterface);
+            OperStatus operStatus = updatedInterface.getOperStatus();
+            if (!Objects.equals(originalInterface.getOperStatus(), updatedInterface.getOperStatus())) {
+                LOG.debug("Tunnel Interface {} changed state to {}", originalInterface.getName(), operStatus);
+                jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + originalInterface.getName(),
+                    () -> ItmTunnelStateUpdateHelper.updateTunnel(updatedInterface, dataBroker));
             }
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
-                tunnelAggregationHelper.updateLogicalTunnelState(original, update,
-                                                                 ItmTunnelAggregationHelper.MOD_TUNNEL, broker);
+                tunnelAggregationHelper.updateLogicalTunnelState(originalInterface, updatedInterface,
+                                                                 ItmTunnelAggregationHelper.MOD_TUNNEL, dataBroker);
             }
         }
-    }
-
-    private class ItmTunnelAddWorker implements Callable<List<ListenableFuture<Void>>> {
-        private Interface iface;
-
-        ItmTunnelAddWorker(Interface iface) {
-            this.iface = iface;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            return ItmTunnelStateAddHelper.addTunnel(iface,ifaceManager, broker);
-        }
-
-    }
-
-    private class ItmTunnelRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-        private Interface iface;
-
-        ItmTunnelRemoveWorker(Interface iface) {
-            this.iface = iface;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            return ItmTunnelStateRemoveHelper.removeTunnel(iface, broker);
-        }
-
-    }
-
-    private class ItmTunnelUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
-        private Interface updatedIface;
-        private Interface originalIface;
-
-        ItmTunnelUpdateWorker(Interface originalIface, Interface updatedIface) {
-            this.updatedIface = updatedIface;
-            this.originalIface = originalIface;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            return ItmTunnelStateUpdateHelper.updateTunnel(updatedIface, broker);
-        }
-
     }
 }
