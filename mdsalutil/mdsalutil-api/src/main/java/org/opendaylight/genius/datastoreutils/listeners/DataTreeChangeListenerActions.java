@@ -32,8 +32,9 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      *
      * @param collection collection of changes
      */
-    default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        for (final DataTreeModification<T> dataTreeModification : collection) {
+    default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> changes) {
+        // This code is also in DataTreeEventCallbackRegistrarImpl and any changes should be applied there as well
+        for (final DataTreeModification<T> dataTreeModification : changes) {
             final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
             final T dataBefore = dataObjectModification.getDataBefore();
             final T dataAfter = dataObjectModification.getDataAfter();
