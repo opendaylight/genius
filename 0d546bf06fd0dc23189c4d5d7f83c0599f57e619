@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_a65d264b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-26T06:39:29Z",
+      "side": 1,
+      "message": "Something that just occurred to me is that it *might* be useful to have the function objects return t/f to signify whether or not they want to be de-registered at this point.",
+      "range": {
+        "startLine": 18,
+        "startChar": 63,
+        "endLine": 18,
+        "endChar": 69
+      },
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_6644ce74",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-26T06:39:29Z",
+      "side": 1,
+      "message": "A few comments on the name. I don\u0027t think the concept of \"DataInstance\" makes sense, perhaps just Instance? However, there is nothing in the API that forces this to be for a single object. You could use the same exact API for a sub-tree. Also, registerer is not a word ;-). In fact the only real functional difference between this and the other listeners is that this is \"fire once\" so I would propose calling it \"DataTreeEventCallback\" or something like that.",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_865aaa4e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-26T06:39:29Z",
+      "side": 1,
+      "message": "onUpdate for consistency?",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_4649d28a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-26T06:39:29Z",
+      "side": 1,
+      "message": "Although one can always track it at the time the lambda is created I do think it is nice to receive the path deleted as an argument.",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
