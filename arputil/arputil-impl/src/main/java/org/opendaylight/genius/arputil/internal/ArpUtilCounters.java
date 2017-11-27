@@ -18,7 +18,7 @@ public enum ArpUtilCounters {
     arp_req_rcv_notification,
     arp_req_rcv_notification_rejected;
 
-    private OccurenceCounter counter;
+    private final OccurenceCounter counter;
 
     ArpUtilCounters() {
         counter = new OccurenceCounter(getClass().getSimpleName(), name(), name());
