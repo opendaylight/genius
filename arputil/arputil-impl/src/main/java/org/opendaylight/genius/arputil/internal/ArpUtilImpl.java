@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -162,7 +163,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                         public void onSuccess(RpcResult<Void> result) {
                             LOG.trace("Successfully sent the arp pkt out for ip {}", dstIpAddress);
                         }
-                    });
+                    }, MoreExecutors.directExecutor());
 
             macAddrs.put(dstIpAddress, ft);
             return ft;
@@ -185,8 +186,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         byte[] payload;
         String interfaceName = null;
         byte[] srcIpBytes;
-        byte[] dstIpBytes = null;
-        byte[] srcMac = null;
+        byte[] dstIpBytes;
+        byte[] srcMac;
 
         RpcResultBuilder<Void> failureBuilder = RpcResultBuilder.failed();
         RpcResultBuilder<Void> successBuilder = RpcResultBuilder.success();
@@ -420,7 +421,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private class MacResponderTask implements Runnable {
-        ARP arp;
+        final ARP arp;
 
         MacResponderTask(ARP arp) {
             this.arp = arp;
