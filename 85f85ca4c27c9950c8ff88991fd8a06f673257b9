@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_ccee83b4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-27T10:22:10Z",
+      "side": 1,
+      "message": "Do we have an option to specify the number of retries? Any idea whether the users of SingleTransactionDataBroker uses DJC also within?",
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
