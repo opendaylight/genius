@@ -42,6 +42,29 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_3a4ae983",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-11-28T07:30:00Z",
+      "side": 1,
+      "message": "Also, just noticed this. Either you need to add the LogicalDataStore or switch back to DataTreeIdentifier.",
+      "range": {
+        "startLine": 24,
+        "startChar": 38,
+        "endLine": 24,
+        "endChar": 56
+      },
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_865aaa4e",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
         "patchSetId": 2
