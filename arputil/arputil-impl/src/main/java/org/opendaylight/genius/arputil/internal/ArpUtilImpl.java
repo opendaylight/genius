@@ -11,6 +11,7 @@ package org.opendaylight.genius.arputil.internal;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.codahale.metrics.Counter;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
@@ -45,6 +46,7 @@ import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.infrautils.inject.AbstractLifecycle;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -103,15 +105,34 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private final ConcurrentMap<String, String> macsDB = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>> macAddrs = new ConcurrentHashMap<>();
 
+    private final Counter arpRespRecvd;
+    private final Counter arpRespRecvdNotification;
+    private final Counter arpRespRecvdNotificationRejected;
+    private final Counter arpReqRecvd;
+    private final Counter arpReqRecvdNotification;
+    private final Counter arpReqRecvdNotificationRejected;
+    private static final String MODULENAME = "odl.genius.arputil.";
+
     @Inject
     public ArpUtilImpl(final DataBroker dataBroker, final PacketProcessingService packetProcessingService,
-            final NotificationPublishService notificationPublishService, final NotificationService notificationService,
-            final OdlInterfaceRpcService odlInterfaceRpcService) {
+                       final NotificationPublishService notificationPublishService,
+                       final NotificationService notificationService,
+                       final OdlInterfaceRpcService odlInterfaceRpcService,
+                       final MetricProvider metricProvider) {
         this.dataBroker = dataBroker;
         this.packetProcessingService = packetProcessingService;
         this.notificationPublishService = notificationPublishService;
         this.notificationService = notificationService;
         this.odlInterfaceRpcService = odlInterfaceRpcService;
+
+        arpRespRecvd = metricProvider.newCounter(this,MODULENAME + "arpResponseReceived");
+        arpRespRecvdNotification = metricProvider.newCounter(this,MODULENAME + "arpResponseReceivedNotification");
+        arpRespRecvdNotificationRejected = metricProvider.newCounter(this,
+                MODULENAME + "arpResponseReceivedNotificationRejected");
+        arpReqRecvd = metricProvider.newCounter(this,MODULENAME + "arpRequestReceived");
+        arpReqRecvdNotification = metricProvider.newCounter(this,MODULENAME + "arpRequestReceivedNotification");
+        arpReqRecvdNotificationRejected = metricProvider.newCounter(this,
+                MODULENAME + "arpRequestReceivedNotificationRejected");
     }
 
     @Override
@@ -454,7 +475,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
             int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
                     throws InterruptedException {
-        ArpUtilCounters.arp_res_rcv.inc();
+        arpRespRecvd.inc();
 
         IpAddress srcIp = new IpAddress(srcInetAddr.getHostAddress().toCharArray());
         IpAddress dstIp = new IpAddress(dstInetAddr.getHostAddress().toCharArray());
@@ -472,15 +493,16 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         builder.setDstMac(dstMac);
         ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
         if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
-            ArpUtilCounters.arp_res_rcv_notification_rejected.inc();
+            arpRespRecvdNotificationRejected.inc();
+
         } else {
-            ArpUtilCounters.arp_res_rcv_notification.inc();
+            arpRespRecvdNotification.inc();
         }
     }
 
     private void fireArpReqRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMac,
             InetAddress dstInetAddr, int tableId, BigInteger metadata) throws InterruptedException {
-        ArpUtilCounters.arp_req_rcv.inc();
+        arpReqRecvd.inc();
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
@@ -491,9 +513,9 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         builder.setMetadata(metadata);
         ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
         if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
-            ArpUtilCounters.arp_req_rcv_notification_rejected.inc();
+            arpReqRecvdNotificationRejected.inc();
         } else {
-            ArpUtilCounters.arp_req_rcv_notification.inc();
+            arpReqRecvdNotification.inc();
         }
     }
 
