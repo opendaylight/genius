@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,19 +27,6 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     private final Supplier<Long> incompleteTaskCountSupplier;
     private final Object incompleteTaskCountDetailsToStringer;
-
-    /**
-     * Constructs an instance that uses the deprecated DataStoreJobCoordinator.
-     *
-     * @deprecated Use
-     *             {@link TestableJobCoordinatorEventsWaiter#TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor)}
-     *             instead.
-     */
-    @Deprecated
-    public TestableJobCoordinatorEventsWaiter() {
-        incompleteTaskCountSupplier = () -> DataStoreJobCoordinator.getInstance().getIncompleteTaskCount();
-        incompleteTaskCountDetailsToStringer = DataStoreJobCoordinator.getInstance();
-    }
 
     @Inject
     public TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor coordinatorMonitor) {

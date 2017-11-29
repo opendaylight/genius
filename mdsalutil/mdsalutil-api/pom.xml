@@ -89,12 +89,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.infrautils.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.infrautils</groupId>
-      <!-- TODO Remove when when DataStoreJobCoordinator is removed -->
-      <artifactId>jobcoordinator-impl</artifactId>
-      <version>${genius.infrautils.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>value</artifactId>
     </dependency>

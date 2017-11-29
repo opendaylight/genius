@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
@@ -67,21 +66,4 @@ public class TestableJobCoordinatorEventsWaiterTest {
         jobCoordinatorEventsWaiter.awaitEventsConsumption();
         assertTrue(testCallable.wasCalled);
     }
-
-    @Test
-    public void testGeniusDataStoreJobCoordinatorUsingTestableJobCoordinatorEventsWaiter() {
-        TestCallable testCallable = new TestCallable();
-        DataStoreJobCoordinator.getInstance().enqueueJob(getClass().getName().toString(), testCallable);
-        jobCoordinatorEventsWaiter.awaitEventsConsumption();
-        assertTrue(testCallable.wasCalled);
-    }
-
-    @Test // do the exact same test again, just to make sure that the reset and null-ing works in the static
-    public void testGeniusDataStoreJobCoordinatorUsingTestableJobCoordinatorEventsWaiterAgain() {
-        TestCallable testCallable = new TestCallable();
-        DataStoreJobCoordinator.getInstance().enqueueJob(getClass().getName().toString(), testCallable);
-        jobCoordinatorEventsWaiter.awaitEventsConsumption();
-        assertTrue(testCallable.wasCalled);
-    }
-
 }

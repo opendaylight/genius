@@ -8,16 +8,12 @@
 package org.opendaylight.genius.datastoreutils.testutils;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Singleton;
-import javax.annotation.PreDestroy;
-import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
 import org.opendaylight.infrautils.jobcoordinator.internal.JobCoordinatorImpl;
 
 /**
- * Guice Binding for using {@link JobCoordinator} in components tests (with
- * support for legacy deprecated {@link DataStoreJobCoordinator}.
+ * Guice Binding for using {@link JobCoordinator} in components tests.
  *
  * @author Michael Vorburger.ch
  */
@@ -33,24 +29,5 @@ public class JobCoordinatorTestModule extends AbstractModule {
         JobCoordinatorImpl jobCoordinatorImpl = new JobCoordinatorImpl();
         bind(JobCoordinator.class).toInstance(jobCoordinatorImpl);
         bind(JobCoordinatorMonitor.class).toInstance(jobCoordinatorImpl);
-
-        DataStoreJobCoordinator.setInstance(new DataStoreJobCoordinator(jobCoordinatorImpl, jobCoordinatorImpl));
-        bind(DataStoreJobCoordinatorCloser.class).toInstance(new DataStoreJobCoordinatorCloser(jobCoordinatorImpl));
     }
-
-    @Singleton
-    private static class DataStoreJobCoordinatorCloser {
-        private final JobCoordinatorImpl jobCoordinatorImpl;
-
-        DataStoreJobCoordinatorCloser(JobCoordinatorImpl jobCoordinatorImpl) {
-            this.jobCoordinatorImpl = jobCoordinatorImpl;
-        }
-
-        @PreDestroy
-        public void close() {
-            jobCoordinatorImpl.destroy();
-            DataStoreJobCoordinator.getInstance().close();
-        }
-    }
-
 }
