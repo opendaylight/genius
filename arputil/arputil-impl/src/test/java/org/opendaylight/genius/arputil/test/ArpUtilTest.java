@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
+import org.opendaylight.genius.arputil.internal.ArpMetrics;
 import org.opendaylight.genius.arputil.internal.ArpUtilCounters;
 import org.opendaylight.genius.arputil.internal.ArpUtilImpl;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
@@ -44,6 +45,7 @@ public class ArpUtilTest {
 
     @Inject ArpUtilImpl arpUtil;
     @Inject OdlArputilService odlArputilService;
+    @Inject ArpMetrics arpMetrics;
 
     @Test
     public void testGetMac() throws Exception {
@@ -71,11 +73,11 @@ public class ArpUtilTest {
     public void testRespRecvdNotification() {
         PacketReceived packetReceived = ArpUtilTestUtil.createPayload(1); //response payload
 
-        Assert.assertEquals(0,ArpUtilCounters.arp_res_rcv_notification.get());
+        Assert.assertEquals(0, arpMetrics.get(ArpUtilCounters.arp_res_rcv_notification));
 
         arpUtil.onPacketReceived(packetReceived);//onPacketReceived triggers counter.inc()
 
-        Assert.assertEquals(1,ArpUtilCounters.arp_res_rcv_notification.get());
+        Assert.assertEquals(1, arpMetrics.get(ArpUtilCounters.arp_res_rcv_notification));
     }
 
     @Test

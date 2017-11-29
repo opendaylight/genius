@@ -17,6 +17,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
              interface="org.opendaylight.controller.md.sal.binding.api.NotificationPublishService" />
   <reference id="notificationService"
              interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
+  <reference id="metricProvider"
+             interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
 
   <odl:rpc-service id="packetProcessingService"
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService" />
