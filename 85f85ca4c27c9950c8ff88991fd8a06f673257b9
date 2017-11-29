@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_97992b71",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-29T18:20:47Z",
+      "side": 1,
+      "message": "Done; BTW if you know how to the that Futures.makeChecked thing without using the deprecated Guava, I\u0027m all open to a follow-up change from you to fix it, but I could not figure it out so just used that deprecated API anyway.",
+      "parentUuid": "7a1969be_cf8cb582",
+      "range": {
+        "startLine": 185,
+        "startChar": 23,
+        "endLine": 185,
+        "endChar": 34
+      },
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_ccee83b4",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
         "patchSetId": 2
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_d7a28399",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-29T18:20:47Z",
+      "side": 1,
+      "message": "That is a good point, but the bigger issue is not that this doesn\u0027t have an option to specify the number of retries, but that even RetryingManagedNewTransactionRunner does not have one.. if it\u0027s OK with you and I could get your +1/+2 anyway, I would like to follow-up separately in a new change?",
+      "parentUuid": "7a1969be_ccee83b4",
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_2fe9091b",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
         "patchSetId": 2
@@ -53,6 +95,24 @@
       "writtenOn": "2017-11-27T14:12:08Z",
       "side": 1,
       "message": "ditto etc",
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_779e2f58",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-29T18:20:47Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_2fe9091b",
       "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
