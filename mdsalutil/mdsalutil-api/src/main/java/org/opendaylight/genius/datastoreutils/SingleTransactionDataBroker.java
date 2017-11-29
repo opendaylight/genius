@@ -33,6 +33,8 @@ public class SingleTransactionDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionDataBroker.class);
 
+    private static final int DEFAULT_RETRIES = 3; // duplicated in RetryingManagedNewTransactionRunnerImpl
+
     private final DataBroker broker;
 
     // do *NOT* use BP @Inject here, see comment above
@@ -172,11 +174,23 @@ public class SingleTransactionDataBroker {
         syncWrite(broker, datastoreType, path, data);
     }
 
+    public <T extends DataObject> void syncWrite(
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
+            throws TransactionCommitFailedException {
+        syncWrite(broker, datastoreType, path, data, maxRetries);
+    }
+
     public static <T extends DataObject> void syncWrite(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
             throws TransactionCommitFailedException {
+        syncWrite(broker, datastoreType, path, data, DEFAULT_RETRIES);
+    }
 
-        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+    public static <T extends DataObject> void syncWrite(
+            DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
+            throws TransactionCommitFailedException {
+
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             tx.put(datastoreType, path, data, true);
         }), SUBMIT_MAPPER).checkedGet();
@@ -188,11 +202,22 @@ public class SingleTransactionDataBroker {
         syncUpdate(broker, datastoreType, path, data);
     }
 
+    public <T extends DataObject> void syncUpdate(
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
+            throws TransactionCommitFailedException {
+        syncUpdate(broker, datastoreType, path, data, maxRetries);
+    }
+
     public static <T extends DataObject> void syncUpdate(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data)
             throws TransactionCommitFailedException {
+        syncUpdate(broker, datastoreType, path, data, DEFAULT_RETRIES);
+    }
 
-        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+    public static <T extends DataObject> void syncUpdate(
+            DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
+            throws TransactionCommitFailedException {
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             tx.merge(datastoreType, path, data, true);
         }), SUBMIT_MAPPER).checkedGet();
@@ -204,11 +229,23 @@ public class SingleTransactionDataBroker {
         syncDelete(broker, datastoreType, path);
     }
 
+    public <T extends DataObject> void syncDelete(
+            LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, int maxRetries)
+            throws TransactionCommitFailedException {
+        syncDelete(broker, datastoreType, path, maxRetries);
+    }
+
     public static <T extends DataObject> void syncDelete(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
             throws TransactionCommitFailedException {
+        syncDelete(broker, datastoreType, path, DEFAULT_RETRIES);
+    }
 
-        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker);
+    public static <T extends DataObject> void syncDelete(
+            DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, int maxRetries)
+            throws TransactionCommitFailedException {
+
+        RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             tx.delete(datastoreType, path);
         }), SUBMIT_MAPPER).checkedGet();

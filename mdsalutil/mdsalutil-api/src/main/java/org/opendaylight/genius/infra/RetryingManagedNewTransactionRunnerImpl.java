@@ -48,7 +48,9 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
 
     // NB: The RetryingManagedNewTransactionRunnerTest is in mdsalutil-testutils's src/test, not this project's
 
-    private static final int MAX_RETRIES = 3;
+    private static final int DEFAULT_RETRIES = 3; // duplicated in SingleTransactionDataBroker
+
+    private final int maxRetries;
 
     private final ManagedNewTransactionRunner delegate;
 
@@ -57,12 +59,24 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
     /**
      * Constructor.
      * Please see the class level documentation above for more details about the threading model used.
+     * This uses the default of 3 retries, which is typically suitable.
      *
      * @param delegate the {@link ManagedNewTransactionRunner} to run the first attempt and retries (if any) in
      */
     @Inject
     public RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate) {
-        this(delegate, MoreExecutors.directExecutor());
+        this(delegate, MoreExecutors.directExecutor(), DEFAULT_RETRIES);
+    }
+
+    /**
+     * Constructor.
+     * Please see the class level documentation above for more details about the threading model used.
+     *
+     * @param delegate the {@link ManagedNewTransactionRunner} to run the first attempt and retries (if any) in
+     * @param maxRetries the maximum number of retry attempts
+     */
+    public RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate, int maxRetries) {
+        this(delegate, MoreExecutors.directExecutor(), maxRetries);
     }
 
     /**
@@ -71,17 +85,19 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
      *
      * @param delegate the {@link ManagedNewTransactionRunner} to run the first attempt and retries (if any) in
      * @param executor the {@link Executor} to asynchronously run any retry attempts in
+     * @param maxRetries the maximum number of retry attempts
      */
-    public RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate, Executor executor) {
+    public RetryingManagedNewTransactionRunnerImpl(ManagedNewTransactionRunner delegate, Executor executor,
+            int maxRetries) {
         this.delegate = delegate;
         this.executor = executor;
+        this.maxRetries = maxRetries;
     }
 
     @Override
     public <E extends Exception> ListenableFuture<Void>
         callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner) {
-
-        return callWithNewWriteOnlyTransactionAndSubmit(txRunner, MAX_RETRIES);
+        return callWithNewWriteOnlyTransactionAndSubmit(txRunner, maxRetries);
     }
 
 
@@ -105,7 +121,7 @@ public class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransa
     @Override
     public <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
             CheckedConsumer<ReadWriteTransaction, E> txRunner) {
-        return callWithNewReadWriteTransactionAndSubmit(txRunner, MAX_RETRIES);
+        return callWithNewReadWriteTransactionAndSubmit(txRunner, maxRetries);
     }
 
     private <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
