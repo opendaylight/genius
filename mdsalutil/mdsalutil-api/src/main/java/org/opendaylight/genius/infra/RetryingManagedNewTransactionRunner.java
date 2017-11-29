@@ -28,4 +28,9 @@ public class RetryingManagedNewTransactionRunner extends RetryingManagedNewTrans
     public RetryingManagedNewTransactionRunner(DataBroker dataBroker) {
         super(new ManagedNewTransactionRunnerImpl(dataBroker));
     }
+
+    public RetryingManagedNewTransactionRunner(DataBroker dataBroker, int maxRetries) {
+        super(new ManagedNewTransactionRunnerImpl(dataBroker), maxRetries);
+    }
+
 }
