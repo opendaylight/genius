@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_17c89b73",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-29T17:53:09Z",
+      "side": 1,
+      "message": "\"registrar\" is the correct word for \"registerer\"",
+      "parentUuid": "7a1969be_6644ce74",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_3a4ae983",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
         "patchSetId": 2
