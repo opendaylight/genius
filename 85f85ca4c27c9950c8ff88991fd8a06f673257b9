@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a1969be_773aaf37",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-29T18:54:00Z",
+      "side": 1,
+      "message": "It seems we should be using TransactionCommitFailedExceptionMapper... if the ExecutionException cause is a TransactionCommitFailedException (which it should be), we should return that directly.  TransactionCommitFailedExceptionMapper does this.",
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_cf8cb582",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
         "patchSetId": 2
@@ -37,6 +54,30 @@
       "side": 1,
       "message": "Done; BTW if you know how to the that Futures.makeChecked thing without using the deprecated Guava, I\u0027m all open to a follow-up change from you to fix it, but I could not figure it out so just used that deprecated API anyway.",
       "parentUuid": "7a1969be_cf8cb582",
+      "range": {
+        "startLine": 185,
+        "startChar": 23,
+        "endLine": 185,
+        "endChar": 34
+      },
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_9735ab48",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-29T18:54:00Z",
+      "side": 1,
+      "message": "you don\u0027t have to use makeChecked - you can catch ExecutionException from ListenableFuture and basically do the same thing as CheckedFuture. In fact I can see our own little ListenableFutures utility to do that...",
+      "parentUuid": "7a1969be_97992b71",
       "range": {
         "startLine": 185,
         "startChar": 23,
