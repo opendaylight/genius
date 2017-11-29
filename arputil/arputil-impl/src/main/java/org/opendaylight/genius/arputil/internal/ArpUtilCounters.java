@@ -8,8 +8,6 @@
 
 package org.opendaylight.genius.arputil.internal;
 
-import org.opendaylight.infrautils.counters.api.OccurenceCounter;
-
 public enum ArpUtilCounters {
     arp_res_rcv,
     arp_res_rcv_notification,
@@ -17,18 +15,4 @@ public enum ArpUtilCounters {
     arp_req_rcv,
     arp_req_rcv_notification,
     arp_req_rcv_notification_rejected;
-
-    private OccurenceCounter counter;
-
-    ArpUtilCounters() {
-        counter = new OccurenceCounter(getClass().getSimpleName(), name(), name());
-    }
-
-    public void inc() {
-        counter.inc();
-    }
-
-    public long get() {
-        return counter.get();
-    }
 }
