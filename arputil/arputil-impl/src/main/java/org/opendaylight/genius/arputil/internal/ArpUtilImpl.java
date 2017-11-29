@@ -101,16 +101,18 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
     private final ConcurrentMap<String, String> macsDB = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>> macAddrs = new ConcurrentHashMap<>();
+    private final ArpMetrics arpMetrics;
 
     @Inject
     public ArpUtilImpl(final DataBroker dataBroker, final PacketProcessingService packetProcessingService,
             final NotificationPublishService notificationPublishService, final NotificationService notificationService,
-            final OdlInterfaceRpcService odlInterfaceRpcService) {
+            final OdlInterfaceRpcService odlInterfaceRpcService, final ArpMetrics arpMetrics) {
         this.dataBroker = dataBroker;
         this.packetProcessingService = packetProcessingService;
         this.notificationPublishService = notificationPublishService;
         this.notificationService = notificationService;
         this.odlInterfaceRpcService = odlInterfaceRpcService;
+        this.arpMetrics = arpMetrics;
     }
 
     @Override
@@ -453,7 +455,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
             int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
                     throws InterruptedException {
-        ArpUtilCounters.arp_res_rcv.inc();
+        arpMetrics.inc(ArpUtilCounters.arp_res_rcv);
 
         IpAddress srcIp = new IpAddress(srcInetAddr.getHostAddress().toCharArray());
         IpAddress dstIp = new IpAddress(dstInetAddr.getHostAddress().toCharArray());
@@ -471,15 +473,15 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         builder.setDstMac(dstMac);
         ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
         if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
-            ArpUtilCounters.arp_res_rcv_notification_rejected.inc();
+            arpMetrics.inc(ArpUtilCounters.arp_res_rcv_notification_rejected);
         } else {
-            ArpUtilCounters.arp_res_rcv_notification.inc();
+            arpMetrics.inc(ArpUtilCounters.arp_res_rcv_notification);
         }
     }
 
     private void fireArpReqRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMac,
             InetAddress dstInetAddr, int tableId, BigInteger metadata) throws InterruptedException {
-        ArpUtilCounters.arp_req_rcv.inc();
+        arpMetrics.inc(ArpUtilCounters.arp_req_rcv);
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
@@ -490,9 +492,9 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         builder.setMetadata(metadata);
         ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
         if (offerNotification != null && offerNotification.equals(NotificationPublishService.REJECTED)) {
-            ArpUtilCounters.arp_req_rcv_notification_rejected.inc();
+            arpMetrics.inc(ArpUtilCounters.arp_req_rcv_notification_rejected);
         } else {
-            ArpUtilCounters.arp_req_rcv_notification.inc();
+            arpMetrics.inc(ArpUtilCounters.arp_req_rcv_notification);
         }
     }
 
