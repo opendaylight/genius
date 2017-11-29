@@ -678,10 +678,33 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     public OvsdbBridgeAugmentation getBridgeForNodeIid(InstanceIdentifier<Node> nodeIid) {
-        if (nodeIid != null) {
-            return nodeIidToBridgeMap.get(nodeIid);
+        if (nodeIid == null) {
+            return null;
         }
-        return null;
+
+        OvsdbBridgeAugmentation ret = nodeIidToBridgeMap.get(nodeIid);
+        if (ret != null) {
+            return ret;
+        }
+
+        LOG.info("Node {} not found in cache, reading from md-sal", nodeIid);
+        Node node;
+        try {
+            node = SingleTransactionDataBroker.syncRead(
+                                        dataBroker, LogicalDatastoreType.OPERATIONAL, nodeIid);
+        } catch (ReadFailedException e) {
+            LOG.error("Failed to read Node for " + nodeIid, e);
+            return null;
+        }
+
+        OvsdbBridgeAugmentation bridge = node.getAugmentation(OvsdbBridgeAugmentation.class);
+        if (bridge == null) {
+            LOG.error("Node {} has no bridge augmentation");
+            return null;
+        }
+
+        addBridgeForNodeIid(nodeIid, bridge);
+        return bridge;
     }
 
     @Override
