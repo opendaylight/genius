@@ -16,6 +16,24 @@
       "revId": "12703b9cc6ce567154676eaf7388c4a2cc044f05",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_1d48b95a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-30T17:33:23Z",
+      "side": 1,
+      "message": "Faseela you can answer that Q by looking at what type of MNTR this txRunner is.. in the constructor it is the ManagedNewTransactionRunnerImpl not the RetryingManagedNewTransactionRunner, so the answer is... no, this transaction runner will never do retries on its own.",
+      "parentUuid": "7a1969be_9a030f73",
+      "revId": "12703b9cc6ce567154676eaf7388c4a2cc044f05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
