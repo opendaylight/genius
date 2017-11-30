@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_b2f555cd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-30T00:13:45Z",
+      "side": 1,
+      "message": "Tx; I obviously had no idea we even had TransactionCommitFailedExceptionMapper ..  using that now, but could not directly reference it, see JavaDoc re. why.",
+      "parentUuid": "7a1969be_773aaf37",
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_cf8cb582",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
         "patchSetId": 2
@@ -78,6 +96,30 @@
       "side": 1,
       "message": "you don\u0027t have to use makeChecked - you can catch ExecutionException from ListenableFuture and basically do the same thing as CheckedFuture. In fact I can see our own little ListenableFutures utility to do that...",
       "parentUuid": "7a1969be_97992b71",
+      "range": {
+        "startLine": 185,
+        "startChar": 23,
+        "endLine": 185,
+        "endChar": 34
+      },
+      "revId": "85f85ca4c27c9950c8ff88991fd8a06f673257b9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_92265967",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-30T00:13:45Z",
+      "side": 1,
+      "message": "hm... I\u0027ve started exploring this, but am not sure I fully get it, yet.  You wouldn\u0027t want to +1 this so we can get this in ASAP already, and we then follow-up with a separate new change to remove the deprecated here and replace it with a first usage of such a \"own new little ListenableFutures utility\" - once we actually have such a thing somewhere, would that work for you? I\u0027ve started this in https://git.opendaylight.org/gerrit/#/c/66076/, and just posted new thread \"infrautils ListenableFutures.checkedGet() to replace Guava Futures.makeChecked() and CheckedFuture.checkedGet()\" on infrautils-dev to get the discussion for that started...",
+      "parentUuid": "7a1969be_9735ab48",
       "range": {
         "startLine": 185,
         "startChar": 23,
