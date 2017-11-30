@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_3217a5a5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-30T01:57:21Z",
+      "side": 1,
+      "message": "what does this not E mean here? and can we explain it without this symbol? :)",
+      "revId": "752c629d2a294674c99c36f4c82403e3b8d877aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
