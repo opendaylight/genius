@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.datastoreutils;
 
-import static com.google.common.util.concurrent.Futures.makeChecked;
 import static org.opendaylight.genius.datastoreutils.TransactionCommitFailedExceptionMapper.SUBMIT_MAPPER;
 
 import com.google.common.base.Optional;
@@ -18,6 +17,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -191,9 +191,9 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             tx.put(datastoreType, path, data, true);
-        }), SUBMIT_MAPPER).checkedGet();
+        }), SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncUpdate(
@@ -218,9 +218,9 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
             throws TransactionCommitFailedException {
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             tx.merge(datastoreType, path, data, true);
-        }), SUBMIT_MAPPER).checkedGet();
+        }), SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncDelete(
@@ -246,9 +246,9 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        makeChecked(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             tx.delete(datastoreType, path);
-        }), SUBMIT_MAPPER).checkedGet();
+        }), SUBMIT_MAPPER);
     }
 
     // TODO Move asyncWrite/asyncUpdate/asyncRemove from org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils to here
