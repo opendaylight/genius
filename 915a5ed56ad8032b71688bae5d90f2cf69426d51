@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_f27d0db3",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-11-30T03:04:43Z",
+      "side": 1,
+      "message": "this doesn\u0027t make much sense as it\u0027s not used, but doesn\u0027t do any harm either so I won\u0027t -1 just because of this",
+      "revId": "915a5ed56ad8032b71688bae5d90f2cf69426d51",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
