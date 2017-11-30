@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_52eea18c",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/JobCoordinatorTestModule.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-30T02:23:46Z",
+      "side": 1,
+      "message": "yes - it\u0027s used to wire the JobCoordinator. We just don\u0027t need the DataStoreJobCoordinator wiring any more.",
+      "parentUuid": "7a1969be_d225710b",
+      "revId": "ae5dcb7f2c957ae34a0c39d0c2ee60b9c37f46a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_b22275ff",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_32f32575",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-30T02:23:46Z",
+      "side": 1,
+      "message": "yup - it\u0027s used with JobCoordinatorMonitor - only the DataStoreJobCoordinator support was removed",
+      "parentUuid": "7a1969be_b22275ff",
+      "revId": "ae5dcb7f2c957ae34a0c39d0c2ee60b9c37f46a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_1220a9f6",
         "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/datastoreutils/testutils/tests/TestableJobCoordinatorEventsWaiterTest.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2017-11-30T02:00:04Z",
       "side": 1,
       "message": "Since the whole jobccordinator has moved to infrautils, what is the need for test classes in genius?",
+      "revId": "ae5dcb7f2c957ae34a0c39d0c2ee60b9c37f46a0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_92e8197e",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/datastoreutils/testutils/tests/TestableJobCoordinatorEventsWaiterTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-11-30T02:23:46Z",
+      "side": 1,
+      "message": "This is here b/c TestableJobCoordinatorEventsWaiter is in genius. If you\u0027re asking why aren\u0027t TestableJobCoordinatorEventsWaiter et al moved to infrautils... I proposed a patch for that but it required the classes copied to infrautils with the genius classes deprecated and eventually removed when all users were converted but Michael -1 that idea.",
+      "parentUuid": "7a1969be_1220a9f6",
       "revId": "ae5dcb7f2c957ae34a0c39d0c2ee60b9c37f46a0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
