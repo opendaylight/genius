@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_9a030f73",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-30T15:37:42Z",
+      "side": 1,
+      "message": "stephen would this transaction runner do retry on its own?",
+      "revId": "12703b9cc6ce567154676eaf7388c4a2cc044f05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
