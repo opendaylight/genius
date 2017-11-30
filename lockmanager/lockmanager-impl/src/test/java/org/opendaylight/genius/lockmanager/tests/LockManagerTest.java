@@ -25,7 +25,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.lockmanager.LockManager;
-import org.opendaylight.genius.lockmanager.LockManagerUtils;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
@@ -49,7 +48,6 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     @Inject LockManagerService lockManager;
     public @Rule MethodRule guice = new GuiceRule(new LockManagerTestModule(),
             new TestableDataTreeChangeListenerModule());
-    @Inject LockManagerUtils lockManagerUtils;
 
     @Test
     public void testLockAndUnLock() throws InterruptedException, ExecutionException, TimeoutException {
@@ -101,6 +99,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
             .setTimeUnit(TimeUnits.Microseconds).build();
         assertSuccessfulFutureRpcResult(lockManager.tryLock(lockInput));
     }
+
 
     private void assertSuccessfulFutureRpcResult(Future<RpcResult<Void>> futureRpcResult)
             throws InterruptedException, ExecutionException, TimeoutException {
