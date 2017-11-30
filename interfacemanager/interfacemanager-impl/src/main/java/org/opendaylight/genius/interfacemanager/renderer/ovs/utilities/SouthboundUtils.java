@@ -307,7 +307,6 @@ public class SouthboundUtils {
     public static void removeTerminationEndPoint(DataBroker dataBroker, InstanceIdentifier<?> bridgeIid,
             String interfaceName) {
         LOG.debug("removing termination point for {}", interfaceName);
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
         BatchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
