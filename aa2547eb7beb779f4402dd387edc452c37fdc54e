@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_89ec67c9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 1,
+      "message": "remove this?",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_e9d07bf9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 1,
+      "message": "} else {\n    return Collections.emptyList();\n}",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_29dbb31c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 1,
+      "message": "whoa - this took me a moment to understand, because the order had to be flipped around, but I\u0027ve convinced myself that this should be equivalent.. 99% because order of TXs does change, but non-blocking so even before was timing dependant, so this should not matter.",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_4909cf94",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 1,
+      "message": "does IDEA does this for you automatically?",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_c9d77fbe",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 1,
+      "message": "why adding a new LOG here, especially at level info?  This will be very \"noisy\", no?",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_a9e8437d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 1,
+      "message": "after staring at this for a few minutes, I could see how its the same as before, but I don\u0027t *WHY* you do this, and why you use this change as the opportunity to turn this inside out?  To me, it looks harder to read now, not easier... ;-)",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_69048b7e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPInterfaceConfigUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 0,
+      "message": "here were strictly speaking making a change and not creating a new TX... *BUT* this code as-is makes no sense at all anyway - because this transaction was not used! So it\u0027s fine.",
+      "revId": "468144cc3db40d4a50dc8f4061098b51506addd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_29e573a8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 0,
+      "message": "loosing this looks a little curious.. but it very weird for this method to close a transaction that was passed into it, anyway; so I don\u0027t have a better solution.",
+      "revId": "468144cc3db40d4a50dc8f4061098b51506addd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_09e2379f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T21:31:16Z",
+      "side": 0,
+      "message": "why drop this \"iface \u003d\u003d null\" here?",
+      "revId": "468144cc3db40d4a50dc8f4061098b51506addd5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
