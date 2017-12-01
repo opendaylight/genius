@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_c9213fb6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T22:18:39Z",
+      "side": 1,
+      "message": "Done.  (But using clear Enum, not confusing boolean!)",
+      "parentUuid": "7a1969be_a65d264b",
+      "range": {
+        "startLine": 18,
+        "startChar": 63,
+        "endLine": 18,
+        "endChar": 69
+      },
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_6644ce74",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
         "patchSetId": 2
@@ -60,6 +84,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_e924fbc7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T22:18:39Z",
+      "side": 1,
+      "message": "Done.  Keep *Registrar suffix, because this interface itself is not the *Callback - its what you use to register Callbacks.  OK for you?  FYI: I\u0027m very open ;) to further name changes, just comment..",
+      "parentUuid": "7a1969be_17c89b73",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_3a4ae983",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
         "patchSetId": 2
@@ -71,6 +113,30 @@
       "writtenOn": "2017-11-28T07:30:00Z",
       "side": 1,
       "message": "Also, just noticed this. Either you need to add the LogicalDataStore or switch back to DataTreeIdentifier.",
+      "range": {
+        "startLine": 24,
+        "startChar": 38,
+        "endLine": 24,
+        "endChar": 56
+      },
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_4936ef04",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T22:18:39Z",
+      "side": 1,
+      "message": "Done. Duh, right of course; sorry. Which one do you prefer?  I personally actually really like DataTreeIdentifier (I feel it\u0027s a more \"compact\" representation of what is always a \"pair\"); BUT AFAIK most existing genius and netvirt code does not use it but pass the pair around explicitly as two args everywhere.. so more for \"consistency\", let\u0027s do the same here then.  Unless you like me are a big fan of DataTreeIdentifier and would prefer that?",
+      "parentUuid": "7a1969be_3a4ae983",
       "range": {
         "startLine": 24,
         "startChar": 38,
@@ -100,6 +166,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_a944c374",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T22:18:39Z",
+      "side": 1,
+      "message": "Done.  Consistency with.. DataTreeChangeListenerActions, yeah.",
+      "parentUuid": "7a1969be_865aaa4e",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_4649d28a",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
         "patchSetId": 2
@@ -111,6 +195,24 @@
       "writtenOn": "2017-11-26T06:39:29Z",
       "side": 1,
       "message": "Although one can always track it at the time the lambda is created I do think it is nice to receive the path deleted as an argument.",
+      "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_8949078e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataInstanceChangeListenerRegisterer.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-01T22:18:39Z",
+      "side": 1,
+      "message": "Done.  The other APIs actually give you the entire object, so unless we have a reason not to do that (do we?) let\u0027s just do that as well here?",
+      "parentUuid": "7a1969be_4649d28a",
       "revId": "0d546bf06fd0dc23189c4d5d7f83c0599f57e619",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
