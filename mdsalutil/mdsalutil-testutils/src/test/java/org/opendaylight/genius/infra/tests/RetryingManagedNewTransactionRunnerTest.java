@@ -14,10 +14,9 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunnerImpl;
 
 /**
- * Test for {@link RetryingManagedNewTransactionRunnerImpl}.
+ * Test for {@link RetryingManagedNewTransactionRunner}.
  * Note that this test (intentionally) extends the {@link ManagedNewTransactionRunnerImplTest}.
  *
  * @author Michael Vorburger.ch
