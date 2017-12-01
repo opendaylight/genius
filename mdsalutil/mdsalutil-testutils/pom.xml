@@ -90,6 +90,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.infrautils.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.cdi</groupId>
+      <artifactId>pax-cdi-api</artifactId>
+      <optional>true</optional>
+    </dependency>
 
     <!-- Now all <scope>test here: -->
     <dependency>
