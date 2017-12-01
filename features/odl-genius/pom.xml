@@ -109,7 +109,7 @@
     </dependency>
     <dependency>
       <groupId>org.opendaylight.daexim</groupId>
-      <artifactId>odl-daexim-all</artifactId>
+      <artifactId>odl-daexim</artifactId>
       <version>${daexim.version}</version>
       <type>xml</type>
       <classifier>features</classifier>
