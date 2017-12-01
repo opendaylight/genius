@@ -31,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     private final LockManagerUtils lockManagerUtils;
 
     @Inject
-    public LockManagerServiceImpl(final DataBroker dataBroker, final LockManagerUtils lockManagerUtils) {
+    public LockManagerServiceImpl(final @OsgiService DataBroker dataBroker, final LockManagerUtils lockManagerUtils) {
         this.broker = dataBroker;
         this.lockManagerUtils = lockManagerUtils;
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);

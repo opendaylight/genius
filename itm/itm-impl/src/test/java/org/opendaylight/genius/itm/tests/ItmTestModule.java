@@ -79,7 +79,9 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(EntityOwnershipService.class).toInstance(mock(EntityOwnershipService.class));
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
-        bind(DataBroker.class).toInstance(DataBrokerTestModule.dataBroker());
+        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+        bind(DataBroker.class).toInstance(dataBroker);
+        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 
         // Bindings to test infra (fakes & mocks)

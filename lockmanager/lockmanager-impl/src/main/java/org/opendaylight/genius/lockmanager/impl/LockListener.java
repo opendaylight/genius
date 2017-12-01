@@ -17,6 +17,7 @@ import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListen
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.Locks;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +28,7 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
     private final LockManagerServiceImpl lockManager;
 
     @Inject
-    public LockListener(DataBroker broker, LockManagerServiceImpl lockManager) {
+    public LockListener(@OsgiService DataBroker broker, LockManagerServiceImpl lockManager) {
         super(Lock.class, LockListener.class);
         this.lockManager = lockManager;
         registerListener(LogicalDatastoreType.OPERATIONAL, broker);

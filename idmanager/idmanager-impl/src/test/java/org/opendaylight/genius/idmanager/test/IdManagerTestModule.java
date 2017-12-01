@@ -39,6 +39,6 @@ public class IdManagerTestModule extends AbstractGuiceJsr250Module {
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
-
+        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
     }
 }
