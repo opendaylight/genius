@@ -15,13 +15,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import javax.inject.Inject;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailures;
@@ -45,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test for {@link LockManagerServiceImpl}.
+ *
  * @author Michael Vorburger.ch
  */
 public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
@@ -55,7 +53,6 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
     public @Rule MethodRule guice = new GuiceRule(LockManagerTestModule.class, DataBrokerFailuresModule.class);
 
-    @Inject DataBroker dataBroker;
     @Inject DataBrokerFailures dbFailureSimulator;
     @Inject LockManagerService lockManager;
     @Inject LockManagerUtils lockManagerUtils;
@@ -96,13 +93,13 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         logCaptureRule.expectError("Failed to get lock testTryLock owner " + uniqueId + " after 3 retries");
 
         TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3L)
-            .setTimeUnit(TimeUnits.Seconds).build();
+                .setTimeUnit(TimeUnits.Seconds).build();
         assertSuccessfulFutureRpcResult(lockManager.tryLock(lockInput));
 
         // The second acquireLock request will retry for 3 seconds
         // and since the first lock is not unlocked, the request will fail.
         lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3000L)
-            .setTimeUnit(TimeUnits.Milliseconds).build();
+                .setTimeUnit(TimeUnits.Milliseconds).build();
         assertFailedFutureRpcResult(lockManager.tryLock(lockInput));
 
         // Try to unlock the key in a separate thread before retry expires, and see
@@ -110,7 +107,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         runUnlockTimerTask("testTryLock", 2000);
 
         lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(4000000L)
-            .setTimeUnit(TimeUnits.Microseconds).build();
+                .setTimeUnit(TimeUnits.Microseconds).build();
         assertSuccessfulFutureRpcResult(lockManager.tryLock(lockInput));
     }
 
@@ -131,14 +128,14 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         assertSuccessfulFutureRpcResult(lockManager.lock(lockInput));
     }
 
-    private void assertSuccessfulFutureRpcResult(Future<RpcResult<Void>> futureRpcResult)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    private void assertSuccessfulFutureRpcResult(
+            Future<RpcResult<Void>> futureRpcResult) throws InterruptedException, ExecutionException, TimeoutException {
         assertThat(futureRpcResult.get(5, TimeUnit.SECONDS).isSuccessful()).isTrue();
         assertThat(futureRpcResult.get(5, TimeUnit.SECONDS).getErrors()).isEmpty();
     }
 
-    private void assertFailedFutureRpcResult(Future<RpcResult<Void>> futureRpcResult)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    private void assertFailedFutureRpcResult(
+            Future<RpcResult<Void>> futureRpcResult) throws InterruptedException, ExecutionException, TimeoutException {
         assertThat(futureRpcResult.get(5, TimeUnit.SECONDS).isSuccessful()).isFalse();
     }
 
