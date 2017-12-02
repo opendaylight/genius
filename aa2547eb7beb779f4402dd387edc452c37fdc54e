@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_9b05cec4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "He has changed the removal order also similar to this, and this will not cause any problem",
+      "parentUuid": "7a1969be_29dbb31c",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_4909cf94",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigRemoveHelper.java",
         "patchSetId": 1
@@ -87,6 +105,75 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_db0f46e0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "admin state for vlan interface never gets updated though ;) Now don\u0027t ask why we have this code then !",
+      "parentUuid": "7a1969be_c9d77fbe",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_fbf5e2cb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "i think there was some problem here.. this handling lldp monitoring stuff below required something from the above transaction.. could you please check? That looks too weird though",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_3b001aaa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "i thnk there is come case where iface can come as null",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_5b0356b8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_a9e8437d",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
         "patchSetId": 1
@@ -98,6 +185,41 @@
       "writtenOn": "2017-12-01T21:31:16Z",
       "side": 1,
       "message": "after staring at this for a few minutes, I could see how its the same as before, but I don\u0027t *WHY* you do this, and why you use this change as the opportunity to turn this inside out?  To me, it looks harder to read now, not easier... ;-)",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_9b2cae4c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "agree to Michael :)",
+      "parentUuid": "7a1969be_a9e8437d",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_7b31f2a1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:06:57Z",
+      "side": 1,
+      "message": "transaction.submit() was done before, because usually there will be too many tunnels under the bridge, and this might delay bridge showing up in operational",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
