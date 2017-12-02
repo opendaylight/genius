@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_1be71e14",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPConfigRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:35:09Z",
+      "side": 1,
+      "message": "just a basic question to clear my doubt, this tx here and below are two separate ones right? can we put the variable name also like that so that it will be clear while reading, that one is for opershard and one for config shard..",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_29dbb31c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPInterfaceConfigAddHelper.java",
         "patchSetId": 1
