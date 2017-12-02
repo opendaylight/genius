@@ -223,6 +223,23 @@
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_1b20be48",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-02T03:08:34Z",
+      "side": 1,
+      "message": "here one is opershard and one is config shard, but only one transaction. not that you have changed, but it was like that even before ;) but is that right?",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
