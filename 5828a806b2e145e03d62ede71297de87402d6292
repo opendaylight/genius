@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_9be94e1d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-02T01:03:46Z",
+      "side": 1,
+      "message": "I prefer enum entries to be upper case, following the standard naming convention for constants.",
+      "revId": "5828a806b2e145e03d62ede71297de87402d6292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_7bee1224",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-02T01:03:46Z",
+      "side": 1,
+      "message": "What does UnregisterOrCallAgain mean and what\u0027s the purpose of passing to the callback?\n\nPerhaps adding java docs will help me (and maybe others) understand the intent here.",
+      "revId": "5828a806b2e145e03d62ede71297de87402d6292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
