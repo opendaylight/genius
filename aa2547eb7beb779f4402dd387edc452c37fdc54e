@@ -212,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_91180d86",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsVlanMemberConfigUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T13:57:31Z",
+      "side": 1,
+      "message": "Thanks for having removed it!",
+      "parentUuid": "7a1969be_fe2150b5",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_fbf5e2cb",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
         "patchSetId": 1
@@ -276,6 +294,24 @@
       "side": 1,
       "message": "Having\n\n    iface \u003d\u003d null\n\nin the test is redundant. If iface is not null, the first part of the test succeeds, and the rest is not evaluated. If iface is null, the first part fails, and the second is evaluated, at which point iface is always null so there’s no point in testing for it. You can write out the truth table here if you want, to convince yourself that the two forms of the if statement are exactly equivalent.",
       "parentUuid": "7a1969be_3b001aaa",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_d1128561",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T13:57:31Z",
+      "side": 1,
+      "message": "Duh! Right. I now feel ashamed to have raised this - shold have seen it. Tx! ;)",
+      "parentUuid": "7a1969be_fe08302f",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -364,6 +400,24 @@
       "side": 1,
       "message": "Because opstateModified is not effectively final, and can’t be used inside the lambda. I reckoned this approach was easier to read than adding a fake final variable, but I can change it if necessary.",
       "parentUuid": "7a1969be_a9e8437d",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_110c1d42",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T13:57:31Z",
+      "side": 1,
+      "message": "\u003e Because opstateModified is not effectively final, and can’t be used inside the lambda.\n\nOh!  I didn\u0027t see that.  Thanks for explanation - OK for me then; don\u0027t change it.",
+      "parentUuid": "7a1969be_3e03e810",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
