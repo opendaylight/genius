@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_314679c0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T13:13:30Z",
+      "side": 1,
+      "message": "Done (and if anyone has better proposals for naming this enum or its values, I\u0027m all for it)",
+      "parentUuid": "7a1969be_9be94e1d",
+      "revId": "5828a806b2e145e03d62ede71297de87402d6292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_7bee1224",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-12-02T01:03:46Z",
       "side": 1,
       "message": "What does UnregisterOrCallAgain mean and what\u0027s the purpose of passing to the callback?\n\nPerhaps adding java docs will help me (and maybe others) understand the intent here.",
+      "revId": "5828a806b2e145e03d62ede71297de87402d6292",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f1222100",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T13:13:30Z",
+      "side": 1,
+      "message": "Done; added JavaDoc at least to Enum; was hoping that the onAdd/Update/Remove methods were self explanatory?  Could spend more time on documentation, later; want to first hear from Josh if this meets the requirement from his original idea, and would love to see a first usage in the context of Upgrade-ability by him proposed, discussed and accepted, then further work on this utility.",
+      "parentUuid": "7a1969be_7bee1224",
       "revId": "5828a806b2e145e03d62ede71297de87402d6292",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
