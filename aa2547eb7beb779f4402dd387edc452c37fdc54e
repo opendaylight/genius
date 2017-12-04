@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_91264db9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-04T09:52:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_89ec67c9",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_e9d07bf9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceStateListener.java",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2017-12-02T03:35:09Z",
       "side": 1,
       "message": "just a basic question to clear my doubt, this tx here and below are two separate ones right? can we put the variable name also like that so that it will be clear while reading, that one is for opershard and one for config shard..",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_712bd182",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/hwvtep/confighelpers/HwVTEPConfigRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-04T09:52:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_1be71e14",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -193,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_313159ed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-04T09:52:56Z",
+      "side": 1,
+      "message": "The code doesn’t express any dependency. If startLLDPMonitoring only works if the transaction has been processed beforehand, we need to fix that separately, because there’s nothing here to guarantee that.",
+      "parentUuid": "7a1969be_fbf5e2cb",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_3b001aaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
         "patchSetId": 1
@@ -239,6 +293,24 @@
       "writtenOn": "2017-12-02T03:06:57Z",
       "side": 1,
       "message": "same here",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_7152b114",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-04T09:52:56Z",
+      "side": 1,
+      "message": "Same reply, transaction.submit() is asynchronous.",
+      "parentUuid": "7a1969be_5b0356b8",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
