@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_1441ab39",
+        "filename": "arputil/arputil-impl/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "Viji, upon seeing you (having to; I do understand why!) do this here, I\u0027m now starting to think that this could be bigger problem than I originally thought.. you must have seen and probably copy/pasted this from the same inside infrautils.metrics, but upon seeing this spread to genius and then netvirt.. \n\nI\u0027m concerned that we may be creating a bigger mess wit this for the future.  Of course we can clean it up later also, but before we merge this as-is, let me first find out more about about the odlparent 3.0.0 plans (where this will not be necessary anymore, due to https://git.opendaylight.org/gerrit/#/c/65381/), or the feasibility of getting https://git.opendaylight.org/gerrit/#/c/66090/ accepted anyway (and having an odlparent 2.0.6; that\u0027s the real issue).",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_94747b9d",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "I see what you are doing here (a class for the existing enum), but can I suggest an alternative?  Look at what I started (not finished!) doing, similarly in https://git.opendaylight.org/gerrit/#/c/65514/, my WIP Draft to which I\u0027ve just added as you Reviewer.  There, I\u0027m just getting rid of the enum and use a local field for each counter.  IMHO that\u0027s much simpler to read and follow and understand for others in the future - what do you think?",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f43defbc",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "final (but ignore; as I think this class should disappear, anyway)",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_544b2359",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "final",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_74a0dff4",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "FYI I\u0027m hoping to add the project and bundle name as additional argument here (in infrautils.metrics) this week, so you may have to adjust this, here or where this will be after taking above into accout - hope you don\u0027t mind.",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f464cfe6",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilCounters.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "as per comment in ArpMetrics, I\u0027m wondering if we cannot just completely ditch this enum.. (And also others like it in the future in other projects; I want to get this change here done right, so that it can serve as an example to look at for future infrautils.counters to infrautils.metrics migrations elsewhere too.)",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_14afebe4",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/TestMetricProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-04T15:02:50Z",
+      "side": 1,
+      "message": "Hang on, this one doesn\u0027t make much sense to me... please don\u0027t take any offense, but.. what\u0027s actually the point of this?? ;-)\n\nI think you should remove this, and we do EITHER or the other of the following two options:\n\nA. If we do not care about metrics in unit and components tests, which I suspect is normally the case, then .. why not just do this in ArpUtilTestModule, and others like it in the future, something like (not tested; should work, if it gives you trouble I\u0027m sure it\u0027s possible to get working):\n\nbind(MetricProvider.class).toInstance(mock(MetricProvider.class));\n\nB. If, for some reason we do need real working metrics in tests (but I cannot think of a good one..), then why not just bind the real MetricProviderImpl instead of this semi implemented half baked sort of working not but really test stub??\n\nBut I think typically A. is sufficient and the right thing to do.",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
