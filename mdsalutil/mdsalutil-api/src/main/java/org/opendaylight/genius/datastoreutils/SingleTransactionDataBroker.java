@@ -33,7 +33,11 @@ public class SingleTransactionDataBroker {
 
     private static final Logger LOG = LoggerFactory.getLogger(SingleTransactionDataBroker.class);
 
-    private static final int DEFAULT_RETRIES = 3; // duplicated in RetryingManagedNewTransactionRunnerImpl
+    // Beware: This utility, which is older and existed before RetryingManagedNewTransactionRunner,
+    // CAN retry if parameter int maxRetries > 0 in its write/update/delete methods, but it
+    // does *NOT* automatically do retries, because we've "seen issues" (???) with that.
+    // (RetryingManagedNewTransactionRunnerImpl's has a DEFAULT_RETRIES of 3 instead of 0.)
+    private static final int DEFAULT_RETRIES = 0;
 
     private final DataBroker broker;
 
