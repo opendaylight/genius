@@ -34,6 +34,24 @@
       "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_944d9b75",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-12-04T14:36:13Z",
+      "side": 1,
+      "message": "When I saw SingleTxDataBroker last week, it was still using tx.submit().checkedGet() without doing tx.cancel() for TransactionCommitFailedException.\nIt looks like Michael merged the changes for SingleTxDataBroker to use RetryingTxRunner some days back. This should fix the problem.",
+      "parentUuid": "7a1969be_ddd90185",
+      "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
