@@ -88,6 +88,24 @@
       "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_74d8df53",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-12-04T15:59:57Z",
+      "side": 1,
+      "message": "I\u0027m talking about https://github.com/opendaylight/genius/blob/master/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java#L63 which is eventually used by RetryingTxRunnerImpl (???). If tx.cancel() is not needed, what is actually causing tx leaks ? I\u0027m trying to understand other benefits TxRunner brings to applications apart from tx abstraction and retries capability.",
+      "parentUuid": "7a1969be_340027aa",
+      "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
