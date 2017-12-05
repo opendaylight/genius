@@ -59,6 +59,11 @@ public final class ItmRpcTestImpl implements ItmRpcService {
         interfaceNames.get(dpnId).put(dstTep, interfaceName);
     }
 
+    public synchronized void addL2GwInterface(BigInteger dpnId, String nodeId, String interfaceName) {
+        externalInterfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
+        externalInterfaceNames.get(dpnId).put(nodeId, interfaceName);
+    }
+
     public synchronized void addExternalInterface(BigInteger dpnId, String dstTep, String interfaceName) {
         dstTep = new IpAddress(new Ipv4Address(dstTep)).toString();
         externalInterfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
