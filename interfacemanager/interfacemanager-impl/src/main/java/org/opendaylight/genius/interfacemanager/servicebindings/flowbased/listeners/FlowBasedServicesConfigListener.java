@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -24,6 +25,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
@@ -53,6 +56,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver;
@@ -64,6 +68,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.dataBroker = dataBroker;
+        this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesRendererFactoryResolver = flowBasedServicesRendererFactoryResolver;
@@ -217,22 +222,28 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            BoundServicesState boundServicesState = FlowBasedServicesUtils
-                .getBoundServicesState(dataBroker, interfaceName, serviceMode);
-            // if service-binding state is not present, construct the same using ifstate
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            if (boundServicesState == null) {
-                Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
-                if (ifState == null) {
-                    LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
-                        interfaceName);
-                    return null;
-                }
-                boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
-                FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, interfaceName,boundServicesState);
+            try {
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                    BoundServicesState boundServicesState = FlowBasedServicesUtils
+                        .getBoundServicesState(dataBroker, interfaceName, serviceMode);
+                    //if service-binding state is not present, construct the same using ifstate
+                    if (boundServicesState == null) {
+                        Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
+                        if (ifState == null) {
+                            LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
+                                    interfaceName);
+                            return;
+                        }
+                        boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
+                        FlowBasedServicesUtils.addBoundServicesState(futures, interfaceName, boundServicesState, tx);
+                        flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew,
+                                boundServicesList, boundServicesState);
+                    }
+                }).get();
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.error("flowBasedServicesConfigAdd : error writing in datastore {}", e);
             }
-            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
-                    boundServicesState);
             return futures;
         }
     }
