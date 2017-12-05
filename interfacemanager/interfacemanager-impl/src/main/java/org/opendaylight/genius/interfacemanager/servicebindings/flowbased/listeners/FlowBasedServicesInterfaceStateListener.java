@@ -11,11 +11,14 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
@@ -40,6 +43,7 @@ public class FlowBasedServicesInterfaceStateListener
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
@@ -50,6 +54,7 @@ public class FlowBasedServicesInterfaceStateListener
             final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
+        this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
@@ -133,8 +138,14 @@ public class FlowBasedServicesInterfaceStateListener
             }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
-                FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
+            try {
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                        FlowBasedServicesUtils.addBoundServicesState(futures, iface.getName(),
+                            FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode), tx);
+                    }).get();
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.error("flowBasedServicesInterfaceStateAdd : error writing in datastore {}", e);
+            }
             flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
             return futures;
         }
