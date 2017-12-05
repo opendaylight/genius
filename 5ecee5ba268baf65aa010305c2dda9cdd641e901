@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_4aaff7e3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-05T18:43:23Z",
+      "side": 1,
+      "message": "1. This may work, BUT you are turning a previously async use into a sync one, when you don\u0027t actually have to! Note how the way you have it now, your future are useless - it will always be an empty list, see?  That doesn\u0027t seem right, agreed? So the way we intended to use this is that instead of try { get() and catch() and LOG.error, you just do return Collections.singletonList(xRunner.callWithNewWriteOnlyTransactionAndSubmit(...)) - does this make sense?\n\n2. Also, the RetryingManagedNewTransactionRunner is, ideally, intented to be used  at a higher level, not just around one statement.  Ideally, you shold be doing other data store access, such as whatever the interfaceManagerCommonUtils.getInterfaceState() and lowBasedServicesUtils.buildBoundServicesState() does, within the same Tx from this ManagedNewTransactionRunner.",
+      "revId": "5ecee5ba268baf65aa010305c2dda9cdd641e901",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_2aac3bed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-05T18:43:23Z",
+      "side": 1,
+      "message": "same as in the other class",
+      "revId": "5ecee5ba268baf65aa010305c2dda9cdd641e901",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
