@@ -688,17 +688,14 @@ public final class FlowBasedServicesUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).orNull();
     }
 
-    public static void addBoundServicesState(List<ListenableFuture<Void>> futures,
-                                             DataBroker dataBroker, String interfaceName,
-                                             BoundServicesState interfaceBoundServicesState) {
+    public static void addBoundServicesState(String interfaceName, BoundServicesState interfaceBoundServicesState,
+                                             WriteTransaction tx) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
             interfaceBoundServicesState.getInterfaceName(), interfaceBoundServicesState.getServiceMode().getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState, true);
-        futures.add(writeTransaction.submit());
+        tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState, tx.CREATE_MISSING_PARENTS);
     }
 
     public static  void removeBoundServicesState(List<ListenableFuture<Void>> futures,
