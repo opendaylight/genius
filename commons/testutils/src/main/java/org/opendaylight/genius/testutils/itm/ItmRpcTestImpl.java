@@ -60,7 +60,11 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     }
 
     public synchronized void addExternalInterface(BigInteger dpnId, String dstTep, String interfaceName) {
-        dstTep = new IpAddress(new Ipv4Address(dstTep)).toString();
+        try {
+            dstTep = new IpAddress(new Ipv4Address(dstTep)).toString();
+        } catch (IllegalArgumentException e) {
+            //incase of tor node dst is a node id
+        }
         externalInterfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
         externalInterfaceNames.get(dpnId).put(dstTep, interfaceName);
     }
