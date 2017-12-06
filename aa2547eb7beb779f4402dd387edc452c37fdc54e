@@ -265,6 +265,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_0df4f9f0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T06:08:26Z",
+      "side": 1,
+      "message": "Here is the thing, startLLdpMonitoring makes an RPC call to AlivenessMonitor, which in turn is trying to fetch interafce-state which is actually being submitted by this above transaction. The design looks a bit weird, but when this patch goes in, that is going to break! So can we fix this also as part of this patch? Either startLLDPMonitoring should be removed from here, and added to the InterfaceStateListener in interface-manager. OR we need to retain this as how it was before",
+      "parentUuid": "7a1969be_313159ed",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_3b001aaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
         "patchSetId": 1
@@ -312,6 +330,24 @@
       "side": 1,
       "message": "Duh! Right. I now feel ashamed to have raised this - shold have seen it. Tx! ;)",
       "parentUuid": "7a1969be_fe08302f",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_edf87de7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T06:08:26Z",
+      "side": 1,
+      "message": "Right Stephen!",
+      "parentUuid": "7a1969be_d1128561",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -424,6 +460,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_4ddd5170",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T06:08:26Z",
+      "side": 1,
+      "message": "Ok",
+      "parentUuid": "7a1969be_110c1d42",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_7b31f2a1",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateAddHelper.java",
         "patchSetId": 1
@@ -459,6 +513,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_2dda9578",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T06:08:26Z",
+      "side": 1,
+      "message": "In a scale scenario, we have almost 100 tunnel ports on each bridge. submitting the bridge transaction, before iterating over all 100 ports and doing 100 reads + 100 writes for each of those tunnel ports look better to me",
+      "parentUuid": "7a1969be_91ff6d01",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_1b20be48",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateRemoveHelper.java",
         "patchSetId": 1
@@ -488,6 +560,24 @@
       "side": 1,
       "message": "Indeed, I was just converting the transaction processing, not necessarily investigating it in detail. In Oxygen this whole helper is gone anyway.",
       "parentUuid": "7a1969be_1b20be48",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_8de74940",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T06:08:26Z",
+      "side": 1,
+      "message": ":) Okay, let us fix this in master...",
+      "parentUuid": "7a1969be_b10ee932",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
