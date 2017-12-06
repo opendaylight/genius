@@ -52,6 +52,24 @@
       "revId": "376f04bb457a674fa10e29334e8706d45f34cd4b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_f014d4f6",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-12-06T12:51:37Z",
+      "side": 1,
+      "message": "Tom, I started out thinking that but since it\u0027s unclear which one means which means unregister and which one means call again, I think having the explicit vars is better, especially if we go with my suggestion that it is optional to return it at all.",
+      "parentUuid": "7a1969be_70e4643b",
+      "revId": "376f04bb457a674fa10e29334e8706d45f34cd4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
