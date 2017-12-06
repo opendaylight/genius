@@ -34,6 +34,24 @@
       "revId": "376f04bb457a674fa10e29334e8706d45f34cd4b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_70e4643b",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-06T12:19:14Z",
+      "side": 1,
+      "message": "Since UnregisterOrCallAgain is 2 states, how about returning a boolean? I imagine you were trying to be more descriptive with the enum but maybe it\u0027s too descriptive...",
+      "parentUuid": "7a1969be_b0eedc20",
+      "revId": "376f04bb457a674fa10e29334e8706d45f34cd4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
