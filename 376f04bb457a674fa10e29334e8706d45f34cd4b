@@ -16,6 +16,24 @@
       "revId": "376f04bb457a674fa10e29334e8706d45f34cd4b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b0eedc20",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2017-12-06T12:14:27Z",
+      "side": 1,
+      "message": "\"return DataTreeEventCallbackRegistrar.UnregisterOrCallAgain.UNREGISTER\" is sort of a mouthful.",
+      "parentUuid": "7a1969be_8d06291f",
+      "revId": "376f04bb457a674fa10e29334e8706d45f34cd4b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
