@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_90aac017",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 6988
+      },
+      "writtenOn": "2017-12-06T14:44:36Z",
+      "side": 1,
+      "message": "Done for the step 1 and 2.\nabout the step 1 we are now use future array.",
+      "parentUuid": "7a1969be_4aaff7e3",
+      "revId": "5ecee5ba268baf65aa010305c2dda9cdd641e901",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_2aac3bed",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-12-05T18:43:23Z",
       "side": 1,
       "message": "same as in the other class",
+      "revId": "5ecee5ba268baf65aa010305c2dda9cdd641e901",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_7090e4ec",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 6988
+      },
+      "writtenOn": "2017-12-06T14:44:36Z",
+      "side": 1,
+      "message": "Done, as in the other class (FlowBasedServicesConfigListener.java)",
+      "parentUuid": "7a1969be_2aac3bed",
       "revId": "5ecee5ba268baf65aa010305c2dda9cdd641e901",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
