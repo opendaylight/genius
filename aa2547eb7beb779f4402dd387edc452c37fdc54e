@@ -301,6 +301,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_ad4fa591",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T11:14:17Z",
+      "side": 1,
+      "message": "Will you please track this and remember to fix it soon? All i can say is our downstream tests for LLDP monitoring works with the current code, and it will break once submit is moved down.",
+      "parentUuid": "7a1969be_0dffd968",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_3b001aaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
         "patchSetId": 1
@@ -561,6 +579,24 @@
       "side": 1,
       "message": "*It doesn’t necessarily happen “before”!*\n\nJust because there’s a transaction.submit() at some point in the code, doesn’t mean that when code following that point is run, the transaction has been committed. IT IS ASYNCHRONOUS. If there’s a dependency, it MUST be made explicit. That’s a bug that’s already present, so it should be fixed in a separate patch. This patch is just “convert code to use the transaction runner”.",
       "parentUuid": "7a1969be_2dda9578",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_6d55ad1c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-06T11:14:17Z",
+      "side": 1,
+      "message": "There is no restriction that it SHOULD happen before, but it will happen faster.. But it is not a functionality blocker.",
+      "parentUuid": "7a1969be_4df8b17c",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
