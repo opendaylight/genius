@@ -124,6 +124,24 @@
       "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_cde9411c",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-12-06T05:55:29Z",
+      "side": 1,
+      "message": "OK. I see your point. tx.cancel() is only needed for Exception thrown by application code which are the potential places for tx leaks.",
+      "parentUuid": "7a1969be_b4e25701",
+      "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
