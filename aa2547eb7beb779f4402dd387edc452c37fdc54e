@@ -283,6 +283,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_0dffd968",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-06T09:15:38Z",
+      "side": 1,
+      "message": "“OR we need to retain this as how it was before”: here’s the thing: the current state is *already* buggy, there are no guarantees that the transaction will be effectively committed before the RPC call is made. I’ll submit a separate patch to fix this.",
+      "parentUuid": "7a1969be_0df4f9f0",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_3b001aaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
         "patchSetId": 1
@@ -531,6 +549,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_4df8b17c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-06T09:15:38Z",
+      "side": 1,
+      "message": "*It doesn’t necessarily happen “before”!*\n\nJust because there’s a transaction.submit() at some point in the code, doesn’t mean that when code following that point is run, the transaction has been committed. IT IS ASYNCHRONOUS. If there’s a dependency, it MUST be made explicit. That’s a bug that’s already present, so it should be fixed in a separate patch. This patch is just “convert code to use the transaction runner”.",
+      "parentUuid": "7a1969be_2dda9578",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_1b20be48",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateRemoveHelper.java",
         "patchSetId": 1
@@ -578,6 +614,24 @@
       "side": 1,
       "message": ":) Okay, let us fix this in master...",
       "parentUuid": "7a1969be_b10ee932",
+      "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_2df57583",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateRemoveHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-06T09:15:38Z",
+      "side": 1,
+      "message": "There’s nothing to fix in master, the code is gone...",
+      "parentUuid": "7a1969be_8de74940",
       "revId": "aa2547eb7beb779f4402dd387edc452c37fdc54e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
