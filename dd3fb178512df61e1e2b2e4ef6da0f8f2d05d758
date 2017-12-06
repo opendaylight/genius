@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_738d8e7b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "it\u0027s very good to see this happen inside the lambda now, but the problem is that getBoundServicesState uses IfmUtil.read which does its own newReadOnlyTransaction() .. I think what we really should do here for this to be properly Transactionally consistent is to use callWithNewReadWriteTransactionAndSubmit to get a ReadWriteTransaction instead of only a WriteTransaction, and pass that through for reads as well.  Does this make sense?",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b3eee620",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "as above, the getInterfaceStateFromOperDS() which gets called here should read using the same tx, what do you think?",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_53ddf26f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "passsing around the futures here is going to be trouble if there are retries (it would add the FAILED Tx result to the Futures list).  What we should do instead is pass through the tx to addBoundServicesState and let it use that instead of letting it create its own newWriteOnlyTransaction, what do you think?",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_33daf678",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "same here, although this has a bit more impacts.. the passing through of the Futures is all wrong, IMHO; you want to pass through the Tx, instead, and not use newWriteOnlyTransaction in the places it calls, anymore.",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_13cb7aa6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "Instead of try { get() and catch() and LOG.error, you just do return Collections.singletonList(xRunner.callWithNewWriteOnlyTransactionAndSubmit(...)), to keep it async.",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_53c4d291",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "same feedback as in the other class",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_b33c2695",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 691,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "do not pass the futures List anymore, here and elsewhere..",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_d33722af",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 700,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-06T15:53:13Z",
+      "side": 1,
+      "message": "this would lead to an UnsupportedOperationException .. please read the JavaDoc of ManagedNewTransactionRunner to understand why.  Just don\u0027t submit here - the caller will.  (But you now have to make sure that all callers of this method use a tx from a ManagedNewTransactionRunner which will do the submit.)",
+      "revId": "dd3fb178512df61e1e2b2e4ef6da0f8f2d05d758",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
