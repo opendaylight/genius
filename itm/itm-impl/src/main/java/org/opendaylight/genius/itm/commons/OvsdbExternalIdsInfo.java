@@ -10,16 +10,11 @@ package org.opendaylight.genius.itm.commons;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 
 public class OvsdbExternalIdsInfo {
-    private String tepIp = null;
     private String tzName = null;
     private String brName = ITMConstants.DEFAULT_BRIDGE_NAME;
     private boolean ofTunnel = false;
 
     // get methods
-    public String getTepIp() {
-        return tepIp;
-    }
-
     public String getTzName() {
         return tzName;
     }
@@ -33,10 +28,6 @@ public class OvsdbExternalIdsInfo {
     }
 
     // set methods
-    public void setTepIp(String tepIp) {
-        this.tepIp = tepIp;
-    }
-
     public void setTzName(String tzName) {
         this.tzName = tzName;
     }
@@ -52,7 +43,7 @@ public class OvsdbExternalIdsInfo {
     @Override
     public String toString() {
         return "OvsdbExternalIdsInfo  { "
-                + "Ovsdb node External Ids Info list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName
+                + "Ovsdb node External Ids Info list TEP parameters: TZ name:" + tzName
                 + "  Bridge name: " + brName +  " of-tunnel flag: " + ofTunnel + " }" ;
     }
 }
