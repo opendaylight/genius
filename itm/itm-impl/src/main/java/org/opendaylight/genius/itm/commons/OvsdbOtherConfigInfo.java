@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.commons;
 
 import org.opendaylight.genius.itm.globals.ITMConstants;
 
-public class OvsdbExternalIdsInfo {
+public class OvsdbOtherConfigInfo {
     private String tepIp = null;
     private String tzName = null;
     private String brName = ITMConstants.DEFAULT_BRIDGE_NAME;
@@ -51,8 +51,8 @@ public class OvsdbExternalIdsInfo {
 
     @Override
     public String toString() {
-        return "OvsdbExternalIdsInfo  { "
-                + "Ovsdb node External Ids Info list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName
+        return "OvsdbOtherConfigInfo  { "
+                + "Ovsdb node Other Configs Info list TEP parameters: TEP IP: " + tepIp + "  TZ name:" + tzName
                 + "  Bridge name: " + brName +  " of-tunnel flag: " + ofTunnel + " }" ;
     }
 }

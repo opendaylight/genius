@@ -66,8 +66,8 @@ public class ITMConstants {
     public static final String ITM_PREFIX = "ITM";
     public static final String ITM_ALARM = "ITM_ALARM";
     // Southbound side OVSDB ExternalIds list TEP parameters
-    public static final String EXT_ID_TEP_PARAM_KEY_TEP_IP = "tep-ip";
-    public static final String EXT_ID_TEP_PARAM_KEY_TZNAME = "tzname";
-    public static final String EXT_ID_TEP_PARAM_KEY_BR_NAME = "br-name";
-    public static final String EXT_ID_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
+    public static final String OTH_CFG_TEP_PARAM_KEY_LOCAL_IP = "local_ip";
+    public static final String OTH_CFG_TEP_PARAM_KEY_TZNAME = "tzname";
+    public static final String OTH_CFG_TEP_PARAM_KEY_BR_NAME = "br-name";
+    public static final String OTH_CFG_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
 }
