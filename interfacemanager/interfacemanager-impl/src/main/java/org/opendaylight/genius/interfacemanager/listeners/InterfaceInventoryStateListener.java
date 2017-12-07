@@ -159,7 +159,7 @@ public class InterfaceInventoryStateListener
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
-        if (InterfaceManagerCommonUtils.isNovaPort(portName)) {
+        if (InterfaceManagerCommonUtils.isNovaPort(portName) || InterfaceManagerCommonUtils.isK8SPort(portName)) {
             NodeConnectorId nodeConnectorIdOld =
                     FlowBasedServicesUtils.getNodeConnectorIdFromInterface(portName, interfaceManagerCommonUtils);
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
