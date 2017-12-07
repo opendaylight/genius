@@ -16,6 +16,24 @@
       "revId": "05a5ad26f149cce43a419e381346ee5ae7ca7cf5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_44cec65b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-07T16:37:37Z",
+      "side": 0,
+      "message": "because I\u0027ve found this is not needed and leads to double entries in rpcResult.errors; somewhere in RpcResultBuilder withError it appears to already do this. If we keep it, the LockManagerTest now fails, rightfully, with this:\n\njava.lang.AssertionError: Not true that rpcResult.errors (\u003c[RpcError [message\u003dbada boum bam!, severity\u003dERROR, errorType\u003dAPPLICATION, tag\u003doperation-failed, applicationTag\u003dnull, info\u003dnull, cause\u003dTransactionCommitFailedException{message\u003dbada boum bam!, errorList\u003d[RpcError [message\u003dbada boum bam!, severity\u003dERROR, errorType\u003dAPPLICATION, tag\u003doperation-failed, applicationTag\u003dnull, info\u003dnull, cause\u003dnull]]}], RpcError [message\u003dbada boum bam!, severity\u003dERROR, errorType\u003dAPPLICATION, tag\u003doperation-failed, applicationTag\u003dnull, info\u003dnull, cause\u003dnull]]\u003e) has a size of \u003c1\u003e. It is \u003c2\u003e",
+      "parentUuid": "7a1969be_d1356547",
+      "revId": "05a5ad26f149cce43a419e381346ee5ae7ca7cf5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
