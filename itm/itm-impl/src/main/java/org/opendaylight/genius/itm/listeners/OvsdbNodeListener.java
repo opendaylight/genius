@@ -15,7 +15,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
-import org.opendaylight.genius.itm.commons.OvsdbExternalIdsInfo;
+import org.opendaylight.genius.itm.commons.OvsdbOtherConfigInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -24,7 +24,7 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchOtherConfigs;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -88,16 +88,16 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         }
 
         if (ovsdbNewNodeAugmentation != null) {
-            // get OVSDB external_ids list from old ovsdb node
-            OvsdbExternalIdsInfo ovsdbExternalIdsInfo = getOvsdbNodeExternalIds(ovsdbNewNodeAugmentation);
-            if (ovsdbExternalIdsInfo == null) {
+            // get OVSDB other_config list from old ovsdb node
+            OvsdbOtherConfigInfo ovsdbOtherConfigInfo = getOvsdbNodeOtherConfig(ovsdbNewNodeAugmentation);
+            if (ovsdbOtherConfigInfo == null) {
                 return;
             }
-            // store ExternalIds required parameters
-            String newTepIp = ovsdbExternalIdsInfo.getTepIp();
-            String tzName = ovsdbExternalIdsInfo.getTzName();
-            String newBridgeName = ovsdbExternalIdsInfo.getBrName();
-            boolean ofTunnel = ovsdbExternalIdsInfo.getOfTunnel();
+            // store Other Configs required parameters
+            String newTepIp = ovsdbOtherConfigInfo.getTepIp();
+            String tzName = ovsdbOtherConfigInfo.getTzName();
+            String newBridgeName = ovsdbOtherConfigInfo.getBrName();
+            boolean ofTunnel = ovsdbOtherConfigInfo.getOfTunnel();
 
             // check if TEP-IP is configured or not
             if (newTepIp != null && !newTepIp.isEmpty()) {
@@ -149,8 +149,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         String oldDpnBridgeName = null;
         String newDpnBridgeName = null;
         boolean newOfTunnel = false;
-        boolean isExternalIdsUpdated = false;
-        boolean isExternalIdsDeleted = false;
+        boolean isOtherConfigUpdated = false;
+        boolean isOtherConfigDeleted = false;
         boolean isTepIpAdded = false;
         boolean isTepIpRemoved = false;
         boolean isTepIpUpdated;
@@ -159,45 +159,45 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Update.", originalOvsdbNode.getNodeId().getValue());
 
-        // get OVSDB external_ids list from old ovsdb node
-        OvsdbExternalIdsInfo newExternalIdsInfoObj = getOvsdbNodeExternalIds(
+        // get OVSDB other_configs list from old ovsdb node
+        OvsdbOtherConfigInfo newOtherConfigInfoObj = getOvsdbNodeOtherConfig(
                 updatedOvsdbNode.getAugmentation(OvsdbNodeAugmentation.class));
 
-        // get OVSDB external_ids list from new ovsdb node
-        OvsdbExternalIdsInfo oldExternalIdsInfoObj = getOvsdbNodeExternalIds(
+        // get OVSDB other_configs list from new ovsdb node
+        OvsdbOtherConfigInfo oldOtherConfigInfoObj = getOvsdbNodeOtherConfig(
                 originalOvsdbNode.getAugmentation(OvsdbNodeAugmentation.class));
 
-        if (oldExternalIdsInfoObj == null && newExternalIdsInfoObj == null) {
-            LOG.trace("ExternalIds is not received in old and new Ovsdb Nodes.");
+        if (oldOtherConfigInfoObj == null && newOtherConfigInfoObj == null) {
+            LOG.trace("OtherConfig is not received in old and new Ovsdb Nodes.");
             return;
         }
 
-        if (oldExternalIdsInfoObj != null && newExternalIdsInfoObj == null) {
-            isExternalIdsDeleted = true;
-            LOG.trace("ExternalIds is deleted from Ovsdb node: {}", originalOvsdbNode.getNodeId().getValue());
+        if (oldOtherConfigInfoObj != null && newOtherConfigInfoObj == null) {
+            isOtherConfigDeleted = true;
+            LOG.trace("OtherConfig is deleted from Ovsdb node: {}", originalOvsdbNode.getNodeId().getValue());
         }
 
-        // store ExternalIds required parameters
-        if (newExternalIdsInfoObj != null) {
-            newTepIp = newExternalIdsInfoObj.getTepIp();
-            tzName = newExternalIdsInfoObj.getTzName();
-            newDpnBridgeName = newExternalIdsInfoObj.getBrName();
-            newOfTunnel = newExternalIdsInfoObj.getOfTunnel();
+        // store OtherConfigs required parameters
+        if (newOtherConfigInfoObj != null) {
+            newTepIp = newOtherConfigInfoObj.getTepIp();
+            tzName = newOtherConfigInfoObj.getTzName();
+            newDpnBridgeName = newOtherConfigInfoObj.getBrName();
+            newOfTunnel = newOtherConfigInfoObj.getOfTunnel();
         }
 
-        if (oldExternalIdsInfoObj != null) {
-            oldDpnBridgeName = oldExternalIdsInfoObj.getBrName();
-            oldTzName = oldExternalIdsInfoObj.getTzName();
-            oldTepIp = oldExternalIdsInfoObj.getTepIp();
+        if (oldOtherConfigInfoObj != null) {
+            oldDpnBridgeName = oldOtherConfigInfoObj.getBrName();
+            oldTzName = oldOtherConfigInfoObj.getTzName();
+            oldTepIp = oldOtherConfigInfoObj.getTepIp();
         }
 
         // handle case when TEP parameters are not configured from switch side
         if (newTepIp == null && oldTepIp == null) {
-            LOG.trace("ExternalsIds TEP parameters are not specified in old and new Ovsdb Nodes.");
+            LOG.trace("OtherConfig TEP parameters are not specified in old and new Ovsdb Nodes.");
             return;
         }
 
-        if (!isExternalIdsDeleted) {
+        if (!isOtherConfigDeleted) {
             isTepIpRemoved = isTepIpRemoved(oldTepIp, newTepIp);
             isTepIpAdded = isTepIpAdded(oldTepIp, newTepIp);
             isTepIpUpdated = isTepIpUpdated(oldTepIp, newTepIp);
@@ -208,26 +208,26 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
 
             if (isTepIpAdded || isTepIpRemoved) {
-                isExternalIdsUpdated = true;
+                isOtherConfigUpdated = true;
             }
             if (isTzUpdated(oldTzName, tzName)) {
-                isExternalIdsUpdated = true;
+                isOtherConfigUpdated = true;
                 if (oldTepIp != null && newTepIp != null) {
                     isTzChanged = true;
                     LOG.trace("tzname is changed from {} to {} for TEP-IP: {}", oldTzName, tzName, newTepIp);
                 }
             }
-            if (!oldDpnBridgeName.equals(newDpnBridgeName)) {
-                isExternalIdsUpdated = true;
+            if (isDpnUpdated(oldDpnBridgeName, newDpnBridgeName)) {
+                isOtherConfigUpdated = true;
                 if (oldTepIp != null && newTepIp != null) {
                     isDpnBrChanged = true;
                     LOG.trace("dpn-br-name is changed from {} to {} for TEP-IP: {}", oldDpnBridgeName, newDpnBridgeName,
-                              newTepIp);
+                            newTepIp);
                 }
             }
 
-            if (!isExternalIdsUpdated) {
-                LOG.trace("No updates in the ExternalIds parameters. Nothing to do.");
+            if (!isOtherConfigUpdated) {
+                LOG.trace("No updates in the OtherConfig parameters. Nothing to do.");
                 return;
             }
         }
@@ -235,7 +235,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         String strOldDpnId;
         String strNewDpnId;
         // handle TEP-remove in remove case, TZ change case, Bridge change case
-        if (isExternalIdsDeleted || isTepIpRemoved || isTzChanged || isDpnBrChanged) {
+        if (isOtherConfigDeleted || isTepIpRemoved || isTzChanged || isDpnBrChanged) {
             // check if defTzEnabled flag is false in config file,
             // if flag is OFF, then no need to add TEP into ITM config DS.
             if (oldTzName == null || oldTzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
@@ -307,36 +307,41 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 || oldTzName != null && !oldTzName.equals(tzName);
     }
 
-    private OvsdbExternalIdsInfo getOvsdbNodeExternalIds(OvsdbNodeAugmentation ovsdbNodeAugmentation) {
+    private boolean isDpnUpdated(String oldDpnBridgeName, String dpnBridgeName) {
+        return oldDpnBridgeName == null && dpnBridgeName != null || oldDpnBridgeName != null && dpnBridgeName == null
+                || oldDpnBridgeName != null && !oldDpnBridgeName.equals(dpnBridgeName);
+    }
+
+    private OvsdbOtherConfigInfo getOvsdbNodeOtherConfig(OvsdbNodeAugmentation ovsdbNodeAugmentation) {
         if (ovsdbNodeAugmentation == null) {
             return null;
         }
 
-        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
-        if (ovsdbNodeExternalIdsList == null) {
-            LOG.warn("ExternalIds list does not exist in the OVSDB Node Augmentation.");
+        List<OpenvswitchOtherConfigs> ovsdbNodeOtherConfigsList = ovsdbNodeAugmentation.getOpenvswitchOtherConfigs();
+        if (ovsdbNodeOtherConfigsList == null) {
+            LOG.debug("OtherConfigs list does not exist in the OVSDB Node Augmentation.");
             return null;
         }
 
-        OvsdbExternalIdsInfo externalIdsInfoObj = new OvsdbExternalIdsInfo();
+        OvsdbOtherConfigInfo otherConfigInfoObj = new OvsdbOtherConfigInfo();
 
-        for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-            if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TEP_IP.equals(externalId.getExternalIdKey())) {
-                String tepIp = externalId.getExternalIdValue();
-                externalIdsInfoObj.setTepIp(tepIp);
-            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
-                String tzName = externalId.getExternalIdValue();
-                externalIdsInfoObj.setTzName(tzName);
-            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
-                String bridgeName = externalId.getExternalIdValue();
-                externalIdsInfoObj.setBrName(bridgeName);
-            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
-                boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
-                externalIdsInfoObj.setOfTunnel(ofTunnel);
+        for (OpenvswitchOtherConfigs otherConfigs : ovsdbNodeOtherConfigsList) {
+            if (ITMConstants.OTH_CFG_TEP_PARAM_KEY_LOCAL_IP.equals(otherConfigs.getOtherConfigKey())) {
+                String tepIp = otherConfigs.getOtherConfigValue();
+                otherConfigInfoObj.setTepIp(tepIp);
+            } else if (ITMConstants.OTH_CFG_TEP_PARAM_KEY_TZNAME.equals(otherConfigs.getOtherConfigKey())) {
+                String tzName = otherConfigs.getOtherConfigValue();
+                otherConfigInfoObj.setTzName(tzName);
+            } else if (ITMConstants.OTH_CFG_TEP_PARAM_KEY_BR_NAME.equals(otherConfigs.getOtherConfigKey())) {
+                String bridgeName = otherConfigs.getOtherConfigValue();
+                otherConfigInfoObj.setBrName(bridgeName);
+            } else if (ITMConstants.OTH_CFG_TEP_PARAM_KEY_OF_TUNNEL.equals(otherConfigs.getOtherConfigKey())) {
+                boolean ofTunnel = Boolean.parseBoolean(otherConfigs.getOtherConfigValue());
+                otherConfigInfoObj.setOfTunnel(ofTunnel);
             }
         }
 
-        LOG.trace("{}", externalIdsInfoObj.toString());
-        return externalIdsInfoObj;
+        LOG.trace("{}", otherConfigInfoObj.toString());
+        return otherConfigInfoObj;
     }
 }
