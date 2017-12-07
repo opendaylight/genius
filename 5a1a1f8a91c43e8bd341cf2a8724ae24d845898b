@@ -142,6 +142,24 @@
       "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_841a7e6c",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-07T15:00:24Z",
+      "side": 1,
+      "message": "The runner also avoids the many scenarios where a transaction is created and never submitted or cancelled, because of early returns. (These can obviously be found and fixed manually, but delegating the transaction handling to the runner means they can’t occur at all.)",
+      "parentUuid": "7a1969be_cde9411c",
+      "revId": "5a1a1f8a91c43e8bd341cf2a8724ae24d845898b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
