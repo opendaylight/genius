@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_643f8226",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "you can add the topic branch here",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_443c0630",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "interfacemanager",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_a4497ad2",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "expected to",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_e4609237",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "Please call out that Multiple VXLAN Tunnels feature will not work with this",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_446a461b",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "external tunnels also?",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_84743efe",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "what about external tunnel table?",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_c4659646",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-07T16:53:10Z",
+      "side": 1,
+      "message": "Please add a section for upgrade impact",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
