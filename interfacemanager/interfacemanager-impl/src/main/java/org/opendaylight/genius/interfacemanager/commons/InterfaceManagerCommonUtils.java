@@ -93,11 +93,13 @@ public final class InterfaceManagerCommonUtils {
 
     private static final String NOVA_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}";
     private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
+    private static final String K8S_CNI_PORT_REGEX = "veth[0-9a-f]{8}";
     private static final String NOVA_OR_TUNNEL_PORT_REGEX = NOVA_PORT_REGEX + "|" + TUNNEL_PORT_REGEX;
 
     private static final Pattern NOVA_OR_TUNNEL_PORT_PATTERN = Pattern.compile(NOVA_OR_TUNNEL_PORT_REGEX);
     private static final Pattern TUNNEL_PORT_PATTERN = Pattern.compile(TUNNEL_PORT_REGEX);
     private static final Pattern NOVA_PORT_PATTERN = Pattern.compile(NOVA_PORT_REGEX);
+    private static final Pattern K8S_CNI_PORT_PATTERN = Pattern.compile(K8S_CNI_PORT_REGEX);
 
     private final ConcurrentHashMap<String, Interface> interfaceConfigMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf
@@ -662,6 +664,11 @@ public final class InterfaceManagerCommonUtils {
         return matcher.matches();
     }
 
+    public static boolean isK8SPort(String portName) {
+        Matcher matcher = K8S_CNI_PORT_PATTERN.matcher(portName);
+        return matcher.matches();
+    }
+
     public void createOrUpdateDpnToInterface(BigInteger dpId, String infName) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
@@ -711,7 +718,7 @@ public final class InterfaceManagerCommonUtils {
     }
 
     public static String getPortNameForInterface(NodeConnectorId nodeConnectorId, String portName) {
-        if (isNovaOrTunnelPort(portName)) {
+        if (isNovaOrTunnelPort(portName) || isK8SPort(portName)) {
             return portName;
         } else {
             return getDpnPrefixedPortName(nodeConnectorId, portName);
@@ -719,7 +726,7 @@ public final class InterfaceManagerCommonUtils {
     }
 
     public static String getPortNameForInterface(String dpnId, String portName) {
-        if (isNovaOrTunnelPort(portName)) {
+        if (isNovaOrTunnelPort(portName) || isK8SPort(portName)) {
             return portName;
         } else {
             return getDpnPrefixedPortName(dpnId, portName);
