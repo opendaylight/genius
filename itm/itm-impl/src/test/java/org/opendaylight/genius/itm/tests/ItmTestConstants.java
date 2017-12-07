@@ -38,7 +38,7 @@ public interface ItmTestConstants {
     Class<? extends TunnelTypeBase> TUNNEL_TYPE_VXLAN = TunnelTypeVxlan.class;
     Class<? extends TunnelMonitoringTypeBase> MONITOR_PROTOCOL = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     String  DPID_STR_ONE = "1";
-    String EXTERNAL_ID_TEP_IP_KEY = "tep-ip";
+    String OTHER_CFG_TEP_IP_KEY = "local_ip";
     String EXTERNAL_ID_TZNAME_KEY = "tzname";
     String EXTERNAL_ID_BR_NAME_KEY = "br-name";
 
