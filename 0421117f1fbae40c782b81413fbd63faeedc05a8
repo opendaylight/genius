@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_bf3187a4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2017-12-07T20:08:21Z",
+      "side": 1,
+      "message": "Note: During testing, I encountered a NPE before this change. The reason is that I cleared local_ip from other_config, then a little later, set it. This was to test being able to change the local_ip. When I set it, this code was hit, and oldDpnBridgeName was NULL, as the oldOtherConfigInfoObj, on line 188 was null (as expected, no info in old config), so oldDpnBridgeName was never set to anything from null. Boom! NPE.\n\nThat is why you will see this code is a modified from other version. I\u0027m pretty sure this would fail in the same way if this test was done in current code version using externalIds.",
+      "revId": "0421117f1fbae40c782b81413fbd63faeedc05a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
