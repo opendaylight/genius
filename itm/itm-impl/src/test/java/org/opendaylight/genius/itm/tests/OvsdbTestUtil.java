@@ -28,10 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeRef;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfoBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIdsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.*;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
@@ -68,8 +65,10 @@ public class OvsdbTestUtil {
 
         // create map of key-val pairs
         Map<String, String> externalIds = new HashMap<>();
+        Map<String, String> otherConfigs = new HashMap<>();
+
         if (tepIp != null && !tepIp.isEmpty()) {
-            externalIds.put(ItmTestConstants.EXTERNAL_ID_TEP_IP_KEY, tepIp);
+            otherConfigs.put(ItmTestConstants.OTHER_CFG_TEP_IP_KEY, tepIp);
         }
 
         if (tzName != null) {
@@ -78,6 +77,7 @@ public class OvsdbTestUtil {
 
         // get map-keys into set.
         Set<String> externalIdKeys = externalIds.keySet();
+        Set<String> otherConfigKeys = otherConfigs.keySet();
 
         List<OpenvswitchExternalIds> externalIdsList = new ArrayList<>();
         String externalIdValue = null;
@@ -89,8 +89,22 @@ public class OvsdbTestUtil {
             }
         }
 
+        List<OpenvswitchOtherConfigs> otherConfigsList = new ArrayList<>();
+        String otherConfigValue = null;
+        for (String otherConfigKey : otherConfigKeys) {
+            otherConfigValue = otherConfigs.get(otherConfigKey);
+            if (otherConfigKey != null && otherConfigValue != null) {
+                otherConfigsList.add(new OpenvswitchOtherConfigsBuilder().setOtherConfigKey(otherConfigKey)
+                    .setOtherConfigValue(otherConfigValue).build());
+            }
+        }
+
         // set ExternalIds list into Node
         ovsdbNodeAugBuilder.setOpenvswitchExternalIds(externalIdsList);
+
+        // set OtherConfig list into Node
+        ovsdbNodeAugBuilder.setOpenvswitchOtherConfigs(otherConfigsList);
+
         // add OvsdbNodeAugmentation into Node
         nodeBuilder.addAugmentation(OvsdbNodeAugmentation.class, ovsdbNodeAugBuilder.build());
         Node ovsdbNode = nodeBuilder.build();
@@ -118,8 +132,9 @@ public class OvsdbTestUtil {
 
         // create map of key-val pairs
         Map<String, String> externalIds = new HashMap<>();
+        Map<String, String> otherConfigs = new HashMap<>();
         if (tepIp != null && !tepIp.isEmpty()) {
-            externalIds.put(ItmTestConstants.EXTERNAL_ID_TEP_IP_KEY, tepIp);
+            otherConfigs.put(ItmTestConstants.OTHER_CFG_TEP_IP_KEY, tepIp);
         }
 
         if (tzName != null) {
@@ -132,6 +147,7 @@ public class OvsdbTestUtil {
 
         // get map-keys into set.
         Set<String> externalIdKeys = externalIds.keySet();
+        Set<String> otherConfigKeys = otherConfigs.keySet();
 
         List<OpenvswitchExternalIds> externalIdsList = new ArrayList<>();
         String externalIdValue = null;
@@ -143,8 +159,22 @@ public class OvsdbTestUtil {
             }
         }
 
+        List<OpenvswitchOtherConfigs> otherConfigsList = new ArrayList<>();
+        String otherConfigsValue = null;
+        for (String otherConfigKey : otherConfigKeys) {
+            otherConfigsValue = otherConfigs.get(otherConfigKey);
+            if (otherConfigKey != null && otherConfigsValue != null) {
+                otherConfigsList.add(new OpenvswitchOtherConfigsBuilder().setOtherConfigKey(otherConfigKey)
+                        .setOtherConfigValue(otherConfigsValue).build());
+            }
+        }
+
         // set ExternalIds list into Node
         ovsdbNodeAugBuilder.setOpenvswitchExternalIds(externalIdsList);
+
+        // set OtherConfigs list into Node
+        ovsdbNodeAugBuilder.setOpenvswitchOtherConfigs(otherConfigsList);
+
         // add OvsdbNodeAugmentation into Node
         nodeBuilder.addAugmentation(OvsdbNodeAugmentation.class, ovsdbNodeAugBuilder.build());
         Node ovsdbNode = nodeBuilder.build();
