@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_5e0cd942",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-12-07T10:30:05Z",
+      "side": 1,
+      "message": "ok.I have made changes similar to ur JC review.\nRemoved this class.",
+      "parentUuid": "7a1969be_94747b9d",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_f43defbc",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
         "patchSetId": 4
@@ -87,6 +105,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_3e091d32",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpMetrics.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-12-07T10:30:05Z",
+      "side": 1,
+      "message": "ok taking into account to add project and bundle in the required class.",
+      "parentUuid": "7a1969be_74a0dff4",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_f464cfe6",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilCounters.java",
         "patchSetId": 4
@@ -104,6 +140,24 @@
     },
     {
       "key": {
+        "uuid": "7a1969be_9e06511f",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilCounters.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-12-07T10:30:05Z",
+      "side": 1,
+      "message": "Done. Enum class will be removed.",
+      "parentUuid": "7a1969be_f464cfe6",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_14afebe4",
         "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/TestMetricProvider.java",
         "patchSetId": 4
@@ -115,6 +169,24 @@
       "writtenOn": "2017-12-04T15:02:50Z",
       "side": 1,
       "message": "Hang on, this one doesn\u0027t make much sense to me... please don\u0027t take any offense, but.. what\u0027s actually the point of this?? ;-)\n\nI think you should remove this, and we do EITHER or the other of the following two options:\n\nA. If we do not care about metrics in unit and components tests, which I suspect is normally the case, then .. why not just do this in ArpUtilTestModule, and others like it in the future, something like (not tested; should work, if it gives you trouble I\u0027m sure it\u0027s possible to get working):\n\nbind(MetricProvider.class).toInstance(mock(MetricProvider.class));\n\nB. If, for some reason we do need real working metrics in tests (but I cannot think of a good one..), then why not just bind the real MetricProviderImpl instead of this semi implemented half baked sort of working not but really test stub??\n\nBut I think typically A. is sufficient and the right thing to do.",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_197d5b6f",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/TestMetricProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-12-07T10:30:05Z",
+      "side": 1,
+      "message": "1) First of all, arputil had unit test case for counters previously, so updated the testcase according to metrics.\nIf we remove this test case, will test coverage tool get\u0027s an impact?\n\n2) This class was introduced is because \nOption A : bind(MetricProvider.class).toInstance(mock(MetricProvider.class)); is not working.\ns \ntestGetMac() Arputil main test cases are failing with null pointer exception pointing metric Counter api is null.\nThis is happening,since Metric Registry is created in constructor of the Impl.In mocked object it doesnt call the default constructor, registry is null here.\nOption B:\nIf we bind real MetricProviderImpl,\nbind(MetricProvider.class).toInstance(new MetricProviderImpl.class); things are working. But\nthen this module will have dependency on metrics-impl (Is this agreeable??)\n\nOr this has to be done pax exam or pojosr.\nTo keep it simple, I am retaining this class as of now.",
+      "parentUuid": "7a1969be_14afebe4",
       "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
