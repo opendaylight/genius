@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a1969be_1f5b7b88",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-08T01:19:50Z",
+      "side": 1,
+      "message": "How about calling this NextAction?",
+      "range": {
+        "startLine": 29,
+        "startChar": 9,
+        "endLine": 29,
+        "endChar": 30
+      },
+      "revId": "cab9ba7dc84d873ad3cef9dea35df4d9902765c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_df60c337",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-08T01:19:50Z",
+      "side": 1,
+      "message": "Another way to do this is via Optional:\n\n  Function\u003cT, Optional\u003cUnregisterOrCallAgain\u003e\u003e\n\nSo returning Optional.empty() means UNREGISTER.",
+      "revId": "cab9ba7dc84d873ad3cef9dea35df4d9902765c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
