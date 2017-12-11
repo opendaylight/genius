@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b71ef920_ac20ff6f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/commons/OvsdbOtherConfigInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-12-11T07:20:47Z",
+      "side": 1,
+      "message": "I think would be better to combine this into OvsdbExternalIdsInfo, in other words rename OvsdbExternalIdsInfo to something like OvsdbTepIdsInfo which pulls info from ExternalIds and OtherConfigs into single POJO class. HAving two kind of defeats the purpose of a POJO and makes code unnecessarily complicated. With single class comparisons to detect changes will be much easier.",
+      "range": {
+        "startLine": 10,
+        "startChar": 13,
+        "endLine": 10,
+        "endChar": 33
+      },
+      "revId": "bb9423e848062a0b837291274649d58b0fccea08",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
