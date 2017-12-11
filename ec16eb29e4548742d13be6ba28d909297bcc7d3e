@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "db8965e8_79168f48",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/commons/OvsdbTepInfo.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2017-12-11T19:10:16Z",
+      "side": 1,
+      "message": "OK, I\u0027ll leave it as is. If I have to go back and make changes based on your other comment, I\u0027ll make this change also. Otherwise, I\u0027ll leave it as is.",
+      "parentUuid": "997dca51_268bf438",
+      "range": {
+        "startLine": 13,
+        "startChar": 19,
+        "endLine": 13,
+        "endChar": 24
+      },
+      "revId": "ec16eb29e4548742d13be6ba28d909297bcc7d3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "322dec8f_17af6389",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 6
