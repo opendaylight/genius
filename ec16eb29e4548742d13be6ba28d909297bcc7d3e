@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "997dca51_268bf438",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/commons/OvsdbTepInfo.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-12-11T18:32:36Z",
+      "side": 1,
+      "message": "this can probably be retained as tepIp. It doesn\u0027t need to reflect source it came from but how this will be used. Would reduce changes in code. But since you\u0027ve already done, should be fine.",
+      "range": {
+        "startLine": 13,
+        "startChar": 19,
+        "endLine": 13,
+        "endChar": 24
+      },
+      "revId": "ec16eb29e4548742d13be6ba28d909297bcc7d3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "322dec8f_17af6389",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-12-11T18:32:36Z",
+      "side": 1,
+      "message": "It will be much simpler to make this OvsddbTepInfo constructor.\n\nOvsdbTepInfo newTepInfo \u003d new OVsdbTepInfo(updatedOvsdbNode.getAugmentation(OvsdbNodeAugmentation.class))\n\nWill save hassle of calling set individually. Can also remove set methods altogether if not used once initialized.",
+      "range": {
+        "startLine": 165,
+        "startChar": 8,
+        "endLine": 166,
+        "endChar": 79
+      },
+      "revId": "ec16eb29e4548742d13be6ba28d909297bcc7d3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
