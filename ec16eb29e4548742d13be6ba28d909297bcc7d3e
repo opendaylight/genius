@@ -45,6 +45,30 @@
       "revId": "ec16eb29e4548742d13be6ba28d909297bcc7d3e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "392c322b_fc7bbe21",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2017-12-11T19:05:40Z",
+      "side": 1,
+      "message": "With this approach, the logic would move over to OvsdbTepInfo class to parse and store the relevant config, as is being done in the private getOvsdbTepInfo() method, right?\n\nI was taking the approach to minimize code changes, but if you think this is something that needs to be done to optimize and clean up, then I will make these changes as well.",
+      "parentUuid": "322dec8f_17af6389",
+      "range": {
+        "startLine": 165,
+        "startChar": 8,
+        "endLine": 166,
+        "endChar": 79
+      },
+      "revId": "ec16eb29e4548742d13be6ba28d909297bcc7d3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
