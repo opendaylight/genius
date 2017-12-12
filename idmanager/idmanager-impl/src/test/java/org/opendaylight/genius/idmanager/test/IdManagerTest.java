@@ -8,12 +8,13 @@
 package org.opendaylight.genius.idmanager.test;
 
 import static java.util.Comparator.comparing;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.google.common.base.Optional;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,12 +23,11 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
-
+import junit.framework.AssertionFailedError;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Ignore;
@@ -45,7 +45,9 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
+import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.mdsal.binding.testutils.AssertDataObjects;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
@@ -73,8 +75,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IdManagerTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(IdManagerTest.class);
 
     private static final String TEST_KEY1 = "test-key1";
     private static final String TEST_KEY2 = "test-key2";
@@ -83,7 +89,12 @@ public class IdManagerTest {
     private static final long ID_LOW = 0L;
     private static final long ID_HIGH = 100L;
 
+    // public static @ClassRule RunUntilFailureClassRule classRepeater = new RunUntilFailureClassRule();
+    // public @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(classRepeater);
+
     public @Rule LogRule logRule = new LogRule();
+    public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
+
     public @Rule MethodRule guice = new GuiceRule(IdManagerTestModule.class,
             TestableDataTreeChangeListenerModule.class, JobCoordinatorTestModule.class);
 
@@ -187,7 +198,8 @@ public class IdManagerTest {
     }
 
     @Test
-    public void testMultithreadedIdAllocationFromAvailableIds() throws Exception {
+    @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
+    public void testMultithreadedIdAllocationFromAvailableIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
                 .setPoolName(ID_POOL_NAME).build();
         idManagerService.createIdPool(createIdPoolInput);
@@ -205,7 +217,8 @@ public class IdManagerTest {
     }
 
     @Test
-    public void testMultithreadedIdAllocationFromReleaseIds() throws Exception {
+    @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
+    public void testMultithreadedIdAllocationFromReleaseIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
                 .setPoolName(ID_POOL_NAME).build();
         AllocateIdInput allocateIdInput = new AllocateIdInputBuilder().setIdKey(TEST_KEY1).setPoolName(ID_POOL_NAME)
@@ -243,7 +256,8 @@ public class IdManagerTest {
 
     @Test
     @Ignore // TODO make less brittle and completely reliable, see https://jira.opendaylight.org/browse/GENIUS-105
-    public void testMultithreadedIdAllocationForSameKeyFromAvailableIds() throws Exception {
+    @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
+    public void testMultithreadedIdAllocationForSameKeyFromAvailableIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
                 .setPoolName(ID_POOL_NAME).build();
         idManagerService.createIdPool(createIdPoolInput);
@@ -255,7 +269,8 @@ public class IdManagerTest {
 
     @Test
     @Ignore
-    public void testMultithreadedIdAllocationForSameKeyFromReleasedIds() throws Exception {
+    @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
+    public void testMultithreadedIdAllocationForSameKeyFromReleasedIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
                 .setPoolName(ID_POOL_NAME).build();
         AllocateIdInput allocateIdInput = new AllocateIdInputBuilder().setIdKey(TEST_KEY2).setPoolName(ID_POOL_NAME)
@@ -281,11 +296,13 @@ public class IdManagerTest {
                 ExpectedAllocateIdFromReleasedId.idPoolChild());
     }
 
-    private void requestIdsConcurrently(boolean isSameKey) throws InterruptedException {
+    @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
+    private void requestIdsConcurrently(boolean isSameKey) throws Throwable {
         int numberOfTasks = 3;
         CountDownLatch latch = new CountDownLatch(numberOfTasks);
         Set<Long> idSet = new HashSet<>();
-        ExecutorService executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newCachedThreadPool("requestIdsConcurrently()", LOG);
+        AtomicReference<Throwable> exceptionInExecutorAtomic = new AtomicReference<>();
         for (int i = 0; i < numberOfTasks; i++) {
             final String idKey;
             if (isSameKey) {
@@ -294,6 +311,8 @@ public class IdManagerTest {
                 idKey = TEST_KEY1 + i;
             }
             executor.execute(() -> {
+                // Any exception thrown inside this background thread will not cause the test to fail
+                // so you cannot use assert* here but must set the exceptionInExecutor which is checked after
                 Future<RpcResult<AllocateIdOutput>> result;
                 result = idManagerService.allocateId(
                         new AllocateIdInputBuilder().setPoolName(ID_POOL_NAME).setIdKey(idKey).build());
@@ -301,23 +320,33 @@ public class IdManagerTest {
                     if (result.get().isSuccessful()) {
                         Long idValue = result.get().getResult().getIdValue();
                         idSet.add(idValue);
-                        assertTrue(idValue <= ID_LOW + BLOCK_SIZE);
+                        if (idValue > ID_LOW + BLOCK_SIZE) {
+                            exceptionInExecutorAtomic.set(new AssertionFailedError("idValue <= ID_LOW + BLOCK_SIZE"));
+                        }
                     } else {
                         RpcError error = result.get().getErrors().iterator().next();
-                        assertTrue(error.getCause().getMessage().contains("Ids exhausted for pool : " + ID_POOL_NAME));
+                        if (!error.getCause().getMessage().contains("Ids exhausted for pool : " + ID_POOL_NAME)) {
+                            exceptionInExecutorAtomic.set(error.getCause());
+                        }
                     }
-                } catch (ExecutionException | InterruptedException e) {
-                    assertTrue(e.getCause().getMessage(), false);
+                } catch (InterruptedException | ExecutionException e) {
+                    exceptionInExecutorAtomic.set(e);
                 } finally {
                     latch.countDown();
                 }
             });
         }
-        latch.await();
+        if (!latch.await(13, SECONDS)) {
+            fail("latch.await(13, SECONDS) timed out :(");
+        }
+        Throwable exceptionInExecutor = exceptionInExecutorAtomic.get();
+        if (exceptionInExecutor != null) {
+            throw exceptionInExecutor;
+        }
         if (isSameKey) {
-            assertTrue(idSet.size() == 1);
+            assertEquals(1, idSet.size());
         } else {
-            assertTrue(idSet.size() == numberOfTasks);
+            assertEquals(numberOfTasks, idSet.size());
         }
     }
 
