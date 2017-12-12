@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.ComparisonFailure;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -241,6 +242,7 @@ public class IdManagerTest {
     }
 
     @Test
+    @Ignore // TODO make less brittle and completely reliable, see https://jira.opendaylight.org/browse/GENIUS-105
     public void testMultithreadedIdAllocationForSameKeyFromAvailableIds() throws Exception {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
                 .setPoolName(ID_POOL_NAME).build();
