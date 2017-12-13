@@ -1,0 +1,227 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f3472f7_a01922c0",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "Title overline too short.",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d61488ae_f16a3889",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "leave one blank line after this.",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c961f40_67a5f3f4",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "Unexpected indentation",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 1
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "943b3474_aa3beb32",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "add a blank line after this para.",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f55c9c7_dfafad5d",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "Add a blank line",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "472a8d65_3358ecf6",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "can use a better name e.g., \u0027itm-direct-tunnels\u0027",
+      "range": {
+        "startLine": 65,
+        "startChar": 7,
+        "endLine": 65,
+        "endChar": 33
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a337e2f9_2c5e408f",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "there should not be any impact on functionalities provided by interface-manager. If there are tunnel interfaces created by other modules in interface-manager, it shoudl be able to handle it.",
+      "range": {
+        "startLine": 67,
+        "startChar": 16,
+        "endLine": 67,
+        "endChar": 53
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6288713c_c6de14db",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "unexpected indent. use http://rst.ninjs.org/ to view and correct rst formatting errors.",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e96eb395_cb4d44db",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "how will you ensure if this group-id is not allocated/used by other modules? specify group-id pool.",
+      "range": {
+        "startLine": 73,
+        "startChar": 26,
+        "endLine": 73,
+        "endChar": 55
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "363e34ef_32693ceb",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "?? there is a new group being introduced, the pipeline will change.",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 20
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5eaa1733_677af3d5",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2017-12-13T08:50:10Z",
+      "side": 1,
+      "message": "can this be merged with tranzport-zone/DPN-TEPs DS?",
+      "range": {
+        "startLine": 126,
+        "startChar": 2,
+        "endLine": 126,
+        "endChar": 34
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
