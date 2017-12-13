@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
+import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -46,8 +47,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * properly in component tests (no reset between tests)
  * </ul>
  *
- * @deprecated This class is currently only use in ITM, and has a number of
- *             serious design flaws.
+ * @deprecated This class has a number of serious design flaws. Use {@link DataObjectCache} instead.
  *
  * @author unascribed (Ericsson India?) - original code
  * @author Michael Vorburger.ch - JavaDoc
