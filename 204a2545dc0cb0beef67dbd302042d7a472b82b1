@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b8e44c70_98bd8de8",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "suite",
+      "range": {
+        "startLine": 17,
+        "startChar": 5,
+        "endLine": 17,
+        "endChar": 9
+      },
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "407f3144_5932159c",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "I don\u0027t think we need mininet, but we will need\nmultiple OVS instances right? that means multiple\n\"Tools Systems\" in our upstream CSIT terminology",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 32,
+        "endChar": 11
+      },
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "07395236_11480496",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "could we somehow give a list of the test cases below\nwithout the steps and criteria? that will be easier\nto digest at a high level, then we also have the steps\nand criteria listed below. just a thought",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11ea20dc_4acee791",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "is this the proper place to give better details about\nwhat exactly the flows should look like?\n\nactually, I see there are a few more details added in\nsome of the test cases below. I think these might be\nimportant to have in this testplan. Devs that write\nthese test plans will likely be more in tune with the\ngory details about the kinds of flows that should end\nup on the switch(es)",
+      "range": {
+        "startLine": 93,
+        "startChar": 6,
+        "endLine": 93,
+        "endChar": 47
+      },
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2155a70d_32a3b207",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "user",
+      "range": {
+        "startLine": 239,
+        "startChar": 25,
+        "endLine": 239,
+        "endChar": 29
+      },
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b70cb6f5_39a6c3b8",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "suite",
+      "range": {
+        "startLine": 51,
+        "startChar": 59,
+        "endLine": 51,
+        "endChar": 63
+      },
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e909bcb3_56199029",
+        "filename": "docs/testplans/testplan-template.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2017-12-13T19:19:58Z",
+      "side": 1,
+      "message": "extra newline?",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
