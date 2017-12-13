@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fddaac63_77a4853f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "If this is intended as the replacement of the @Deprecated DataStoreCache then perhaps as part of this change we could change the DataStoreCache @deprecated JavaDoc tag to point to this class?  The API is not identical, but in practice DataStoreCache is used in genius.itm and netvirt.vpnmanager for DataObject AFAIK, so this could be drop-in.  Hell, let\u0027s be crazy - what if as part of this change already, or in an immediate chained follow-up change reviewable together, we already changed ITM to use this new util, to illustrate?",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a2be04f0_2dee4f57",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "in previous discussions I\u0027ve had with E// others in the past had wanted to build something like this but always intended to build a built-in companion DTCL which would automatically evict on changes.  As far as I know (last looked at this a while ago), much of the existing code has built on off listener classes for this purpose, which all does the same thing.  IMHO if we do introduce such a new utility, a listener for eviction should be part of it.",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f2029f79_c58bd642",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "why don\u0027t we use the infrautils.caches here?  I do realize ;) it\u0027s not always applicable, but this strikes me as a use case where it is (the CacheFunction is the db.read) ... if we did, we would get cache:list CLI monitor-ability, and prevent OOM from bad use of this class (because it would auto-evict old entries; which should not cause any issue to application code, as it could reload, if needed).",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "403ea549_027be253",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "I\u0027m surprised you are making this a Cache per LogicalDatastoreType.. not clear if you intend for each module, like say genius.itm VS netvirt.vpnmanager to create their own instance of this, x2 (Oper \u0026 Config) ?  Or did you anticipate to create an OSGi service with a global cache?  If you don\u0027t, someone else will probably think that\u0027s a Good Idea, sooner or later, trust me... I\u0027m not sure that would ever be a good idea, so how about making this a Cache for an InstanceIdentifier instead?  Either for a pair of InstanceIdentifier and LogicalDatastoreType, or (why not) just an InstanceIdentifier (and have LogicalDatastoreType on get) ?  So each module would (be forced by the API to) only \"cache\" sub-trees it is interested in.",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2999c7ce_f12eb72a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "I\u0027m curious if any why this method is needed.. have you found existing code in genius or netvirt that uses this kind of operation, or are you proposing this particular operation here just because why not also?\n\nDoesn\u0027t it, always, just do a read after anyways; so only the get() would be sufficient? I\u0027m just struggling to understand the use case where you would want to see if the Cache has a DataObject for an InstanceIdentifier.. this \"smells\" like someone misusing this.  (Also infrautils.caches.Cache has no such method - but if there is a good reason why consuming code would ever need such an operation, then we could add it there of course, relatively easily.)",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "387fd037_e194ad0c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "The whole problem with this of course is that it\u0027s not Transactional... I do realize much existing code in genius and netvirt does this like this, but it seems wrong, to me; so I\u0027m slightly reluctant to add a new utility that encourages this... What we really need is a bigger discussion WHY people feel like they have to cache data from the DB in the first place? There was once a discussion to add a kind of \"read fast even if stale\" (I think) to the DB.. you Tom would be ideally placed to help pick that up! But perhaps that\u0027s unrealistic, and we do need a helper like this in the short term anyway, just to at least get rid of the static DataStoreCache.",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "72a0f464_111268c0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-13T11:03:48Z",
+      "side": 1,
+      "message": "I\u0027m curious if any why this method is needed.. have you found existing code in genius or netvirt that uses this kind of operation, or are you proposing this particular operation here just because why not also?\n\nI\u0027m just struggling to understand the use case where you would want this.  It\u0027s like a \"read everything\" on DataBroker; not sure that\u0027s really needed?\n\n(Also infrautils.caches.Cache has no such method - but if there is a good reason why consuming code would ever need such an operation, then we could add it there of course.)",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
