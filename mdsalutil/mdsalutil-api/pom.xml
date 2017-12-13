@@ -94,6 +94,21 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.infrautils.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>caches-api</artifactId>
+      <version>${genius.infrautils.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>caches-impl-base</artifactId>
+      <version>${genius.infrautils.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>caches-standard-impl</artifactId>
+      <version>${genius.infrautils.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>value</artifactId>
     </dependency>
@@ -138,6 +153,17 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
     </dependency>
+    <dependency>
+       <groupId>org.opendaylight.controller</groupId>
+       <artifactId>sal-binding-broker-impl</artifactId>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+       <groupId>org.opendaylight.controller</groupId>
+       <artifactId>sal-binding-broker-impl</artifactId>
+       <scope>test</scope>
+       <type>test-jar</type>
+     </dependency>
   </dependencies>
 
   <build>
