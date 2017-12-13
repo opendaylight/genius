@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "38942305_1eabd752",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "I can update DataStoreCache . I have locally converted vpnmanager to this already. I was planning to look at ITM next but would rather do it in another patch.",
+      "parentUuid": "fddaac63_77a4853f",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a2be04f0_2dee4f57",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-12-13T11:03:48Z",
       "side": 1,
       "message": "in previous discussions I\u0027ve had with E// others in the past had wanted to build something like this but always intended to build a built-in companion DTCL which would automatically evict on changes.  As far as I know (last looked at this a while ago), much of the existing code has built on off listener classes for this purpose, which all does the same thing.  IMHO if we do introduce such a new utility, a listener for eviction should be part of it.",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "190ea7d2_271b066e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "That is the case in vpnmanager - I haven\u0027t looked at detailed usage in ITM yet. I was actually thinking of making a DTCL part of it. That way all we should need is public get method(s).",
+      "parentUuid": "a2be04f0_2dee4f57",
       "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "21d9777c_59c2b510",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "I started out trying to use it when I had V as the value type and the read could result in null but Cache (infrautils and guava) require non-null or throw an exception. I was wary of doing the latter for performance reasons in case cache misses are frequent for paths that really don\u0027t exist in the data store. However now that I\u0027ve changed it to Optional\u003cV\u003e this isn\u0027t an issue anymore.\n\nThat said, I appreciate what you\u0027ve done with infrautils Cache but I\u0027ve found it a bit heavy-weight/cumbersome to use. Specifically \u0027anchor\u0027 and \u0027id\u0027  (and maybe \u0027desc\u0027 too?) which are required - I guess I can see a use for \u0027id\u0027 but I\u0027m not clear on the purpose of \u0027anchor\u0027.  TBH - having 3 such identifying/reporting properties is a bit much IMO.  Also I\u0027d need to pass a CacheProvider here as well. Passing all those on to the caller here would make DataObjectCache a bit more cumbersome to use. It would be easiest to just use guava Cache directly here but I get that going thru a CacheProvider allows for the \nmonitor-ability via CLI/JMX.\n\nI\u0027\u0027m not concerned about bad usage of this class - as mentioned, with an internal DTCL, we can completely control the puts so we don\u0027t need auto-evict for potential user leaks. The only issue would be potential OOM from simply too many such DataObjects in the DS.",
+      "parentUuid": "f2029f79_c58bd642",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "403ea549_027be253",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2017-12-13T11:03:48Z",
       "side": 1,
       "message": "I\u0027m surprised you are making this a Cache per LogicalDatastoreType.. not clear if you intend for each module, like say genius.itm VS netvirt.vpnmanager to create their own instance of this, x2 (Oper \u0026 Config) ?  Or did you anticipate to create an OSGi service with a global cache?  If you don\u0027t, someone else will probably think that\u0027s a Good Idea, sooner or later, trust me... I\u0027m not sure that would ever be a good idea, so how about making this a Cache for an InstanceIdentifier instead?  Either for a pair of InstanceIdentifier and LogicalDatastoreType, or (why not) just an InstanceIdentifier (and have LogicalDatastoreType on get) ?  So each module would (be forced by the API to) only \"cache\" sub-trees it is interested in.",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e3ec8c31_d508d644",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "I\u0027m not totally clear what you mean here, specifically the last sentence. This is intended per DS type. Maybe you could send me a modified  class to illustrate what you mean?",
+      "parentUuid": "403ea549_027be253",
       "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "50c30915_0073b1d7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "Not sure if this is really needed. It isn\u0027t in the netvirt usage. I still have to work thru ITM but I\u0027ll probably end up removing it.",
+      "parentUuid": "2999c7ce_f12eb72a",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "387fd037_e194ad0c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -104,6 +194,24 @@
     },
     {
       "key": {
+        "uuid": "261e6798_c259c8d1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "yeah I did this to at least preserve existing behavior - not saying it\u0027s right. The absolute first step is to get rid of the static DataStoreCache - we can work from there. The vpnmanager usage of DataStoreCache was introduced by https://git.opendaylight.org/gerrit/#/c/48580/ to apparently work around a timing issue.  I\u0027m not sure if the cache is really necessary or if it\u0027s a hack as I don\u0027t know the code or functionality. Also a lot of other code reads the same data from the DS directly - since that patch added caching it seems all the other code should use the cache as well.",
+      "parentUuid": "387fd037_e194ad0c",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "72a0f464_111268c0",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -115,6 +223,24 @@
       "writtenOn": "2017-12-13T11:03:48Z",
       "side": 1,
       "message": "I\u0027m curious if any why this method is needed.. have you found existing code in genius or netvirt that uses this kind of operation, or are you proposing this particular operation here just because why not also?\n\nI\u0027m just struggling to understand the use case where you would want this.  It\u0027s like a \"read everything\" on DataBroker; not sure that\u0027s really needed?\n\n(Also infrautils.caches.Cache has no such method - but if there is a good reason why consuming code would ever need such an operation, then we could add it there of course.)",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "110b9e35_50c1a5ce",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-13T16:00:43Z",
+      "side": 1,
+      "message": "Again not sure if this is needed yet. The only reason would be to dump the cache via CLI.",
+      "parentUuid": "72a0f464_111268c0",
       "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
