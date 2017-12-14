@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_1f94dee0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 676,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-09T07:02:57Z",
+      "side": 1,
+      "message": "remove this tab",
+      "revId": "1a7397a031fa87997d3331f3ba05ca595f367025",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
