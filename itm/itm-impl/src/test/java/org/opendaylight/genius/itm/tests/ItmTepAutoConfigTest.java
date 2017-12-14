@@ -30,6 +30,7 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDefTransportZoneObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedTepNotHostedTransportZoneObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedTransportZoneObjects;
+import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -52,7 +53,8 @@ public class ItmTepAutoConfigTest {
 
     public @Rule LogRule logRule = new LogRule();
     // TODO public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class);
+    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class,
+            CacheModule.class);
 
     TransportZone transportZone;
     TransportZones transportZones;

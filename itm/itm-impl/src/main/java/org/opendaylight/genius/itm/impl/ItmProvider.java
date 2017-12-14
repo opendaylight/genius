@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Preconditions;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -32,10 +33,6 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
-import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
-import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
-import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
-import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
@@ -62,7 +59,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
 
-    private final ITMManager itmManager;
     private final DataBroker dataBroker;
     private final ItmManagerRpcService itmRpcService ;
     private final IdManagerService idManager;
@@ -75,48 +71,37 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private RpcProviderRegistry rpcProviderRegistry;
     private static final ITMStatusMonitor ITM_STAT_MON = ITMStatusMonitor.getInstance();
     private final ItmTunnelEventListener itmStateListener;
-    private final ItmMonitoringListener itmMonitoringListener;
-    private final ItmMonitoringIntervalListener itmMonitoringIntervalListener;
     private final OvsdbNodeListener ovsdbChangeListener;
     static short flag = 0;
-    private final StateTunnelListListener tunnelStateListener ;
-    private final DpnTepsInfoListener dpnTepsInfoListener ;
+    private final TunnelMonitoringConfig tunnelMonitoringConfig;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
-                       DpnTepsInfoListener dpnTepsInfoListener,
                        IdManagerService idManagerService,
                        InterfaceStateListener interfaceStateListener,
-                       ITMManager itmManager,
                        ItmManagerRpcService itmManagerRpcService,
-                       ItmMonitoringListener itmMonitoringListener,
-                       ItmMonitoringIntervalListener itmMonitoringIntervalListener,
                        ItmTunnelEventListener itmTunnelEventListener,
-                       StateTunnelListListener stateTunnelListListener,
                        TepCommandHelper tepCommandHelper,
                        TunnelMonitorChangeListener tunnelMonitorChangeListener,
                        TunnelMonitorIntervalListener tunnelMonitorIntervalListener,
                        TransportZoneListener transportZoneListener,
                        VtepConfigSchemaListener vtepConfigSchemaListener,
-                       OvsdbNodeListener ovsdbNodeListener) {
+                       OvsdbNodeListener ovsdbNodeListener,
+                       TunnelMonitoringConfig tunnelMonitoringConfig) {
         LOG.info("ItmProvider Before register MBean");
         ITM_STAT_MON.registerMbean();
         this.dataBroker = dataBroker;
-        this.dpnTepsInfoListener = dpnTepsInfoListener;
         this.idManager = idManagerService;
         this.ifStateListener = interfaceStateListener;
-        this.itmManager = itmManager;
         this.itmRpcService = itmManagerRpcService;
-        this.itmMonitoringListener = itmMonitoringListener;
-        this.itmMonitoringIntervalListener = itmMonitoringIntervalListener;
         this.itmStateListener = itmTunnelEventListener;
-        this.tunnelStateListener = stateTunnelListListener;
         this.tepCommandHelper = tepCommandHelper;
         this.tnlToggleListener = tunnelMonitorChangeListener;
         this.tnlIntervalListener = tunnelMonitorIntervalListener;
         this.tzChangeListener = transportZoneListener;
         this.vtepConfigSchemaListener = vtepConfigSchemaListener;
         this.ovsdbChangeListener = ovsdbNodeListener;
+        this.tunnelMonitoringConfig = tunnelMonitoringConfig;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
@@ -137,9 +122,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @PreDestroy
     public void close() {
         ITM_STAT_MON.unregisterMbean();
-        if (itmManager != null) {
-            itmManager.close();
-        }
         if (tzChangeListener != null) {
             tzChangeListener.close();
         }
@@ -148,12 +130,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
         if (tnlToggleListener != null) {
             tnlToggleListener.close();
-        }
-        if (tunnelStateListener != null) {
-            tunnelStateListener.close();
-        }
-        if (dpnTepsInfoListener != null) {
-            dpnTepsInfoListener.close();
         }
         if (ovsdbChangeListener != null) {
             ovsdbChangeListener.close();
@@ -222,18 +198,18 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public void showTeps(CommandSession session) {
         try {
-            tepCommandHelper.showTeps(itmManager.getTunnelMonitorEnabledFromConfigDS(),
-                    ItmUtils.determineMonitorInterval(this.dataBroker), session);
+            tepCommandHelper.showTeps(tunnelMonitoringConfig.isTunnelMonitoringEnabled(),
+                    tunnelMonitoringConfig.getMonitorInterval(), session);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
     }
 
     @Override
-    public void showState(List<StateTunnelList> tunnels,CommandSession session) {
+    public void showState(Collection<StateTunnelList> tunnels,CommandSession session) {
         if (tunnels != null) {
             try {
-                tepCommandHelper.showState(tunnels, itmManager.getTunnelMonitorEnabledFromConfigDS(), session);
+                tepCommandHelper.showState(tunnels, tunnelMonitoringConfig.isTunnelMonitoringEnabled(), session);
             } catch (TepException e) {
                 LOG.error(e.getMessage());
             }
