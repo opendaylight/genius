@@ -16,6 +16,24 @@
       "revId": "7356eed2e7d62a9c87b0cc38358105ff59fcee2c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a0e34404",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilImplTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_20d59443",
+      "revId": "7356eed2e7d62a9c87b0cc38358105ff59fcee2c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
