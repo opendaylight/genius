@@ -122,6 +122,91 @@
     },
     {
       "key": {
+        "uuid": "7713ca50_f9ed20cb",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-14T15:25:54Z",
+      "side": 1,
+      "message": "Need to mention about table 220 as well",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bbd8f494_290966bf",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-14T15:25:54Z",
+      "side": 1,
+      "message": "Need to mention about table 220 as well",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7814778f_f911479e",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-14T15:25:54Z",
+      "side": 1,
+      "message": "Need to mention about table 220 as well",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb3ae769_def2f9e5",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-14T15:25:54Z",
+      "side": 1,
+      "message": "Need to mention about table 220 as well",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd26089d_f33808df",
+        "filename": "docs/testplans/interface-manager.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-14T15:25:54Z",
+      "side": 1,
+      "message": "need to mention about egress service binding?",
+      "revId": "204a2545dc0cb0beef67dbd302042d7a472b82b1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2155a70d_32a3b207",
         "filename": "docs/testplans/interface-manager.rst",
         "patchSetId": 7
