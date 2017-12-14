@@ -44,7 +44,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SouthboundUtils {
+public final class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
     public static final String HWVTEP_TOPOLOGY = "hwvtep:1";
     public static final TopologyId HWVTEP_TOPOLOGY_ID = new TopologyId(new Uri(HWVTEP_TOPOLOGY));
@@ -73,6 +73,8 @@ public class SouthboundUtils {
     private static final String BFD_FORWARDING_IF_RX_VAL = "true";
     private static final String BFD_CPATH_DOWN_VAL = "false";
     private static final String BFD_CHECK_TNL_KEY_VAL = "false";
+
+    private SouthboundUtils() { }
 
     public static InstanceIdentifier<Node> createPhysicalSwitchInstanceIdentifier(String psNodeIdString) {
         NodeId physicalSwitchNodeId = new NodeId(psNodeIdString);

@@ -54,7 +54,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActionConverterUtil {
+public final class ActionConverterUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(ActionConverterUtil.class);
     private static final Map<Class<? extends Action>, Class<?>> SERVICE_ACTION_TO_OF_ACTION_MAP = new HashMap<>();
@@ -100,6 +100,8 @@ public class ActionConverterUtil {
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitWriteActionsCase.class,
                 NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder.class);
     }
+
+    private ActionConverterUtil() { }
 
     public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action
         .types.rev131112.action.list.Action> convertServiceActionToFlowAction(

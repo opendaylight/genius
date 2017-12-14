@@ -37,7 +37,7 @@ public class VlanInterfaceInfo extends InterfaceInfo {
         return isVlanTransparent;
     }
 
-    public void setVlanTransparent(boolean isVlanTransparent) {
-        this.isVlanTransparent = isVlanTransparent;
+    public void setVlanTransparent(boolean vlanTransparent) {
+        this.isVlanTransparent = vlanTransparent;
     }
 }

@@ -55,7 +55,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * TODO: Move these API's to ovsdb's utils.hwvtepsouthbound-utils module.
  */
-public class HwvtepSouthboundUtils {
+public final class HwvtepSouthboundUtils {
+
+    private HwvtepSouthboundUtils() { }
 
     /**
      * Creates the hwvtep topology instance identifier.

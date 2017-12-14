@@ -39,9 +39,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsdbTepAddConfigHelper {
+public final class OvsdbTepAddConfigHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddConfigHelper.class);
+
+    private OvsdbTepAddConfigHelper() { }
 
     /**
      * Adds the TEP into ITM configuration Datastore in one of the following cases.

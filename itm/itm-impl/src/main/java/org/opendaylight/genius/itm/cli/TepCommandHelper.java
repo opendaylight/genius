@@ -69,7 +69,6 @@ public class TepCommandHelper {
     private final DataBroker dataBroker;
     private final ItmConfig itmConfig;
     static int check = 0;
-    static short flag = 0;
     /*
      * boolean flag add_or_delete --- can be set to true if the last called tep
      * command is Tep-add else set to false when Tep-delete is called

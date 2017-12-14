@@ -23,8 +23,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTunnelStateAddHelper {
+public final class ItmTunnelStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateAddHelper.class);
+
+    private ItmTunnelStateAddHelper() { }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static List<ListenableFuture<Void>> addTunnel(Interface iface, IInterfaceManager ifaceManager,

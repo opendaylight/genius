@@ -63,8 +63,8 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
     }
 
     @Override
-    protected void applyValue(NxAugMatchNodesNodeTableFlowBuilder matchBuilder, NxmNxReg value) {
-        matchBuilder.setNxmNxReg(value);
+    protected void applyValue(NxAugMatchNodesNodeTableFlowBuilder matchBuilder, NxmNxReg regValue) {
+        matchBuilder.setNxmNxReg(regValue);
     }
 
     @Override

@@ -78,7 +78,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InterfaceManagerTestUtil {
+public final class InterfaceManagerTestUtil {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerConfigurationTest.class);
     public static final String PARENT_INTERFACE = "tap23701c04-7e";
     public static final String DEVICE_PORT = "eth0";
@@ -96,6 +96,8 @@ public class InterfaceManagerTestUtil {
 
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
     public static final NodeKey NODE_KEY = new NodeKey(new NodeId("openflow:1"));
+
+    private InterfaceManagerTestUtil() { }
 
     static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
         buildStateInterface(String ifName, String dpnId, String portNo, String phyAddress,

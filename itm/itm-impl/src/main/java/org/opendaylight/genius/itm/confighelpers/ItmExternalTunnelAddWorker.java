@@ -45,11 +45,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmExternalTunnelAddWorker {
+public final class ItmExternalTunnelAddWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmExternalTunnelAddWorker.class);
 
     private static Integer monitorInterval;
     private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+
+    private ItmExternalTunnelAddWorker() { }
 
     public static List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(DataBroker dataBroker,
                                                                               List<DPNTEPsInfo> cfgDpnList,
@@ -174,8 +176,7 @@ public class ItmExternalTunnelAddWorker {
                             if (!wireUp(dpn.getDPNID(), tep.getPortname(), sub.getVlanId(),
                                     tep.getIpAddress(), useOfTunnel, nodeId, hwVtepDS.getIpAddress(),
                                     tep.getSubnetMask(), sub.getGatewayIp(), sub.getPrefix(),
-                                    transportZone.getTunnelType(), false, monitorProtocol, monitorInterval,
-                                    transaction)) {
+                                    transportZone.getTunnelType(), false, transaction)) {
                                 LOG.error("Unable to build tunnel {} -- {}",
                                         tep.getIpAddress(), hwVtepDS.getIpAddress());
                             }
@@ -183,8 +184,8 @@ public class ItmExternalTunnelAddWorker {
                             LOG.trace("wire up {} and {}", hwVtepDS,tep);
                             if (!wireUp(hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
                                     cssID, tep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(),
-                                    tep.getSubnetMask(), transportZone.getTunnelType(), false, monitorProtocol,
-                                    monitorInterval, transaction)) {
+                                    tep.getSubnetMask(), transportZone.getTunnelType(), false,
+                                    transaction)) {
                                 LOG.error("Unable to build tunnel {} -- {}",
                                         hwVtepDS.getIpAddress(), tep.getIpAddress());
                             }
@@ -218,8 +219,8 @@ public class ItmExternalTunnelAddWorker {
                                 LOG.trace("wire up {} and {}",hwTep, hwVtepDS);
                                 if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
                                         hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(), hwTep.getIpPrefix(),
-                                        hwTep.getGatewayIP(), sub.getPrefix(), tunType,false,monitorProtocol,
-                                        monitorInterval, transaction)) {
+                                        hwTep.getGatewayIP(), sub.getPrefix(), tunType,false,
+                                        transaction)) {
                                     LOG.error("Unable to build tunnel {} -- {}",
                                             hwTep.getHwIp(), hwVtepDS.getIpAddress());
                                 }
@@ -227,7 +228,7 @@ public class ItmExternalTunnelAddWorker {
                                 LOG.trace("wire up {} and {}", hwVtepDS,hwTep);
                                 if (!wireUp(hwTep.getTopoId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
                                         hwTep.getNodeId(), hwTep.getHwIp(), sub.getPrefix(), sub.getGatewayIp(),
-                                        hwTep.getIpPrefix(), tunType, false, monitorProtocol, monitorInterval,
+                                        hwTep.getIpPrefix(), tunType, false,
                                         transaction)) {
                                     LOG.error("Unable to build tunnel {} -- {}",
                                             hwVtepDS.getIpAddress(), hwTep.getHwIp());
@@ -244,7 +245,7 @@ public class ItmExternalTunnelAddWorker {
                                 LOG.trace("wire up {} and {}",hwTep, vtep);
                                 if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(), cssID,
                                         vtep.getIpAddress(), hwTep.getIpPrefix(), hwTep.getGatewayIP(),
-                                        sub.getPrefix(), tunType,false, monitorProtocol, monitorInterval,
+                                        sub.getPrefix(), tunType,false,
                                         transaction)) {
                                     LOG.error("Unable to build tunnel {} -- {}",
                                             hwTep.getHwIp(), vtep.getIpAddress());
@@ -254,8 +255,7 @@ public class ItmExternalTunnelAddWorker {
                                 boolean useOfTunnel = ItmUtils.falseIfNull(vtep.isOptionOfTunnel());
                                 if (!wireUp(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId(), vtep.getIpAddress(),
                                         useOfTunnel, hwTep.getNodeId(),hwTep.getHwIp(),sub.getPrefix(),
-                                        sub.getGatewayIp(),hwTep.getIpPrefix(), tunType,false,monitorProtocol,
-                                        monitorInterval, transaction)) {
+                                        sub.getGatewayIp(), hwTep.getIpPrefix(), tunType, false, transaction)) {
                                     //do nothing
                                 }
                             }
@@ -271,7 +271,6 @@ public class ItmExternalTunnelAddWorker {
     private static boolean wireUp(String topoId, String srcNodeid, IpAddress srcIp, String dstNodeId, IpAddress dstIp,
                                   IpPrefix srcSubnet, IpAddress gwIp, IpPrefix dstSubnet,
                                   Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled,
-                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol, Integer monitorInterval,
                                   WriteTransaction transaction) {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gwIp;
@@ -305,8 +304,7 @@ public class ItmExternalTunnelAddWorker {
     private static boolean wireUp(BigInteger dpnId, String portname, Integer vlanId, IpAddress srcIp,
                                   Boolean remoteIpFlow, String dstNodeId, IpAddress dstIp, IpPrefix srcSubnet,
                                   IpAddress gwIp, IpPrefix dstSubnet, Class<? extends TunnelTypeBase> tunType,
-                                  Boolean monitorEnabled, Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
-                                  Integer monitorInterval, WriteTransaction transaction) {
+                                  Boolean monitorEnabled, WriteTransaction transaction) {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gwIp;
         String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);

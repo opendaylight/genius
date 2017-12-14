@@ -217,7 +217,7 @@ public class ICMP extends Packet {
             BitBufferHelper.setBytes(serializedBytes, checkSum,
                     getfieldOffset(CHECKSUM), getfieldnumBits(CHECKSUM));
         } catch (BufferException e) {
-            throw new PacketException(e.getMessage());
+            throw new PacketException(e.getMessage(), e);
         }
     }
 

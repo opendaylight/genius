@@ -33,9 +33,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsdbTepRemoveConfigHelper {
+public final class OvsdbTepRemoveConfigHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepRemoveConfigHelper.class);
+
+    private OvsdbTepRemoveConfigHelper() { }
 
     /**
      * Removes the TEP from ITM configuration Datastore in one of the following cases.

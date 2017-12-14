@@ -18,7 +18,7 @@ import javax.management.ObjectName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ITMStatusMonitor implements ITMStatusMonitorMBean {
+public final class ITMStatusMonitor implements ITMStatusMonitorMBean {
 
     private String serviceStatus;
     private static ITMStatusMonitor itmStatusMonitor = new ITMStatusMonitor();
@@ -69,7 +69,7 @@ public class ITMStatusMonitor implements ITMStatusMonitorMBean {
         return serviceStatus;
     }
 
-    public void reportStatus(@SuppressWarnings("hiding") String serviceStatus) {
-        this.serviceStatus = serviceStatus;
+    public void reportStatus(String status) {
+        this.serviceStatus = status;
     }
 }
