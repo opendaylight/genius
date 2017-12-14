@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_02cc2169",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-17T16:13:18Z",
+      "side": 1,
+      "message": "remove * imports",
+      "revId": "9a087bda4761784df65707a2e514e62b49e06519",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_42c29934",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-17T16:13:18Z",
+      "side": 1,
+      "message": "if the first exception itself is not an instance of AskTimeout, we have to do individual retries...where is it?",
+      "revId": "9a087bda4761784df65707a2e514e62b49e06519",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
