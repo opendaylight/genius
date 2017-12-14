@@ -113,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_92473f4b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/RemoveExternalEndpoint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_6bfe2f3a",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d661c2d4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/HwVtep.java",
         "patchSetId": 8
@@ -316,6 +334,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_22828c52",
+      "range": {
+        "startLine": 218,
+        "startChar": 10,
+        "endLine": 218,
+        "endChar": 31
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ff2ae17c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "the methods deleteOnCommit() and buildTeps() do not throw any specific kind of exception, ergo I could not replace it with TepException.",
+      "parentUuid": "fafc7978_29471a1f",
       "range": {
         "startLine": 218,
         "startChar": 10,
