@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "fa2559ec_ad67c9e9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-21T07:13:40Z",
+      "side": 1,
+      "message": "can\u0027t this be part of FlowInstallHelper ?\nyou could change interface name to InterfaceFlowHelper (or) you simply make that as util class ?",
+      "revId": "e36a14463a7454bbb0a706bd249200766e85a37a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_ad406936",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-21T07:13:40Z",
+      "side": 1,
+      "message": "as discussed, let us combine these two methods with single one using consumer with builder pattern for multi-argument passing.",
+      "revId": "e36a14463a7454bbb0a706bd249200766e85a37a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_8d3645e6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-21T07:13:40Z",
+      "side": 1,
+      "message": "this can be a interface and change below methods as default methods.",
+      "revId": "e36a14463a7454bbb0a706bd249200766e85a37a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da2a55be_b4e25b01",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
         "patchSetId": 2
@@ -14,6 +65,23 @@
       "side": 1,
       "message": "Would any class ever implement it?",
       "parentUuid": "fa2559ec_8d3645e6",
+      "revId": "e36a14463a7454bbb0a706bd249200766e85a37a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_6d20319c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-06-21T07:13:40Z",
+      "side": 1,
+      "message": "annotate allDpId with @Nonnull",
       "revId": "e36a14463a7454bbb0a706bd249200766e85a37a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
