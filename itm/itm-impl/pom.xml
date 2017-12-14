@@ -150,6 +150,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>caches-test</artifactId>
+      <version>${genius.infrautils.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <!--Build Dependencies-->
   <build>

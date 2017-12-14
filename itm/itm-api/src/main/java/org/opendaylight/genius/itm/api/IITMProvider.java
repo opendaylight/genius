@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.api;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -27,7 +28,7 @@ public interface IITMProvider {
 
     void showTeps(CommandSession session);
 
-    void showState(List<StateTunnelList> tunnels, CommandSession session);
+    void showState(Collection<StateTunnelList> tunnels, CommandSession session);
 
     void showCache(String cacheName);
 

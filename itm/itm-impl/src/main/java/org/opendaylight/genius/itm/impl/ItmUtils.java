@@ -34,6 +34,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -47,7 +48,6 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPuntToController;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
-import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -64,7 +64,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
@@ -77,10 +76,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptionsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepIpPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
@@ -139,7 +134,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -415,56 +409,21 @@ public final class ItmUtils {
                 .setTransportType(tunType).build();
     }
 
-    public static List<DPNTEPsInfo> getTunnelMeshInfo(DataBroker dataBroker) {
-        // Read the Mesh Information from Cache if not read from the DS
-        List<DPNTEPsInfo> dpnTEPs = getTunnelMeshInfo() ;
-        if (dpnTEPs != null) {
-            return dpnTEPs;
-        }
-
-        // Read the EndPoint Info from the operational database
-        InstanceIdentifierBuilder<DpnEndpoints> depBuilder = InstanceIdentifier.builder(DpnEndpoints.class);
-        InstanceIdentifier<DpnEndpoints> deps = depBuilder.build();
-        Optional<DpnEndpoints> dpnEps = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, deps, dataBroker);
-        if (dpnEps.isPresent()) {
-            DpnEndpoints tn = dpnEps.get();
-            dpnTEPs = tn.getDPNTEPsInfo();
-            LOG.debug("Read from CONFIGURATION datastore - No. of Dpns " , dpnTEPs.size());
-        } else {
-            LOG.debug("No Dpn information in CONFIGURATION datastore ");
-        }
-        return dpnTEPs;
-    }
-
-    // Reading the Mesh Information from Cache
-    private static List<DPNTEPsInfo> getTunnelMeshInfo() {
-        List<DPNTEPsInfo> dpnTepsInfo = null;
-        List<Object> values = DataStoreCache.getValues(ITMConstants.DPN_TEPs_Info_CACHE_NAME);
-        if (values != null) {
-            dpnTepsInfo = new ArrayList<>() ;
-            for (Object value : values) {
-                dpnTepsInfo.add((DPNTEPsInfo)value) ;
-            }
-        }
-        return dpnTepsInfo;
-    }
-
     private static String getUniqueIdString(String idKey) {
         return UUID.nameUUIDFromBytes(idKey.getBytes()).toString().substring(0, 12).replace("-", "");
     }
 
-    public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DataBroker dataBroker, List<BigInteger> dpnIds) {
-        List<DPNTEPsInfo> meshedDpnList = getTunnelMeshInfo(dataBroker) ;
+    public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DPNTEPsInfoCache dpnTEPsInfoCache, List<BigInteger> dpnIds) {
+        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
-        if (null != meshedDpnList) {
-            for (BigInteger dpnId : dpnIds) {
-                for (DPNTEPsInfo teps : meshedDpnList) {
-                    if (dpnId.equals(teps.getDPNID())) {
-                        cfgDpnList.add(teps);
-                    }
+        for (BigInteger dpnId : dpnIds) {
+            for (DPNTEPsInfo teps : meshedDpnList) {
+                if (dpnId.equals(teps.getDPNID())) {
+                    cfgDpnList.add(teps);
                 }
             }
         }
+
         return cfgDpnList;
     }
 
@@ -821,46 +780,6 @@ public final class ItmUtils {
                                interfaceName)).build();
     }
 
-    public static Boolean readMonitoringStateFromCache(DataBroker dataBroker) {
-        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
-        TunnelMonitorParams tunnelMonitorParams = (TunnelMonitorParams) DataStoreCache
-                .get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"MonitorParams",dataBroker,true);
-        if (tunnelMonitorParams != null) {
-            return tunnelMonitorParams.isEnabled();
-        } else {
-            return ITMConstants.DEFAULT_MONITOR_ENABLED;
-        }
-    }
-
-    private static Integer readMonitorIntervalfromCache(DataBroker dataBroker) {
-        InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.create(TunnelMonitorInterval.class);
-        TunnelMonitorInterval tunnelMonitorIOptional = (TunnelMonitorInterval)DataStoreCache
-                .get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"Interval",dataBroker,true);
-        if (tunnelMonitorIOptional != null) {
-            return tunnelMonitorIOptional.getInterval();
-        }
-        return null;
-    }
-
-    public static Integer determineMonitorInterval(DataBroker dataBroker) {
-        Integer monitorInterval = ItmUtils.readMonitorIntervalfromCache(dataBroker);
-        LOG.debug("determineMonitorInterval: monitorInterval from DS = {}", monitorInterval);
-        if (monitorInterval == null) {
-            Class<? extends TunnelMonitoringTypeBase> monitorProtocol = determineMonitorProtocol(dataBroker);
-            if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeBfd.class)) {
-                monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
-            } else {
-                monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
-            }
-        }
-        LOG.debug("determineMonitorInterval: monitorInterval = {}", monitorInterval);
-        InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-        TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(monitorInterval).build();
-        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker,
-                ItmUtils.DEFAULT_CALLBACK);
-        return monitorInterval;
-    }
-
     public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
         List<String> tunnelList = new ArrayList<>();
         Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
@@ -1005,7 +924,7 @@ public final class ItmUtils {
         return new ExternalTunnelKey(dst, src, tunType);
     }
 
-    public static List<TunnelEndPoints> getTEPsForDpn(BigInteger srcDpn, List<DPNTEPsInfo> dpnList) {
+    public static List<TunnelEndPoints> getTEPsForDpn(BigInteger srcDpn, Collection<DPNTEPsInfo> dpnList) {
         for (DPNTEPsInfo dpn : dpnList) {
             if (dpn.getDPNID().equals(srcDpn)) {
                 return dpn.getTunnelEndPoints() ;
@@ -1107,51 +1026,6 @@ public final class ItmUtils {
             }
         }
         return result;
-    }
-
-    public static StateTunnelList getTunnelState(DataBroker dataBroker, String ifaceName,
-                                                 InstanceIdentifier<StateTunnelList> stListId) {
-        StateTunnelList tunnelState = (StateTunnelList)DataStoreCache
-                .get(ITMConstants.TUNNEL_STATE_CACHE_NAME, ifaceName);
-        if (tunnelState == null) {
-            Optional<StateTunnelList> tunnelsState = ItmUtils
-                    .read(LogicalDatastoreType.OPERATIONAL, stListId, dataBroker);
-            if (tunnelsState.isPresent()) {
-                return tunnelState;
-            }
-        }
-        return tunnelState;
-    }
-
-    private static Class<? extends TunnelMonitoringTypeBase> readMonitoringProtocolFromCache(DataBroker dataBroker) {
-        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
-        TunnelMonitorParams tunnelMonitorParams = (TunnelMonitorParams) DataStoreCache
-                .get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"MonitorParams",dataBroker,true);
-        if (tunnelMonitorParams != null) {
-            return tunnelMonitorParams.getMonitorProtocol();
-        }
-        return null;
-    }
-
-    public static Class<? extends TunnelMonitoringTypeBase> determineMonitorProtocol(DataBroker dataBroker) {
-        Class<? extends TunnelMonitoringTypeBase> monitoringProtocol =
-                ItmUtils.readMonitoringProtocolFromCache(dataBroker);
-        LOG.debug("determineMonitorProtocol: monitorProtocol from DS = {}", monitoringProtocol);
-        if (monitoringProtocol == null) {
-            monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
-        }
-        LOG.debug("determineMonitorProtocol: monitorProtocol = {}", monitoringProtocol);
-        Boolean monitorState = ItmUtils.readMonitoringStateFromCache(dataBroker);
-        if (monitorState == null) {
-            monitorState = true;
-        }
-        LOG.debug("determineMonitorProtocol: monitorState = {}", monitorState);
-        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder().setEnabled(monitorState)
-                .setMonitorProtocol(monitoringProtocol).build();
-        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder, dataBroker,
-                ItmUtils.DEFAULT_CALLBACK);
-        return monitoringProtocol;
     }
 
     public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker) {
@@ -1385,7 +1259,7 @@ public final class ItmUtils {
     }
 
     public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, BigInteger dpnId,
-                                                             List<DPNTEPsInfo> meshedDpnList) {
+            Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
         for (DPNTEPsInfo dstDpn : meshedDpnList) {
             if (dpnId.equals(dstDpn.getDPNID())) {

@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.annotation.PostConstruct;
@@ -23,6 +24,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -100,14 +102,16 @@ public class ItmManagerRpcService implements ItmRpcService {
     private static final Logger LOG = LoggerFactory.getLogger(ItmManagerRpcService.class);
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalManager;
-    private final ItmConfig itmConfig;
+    private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
 
     @Inject
-    public ItmManagerRpcService(final DataBroker dataBroker,
-                                final IMdsalApiManager mdsalManager, final ItmConfig itmConfig) {
+    public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
+            final ItmConfig itmConfig, final DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.dataBroker = dataBroker;
         this.mdsalManager = mdsalManager;
-        this.itmConfig = itmConfig;
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
+        this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
     }
 
     @PostConstruct
@@ -159,7 +163,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             RemoveExternalTunnelEndpointInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
+        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, meshedDpnList,
                 input.getDestinationIp(), input.getTunnelType());
         InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
@@ -189,7 +193,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             RemoveExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dataBroker, input.getDpnId()) ;
+        List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, input.getDpnId()) ;
         ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, cfgDpnList,
                 input.getDestinationIp(), input.getTunnelType());
         result.set(RpcResultBuilder.<Void>success().build());
@@ -201,9 +205,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<ListenableFuture<Void>> extTunnelResultList = ItmExternalTunnelAddWorker
-                .buildTunnelsFromDpnToExternalEndPoint(dataBroker, input.getDpnId(),
-                        input.getDestinationIp(),input.getTunnelType(), itmConfig);
+        List<ListenableFuture<Void>> extTunnelResultList = externalTunnelAddWorker
+            .buildTunnelsFromDpnToExternalEndPoint(input.getDpnId(), input.getDestinationIp(),input.getTunnelType());
         for (ListenableFuture<Void> extTunnelResult : extTunnelResultList) {
             Futures.addCallback(extTunnelResult, new FutureCallback<Void>() {
 
@@ -231,9 +234,9 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
-        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, meshedDpnList,
-                input.getDestinationIp(), input.getTunnelType(), itmConfig);
+        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList,
+                input.getDestinationIp(), input.getTunnelType());
         InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                 .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp =
@@ -408,7 +411,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             resultBld = RpcResultBuilder.success();
             resultBld.withResult(output.build()) ;
         } else {
-            List<DPNTEPsInfo> meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker);
+            Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
             if (meshedDpnList == null) {
                 LOG.error("There are no tunnel mesh info in config DS");
                 return Futures.immediateFuture(resultBld.build());

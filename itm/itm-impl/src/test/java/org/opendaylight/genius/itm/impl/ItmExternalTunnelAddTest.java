@@ -29,10 +29,12 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.utils.cache.DataStoreCache;
+import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
+import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -162,10 +164,11 @@ public class ItmExternalTunnelAddTest {
     @Mock IdManagerService idManagerService;
     @Mock ItmConfig itmConfig;
 
+    private ItmExternalTunnelAddWorker externalTunnelAddWorker;
+
     @Before
     public void setUp() {
         setupMocks();
-        DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
 
         optionalDpnEndPoints = Optional.of(dpnEndpointsVxlan);
         tunnelMonitorParamsOptional = Optional.of(tunnelMonitorParams);
@@ -177,6 +180,9 @@ public class ItmExternalTunnelAddTest {
                 .when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional))
                 .when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
+
+        externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
+                new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())));
 
     }
 
@@ -286,8 +292,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
 
-        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, cfgdDpnListVxlan,
-                ipAddress2,tunnelType1, itmConfig);
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(cfgdDpnListVxlan, ipAddress2, tunnelType1);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier,externalTunnel,true);
@@ -298,8 +303,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsFromDpnToExternalEndPoint() {
 
-        ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, bigIntegerList,
-                ipAddress2,tunnelType1, itmConfig);
+        externalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(bigIntegerList, ipAddress2, tunnelType1);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier,externalTunnel,true);
@@ -391,8 +395,8 @@ public class ItmExternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, cfgdDpnListVxlan,null);
-        ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, null,cfgdHwVtepsList);
+        externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null);
+        externalTunnelAddWorker.buildHwVtepsTunnels(null, cfgdHwVtepsList);
 
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID1,extTunnelIf1,true);
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1,
