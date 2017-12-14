@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_fa0caa96",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "The service should be injected.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_da11e6ad",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "The provider should be injected.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_c4810f4c",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
         "patchSetId": 31
@@ -13,6 +47,125 @@
       "writtenOn": "2017-08-09T11:17:26Z",
       "side": 1,
       "message": "Can we do this the @Inject way ? May be not in this patch, a subsequent one will also do.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_bc318bee",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "Draft\tIs the cast to short really needed?",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5c584f32",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "Draft\tIs this cast really needed?",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5c6fafc5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "the same.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_3c747b98",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "This is going to give a NPE.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9c6807bc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "the same.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_dc90bf97",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "We can just remove this method.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_bc8d0b7e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "We should unregister the listener here.",
       "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +257,23 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_9c41273c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedEgressServicesStateBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "The same.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_641ae318",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedEgressServicesStateUnbindHelper.java",
         "patchSetId": 31
@@ -149,6 +319,57 @@
       "writtenOn": "2017-08-09T11:17:26Z",
       "side": 1,
       "message": "don\u0027t return futures",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_3cf91bea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "this constant might be protected.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_fcee6321",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "Potential NPE.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9cdda773",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-10T08:33:15Z",
+      "side": 1,
+      "message": "return this directly.",
       "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
