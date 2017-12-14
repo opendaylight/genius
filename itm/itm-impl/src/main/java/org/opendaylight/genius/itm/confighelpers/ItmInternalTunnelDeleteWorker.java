@@ -102,8 +102,8 @@ public class ItmInternalTunnelDeleteWorker {
                                             // remove all trunk interfaces
                                             LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                     + "Destination TEP {} ", srcTep, dstTep);
-                                            removeTrunkInterface(dataBroker, srcTep, dstTep, srcDpn
-                                                    .getDPNID(), dstDpn.getDPNID(), writeTransaction);
+                                            removeTrunkInterface(srcTep, dstTep, srcDpn.getDPNID(), dstDpn.getDPNID(),
+                                                    writeTransaction);
                                         }
                                     }
                                 }
@@ -185,7 +185,7 @@ public class ItmInternalTunnelDeleteWorker {
         }));
     }
 
-    private void removeTrunkInterface(DataBroker dataBroker, TunnelEndPoints srcTep, TunnelEndPoints dstTep,
+    private void removeTrunkInterface(TunnelEndPoints srcTep, TunnelEndPoints dstTep,
                                       BigInteger srcDpnId, BigInteger dstDpnId, WriteTransaction transaction) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 new String(srcTep.getIpAddress().getValue()),
@@ -207,7 +207,7 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
-        removeLogicalGroupTunnel(srcDpnId, dstDpnId, dataBroker);
+        removeLogicalGroupTunnel(srcDpnId, dstDpnId);
 
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(dstTep.getInterfaceName(),
                 new String(dstTep.getIpAddress().getValue()),
@@ -229,7 +229,7 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(dstTep.getIpAddress().getValue()),
                 new String(srcTep.getIpAddress().getValue()),
                 dstTep.getTunnelType().getName());
-        removeLogicalGroupTunnel(dstDpnId, srcDpnId, dataBroker);
+        removeLogicalGroupTunnel(dstDpnId, srcDpnId);
     }
 
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId,
@@ -239,8 +239,7 @@ public class ItmInternalTunnelDeleteWorker {
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
     }
 
-    private void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
-                                                 DataBroker dataBroker) {
+    private void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId) {
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {
             return;

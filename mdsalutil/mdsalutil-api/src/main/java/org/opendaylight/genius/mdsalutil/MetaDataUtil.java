@@ -9,7 +9,7 @@ package org.opendaylight.genius.mdsalutil;
 
 import java.math.BigInteger;
 
-public class MetaDataUtil {
+public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_LPORT_TAG =     new BigInteger("0FFFFF0000000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE =       new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
@@ -25,6 +25,8 @@ public class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SH_FLAG = new BigInteger("0000000000000001", 16);
     public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("000000FFFFFFFFFE", 16);
+
+    private MetaDataUtil() { }
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
         return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag));

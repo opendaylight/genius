@@ -21,8 +21,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTunnelStateRemoveHelper {
+public final class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
+
+    private ItmTunnelStateRemoveHelper() { }
 
     public static List<ListenableFuture<Void>> removeTunnel(Interface iface, DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateRemoveHelper for Interface {} ", iface);

@@ -162,8 +162,6 @@ public class ItmExternalTunnelAddTest {
     @Mock IdManagerService idManagerService;
     @Mock ItmConfig itmConfig;
 
-    ItmExternalTunnelAddWorker externalTunnelAddWorker = new ItmExternalTunnelAddWorker();
-
     @Before
     public void setUp() {
         setupMocks();
@@ -288,7 +286,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
 
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, cfgdDpnListVxlan,
+        ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker, cfgdDpnListVxlan,
                 ipAddress2,tunnelType1, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
@@ -300,7 +298,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsFromDpnToExternalEndPoint() {
 
-        externalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, bigIntegerList,
+        ItmExternalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(dataBroker, bigIntegerList,
                 ipAddress2,tunnelType1, itmConfig);
 
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
@@ -393,8 +391,8 @@ public class ItmExternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, cfgdDpnListVxlan,null);
-        externalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, null,cfgdHwVtepsList);
+        ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, cfgdDpnListVxlan,null);
+        ItmExternalTunnelAddWorker.buildHwVtepsTunnels(dataBroker, null,cfgdHwVtepsList);
 
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID1,extTunnelIf1,true);
         verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1,

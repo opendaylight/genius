@@ -29,8 +29,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HwVTEPInterfaceConfigAddHelper {
+public final class HwVTEPInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceConfigAddHelper.class);
+
+    private HwVTEPInterfaceConfigAddHelper() { }
 
     public static List<ListenableFuture<Void>> addConfiguration(DataBroker dataBroker,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
