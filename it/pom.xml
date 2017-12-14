@@ -33,7 +33,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <type>xml</type>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.sonar-plugins.java</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>sonar-jacoco-listeners</artifactId>
       <scope>test</scope>
     </dependency>
