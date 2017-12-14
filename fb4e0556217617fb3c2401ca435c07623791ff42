@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_7682ae01",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T10:22:13Z",
+      "side": 1,
+      "message": "best to make this final while you\u0027re at it (BTW: In https://github.com/vorburger/opendaylight-eclipse-setup we use Eclipse\u0027s menu Window \u003e Preferences: Java \u003e Editor \u003e Save Actions: Use modifier \u0027final\u0027 where possible for private fields to automate this.",
+      "revId": "fb4e0556217617fb3c2401ca435c07623791ff42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b67ba628",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T10:22:13Z",
+      "side": 1,
+      "message": "unless there is any code that ever calls this setter, which would be a bit strange, perhaps use this as the opportunity to remove this setter, and make private FINAL IMdsalApiManager mdsalManager;",
+      "revId": "fb4e0556217617fb3c2401ca435c07623791ff42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_96782a2d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T10:22:13Z",
+      "side": 1,
+      "message": "make both of these final while you\u0027re at it?",
+      "revId": "fb4e0556217617fb3c2401ca435c07623791ff42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d672a248",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T10:22:13Z",
+      "side": 1,
+      "message": "please make this private final while you\u0027re at it",
+      "revId": "fb4e0556217617fb3c2401ca435c07623791ff42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_368f9625",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T10:22:13Z",
+      "side": 1,
+      "message": "please make this private final while you\u0027re at it",
+      "revId": "fb4e0556217617fb3c2401ca435c07623791ff42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_569e9257",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T10:22:13Z",
+      "side": 1,
+      "message": "as earlier, normally nobody should use this, so I would remove it and make IMdsalApiManager private final.  If a test uses this, you can probably change it to use the constructor correctly during object creation, instead of this setter after.",
+      "revId": "fb4e0556217617fb3c2401ca435c07623791ff42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
