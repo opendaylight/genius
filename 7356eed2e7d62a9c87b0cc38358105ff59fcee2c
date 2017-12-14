@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_20d59443",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilImplTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-04-03T09:08:54Z",
+      "side": 1,
+      "message": "Why is this defined here?",
+      "revId": "7356eed2e7d62a9c87b0cc38358105ff59fcee2c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
