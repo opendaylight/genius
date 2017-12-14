@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "da01753e_842b4f93",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_ffc0ebe1",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_3fbb9373",
         "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestUtil.java",
         "patchSetId": 5
@@ -81,6 +99,24 @@
       "writtenOn": "2017-04-20T14:39:11Z",
       "side": 1,
       "message": "private ArpUtilTestUtil() { }",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_e4197b89",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_3fbb9373",
       "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
