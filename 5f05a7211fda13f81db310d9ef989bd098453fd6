@@ -59,6 +59,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_942476b0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/RemoveExternalEndpoint.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-15T22:53:41Z",
+      "side": 1,
+      "message": "I think you could/should remove this suppression and try to replace the System.out messages.",
+      "range": {
+        "startLine": 40,
+        "startChar": 50,
+        "endLine": 40,
+        "endChar": 85
+      },
+      "revId": "5f05a7211fda13f81db310d9ef989bd098453fd6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_743632b6",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 5
@@ -138,6 +161,23 @@
       "writtenOn": "2017-03-15T22:53:41Z",
       "side": 1,
       "message": "Can we remove this commented code?",
+      "revId": "5f05a7211fda13f81db310d9ef989bd098453fd6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_94ce36b3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-15T22:53:41Z",
+      "side": 1,
+      "message": "Is this suppression really needed?",
       "revId": "5f05a7211fda13f81db310d9ef989bd098453fd6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
