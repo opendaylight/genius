@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_f8a90be0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-24T18:46:05Z",
+      "side": 1,
+      "message": "boundservice state cannot be null, as the caller of this method already handles it!",
+      "parentUuid": "ba1f61a0_0765a91d",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 63
+      },
+      "revId": "69127dcade109987b9f6f0b24aa3f0e269dd2f9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_67ac6536",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
         "patchSetId": 38
@@ -42,6 +66,23 @@
         "endLine": 64,
         "endChar": 13
       },
+      "revId": "69127dcade109987b9f6f0b24aa3f0e269dd2f9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_38aba3d7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-24T18:46:05Z",
+      "side": 1,
+      "message": "this is not anything with this code patch, why do we change all these as part of this patch? Edwin, if you think all these needs to be changed, do it as a separate review.",
       "revId": "69127dcade109987b9f6f0b24aa3f0e269dd2f9b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
