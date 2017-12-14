@@ -26,7 +26,9 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
+import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
@@ -35,11 +37,11 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedMoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -72,25 +74,31 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
-    private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalManager;
     private final ItmConfig itmConfig;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
+    private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
+    private final DPNTEPsInfoCache dpnTEPsInfoCache;
 
     @Inject
-    public TransportZoneListener(final DataBroker dataBroker, final IdManagerService idManagerService,
+    public TransportZoneListener(final DataBroker dataBroker,
                                  final IMdsalApiManager mdsalManager,
-                                 final ItmConfig itmConfig, JobCoordinator jobCoordinator) {
+                                 final ItmConfig itmConfig, final JobCoordinator jobCoordinator,
+                                 final TunnelMonitoringConfig tunnelMonitoringConfig,
+                                 final DPNTEPsInfoCache dpnTEPsInfoCache) {
         super(TransportZone.class, TransportZoneListener.class);
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
-        this.idManagerService = idManagerService;
         initializeTZNode(dataBroker);
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
-        this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator);
-        this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator);
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
+        this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
+                tunnelMonitoringConfig);
+        this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
+                tunnelMonitoringConfig);
+        this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
     }
 
     @PostConstruct
@@ -169,9 +177,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
                 LOG.trace("Delete: Invoking ItmManager with hwVtep List {} ", hwVtepList);
                 jobCoordinator.enqueueJob(tzOld.getZoneName(),
-                                          new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker,
-                                                                 mdsalManager,
-                                                                 itmInternalTunnelDeleteWorker));
+                        new ItmTepRemoveWorker(opDpnList, hwVtepList, tzOld, dataBroker, mdsalManager,
+                                itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
             }
         }
     }
@@ -200,16 +207,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             jobCoordinator.enqueueJob(tzNew.getZoneName(),
-                                      new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
-                                                          mdsalManager, itmConfig,
-                                                          itmInternalTunnelAddWorker));
+                    new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager, itmConfig,
+                            itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
         }
         if (!oldDpnTepsList.isEmpty()) {
             LOG.trace("Removing TEPs ");
             jobCoordinator.enqueueJob(tzNew.getZoneName(),
-                                      new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), tzOld, dataBroker,
-                                                             mdsalManager,
-                                                             itmInternalTunnelDeleteWorker));
+                    new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), tzOld, dataBroker, mdsalManager,
+                            itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
         }
         List<HwVtep> oldHwList = createhWVteps(tzOld);
         List<HwVtep> newHwList = createhWVteps(tzNew);
@@ -228,17 +233,14 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
         LOG.trace("newHwListcopy {}", newHwListcopy);
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
-            jobCoordinator.enqueueJob(tzNew.getZoneName(),
-                                      new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker,
-                                                          mdsalManager, itmConfig,
-                                                          itmInternalTunnelAddWorker));
+            jobCoordinator.enqueueJob(tzNew.getZoneName(), new ItmTepAddWorker(Collections.emptyList(), newHwList,
+                    dataBroker, mdsalManager, itmConfig, itmInternalTunnelAddWorker, externalTunnelAddWorker,
+                    dpnTEPsInfoCache));
         }
         if (!oldHwList.isEmpty()) {
             LOG.trace("Removing HW TEPs ");
-            jobCoordinator.enqueueJob(tzNew.getZoneName(),
-                                      new ItmTepRemoveWorker(Collections.emptyList(), oldHwList, tzOld, dataBroker,
-                                                             mdsalManager,
-                                                             itmInternalTunnelDeleteWorker));
+            jobCoordinator.enqueueJob(tzNew.getZoneName(), new ItmTepRemoveWorker(Collections.emptyList(), oldHwList,
+                    tzOld, dataBroker, mdsalManager, itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
         }
     }
 
@@ -253,8 +255,8 @@ public class TransportZoneListener extends AsyncDataTreeChangeListenerBase<Trans
             LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
             jobCoordinator.enqueueJob(tzNew.getZoneName(),
-                                      new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker,
-                                                          mdsalManager, itmConfig, itmInternalTunnelAddWorker));
+                    new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, mdsalManager, itmConfig,
+                            itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
         }
     }
 
