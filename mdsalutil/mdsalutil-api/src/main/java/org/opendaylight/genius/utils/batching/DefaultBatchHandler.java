@@ -32,12 +32,12 @@ public class DefaultBatchHandler implements ResourceHandler {
     }
 
     @Override
-    public void update(WriteTransaction tx, LogicalDatastoreType datastoreType, final InstanceIdentifier identifier,
-            final Object original, final Object update, List<SubTransaction> transactionObjects) {
+    public void update(WriteTransaction tx, LogicalDatastoreType logicalDatastoreType,
+            InstanceIdentifier identifier, Object original, Object update, List<SubTransaction> transactionObjects) {
         if (update != null && !(update instanceof DataObject)) {
             return;
         }
-        if (datastoreType != getDatastoreType()) {
+        if (logicalDatastoreType != getDatastoreType()) {
             return;
         }
 
@@ -47,16 +47,16 @@ public class DefaultBatchHandler implements ResourceHandler {
         subTransaction.setInstanceIdentifier(identifier);
         transactionObjects.add(subTransaction);
 
-        tx.merge(datastoreType, identifier, (DataObject) update, true);
+        tx.merge(logicalDatastoreType, identifier, (DataObject) update, true);
     }
 
     @Override
-    public void create(WriteTransaction tx, final LogicalDatastoreType datastoreType,
+    public void create(WriteTransaction tx, final LogicalDatastoreType logicalDatastoreType,
             final InstanceIdentifier identifier, final Object data, List<SubTransaction> transactionObjects) {
         if (data != null && !(data instanceof DataObject)) {
             return;
         }
-        if (datastoreType != getDatastoreType()) {
+        if (logicalDatastoreType != getDatastoreType()) {
             return;
         }
 
@@ -66,16 +66,16 @@ public class DefaultBatchHandler implements ResourceHandler {
         subTransaction.setInstanceIdentifier(identifier);
         transactionObjects.add(subTransaction);
 
-        tx.put(datastoreType, identifier, (DataObject) data, true);
+        tx.put(logicalDatastoreType, identifier, (DataObject) data, true);
     }
 
     @Override
-    public void delete(WriteTransaction tx, final LogicalDatastoreType datastoreType,
+    public void delete(WriteTransaction tx, final LogicalDatastoreType logicalDatastoreType,
             final InstanceIdentifier identifier, final Object data, List<SubTransaction> transactionObjects) {
         if (data != null && !(data instanceof DataObject)) {
             return;
         }
-        if (datastoreType != getDatastoreType()) {
+        if (logicalDatastoreType != getDatastoreType()) {
             return;
         }
 
@@ -84,7 +84,7 @@ public class DefaultBatchHandler implements ResourceHandler {
         subTransaction.setInstanceIdentifier(identifier);
         transactionObjects.add(subTransaction);
 
-        tx.delete(datastoreType, identifier);
+        tx.delete(logicalDatastoreType, identifier);
     }
 
     @Override

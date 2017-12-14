@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ITMBatchingUtils {
+public final class ITMBatchingUtils {
     private static final Logger LOG = LoggerFactory.getLogger((Class)ITMBatchingUtils.class);
     public static final int BATCH_SIZE = 1000;
     public static final int PERIODICITY = 500;
@@ -36,6 +36,8 @@ public class ITMBatchingUtils {
         DEFAULT_CONFIG
     }
 
+    private ITMBatchingUtils() { }
+
     public static DataBroker getBroker() {
         return dataBroker;
     }
@@ -44,8 +46,8 @@ public class ITMBatchingUtils {
         dataBroker = broker;
     }
 
-    public static void registerWithBatchManager(DataBroker dataBroker) {
-        ITMBatchingUtils.setBroker(dataBroker);
+    public static void registerWithBatchManager(DataBroker broker) {
+        ITMBatchingUtils.setBroker(broker);
         batchSize = 1000;
         if (Integer.getInteger("batch.size") != null) {
             batchSize = Integer.getInteger("batch.size");
@@ -56,9 +58,9 @@ public class ITMBatchingUtils {
         }
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
         resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ,
-                new DefaultBatchHandler(dataBroker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
+                new DefaultBatchHandler(broker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
         resBatchingManager.registerBatchableResource("ITM-DEFAULT-CONFIG", defaultConfigShardBufferQ,
-                new DefaultBatchHandler(dataBroker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
+                new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
     }
 
 

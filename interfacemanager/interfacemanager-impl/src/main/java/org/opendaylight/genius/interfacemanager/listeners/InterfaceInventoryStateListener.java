@@ -301,8 +301,7 @@ public class InterfaceInventoryStateListener
                 }
             }
 
-            futures = removeInterfaceStateConfiguration(nodeConnectorIdNew, nodeConnectorIdOld, interfaceName,
-                    fcNodeConnectorOld, isNodePresent);
+            futures = removeInterfaceStateConfiguration();
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
@@ -316,9 +315,7 @@ public class InterfaceInventoryStateListener
             return futures;
         }
 
-        private List<ListenableFuture<Void>> removeInterfaceStateConfiguration(NodeConnectorId nodeConnectorIdNew,
-                NodeConnectorId nodeConnectorIdOld, String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld,
-                boolean isNodePresent) {
+        private List<ListenableFuture<Void>> removeInterfaceStateConfiguration() {
             LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
@@ -364,15 +361,15 @@ public class InterfaceInventoryStateListener
             return futures;
         }
 
-        private void handleTunnelMonitoringRemoval(BigInteger dpId, String interfaceName,
+        private void handleTunnelMonitoringRemoval(BigInteger dpId, String removedInterfaceName,
                 IfTunnel ifTunnel, WriteTransaction transaction, List<ListenableFuture<Void>> futures) {
-            interfaceManagerCommonUtils.removeTunnelIngressFlow(ifTunnel, dpId, interfaceName);
+            interfaceManagerCommonUtils.removeTunnelIngressFlow(ifTunnel, dpId, removedInterfaceName);
 
-            IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
-                    FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
+            IfmUtil.unbindService(dataBroker, coordinator, removedInterfaceName,
+                    FlowBasedServicesUtils.buildDefaultServiceId(removedInterfaceName));
 
             futures.add(transaction.submit());
-            alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
+            alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, removedInterfaceName);
         }
 
         @Override

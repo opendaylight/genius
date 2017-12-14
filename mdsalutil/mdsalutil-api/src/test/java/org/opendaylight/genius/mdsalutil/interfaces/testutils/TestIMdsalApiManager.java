@@ -99,6 +99,8 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         }
     }
 
+    // ComparisonException doesn’t allow us to keep the cause (which we don’t care about anyway)
+    @SuppressWarnings("checkstyle:AvoidHidingCauseException")
     public synchronized void assertFlowsInAnyOrder(Iterable<FlowEntity> expectedFlows) {
         checkNonEmptyFlows(expectedFlows);
         // TODO Support Iterable <-> List directly within XtendBeanGenerator

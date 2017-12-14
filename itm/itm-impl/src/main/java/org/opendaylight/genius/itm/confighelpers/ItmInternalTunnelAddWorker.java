@@ -77,7 +77,7 @@ public final class ItmInternalTunnelAddWorker {
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(transaction -> {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 //#####if dpn is not in meshedDpnList
-                buildTunnelFrom(dpn, meshedDpnList, dataBroker, mdsalManager, transaction);
+                buildTunnelFrom(dpn, meshedDpnList, mdsalManager, transaction);
                 if (meshedDpnList != null) {
                     meshedDpnList.add(dpn);
                 }
@@ -96,7 +96,7 @@ public final class ItmInternalTunnelAddWorker {
         ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    private void buildTunnelFrom(DPNTEPsInfo srcDpn, List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
+    private void buildTunnelFrom(DPNTEPsInfo srcDpn, List<DPNTEPsInfo> meshedDpnList,
                                  IMdsalApiManager mdsalManager, WriteTransaction transaction) {
         LOG.trace("Building tunnels from DPN {} " , srcDpn);
         if (null == meshedDpnList || meshedDpnList.isEmpty()) {
@@ -105,14 +105,13 @@ public final class ItmInternalTunnelAddWorker {
         }
         for (DPNTEPsInfo dstDpn: meshedDpnList) {
             if (!srcDpn.equals(dstDpn)) {
-                wireUpWithinTransportZone(srcDpn, dstDpn, dataBroker, mdsalManager,
-                        transaction);
+                wireUpWithinTransportZone(srcDpn, dstDpn, mdsalManager, transaction);
             }
         }
 
     }
 
-    private void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, DataBroker dataBroker,
+    private void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn,
                                            IMdsalApiManager mdsalManager, WriteTransaction transaction) {
         LOG.trace("Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn);
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
@@ -124,7 +123,7 @@ public final class ItmInternalTunnelAddWorker {
                 if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
                     if (!ItmUtils.getIntersection(srcte.getTzMembership(), dstte.getTzMembership()).isEmpty()) {
                         // wire them up
-                        wireUpBidirectionalTunnel(srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), dataBroker,
+                        wireUpBidirectionalTunnel(srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
                                 mdsalManager, transaction);
                         if (!ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
                             // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
@@ -137,7 +136,7 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private void wireUpBidirectionalTunnel(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
-                                           BigInteger dstDpnId, DataBroker dataBroker, IMdsalApiManager mdsalManager,
+                                           BigInteger dstDpnId, IMdsalApiManager mdsalManager,
                                            WriteTransaction transaction) {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
 
@@ -146,21 +145,19 @@ public final class ItmInternalTunnelAddWorker {
             ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
         }
         // Create the forward direction tunnel
-        if (!wireUp(srcte, dstte, srcDpnId, dstDpnId, dataBroker,
-                transaction)) {
+        if (!wireUp(srcte, dstte, srcDpnId, dstDpnId, transaction)) {
             LOG.error("Could not build tunnel between end points {}, {} " , srcte, dstte);
         }
 
         // CHECK IF FORWARD IS NOT BUILT , REVERSE CAN BE BUILT
         // Create the tunnel for the reverse direction
-        if (!wireUp(dstte, srcte, dstDpnId, srcDpnId, dataBroker,
-                transaction)) {
+        if (!wireUp(dstte, srcte, dstDpnId, srcDpnId, transaction)) {
             LOG.error("Could not build tunnel between end points {}, {} " , dstte, srcte);
         }
     }
 
     private boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
-                           DataBroker dataBroker, WriteTransaction transaction) {
+                           WriteTransaction transaction) {
         // Wire Up logic
         LOG.trace("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
         String interfaceName = srcte.getInterfaceName();
@@ -174,7 +171,7 @@ public final class ItmInternalTunnelAddWorker {
                 tunTypeStr);
         String parentInterfaceName = null;
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
-            parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId, dataBroker);
+            parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId);
         }
         createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
         // also update itm-state ds?
@@ -230,7 +227,7 @@ public final class ItmInternalTunnelAddWorker {
         ItmUtils.ITM_CACHE.addInternalTunnel(tnl);
     }
 
-    private String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId, DataBroker dataBroker) {
+    private String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId) {
         String logicTunnelGroupName = null;
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {

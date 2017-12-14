@@ -84,8 +84,8 @@ public class InterfaceInfo implements Serializable {
         this.interfaceTag = interfaceTag;
     }
 
-    public void setUntaggedVlan(boolean isUntaggedVlan) {
-        this.isUntaggedVlan = isUntaggedVlan;
+    public void setUntaggedVlan(boolean untaggedVlan) {
+        this.isUntaggedVlan = untaggedVlan;
     }
 
     public boolean isUntaggedVlan() {

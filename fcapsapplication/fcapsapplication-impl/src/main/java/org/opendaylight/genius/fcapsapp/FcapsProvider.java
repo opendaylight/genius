@@ -64,7 +64,7 @@ public class FcapsProvider implements AutoCloseable {
     @PostConstruct
     public void start() throws Exception {
         PortNameMapping.registerPortMappingBean();
-        registerListener(dataBroker);
+        registerListener();
         notificationService.registerNotificationListener(packetInCounterHandler);
         LOG.info("FcapsProvider started");
     }
@@ -75,7 +75,7 @@ public class FcapsProvider implements AutoCloseable {
         LOG.info("FcapsProvider closed");
     }
 
-    private void registerListener(DataBroker dataBroker) {
+    private void registerListener() {
         final DataTreeIdentifier<FlowCapableNode> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
                 getWildCardPath());
         dataBroker.registerDataTreeChangeListener(treeId, nodeEventListener);
