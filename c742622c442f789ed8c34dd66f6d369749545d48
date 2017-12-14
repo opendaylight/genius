@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_fa49bf31",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be inside the if (l2vlan or tunnel) check? or even inside bindServiceOnInterface? This is not anything common for both the binding types",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7a65cfb3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "same comment as bindhelper",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ba5bc7f4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "why is this a class which is extended by others, to me it looks more like a utility class",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_1a749366",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "We will have to be careful in choosing the synchronization key in this case. I think interfaceType based binding should use dpnId as DJC key. Here as well as the config helper. Probably you have to take it up once the base patches are finished.",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_fa709f73",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "can you rename the utilities to make it explicit that it will be used for putting interface-type? eg : getMatchInfoWithInterfaceTypeForLportDispatcher?",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
