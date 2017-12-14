@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_78757231",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/AddExternalEndpoint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "I guess then that this System.out cannot be replaced you detected a bug in Karaf.",
+      "range": {
+        "startLine": 51,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 72
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_0bee838b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/AddExternalEndpoint.java",
         "patchSetId": 8
@@ -19,6 +42,29 @@
         "startChar": 16,
         "endLine": 51,
         "endChar": 72
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_58722e4a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/AddExternalEndpoint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "I guess then that this System.out cannot be replaced you detected a bug in Karaf.",
+      "range": {
+        "startLine": 56,
+        "startChar": 16,
+        "endLine": 56,
+        "endChar": 73
       },
       "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
@@ -84,6 +130,98 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b88eba25",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "This change is not related to checkstyle, this should be in a separate commit once we merge it.",
+      "range": {
+        "startLine": 92,
+        "startChar": 8,
+        "endLine": 92,
+        "endChar": 93
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ce1014ab",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "The same here.",
+      "range": {
+        "startLine": 186,
+        "startChar": 8,
+        "endLine": 186,
+        "endChar": 100
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0941760b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedMoveWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "This file is totally new. We shouldn\u0027t mix changes, although I guess it might come from a different patch in between.",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 58,
+        "endChar": 1
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e9451218",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedRemoveWorker.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "The same for this totally new file.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 1
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_0bc7a313",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 8
@@ -95,6 +233,53 @@
       "writtenOn": "2017-03-22T06:50:30Z",
       "side": 1,
       "message": "This may not the point to declare the status \"STARTING\" as all the dependencies are already injected. Should only declare \"STARTED\".\nJust for records, ID pool creation should be removed in a separate review.",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_29471a1f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-20T17:01:16Z",
+      "side": 1,
+      "message": "My previos comment wasn\u0027t addressed. Shouldn\u0027t we use TepException here?",
+      "range": {
+        "startLine": 218,
+        "startChar": 10,
+        "endLine": 218,
+        "endChar": 31
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_22828c52",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-21T13:21:09Z",
+      "side": 1,
+      "message": "Then I think you could just remove the catch.",
+      "parentUuid": "fafc7978_ff2ae17c",
+      "range": {
+        "startLine": 218,
+        "startChar": 10,
+        "endLine": 218,
+        "endChar": 31
+      },
       "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
