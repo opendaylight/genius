@@ -16,6 +16,24 @@
       "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0a1c2677",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-20T17:19:03Z",
+      "side": 1,
+      "message": "Thanks Sam, Edwin will look into this..we have been stuck for so long coz of this cyclic dependency error! Thanks for your help",
+      "parentUuid": "1a622d24_ea372afd",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_8d3df0c6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-01-20T17:35:21Z",
+      "side": 0,
+      "message": "It should not be removed!! it is required for status and diag module which we are proposing in infrautils",
+      "parentUuid": "1a622d24_4a129e62",
+      "revId": "2f918ab04677bb7f036483097be42d451ad57cb0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
