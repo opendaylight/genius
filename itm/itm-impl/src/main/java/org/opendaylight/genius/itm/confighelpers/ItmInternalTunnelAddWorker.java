@@ -12,6 +12,7 @@ import static java.util.Collections.singletonList;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -22,6 +23,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -47,27 +49,30 @@ import org.slf4j.LoggerFactory;
 public final class ItmInternalTunnelAddWorker {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
-    private static Boolean monitorEnabled;
-    private static Integer monitorInterval;
     private static ItmConfig itmCfg;
-    private static Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+
+    private final Integer monitorInterval;
+    private final boolean isTunnelMonitoringEnabled;
+    private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
 
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
 
-    public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+    public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
+            TunnelMonitoringConfig tunnelMonitoringConfig) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
+
+        isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
+        monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
+        monitorInterval = Integer.valueOf(tunnelMonitoringConfig.getMonitorInterval());
     }
 
     public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
-                                                        List<DPNTEPsInfo> meshedDpnList, ItmConfig itmConfig) {
+                                                        Collection<DPNTEPsInfo> meshedDpnList, ItmConfig itmConfig) {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
-        monitorInterval = ItmUtils.determineMonitorInterval(dataBroker);
-        monitorProtocol = ItmUtils.determineMonitorProtocol(dataBroker);
-        monitorEnabled = ItmUtils.readMonitoringStateFromCache(dataBroker);
         itmCfg = itmConfig;
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             LOG.error(" Build Tunnels was invoked with empty list");
@@ -96,7 +101,7 @@ public final class ItmInternalTunnelAddWorker {
         ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    private void buildTunnelFrom(DPNTEPsInfo srcDpn, List<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
+    private void buildTunnelFrom(DPNTEPsInfo srcDpn, Collection<DPNTEPsInfo> meshedDpnList, DataBroker dataBroker,
                                  IMdsalApiManager mdsalManager, WriteTransaction transaction) {
         LOG.trace("Building tunnels from DPN {} " , srcDpn);
         if (null == meshedDpnList || meshedDpnList.isEmpty()) {
@@ -182,9 +187,8 @@ public final class ItmInternalTunnelAddWorker {
         return true;
     }
 
-    private static void createTunnelInterface(TunnelEndPoints srcte, TunnelEndPoints dstte,
-                                              BigInteger srcDpnId, Class<? extends TunnelTypeBase> tunType,
-                                              String trunkInterfaceName, String parentInterfaceName) {
+    private void createTunnelInterface(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
+            Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName, String parentInterfaceName) {
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
         IpAddress gatewayIpObj = new IpAddress(gateway.toCharArray());
         IpAddress gwyIpAddress =
@@ -195,7 +199,8 @@ public final class ItmInternalTunnelAddWorker {
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
 
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
-        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false : monitorEnabled;
+        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false
+                : isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,

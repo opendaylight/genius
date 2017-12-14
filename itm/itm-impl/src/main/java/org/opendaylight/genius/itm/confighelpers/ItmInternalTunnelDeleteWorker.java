@@ -16,13 +16,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -50,16 +50,19 @@ public class ItmInternalTunnelDeleteWorker {
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
+    private final TunnelMonitoringConfig tunnelMonitoringConfig;
 
-    public ItmInternalTunnelDeleteWorker(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+    public ItmInternalTunnelDeleteWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
+            TunnelMonitoringConfig tunnelMonitoringConfig) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
+        this.tunnelMonitoringConfig = tunnelMonitoringConfig;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public List<ListenableFuture<Void>> deleteTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> dpnTepsList,
-                                                      List<DPNTEPsInfo> meshedDpnList) {
+    public List<ListenableFuture<Void>> deleteTunnels(IMdsalApiManager mdsalManager,
+            Collection<DPNTEPsInfo> dpnTepsList, Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("TEPs to be deleted {} " , dpnTepsList);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTransaction -> {
             if (dpnTepsList == null || dpnTepsList.size() == 0) {
@@ -152,7 +155,7 @@ public class ItmInternalTunnelDeleteWorker {
                         // remove the tep from the cache
                         meshedEndPtCache.remove(srcTep);
                         Class<? extends TunnelMonitoringTypeBase> monitorProtocol =
-                                ItmUtils.determineMonitorProtocol(dataBroker);
+                                tunnelMonitoringConfig.getMonitorProtocol();
                         InstanceIdentifier<DPNTEPsInfo> dpnPath =
                                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
                                         .build();

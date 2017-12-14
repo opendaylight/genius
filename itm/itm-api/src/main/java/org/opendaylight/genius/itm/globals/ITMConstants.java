@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.globals;
 
 import java.math.BigInteger;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 
@@ -46,12 +45,6 @@ public class ITMConstants {
     public static final String DEFAULT_TRANSPORT_ZONE = "default-transport-zone";
     public static final Class<? extends TunnelMonitoringTypeBase> DEFAULT_MONITOR_PROTOCOL
             = TunnelMonitoringTypeBfd.class;
-    public static final String ITM_MONIRORING_PARAMS_CACHE_NAME = "ItmMonitoringParamsCache";
-    public static final String TUNNEL_STATE_CACHE_NAME = "ItmTunnelStateCache";
-    // FIXME: the following annotation should be removed once the itm-impl
-    // changes the name
-    @SuppressWarnings("checkstyle:ConstantName")
-    public static final String DPN_TEPs_Info_CACHE_NAME = "ItmDpnTepsInfoCache";
     public static final String INTERNAL_TUNNEL_CACHE_NAME = "InternalTunnelCache";
     public static final String EXTERNAL_TUNNEL_CACHE_NAME = "ExternalTunnelCache";
     public static final String TUNNEL_STATE_UP = "UP";

@@ -27,6 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -200,7 +201,8 @@ public class ItmManagerRpcServiceTest {
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
-        itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig);
+        itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
+                new DPNTEPsInfoCache(dataBroker));
     }
 
     @After
