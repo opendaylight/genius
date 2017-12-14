@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_0765a91d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-23T08:15:24Z",
+      "side": 1,
+      "message": "Trying to clarify my previous comment. If boundServicesState \u003d\u003dnull, you\u0027ll get a NPE if you do boundServiceState.getInterfaceName()",
+      "range": {
+        "startLine": 61,
+        "startChar": 24,
+        "endLine": 61,
+        "endChar": 63
+      },
+      "revId": "69127dcade109987b9f6f0b24aa3f0e269dd2f9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_67ac6536",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-23T08:15:24Z",
+      "side": 1,
+      "message": "You shoudn\u0027t catch NPE.",
+      "range": {
+        "startLine": 61,
+        "startChar": 63,
+        "endLine": 64,
+        "endChar": 13
+      },
+      "revId": "69127dcade109987b9f6f0b24aa3f0e269dd2f9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6773c5e7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 38
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-08-23T08:15:24Z",
+      "side": 1,
+      "message": "Do not catch NPE, just check for null values.",
+      "range": {
+        "startLine": 151,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 9
+      },
+      "revId": "69127dcade109987b9f6f0b24aa3f0e269dd2f9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
