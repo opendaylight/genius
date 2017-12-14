@@ -1,0 +1,344 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_4cf6d6d8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "can you make this method as final as it is going to be a template method for bind service on a interface ?",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ac0312b7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "same comment here.",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8c00ceab",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "use @Override",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ec2cea4c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "same here. Also do it for other overridden methods.",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4c1d360f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "can you just see whether we can use @Inject and avoid using initialize method to instantiate FlowBasedIngressServicesConfigUnbindHelper, etc. ?",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_cc3126a4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "why do you need try-catch? anyway this one throws NPE.",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ac1af214",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "override init() method with @PostConstruct annotation and invoke registerListener in that method.",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8c172eed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "it\u0027s better to override close method add required logging and invoke super.close()",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ccd80656",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "retrieving logic for dpId is same in both add/remove methods. move it to getDpId(Node node)",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_6ce75a13",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "replace Object with Class\u003c? extends ServiceModeBase\u003e",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ecba2ae0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "DataStoreJobCoordinator.getInstance().enqueueJob(interfaceName, new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId, interfaceName));",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4ce4160d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "same comment here.",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_ccbf66cf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "same comment here.",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_acf152cf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "use private final",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8cee0eeb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2cb562ee",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateBindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "final",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0cba1ede",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateUnbindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "final",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8cc56e5d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedEgressServicesStateBindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "Nit: import static for comparing",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0cb17ef8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedIngressServicesStateUnbindHelper.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "@Override",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8c9c4e6b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 32
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "why do you need try-catch here ?",
+      "revId": "bfa9f6ff3911d0d61329624d627df24f0e5cba91",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
