@@ -46,12 +46,6 @@ public interface ITMConstants {
     String DEFAULT_TRANSPORT_ZONE = "default-transport-zone";
     Class<? extends TunnelMonitoringTypeBase> DEFAULT_MONITOR_PROTOCOL
             = TunnelMonitoringTypeBfd.class;
-    String ITM_MONIRORING_PARAMS_CACHE_NAME = "ItmMonitoringParamsCache";
-    String TUNNEL_STATE_CACHE_NAME = "ItmTunnelStateCache";
-    // FIXME: the following annotation should be removed once the itm-impl
-    // changes the name
-    @SuppressWarnings("checkstyle:ConstantName")
-    String DPN_TEPs_Info_CACHE_NAME = "ItmDpnTepsInfoCache";
     String INTERNAL_TUNNEL_CACHE_NAME = "InternalTunnelCache";
     String EXTERNAL_TUNNEL_CACHE_NAME = "ExternalTunnelCache";
     String TUNNEL_STATE_UP = "UP";
