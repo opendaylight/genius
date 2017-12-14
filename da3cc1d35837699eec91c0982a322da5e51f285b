@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d049b979_0b381cef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateUpdateHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-14T18:10:56Z",
+      "side": 0,
+      "message": "This method was only called by InterfaceStateListener so it was moved there instead of making this non-static.",
+      "revId": "da3cc1d35837699eec91c0982a322da5e51f285b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aee0084c_c348c823",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-14T18:10:56Z",
+      "side": 0,
+      "message": "This class was basically just used to read the tunnel monitoring params from the DS and bypass the caches - not sure why. In any even this class is replaced by TunnelMonitoringConfig.",
+      "revId": "da3cc1d35837699eec91c0982a322da5e51f285b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "399e59e9_9039d0c7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-14T18:10:56Z",
+      "side": 0,
+      "message": "this method wasn\u0027t called.",
+      "revId": "da3cc1d35837699eec91c0982a322da5e51f285b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
