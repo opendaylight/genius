@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_1f97afed",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilCounters.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "can this be \"private\" ?",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_3fa43356",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "don\u0027t do anything like this in tests.. just use:\n\n@Test\npublic void testGetMac() throws Exception {\n\nand remove this entire try-catch.",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_7f851bac",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTest.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ffc0ebe1",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "final",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_3fbb9373",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "private ArpUtilTestUtil() { }",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_5f46577d",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/OdlInterfaceRpcTestModule.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "the name of this class is confusing / wrong... this is *NOT* a *SomethingModule!  A *Module is something that you can use to create a (Guice) injector, like the ArpUtilTestModule, which binds (many) interfaces to implementations, and extends AbstractCheckedModule. This is not that.. I would call this class simply TestOdlInterfaceRpcService ?",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_fa03d90a",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/OdlInterfaceRpcTestModule.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "are you sure / intentionally doing this?  It looks like you may just not want to implement this .. and perhaps misunderstood the whole idea of the realOrException()?  if you make this class abstract, then you can remove all these return null methods here - that\u0027s the whole idea.",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_9f5f1f41",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/PacketProcessingTestModule.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-20T14:39:11Z",
+      "side": 1,
+      "message": "TestPacketProcessingService",
+      "revId": "3a1e261075e31c9fb89ed82d16659a376e8f551c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
