@@ -1,0 +1,481 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_c828b388",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a82d6f97",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_081f5b5c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_483cc3c8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_88322bf0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final (possible if you move registerListener() into constructor)",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_682f0789",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_086d9bcc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final (possible if you move registerListener() into constructor)",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c876f3a3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a87baf8a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e87137a9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_486a03b4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c839d3a5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_68b9c714",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_88606bd0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "put AlivenessMonitorService back here as an arg (after c/52020)",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_28c33f8a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c89d53be",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_68b42735",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a889ef76",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c8843360",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_087bdb7b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e87f7764",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "is this really needed for a LOG?  This is just one of many internal bean, not a global OSGi service; personally I don\u0027t see the need to spam the log with this.",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_489843c0",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this (after c/52020)",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_688b8768",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_888eab77",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "do *NOT* comment this out",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c860b3a7",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:31:03Z",
+      "side": 1,
+      "message": "oh no sorry I\u0027ve confused this with something else - this can  be removed, of course!  But then you can just delete the class Stopper below as well.",
+      "parentUuid": "fafc7978_888eab77",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a8656fb6",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:31:03Z",
+      "side": 1,
+      "message": "delete this,it\u0027s no longer used",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2895ff86",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "delete this",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c8eb9311",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "delete this,it\u0027s no longer used",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
