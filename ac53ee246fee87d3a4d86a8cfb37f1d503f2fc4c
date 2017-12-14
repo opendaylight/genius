@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_c4810f4c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedEgressServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "Can we do this the @Inject way ? May be not in this patch, a subsequent one will also do.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_44699f8a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "@Inject is missing..Hope it is take care in the subsequent patches",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_840a77d0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/factory/FlowBasedServicesStateAddable.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "bindServicesOnInterface",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e40ff3df",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/factory/FlowBasedServicesStateRemovable.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "unbindServicesOnInterface",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c4146ff7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "Could you please see if this check is already there in the main listener? If so this can be removed as it is redundant.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_8431d7a4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "check if this is already present in the main listener",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_641ae318",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedEgressServicesStateUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "typo ;) i know that it will be already taken care in subsequent patches",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_4417dfed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedIngressServicesStateUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "no need of this return statement",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a4d33b37",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/FlowBasedIngressServicesStateUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-09T11:17:26Z",
+      "side": 1,
+      "message": "don\u0027t return futures",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
