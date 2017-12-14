@@ -8,24 +8,34 @@
 
 package org.opendaylight.genius.itm.listeners;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
-import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateUpdateHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,16 +49,19 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     private final JobCoordinator jobCoordinator;
     private final IInterfaceManager interfaceManager;
     private final ItmTunnelAggregationHelper tunnelAggregationHelper;
+    private final TunnelStateCache tunnelStateCache;
 
     @Inject
     public InterfaceStateListener(final DataBroker dataBroker, IInterfaceManager iinterfacemanager,
-            final ItmTunnelAggregationHelper tunnelAggregation, JobCoordinator jobCoordinator) {
+            final ItmTunnelAggregationHelper tunnelAggregation, JobCoordinator jobCoordinator,
+            TunnelStateCache tunnelStateCache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         this.interfaceManager = iinterfacemanager;
         this.tunnelAggregationHelper = tunnelAggregation;
+        this.tunnelStateCache = tunnelStateCache;
     }
 
     @Override
@@ -91,12 +104,48 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
             if (!Objects.equals(originalInterface.getOperStatus(), updatedInterface.getOperStatus())) {
                 LOG.debug("Tunnel Interface {} changed state to {}", originalInterface.getName(), operStatus);
                 jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + originalInterface.getName(),
-                    () -> ItmTunnelStateUpdateHelper.updateTunnel(updatedInterface, dataBroker));
+                    () -> updateTunnel(updatedInterface));
             }
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
                 tunnelAggregationHelper.updateLogicalTunnelState(originalInterface, updatedInterface,
                                                                  ItmTunnelAggregationHelper.MOD_TUNNEL, dataBroker);
             }
         }
+    }
+
+    private List<ListenableFuture<Void>> updateTunnel(Interface updated) throws Exception {
+        LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
+        final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
+
+        StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(updated);
+        LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, updated.getName());
+        InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
+        Optional<StateTunnelList> tunnelsState = tunnelStateCache.get(stListId);
+        StateTunnelListBuilder stlBuilder;
+        TunnelOperStatus tunnelOperStatus;
+        boolean tunnelState = updated.getOperStatus().equals(Interface.OperStatus.Up);
+        switch (updated.getOperStatus()) {
+            case Up:
+                tunnelOperStatus = TunnelOperStatus.Up;
+                break;
+            case Down:
+                tunnelOperStatus = TunnelOperStatus.Down;
+                break;
+            case Unknown:
+                tunnelOperStatus = TunnelOperStatus.Unknown;
+                break;
+            default:
+                tunnelOperStatus = TunnelOperStatus.Ignore;
+        }
+        if (tunnelsState.isPresent()) {
+            stlBuilder = new StateTunnelListBuilder(tunnelsState.get());
+            stlBuilder.setTunnelState(tunnelState);
+            stlBuilder.setOperState(tunnelOperStatus);
+            StateTunnelList stList = stlBuilder.build();
+            LOG.trace("Batching the updation of tunnel_state: {} for Id: {}", stList, stListId);
+            ITMBatchingUtils.update(stListId, stList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        }
+
+        return Collections.singletonList(writeTransaction.submit());
     }
 }

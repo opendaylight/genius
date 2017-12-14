@@ -9,9 +9,11 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -27,21 +29,23 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
 
     private final DataBroker dataBroker;
     private final List<DPNTEPsInfo> delDpnList ;
-    private List<DPNTEPsInfo> meshedDpnList ;
+    private Collection<DPNTEPsInfo> meshedDpnList ;
     private final IMdsalApiManager mdsalManager;
     private final List<HwVtep> cfgdHwVteps;
     private final TransportZone originalTZone;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
+    private final DPNTEPsInfoCache dpnTEPsInfoCache;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
-                              DataBroker broker, IMdsalApiManager mdsalManager,
-                              ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker) {
+            DataBroker broker, IMdsalApiManager mdsalManager,
+            ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker, DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.delDpnList = delDpnList;
         this.dataBroker = broker;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
         this.originalTZone = originalTZone;
         this.itmInternalTunnelDeleteWorker = itmInternalTunnelDeleteWorker;
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         LOG.trace("ItmTepRemoveWorker initialized with  DpnList {}", delDpnList);
         LOG.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}", delHwList);
     }
@@ -49,7 +53,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     @Override
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        this.meshedDpnList = ItmUtils.getTunnelMeshInfo(dataBroker) ;
+        this.meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(mdsalManager, delDpnList,
                 meshedDpnList));
         LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",
