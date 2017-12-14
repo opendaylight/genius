@@ -2,6 +2,91 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_8a28369b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "Let\u0027s have this code in a small shared utility class, instead of copy/pasting it into each Listener?",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6a231abd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "Let\u0027s have this code in a small shared utility class, instead of copy/pasting it into each Listener?",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ca2eaea4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "Let\u0027s have this code in a small shared utility class, instead of copy/pasting it into each Listener?",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8a0f9636",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "These moved import are wrong; please undo.",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ca050e15",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "These moved import are wrong; please undo.",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_ea372afd",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
         "patchSetId": 10
@@ -31,6 +116,97 @@
       "side": 1,
       "message": "Thanks Sam, Edwin will look into this..we have been stuck for so long coz of this cyclic dependency error! Thanks for your help",
       "parentUuid": "1a622d24_ea372afd",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_cd1c086d",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "just use bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class); here now; see also review comment below in interfaceManager()",
+      "range": {
+        "startLine": 105,
+        "startChar": 9,
+        "endLine": 105,
+        "endChar": 67
+      },
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ad170c44",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "this is wrong (not necessary, anymore) .. because InterfaceManagerRpcService is, now, annotated with @Singleton \u0026 @Inject, it should not be initialized \"manually\" like this here anymore, but instead this method can now be deleted, see above",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0d2a807e",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "this can now be deleted, right?",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_aa009202",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/infra/TestAlivenessMonitorService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "unless there are plans to implement this \"test fake\" (similar to TestIMdsalApiManager), it\u0027s simplest to do the mock \"inline\" in the *Module - and remove this.",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_aa29b29c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-20T17:30:45Z",
+      "side": 1,
+      "message": "this is unrelated to the change here, and wrong (and will fail the Checkstyle validation we\u0027re hoping to activate on  mdsalutil soon-ish; see also https://git.opendaylight.org/gerrit/#/c/50637/) so would you like to remove that from this review?  This can even be done via the Gerrit Web UI.",
       "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
