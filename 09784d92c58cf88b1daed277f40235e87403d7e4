@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7e63811a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepEnableTunnelMonitor.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_4d9258a0",
+      "range": {
+        "startLine": 41,
+        "startChar": 17,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "09784d92c58cf88b1daed277f40235e87403d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_ad4824cd",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
         "patchSetId": 11
