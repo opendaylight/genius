@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_bf735ae6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-05T08:08:55Z",
+      "side": 1,
+      "message": "enums can be com",
+      "revId": "5b62b1ae808681ae9069684d9b248c65c2839e05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_ff7de2b2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 292,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-05T08:08:55Z",
+      "side": 1,
+      "message": "enums can be compared using \u003d\u003d",
+      "revId": "5b62b1ae808681ae9069684d9b248c65c2839e05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
