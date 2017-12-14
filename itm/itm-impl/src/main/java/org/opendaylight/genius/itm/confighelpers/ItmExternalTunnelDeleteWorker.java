@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -42,7 +43,7 @@ public final class ItmExternalTunnelDeleteWorker {
     private ItmExternalTunnelDeleteWorker() { }
 
     public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker,
-            List<DPNTEPsInfo> dpnTepsList, List<DPNTEPsInfo> meshedDpnList, IpAddress extIp,
+            Collection<DPNTEPsInfo> dpnTepsList, Collection<DPNTEPsInfo> meshedDpnList, IpAddress extIp,
             Class<? extends TunnelTypeBase> tunType) {
         LOG.trace(" Delete Tunnels towards DC Gateway with Ip  {}", extIp);
 
@@ -82,7 +83,7 @@ public final class ItmExternalTunnelDeleteWorker {
     }
 
     public static List<ListenableFuture<Void>> deleteTunnels(DataBroker dataBroker,
-            List<DPNTEPsInfo> dpnTepsList, IpAddress extIp, Class<? extends TunnelTypeBase> tunType) {
+            Collection<DPNTEPsInfo> dpnTepsList, IpAddress extIp, Class<? extends TunnelTypeBase> tunType) {
         LOG.trace(" Delete Tunnels towards DC Gateway with Ip  {}", extIp);
 
         if (dpnTepsList == null || dpnTepsList.isEmpty()) {
