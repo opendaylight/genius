@@ -22,6 +22,30 @@
       "revId": "7459a5316cce347b35f78c2a15bfd630f396a73e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f4b59bee",
+        "filename": "interfacemanager/interfacemanager-api/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_d47217ac",
+      "range": {
+        "startLine": 73,
+        "startChar": 6,
+        "endLine": 76,
+        "endChar": 15
+      },
+      "revId": "7459a5316cce347b35f78c2a15bfd630f396a73e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
