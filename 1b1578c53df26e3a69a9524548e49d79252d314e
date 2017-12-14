@@ -53,11 +53,45 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e823f7a4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_483cc3c8",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 12
       },
       "lineNbr": 91,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_28397fd7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 92,
       "author": {
         "id": 5867
       },
@@ -234,6 +268,40 @@
       "writtenOn": "2017-02-18T01:26:12Z",
       "side": 1,
       "message": "put AlivenessMonitorService back here as an arg (after c/52020)",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2867bfea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire block completely, just @Inject AlivesessMonitorService (after c/52020)",
+      "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_685d4715",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-18T01:26:12Z",
+      "side": 1,
+      "message": "remove this entire method, just do this in the constructor",
       "revId": "1b1578c53df26e3a69a9524548e49d79252d314e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
