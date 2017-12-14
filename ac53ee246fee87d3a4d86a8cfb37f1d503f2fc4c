@@ -325,6 +325,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_53d835ef",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-11T16:25:31Z",
+      "side": 1,
+      "message": "We cannot jobccordinator only for this, coz there are synchronization dependencies for this job with other existing jobs which are still using genius jobcoordinator",
+      "parentUuid": "ba1f61a0_803ff524",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_840a77d0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/factory/FlowBasedServicesStateAddable.java",
         "patchSetId": 31
