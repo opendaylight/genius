@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fa2559ec_56c7b112",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "change into final",
+      "revId": "b7adba0aa0744eaad6791bfd03e9775bb15662c1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa2559ec_36ccbd35",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-08-14T04:25:29Z",
+      "side": 1,
+      "message": "These two can be combined into same API using consumer. I think Edwin is already looking into it.",
+      "revId": "b7adba0aa0744eaad6791bfd03e9775bb15662c1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
