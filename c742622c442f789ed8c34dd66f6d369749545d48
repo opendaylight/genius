@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_da567bcd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "Follow proper format, check other files for reference",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_ba5bc7f4",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
         "patchSetId": 19
@@ -81,6 +98,23 @@
       "writtenOn": "2017-11-16T06:06:53Z",
       "side": 1,
       "message": "can you rename the utilities to make it explicit that it will be used for putting interface-type? eg : getMatchInfoWithInterfaceTypeForLportDispatcher?",
+      "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9a07e3c9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MetaDataUtil.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-11-16T06:06:53Z",
+      "side": 1,
+      "message": "ingress lport dispatcher table",
       "revId": "c742622c442f789ed8c34dd66f6d369749545d48",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
