@@ -1,0 +1,171 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0bee838b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/AddExternalEndpoint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "System.out bug is only relevant where you need to grep a pattern in the output. This is required mainly for tep:show and tep:show-state output. This can be taken up in the subsequent review",
+      "parentUuid": "fafc7978_78757231",
+      "range": {
+        "startLine": 51,
+        "startChar": 16,
+        "endLine": 51,
+        "endChar": 72
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4be88b7c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/AddExternalEndpoint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "Same comment as above",
+      "parentUuid": "fafc7978_58722e4a",
+      "range": {
+        "startLine": 56,
+        "startChar": 16,
+        "endLine": 56,
+        "endChar": 73
+      },
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6bfe2f3a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/RemoveExternalEndpoint.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "This need to be changed. These user ID is not relevant in ODL. Either remove it or have the authors name.",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d661c2d4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/HwVtep.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "Please take care of this. Same comment as before",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0bc7a313",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "This may not the point to declare the status \"STARTING\" as all the dependencies are already injected. Should only declare \"STARTED\".\nJust for records, ID pool creation should be removed in a separate review.",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_96ae1ae6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/DpnTepsInfoListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "Please take care of this",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_76abb6d6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ItmMonitoringIntervalListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "Please take care of this",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d6b8a22c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ItmMonitoringListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "Please take care of this",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_567cb272",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-03-22T06:50:30Z",
+      "side": 1,
+      "message": "The commented lines can be removed",
+      "revId": "3eaae081792fc76ae6fa64d4690b6f679e9660ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
