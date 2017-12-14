@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_13b5efcc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-08-22T11:45:23Z",
+      "side": 1,
+      "message": "remove this..as null servicestates will not even reach here",
+      "revId": "570e771cf8544b687fd30a9b3da7f1dd5999d452",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
