@@ -159,6 +159,23 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_352d37ff",
+        "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Please include @PreDestroy tag and send a bundle closed report, without it status would remain unchanged on bundle:stop.",
+      "revId": "258fa99220b939b02ecef731c5dc4d8f5cd47e94",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_48ce572f",
         "filename": "infrautils/infrautils/src/main/java/org/opendaylight/genius/infrautils/DatastoreServiceStatusProvider.java",
         "patchSetId": 3
