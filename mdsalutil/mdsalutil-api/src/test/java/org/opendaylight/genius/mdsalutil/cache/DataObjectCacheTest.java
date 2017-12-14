@@ -31,7 +31,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
-import org.opendaylight.infrautils.caches.standard.StandardCacheProvider;
+import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.ConfigBuilder;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -65,7 +65,7 @@ public class DataObjectCacheTest {
                 LogicalDatastoreType.OPERATIONAL, PATH)), any());
 
         cache = new DataObjectCache<>(Config.class, mockDataBroker, LogicalDatastoreType.OPERATIONAL, PATH,
-                new StandardCacheProvider(new CacheManagersRegistryImpl()));
+                new GuavaCacheProvider(new CacheManagersRegistryImpl()));
 
         verify(mockDataBroker).registerDataTreeChangeListener(eq(new DataTreeIdentifier<>(
                 LogicalDatastoreType.OPERATIONAL, PATH)), listenerCapture.capture());

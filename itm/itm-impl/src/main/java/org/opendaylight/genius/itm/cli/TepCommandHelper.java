@@ -703,7 +703,7 @@ public class TepCommandHelper {
     }
 
     @SuppressWarnings("checkstyle:RegexpSinglelineJava")
-    public void showState(List<StateTunnelList> tunnelLists, boolean tunnelMonitorEnabled,
+    public void showState(Collection<StateTunnelList> tunnelLists, boolean tunnelMonitorEnabled,
                           CommandSession session) throws TepException {
         if (tunnelLists == null || tunnelLists.isEmpty()) {
             handleError("No Internal Tunnels Exist", session);

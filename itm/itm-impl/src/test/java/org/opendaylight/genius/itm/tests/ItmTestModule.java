@@ -18,7 +18,6 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerServiceImpl;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.impl.ITMManager;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
 import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
@@ -26,10 +25,6 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
-import org.opendaylight.genius.itm.listeners.cache.DpnTepsInfoListener;
-import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringIntervalListener;
-import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
-import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
@@ -57,7 +52,6 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
     protected void configureBindings() {
         // Bindings for services from this project
         bind(ItmRpcService.class).to(ItmManagerRpcService.class);
-        bind(ITMManager.class);
         bind(ItmProvider.class);
         ItmConfig itmConfigObj = new ItmConfigBuilder()
                 .setDefTzEnabled(true)
@@ -65,10 +59,6 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setGpeExtensionEnabled(false)
                 .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);
-        bind(ItmMonitoringIntervalListener.class);
-        bind(DpnTepsInfoListener.class);
-        bind(StateTunnelListListener.class);
-        bind(ItmMonitoringListener.class);
         bind(TunnelMonitorIntervalListener.class);
         bind(TransportZoneListener.class);
         bind(OvsdbNodeListener.class);
