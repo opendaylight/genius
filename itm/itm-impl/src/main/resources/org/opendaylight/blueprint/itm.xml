@@ -60,7 +60,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         </command>
         <command>
             <action class="org.opendaylight.genius.itm.cli.TepShowState">
-                <property name="itmProvider" ref="itmProvider" />
+                <argument ref="itmProvider" />
+                <argument ref="tunnelStateCache" />
             </action>
         </command>
         <command>

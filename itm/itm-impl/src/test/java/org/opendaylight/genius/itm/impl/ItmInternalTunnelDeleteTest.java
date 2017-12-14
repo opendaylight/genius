@@ -27,9 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -116,7 +114,6 @@ public class ItmInternalTunnelDeleteTest {
     @Before
     public void setUp() {
         setupMocks();
-        DataStoreCache.create(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME);
 
         tunnelMonitorParamsOptional = Optional.of(tunnelMonitorParams);
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
@@ -131,7 +128,8 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier);
 
-        itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator);
+        itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
+                new TunnelMonitoringConfig(dataBroker));
     }
 
     @After
