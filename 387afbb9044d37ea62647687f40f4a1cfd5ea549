@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_3b6ef62f",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/globals/IfmConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-16T09:49:14Z",
+      "side": 1,
+      "message": "pls update copyright to reflect 2016 - 2017",
+      "revId": "387afbb9044d37ea62647687f40f4a1cfd5ea549",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
