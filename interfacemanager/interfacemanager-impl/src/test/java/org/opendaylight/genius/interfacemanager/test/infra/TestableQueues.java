@@ -23,6 +23,8 @@ public final class TestableQueues {
 
     // TODO remove when https://git.opendaylight.org/gerrit/#/c/61927/ is in infrautils
 
+    private TestableQueues() { }
+
     /**
      * Await for a {@link Queue} to be empty.
      *

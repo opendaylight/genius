@@ -32,6 +32,9 @@ import org.slf4j.LoggerFactory;
 public final class SrmCliUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(SrmCliUtils.class);
+
+    private SrmCliUtils() { }
+
     private static final ImmutableMap<String, Class<? extends EntityTypeBase>> ENTITY_TYPE_MAP =
         new ImmutableMap.Builder<String, Class<? extends EntityTypeBase>>()
             .put("SERVICE", EntityTypeService.class)

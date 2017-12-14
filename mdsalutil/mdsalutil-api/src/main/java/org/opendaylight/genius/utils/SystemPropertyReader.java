@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.utils;
 
-public class SystemPropertyReader {
+public final class SystemPropertyReader {
     public static class Cluster {
         // Sleep time to be used between successive EntityOwnershipState calls
         // Returned time is in milliseconds
@@ -20,6 +20,8 @@ public class SystemPropertyReader {
             return Integer.getInteger("cluster.entity_owner.max_retries", 5);
         }
     }
+
+    private SystemPropertyReader() { }
 
     // Returns max retries to be tried with DataStoreJobCoordinator calls
     public static int getDataStoreJobCoordinatorMaxRetries() {

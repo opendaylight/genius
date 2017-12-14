@@ -53,7 +53,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Michael Vorburger.ch - JavaDoc
  */
 @Deprecated
-public class DataStoreCache {
+public final class DataStoreCache {
+
+    private DataStoreCache() { }
 
     public static void create(String cacheName) {
         if (CacheUtil.getCache(cacheName) == null) {

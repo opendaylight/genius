@@ -28,7 +28,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class ItmTepAutoConfigTestUtil {
+public final class ItmTepAutoConfigTestUtil {
+
+    private ItmTepAutoConfigTestUtil() { }
 
     /* transaction methods */
     public static CheckedFuture<Void, TransactionCommitFailedException> addTep(String tepIp,

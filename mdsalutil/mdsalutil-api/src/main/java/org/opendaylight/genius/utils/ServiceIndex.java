@@ -19,10 +19,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author Konstantin Pozdeev, HPE
  */
-public class ServiceIndex {
+public final class ServiceIndex {
     private static final Logger LOG = LoggerFactory.getLogger(ServiceIndex.class);
 
     private static Map<String, Short> serviceIndexMap = new ConcurrentHashMap<>();
+
+    private ServiceIndex() { }
 
     public static short getIndex(String serviceName, short defaultValue) {
         if (serviceIndexMap.containsKey(serviceName)) {

@@ -27,8 +27,8 @@ public class SubTransactionImpl implements SubTransaction {
     }
 
     @Override
-    public void setInstanceIdentifier(InstanceIdentifier identifier) {
-        this.identifier = identifier;
+    public void setInstanceIdentifier(InstanceIdentifier instanceIdentifier) {
+        this.identifier = instanceIdentifier;
     }
 
     @Override

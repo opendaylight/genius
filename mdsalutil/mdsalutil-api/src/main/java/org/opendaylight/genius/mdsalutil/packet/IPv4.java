@@ -536,7 +536,7 @@ public class IPv4 extends Packet {
             BitBufferHelper.setBytes(data, totalLength, getfieldOffset(TOTLENGTH),
                     getfieldnumBits(TOTLENGTH));
         } catch (BufferException e) {
-            throw new PacketException(e.getMessage());
+            throw new PacketException(e.getMessage(), e);
         }
 
         // Now compute the Header Checksum
@@ -546,7 +546,7 @@ public class IPv4 extends Packet {
             BitBufferHelper.setBytes(data, checkSum, getfieldOffset(CHECKSUM),
                     getfieldnumBits(CHECKSUM));
         } catch (BufferException e) {
-            throw new PacketException(e.getMessage());
+            throw new PacketException(e.getMessage(), e);
         }
     }
 

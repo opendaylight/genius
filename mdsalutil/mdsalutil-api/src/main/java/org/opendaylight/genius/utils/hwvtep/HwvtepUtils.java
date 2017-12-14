@@ -46,6 +46,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public final class HwvtepUtils {
 
+    private HwvtepUtils() { }
+
     // TODO: (eperefr) Move this to HwvtepSouthboundUtils when in place.
     public static InstanceIdentifier<LocalUcastMacs> getWildCardPathForLocalUcastMacs() {
         return InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)

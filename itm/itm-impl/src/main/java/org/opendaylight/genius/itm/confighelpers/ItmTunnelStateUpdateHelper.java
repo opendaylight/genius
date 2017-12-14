@@ -23,8 +23,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTunnelStateUpdateHelper {
+public final class ItmTunnelStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateUpdateHelper.class);
+
+    private ItmTunnelStateUpdateHelper() { }
 
     public static List<ListenableFuture<Void>> updateTunnel(Interface updated, DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
