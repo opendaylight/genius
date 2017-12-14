@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_ea372afd",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestModule.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-01-20T17:09:46Z",
+      "side": 1,
+      "message": "This really doesn\u0027t do anything so we could just replace these two lines with the below. This makes it less confusing as seeing the class makes me think something is actually being done in the class.\n\nbind(AlivenessMonitorService.class).toInstance(Mockito.mock(AlivenessMonitorService.class, exception()));",
+      "revId": "039ca05e7a6d81b510190aee26f8b68a652f1a1c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
