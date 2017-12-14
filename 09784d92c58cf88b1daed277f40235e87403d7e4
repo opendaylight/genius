@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0daa10d4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommit.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-23T11:21:48Z",
+      "side": 1,
+      "message": "I know, this catch was already there, but we should remove it, catching NPE is bad practice.",
+      "range": {
+        "startLine": 34,
+        "startChar": 17,
+        "endLine": 34,
+        "endChar": 37
+      },
+      "revId": "09784d92c58cf88b1daed277f40235e87403d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4d9258a0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepEnableTunnelMonitor.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-23T11:21:48Z",
+      "side": 1,
+      "message": "We shouldn\u0027t catch NPE.",
+      "range": {
+        "startLine": 41,
+        "startChar": 17,
+        "endLine": 41,
+        "endChar": 37
+      },
+      "revId": "09784d92c58cf88b1daed277f40235e87403d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ad4824cd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-03-23T11:21:48Z",
+      "side": 1,
+      "message": "Can we just remove this commented block?",
+      "range": {
+        "startLine": 307,
+        "startChar": 13,
+        "endLine": 333,
+        "endChar": 19
+      },
+      "revId": "09784d92c58cf88b1daed277f40235e87403d7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
