@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_60f5a182",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "blank line between static and non static fields",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_80f8957d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "final",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_fa0caa96",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
         "patchSetId": 31
@@ -19,6 +53,40 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_c0f28d99",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "this is a wrong pattern.. in general, don\u0027t obtain required services through other services.    Just pass a DataBroker to the constructor of this class (by BP XML or @Singleton and @Inject - whatever you prefer).  InterfacemgrProvider should not really expose getDataBroker().",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_002ca501",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "final",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_da11e6ad",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
         "patchSetId": 31
@@ -30,6 +98,23 @@
       "writtenOn": "2017-08-10T08:33:15Z",
       "side": 1,
       "message": "The provider should be injected.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e0307158",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/AbstractFlowBasedServicesConfigUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "as before",
       "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -172,6 +257,23 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_40369d53",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "final",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_44699f8a",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
         "patchSetId": 31
@@ -183,6 +285,40 @@
       "writtenOn": "2017-08-09T11:17:26Z",
       "side": 1,
       "message": "@Inject is missing..Hope it is take care in the subsequent patches",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_203ba93b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "this.broker (for consistency with the next line",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_803ff524",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesNodeStateListener.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "how about in new code like this starting to use the JobCoordinator from infrautils instead of this @Deprecated one?",
       "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -223,6 +359,40 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_c049edd1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "new line in between",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_603c8130",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateBindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "final",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_c4146ff7",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateBindHelper.java",
         "patchSetId": 31
@@ -234,6 +404,40 @@
       "writtenOn": "2017-08-09T11:17:26Z",
       "side": 1,
       "message": "Could you please see if this check is already there in the main listener? If so this can be removed as it is redundant.",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a04679bd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "new line",
+      "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_001305b9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/state/helpers/AbstractFlowBasedServicesStateUnbindHelper.java",
+        "patchSetId": 31
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-11T10:46:45Z",
+      "side": 1,
+      "message": "final",
       "revId": "ac53ee246fee87d3a4d86a8cfb37f1d503f2fc4c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
