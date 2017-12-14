@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_94788f90",
+        "filename": "interfacemanager/interfacemanager-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2017-02-16T14:40:05Z",
+      "side": 1,
+      "message": "This is not needed for checkstyle.",
+      "range": {
+        "startLine": 73,
+        "startChar": 6,
+        "endLine": 76,
+        "endChar": 15
+      },
+      "revId": "387afbb9044d37ea62647687f40f4a1cfd5ea549",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3b6ef62f",
         "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/globals/IfmConstants.java",
         "patchSetId": 1
