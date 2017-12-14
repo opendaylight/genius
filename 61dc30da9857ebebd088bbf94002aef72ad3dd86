@@ -1,0 +1,537 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_0564ba20",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/NodeEventListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove the trailing space in \"failed \" here?",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_65adb631",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove the useless \" : \" suffix as well here",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_85b0aa8c",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove the useless \" : \" suffix as well here",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_657496cf",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "as well",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_054b1a88",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "also",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_855eea43",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PMAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove trailing space",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_655bf654",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PMAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" : \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c558e258",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PMAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" : \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_a555ee1e",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PMAgent.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" : \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0532fa0f",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/portinfo/PortNameMapping.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" : \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_e536c602",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/portinfo/PortNameMapping.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" : \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_45135266",
+        "filename": "fcapsmanager/alarmmanager/src/main/java/org/opendaylight/genius/fcapsmanager/alarmmanager/AlarmNotificationListeners.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "this is one of those cases where an if(isDebugEnabled()) would probably make sense... see https://wiki.opendaylight.org/view/BestPractices/Logging_Best_Practices#Do_NOT.2C_in_general.2C_use_isTrace.2F.2FDebug.2FInfo.2FWarn.2FErrorEnabled.28.29",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_2518de80",
+        "filename": "fcapsmanager/alarmmanager/src/main/java/org/opendaylight/genius/fcapsmanager/alarmmanager/AlarmNotificationListeners.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_850c2a44",
+        "filename": "fcapsmanager/alarmmanager/src/main/java/org/opendaylight/genius/fcapsmanager/alarmmanager/AlarmNotificationListeners.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \"listener \" trailing space",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_65093631",
+        "filename": "fcapsmanager/alarmmanager/src/main/java/org/opendaylight/genius/fcapsmanager/alarmmanager/AlarmNotificationListeners.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove trailing \"Mbean \" space",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_c5062220",
+        "filename": "fcapsmanager/countermanager/src/main/java/org/opendaylight/genius/fcapsmanager/countermanager/Poller.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove trailing \": \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_10007600",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "huh?!  How about:\n\n  LOG.error(msg, exception); \n\ninstead? ;-)",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_300f7a32",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \": \" suffix",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9013c65b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/PMAgentForNodeConnectorCounters.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove tailing space",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_7010d24e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/PMAgentForNodeConnectorCounters.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "dito",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d01d3e68",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove trailing space",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b01a4a6c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 227,
+        "startChar": 36,
+        "endLine": 227,
+        "endChar": 45
+      },
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_1027d6b7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" failed due to\"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f02b2280",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove \" failed due to\"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f0520212",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepAdd.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "the \u0027\\t\u0027 tab character in a log message is strange; perhaps we could use something like: \"Executing create TEP command:  dpnId \u003d {}, portName \u003d {}, vlanId \u003d {}, ipAddress \u003d {}, subnetMask \u003d {}, gatewayIp \u003d {}, transportZone \u003d {}\");",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_305dba22",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepAdd.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove the trailing \": \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9041063c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove the toString() here",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_703e12ba",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "let\u0027s remove the \u0027\\t\u0027 ?",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_10751698",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove trailing space \" \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_9068e6bb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove trailing \": \"",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_507dce6d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/DpnTepsInfoListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-08-10T14:28:07Z",
+      "side": 1,
+      "message": "remove the toString() here, and review why del.getDPNID() is duplicated (twice, the same info) - that doesn\u0027t seem right?",
+      "revId": "61dc30da9857ebebd088bbf94002aef72ad3dd86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
