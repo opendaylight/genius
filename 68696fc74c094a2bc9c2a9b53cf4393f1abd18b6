@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_156fc793",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/blueprint/idmanager.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2016-11-07T14:35:06Z",
+      "side": 1,
+      "message": "We are using annotations (@Inject, @PostConstruct, @PreDestroy) to avoid declaration in xml file. I can see the IdManager.java includes an Inject already. You can look into alivenessmonitor or resourcemanager as examples.",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 11
+      },
+      "revId": "68696fc74c094a2bc9c2a9b53cf4393f1abd18b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
