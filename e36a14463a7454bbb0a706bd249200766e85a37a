@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da2a55be_b4e25b01",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowInstallHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-07-03T13:39:30Z",
+      "side": 1,
+      "message": "Would any class ever implement it?",
+      "parentUuid": "fa2559ec_8d3645e6",
+      "revId": "e36a14463a7454bbb0a706bd249200766e85a37a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
