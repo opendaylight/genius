@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_01aa1419",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5492
+      },
+      "writtenOn": "2017-01-23T16:06:00Z",
+      "side": 1,
+      "message": "on an ASK Timeout, would we want to immediately retry?  How does it help?  Should we not follow something similar to exponential backoff here ?",
+      "revId": "435bb9384e0cf456df3012714723b6963eb0410a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_fa66dd28",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
         "patchSetId": 2
