@@ -1,0 +1,52 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_40189884",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilImplTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-03T10:34:51Z",
+      "side": 1,
+      "message": "yes that\u0027s a good idea, just have an empty @Test public void testWiring() { } kind of method here, to make sure that the GuiceRule\u0027s ArputilTestModule actually works - even if you do not yet have real tests here (I\u0027m assuming that you\u0027re planning to add at some point?)",
+      "parentUuid": "da01753e_20363404",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 30
+      },
+      "revId": "5a807a7be9ddce279c50f7107e07de87bca259bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_a6ca3c6c",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArputilTestModule.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-04-03T13:20:34Z",
+      "side": 1,
+      "message": "yes agreed",
+      "parentUuid": "da01753e_60403c57",
+      "range": {
+        "startLine": 21,
+        "startChar": 13,
+        "endLine": 21,
+        "endChar": 30
+      },
+      "revId": "5a807a7be9ddce279c50f7107e07de87bca259bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
