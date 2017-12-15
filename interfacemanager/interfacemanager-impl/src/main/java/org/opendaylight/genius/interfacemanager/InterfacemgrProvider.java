@@ -40,7 +40,6 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
@@ -105,7 +104,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
-    private final InterfaceStatusMonitor interfaceStatusMonitor = new InterfaceStatusMonitor();
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
@@ -130,37 +128,26 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @PostConstruct
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
+        createIdPool();
         try {
-            interfaceStatusMonitor.registerMbean();
-            createIdPool();
-
-            try {
-                configEntityCandidate = entityOwnershipService.registerCandidate(
-                        new Entity(IfmConstants.INTERFACE_CONFIG_ENTITY, IfmConstants.INTERFACE_CONFIG_ENTITY));
-                bindingEntityCandidate = entityOwnershipService.registerCandidate(
-                        new Entity(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
-                                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY));
-            } catch (CandidateAlreadyRegisteredException e) {
-                LOG.error("Failed to register entity {} with EntityOwnershipService", e.getEntity());
-            }
-
-            this.ifaceToTpMap = new ConcurrentHashMap<>();
-            this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
-            this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
-
-            interfaceStatusMonitor.reportStatus("OPERATIONAL");
-        } catch (Exception e) {
-            interfaceStatusMonitor.reportStatus("ERROR");
-            throw e;
+            configEntityCandidate = entityOwnershipService.registerCandidate(
+                    new Entity(IfmConstants.INTERFACE_CONFIG_ENTITY, IfmConstants.INTERFACE_CONFIG_ENTITY));
+            bindingEntityCandidate = entityOwnershipService.registerCandidate(
+                    new Entity(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                            IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY));
+        } catch (CandidateAlreadyRegisteredException e) {
+            LOG.error("Failed to register entity {} with EntityOwnershipService", e.getEntity());
         }
+
+        this.ifaceToTpMap = new ConcurrentHashMap<>();
+        this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
+        this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
         LOG.info("InterfacemgrProvider Started");
     }
 
     @Override
     @PreDestroy
     public void close() throws Exception {
-        interfaceStatusMonitor.unregisterMbean();
-
         if (configEntityCandidate != null) {
             configEntityCandidate.close();
         }
