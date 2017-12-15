@@ -38,7 +38,6 @@ import org.opendaylight.genius.itm.listeners.cache.ItmMonitoringListener;
 import org.opendaylight.genius.itm.listeners.cache.StateTunnelListListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
-import org.opendaylight.genius.itm.snd.ITMStatusMonitor;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
@@ -73,7 +72,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final VtepConfigSchemaListener vtepConfigSchemaListener;
     private final InterfaceStateListener ifStateListener;
     private RpcProviderRegistry rpcProviderRegistry;
-    private static final ITMStatusMonitor ITM_STAT_MON = ITMStatusMonitor.getInstance();
     private final ItmTunnelEventListener itmStateListener;
     private final ItmMonitoringListener itmMonitoringListener;
     private final ItmMonitoringIntervalListener itmMonitoringIntervalListener;
@@ -100,7 +98,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        VtepConfigSchemaListener vtepConfigSchemaListener,
                        OvsdbNodeListener ovsdbNodeListener) {
         LOG.info("ItmProvider Before register MBean");
-        ITM_STAT_MON.registerMbean();
         this.dataBroker = dataBroker;
         this.dpnTepsInfoListener = dpnTepsInfoListener;
         this.idManager = idManagerService;
@@ -124,19 +121,16 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            ITM_STAT_MON.reportStatus("STARTING");
             createIdPool();
             LOG.info("ItmProvider Started");
-            ITM_STAT_MON.reportStatus("OPERATIONAL");
         } catch (Exception ex) {
-            ITM_STAT_MON.reportStatus("ERROR");
+            LOG.info("ItmProvider failed to start");
         }
     }
 
     @Override
     @PreDestroy
     public void close() {
-        ITM_STAT_MON.unregisterMbean();
         if (itmManager != null) {
             itmManager.close();
         }
