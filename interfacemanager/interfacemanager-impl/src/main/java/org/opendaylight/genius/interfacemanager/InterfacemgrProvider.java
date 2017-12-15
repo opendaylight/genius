@@ -40,7 +40,6 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.interfacemanager.statusanddiag.InterfaceStatusMonitor;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
@@ -105,7 +104,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
-    private final InterfaceStatusMonitor interfaceStatusMonitor = new InterfaceStatusMonitor();
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
@@ -131,7 +129,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            interfaceStatusMonitor.registerMbean();
             createIdPool();
 
             try {
@@ -147,10 +144,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             this.ifaceToTpMap = new ConcurrentHashMap<>();
             this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
             this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
-
-            interfaceStatusMonitor.reportStatus("OPERATIONAL");
         } catch (Exception e) {
-            interfaceStatusMonitor.reportStatus("ERROR");
+            LOG.error("InterfacemgrProvider failed to Start");
             throw e;
         }
         LOG.info("InterfacemgrProvider Started");
@@ -159,8 +154,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     @PreDestroy
     public void close() throws Exception {
-        interfaceStatusMonitor.unregisterMbean();
-
         if (configEntityCandidate != null) {
             configEntityCandidate.close();
         }
