@@ -65,6 +65,7 @@ public final class NwConstants {
     public static final short IPV6_SERVICE_INDEX = 7;
     public static final short L3VPN_SERVICE_INDEX = 8;
     public static final short ELAN_SERVICE_INDEX = 9;
+    public static final short L3_VPNV6_SERVICE_INDEX = 10;
 
     public static final String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     public static final String ACL_SERVICE_NAME = "ACL_SERVICE";
@@ -74,6 +75,7 @@ public final class NwConstants {
     public static final String SFC_SERVICE_NAME = "SFC_SERVICE";
     public static final String L3VPN_SERVICE_NAME = "L3VPN_SERVICE";
     public static final String ELAN_SERVICE_NAME = "ELAN_SERVICE";
+    public static final String L3_VPNV6_SERVICE_NAME = "VPNV6 SERVICE";
     public static final String SFC_CLASSIFIER_SERVICE_NAME = "SFC_CLASSIFIER_SERVICE";
     public static final String DEFAULT_EGRESS_SERVICE_NAME = "DEFAULT_EGRESS_SERVICE";
 
