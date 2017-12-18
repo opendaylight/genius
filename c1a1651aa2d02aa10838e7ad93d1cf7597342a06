@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e4a1d03_1872dfa6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "I just realized (only now) that it\u0027s bad to have org.opendaylight.genius.datastoreutils in genius.mdsalutil-api.. we of course already have other stuff, but for something new like this, how would you feel about either putting this into org.opendaylight.genius.mdsalutil.cache(s?) in this existing mdsalutil-api bundle, or use this as the opportunity to start a new bundle such as... org.opendaylight.genius.incubator (?)",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd11ece5_5e6247d2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "add cache.cleanUp() here",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29d0ea9f_319f99ca",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "hang on, and perhaps I\u0027m just confused here (need to eat), BUT.. if we have an InstanceIdentifier\u003cV\u003e path here and in te constructor, then one could majorly screw things up upon usage of this, by passing an entirely different path here than the one given in construction, and thus loosing the listener for invalidation, no?  We couldn\u0027t just not have a path here at all, and read from the one passed to the constructor?  Or.. must be check the path here as being a sub-path of the one passed to the constructor?",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a0078adf_cf876b55",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "just to make it crystal clear, perhaps more so to folks looking at this class in the future, that the ONLY place that reads is the Cache (Loader) function, how about inlining this above in line 52 instead of having it as a private method which could be misunderstood as being available for use from other places in this class in the future? Because it is (should not) ever be, in this new design - and that\u0027s a Good Thing.",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
