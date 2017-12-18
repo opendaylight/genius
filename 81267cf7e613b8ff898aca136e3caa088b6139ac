@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "95caa6f5_579ebc18",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T14:43:38Z",
+      "side": 1,
+      "message": "Yeah.. so will you +1 it as is then? ;) You know I was thinking that a lil\u0027 util for this would be handy... I\u0027ve taken a note to see if we could have something handy e.g. in infrautils.testutils.concurrent for this; but for now, let\u0027s get this one in as is already?",
+      "parentUuid": "527af7f8_e3ec7a4f",
+      "revId": "81267cf7e613b8ff898aca136e3caa088b6139ac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4fa9f078_5909457b",
         "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-12-12T14:04:00Z",
       "side": 1,
       "message": "On a side note, we really should avoid using unbounded await calls in UTs - if the latch is never triggered, the test will unfortunately wait for ever. I\u0027ve seen this happen before  so I always put a timeout on it (usually 5 sec).",
+      "revId": "81267cf7e613b8ff898aca136e3caa088b6139ac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0457c971_41e6cecb",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T14:43:38Z",
+      "side": 1,
+      "message": "Done! Tx for feedback.",
+      "parentUuid": "4fa9f078_5909457b",
       "revId": "81267cf7e613b8ff898aca136e3caa088b6139ac",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
