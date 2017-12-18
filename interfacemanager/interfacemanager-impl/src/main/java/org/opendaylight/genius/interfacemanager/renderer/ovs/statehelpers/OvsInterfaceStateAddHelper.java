@@ -7,12 +7,19 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -134,9 +141,20 @@ public class OvsInterfaceStateAddHelper {
                 NwConstants.ADD_FLOW);
         FlowBasedServicesUtils.bindDefaultEgressDispatcherService(dataBroker, futures, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);
-        futures.add(transaction.submit());
-        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
-                interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
+        CheckedFuture<Void, TransactionCommitFailedException> future = transaction.submit();
+        futures.add(future);
+        Futures.addCallback(future, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void result) {
+                AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
+                        interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
+            }
+
+            @Override
+            public void onFailure(@Nonnull Throwable throwable) {
+                LOG.error("Unable to add tunnel monitoring", throwable);
+            }
+        }, MoreExecutors .directExecutor());
     }
 
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
