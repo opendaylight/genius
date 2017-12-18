@@ -179,6 +179,24 @@
     },
     {
       "key": {
+        "uuid": "6fadb89c_3692d8bf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T17:05:29Z",
+      "side": 1,
+      "message": "OK cool then I can probably comfortably +1 this in next round (but also see my other new feedback when you have a moment)",
+      "parentUuid": "1e31781e_694e262b",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "403ea549_027be253",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
