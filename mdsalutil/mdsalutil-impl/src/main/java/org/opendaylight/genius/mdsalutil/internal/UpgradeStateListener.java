@@ -16,6 +16,8 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.UpgradeState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config;
@@ -33,10 +35,17 @@ public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeLis
     private AtomicBoolean isUpgradeInProgress = new AtomicBoolean(false);
 
     @Inject
-    public UpgradeStateListener(@OsgiService final DataBroker dataBroker) {
+    public UpgradeStateListener(@OsgiService final DataBroker dataBroker, final Config config) {
         super(dataBroker, new DataTreeIdentifier<>(
                 LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Config.class)));
-        LOG.info("UpgradeStateListener(): isUpgradeInProgress = {}", this.isUpgradeInProgress.get());
+        // When this config value is set from a file it is not accessible via the yang tree...
+        // so we just write it once here just in case.
+        try {
+            SingleTransactionDataBroker.syncWrite(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                    InstanceIdentifier.create(Config.class), config);
+        } catch (TransactionCommitFailedException e) {
+            LOG.error("Failed to write mdsalutil config", e);
+        }
     }
 
     @Override
