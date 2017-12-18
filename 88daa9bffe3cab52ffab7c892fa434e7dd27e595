@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "16f39ee6_c6cc51f2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "OK Tx; LGTM.",
+      "parentUuid": "38942305_1eabd752",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a2be04f0_2dee4f57",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "That is the case in vpnmanager - I haven\u0027t looked at detailed usage in ITM yet. I was actually thinking of making a DTCL part of it. That way all we should need is public get method(s).",
       "parentUuid": "a2be04f0_2dee4f57",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f76b1555_d08ee43c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "OK; it\u0027s great to see the x4 deleted *Listener in https://git.opendaylight.org/gerrit/#/c/66470/",
+      "parentUuid": "190ea7d2_271b066e",
       "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -107,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "a5b05593_924c036f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "NOK; I still very (very) much think that this should be built on infrautils.caches, instead of custom local Guava usage.  Are you open to work together to bridge whatever gap we may currently have in infrautils.caches to make this possile (likely more in January 2018 than still in December), or do you feel strongly that this should go in ASAP as-is already, and then later be made to use infrautils.caches?  I would just be a bit concerned that this later will never happen..",
+      "parentUuid": "21d9777c_59c2b510",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "403ea549_027be253",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -136,6 +190,24 @@
       "side": 1,
       "message": "I\u0027m not totally clear what you mean here, specifically the last sentence. This is intended per DS type. Maybe you could send me a modified  class to illustrate what you mean?",
       "parentUuid": "403ea549_027be253",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1fffd43_60613147",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "OK; in your new latest Patch Set 3/4 we can see that you have actually introduced an InstanceIdentifier\u003cV\u003e listetenerRegistrationPath which is what I meant here.",
+      "parentUuid": "e3ec8c31_d508d644",
       "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -177,6 +249,24 @@
     },
     {
       "key": {
+        "uuid": "394d59ff_76c41046",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "OK, this has been removed.",
+      "parentUuid": "50c30915_0073b1d7",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "387fd037_e194ad0c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -212,6 +302,24 @@
     },
     {
       "key": {
+        "uuid": "8b8dc3fb_6be99e7c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "OK for me.",
+      "parentUuid": "261e6798_c259c8d1",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "72a0f464_111268c0",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
@@ -241,6 +349,24 @@
       "side": 1,
       "message": "Again not sure if this is needed yet. The only reason would be to dump the cache via CLI.",
       "parentUuid": "72a0f464_111268c0",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1b46bd07_eb964a81",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-18T16:04:10Z",
+      "side": 1,
+      "message": "OK, this is now called getAllPresent, and appropriately JavaDoc\u0027d, so I have no strong objection to this anymore.  I\u0027m also very open to a proposed change to infrautils.caches to add an operation like this... ;-)",
+      "parentUuid": "110b9e35_50c1a5ce",
       "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
