@@ -7,10 +7,15 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -118,8 +123,8 @@ public final class OvsInterfaceStateAddHelper {
                 BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, txRunner,
                         ifState.getIfIndex());
-                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, iface,
-                        Long.toString(portNo), interfaceName, ifState.getIfIndex());
+                futures.add(FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, iface,
+                        Long.toString(portNo), interfaceName, ifState.getIfIndex()));
             }
         }));
 
@@ -133,9 +138,21 @@ public final class OvsInterfaceStateAddHelper {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         interfaceManagerCommonUtils.addTunnelIngressFlow(
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
-        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceInfo,
-                Long.toString(portNo), interfaceName, ifIndex);
-        alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
+        ListenableFuture<Void> future =
+                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceInfo,
+                        Long.toString(portNo), interfaceName, ifIndex);
+        futures.add(future);
+        Futures.addCallback(future, new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void result) {
+                alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
+            }
+
+            @Override
+            public void onFailure(@Nonnull Throwable throwable) {
+                LOG.error("Unable to add tunnel monitoring", throwable);
+            }
+        }, MoreExecutors.directExecutor());
     }
 
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
