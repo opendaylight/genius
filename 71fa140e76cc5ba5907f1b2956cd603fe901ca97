@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6186c300_2574cb02",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-18T16:54:44Z",
+      "side": 1,
+      "message": "Stephen, sorry if I am asking stupid question. How is the Carbon issue solved here?",
+      "revId": "71fa140e76cc5ba5907f1b2956cd603fe901ca97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
