@@ -16,6 +16,24 @@
       "revId": "16fac987ba69917dd0acbbdf8353f32c4ad9556b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a1969be_da47471c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 479,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-18T17:09:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_ff77e79d",
+      "revId": "16fac987ba69917dd0acbbdf8353f32c4ad9556b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
