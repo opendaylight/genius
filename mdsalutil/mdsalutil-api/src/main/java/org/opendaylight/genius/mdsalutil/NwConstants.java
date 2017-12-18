@@ -65,6 +65,7 @@ public interface NwConstants {
     short IPV6_SERVICE_INDEX = 7;
     short L3VPN_SERVICE_INDEX = 8;
     short ELAN_SERVICE_INDEX = 9;
+    short L3_VPNV6_SERVICE_INDEX = 10;
 
     String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     String ACL_SERVICE_NAME = "ACL_SERVICE";
@@ -76,6 +77,7 @@ public interface NwConstants {
     String ELAN_SERVICE_NAME = "ELAN_SERVICE";
     String SFC_CLASSIFIER_SERVICE_NAME = "SFC_CLASSIFIER_SERVICE";
     String DEFAULT_EGRESS_SERVICE_NAME = "DEFAULT_EGRESS_SERVICE";
+    String L3_VPNV6_SERVICE_NAME = "VPNV6 SERVICE";
 
     // Egress (w.r.t switch) service indexes
     short EGRESS_ACL_SERVICE_INDEX = 6;
