@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "1e31781e_694e262b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-18T16:38:14Z",
+      "side": 1,
+      "message": "I was thinking to get this in first using guava and then work in infrautils.caches, since we agree that we\u0027ll need changes there. I\u0027d like to get  rid of DataStoreCahe ASAP, especially before M4, so no one further perpetuates its use (the ITM patch and my netvirt patch will accomplish that). I have another patch set coming to add  CacheProvider to the ctor in anticipation of converting to infrautils.caches so we won\u0027t have to change the API signatures.",
+      "parentUuid": "a5b05593_924c036f",
+      "revId": "88daa9bffe3cab52ffab7c892fa434e7dd27e595",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "403ea549_027be253",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 2
