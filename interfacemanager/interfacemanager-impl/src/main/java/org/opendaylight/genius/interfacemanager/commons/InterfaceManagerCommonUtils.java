@@ -450,8 +450,8 @@ public final class InterfaceManagerCommonUtils {
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn
                 .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
             FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, interfaceInfo, futures, txRunner, ifIndex);
-            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures,
-                        interfaceInfo, Long.toString(portNo), interfaceName, ifIndex);
+            futures.add(FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner,
+                    interfaceInfo, Long.toString(portNo), interfaceName, ifIndex));
         }
 
         // Update the DpnToInterfaceList OpDS

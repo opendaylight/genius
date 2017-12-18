@@ -8,12 +8,17 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import com.google.common.base.Strings;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -140,7 +145,7 @@ public final class OvsInterfaceConfigAddHelper {
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
 
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            addLogicalTunnelGroup(interfaceNew, defaultOperShardTransaction, futures);
+            futures.add(addLogicalTunnelGroup(interfaceNew, defaultOperShardTransaction));
             return;
         }
 
@@ -198,10 +203,22 @@ public final class OvsInterfaceConfigAddHelper {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
                     interfaceManagerCommonUtils.addTunnelIngressFlow(ifTunnel, dpId, portNo,
                             interfaceNew.getName(), ifState.getIfIndex());
-                    FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceNew,
-                            Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
-                    // start LLDP monitoring for the tunnel interface
-                    alivenessMonitorUtils.startLLDPMonitoring(ifTunnel, interfaceNew.getName());
+                    ListenableFuture<Void> future =
+                            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceNew,
+                                    Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
+                    futures.add(future);
+                    Futures.addCallback(future, new FutureCallback<Void>() {
+                        @Override
+                        public void onSuccess(@Nullable Void result) {
+                            // start LLDP monitoring for the tunnel interface
+                            alivenessMonitorUtils.startLLDPMonitoring(ifTunnel, interfaceNew.getName());
+                        }
+
+                        @Override
+                        public void onFailure(@Nonnull Throwable throwable) {
+                            LOG.error("Unable to add tunnel monitoring", throwable);
+                        }
+                    }, MoreExecutors.directExecutor());
                 }
             }
         }
@@ -266,7 +283,7 @@ public final class OvsInterfaceConfigAddHelper {
         return groupId;
     }
 
-    private void addLogicalTunnelGroup(Interface itfNew, WriteTransaction tx, List<ListenableFuture<Void>> futures) {
+    private ListenableFuture<Void> addLogicalTunnelGroup(Interface itfNew, WriteTransaction tx) {
         String ifaceName = itfNew.getName();
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
@@ -278,7 +295,7 @@ public final class OvsInterfaceConfigAddHelper {
                     null /*nodeConnectorId*/);
         long groupId = createLogicalTunnelSelectGroup(IfmUtil.getDpnFromInterface(ifState),
                                                       itfNew.getName(), ifState.getIfIndex());
-        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, itfNew,
+        return FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, itfNew,
                                                                   ifaceName, ifState.getIfIndex(), groupId);
     }
 
