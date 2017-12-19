@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "189d23a0_f086078a",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_643f8226",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_443c0630",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-12-07T16:53:10Z",
       "side": 1,
       "message": "interfacemanager",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a257e528_7079935e",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_443c0630",
       "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c355895c_93182c00",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_a4497ad2",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_e4609237",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-12-07T16:53:10Z",
       "side": 1,
       "message": "Please call out that Multiple VXLAN Tunnels feature will not work with this",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99d7c733_5d296ca5",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a1969be_e4609237",
       "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "6f1c14a5_8f977ee6",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "External tunnels will take the same existing path through interfacemanager. No change. Updated the document with the same.",
+      "parentUuid": "7a1969be_446a461b",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a1969be_84743efe",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2017-12-07T16:53:10Z",
       "side": 1,
       "message": "what about external tunnel table?",
+      "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65c10927_de5274c2",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "No change in external tunnel",
+      "parentUuid": "7a1969be_84743efe",
       "revId": "4438f20cb6776b283d1a0b430ec1df81c82f27b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
