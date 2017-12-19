@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7802ce76_f0ac47f0",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9f3472f7_a01922c0",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d61488ae_f16a3889",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2017-12-13T08:50:10Z",
       "side": 1,
       "message": "leave one blank line after this.",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5958b9c2_bfa136be",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d61488ae_f16a3889",
       "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -59,6 +95,30 @@
     },
     {
       "key": {
+        "uuid": "5c7189e8_c2448b8a",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c961f40_67a5f3f4",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 1
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "943b3474_aa3beb32",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 2
@@ -70,6 +130,24 @@
       "writtenOn": "2017-12-13T08:50:10Z",
       "side": 1,
       "message": "add a blank line after this para.",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "07b3987e_a86d7fd2",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "943b3474_aa3beb32",
       "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "c933fc4c_3833d260",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f55c9c7_dfafad5d",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "472a8d65_3358ecf6",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 2
@@ -104,6 +200,30 @@
       "writtenOn": "2017-12-13T08:50:10Z",
       "side": 1,
       "message": "can use a better name e.g., \u0027itm-direct-tunnels\u0027",
+      "range": {
+        "startLine": 65,
+        "startChar": 7,
+        "endLine": 65,
+        "endChar": 33
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "17473665_267d6ee1",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "472a8d65_3358ecf6",
       "range": {
         "startLine": 65,
         "startChar": 7,
@@ -139,6 +259,30 @@
     },
     {
       "key": {
+        "uuid": "1f6b75fe_1a7e2409",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Will these tunnel interfaces be created directly from REST?\nInternal or external or both?\nWhen events come from switch, how will interface manager know if it should process those events or not? Inferring just from the absence of config? If so, this will lead a situation where we cannot distinguish from \"normal absence of config\" versus \"erroneous absence of config\".\nOverloading same code with many flavors will only result in bugs.",
+      "parentUuid": "a337e2f9_2c5e408f",
+      "range": {
+        "startLine": 67,
+        "startChar": 16,
+        "endLine": 67,
+        "endChar": 53
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6288713c_c6de14db",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 2
@@ -156,6 +300,24 @@
     },
     {
       "key": {
+        "uuid": "bf95d05c_d98697f9",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6288713c_c6de14db",
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e96eb395_cb4d44db",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 2
@@ -167,6 +329,30 @@
       "writtenOn": "2017-12-13T08:50:10Z",
       "side": 1,
       "message": "how will you ensure if this group-id is not allocated/used by other modules? specify group-id pool.",
+      "range": {
+        "startLine": 73,
+        "startChar": 26,
+        "endLine": 73,
+        "endChar": 55
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2acd31c7_b5a8a9e1",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Today the group-id pool is not defined in one common place. Hence its difficult to assign a unique group id pool. Discussion in the community to use resource manager for the group id is going on. Will upgrade this document once the approach is decided.",
+      "parentUuid": "e96eb395_cb4d44db",
       "range": {
         "startLine": 73,
         "startChar": 26,
@@ -202,6 +388,30 @@
     },
     {
       "key": {
+        "uuid": "124a96a3_e4874564",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Yes pipeline will change as the action will be pointing to the group and not output on port.",
+      "parentUuid": "363e34ef_32693ceb",
+      "range": {
+        "startLine": 105,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 20
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5eaa1733_677af3d5",
         "filename": "docs/specs/itm-scale-improvements.rst",
         "patchSetId": 2
@@ -213,6 +423,30 @@
       "writtenOn": "2017-12-13T08:50:10Z",
       "side": 1,
       "message": "can this be merged with tranzport-zone/DPN-TEPs DS?",
+      "range": {
+        "startLine": 126,
+        "startChar": 2,
+        "endLine": 126,
+        "endChar": 34
+      },
+      "revId": "7f8a1efab109589887132939e53ba87a8fc387ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6bfe044_ac441369",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-12-19T10:10:52Z",
+      "side": 1,
+      "message": "Awaiting Vivek\u0027s feedback on merging the yang containers.",
+      "parentUuid": "5eaa1733_677af3d5",
       "range": {
         "startLine": 126,
         "startChar": 2,
