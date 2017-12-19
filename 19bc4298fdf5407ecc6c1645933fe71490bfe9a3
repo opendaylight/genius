@@ -52,6 +52,24 @@
       "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8546604_cfb4c882",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-12-19T14:51:57Z",
+      "side": 1,
+      "message": "when 3 nodes come up at same time and write to DS ConflictingModException or OptimiticLockException can easily happen and or not really error. Probably good to catch those here.\n@Michael if we throw an exception here, who is catcing it? Will it abort the thread doing bring up?",
+      "parentUuid": "b5f7b3f7_5855eb61",
+      "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
