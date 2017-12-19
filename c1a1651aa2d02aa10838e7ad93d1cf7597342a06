@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "24ff8dd9_d9f9da6e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-19T16:30:03Z",
+      "side": 1,
+      "message": "OK, fine for me then ignore this point. I\u0027ll +1 and propose merge when other NOKs are addressed!",
+      "parentUuid": "e81e67f6_5ba57219",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0078adf_cf876b55",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 4
