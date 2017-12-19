@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ecbcffdf_683ba0bb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-19T05:12:48Z",
+      "side": 1,
+      "message": "I meant \"incubator\" as in \"this is the bundle in infrautils where we put things to incubate which we may propose to higher up projects elsewhere later\" (as in, \"if this Cache proves to be useful, perhaps it should ultimately be in mdsal/conroller?\") but I\u0027m also perfectly fine if we just go with org.opendaylight.genius.mdsalutil.cache, for now.",
+      "parentUuid": "7adb8a19_4d882431",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cd11ece5_5e6247d2",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
         "patchSetId": 4
@@ -101,6 +119,24 @@
       "side": 1,
       "message": "The path can\u0027t be entirely different b/c they\u0027re both typed with V. The one for the ctor is the DTCL registration path which, for a list, is wildcarded, ie the last path arg represents the list container type V. For a list, this method would be called to read a specific list entry so last path arg would represent a list key for type V. \n\nE.g. listener reg path would be:\n\n  InstanceIdentifier.builder(VpnInstanceOpData.class).child(\n          VpnInstanceOpDataEntry.class).build()\n\nand to lookup an entry via get:\n\n  InstanceIdentifier.builder(VpnInstanceOpData.class)\n            .child(VpnInstanceOpDataEntry.class, \n                            new VpnInstanceOpDataEntryKey(rd)).build()",
       "parentUuid": "29d0ea9f_319f99ca",
+      "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5b15ae5e_e51fd360",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-19T05:12:48Z",
+      "side": 1,
+      "message": "OK, I didn\u0027t the wildcard, so probably fine.  We can\u0027t use InstanceIdentifier\u0027s contains() operation here, can we? Because it\u0027s \"the wrong way around\", isn\u0027t it?  Fine, just ignore me then - wildcard probably achieves what I was after.",
+      "parentUuid": "b06461b0_9c402dbc",
       "revId": "c1a1651aa2d02aa10838e7ad93d1cf7597342a06",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
