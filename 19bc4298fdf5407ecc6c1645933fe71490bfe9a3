@@ -16,6 +16,24 @@
       "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "185811eb_4338622b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-19T07:17:06Z",
+      "side": 1,
+      "message": "I was just wondering whether we should throw exception here? what if when the bundles are coming up in a 3 node cluster, and we createIDPool from all 3 nodes...will there be any datastore exception? In that case our bundle bring up will be impacted? should we catch only that and ignore?",
+      "parentUuid": "49129b27_a6a91ae7",
+      "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
