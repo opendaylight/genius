@@ -34,6 +34,24 @@
       "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5f7b3f7_5855eb61",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-12-19T14:29:42Z",
+      "side": 1,
+      "message": "Is this something you\u0027ve actually run into, or just think it may happen? I wouldn\u0027t code anything like that just in case, but only if tests show a bug.  Also, and more importantly, the problem you mention should be handled inside the IdManager component or the createIdPool() method, not here, agreed? And createIdPool() does already \"handle\" it, I think; there won\u0027t be an exception, just a LOG.error(\"Failed to create idPool for InterfaceMgr\").  So I would just remove the try/catch/throw and simply let it propagate; that\u0027s what\u0027 it\u0027s currently as is proposed heere doing anyway, just weird/ugly/confusing catch and identical rethrow.",
+      "parentUuid": "185811eb_4338622b",
+      "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
