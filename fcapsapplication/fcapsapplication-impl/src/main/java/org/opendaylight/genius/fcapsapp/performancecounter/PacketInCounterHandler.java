@@ -43,7 +43,10 @@ public class PacketInCounterHandler implements PacketProcessingListener {
             return;
         }
         String dpnId = getDpnId(notification.getIngress().getValue().toString());
-        ingressPacketMap.putIfAbsent(dpnId, new AtomicLong(FIRST_VALUE)).incrementAndGet();
+        AtomicLong counter = ingressPacketMap.putIfAbsent(dpnId, new AtomicLong(FIRST_VALUE));
+        if (counter != null) {
+            counter.incrementAndGet();
+        }
         connectToPMAgent();
     }
 
