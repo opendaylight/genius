@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class NodeEventListener<D extends DataObject> implements ClusteredDataTreeChangeListener<D>, AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(NodeEventListener.class);
+    private static final String ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
     public final AlarmAgent alarmAgent;
     public final NodeUpdateCounter nodeUpdateCounter;
     public final PacketInCounterHandler packetInCounterHandler;
@@ -74,7 +75,6 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                     LOG.error("Retrieving hostName failed", e);
                 }
             }
-            LOG.debug("retrieved hostname {}", hostName);
             String nodeId = getDpnId(String.valueOf(nodeConnIdent.firstKeyOf(Node.class).getId()));
             switch (mod.getModificationType()) {
                 case DELETE:
@@ -86,11 +86,6 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                     packetInCounterHandler.nodeRemovedNotification(nodeId);
                     break;
                 case SUBTREE_MODIFIED:
-                    if (isNodeOwner(nodeId)) {
-                        LOG.debug("NodeUpdated {} notification is received", nodeId);
-                    } else {
-                        LOG.debug("UPDATE: Node {} is not connected to host {}", nodeId, hostName);
-                    }
                     break;
                 case WRITE:
                     if (mod.getDataBefore() == null) {
@@ -126,7 +121,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
      * @return True if owner, else false
      */
     public boolean isNodeOwner(String nodeId) {
-        Entity entity = new Entity("openflow", nodeId);
+        Entity entity = new Entity(ENTITY_TYPE, nodeId);
         return entityOwnershipService.getOwnershipState(entity).transform(
             state -> state == EntityOwnershipState.IS_OWNER).or(false);
     }

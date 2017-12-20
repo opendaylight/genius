@@ -36,14 +36,17 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEventListener<FlowCapableNodeConnector> {
-    public static final int STARTUP_LOOP_TICK = 500;
-    public static final int STARTUP_LOOP_MAX_RETRIES = 8;
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodeConnectorInventoryTranslatorImpl.class);
+
+    private static final int STARTUP_LOOP_TICK = 500;
+    private static final int STARTUP_LOOP_MAX_RETRIES = 8;
+    private static final String ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
+
     private final EntityOwnershipService entityOwnershipService;
     private final DataBroker dataBroker;
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
-    public static final String SEPARATOR = ":";
+    private static final String SEPARATOR = ":";
     private final PMAgent agent;
 
     private static final InstanceIdentifier<FlowCapableNodeConnector>
@@ -172,7 +175,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
      * @return True if owner, else false
      */
     public boolean isNodeOwner(String nodeId) {
-        Entity entity = new Entity("openflow", nodeId);
+        Entity entity = new Entity(ENTITY_TYPE, nodeId);
         return entityOwnershipService.getOwnershipState(entity).transform(
             state -> state == EntityOwnershipState.IS_OWNER).or(false);
     }
