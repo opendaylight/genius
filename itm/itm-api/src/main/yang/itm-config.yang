@@ -2,7 +2,7 @@ module itm-config {
 
     namespace "urn:opendaylight:genius:itm:config";
 
-    prefix itm-config;
+    prefix "itm-config";
 
     import ietf-interfaces {
         prefix if;
