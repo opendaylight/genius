@@ -20,7 +20,9 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.fcapsapp.FcapsConstants;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
@@ -36,14 +38,16 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEventListener<FlowCapableNodeConnector> {
-    public static final int STARTUP_LOOP_TICK = 500;
-    public static final int STARTUP_LOOP_MAX_RETRIES = 8;
     private static final Logger LOG = LoggerFactory.getLogger(FlowNodeConnectorInventoryTranslatorImpl.class);
-    private final EntityOwnershipService entityOwnershipService;
+
+    private static final int STARTUP_LOOP_TICK = 500;
+    private static final int STARTUP_LOOP_MAX_RETRIES = 8;
+
+    private final EntityOwnershipUtils entityOwnershipUtils;
     private final DataBroker dataBroker;
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
-    public static final String SEPARATOR = ":";
+    private static final String SEPARATOR = ":";
     private final PMAgent agent;
 
     private static final InstanceIdentifier<FlowCapableNodeConnector>
@@ -59,9 +63,10 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     @Inject
     @SuppressWarnings("checkstyle:IllegalCatch")
     public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,
-            final EntityOwnershipService entityOwnershipService, final PMAgent agent) {
+                                                    final EntityOwnershipService entityOwnershipService, final PMAgent agent,
+                                                    final EntityOwnershipUtils entityOwnershipUtils) {
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
-        this.entityOwnershipService = entityOwnershipService;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         this.agent = agent;
         final DataTreeIdentifier<FlowCapableNodeConnector> treeId = new DataTreeIdentifier<>(
                 LogicalDatastoreType.OPERATIONAL, getWildCardPath());
@@ -111,24 +116,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     @Override
     public void update(InstanceIdentifier<FlowCapableNodeConnector> identifier, FlowCapableNodeConnector original,
             FlowCapableNodeConnector update, InstanceIdentifier<FlowCapableNodeConnector> nodeConnIdent) {
-        if (compareInstanceIdentifierTail(identifier, II_TO_FLOW_CAPABLE_NODE_CONNECTOR)) {
-            // Don't need to do anything as we are not considering updates here
-            String nodeConnectorIdentifier = getNodeConnectorId(
-                    String.valueOf(nodeConnIdent.firstKeyOf(NodeConnector.class).getId()));
-            long dataPathId = getDpIdFromPortName(nodeConnectorIdentifier);
-            if (isNodeOwner(getNodeId(dataPathId))) {
-                boolean originalPortStatus = original.getConfiguration().isPORTDOWN();
-                boolean updatePortStatus = update.getConfiguration().isPORTDOWN();
-
-                if (updatePortStatus) {
-                    // port has gone down
-                    LOG.debug("Node Connector {} updated port is down", nodeConnectorIdentifier);
-                } else if (originalPortStatus) {
-                    // port has come up
-                    LOG.debug("Node Connector {} updated port is up", nodeConnectorIdentifier);
-                }
-            }
-        }
+        // Don't need to do anything as we are not considering updates here
     }
 
     @Override
@@ -139,7 +127,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
             String nodeConnectorIdentifier = getNodeConnectorId(
                     String.valueOf(nodeConnIdent.firstKeyOf(NodeConnector.class).getId()));
             long dataPathId = getDpIdFromPortName(nodeConnectorIdentifier);
-            if (isNodeOwner(getNodeId(dataPathId))) {
+            if (entityOwnershipUtils.isEntityOwner(FcapsConstants.OPENFLOW_ENTITY_TYPE,getNodeId(dataPathId))) {
                 if (!dpnToPortMultiMap.containsEntry(dataPathId, nodeConnectorIdentifier)) {
                     LOG.debug("Node Connector {} added", nodeConnectorIdentifier);
                     dpnToPortMultiMap.put(dataPathId, nodeConnectorIdentifier);
@@ -161,20 +149,6 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     private String getNodeId(Long dpnId) {
         return "openflow:" + dpnId;
-    }
-
-    /**
-     * Method checks if *this* instance of controller is owner of the given
-     * openflow node.
-     *
-     * @param nodeId
-     *            openflow node Id
-     * @return True if owner, else false
-     */
-    public boolean isNodeOwner(String nodeId) {
-        Entity entity = new Entity("openflow", nodeId);
-        return entityOwnershipService.getOwnershipState(entity).transform(
-            state -> state == EntityOwnershipState.IS_OWNER).or(false);
     }
 
     private boolean compareInstanceIdentifierTail(InstanceIdentifier<?> identifier1,
