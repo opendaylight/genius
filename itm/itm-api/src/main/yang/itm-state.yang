@@ -225,6 +225,12 @@ module itm-state {
                           base odlif:tunnel-type-base;
                       }
                   }
+                  leaf port-number {
+                      type string;
+                  }
+                  leaf if-index {
+                      type uint16;
+                  }
 
               }
             }
@@ -232,4 +238,61 @@ module itm-state {
             notification itm-tunnel-build-complete{
             }
 
-      }
+        container dpn-teps-state {
+            list dpns-teps {
+                key "source-dpn-id";
+                leaf source-dpn-id {
+                    type uint64;
+                    mandatory true;
+                }
+
+                leaf tunnel-type {
+                    type identityref {
+                        base odlif:tunnel-type-base;
+                    }
+                    mandatory true;
+                }
+
+                leaf group-id {
+                    type uint32;
+                    mandatory true;
+                }
+
+                /* Remote DPNs to which this DPN-Tep has a tunnel */
+                list remote-dpns {
+                    key "destination-dpn-id";
+                    leaf destination-dpn-id {
+                        type uint64;
+                        mandatory true;
+                    }
+
+                    leaf tunnel-name {
+                        type string;
+                        mandatory true;
+                    }
+
+                    /* This will later be changed to monitor profile id */
+                    /* The monitor profile will contain monitoring related params */
+                    leaf monitoring-enabled {
+                        type boolean;
+                        mandatory true;
+                    }
+
+                    leaf monitoring-interval {
+                        type uint16 {
+                            range "1000..30000";
+                        }
+                        mandatory true;
+                    }
+
+
+                    leaf internal {
+                        type boolean;
+                        mandatory true;
+                        description "represents whether this is an internal or external tunnel.";
+                    }
+
+                }
+            }
+        }
+}

@@ -289,4 +289,67 @@ module itm-rpc {
             }
         }
 
+        rpc get-egress-actions-for-tunnel {
+            description "used to retrieve group actions to use from interface name";
+            input {
+                leaf source-node {
+                    type string;
+                    mandatory true;
+                }
+                leaf destination-node {
+                    type string;
+                    mandatory true;
+                }
+
+                leaf tunnel-type {
+                    type identityref {
+                        base odlif:tunnel-type-base;
+                    }
+                }
+            }
+            output {
+                uses action:action-list;
+            }
+        }
+
+        rpc get-tunnel-type {
+            description "to get the type of the tunnel interface(vxlan, vxlan-gpe, gre, etc.)";
+            input {
+                leaf intf-name {
+                    type string;
+                    mandatory true;
+                }
+            }
+            output {
+                leaf tunnel-type {
+                    type identityref {
+                        base odlif:tunnel-type-base;
+                    }
+                }
+            }
+        }
+
+        rpc set-bfd-enable-on-tunnel {
+            description "used for turning ON/OFF to monitor individual tunnels";
+            input {
+                leaf source-node {
+                    type string;
+                    mandatory true;
+                }
+                leaf destination-node {
+                    type string;
+                    mandatory true;
+                }
+                leaf monitoring-enabled {
+                    type boolean;
+                    mandatory true;
+                }
+                leaf monitoring-interval {
+                    type uint16 {
+                        range "1000..30000";
+                    }
+                }
+
+            }
+        }
     }
