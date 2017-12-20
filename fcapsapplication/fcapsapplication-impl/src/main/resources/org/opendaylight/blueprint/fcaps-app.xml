@@ -19,4 +19,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="notificationService"
                interface="org.opendaylight.controller.md.sal.binding.api.NotificationService"/>
 
+    <bean id="entityOwnershipUtils" class="org.opendaylight.genius.utils.clustering.EntityOwnershipUtils">
+        <argument ref="entityOwnershipService"/>
+    </bean>
+
 </blueprint>

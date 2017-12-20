@@ -21,9 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.genius.fcapsapp.alarm.AlarmAgent;
 import org.opendaylight.genius.fcapsapp.performancecounter.NodeUpdateCounter;
 import org.opendaylight.genius.fcapsapp.performancecounter.PacketInCounterHandler;
-import org.opendaylight.mdsal.eos.binding.api.Entity;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
-import org.opendaylight.mdsal.eos.common.api.EntityOwnershipState;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -37,15 +35,16 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
     public final AlarmAgent alarmAgent;
     public final NodeUpdateCounter nodeUpdateCounter;
     public final PacketInCounterHandler packetInCounterHandler;
-    private final EntityOwnershipService entityOwnershipService;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public NodeEventListener(final AlarmAgent alarmAgent, final NodeUpdateCounter nodeUpdateCounter,
-            final PacketInCounterHandler packetInCounterHandler, final EntityOwnershipService entityOwnershipService) {
+                             final PacketInCounterHandler packetInCounterHandler,
+                             final EntityOwnershipUtils entityOwnershipUtils) {
         this.alarmAgent = alarmAgent;
         this.nodeUpdateCounter = nodeUpdateCounter;
         this.packetInCounterHandler = packetInCounterHandler;
-        this.entityOwnershipService = entityOwnershipService;
+        this.entityOwnershipUtils = entityOwnershipUtils;
     }
 
     @PostConstruct
@@ -74,7 +73,6 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                     LOG.error("Retrieving hostName failed", e);
                 }
             }
-            LOG.debug("retrieved hostname {}", hostName);
             String nodeId = getDpnId(String.valueOf(nodeConnIdent.firstKeyOf(Node.class).getId()));
             switch (mod.getModificationType()) {
                 case DELETE:
@@ -86,15 +84,10 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                     packetInCounterHandler.nodeRemovedNotification(nodeId);
                     break;
                 case SUBTREE_MODIFIED:
-                    if (isNodeOwner(nodeId)) {
-                        LOG.debug("NodeUpdated {} notification is received", nodeId);
-                    } else {
-                        LOG.debug("UPDATE: Node {} is not connected to host {}", nodeId, hostName);
-                    }
                     break;
                 case WRITE:
                     if (mod.getDataBefore() == null) {
-                        if (isNodeOwner(nodeId)) {
+                        if (entityOwnershipUtils.isEntityOwner(FcapsConstants.SERVICE_ENTITY_TYPE,nodeId)) {
                             LOG.debug("NodeAdded {} notification is received on host {}", nodeId, hostName);
                             alarmAgent.clearControlPathAlarm(nodeId, hostName);
                             nodeUpdateCounter.nodeAddedNotification(nodeId, hostName);
@@ -115,19 +108,5 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
         // Uri [_value=openflow:1]
         String[] temp = node.split("=");
         return temp[1].substring(0, temp[1].length() - 1);
-    }
-
-    /**
-     * Method checks if *this* instance of controller is owner of the given
-     * openflow node.
-     *
-     * @param nodeId
-     *            DpnId
-     * @return True if owner, else false
-     */
-    public boolean isNodeOwner(String nodeId) {
-        Entity entity = new Entity("openflow", nodeId);
-        return entityOwnershipService.getOwnershipState(entity).transform(
-            state -> state == EntityOwnershipState.IS_OWNER).or(false);
     }
 }
