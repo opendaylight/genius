@@ -225,11 +225,54 @@ module itm-state {
                           base odlif:tunnel-type-base;
                       }
                   }
+                  leaf port-number {
+                      type string;
+                  }
+                  leaf if-index {
+                      type uint16;
+                  }
 
               }
             }
 
             notification itm-tunnel-build-complete{
             }
-
+            container dpn-teps-state {
+                  list dpns-teps {
+                      key "source-dpn-id";
+                      leaf source-dpn-id {
+                         type uint64;
+                      }
+                      leaf tunnel-type {
+                         type identityref {
+                         base odlif:tunnel-type-base;
+                      }
+                  }
+                  leaf group-id {
+                      type uint32;
+                  }
+                  /* Remote DPNs to which this DPN-Tep has a tunnel */
+                  list remote-dpns {
+                       key "destination-dpn-id";
+                       leaf destination-dpn-id {
+                          type uint64;
+                       }
+                       leaf tunnel-name {
+                          type string;
+                       }
+                       /* This will later be changed to monitor profile id */
+                       /* The monitor profile will contain monitoring related params */
+                       leaf monitor-enabled {
+                          type boolean;
+                          default true;
+                       }
+                       leaf internal {
+                          type boolean;
+                          default "false";
+                          description
+                             "represents whether this is an internal or external tunnel.";
+                       }
+                  }
+            }
+        }
       }

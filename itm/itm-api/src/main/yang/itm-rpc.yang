@@ -289,4 +289,43 @@ module itm-rpc {
             }
         }
 
+        rpc get-egress-actions-for-interface {
+            description "used to retrieve group actions to use from interface name";
+            input {
+                leaf intf-name {
+                type string;
+                mandatory true;
+                }
+
+                 leaf tunnel-key {
+                     description "It can be VNI for VxLAN tunnel ifaces, Gre Key for GRE tunnels, etc.";
+                     type uint32;
+                     mandatory false;
+                 }
+                 leaf action-key {
+                     description "By default action keys are incremented from zero, for custom initial value set action-key";
+                     type int32;
+                     mandatory false;
+                 }
+            }
+            output {
+                 uses action:action-list;
+            }
+        }
+
+        rpc get-tunnel-type {
+            description "to get the type of the tunnel interface(vxlan, vxlan-gpe, gre, etc.)";
+            input {
+                leaf intf-name {
+                type string;
+                }
+            }
+            output {
+                leaf tunnel-type {
+                   type identityref {
+                   base odlif:tunnel-type-base;
+                   }
+                }
+            }
+        }
     }
