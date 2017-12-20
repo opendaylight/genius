@@ -10,6 +10,10 @@ package org.opendaylight.genius.fcapsmanager.alarmmanager;
 import java.lang.management.ManagementFactory;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.management.AttributeChangeNotification;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
@@ -20,41 +24,28 @@ import javax.management.NotificationFilterSupport;
 import javax.management.NotificationListener;
 import javax.management.ObjectName;
 import org.opendaylight.genius.fcapsmanager.AlarmServiceFacade;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AlarmNotificationListeners implements Runnable {
+@Singleton
+public class AlarmNotificationListeners {
     private static final String DOMAIN = "SDNC.FM";
-    private boolean shouldContinue = true;
+    private AlarmServiceFacade alarmService;
     private final DelegateListener delegateListener = new DelegateListener();
-    private final BundleContext context;
     private MBeanServer mbs;
     private static final Logger LOG = LoggerFactory.getLogger(AlarmNotificationListeners.class);
 
-
-    public AlarmNotificationListeners(BundleContext context) {
-        this.context = context;
+    @Inject
+    public AlarmNotificationListeners(AlarmServiceFacade alarmServiceFacade) {
+        alarmService = alarmServiceFacade;
     }
 
-    public void setShouldContinue(boolean shouldContinue) {
-        this.shouldContinue = shouldContinue;
-    }
-
-    /**
-     * Platform dependent bundle injects its handle and it is retrieved in the
-     * method.
-     */
-    private AlarmServiceFacade getAlarmServiceSPI() {
-        AlarmServiceFacade service = null;
-        if (context != null) {
-            ServiceReference<?> serviceReference = context.getServiceReference(AlarmServiceFacade.class.getName());
-            if (serviceReference != null) {
-                service = (AlarmServiceFacade) context.getService(serviceReference);
-            }
-        }
-        return service;
+    @PostConstruct
+    public void start() {
+        mbs = ManagementFactory.getPlatformMBeanServer();
+        LOG.info("Register with MBean Server and Mbeans for notifications");
+        addListenerToMBeans();
+        addListenerToMBeanServer();
     }
 
     /**
@@ -91,76 +82,62 @@ public class AlarmNotificationListeners implements Runnable {
 
                 LOG.debug("Received attribute notification of Mbean: {} for attribute: {}", notification.getSource(),
                         acn.getAttributeName());
-
-                if ("raiseAlarmObject".equals(acn.getAttributeName())) {
+                if (alarmService != null) {
                     String value = acn.getNewValue().toString();
                     value = value.replace(value.charAt(0), ' ');
                     value = value.replace(value.charAt(value.lastIndexOf(']')), ' ');
 
                     String[] args = value.split(",");
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Receive attribute value : {}", args[0].trim() + args[1].trim() + args[2].trim());
-                    }
-                    if (getAlarmServiceSPI() != null) {
-                        getAlarmServiceSPI().raiseAlarm(args[0].trim(), args[1].trim(), args[2].trim());
-                    } else {
-                        LOG.debug("Alarm service not available");
-                    }
-                } else if ("clearAlarmObject".equals(acn.getAttributeName())) {
-                    String value = acn.getNewValue().toString();
-                    value = value.replace(value.charAt(0), ' ');
-                    value = value.replace(value.charAt(value.lastIndexOf(']')), ' ');
+                    String alarmName = args[0].trim();
+                    String additionalText = args[1].trim();
+                    String source = args[2].trim();
 
-                    String[] args = value.split(",");
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Receive attribute value : {}", args[0].trim() + args[1].trim() + args[2].trim());
+                    if ("raiseAlarmObject".equals(acn.getAttributeName())) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Received attributes to raise the alarm,"
+                                    + "Alarm Name {} Additional Text {} Source {}",
+                                    alarmName, additionalText, source);
+                        }
+                        alarmService.raiseAlarm(alarmName, additionalText, source);
+                    } else if ("clearAlarmObject".equals(acn.getAttributeName())) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Received attributes  to clear the alarm,"
+                                    + "Alarm Name {} Additional Text {} Source {}",
+                                    alarmName, additionalText, source);
+                        }
+                        alarmService.clearAlarm(alarmName, additionalText, source);
                     }
-                    if (getAlarmServiceSPI() != null) {
-                        getAlarmServiceSPI().clearAlarm(args[0].trim(), args[1].trim(), args[2].trim());
-                    } else {
-                        LOG.debug("Alarm service not available");
-                    }
+                } else {
+                    LOG.debug("Alarm service not available");
                 }
             }
         }
     }
 
-    /**
-     * Gets the platform MBeanServer instance and registers to get notification
-     * whenever alarm mbean is registered in the mbeanserver.
-     */
-    @Override
-    public void run() {
-        mbs = ManagementFactory.getPlatformMBeanServer();
-
-        queryMbeans();
+    /*
+    * Register the listener with Mbean Server to receive the notifications to
+    * know when new MBeans are registered or existing ones are removed.
+    */
+    private void addListenerToMBeanServer() {
 
         ObjectName delegate = null;
         try {
             delegate = new ObjectName("JMImplementation:type=MBeanServerDelegate");
-        } catch (MalformedObjectNameException e) {
-            LOG.error("Failed to create JMX ObjectName", e);
-            return;
+        } catch (MalformedObjectNameException ex) {
+            LOG.error("Invalid object name");
         }
         NotificationFilterSupport filter = new NotificationFilterSupport();
         filter.enableType("JMX.mbean.registered");
         filter.enableType("JMX.mbean.unregistered");
 
         try {
-            mbs.addNotificationListener(delegate, delegateListener, filter, null);
-            LOG.debug("Added registeration listener for Mbean {}", delegate);
-        } catch (InstanceNotFoundException e) {
-            LOG.error("Failed to add registeration listener", e);
-            return;
+            mbs.addNotificationListener(delegate, delegateListener , filter, null);
+            LOG.info("Added registeration listener with Mbean Server");
+        } catch (InstanceNotFoundException ex) {
+            LOG.error("Mbean Server is not found to add listener");
+
         }
 
-        while (shouldContinue) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ex) {
-                shouldContinue = false;
-            }
-        }
     }
 
     /**
@@ -169,18 +146,25 @@ public class AlarmNotificationListeners implements Runnable {
      * to retrieve registered alarm mbean and add attribute notification
      * listener to it.
      */
-    public void queryMbeans() {
-        Set<ObjectName> names = new TreeSet<>(mbs.queryNames(null, null));
-        LOG.debug("Queried MBeanServer for MBeans:");
-        for (ObjectName beanName : names) {
-            if (beanName.toString().contains(DOMAIN)) {
-                try {
-                    mbs.addNotificationListener(beanName, delegateListener, null, null);
-                    LOG.debug("Added attribute notification listener for Mbean {}", beanName);
-                } catch (InstanceNotFoundException e) {
-                    LOG.error("Failed to add attribute notification for Mbean", e);
-                }
+    private void addListenerToMBeans() {
+        Set<ObjectName> names = new TreeSet<ObjectName>(mbs.queryNames(null, null));
+        LOG.debug("adding listener for MBeans");
+        names.stream().filter(AlarmNotificationListeners::isBeanMatched).forEach(bean -> {
+            try {
+                mbs.addNotificationListener(bean, delegateListener, null, null);
+                LOG.debug("Added attribute notification listener for Mbean {} ", bean);
+            } catch (InstanceNotFoundException e) {
+                LOG.error("Failed to add attribute notification for Mbean", e);
             }
-        }
+        });
+    }
+
+    private static boolean isBeanMatched(ObjectName beanName) {
+        return beanName.toString().contains(DOMAIN);
+    }
+
+    @PreDestroy
+    public void stop() {
+        LOG.info("AlarmNotificationListener::stop method called");
     }
 }
