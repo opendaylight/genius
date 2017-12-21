@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5b4db00c_fef649c9",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-21T13:33:55Z",
+      "side": 1,
+      "message": "This is actually internal to the ClusterSingletonServiceProvider impl in mdsal so this may be a bit fragile to rely on. I think what we really need is an API in CSS to query ownership of a service group. In lieu of that, I guess there\u0027s no other choice.",
+      "parentUuid": "6f2c75cc_22f9870e",
+      "revId": "f87515647ad79825068a395e0bf04eed0e0b71be",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7519370b_e045ea88",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
         "patchSetId": 2
@@ -30,6 +48,23 @@
       "writtenOn": "2017-12-21T07:02:42Z",
       "side": 1,
       "message": "Can you check if EntityOwnerUtils, in genius is already doing this? If so, can you just use that?",
+      "revId": "f87515647ad79825068a395e0bf04eed0e0b71be",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b450705e_0b0c9251",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2017-12-21T13:33:55Z",
+      "side": 1,
+      "message": "This looks incorrect. I believe the intent is to initialize to 1 (ie FIRST_VALUE + 1) so either set FIRST_VALUE to 1 instead of 0 or, better yet, use computeIfAbsent.",
       "revId": "f87515647ad79825068a395e0bf04eed0e0b71be",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
