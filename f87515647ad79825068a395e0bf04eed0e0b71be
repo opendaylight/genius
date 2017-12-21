@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f2c75cc_22f9870e",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-21T07:02:42Z",
+      "side": 1,
+      "message": "why can\u0027t this be in a common constants file? both the classes have the same?",
+      "revId": "f87515647ad79825068a395e0bf04eed0e0b71be",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7519370b_e045ea88",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-21T07:02:42Z",
+      "side": 1,
+      "message": "Can you check if EntityOwnerUtils, in genius is already doing this? If so, can you just use that?",
+      "revId": "f87515647ad79825068a395e0bf04eed0e0b71be",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
