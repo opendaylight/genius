@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6bd61980_32a35fbf",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-21T16:53:08Z",
+      "side": 1,
+      "message": "why are we writing interfaceState to config DS??",
+      "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
