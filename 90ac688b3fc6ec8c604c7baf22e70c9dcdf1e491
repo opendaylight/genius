@@ -34,6 +34,24 @@
       "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8e96f3c5_bdc8515a",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-21T18:24:48Z",
+      "side": 1,
+      "message": "ElanServiceTest expects the interfaces to show up in config, I’ll fix that in the related NetVirt patch.",
+      "parentUuid": "e826af43_2186816a",
+      "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
