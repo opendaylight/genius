@@ -24,6 +24,7 @@ import org.opendaylight.genius.testutils.interfacemanager.InterfaceHelper;
 import org.opendaylight.genius.testutils.interfacemanager.InterfaceStateHelper;
 import org.opendaylight.genius.testutils.interfacemanager.TunnelInterfaceDetails;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * IInterfaceManager implementation for tests.
@@ -66,15 +67,20 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
             ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
 
             Interface iface = InterfaceHelper.buildVlanInterfaceFromInfo(interfaceInfo);
-            //Add the interface to config ds so that if the application reads from configds it finds it there
-            tx.put(LogicalDatastoreType.CONFIGURATION,
-                    InterfaceHelper.buildIId(interfaceInfo.getInterfaceName()),
-                    iface);
+            InstanceIdentifier<Interface> ifaceIId = InterfaceHelper.buildIId(interfaceInfo.getInterfaceName());
+            InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
+                    .rev140508.interfaces.state.Interface>
+                    ifaceStateIId = InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName());
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface
+                    ifaceState = InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo);
 
-            //Add the interface to oper ds so that if the application reads from configds it finds it there
-            tx.put(LogicalDatastoreType.OPERATIONAL,
-                    InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
-                    InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
+            // Add the interface and state to both config and operational
+            tx.put(LogicalDatastoreType.CONFIGURATION, ifaceIId, iface);
+            tx.put(LogicalDatastoreType.CONFIGURATION, ifaceStateIId, ifaceState);
+            tx.put(LogicalDatastoreType.OPERATIONAL, ifaceIId, iface);
+            tx.put(LogicalDatastoreType.OPERATIONAL, ifaceStateIId, ifaceState);
+
             tx.submit().checkedGet();
             addInterface(iface);
         }
