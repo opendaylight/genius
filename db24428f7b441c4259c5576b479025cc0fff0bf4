@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "909d7428_b2043752",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-21T07:12:11Z",
+      "side": 1,
+      "message": "out of context..but don\u0027t we need txnRunner for this one?",
+      "revId": "db24428f7b441c4259c5576b479025cc0fff0bf4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
