@@ -16,6 +16,24 @@
       "revId": "db24428f7b441c4259c5576b479025cc0fff0bf4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38ad2802_bd3a51ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2017-12-21T08:24:07Z",
+      "side": 1,
+      "message": "Eventually, yes, but we haven’t got that far yet. (createLogicalTunnelSelectGroup uses MDSALUtil and mdsalApiManager to handle datastore changes.)",
+      "parentUuid": "909d7428_b2043752",
+      "revId": "db24428f7b441c4259c5576b479025cc0fff0bf4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
