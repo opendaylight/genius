@@ -10,6 +10,8 @@ package org.opendaylight.genius.testutils.interfacemanager;
 import com.google.common.collect.Lists;
 import java.math.BigInteger;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
@@ -18,6 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state._interface.StatisticsBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.DateAndTime;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -46,6 +50,10 @@ public final class InterfaceStateHelper {
                 .setLowerLayerIf(Lists.newArrayList(nodeConnectorId.getValue()))
                 .setPhysAddress(new PhysAddress(interfaceInfo.getMacAddress()))
                 .setKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
+                .setStatistics(new StatisticsBuilder()
+                        .setDiscontinuityTime(new DateAndTime(
+                                DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now())))
+                        .build())
                 .build();
     }
 }
