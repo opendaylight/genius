@@ -70,6 +70,24 @@
       "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "860739b2_ded3c001",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-21T07:15:33Z",
+      "side": 1,
+      "message": "Vishal, looks like idmanager already uses lockmanager and in this case DS exception will not happen.. so I can remove this anyways.. Even before we were just throwing this, and we have never seen any issue so far..",
+      "parentUuid": "b8546604_cfb4c882",
+      "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
