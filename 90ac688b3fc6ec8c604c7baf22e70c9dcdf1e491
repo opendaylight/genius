@@ -70,6 +70,24 @@
       "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d41cf099_60f68629",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-12-22T05:27:36Z",
+      "side": 1,
+      "message": "ifaceIid will go only in CONFIG...\nand ifactStateId should go only in OPERATIONAL.. if netvirt test breaks without that, there is some serious problem in the test.. but interface-manager will never populate ifaceId in OPERATIONAL..so not sure why such a mock!!",
+      "parentUuid": "961de966_be6f7436",
+      "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
