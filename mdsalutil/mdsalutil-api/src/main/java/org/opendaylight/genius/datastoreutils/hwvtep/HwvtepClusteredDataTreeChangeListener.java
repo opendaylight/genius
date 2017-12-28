@@ -9,7 +9,6 @@ package org.opendaylight.genius.datastoreutils.hwvtep;
 
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.utils.hwvtep.HwvtepHACache;
 import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -19,11 +18,6 @@ public abstract class HwvtepClusteredDataTreeChangeListener<
         extends AsyncClusteredDataTreeChangeListenerBase<T, K> {
 
     private final HwvtepNodeHACache hwvtepNodeHACache;
-
-    @Deprecated
-    public HwvtepClusteredDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz) {
-        this(clazz, eventClazz, HwvtepHACache.getInstance());
-    }
 
     public HwvtepClusteredDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz,
             HwvtepNodeHACache hwvtepNodeHACache) {

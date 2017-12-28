@@ -16,10 +16,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <service ref="mDSALManager"
            interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
 
-  <bean id="hwvtepHACache" class="org.opendaylight.genius.utils.hwvtep.HwvtepHACache"
-      factory-method="getInstance"/>
-
-  <service ref="hwvtepHACache"
+  <service ref="hwvtepNodeHACacheImpl"
            interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
 
 </blueprint>

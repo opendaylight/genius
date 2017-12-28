@@ -30,6 +30,7 @@ import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandl
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
@@ -74,8 +75,9 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
 
     @Inject
     public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
-            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
-        super(Tunnels.class, HwVtepTunnelsStateHandler.class);
+            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
+            final HwvtepNodeHACache hwvtepNodeHACache) {
+        super(Tunnels.class, HwVtepTunnelsStateHandler.class, hwvtepNodeHACache);
         this.dataBroker = dataBroker;
         this.alivenessMonitor = alivenessMonitor;
         alivenessProtocolHandlerRegistry.register(EtherTypes.Bfd, this);

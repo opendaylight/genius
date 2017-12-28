@@ -17,6 +17,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
              interface="org.opendaylight.controller.md.sal.binding.api.NotificationPublishService" />
   <reference id="notificationService"
              interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
+  <reference id="hwvtepNodeHACache"
+             interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
 
   <service ref="alivenessProtocolHandlerRegistryImpl"
            interface="org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry" />
