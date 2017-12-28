@@ -8,12 +8,10 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
@@ -25,6 +23,7 @@ import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwV
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
 import org.opendaylight.genius.srm.RecoverableListener;
 import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
+import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
@@ -48,8 +47,9 @@ public class HwVTEPTunnelsStateListener
     @Inject
     public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
                                       final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                      final ServiceRecoveryRegistry serviceRecoveryRegistry) {
-        super(Tunnels.class, HwVTEPTunnelsStateListener.class);
+                                      final ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                      final HwvtepNodeHACache hwvtepNodeHACache) {
+        super(Tunnels.class, HwVTEPTunnelsStateListener.class, hwvtepNodeHACache);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
         this.dataBroker = dataBroker;
