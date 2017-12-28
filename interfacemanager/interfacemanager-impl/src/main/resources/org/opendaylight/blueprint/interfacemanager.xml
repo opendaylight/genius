@@ -43,6 +43,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="cacheProvider"
                interface="org.opendaylight.infrautils.caches.CacheProvider"/>
 
+    <reference id="hwvtepNodeHACache"
+             interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <odl:clustered-app-config id="ifmConfig"
