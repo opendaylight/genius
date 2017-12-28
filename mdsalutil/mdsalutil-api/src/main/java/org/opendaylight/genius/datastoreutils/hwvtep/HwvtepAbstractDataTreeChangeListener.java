@@ -10,19 +10,29 @@ package org.opendaylight.genius.datastoreutils.hwvtep;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.utils.hwvtep.HwvtepHACache;
+import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,K extends DataTreeChangeListener<T>>
         extends AsyncDataTreeChangeListenerBase<T,K> {
 
+    private final HwvtepNodeHACache hwvtepNodeHACache;
+
+    @Deprecated
     public HwvtepAbstractDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz) {
-        super(clazz,eventClazz);
+        this(clazz, eventClazz, HwvtepHACache.getInstance());
+    }
+
+    public HwvtepAbstractDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz,
+            HwvtepNodeHACache hwvtepNodeHACache) {
+        super(clazz, eventClazz);
+        this.hwvtepNodeHACache = hwvtepNodeHACache;
     }
 
     @Override
     protected void remove(InstanceIdentifier<T> identifier, T del) {
-        if (HwvtepHACache.getInstance().isHAEnabledDevice(identifier)) {
+        if (hwvtepNodeHACache.isHAEnabledDevice(identifier)) {
             return;
         }
         removed(identifier, del);
@@ -30,7 +40,7 @@ public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,
 
     @Override
     protected void update(InstanceIdentifier<T> identifier, T original, T update) {
-        if (HwvtepHACache.getInstance().isHAEnabledDevice(identifier)) {
+        if (hwvtepNodeHACache.isHAEnabledDevice(identifier)) {
             return;
         }
         updated(identifier,original,update);
@@ -38,7 +48,7 @@ public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,
 
     @Override
     protected void add(InstanceIdentifier<T> identifier, T add) {
-        if (HwvtepHACache.getInstance().isHAEnabledDevice(identifier)) {
+        if (hwvtepNodeHACache.isHAEnabledDevice(identifier)) {
             return;
         }
         added(identifier,add);
