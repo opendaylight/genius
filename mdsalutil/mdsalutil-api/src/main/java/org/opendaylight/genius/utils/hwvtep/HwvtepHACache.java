@@ -21,7 +21,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class HwvtepHACache {
+@Deprecated
+public class HwvtepHACache implements HwvtepNodeHACache {
     private static final int MAX_EVENT_BUFFER_SIZE = 500000;
     private static final int EVENT_DRAIN_BUFFER_SIZE = 100000;
 
@@ -43,6 +44,7 @@ public class HwvtepHACache {
         return instance;
     }
 
+    @Override
     public synchronized void addChild(InstanceIdentifier<Node> parent, InstanceIdentifier<Node> child) {
         if (parent == null || child == null) {
             return;
@@ -55,6 +57,7 @@ public class HwvtepHACache {
         addDebugEvent(new NodeEvent.ChildAddedEvent(childNodeId));
     }
 
+    @Override
     public boolean isHAEnabledDevice(InstanceIdentifier<?> iid) {
         if (iid == null) {
             return false;
@@ -71,10 +74,12 @@ public class HwvtepHACache {
         return enabled;
     }
 
+    @Override
     public  boolean isHAParentNode(InstanceIdentifier<Node> node) {
         return parentToChildMap.containsKey(node);
     }
 
+    @Override
     public Set<InstanceIdentifier<Node>> getChildrenForHANode(InstanceIdentifier<Node> parent) {
         if (parent != null && parentToChildMap.containsKey(parent)) {
             return new HashSet<>(parentToChildMap.get(parent));
@@ -83,19 +88,27 @@ public class HwvtepHACache {
         }
     }
 
+    @Override
     public Set<InstanceIdentifier<Node>> getHAParentNodes() {
         return parentToChildMap.keySet();
     }
 
+    @Override
     public Set<InstanceIdentifier<Node>> getHAChildNodes() {
         return childToParentMap.keySet();
     }
 
+    @Override
     public InstanceIdentifier<Node> getParent(InstanceIdentifier<Node> child) {
         if (child != null) {
             return childToParentMap.get(child);
         }
         return null;
+    }
+
+    @Override
+    public void removeParent(InstanceIdentifier<Node> parent) {
+        cleanupParent(parent);
     }
 
     public synchronized void cleanupParent(InstanceIdentifier<Node> parent) {
@@ -114,6 +127,7 @@ public class HwvtepHACache {
         parentToChildMap.remove(parent);
     }
 
+    @Override
     public void updateConnectedNodeStatus(InstanceIdentifier<Node> iid) {
         String nodeId = iid.firstKeyOf(Node.class).getNodeId().getValue();
         connectedNodes.put(nodeId, true);
@@ -121,6 +135,7 @@ public class HwvtepHACache {
         addDebugEvent(event);
     }
 
+    @Override
     public void updateDisconnectedNodeStatus(InstanceIdentifier<Node> iid) {
         String nodeId = iid.firstKeyOf(Node.class).getNodeId().getValue();
         connectedNodes.put(nodeId, false);
@@ -145,5 +160,10 @@ public class HwvtepHACache {
 
     public List<DebugEvent> getNodeEvents() {
         return ImmutableList.copyOf(debugEvents);
+    }
+
+    @Override
+    public Map<String, Boolean> getNodeConnectionStatuses() {
+        return getConnectedNodes();
     }
 }
