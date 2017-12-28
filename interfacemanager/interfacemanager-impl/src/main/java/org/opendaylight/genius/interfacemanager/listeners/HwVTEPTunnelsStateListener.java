@@ -20,6 +20,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
+import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
@@ -39,8 +40,9 @@ public class HwVTEPTunnelsStateListener
     private final JobCoordinator coordinator;
 
     @Inject
-    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
-        super(Tunnels.class, HwVTEPTunnelsStateListener.class);
+    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
+            final HwvtepNodeHACache hwvtepNodeHACache) {
+        super(Tunnels.class, HwVTEPTunnelsStateListener.class, hwvtepNodeHACache);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
