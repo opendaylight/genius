@@ -68,6 +68,7 @@ public class InterfaceInventoryStateListener
     private final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final PortNameCache portNameCache;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
@@ -77,7 +78,8 @@ public class InterfaceInventoryStateListener
             final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
             final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
             final AlivenessMonitorUtils alivenessMonitorUtils,
-            final InterfaceMetaUtils interfaceMetaUtils) {
+            final InterfaceMetaUtils interfaceMetaUtils,
+            final PortNameCache portNameCache) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -88,6 +90,7 @@ public class InterfaceInventoryStateListener
         this.ovsInterfaceStateUpdateHelper = ovsInterfaceStateUpdateHelper;
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.portNameCache = portNameCache;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -125,6 +128,8 @@ public class InterfaceInventoryStateListener
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
+        portNameCache.removeFromCache(nodeConnectorIdNew.getValue());
     }
 
     @Override
@@ -156,6 +161,9 @@ public class InterfaceInventoryStateListener
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
             .getId();
+        LOG.trace("Adding entry for portid {} portname {} in map", nodeConnectorId.getValue(),
+                fcNodeConnectorNew.getName());
+        portNameCache.updateCache(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
