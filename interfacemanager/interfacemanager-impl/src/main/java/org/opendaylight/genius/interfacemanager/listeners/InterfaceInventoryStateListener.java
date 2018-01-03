@@ -125,6 +125,8 @@ public class InterfaceInventoryStateListener
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
+        interfaceManagerCommonUtils.removeFromNodeConnectorIdPortNameCache(nodeConnectorIdNew.getValue());
     }
 
     @Override
@@ -156,6 +158,8 @@ public class InterfaceInventoryStateListener
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
             .getId();
+        LOG.trace("Adding entry for portid {} portname in map",nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
+        interfaceManagerCommonUtils.addNodeConnectorIdPortNameCache(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 

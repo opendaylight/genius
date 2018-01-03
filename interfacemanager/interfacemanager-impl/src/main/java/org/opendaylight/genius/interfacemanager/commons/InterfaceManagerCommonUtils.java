@@ -108,6 +108,8 @@ public final class InterfaceManagerCommonUtils {
     private final ConcurrentHashMap<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus> bfdStateMap =
             new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,String> nodeConnectorIdPortNameMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String,String> portNamePortUuidMap = new ConcurrentHashMap<>();
     private final DataBroker dataBroker;
     private final IMdsalApiManager mdsalApiManager;
     private final IdManagerService idManager;
@@ -123,6 +125,8 @@ public final class InterfaceManagerCommonUtils {
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.batchingUtils = batchingUtils;
     }
+
+
 
     public NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId) {
         NodeId nodeId = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
@@ -647,6 +651,30 @@ public final class InterfaceManagerCommonUtils {
         .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus removeBfdStateFromCache(
             String interfaceName) {
         return bfdStateMap.remove(interfaceName);
+    }
+
+    public void addNodeConnectorIdPortNameCache(String nodeConnectorId, String portName) {
+        nodeConnectorIdPortNameMap.put(nodeConnectorId,portName);
+    }
+
+    public void removeFromNodeConnectorIdPortNameCache(String nodeConnectorId) {
+        nodeConnectorIdPortNameMap.remove(nodeConnectorId);
+    }
+
+    public String getPortNameForNodeConnectorId(String nodeConnectorId) {
+        return nodeConnectorIdPortNameMap.get(nodeConnectorId);
+    }
+
+    public void addPortNamePortUuidCache(String portName, String uuid) {
+        portNamePortUuidMap.put(portName,uuid);
+    }
+
+    public void removeFromPortNamePortUuidCache(String portName) {
+        portNamePortUuidMap.remove(portName);
+    }
+
+    public String getUuidForPortName(String portName) {
+        return portNamePortUuidMap.get(portName);
     }
 
     public static boolean isNovaOrTunnelPort(String portName) {

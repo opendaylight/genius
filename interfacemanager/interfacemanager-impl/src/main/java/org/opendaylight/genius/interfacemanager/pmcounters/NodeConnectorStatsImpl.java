@@ -26,6 +26,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
@@ -73,14 +74,17 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
     private final OpendaylightPortStatisticsService statPortService;
     private final ScheduledExecutorService portStatExecutorService;
     private final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
+    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
     public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
                                   final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
-                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
+                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService,
+                                  final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
+        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
             getThreadFactory("Port Stats " + "Request Task"));
@@ -190,10 +194,17 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
                     .getNodeConnectorStatisticsAndPortNumberMap();
             NodeId nodeId = ncStats.getId();
             String node = nodeId.getValue().split(":")[1];
+            String portUuid = null;
             for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : ncStatsAndPortMapList) {
                 NodeConnectorId nodeConnector = ncStatsAndPortMap.getNodeConnectorId();
                 String port = nodeConnector.getValue().split(":")[2];
-                String nodePortStr = "dpnId_" + node + "_portNum_" + port;
+                String portName = interfaceManagerCommonUtils.getPortNameForNodeConnectorId(nodeConnector.getValue());
+                if (portName != null) {
+                    portUuid = interfaceManagerCommonUtils.getUuidForPortName(portName);
+                    LOG.trace("Retrieved portUuid {} for portname {}",portUuid,portName);
+                }
+
+                String nodePortStr = "dpnId_" + node + "_portNum_" + port + "_portUuid_" + portUuid;
                 ncIdOFPortDurationMap.put("OFPortDuration:" + nodePortStr + "_OFPortDuration",
                         ncStatsAndPortMap.getDuration().getSecond().getValue().toString());
                 ncIdOFPortReceiveDropMap.put(
