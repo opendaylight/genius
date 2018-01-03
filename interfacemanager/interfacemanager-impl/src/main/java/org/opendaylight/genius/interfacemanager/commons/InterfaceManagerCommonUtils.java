@@ -128,6 +128,8 @@ public final class InterfaceManagerCommonUtils {
         this.batchingUtils = batchingUtils;
     }
 
+
+
     public NodeConnector getNodeConnectorFromInventoryOperDS(NodeConnectorId nodeConnectorId) {
         NodeId nodeId = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<NodeConnector> ncIdentifier = InstanceIdentifier.builder(Nodes.class)
