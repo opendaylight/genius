@@ -40,6 +40,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="jobCoordinator"
              interface="org.opendaylight.infrautils.jobcoordinator.JobCoordinator"/>
 
+    <reference id="cacheProvider"
+               interface="org.opendaylight.infrautils.caches.CacheProvider"/>
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <service ref="interfacemgrProvider"
