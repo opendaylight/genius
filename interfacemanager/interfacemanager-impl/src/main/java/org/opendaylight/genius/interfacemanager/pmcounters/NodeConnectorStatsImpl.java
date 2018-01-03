@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
+import com.google.common.base.Optional;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.math.BigInteger;
@@ -27,6 +28,8 @@ import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.listeners.InterfaceChildCache;
+import org.opendaylight.genius.interfacemanager.listeners.PortNameCache;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
@@ -35,6 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.flow.table.and.statistics.map.FlowTableAndStatisticsMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeRef;
@@ -78,17 +82,22 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     private final ScheduledExecutorService portStatExecutorService;
     private final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final PortNameCache portNameCache;
+    private final InterfaceChildCache interfaceChildCache;
 
     @Inject
     public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
                                   final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
                                   final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService,
-                                  final EntityOwnershipUtils entityOwnershipUtils) {
+                                  final EntityOwnershipUtils entityOwnershipUtils,
+                                  final PortNameCache portNameCache,
+                                  final InterfaceChildCache interfaceChildCache) {
         super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
         this.entityOwnershipUtils = entityOwnershipUtils;
-        registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        this.portNameCache = portNameCache;
+        this.interfaceChildCache = interfaceChildCache;
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
             getThreadFactory("Port Stats " + "Request Task"));
         notificationService.registerNotificationListener(portStatsListener);
@@ -212,10 +221,23 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                     .getNodeConnectorStatisticsAndPortNumberMap();
             NodeId nodeId = ncStats.getId();
             String node = nodeId.getValue().split(":")[1];
+            String portUuid = "";
             for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : ncStatsAndPortMapList) {
                 NodeConnectorId nodeConnector = ncStatsAndPortMap.getNodeConnectorId();
                 String port = nodeConnector.getValue().split(":")[2];
-                String nodePortStr = "dpnId_" + node + "_portNum_" + port;
+                java.util.Optional<String> portName = portNameCache.get(nodeConnector.getValue());
+                if (portName.isPresent()) {
+                    Optional<List<InterfaceChildEntry>> interfaceChildEntries = interfaceChildCache
+                            .getInterfaceChildEntries(portName.get());
+                    if (interfaceChildEntries.isPresent()) {
+                        if (!interfaceChildEntries.get().isEmpty()) {
+                            portUuid = interfaceChildEntries.get().get(0).getChildInterface();
+                        }
+                    }
+                    LOG.trace("Retrieved portUuid {} for portname {}",portUuid,portName.get());
+                }
+
+                String nodePortStr = "dpnId_" + node + "_portNum_" + port + "_portUuid_" + portUuid;
                 ncIdOFPortDurationMap.put("OFPortDuration:" + nodePortStr + "_OFPortDuration",
                         ncStatsAndPortMap.getDuration().getSecond().getValue().toString());
                 ncIdOFPortReceiveDropMap.put(
