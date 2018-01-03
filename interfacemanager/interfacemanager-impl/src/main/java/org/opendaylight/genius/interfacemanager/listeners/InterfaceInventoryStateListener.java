@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -68,6 +69,7 @@ public class InterfaceInventoryStateListener
     private final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper;
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final ConcurrentHashMap<String,String> nodeConnectorIdPortNameMap = new ConcurrentHashMap<>();
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
@@ -125,6 +127,8 @@ public class InterfaceInventoryStateListener
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
+        nodeConnectorIdPortNameMap.remove(nodeConnectorIdNew.getValue());
     }
 
     @Override
@@ -156,6 +160,9 @@ public class InterfaceInventoryStateListener
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
             .getId();
+        LOG.trace("Adding entry for portid {} portname {} in map", nodeConnectorId.getValue(),
+                fcNodeConnectorNew.getName());
+        nodeConnectorIdPortNameMap.put(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
@@ -387,5 +394,9 @@ public class InterfaceInventoryStateListener
             return interfaceParentEntry.getInterfaceChildEntry();
         }
         return new ArrayList<>();
+    }
+
+    public String getPortNameForNodeConnectorId(String nodeConnectorId) {
+        return nodeConnectorIdPortNameMap.get(nodeConnectorId);
     }
 }
