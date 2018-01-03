@@ -102,6 +102,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>pax-cdi-api</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>caches-guava-impl</artifactId>
+      <version>${genius.infrautils.version}</version>
+    </dependency>
 
     <!-- Testing Dependencies -->
     <dependency>
