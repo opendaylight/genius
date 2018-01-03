@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f3ad175d_f4e0187b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-03T14:34:33Z",
+      "side": 1,
+      "message": "Instead of just putting these in a general utilities class along with other unrelated things, how about we put them in their own class(es) combined with the DTCL, ie CachePortNameListener, that populates the cache, similar to https://git.opendaylight.org/gerrit/#/c/66403/10/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java.",
+      "parentUuid": "76ad56f6_25061d36",
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "909cf62c_5197c2e6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
         "patchSetId": 2
@@ -30,6 +48,75 @@
       "writtenOn": "2018-01-03T05:56:09Z",
       "side": 1,
       "message": "InterfaceParentEntry will give you parent-interface to list of children.. This need not be always port name to UUID.. You will also get trunk port to sub port list also. Can you make the name of the class reflect the same?",
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "845b77e7_1607f4ed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-03T14:34:33Z",
+      "side": 1,
+      "message": "This could be null",
+      "range": {
+        "startLine": 76,
+        "startChar": 34,
+        "endLine": 76,
+        "endChar": 55
+      },
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65fb28a3_4e526eed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-03T14:34:33Z",
+      "side": 1,
+      "message": "This could be null",
+      "range": {
+        "startLine": 81,
+        "startChar": 103,
+        "endLine": 81,
+        "endChar": 111
+      },
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0da54cc5_4bee7244",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-03T14:34:33Z",
+      "side": 1,
+      "message": "spacing",
+      "range": {
+        "startLine": 81,
+        "startChar": 102,
+        "endLine": 81,
+        "endChar": 103
+      },
       "revId": "43403a698622a78633c758610edb1068bb0a047f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
