@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c6146513_25493d82",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-04T09:37:31Z",
+      "side": 1,
+      "message": "is this needed? should listener registration provide us with existing data and populate the cache?",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eec43c3e_562e93d6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-04T09:37:31Z",
+      "side": 1,
+      "message": "would be good to have another get method that doesn\u0027t do a read. We mainly use caches to avoid DS reads. There are use cases where we only want to check if something exists or not and avoid read on DS in case of cache miss.",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
