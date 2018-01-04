@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8b040fb1_4bc03247",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-04T14:43:26Z",
+      "side": 1,
+      "message": "I\u0027m trying to duplicate the previous behavior. There could be a race where the the DTCN hasn\u0027t occurred yet, especially on followers where replication could be a bit behind. I\u0027m fine with removing the read if we can be sure it wouldn\u0027t cause an issue  but with the fragile history of this code base I don\u0027t think we can be sure.",
+      "parentUuid": "c6146513_25493d82",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eec43c3e_562e93d6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 10
@@ -30,6 +48,24 @@
       "writtenOn": "2018-01-04T09:37:31Z",
       "side": 1,
       "message": "would be good to have another get method that doesn\u0027t do a read. We mainly use caches to avoid DS reads. There are use cases where we only want to check if something exists or not and avoid read on DS in case of cache miss.",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9745cff8_b9230c86",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-04T14:43:26Z",
+      "side": 1,
+      "message": "I thought of that but I don\u0027t recall seeing any such cases where it just reads from the cache. Maybe I did miss one - if so can you point one out?",
+      "parentUuid": "eec43c3e_562e93d6",
       "revId": "c639ad014f832c021f5d9ed2c439938572479420",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
