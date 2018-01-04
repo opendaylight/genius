@@ -146,4 +146,60 @@ module itm {
             }
         }
     }
+
+    container tunnel-zones {
+        list tunnel-zone {
+            ordered-by user;
+            key tunnel-zone-name;
+            leaf tunnel-zone-name {
+                type string;
+                mandatory true;
+            }
+            leaf tunnel-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+                mandatory true;
+            }
+
+            list vteps {
+                key "node-id";
+                leaf node-id {
+                    type string;
+                }
+                leaf ip-address {
+                    type inet:ip-address;
+                }
+                leaf vtep-node-id-type {
+                    type identityref {
+                        base node-id-type-base;
+                    }
+                }
+            }
+        }
+    }
+
+    identity node-id-type-base {
+        description "Base TEP node id type";
+    }
+
+    identity node-id-type-ovsdb {
+        base node-id-type-base;
+        description "NodeId is for OVSDB devices";
+    }
+    identity node-id-type-hwvtep {
+        base node-id-type-base;
+        description "NodeId is for HWVTEP devices";
+    }
+    identity node-id-type-ip {
+        base node-id-type-base;
+        description "NodeId is an IP, used for DC Gateways";
+    }
+
+    typedef node-id-type {
+      type identityref {
+          base node-id-type-base;
+      }
+      description "This type is used to refer to TEP NodeId Type.";
+    }
 }

@@ -877,4 +877,16 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public long getLogicalTunnelSelectGroupId(int lportTag) {
         return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
     }
+
+    @Override
+    public Integer allocateIfIndex(String ifName) {
+        return IfmUtil.allocateId(idManager, org.opendaylight.genius.interfacemanager.globals.IfmConstants.IFM_IDPOOL_NAME,
+            ifName);
+    }
+
+    @Override
+    public void releaseIfIndex(String ifName) {
+        IfmUtil.releaseId(idManager, org.opendaylight.genius.interfacemanager.globals.IfmConstants.IFM_IDPOOL_NAME,
+            ifName);
+    }
 }
