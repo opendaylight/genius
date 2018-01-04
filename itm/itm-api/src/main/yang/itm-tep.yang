@@ -1,0 +1,183 @@
+module itm-tep {
+    namespace "urn:opendaylight:genius:itm:tep";
+
+    prefix "itm-tep";
+
+    import ietf-interfaces {
+        prefix if;
+    }
+    import ietf-yang-types {
+        prefix yang;
+    }
+    import ietf-inet-types {
+        prefix inet;
+        revision-date "2013-07-15";
+    }
+
+    import odl-interface {
+        prefix odlif;
+    }
+
+    revision "2018-01-06" {
+        description "ODL Internal Transport Module's new models";
+    }
+
+    /* Configuration data */
+
+    container tunnel-zones {
+        list tunnel-zone {
+            ordered-by user;
+            key tunnel-zone-name;
+            leaf tunnel-zone-name {
+                type string;
+                mandatory true;
+            }
+            leaf tunnel-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+                mandatory true;
+            }
+            leaf option-of-tunnel {
+                type boolean;
+                default false;
+            }
+
+            list vteps {
+                key "node-id ip-address";
+                leaf node-id {
+                    type string;
+                }
+                leaf ip-address {
+                    type inet:ip-address;
+                    mandatory true;
+                }
+                leaf vtep-node-id-type {
+                    type node-id-type;
+                    mandatory true;
+                }
+                leaf vtep-tunnel-type {
+                    type identityref {
+                        base odlif:tunnel-type-base;
+                    }
+                }
+                leaf vtep-vlan-id {
+                    type uint16 {
+                        range "0..4094";
+                    }
+                }
+            }
+        }
+    }
+
+    container tep-states {
+        list tep-state {
+            key  "tep-if-name";
+            config false;
+
+            leaf tep-if-name {
+                type string;
+            }
+            leaf tep-node-id {
+                type string;
+            }
+            leaf tep-state {
+                type boolean;
+                config false;
+            }
+            leaf tep-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+            }
+            leaf tep-node-type {
+                type node-id-type;
+            }
+            leaf tep-ip {
+                type inet:ip-address;
+            }
+            leaf dpn-id {
+                type uint64;
+            }
+            leaf tep-of-port {
+                type uint32;
+            }
+            leaf tep-host-name {
+                type string;
+            }
+            leaf tep-option-remote-ip {
+                type string;
+            }
+        }
+    }
+
+    container tunnel-info {
+        list src-tep {
+            key  "src-tep-node-id";
+            leaf src-tep-node-id {
+                type string;
+            }
+            list dst-tep {
+                key "tunnel-if-name";
+                leaf tunnel-if-name {
+                    type string;
+                }
+                leaf dst-tep-node-id {
+                    type string;
+                }
+                leaf tep-tunnel-type {
+                    type identityref {
+                        base odlif:tunnel-type-base;
+                    }
+                    mandatory true;
+                }
+                leaf tep-node-type {
+                    type node-id-type;
+                }
+                leaf tunnel-port-name {
+                    type string;
+                }
+                leaf tunnel-if-index {
+                    type uint32;
+                }
+                leaf tunnel-out-group-id {
+                    type uint32;
+                }
+                leaf tunnel-ip {
+                    type inet:ip-address;
+                }
+                leaf option-of-tunnel {
+                    type boolean;
+                    default false;
+                }
+            }
+        }
+    }
+
+    /* Types */
+
+
+    identity node-id-type-base {
+        description "Base TEP node id type";
+    }
+
+    identity node-id-type-ovsdb {
+        base node-id-type-base;
+        description "NodeId is for OVSDB devices";
+    }
+    identity node-id-type-hwvtep {
+        base node-id-type-base;
+        description "NodeId is for HWVTEP devices";
+    }
+    identity node-id-type-ip {
+        base node-id-type-base;
+        description "NodeId is an IP, used for DC Gateways";
+    }
+
+    typedef node-id-type {
+      type identityref {
+          base node-id-type-base;
+      }
+      description "This type is used to refer to TEP NodeId Type.";
+    }
+}
