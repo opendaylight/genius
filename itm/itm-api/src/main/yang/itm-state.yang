@@ -232,4 +232,43 @@ module itm-state {
             notification itm-tunnel-build-complete{
             }
 
-      }
+    container tep-states {
+        list tep-state {
+            key  "tep-node-id";
+            config false;
+
+            leaf tep-node-id {
+                type string;
+            }
+            leaf tep-state {
+                type boolean;
+                config false;
+            }
+            leaf tep-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+            }
+            leaf tep-device-type {
+                type identityref {
+                    base tep-type-base;
+                }
+            }
+            leaf tep-ip {
+                type inet:ip-address;
+            }
+            leaf dpn-id {
+                type uint64;
+            }
+            leaf tep-if-name {
+                type string;
+            }
+            leaf tep-of-port {
+                type uint32;
+            }
+            leaf tep-host-name {
+                type string;
+            }
+        }
+    }
+}
