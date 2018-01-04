@@ -56,7 +56,10 @@ public class HwvtepHACache {
     }
 
     public boolean isHAEnabledDevice(InstanceIdentifier<?> iid) {
-        boolean enabled = childToParentMap.containsKey(iid);
+        if (iid == null) {
+            return false;
+        }
+        boolean enabled = childToParentMap.containsKey(iid.firstIdentifierOf(Node.class));
         if (!enabled) {
             String psNodeId = iid.firstKeyOf(Node.class).getNodeId().getValue();
             int idx = psNodeId.indexOf(HwvtepSouthboundConstants.PSWITCH_URI_PREFIX);
