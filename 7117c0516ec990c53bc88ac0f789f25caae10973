@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aa078760_0cd762ad",
+        "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/DumpIfmCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-04T09:46:58Z",
+      "side": 1,
+      "message": "why is the name showBfdState\"ToTpOutput\"?? Copy paste from existing utility? Put a proper method name that makes sense to the functionality",
+      "revId": "7117c0516ec990c53bc88ac0f789f25caae10973",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
