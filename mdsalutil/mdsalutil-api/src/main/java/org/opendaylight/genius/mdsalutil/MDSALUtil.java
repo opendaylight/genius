@@ -284,6 +284,11 @@ public class MDSALUtil {
                 .setKey(new BucketKey(new BucketId(Long.valueOf(bucketId)))).build();
     }
 
+    public static Bucket buildBucket(List<Action> actionsList, int bucketId) {
+        return new BucketBuilder().setAction(actionsList).setBucketId(new BucketId(Long.valueOf(bucketId)))
+            .setKey(new BucketKey(new BucketId(Long.valueOf(bucketId)))).build();
+    }
+
     public static Buckets buildBucketLists(List<Bucket> bucketList) {
         return new BucketsBuilder().setBucket(bucketList).build();
     }
