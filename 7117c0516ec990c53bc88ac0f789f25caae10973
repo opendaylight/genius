@@ -16,6 +16,24 @@
       "revId": "7117c0516ec990c53bc88ac0f789f25caae10973",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "258fa034_88baf0b3",
+        "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/DumpIfmCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-01-04T11:49:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa078760_0cd762ad",
+      "revId": "7117c0516ec990c53bc88ac0f789f25caae10973",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
