@@ -29,11 +29,13 @@ public final class ITMBatchingUtils {
     private static DataBroker dataBroker;
     private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
     private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
+    private static BlockingQueue<ActionableResource> topologyConfigShardBufferQ;
 
     // This could extend in future
     public enum EntityType  {
         DEFAULT_OPERATIONAL,
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
+        TOPOLOGY_CONFIG
     }
 
     private ITMBatchingUtils() { }
@@ -61,6 +63,8 @@ public final class ITMBatchingUtils {
                 new DefaultBatchHandler(broker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
         resBatchingManager.registerBatchableResource("ITM-DEFAULT-CONFIG", defaultConfigShardBufferQ,
                 new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
+        resBatchingManager.registerBatchableResource("ITM-TOPOLOGY-CONFIG", topologyConfigShardBufferQ,
+            new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
     }
 
 
@@ -86,6 +90,7 @@ public final class ITMBatchingUtils {
         switch (entityType) {
             case DEFAULT_OPERATIONAL : return defaultOperationalShardBufferQ;
             case DEFAULT_CONFIG : return defaultConfigShardBufferQ;
+            case TOPOLOGY_CONFIG: return topologyConfigShardBufferQ;
             default : {
                 LOG.debug("entity type is neither operational or config, getQueue operation failed");
                 return null;
@@ -105,5 +110,6 @@ public final class ITMBatchingUtils {
     static {
         defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
         defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
+        topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
     }
 }

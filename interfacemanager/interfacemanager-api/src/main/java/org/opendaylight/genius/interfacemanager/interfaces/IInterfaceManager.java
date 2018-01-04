@@ -127,4 +127,8 @@ public interface IInterfaceManager {
     void updateInterfaceParentRef(String interfaceName, String parentInterface, boolean readInterfaceBeforeWrite);
 
     long getLogicalTunnelSelectGroupId(int lportTag);
+
+    Integer allocateIfIndex(String ifName);
+
+    void releaseIfIndex(String ifName);
 }
