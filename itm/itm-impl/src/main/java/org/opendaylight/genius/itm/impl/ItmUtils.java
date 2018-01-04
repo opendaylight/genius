@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -152,9 +152,9 @@ public final class ItmUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
-    public static final ImmutableMap<String, Class<? extends TunnelTypeBase>>
+    public static final ImmutableBiMap<String, Class<? extends TunnelTypeBase>>
         TUNNEL_TYPE_MAP =
-        new ImmutableMap.Builder<String, Class<? extends TunnelTypeBase>>()
+        new ImmutableBiMap.Builder<String, Class<? extends TunnelTypeBase>>()
             .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class)
             .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE, TunnelTypeMplsOverGre.class)
             .put(ITMConstants.TUNNEL_TYPE_VXLAN, TunnelTypeVxlan.class)
