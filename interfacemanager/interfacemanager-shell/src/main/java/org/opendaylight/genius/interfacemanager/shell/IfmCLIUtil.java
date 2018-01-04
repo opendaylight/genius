@@ -28,6 +28,7 @@ public final class IfmCLIUtil {
     private static final String VXLAN_OUTPUT_FORMAT_LINE1 = "%-49s %-45s";
     private static final String IF_TP_OUTPUT_FORMAT = "%-24s";
     private static final String TP_OUTPUT_FORMAT = "%-24s %-20s %-8s";
+    private static final String BFD_OUTPUT_FORMAT = "%-24s %-8s";
     private static final String TP_VXLAN_OUTPUT_FORMAT_LINE1 = "local_ip:%-24s remote_ip:%-24s key:%-12s";
     private static final String BRIDGE_PORTS_OUTPUT_FORMAT_HEADER = "%-8s %-20s";
     private static final String TP_OUTPUT_FORMAT_LINE2 = "%-12s";
@@ -136,14 +137,33 @@ public final class IfmCLIUtil {
     }
 
     static void showInterfaceToTpOutput(String ifName, OvsdbTerminationPointAugmentation port,
-                    CommandSession session) {
+                                        CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt
-            .format(TP_OUTPUT_FORMAT, port.getName(), getPortTypeStr(port), port.getOfport()));
+                .format(TP_OUTPUT_FORMAT, port.getName(), getPortTypeStr(port), port.getOfport()));
         sb.setLength(0);
         session.getConsole().println(fmt.format(IF_TP_OUTPUT_FORMAT, ifName));
         sb.setLength(0);
+        fmt.close();
+    }
+
+    static void printBfdCachesHeader(CommandSession session) {
+        StringBuilder sb = new StringBuilder();
+        Formatter fmt = new Formatter(sb);
+        session.getConsole().println(fmt.format(BFD_OUTPUT_FORMAT, "InterfaceName", "OperStatus"));
+        sb.setLength(0);
+        session.getConsole().println(fmt
+                .format("--------------------------------------------------------------------------------"));
+        fmt.close();
+    }
+
+    static void printBfdCachesOutput(String ifName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+            .interfaces.rev140508.interfaces.state.Interface.OperStatus st,
+                                       CommandSession session) {
+        StringBuilder sb = new StringBuilder();
+        Formatter fmt = new Formatter(sb);
+        session.getConsole().println(fmt.format(BFD_OUTPUT_FORMAT, ifName, st.getName()));
         fmt.close();
     }
 

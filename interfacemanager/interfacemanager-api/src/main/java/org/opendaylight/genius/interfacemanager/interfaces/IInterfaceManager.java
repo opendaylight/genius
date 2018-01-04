@@ -106,6 +106,9 @@ public interface IInterfaceManager {
 
     Map<String, OvsdbTerminationPointAugmentation> getTerminationPointCache();
 
+    Map<String, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            .Interface.OperStatus> getBfdStateCache();
+
     OvsdbTerminationPointAugmentation getTerminationPointForInterface(String interfaceName);
 
     OvsdbBridgeAugmentation getOvsdbBridgeForInterface(String interfaceName);
