@@ -112,6 +112,10 @@ public final class InterfaceManagerCommonUtils {
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final BatchingUtils batchingUtils;
 
+    public ConcurrentHashMap<String, OperStatus> getBfdStateMap() {
+        return bfdStateMap;
+    }
+
     @Inject
     public InterfaceManagerCommonUtils(DataBroker dataBroker, IMdsalApiManager mdsalApiManager,
             IdManagerService idManager, InterfaceMetaUtils interfaceMetaUtils, BatchingUtils batchingUtils) {

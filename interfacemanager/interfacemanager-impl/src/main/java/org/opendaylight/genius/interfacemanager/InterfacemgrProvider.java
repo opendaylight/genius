@@ -602,6 +602,11 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return new ConcurrentHashMap<>(this.ifaceToTpMap);
     }
 
+    @Override
+    public Map<String, OperStatus> getBfdStateCache() {
+        return interfaceManagerCommonUtils.getBfdStateMap();
+    }
+
     public void addTerminationPointForInterface(String interfaceName,
             OvsdbTerminationPointAugmentation terminationPoint) {
         if (interfaceName != null && terminationPoint != null) {
