@@ -37,6 +37,42 @@
     },
     {
       "key": {
+        "uuid": "62a24f91_e920bbfa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-05T12:52:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "76ad56f6_25061d36",
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "35596c30_5655131b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-05T12:52:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3ad175d_f4e0187b",
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "909cf62c_5197c2e6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
         "patchSetId": 2
@@ -54,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "b54ea6b3_a68bee60",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-05T12:52:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "909cf62c_5197c2e6",
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "845b77e7_1607f4ed",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
         "patchSetId": 2
@@ -65,6 +119,30 @@
       "writtenOn": "2018-01-03T14:34:33Z",
       "side": 1,
       "message": "This could be null",
+      "range": {
+        "startLine": 76,
+        "startChar": 34,
+        "endLine": 76,
+        "endChar": 55
+      },
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0bfab9b_05b323c2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-05T12:52:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "845b77e7_1607f4ed",
       "range": {
         "startLine": 76,
         "startChar": 34,
@@ -111,6 +189,30 @@
       "writtenOn": "2018-01-03T14:34:33Z",
       "side": 1,
       "message": "spacing",
+      "range": {
+        "startLine": 81,
+        "startChar": 102,
+        "endLine": 81,
+        "endChar": 103
+      },
+      "revId": "43403a698622a78633c758610edb1068bb0a047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25f52c82_70e5fb3b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CachePortNameListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-05T12:52:59Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0da54cc5_4bee7244",
       "range": {
         "startLine": 81,
         "startChar": 102,
