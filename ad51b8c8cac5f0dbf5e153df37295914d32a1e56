@@ -1,0 +1,193 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d16802a_83df0379",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "How about we name this InterfaceChildCache?",
+      "range": {
+        "startLine": 34,
+        "startChar": 13,
+        "endLine": 34,
+        "endChar": 46
+      },
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "69998163_3028e9c3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "You should extend AbstractClusteredSyncDataTreeChangeListener which does this work for you. Also you could make the actual listener internal as is done in https://git.opendaylight.org/gerrit/#/c/66403/10/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java so you don\u0027t expose the listener notification methods publicly.",
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6702ed7_1e53ac6d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "This can\u0027t be null...",
+      "range": {
+        "startLine": 74,
+        "startChar": 12,
+        "endLine": 74,
+        "endChar": 32
+      },
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "740017bd_db4c3f9c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "...and neither can this since it\u0027s the list key...",
+      "range": {
+        "startLine": 75,
+        "startChar": 37,
+        "endLine": 75,
+        "endChar": 55
+      },
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7c9ef45c_099d1178",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "I think we should put Collections.emptyList if null. That way a cache miss indicates the parent interface doesn\u0027t exist.",
+      "range": {
+        "startLine": 76,
+        "startChar": 44,
+        "endLine": 76,
+        "endChar": 66
+      },
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c45dbdbd_429a941d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "...same here",
+      "range": {
+        "startLine": 85,
+        "startChar": 12,
+        "endLine": 85,
+        "endChar": 85
+      },
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28fe2a99_9498b2cb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheInterfaceParentEntryListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "This should return Collections.unmodifiableList. Also make it clear whether or not it returns null. I\u0027d prefer to return an Optional.",
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c70f200a_af20618d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "I think it would be better to put this in a separate PortNameCache class. This avoids having to inject this instance elsewhere and introducing unnecessary coupling.",
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "054cdf3f_bceb602b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T13:37:45Z",
+      "side": 1,
+      "message": "spacing",
+      "range": {
+        "startLine": 165,
+        "startChar": 65,
+        "endLine": 165,
+        "endChar": 66
+      },
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
