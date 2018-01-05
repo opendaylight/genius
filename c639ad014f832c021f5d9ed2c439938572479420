@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "336d3af6_b06be060",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T05:42:17Z",
+      "side": 1,
+      "message": "Take a look at https://git.opendaylight.org/gerrit/#/c/66562/. It seems to be a race where a cache isn\u0027t yet populated by a DTCL.\n\nI agree with #1 but unfortunately genius and netvirt has quite a bit of such fragile, maybe badly designed code.  I also agree with #2 but there are already many, many blocking reads/writes littered everywhere in the code base (and more being added in pending patches). I am not adding more to that - I\u0027m duplicating the previous behavior. For these reasons, I feel much more comfortable populating the cache on miss, especially since late in the release. I do not want to add potential latent timing /race conditions. If you or someone later on wants to analyze the uses and can determine the read is not needed, then that\u0027s fine.",
+      "parentUuid": "b4dab6ca_5982f6cb",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eec43c3e_562e93d6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 10
@@ -102,6 +120,24 @@
       "side": 1,
       "message": "Maybe not in Genius code, but there are few in NEtvirt and I have some upcoming use cases in ITM. The current caches have been left as is primarily coz we been waiting to move to new cache infra first. Either ways, having the option for get on cache only is desirable from framework perspective. I think it should be easy to get in, but we can always add it in later if needed.",
       "parentUuid": "9745cff8_b9230c86",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb8e914e_b2d7be5f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-05T05:42:17Z",
+      "side": 1,
+      "message": "Let\u0027s add it in later if needed. I\u0027d like to get this in asap - I have several patches following this to eliminate static caches (then we can get rid of DataStoreCache and CacheUtils).",
+      "parentUuid": "00625ca1_370823e1",
       "revId": "c639ad014f832c021f5d9ed2c439938572479420",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
