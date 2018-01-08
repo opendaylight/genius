@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "952ba6d5_18712d68",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-01-08T15:40:16Z",
+      "side": 1,
+      "message": "OK, thanks for clarification. \nbut AFAIK both genius/netvirt applications always need to maintain DCN order.\nso shouldn\u0027t it moved to AbstractClusteredAsyncDataTreeChangeListener because this class in still in genius ?",
+      "parentUuid": "2afddc4f_5145aa83",
+      "range": {
+        "startLine": 36,
+        "startChar": 23,
+        "endLine": 36,
+        "endChar": 46
+      },
+      "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "912343a3_b22c6bc7",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
         "patchSetId": 3
