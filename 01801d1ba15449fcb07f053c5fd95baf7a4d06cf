@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "c0c8986d_84965c4b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-08T19:43:28Z",
+      "side": 1,
+      "message": "they\u0027re imported via the blueprint XML. I added \u003creference\u003e for CacheProvider.",
+      "parentUuid": "9dad4155_2becc758",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "63b35aac_d803a70c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
         "patchSetId": 8
@@ -53,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "ac749789_8b5dd6d9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-08T19:43:28Z",
+      "side": 1,
+      "message": "thanks :) That\u0027s out-of-scope for this patch and better not to overload it with extraneous changes - I\u0027ve done enough of that in other patches...",
+      "parentUuid": "63b35aac_d803a70c",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c2043e24_49945851",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 8
@@ -64,6 +100,24 @@
       "writtenOn": "2018-01-08T18:13:37Z",
       "side": 1,
       "message": "I\u0027m suddenly hesitant if this (and the same below) is correct... look at the existing ItmUtils.getTunnelMeshInfo() it seems to me that reads from the DS if it was not previously cached, right?  However that is NOT what getAllPresent() does, do you agree?  Isn\u0027t that a mismatch / breaking functionality, or am I not getting something?  \n\nPS: That makes me think that perhaps getAllPresent() should have better JavaDoc, to make it clear that it really doesn\u0027t \"get\", in the same like the \"real\" get() does by reading from the DS... have left a comment about this in https://git.opendaylight.org/gerrit/#/c/66403/10/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a8f58b8_e2d82e84",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-08T19:43:28Z",
+      "side": 1,
+      "message": "getTunnelMeshInfo() previously called DataStoreCache.getValues(...) which only returned null if the named map wasn\u0027t in the CacheUtil MAP_OF_MAP which would only happen if createCache wasn\u0027t called yet on startup. I suppose that could\u0027ve happened although small window. However you\u0027re right in that it\u0027s possible someone could call getAllPresent on startup before the DTCL gets its first update with all the initial data. However that was also the case previously as the DataStoreCache was populated by a DTCL (DpnTepsInfoListener) - we\u0027re doing the same thing with the DataObjectCache so the behavior and potential race condition looks to be the same.  Not saying that makes it right :) \n\nPS: to me, \"get\" means to retrieve something from somewhere, however the implementation does that.",
+      "parentUuid": "c2043e24_49945851",
       "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
