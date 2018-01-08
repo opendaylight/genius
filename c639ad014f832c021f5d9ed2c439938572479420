@@ -37,6 +37,23 @@
     },
     {
       "key": {
+        "uuid": "8dfc09e6_e3ceacd2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-08T05:30:53Z",
+      "side": 1,
+      "message": "Currently, infrautils cache has some eviction policy based on size of the cache..  what we were doing so far is to cache almost all datastore entries in the hashmap, without any eviction policy.. Don\u0027t see any size params passed on here.. In that case, will there be any impact on scaling once we integrate the new caching framework for our existing usecases?",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c6146513_25493d82",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 10
