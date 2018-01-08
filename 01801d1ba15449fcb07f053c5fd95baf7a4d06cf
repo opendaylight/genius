@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "80ec8ccd_97ae1001",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T18:13:37Z",
+      "side": 1,
+      "message": "OK for me, just because DPNTEPsInfo probably already has the same problem (but is YANG generated code)",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9dad4155_2becc758",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T18:13:37Z",
+      "side": 1,
+      "message": "I\u0027m a tiny bit surprised that this doesn\u0027t require an @OsgiService for DataBroker and CacheProvider (because they are OSGi services and not local beans), but as it seems to works... fine with me!",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "63b35aac_d803a70c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/InterfaceStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T18:13:37Z",
+      "side": 1,
+      "message": "I was going to say \"please use ManagedNewTransactionRunner\", but as this is not new code but just a move of existing as is from ItmTunnelStateUpdateHelper, I won\u0027t... ;-)",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c2043e24_49945851",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T18:13:37Z",
+      "side": 1,
+      "message": "I\u0027m suddenly hesitant if this (and the same below) is correct... look at the existing ItmUtils.getTunnelMeshInfo() it seems to me that reads from the DS if it was not previously cached, right?  However that is NOT what getAllPresent() does, do you agree?  Isn\u0027t that a mismatch / breaking functionality, or am I not getting something?  \n\nPS: That makes me think that perhaps getAllPresent() should have better JavaDoc, to make it clear that it really doesn\u0027t \"get\", in the same like the \"real\" get() does by reading from the DS... have left a comment about this in https://git.opendaylight.org/gerrit/#/c/66403/10/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
