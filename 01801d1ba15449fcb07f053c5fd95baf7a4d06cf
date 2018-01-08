@@ -121,6 +121,24 @@
       "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c5dd9b4b_4749c0fc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T21:06:06Z",
+      "side": 1,
+      "message": "Looks like you thought this through, so +1 from me!",
+      "parentUuid": "4a8f58b8_e2d82e84",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
