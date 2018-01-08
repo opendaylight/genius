@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "a8a3cbda_354e459a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-08T17:42:25Z",
+      "side": 1,
+      "message": "Faseela\u0027s concern is if this cache will be of limited size and have eviction or not. As you mentioned, we don\u0027t want any eviction and that is exactly what she wanted. Is size+eviction default? If yes, where are we setting it such?",
+      "parentUuid": "d11f5496_3d406657",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c6146513_25493d82",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 10
