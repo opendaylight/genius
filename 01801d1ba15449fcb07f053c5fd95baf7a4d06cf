@@ -139,6 +139,24 @@
       "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "664b1e20_b526026f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-08T22:02:45Z",
+      "side": 1,
+      "message": "I tried to but good to have another set of eyes carefully looking at it. I\u0027m just trying to duplicate the existing functionality at this point. We really need to for DTCLs to be notified when the initial notification is complete, whether or not there is existing data. That way DataObjectCache could block startup or block access to the cache until the first notification  occurs. That\u0027s been brought up before and is worth re-hashing on the Tue kernel call.",
+      "parentUuid": "c5dd9b4b_4749c0fc",
+      "revId": "01801d1ba15449fcb07f053c5fd95baf7a4d06cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
