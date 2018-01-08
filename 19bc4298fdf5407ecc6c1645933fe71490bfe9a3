@@ -88,6 +88,24 @@
       "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df879948_3729b494",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T17:49:51Z",
+      "side": 1,
+      "message": "Vishal, an Exception throw here is caught by Blueprint and will cause it to mark this Bundle as not available (for Blueprint), which infrautils.ready will detect and show.\n\nFaseela, did you mean to remove this but have not yet, or mean to leave it? I\u0027m asking because you write \"I can remove this\" but have not done so - yet?",
+      "parentUuid": "860739b2_ded3c001",
+      "revId": "19bc4298fdf5407ecc6c1645933fe71490bfe9a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
