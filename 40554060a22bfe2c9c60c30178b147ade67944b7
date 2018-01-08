@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b02d194a_65c7946e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-08T12:19:59Z",
+      "side": 1,
+      "message": "Michael, I have a usecase in COE, where I have similar dependancy problem.. I was just thinking whether to use this or resource barrier.. containers will usually be denser, and will have higher scale numbers to meet.. Do you think this implementation will scale enough for such usecases where we will have cases where 100s of containers can be brought up in shorter duration, compared to VMs?",
+      "revId": "40554060a22bfe2c9c60c30178b147ade67944b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
