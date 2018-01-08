@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "6956ed2e_27a0fb98",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T17:37:34Z",
+      "side": 1,
+      "message": "My understanding is that Tom plans to propose follow-up patches to switch the impl over from direct use of the Guava cache to the infrautils cache, as anticipated by the infrautils.CacheProvider argument - right, Tom?",
+      "parentUuid": "4d78bc85_0ba0439b",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8dfc09e6_e3ceacd2",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 10
