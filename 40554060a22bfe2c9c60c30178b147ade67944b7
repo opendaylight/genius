@@ -16,6 +16,24 @@
       "revId": "40554060a22bfe2c9c60c30178b147ade67944b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "187bdf06_8761dc9e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T13:36:06Z",
+      "side": 1,
+      "message": "The Commit Message mentions that this proposal is a Phase 1 and that a possible \"Phase 2 will be an optimized implementation (post usage).\" and the DataTreeEventCallbackRegistrarImpl lines 47 - 50 speak to that.  Is that OK for you?",
+      "parentUuid": "b02d194a_65c7946e",
+      "revId": "40554060a22bfe2c9c60c30178b147ade67944b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
