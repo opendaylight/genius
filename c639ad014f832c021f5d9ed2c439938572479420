@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4d78bc85_0ba0439b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-08T05:28:20Z",
+      "side": 1,
+      "message": "Ignore the above comment",
+      "parentUuid": "34e1e54f_adbdd765",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c6146513_25493d82",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 10
