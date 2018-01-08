@@ -190,6 +190,24 @@
       "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99aa439b_e1072f39",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/TestMetricProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T21:14:34Z",
+      "side": 1,
+      "message": "I think that NPE problem you ran into with 2) can be solved with some Mockito magic; I\u0027ll try out how to do this to help you, in the coming days.",
+      "parentUuid": "7a1969be_197d5b6f",
+      "revId": "c5e2ebf3f4e81cbcdacef0055558cadfe1896922",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
