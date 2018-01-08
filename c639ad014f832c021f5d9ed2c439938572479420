@@ -247,6 +247,23 @@
       "revId": "c639ad014f832c021f5d9ed2c439938572479420",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4558cc7_dafaebc5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-08T18:13:03Z",
+      "side": 1,
+      "message": "I\u0027m hoping this will be clear enough for everyone... perhaps in a (follow-up change, no need to once again amend this one; I\u0027m all for it finally going in) you want to add something like \"This method, contrary to #link get(...), will never read anything from the data store.  It is *ONLY* intended to be used for monitoring purposes, such as CLI commands.  See also the review feedback in https://git.opendaylight.org/gerrit/#/c/66470/8/itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java ...",
+      "revId": "c639ad014f832c021f5d9ed2c439938572479420",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
