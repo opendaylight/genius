@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "2afddc4f_5145aa83",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-08T15:07:19Z",
+      "side": 1,
+      "message": "The data store guarantees DCN ordering so it is not necessary for DTCLs to use a SingleThreadExecutor to maintain order. The only reason to off-load DCNs on a separate thread is to avoid blocking the calling thread for too long. A DTCL that is relatively fast and does not block does not need to off-load at all. For DTCLs that do block, many off-load to the JobCoordinator in which case a SingleThreadExecutor is redundant and not needed.  \n\nThe prior base class always created a dedicated SingleThreadExecutor which could be problematic for scale with many such listeners. The new base class leaves it up to the user to decide what type of executor to use.  For those that don\u0027t need to off-load, they can pass a direct executor. Some may want to use a SingleThreadExecutor but may want to re-use one across several DTCLs to preserve thread resources. Some may not need to maintain DCN order and thus can use a thread pool to process DCNs in parallel.",
+      "parentUuid": "a1ec914f_1f928f6d",
+      "range": {
+        "startLine": 36,
+        "startChar": 23,
+        "endLine": 36,
+        "endChar": 46
+      },
+      "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "912343a3_b22c6bc7",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
         "patchSetId": 3
