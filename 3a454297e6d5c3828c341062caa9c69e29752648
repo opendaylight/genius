@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7611f380_1193005a",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-09T09:10:35Z",
+      "side": 1,
+      "message": "please use the same interface tag pool from idmanager to generate tunnel if-indices. Else it will cause conflicts",
+      "revId": "3a454297e6d5c3828c341062caa9c69e29752648",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "849103c7_6abd4d15",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-09T09:10:35Z",
+      "side": 1,
+      "message": "please update the pipeline diagram under genius/docs with these changes and point to the same here.",
+      "revId": "3a454297e6d5c3828c341062caa9c69e29752648",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "85db3a8a_c520723f",
+        "filename": "docs/specs/itm-scale-improvements.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-09T09:10:35Z",
+      "side": 1,
+      "message": "Do we need this? As Oxygen has only \"Replay based upgrade\"?? I thought all config is going to be cleaned up??",
+      "revId": "3a454297e6d5c3828c341062caa9c69e29752648",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
