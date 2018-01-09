@@ -88,6 +88,24 @@
       "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e24acb8d_5e89c036",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-01-09T09:44:35Z",
+      "side": 1,
+      "message": "I agree and I would note that if this class is meant to be used by external users (like netvirt), these methods need to be very much documented in what is it they do exactly -- that way it is clear what the implementation is supposed to do and on what the users can expect....",
+      "parentUuid": "d41cf099_60f68629",
+      "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
