@@ -47,4 +47,5 @@ public interface IfmConstants {
     String INTERFACE_CONFIG_ENTITY = "interface_config";
     String INTERFACE_SERVICE_BINDING_ENTITY = "interface_service_binding";
     String INTERFACE_SERVICE_NAME = "IFM";
+    String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
 }
