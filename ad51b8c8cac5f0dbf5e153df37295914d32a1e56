@@ -186,6 +186,24 @@
     },
     {
       "key": {
+        "uuid": "a9f3abad_aec252ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-09T06:34:02Z",
+      "side": 1,
+      "message": "the former, ie PortNameCache would still be populated by this class as you have it. It seems cleaner to me to inject a PortNameCache into users that need to query the cache instead of injecting this class, especially since this class has a lot of dependencies injected which increases the possibility of a circular dependency.",
+      "parentUuid": "60910a5a_5259e2bd",
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "054cdf3f_bceb602b",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 5
