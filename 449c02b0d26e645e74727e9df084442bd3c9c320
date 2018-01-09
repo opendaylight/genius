@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8907811f_c4932ef1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-09T16:39:06Z",
+      "side": 1,
+      "message": "What is this delay for? Why 10 sec?",
+      "revId": "449c02b0d26e645e74727e9df084442bd3c9c320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
