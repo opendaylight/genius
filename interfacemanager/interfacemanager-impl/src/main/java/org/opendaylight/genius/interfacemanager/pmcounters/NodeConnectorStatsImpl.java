@@ -25,7 +25,9 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
@@ -50,13 +52,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
+public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
     private static final Logger LOG = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
     private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
     private static final int THREAD_POOL_SIZE = 4;
-    private static final int NO_DELAY = 0;
+    private static final int INITIAL_DELAY = 5;
     private static final String POLLING_INTERVAL_PATH = "interfacemanager-statistics-polling-interval";
     private static final int DEFAULT_POLLING_INTERVAL = 15;
+    private static final int DELAY_STATS_QUERY = 10;
     public static final PMAgentForNodeConnectorCounters PMAGENT = new PMAgentForNodeConnectorCounters();
     private final PortRpcStatisticsListener portStatsListener = new PortRpcStatisticsListener();
     private final FlowRpcStatisticsListener flowTableStatsListener = new FlowRpcStatisticsListener();
@@ -73,14 +76,17 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
     private final OpendaylightPortStatisticsService statPortService;
     private final ScheduledExecutorService portStatExecutorService;
     private final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
                                   final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
-                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
+                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService,
+                                  final EntityOwnershipUtils entityOwnershipUtils) {
         super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
             getThreadFactory("Port Stats " + "Request Task"));
@@ -109,7 +115,7 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
         }
         LOG.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
-        scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, NO_DELAY,
+        scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, INITIAL_DELAY,
                 Integer.getInteger(POLLING_INTERVAL_PATH, DEFAULT_POLLING_INTERVAL), TimeUnit.MINUTES);
     }
 
@@ -145,6 +151,15 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
                 ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(
                         opendaylightFlowTableStatisticsService.getFlowTablesStatistics(
                                 buildGetFlowTablesStatistics(node))), LOG, "Get flow table stats");
+                delay();
+            }
+        }
+
+        private void delay() {
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(DELAY_STATS_QUERY));
+            } catch (InterruptedException ex) {
+                LOG.error("InterruptedException");
             }
         }
 
@@ -211,7 +226,6 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
                 ncIdBytesReceiveMap.put("BytesPerOFPortReceive:" + nodePortStr + "_BytesPerOFPortReceive",
                         ncStatsAndPortMap.getBytes().getReceived().toString());
             }
-            LOG.trace("Port Stats {}", ncStatsAndPortMapList);
             // Storing allNodeConnectorStats(like ncIdOFPortDurationMap) in a
             // map with key as node for easy removal and addition of
             // allNodeConnectorStats.
@@ -309,13 +323,18 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
     @Override
     protected void add(InstanceIdentifier<Node> identifier, Node node) {
         NodeId nodeId = node.getId();
-        BigInteger dpId = new BigInteger(nodeId.getValue().split(":")[1]);
-        if (nodes.contains(dpId)) {
-            return;
-        }
-        nodes.add(dpId);
-        if (nodes.size() == 1) {
-            schedulePortStatRequestTask();
+        if (entityOwnershipUtils.isEntityOwner(IfmConstants.SERVICE_ENTITY_TYPE, nodeId.getValue())) {
+            LOG.trace("Locally connected switch {}",nodeId.getValue());
+            BigInteger dpId = new BigInteger(nodeId.getValue().split(":")[1]);
+            if (nodes.contains(dpId)) {
+                return;
+            }
+            nodes.add(dpId);
+            if (nodes.size() == 1) {
+                schedulePortStatRequestTask();
+            }
+        } else {
+            LOG.trace("Not a locally connected switch {}",nodeId.getValue());
         }
     }
 }
