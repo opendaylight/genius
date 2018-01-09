@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ecb4021_ae6bc1ea",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-01-09T12:38:07Z",
+      "side": 1,
+      "message": "nitpick, add a space here",
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3fdd2787_c301f1cf",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-01-09T12:38:07Z",
+      "side": 1,
+      "message": "did this ever get cleaned up to remove the unneeded fields? Also better to have the final Config be more like MdsalutilConfig over just config. I guess the module name is just module config, which isn\u0027t the best.",
+      "range": {
+        "startLine": 19,
+        "startChar": 89,
+        "endLine": 19,
+        "endChar": 108
+      },
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
