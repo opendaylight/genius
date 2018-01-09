@@ -10,10 +10,10 @@ package org.opendaylight.genius.interfacemanager.pmcounters;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,7 +25,9 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.FlowTableStatisticsUpdate;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.GetFlowTablesStatisticsInput;
@@ -50,37 +52,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
+public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
     private static final Logger LOG = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
     private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
     private static final int THREAD_POOL_SIZE = 4;
-    private static final int NO_DELAY = 0;
+    private static final int INITIAL_DELAY = 5; //in minutes
     private static final String POLLING_INTERVAL_PATH = "interfacemanager-statistics-polling-interval";
-    private static final int DEFAULT_POLLING_INTERVAL = 15;
-    public static final PMAgentForNodeConnectorCounters PMAGENT = new PMAgentForNodeConnectorCounters();
+    private static final int DEFAULT_POLLING_INTERVAL = 15; //in minutes
+    private static final PMAgentForNodeConnectorCounters PMAGENT = new PMAgentForNodeConnectorCounters();
+
+    private volatile int delayStatsQuery;
     private final PortRpcStatisticsListener portStatsListener = new PortRpcStatisticsListener();
     private final FlowRpcStatisticsListener flowTableStatsListener = new FlowRpcStatisticsListener();
-    private final List<BigInteger> nodes = new ArrayList<>();
-    Map<String, Map<String, String>> nodeAndNcIdOFPortDurationMap = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveDropMap = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveError = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndNcIdPacketSentMap = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndNcIdPacketReceiveMap = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndNcIdBytesSentMap = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndNcIdBytesReceiveMap = new ConcurrentHashMap<>();
-    Map<String, Map<String, String>> nodeAndEntriesPerOFTableMap = new ConcurrentHashMap<>();
+    private final Set<BigInteger> nodes = ConcurrentHashMap.newKeySet();
+    private Map<String, Map<String, String>> nodeAndNcIdOFPortDurationMap = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveDropMap = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndNcIdOFPortReceiveError = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndNcIdPacketSentMap = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndNcIdPacketReceiveMap = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndNcIdBytesSentMap = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndNcIdBytesReceiveMap = new ConcurrentHashMap<>();
+    private Map<String, Map<String, String>> nodeAndEntriesPerOFTableMap = new ConcurrentHashMap<>();
     private ScheduledFuture<?> scheduledResult;
     private final OpendaylightPortStatisticsService statPortService;
     private final ScheduledExecutorService portStatExecutorService;
     private final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
                                   final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
-                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
+                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService,
+                                  final EntityOwnershipUtils entityOwnershipUtils) {
         super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
+        this.entityOwnershipUtils = entityOwnershipUtils;
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
             getThreadFactory("Port Stats " + "Request Task"));
@@ -109,7 +116,7 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
         }
         LOG.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
-        scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, NO_DELAY,
+        scheduledResult = portStatExecutorService.scheduleWithFixedDelay(portStatRequestTask, INITIAL_DELAY,
                 Integer.getInteger(POLLING_INTERVAL_PATH, DEFAULT_POLLING_INTERVAL), TimeUnit.MINUTES);
     }
 
@@ -145,6 +152,21 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
                 ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(
                         opendaylightFlowTableStatisticsService.getFlowTablesStatistics(
                                 buildGetFlowTablesStatistics(node))), LOG, "Get flow table stats");
+                delay();
+            }
+        }
+
+        /**
+         * The delay is added to spread the RPC call of the switches to query statistics
+         * across the polling interval.
+         * delay factor is calculated by dividing pollinginterval by no.of.switches
+         */
+
+        private void delay() {
+            try {
+                Thread.sleep(TimeUnit.SECONDS.toMillis(delayStatsQuery));
+            } catch (InterruptedException ex) {
+                LOG.error("InterruptedException");
             }
         }
 
@@ -211,7 +233,6 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
                 ncIdBytesReceiveMap.put("BytesPerOFPortReceive:" + nodePortStr + "_BytesPerOFPortReceive",
                         ncStatsAndPortMap.getBytes().getReceived().toString());
             }
-            LOG.trace("Port Stats {}", ncStatsAndPortMapList);
             // Storing allNodeConnectorStats(like ncIdOFPortDurationMap) in a
             // map with key as node for easy removal and addition of
             // allNodeConnectorStats.
@@ -296,8 +317,11 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
             nodeAndNcIdBytesReceiveMap.remove(nodeVal);
             nodeAndEntriesPerOFTableMap.remove(nodeVal);
         }
-        if (nodes.isEmpty()) {
+        if (nodes.size() > 0) {
+            delayStatsQuery = Integer.getInteger(POLLING_INTERVAL_PATH, DEFAULT_POLLING_INTERVAL) / nodes.size();
+        } else {
             stopPortStatRequestTask();
+            delayStatsQuery = 0;
         }
     }
 
@@ -309,13 +333,19 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
     @Override
     protected void add(InstanceIdentifier<Node> identifier, Node node) {
         NodeId nodeId = node.getId();
-        BigInteger dpId = new BigInteger(nodeId.getValue().split(":")[1]);
-        if (nodes.contains(dpId)) {
-            return;
-        }
-        nodes.add(dpId);
-        if (nodes.size() == 1) {
-            schedulePortStatRequestTask();
+        if (entityOwnershipUtils.isEntityOwner(IfmConstants.SERVICE_ENTITY_TYPE, nodeId.getValue())) {
+            LOG.trace("Locally connected switch {}",nodeId.getValue());
+            BigInteger dpId = new BigInteger(nodeId.getValue().split(":")[1]);
+            if (nodes.contains(dpId)) {
+                return;
+            }
+            nodes.add(dpId);
+            delayStatsQuery = Integer.getInteger(POLLING_INTERVAL_PATH, DEFAULT_POLLING_INTERVAL) / nodes.size();
+            if (nodes.size() == 1) {
+                schedulePortStatRequestTask();
+            }
+        } else {
+            LOG.trace("Not a locally connected switch {}",nodeId.getValue());
         }
     }
 }
