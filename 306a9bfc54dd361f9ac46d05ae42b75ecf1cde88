@@ -159,6 +159,24 @@
       "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "657aa77f_94c6c232",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-01-09T15:01:48Z",
+      "side": 1,
+      "message": "The listener needs to shutdown the executor since it owns it.",
+      "parentUuid": "912343a3_b22c6bc7",
+      "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
