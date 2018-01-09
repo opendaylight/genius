@@ -168,6 +168,24 @@
     },
     {
       "key": {
+        "uuid": "60910a5a_5259e2bd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-09T06:19:14Z",
+      "side": 1,
+      "message": "Hi Tom can you please clear this..Separate PortNameCache class means it will maintain only cache and this cache will be updated from InterfaceInventoryStateListener class.\nOr PortnameCache will also have the listener within itself and updating its cache ??",
+      "parentUuid": "c70f200a_af20618d",
+      "revId": "ad51b8c8cac5f0dbf5e153df37295914d32a1e56",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "054cdf3f_bceb602b",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 5
