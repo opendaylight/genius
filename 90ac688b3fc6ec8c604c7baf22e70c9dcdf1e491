@@ -106,6 +106,24 @@
       "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c5d5f023_86bd3eda",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-09T09:48:08Z",
+      "side": 1,
+      "message": "http://docs.opendaylight.org/en/latest/submodules/genius/docs/interface-manager-design.html",
+      "parentUuid": "e24acb8d_5e89c036",
+      "revId": "90ac688b3fc6ec8c604c7baf22e70c9dcdf1e491",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
