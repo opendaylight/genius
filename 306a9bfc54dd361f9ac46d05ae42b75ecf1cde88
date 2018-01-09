@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "571cff9a_48a41fd4",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-09T07:14:54Z",
+      "side": 1,
+      "message": "I assume you\u0027re saying that for the DTCL\u0027s in genius/netvirt that want to off-load, they all need to maintain order and thus need to use a single-threaded executor so we should implicitly create one in the base class like it did before.  2 reasons as I noted earlier:\n\n- we shouldn\u0027t assume every DTCL will need to maintain order -\n   a DTCL could process DCNs in parallel.\n\n- we may want to share an executor (single-threaded or not) \n   across several DTCLs to preserve thread resources.",
+      "parentUuid": "953aa1b9_2deb2933",
+      "range": {
+        "startLine": 36,
+        "startChar": 23,
+        "endLine": 36,
+        "endChar": 46
+      },
+      "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "912343a3_b22c6bc7",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
         "patchSetId": 3
