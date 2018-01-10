@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 - 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2015 - 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -25,8 +27,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -79,6 +83,9 @@ public class ResourceBatchingManager implements AutoCloseable {
     private final ConcurrentHashMap<String, ScheduledThreadPoolExecutor>
             resourceBatchingThreadMapper = new ConcurrentHashMap<>();
 
+    private final Map<String, Set<InstanceIdentifier>> toBeDeletedByResourceType = new ConcurrentHashMap<>();
+    private final Map<String, Map<InstanceIdentifier, DataObject>> toBeAddedByResourceType = new ConcurrentHashMap<>();
+
     private static ResourceBatchingManager instance;
 
     static {
@@ -111,6 +118,8 @@ public class ResourceBatchingManager implements AutoCloseable {
             resDelegatorService.scheduleWithFixedDelay(
                     new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
         }
+        toBeDeletedByResourceType.putIfAbsent(resourceType, ConcurrentHashMap.newKeySet());
+        toBeAddedByResourceType.putIfAbsent(resourceType, new ConcurrentHashMap<>());
     }
 
     public void registerDefaultBatchHandlers(DataBroker broker) {
@@ -128,10 +137,54 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
+    private void prePut(String resoureType, InstanceIdentifier<?> iid, DataObject data) {
+        toBeDeletedByResourceType.get(resoureType).remove(iid);
+        toBeAddedByResourceType.get(resoureType).put(iid, data);
+    }
+
+    private void preDelete(String resoureType, InstanceIdentifier<?> iid) {
+        toBeDeletedByResourceType.get(resoureType).add(iid);
+        toBeAddedByResourceType.get(resoureType).remove(iid);
+    }
+
+    private void postPut(String resoureType, InstanceIdentifier<?> iid) {
+        toBeAddedByResourceType.get(resoureType).remove(iid);
+    }
+
+    private void postDelete(String resoureType, InstanceIdentifier<?> iid) {
+        toBeDeletedByResourceType.get(resoureType).remove(iid);
+    }
+
+    /**
+     * Reads the identifier of given resource type
+     * If the identifier is going to be deleted , returns Optional.absent()
+     * If the identifier is going to be added , returns the to be added DataObject
+     * else goes to the datastore and reads it.
+     *
+     * @param resourceType resource type that was registered with batch manager
+     * @param identifier   identifier to be read
+     * @return Optional optional dataObject
+     * @throws ReadFailedException throws read failed exception if the datastore read fails
+     */
+    public Optional<? extends DataObject> read(String resourceType,
+                                               InstanceIdentifier<?> identifier) throws ReadFailedException {
+        if (toBeDeletedByResourceType.get(resourceType).contains(identifier)) {
+            return Optional.absent();
+        }
+        if (toBeAddedByResourceType.get(resourceType).containsKey(identifier)) {
+            return Optional.of(toBeAddedByResourceType.get(resourceType).get(identifier));
+        }
+        ResourceHandler resourceHandler  = resourceHandlerMapper.get(resourceType).getRight();
+        try (ReadOnlyTransaction tx = resourceHandler.getResourceBroker().newReadOnlyTransaction()) {
+            return tx.read(resourceHandler.getDatastoreType(), identifier).checkedGet();
+        }
+    }
+
     public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier<?> identifier,
                                         DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
+            prePut(shardResource.name(), identifier, updatedData);
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
@@ -145,6 +198,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     public void merge(String resourceType, InstanceIdentifier<?> identifier, DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
+            prePut(resourceType, identifier, updatedData);
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
@@ -154,6 +208,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     public ListenableFuture<Void> delete(ShardResource shardResource, InstanceIdentifier<?> identifier) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
+            preDelete(shardResource.name(), identifier);
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
@@ -167,6 +222,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     public void delete(String resourceType, InstanceIdentifier<?> identifier) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
+            preDelete(resourceType, identifier);
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
@@ -177,6 +233,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                                       DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
+            prePut(shardResource.name(), identifier, updatedData);
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
@@ -190,6 +247,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     public void put(String resourceType, InstanceIdentifier<?> identifier, DataObject updatedData) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
+            prePut(resourceType, identifier, updatedData);
             ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
@@ -321,8 +379,10 @@ public class ResourceBatchingManager implements AutoCloseable {
 
             try {
                 futures.get();
-                actResourceList.forEach(actionableResource ->
-                        ((SettableFuture<Void>)actionableResource.getResultFuture()).set(null));
+                actResourceList.forEach(actionableResource -> {
+                    ((SettableFuture<Void>) actionableResource.getResultFuture()).set(null);
+                    postCommit(actionableResource);
+                });
                 long time = System.currentTimeMillis() - start;
                 LOG.trace("##### Time taken for {} = {}ms", actResourceList.size(), time);
 
@@ -362,8 +422,38 @@ public class ResourceBatchingManager implements AutoCloseable {
                         }
                         LOG.error("Error {} to datastore (path, data) : ({}, {})", object.getAction(),
                                 object.getInstanceIdentifier(), object.getInstance(), exception);
+                    } finally {
+                        postCommit(object);
                     }
                 }
+            }
+        }
+
+        private void postCommit(SubTransaction subTransaction) {
+            switch (subTransaction.getAction()) {
+                case SubTransaction.CREATE:
+                case SubTransaction.UPDATE:
+                    postPut(resourceType, subTransaction.getInstanceIdentifier());
+                    break;
+                case SubTransaction.DELETE:
+                    postDelete(resourceType, subTransaction.getInstanceIdentifier());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void postCommit(ActionableResource actionableResource) {
+            switch (actionableResource.getAction()) {
+                case ActionableResource.CREATE:
+                case ActionableResource.UPDATE:
+                    postPut(resourceType, actionableResource.getInstanceIdentifier());
+                    break;
+                case ActionableResource.DELETE:
+                    postDelete(resourceType, actionableResource.getInstanceIdentifier());
+                    break;
+                default:
+                    break;
             }
         }
     }
