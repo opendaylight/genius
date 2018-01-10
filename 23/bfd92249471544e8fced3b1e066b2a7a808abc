@@ -1,0 +1,10 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+1: Michael Vorburger <vorburger@redhat.com>
+Code-Review+1: Tom Pantelis <tompantelis@gmail.com>
+Code-Review+1: Periyasamy Palanisamy <periyasamy.palanisamy@ericsson.com>
+Code-Review+2: David Suárez Fuentes <david.suarez.fuentes@gmail.com>
+Submitted-by: David Suárez Fuentes <david.suarez.fuentes@gmail.com>
+Submitted-at: Wed, 10 Jan 2018 09:47:34 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/66127
+Project: genius
+Branch: refs/heads/master
