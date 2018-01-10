@@ -177,6 +177,24 @@
       "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "568d7597_9c05bc81",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-01-10T08:58:52Z",
+      "side": 1,
+      "message": "I was referring moving create/shutdown of executor to AbstractClusteredAsyncDataTreeChangeListener class. But anyway I don\u0027t want to hold this review if you/Tom disagree to it.",
+      "parentUuid": "657aa77f_94c6c232",
+      "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
