@@ -28,7 +28,12 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.infrautils.caches.Cache;
+import org.opendaylight.infrautils.caches.CacheConfigBuilder;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.infrautils.caches.CheckedCache;
+import org.opendaylight.infrautils.caches.CheckedCacheConfig;
+import org.opendaylight.infrautils.caches.CheckedCacheConfigBuilder;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -41,20 +46,18 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class DataObjectCache<V extends DataObject> implements AutoCloseable {
 
     private final SingleTransactionDataBroker broker;
-    private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
+    private final CheckedCache<InstanceIdentifier<V>, Optional<V>, ReadFailedException> cache;
     private final ListenerRegistration<?> listenerRegistration;
 
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
             InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
         this.broker = new SingleTransactionDataBroker(dataBroker);
 
-        requireNonNull(cacheProvider, "cacheProvider");
-        cache = CacheBuilder.newBuilder().build(new CacheLoader<InstanceIdentifier<V>, Optional<V>>() {
-            @Override
-            public Optional<V> load(InstanceIdentifier<V> path) throws ReadFailedException {
-                return broker.syncReadOptional(datastoreType, path);
-            }
-        });
+        cache = requireNonNull(cacheProvider, "cacheProvider").newCheckedCache(
+                new CheckedCacheConfigBuilder<InstanceIdentifier<V>, Optional<V>, ReadFailedException>()
+                    .cacheFunction(path -> broker.syncReadOptional(datastoreType, path))
+                    .anchor(this)
+                    .build());
 
         ClusteredDataTreeChangeListener<V> dataObjectListener = (ClusteredDataTreeChangeListener<V>) changes -> {
             for (DataTreeModification<V> dataTreeModification : changes) {
@@ -68,7 +71,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
                         added(path, dataAfter);
                         break;
                     case DELETE:
-                        cache.invalidate(path);
+                        cache.evict(path);
                         removed(path, rootNode.getDataBefore());
                         break;
                     default:
@@ -83,9 +86,9 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
 
     @Override
     @PreDestroy
-    public void close() {
+    public void close() throws Exception {
         listenerRegistration.close();
-        cache.cleanUp();
+        cache.close();
     }
 
     /**
@@ -98,15 +101,8 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
      * @throws ReadFailedException if that data isn't cached and the read to fetch it fails
      */
     @Nonnull
-    // The ExecutionException cause should be a ReadFailedException - ok to cast.
-    @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
-    @SuppressWarnings("checkstyle:AvoidHidingCauseException")
     public Optional<V> get(@Nonnull InstanceIdentifier<V> path) throws ReadFailedException {
-        try {
-            return cache.get(path);
-        } catch (ExecutionException e) {
-            throw (ReadFailedException) e.getCause();
-        }
+        return cache.get(path);
     }
 
     /**

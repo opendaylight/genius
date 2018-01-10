@@ -151,7 +151,7 @@ public class DataObjectCacheTest {
     }
 
     @Test
-    public void testClose()  {
+    public void testClose() throws Exception  {
         cache.close();
         verify(mockListenerReg).close();
     }
