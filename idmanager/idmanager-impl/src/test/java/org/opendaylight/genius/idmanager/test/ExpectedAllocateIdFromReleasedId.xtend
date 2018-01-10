@@ -25,7 +25,7 @@ class ExpectedAllocateIdFromReleasedId {
     def static idPoolParent() {
         new IdPoolBuilder >> [
             availableIdsHolder = new AvailableIdsHolderBuilder >> [
-                cursor = 9L
+                cursor = 101L
                 end = 100L
                 start = 0L
             ]
