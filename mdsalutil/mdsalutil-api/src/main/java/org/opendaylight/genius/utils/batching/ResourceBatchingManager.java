@@ -7,9 +7,13 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +29,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -45,7 +51,6 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(ResourceBatchingManager.class);
 
-    private static final int INITIAL_DELAY = 3000;
     private static final TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
 
     private static final int PERIODICITY_IN_MS = 500;
@@ -109,7 +114,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
         if (resDelegatorService.getPoolSize() == 0) {
             resDelegatorService.scheduleWithFixedDelay(
-                    new Batcher(resourceType), INITIAL_DELAY, resHandler.getBatchInterval(), TIME_UNIT);
+                    new Batcher(resourceType), resHandler.getBatchInterval(), resHandler.getBatchInterval(), TIME_UNIT);
         }
     }
 
@@ -126,6 +131,25 @@ public class ResourceBatchingManager implements AutoCloseable {
                     batchInterval);
             registerBatchableResource(shardResource.name(), shardResource.getQueue(), batchHandler);
         }
+    }
+
+    /**
+     * Reads the identifier of the given resource type.
+     *
+     * @param resourceType resource type that was registered with batch manager
+     * @param identifier   identifier to be read
+     * @return Optional optional dataObject
+     * @throws ReadFailedException throws read failed exception if the datastore read fails
+     */
+    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(String resourceType,
+            InstanceIdentifier<T> identifier) {
+        BlockingQueue<ActionableResource> queue = getQueue(resourceType);
+        SettableFuture<Optional<T>> readFuture = SettableFuture.create();
+        if (queue != null) {
+            queue.add(new ActionableReadResource<>(identifier, readFuture));
+        }
+
+        return Futures.makeChecked(readFuture, ReadFailedException.MAPPER);
     }
 
     public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier<?> identifier,
@@ -234,7 +258,6 @@ public class ResourceBatchingManager implements AutoCloseable {
                 ResourceHandler resHandler = resMapper.getRight();
                 resList.add(resQueue.take());
                 resQueue.drainTo(resList);
-
                 long start = System.currentTimeMillis();
                 int batchSize = resHandler.getBatchSize();
 
@@ -274,6 +297,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             this.actResourceList = actResourceList;
         }
 
+        @SuppressWarnings("unchecked")
         public void process() {
             LOG.trace("Picked up 3 size {} of resourceType {}", actResourceList.size(), resourceType);
             Pair<BlockingQueue<ActionableResource>, ResourceHandler> resMapper =
@@ -285,7 +309,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             ResourceHandler resHandler = resMapper.getRight();
             DataBroker broker = resHandler.getResourceBroker();
             LogicalDatastoreType dsType = resHandler.getDatastoreType();
-            WriteTransaction tx = broker.newWriteOnlyTransaction();
+            ReadWriteTransaction tx = broker.newReadWriteTransaction();
             List<SubTransaction> transactionObjects = new ArrayList<>();
             Map<SubTransaction, SettableFuture<Void>> txMap = new HashMap<>();
             for (ActionableResource actResource : actResourceList) {
@@ -304,6 +328,22 @@ public class ResourceBatchingManager implements AutoCloseable {
                     case ActionableResource.DELETE:
                         resHandler.delete(tx, dsType, actResource.getInstanceIdentifier(), actResource.getInstance(),
                                 transactionObjects);
+                        break;
+                    case ActionableResource.READ:
+                        ActionableReadResource<DataObject> readAction = (ActionableReadResource<DataObject>)actResource;
+                        ListenableFuture<Optional<DataObject>> future =
+                                tx.read(dsType, readAction.getInstanceIdentifier());
+                        Futures.addCallback(future, new FutureCallback<Optional<DataObject>>() {
+                            @Override
+                            public void onSuccess(Optional<DataObject> result) {
+                                readAction.getReadFuture().set(result);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable failure) {
+                                readAction.getReadFuture().setException(failure);
+                            }
+                        }, MoreExecutors.directExecutor());
                         break;
                     default:
                         LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
@@ -365,6 +405,19 @@ public class ResourceBatchingManager implements AutoCloseable {
                     }
                 }
             }
+        }
+    }
+
+    private static class ActionableReadResource<T extends DataObject> extends ActionableResourceImpl {
+        private final SettableFuture<Optional<T>> readFuture;
+
+        ActionableReadResource(InstanceIdentifier<T> identifier, SettableFuture<Optional<T>> readFuture) {
+            super(identifier.toString(), identifier, ActionableResource.READ, null, null);
+            this.readFuture = readFuture;
+        }
+
+        SettableFuture<Optional<T>> getReadFuture() {
+            return readFuture;
         }
     }
 }
