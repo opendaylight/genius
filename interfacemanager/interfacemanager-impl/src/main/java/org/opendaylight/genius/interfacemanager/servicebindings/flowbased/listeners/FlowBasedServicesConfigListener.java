@@ -219,9 +219,10 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         public List<ListenableFuture<Void>> call() {
             BoundServicesState boundServicesState = FlowBasedServicesUtils
                 .getBoundServicesState(dataBroker, interfaceName, serviceMode);
-            // if service-binding state is not present, construct the same using ifstate
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            if (boundServicesState == null) {
+            // if service-binding state is not present, or if this is the first service getting bound
+            // construct the service-binding state using ifstate
+            if (boundServicesList.size() ==  1 || boundServicesState == null) {
                 Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
                 if (ifState == null) {
                     LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
