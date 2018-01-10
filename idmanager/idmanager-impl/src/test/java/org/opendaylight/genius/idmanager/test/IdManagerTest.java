@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -163,6 +164,7 @@ public class IdManagerTest {
 
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
         IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).setKey(new IdPoolKey(ID_POOL_NAME))
+        		.setAvailableIdsHolder(createAvailableIdHolder(ID_LOW, ID_HIGH, ID_HIGH + 1))
                 .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L))).build();
         IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).setKey(new IdPoolKey(localPoolName))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
@@ -230,8 +232,9 @@ public class IdManagerTest {
 
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
         IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).setKey(new IdPoolKey(ID_POOL_NAME))
-                .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L))).build();
+                .setReleasedIdsHolder(createReleaseIdHolder(Collections.emptyList())).build();
         IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).setKey(new IdPoolKey(localPoolName))
+                .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L)))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
@@ -282,8 +285,10 @@ public class IdManagerTest {
 
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
         IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).setKey(new IdPoolKey(ID_POOL_NAME))
-                .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L))).build();
+                .setAvailableIdsHolder(createAvailableIdHolder(ID_LOW, ID_HIGH, ID_HIGH + 1))
+                .setReleasedIdsHolder(createReleaseIdHolder(Collections.emptyList())).build();
         IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).setKey(new IdPoolKey(localPoolName))
+                .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L)))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
