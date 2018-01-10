@@ -34,6 +34,24 @@
       "revId": "449c02b0d26e645e74727e9df084442bd3c9c320",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da7da631_a31a844f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T13:59:49Z",
+      "side": 1,
+      "message": "At the very least this needs comments to explain what is going on here. \nAn arbitrary, hard-coded 10 sec seems like a hack.  The task itself is scheduleAtFixedRate at a default 15 sec so subsequent executions will back up with a 10 sec delay in between RPCs, even with 3 switches.  This should be a bit smarter - you could use a guava RateLimiter to cap the number of inflight RPCs, or spread the execution of the RPCs across the entire poll interval (ie randomize the start of each RPC).",
+      "parentUuid": "1fa45ee5_a5c23a0a",
+      "revId": "449c02b0d26e645e74727e9df084442bd3c9c320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
