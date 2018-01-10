@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.mdsalutil.cache;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -46,6 +48,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
             InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
         this.broker = new SingleTransactionDataBroker(dataBroker);
 
+        requireNonNull(cacheProvider, "cacheProvider");
         cache = CacheBuilder.newBuilder().build(new CacheLoader<InstanceIdentifier<V>, Optional<V>>() {
             @Override
             public Optional<V> load(InstanceIdentifier<V> path) throws ReadFailedException {
