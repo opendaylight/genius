@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "649efb13_01e4e123",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-10T16:04:39Z",
+      "side": 1,
+      "message": "all these only ever seem to be incremented.  It would thus IMHO be more suitable to use a Meter instead of a Counter here?  I\u0027ve added better JavaDoc about this in https://git.opendaylight.org/gerrit/#/c/67017/",
+      "revId": "196748ea4e5e439c82e1304df7ff0f04e61e1b37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "467a9cfb_57340068",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-10T16:04:39Z",
+      "side": 1,
+      "message": "minor: static fields are typically listed before non-static ones, so I would put this right after the LOG (and put an empty new line before the LOG to separate from class and after the MODULENAME, to separate from DataBroker)",
+      "revId": "196748ea4e5e439c82e1304df7ff0f04e61e1b37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ec21cb2_2d6c877a",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestModule.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-10T16:04:39Z",
+      "side": 1,
+      "message": "I\u0027ve added a \"dead fairy\" here to fix that NPE... see https://tuhrig.de/everytime-a-mock-returns-a-mock-a-fairy-dies/ and https://static.javadoc.io/org.mockito/mockito-core/2.13.0/org/mockito/Mockito.html#RETURNS_DEEP_STUBS",
+      "revId": "196748ea4e5e439c82e1304df7ff0f04e61e1b37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

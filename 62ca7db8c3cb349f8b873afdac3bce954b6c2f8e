@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d770b4ad_ddf695f6",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-10T16:04:39Z",
+      "side": 0,
+      "message": "with https://git.opendaylight.org/gerrit/#/c/66975/ you could actually keep this, after all?",
+      "revId": "62ca7db8c3cb349f8b873afdac3bce954b6c2f8e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
