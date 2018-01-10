@@ -16,6 +16,24 @@
       "revId": "62ca7db8c3cb349f8b873afdac3bce954b6c2f8e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edcc8d36_69dc2562",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-10T17:10:26Z",
+      "side": 0,
+      "message": "duh no with the mocked impl of course you could not.. so please ignore this, unless this test is critical, I don\u0027t mind it getting removed.  If you do want to keep it, then we need to not use the Mock but the real Impl. You can do that easily by depending on metrics with \u003cscope\u003etest (no need for a PAX Exam test). Up to you.  (I\u0027ll +1 when you change Counter to Meter; if you want to do this, here or in a follow-up change, I don\u0027t feel very strongly about either way.)",
+      "parentUuid": "d770b4ad_ddf695f6",
+      "revId": "62ca7db8c3cb349f8b873afdac3bce954b6c2f8e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
