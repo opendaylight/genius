@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9338acf6_27dc99dd",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T14:55:15Z",
+      "side": 1,
+      "message": "You really don\u0027t want to do this. The \u003cclustered-app-config\u003e xml file specifies the defaults and works the same as yang defaults, ie they are applied on reads when the data doesn\u0027t exist - yang defaults are not implicitly written to the data store. You don\u0027t want to do that b/c if you ever change a default in a subsequent release it wouldn\u0027t take affect - so they would only be actual defaults the first time you run it which isn\u0027t right. Also in a clustered env, each node would be doing this on startup which could cause conflicts. It could also conflict with a user changing it via rest at the same time (not likely but possible). Also writing it here will cause the \u003cclustered-app-config\u003e to restart the bundle which would probably happen over and over (you\u0027d have to disable restarts). \n\nThe downside of the defaults is that they\u0027re not available via rest which reads from the DS which obviously isn\u0027t aware of the default xml file. It would be nice to return the xml defaults but that would take some thought on how to do it and what would be the best way. yang defaults are also not returned by rest b/c it uses the DOM layer and, for whatever reason,  yang defaults were only implemented in the binding layer.",
+      "parentUuid": "a085aa9d_059a17ac",
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ecb4021_ae6bc1ea",
         "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
         "patchSetId": 3
