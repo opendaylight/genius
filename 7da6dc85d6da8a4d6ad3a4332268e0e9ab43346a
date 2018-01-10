@@ -22,6 +22,30 @@
       "revId": "7da6dc85d6da8a4d6ad3a4332268e0e9ab43346a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd5f9beb_f7e31158",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-10T16:41:01Z",
+      "side": 1,
+      "message": "erm, OK but how is this a reason to -1 this?! ;\u003d)",
+      "parentUuid": "bd871457_a213979d",
+      "range": {
+        "startLine": 43,
+        "startChar": 12,
+        "endLine": 43,
+        "endChar": 17
+      },
+      "revId": "7da6dc85d6da8a4d6ad3a4332268e0e9ab43346a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
