@@ -140,6 +140,30 @@
       "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf10002c_57070049",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-01-10T18:08:31Z",
+      "side": 1,
+      "message": "Tom, this patch is a modification of the original patch where the naming and packaging of this was decided months ago between Michael Vorburger and myself. The points you raise are valid but in the end we decided that since this is quite literally a single boolean value it should not get its own bundle and should be part of mdsal-util. More importantly, there are a bunch of patches that rely on this one and we are a week away from code freeze and would really like to start getting stuff delivered. Can we agree to leave it as is and if either (a) more things get added to mdsal-util\u0027s config or (b) to the upgrade specific parts that we can refactor it then?",
+      "parentUuid": "8afcf7d9_0a26b7b3",
+      "range": {
+        "startLine": 19,
+        "startChar": 89,
+        "endLine": 19,
+        "endChar": 108
+      },
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
