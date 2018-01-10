@@ -334,15 +334,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private Long getIdFromLocalPoolCache(IdLocalPool localIdPool, String parentPoolName)
             throws OperationFailedException, IdManagerException {
         while (true) {
-            IdHolder releasedIds = localIdPool.getReleasedIds();
-            Optional<Long> releasedId = releasedIds.allocateId();
-            if (releasedId.isPresent()) {
-                IdHolderSyncJob poolSyncJob =
-                        new IdHolderSyncJob(localIdPool.getPoolName(), localIdPool.getReleasedIds(), txRunner,
-                                idUtils);
-                jobCoordinator.enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
-                return releasedId.get();
-            }
             IdHolder availableIds = localIdPool.getAvailableIds();
             if (availableIds != null) {
                 Optional<Long> availableId = availableIds.allocateId();
@@ -353,6 +344,15 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     jobCoordinator.enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
                     return availableId.get();
                 }
+            }
+            IdHolder releasedIds = localIdPool.getReleasedIds();
+            Optional<Long> releasedId = releasedIds.allocateId();
+            if (releasedId.isPresent()) {
+                IdHolderSyncJob poolSyncJob =
+                        new IdHolderSyncJob(localIdPool.getPoolName(), localIdPool.getReleasedIds(), txRunner,
+                                idUtils);
+                jobCoordinator.enqueueJob(localIdPool.getPoolName(), poolSyncJob, IdUtils.RETRY_COUNT);
+                return releasedId.get();
             }
             long idCount = getIdBlockFromParentPool(parentPoolName, localIdPool);
             if (idCount <= 0) {
@@ -401,11 +401,11 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         long idCount = -1;
         ReleasedIdsHolderBuilder releasedIdsBuilderParent = idUtils.getReleaseIdsHolderBuilder(parentIdPool);
         while (true) {
-            idCount = allocateIdBlockFromReleasedIdsHolder(localPoolCache, releasedIdsBuilderParent, parentIdPool, tx);
+            idCount = allocateIdBlockFromAvailableIdsHolder(localPoolCache, parentIdPool, tx);
             if (idCount > 0) {
                 return idCount;
             }
-            idCount = allocateIdBlockFromAvailableIdsHolder(localPoolCache, parentIdPool, tx);
+            idCount = allocateIdBlockFromReleasedIdsHolder(localPoolCache, releasedIdsBuilderParent, parentIdPool, tx);
             if (idCount > 0) {
                 return idCount;
             }
