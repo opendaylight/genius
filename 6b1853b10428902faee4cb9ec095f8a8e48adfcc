@@ -116,6 +116,30 @@
       "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8afcf7d9_0a26b7b3",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T17:28:57Z",
+      "side": 1,
+      "message": "The module is named \"genius-mdsalutil\". These are internal code words/phrases. yang modules are exposed publicly so I would prefer to name it something more meaningful like \"opendaylight-upgrade\" and change the namespace accordingly, ie  \"urn:opendaylight:yang:upgrade\" (I never understood the purpose of \"params:xml:ns\" - seems like useless noise).\n\nAlso I think the upgrade stuff should be in its own bundle rather than  jammed into mdsalutil. It really isn\u0027t an mdsal utility and I think we\u0027ve overloaded and dumped enough into mdsaluti already. That\u0027s my 2 cents...",
+      "parentUuid": "44b96aa5_d6db26fa",
+      "range": {
+        "startLine": 19,
+        "startChar": 89,
+        "endLine": 19,
+        "endChar": 108
+      },
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
