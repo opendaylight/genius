@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a7765c8d_87836c4e",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-01-10T09:35:11Z",
+      "side": 1,
+      "message": "Add a space where?",
+      "parentUuid": "5ecb4021_ae6bc1ea",
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3fdd2787_c301f1cf",
         "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
         "patchSetId": 3
@@ -30,6 +48,30 @@
       "writtenOn": "2018-01-09T12:38:07Z",
       "side": 1,
       "message": "did this ever get cleaned up to remove the unneeded fields? Also better to have the final Config be more like MdsalutilConfig over just config. I guess the module name is just module config, which isn\u0027t the best.",
+      "range": {
+        "startLine": 19,
+        "startChar": 89,
+        "endLine": 19,
+        "endChar": 108
+      },
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "44b96aa5_d6db26fa",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-01-10T09:35:11Z",
+      "side": 1,
+      "message": "It\u0027s more or less the standard that all the other modules use as well. I guess the idea is that since it\u0027s scoped to the component anyway it doesn\u0027t matter.",
+      "parentUuid": "3fdd2787_c301f1cf",
       "range": {
         "startLine": 19,
         "startChar": 89,
