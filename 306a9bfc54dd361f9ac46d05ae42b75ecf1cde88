@@ -195,6 +195,24 @@
       "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7dd22271_a6127adb",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T14:29:12Z",
+      "side": 1,
+      "message": "I don\u0027t necessarily disagree with what you\u0027re saying but the intent of passing the Executor instead of implicitly creating a dedicated single-threaded Executor is to make the user think about it, eg do you really need a dedicated executor, will it scale, can/should you share an executor across listeners, etc. This is similar to the guava APIs where they have deprecated overloaded methods that pass the directExecutor() - so you now have to explicitly pass directExecutor() which is a minor inconvenience but it forces you to think about it.",
+      "parentUuid": "568d7597_9c05bc81",
+      "revId": "306a9bfc54dd361f9ac46d05ae42b75ecf1cde88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
