@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "232a28b7_ef01de01",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T19:58:10Z",
+      "side": 1,
+      "message": "I implemented this solution in https://git.opendaylight.org/gerrit/#/c/67031/",
+      "parentUuid": "03274163_24bdcf97",
+      "revId": "315a44eaf275bbdec289ce2cc2088c950f00ec30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "62b2433b_8a1dd494",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
         "patchSetId": 1
