@@ -188,6 +188,30 @@
       "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae08b0c5_afdb6c58",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/resources/org/opendaylight/blueprint/mdsalutil.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-01-10T18:52:04Z",
+      "side": 1,
+      "message": "So, like, +1? ;-)",
+      "parentUuid": "50dbacd9_e104597c",
+      "range": {
+        "startLine": 19,
+        "startChar": 89,
+        "endLine": 19,
+        "endChar": 108
+      },
+      "revId": "6b1853b10428902faee4cb9ec095f8a8e48adfcc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
