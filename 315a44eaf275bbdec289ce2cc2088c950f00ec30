@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03274163_24bdcf97",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T15:21:18Z",
+      "side": 1,
+      "message": "I don\u0027t think this is the cleanest or best way to do it. I suggest to treat reads like the other transaction operations. Add an ActionableResource for read that records the identifier and a resulting SettableFuture. Waiting for the future to be comleted here. Then execute the read normally on the transaction in the loop at line 349 and set the resulting future (success or failure).",
+      "revId": "315a44eaf275bbdec289ce2cc2088c950f00ec30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62b2433b_8a1dd494",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-10T15:21:18Z",
+      "side": 1,
+      "message": "This assumes this and the other merge, put, delete methods are always used but some users, unfortunately,  add ActionableResources to their queues directly.",
+      "revId": "315a44eaf275bbdec289ce2cc2088c950f00ec30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
