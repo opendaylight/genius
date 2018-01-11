@@ -34,6 +34,24 @@
       "revId": "62ca7db8c3cb349f8b873afdac3bce954b6c2f8e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d5846f0_43501add",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-11T13:48:15Z",
+      "side": 0,
+      "message": "test is not critical. I am removing the test :) Thanks for the input, will take that up in future use cases:)",
+      "parentUuid": "edcc8d36_69dc2562",
+      "revId": "62ca7db8c3cb349f8b873afdac3bce954b6c2f8e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

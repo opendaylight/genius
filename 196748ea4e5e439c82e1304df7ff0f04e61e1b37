@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b7935756_d53c77e0",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-11T13:48:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "649efb13_01e4e123",
+      "revId": "196748ea4e5e439c82e1304df7ff0f04e61e1b37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "467a9cfb_57340068",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2018-01-10T16:04:39Z",
       "side": 1,
       "message": "minor: static fields are typically listed before non-static ones, so I would put this right after the LOG (and put an empty new line before the LOG to separate from class and after the MODULENAME, to separate from DataBroker)",
+      "revId": "196748ea4e5e439c82e1304df7ff0f04e61e1b37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc7bf4ec_a4ee3de2",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-11T13:48:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "467a9cfb_57340068",
       "revId": "196748ea4e5e439c82e1304df7ff0f04e61e1b37",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
