@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "79797e2d_6ebcb8e7",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestModule.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-11T13:48:15Z",
+      "side": 1,
+      "message": "Thanks a ton :) This resolves the issue :)",
+      "revId": "16dc3c582e789960aaf1dbcd1e9f79c7ca749ce4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
