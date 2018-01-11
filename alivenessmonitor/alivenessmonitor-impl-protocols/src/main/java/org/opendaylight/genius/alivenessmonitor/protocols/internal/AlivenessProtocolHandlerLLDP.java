@@ -21,11 +21,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.StringUtils;
-import org.opendaylight.controller.liblldp.EtherTypes;
-import org.opendaylight.controller.liblldp.LLDP;
-import org.opendaylight.controller.liblldp.LLDPTLV;
-import org.opendaylight.controller.liblldp.LLDPTLV.TLVType;
-import org.opendaylight.controller.liblldp.PacketException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
@@ -35,6 +30,11 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.openflowplugin.libraries.liblldp.EtherTypes;
+import org.opendaylight.openflowplugin.libraries.liblldp.LLDP;
+import org.opendaylight.openflowplugin.libraries.liblldp.LLDPTLV;
+import org.opendaylight.openflowplugin.libraries.liblldp.LLDPTLV.TLVType;
+import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
@@ -52,7 +52,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerLLDP.class);
 
-    // TODO org.opendaylight.controller.liblldp.LLDPTLV uses Charset.defaultCharset() .. bug there?
+    // TODO org.opendaylight.openflowplugin.libraries.liblldp.LLDPTLV uses Charset.defaultCharset() .. bug there?
     private static final Charset LLDPTLV_CHARSET = StandardCharsets.US_ASCII;
 
     private final PacketProcessingService packetProcessingService;
