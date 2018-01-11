@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "dc8aa82b_212ec5ba",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2018-01-11T06:20:39Z",
+      "side": 1,
+      "message": "Thank you tom for putting this so quickly.\nI took the inputs from that review and incorporated them here.\nDoes this look ok now ?",
+      "parentUuid": "232a28b7_ef01de01",
+      "revId": "315a44eaf275bbdec289ce2cc2088c950f00ec30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "62b2433b_8a1dd494",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2018-01-10T15:21:18Z",
       "side": 1,
       "message": "This assumes this and the other merge, put, delete methods are always used but some users, unfortunately,  add ActionableResources to their queues directly.",
+      "revId": "315a44eaf275bbdec289ce2cc2088c950f00ec30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81f2916b_e65cc268",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2018-01-11T06:20:39Z",
+      "side": 1,
+      "message": "Added a javadoc on the read method not to be used if the application owns the queue.",
+      "parentUuid": "62b2433b_8a1dd494",
       "revId": "315a44eaf275bbdec289ce2cc2088c950f00ec30",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
