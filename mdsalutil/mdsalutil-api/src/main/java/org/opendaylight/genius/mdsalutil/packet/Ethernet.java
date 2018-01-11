@@ -14,11 +14,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.opendaylight.controller.liblldp.BitBufferHelper;
-import org.opendaylight.controller.liblldp.EtherTypes;
-import org.opendaylight.controller.liblldp.LLDP;
-import org.opendaylight.controller.liblldp.NetUtils;
-import org.opendaylight.controller.liblldp.Packet;
+import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
+import org.opendaylight.openflowplugin.libraries.liblldp.EtherTypes;
+import org.opendaylight.openflowplugin.libraries.liblldp.LLDP;
+import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
+import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 
 /**
  * Class that represents the Ethernet frame objects

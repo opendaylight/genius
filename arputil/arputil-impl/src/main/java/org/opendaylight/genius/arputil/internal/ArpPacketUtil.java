@@ -8,10 +8,10 @@
 
 package org.opendaylight.genius.arputil.internal;
 
-import org.opendaylight.controller.liblldp.EtherTypes;
-import org.opendaylight.controller.liblldp.PacketException;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.openflowplugin.libraries.liblldp.EtherTypes;
+import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 
 public final class ArpPacketUtil {
 
