@@ -10,7 +10,7 @@ package org.opendaylight.genius.alivenessmonitor.protocols;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
-import org.opendaylight.controller.liblldp.Packet;
+import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 
 /**

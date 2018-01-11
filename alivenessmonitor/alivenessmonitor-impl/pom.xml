@@ -33,11 +33,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>liblldp</artifactId>
-      <version>${liblldp.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>mdsalutil-api</artifactId>
       <version>${genius.mdsalutil.version}</version>
@@ -45,6 +40,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.openflowplugin.model</groupId>
       <artifactId>model-flow-service</artifactId>
+      <version>${openflowplugin.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.openflowplugin.libraries</groupId>
+      <artifactId>liblldp</artifactId>
       <version>${openflowplugin.version}</version>
     </dependency>
     <dependency>

@@ -27,9 +27,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <dependencies>
     <dependency>
-      <groupId>org.opendaylight.controller</groupId>
+      <groupId>org.opendaylight.openflowplugin.libraries</groupId>
       <artifactId>liblldp</artifactId>
-      <version>${liblldp.version}</version>
+      <version>${openflowplugin.version}</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>

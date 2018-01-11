@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Singleton;
-import org.opendaylight.controller.liblldp.Packet;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 
 /**

@@ -36,7 +36,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <openflowplugin.version>0.6.0-SNAPSHOT</openflowplugin.version>
     <genius.ovsdb.version>1.6.0-SNAPSHOT</genius.ovsdb.version>
     <genius.infrautils.version>1.3.0-SNAPSHOT</genius.infrautils.version>
-    <liblldp.version>0.14.0-SNAPSHOT</liblldp.version>
   </properties>
 
   <dependencyManagement>
