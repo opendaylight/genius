@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ee12dbad_315e1493",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2018-01-12T05:07:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a053697_38caba12",
+      "revId": "f163b279f0516932d7bf168be95f61d5356fb69a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "87d73740_286e6f08",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2018-01-11T15:17:44Z",
       "side": 1,
       "message": "You can combine these methods by passing the InstanceIdentifier",
+      "revId": "f163b279f0516932d7bf168be95f61d5356fb69a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b662873_a62ed100",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 482,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2018-01-12T05:07:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87d73740_286e6f08",
       "revId": "f163b279f0516932d7bf168be95f61d5356fb69a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
