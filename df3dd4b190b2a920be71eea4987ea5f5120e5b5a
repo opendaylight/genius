@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2e46143_40986c43",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 465,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-12T12:53:23Z",
+      "side": 1,
+      "message": "Since the methods are duplicated, by combine, what I meant was have one postCommit method that takes IID:\n\n  private void postCommit(InstanceIdentifier iid);",
+      "revId": "df3dd4b190b2a920be71eea4987ea5f5120e5b5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
