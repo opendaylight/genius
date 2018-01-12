@@ -52,6 +52,24 @@
       "revId": "449c02b0d26e645e74727e9df084442bd3c9c320",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30e10e3c_13748cbc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T12:38:13Z",
+      "side": 1,
+      "message": "Agreed.I have a put a logic to spread the RPC call across\nthe polling interval time by calculating delay factor to be \npolling interval divided by no.of.switches.",
+      "parentUuid": "da7da631_a31a844f",
+      "revId": "449c02b0d26e645e74727e9df084442bd3c9c320",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
