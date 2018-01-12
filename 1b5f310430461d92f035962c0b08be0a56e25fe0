@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "e0f148ef_da7f2a00",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T14:06:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "644694b3_300e0252",
+      "range": {
+        "startLine": 62,
+        "startChar": 4,
+        "endLine": 62,
+        "endChar": 10
+      },
+      "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "acb63dab_5dd3bcc4",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 3
@@ -36,6 +60,24 @@
       "writtenOn": "2018-01-12T13:20:25Z",
       "side": 1,
       "message": "Accessed by multiple threads so should be volatile",
+      "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb6d9478_a0a70b5c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T14:06:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "acb63dab_5dd3bcc4",
       "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "369bc2ea_63dcb58c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T14:06:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ac995331_c3408f0d",
+      "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8d40e6af_04f122db",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 3
@@ -70,6 +130,30 @@
       "writtenOn": "2018-01-12T13:20:25Z",
       "side": 1,
       "message": "should all be private final",
+      "range": {
+        "startLine": 68,
+        "startChar": 4,
+        "endLine": 75,
+        "endChar": 93
+      },
+      "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1381d9ab_5b97098a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T14:06:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8d40e6af_04f122db",
       "range": {
         "startLine": 68,
         "startChar": 4,
@@ -105,6 +189,30 @@
     },
     {
       "key": {
+        "uuid": "3da76c71_4b312764",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T14:06:23Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b83ca9e1_b1095c57",
+      "range": {
+        "startLine": 119,
+        "startChar": 50,
+        "endLine": 119,
+        "endChar": 69
+      },
+      "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "63efe4f3_a1d04541",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 3
@@ -116,6 +224,24 @@
       "writtenOn": "2018-01-12T13:20:25Z",
       "side": 1,
       "message": "Just curious - it calls getAllNodeConnectorsStatistics but doesn\u0027t do anything with the output - what\u0027s the purpose?",
+      "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9eb0bdff_bcbd0275",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-12T14:06:23Z",
+      "side": 1,
+      "message": "This RPC will trigger a yang notification. \nListener is attached to get the notification check on line 200. The output are processed there.",
+      "parentUuid": "63efe4f3_a1d04541",
       "revId": "1b5f310430461d92f035962c0b08be0a56e25fe0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
