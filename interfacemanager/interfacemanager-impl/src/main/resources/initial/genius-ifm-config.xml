@@ -1,0 +1,5 @@
+<interfacemanager-config xmlns="urn:opendaylight:genius:interfacemanager:config">
+    <ifm-stats-poll-enabled>false</ifm-stats-poll-enabled>
+    <ifm-stats-def-poll-interval>15</ifm-stats-def-poll-interval>
+    <ifm-stats-initial-delay>5</ifm-stats-initial-delay>
+</interfacemanager-config>
