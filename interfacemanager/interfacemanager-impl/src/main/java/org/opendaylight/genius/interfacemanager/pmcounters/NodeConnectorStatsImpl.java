@@ -33,6 +33,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev13
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.flow.table.and.statistics.map.FlowTableAndStatisticsMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeRef;
@@ -52,11 +53,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
     private static final Logger LOG = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
-    private static final String STATS_POLL_FLAG = "interfacemgr.pmcounters.poll";
     private static final int THREAD_POOL_SIZE = 4;
     private static final int NO_DELAY = 0;
-    private static final String POLLING_INTERVAL_PATH = "interfacemanager-statistics-polling-interval";
-    private static final int DEFAULT_POLLING_INTERVAL = 15;
     public static final PMAgentForNodeConnectorCounters PMAGENT = new PMAgentForNodeConnectorCounters();
     private final PortRpcStatisticsListener portStatsListener = new PortRpcStatisticsListener();
     private final FlowRpcStatisticsListener flowTableStatsListener = new FlowRpcStatisticsListener();
@@ -73,14 +71,18 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
     private final OpendaylightPortStatisticsService statPortService;
     private final ScheduledExecutorService portStatExecutorService;
     private final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService;
+    private final IfmConfig ifmConfig;
 
     @Inject
     public NodeConnectorStatsImpl(DataBroker dataBroker, NotificationService notificationService,
                                   final OpendaylightPortStatisticsService opendaylightPortStatisticsService,
-                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService) {
+                                  final OpendaylightFlowTableStatisticsService opendaylightFlowTableStatisticsService,
+                                  final IfmConfig ifmConfigObj) {
         super(Node.class, NodeConnectorStatsImpl.class);
         this.statPortService = opendaylightPortStatisticsService;
         this.opendaylightFlowTableStatisticsService = opendaylightFlowTableStatisticsService;
+        this.ifmConfig = ifmConfigObj;
+
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
             getThreadFactory("Port Stats " + "Request Task"));
@@ -103,14 +105,14 @@ public class NodeConnectorStatsImpl extends AsyncDataTreeChangeListenerBase<Node
      * PortStat request task is started when first DPN gets connected
      */
     private void schedulePortStatRequestTask() {
-        if (!Boolean.getBoolean(STATS_POLL_FLAG)) {
+        if (!ifmConfig.isIfmStatsPollEnabled()) {
             LOG.info("Port statistics is turned off");
             return;
         }
         LOG.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
         scheduledResult = portStatExecutorService.scheduleAtFixedRate(portStatRequestTask, NO_DELAY,
-                Integer.getInteger(POLLING_INTERVAL_PATH, DEFAULT_POLLING_INTERVAL), TimeUnit.MINUTES);
+                ifmConfig.getIfmStatsDefPollInterval(), TimeUnit.MINUTES);
     }
 
     /*

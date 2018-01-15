@@ -1,0 +1,33 @@
+module ifm-config {
+
+    namespace "urn:opendaylight:genius:interfacemanager:config";
+
+    prefix ifm-config;
+
+    import ietf-yang-types {
+        prefix yang;
+    }
+
+    description "This YANG module defines interfacemanager configuration.";
+    revision "2016-04-06";
+
+    /* conf parameters for interfacemanager */
+    container ifm-config {
+        config true;
+        leaf ifm-stats-poll-enabled {
+           type boolean;
+           default false;
+           description "IFM statistics poll flag";
+        }
+        leaf ifm-stats-def-poll-interval {
+           type uint16;
+           default 15;
+           description "IFM statistics polling interval";
+       }
+       leaf ifm-stats-initial-delay {
+           type uint16;
+           default 5;
+           description "IFM statistics initial delay";
+       }
+    }
+}

@@ -197,6 +197,14 @@
       <classifier>config</classifier>
     </dependency>
     <dependency>
+      <!-- finalname="etc/opendaylight/datastore/initial/config/genius-ifm-config.xml" -->
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>interfacemanager-impl</artifactId>
+      <version>${project.version}</version>
+      <type>xml</type>
+      <classifier>config</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>srm-impl</artifactId>
       <version>${project.version}</version>
