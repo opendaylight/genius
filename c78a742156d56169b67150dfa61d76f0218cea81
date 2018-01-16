@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b7e917b3_683eb164",
+        "filename": "idmanager/idmanager-impl/src/test/java/org/opendaylight/genius/idmanager/test/IdManagerTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-16T11:11:23Z",
+      "side": 1,
+      "message": "just for clarity for people reading this in the future, would you mind changing this to use Guava\u0027s Sets.newConcurrentHashSet() here instead?  (The \u003cLong, Boolean\u003e a bit confusing at first; I now get that this is similar, but upon seeing it at first I had to look up why...)",
+      "revId": "c78a742156d56169b67150dfa61d76f0218cea81",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
