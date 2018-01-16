@@ -15,9 +15,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -30,7 +31,6 @@ import javax.inject.Inject;
 import junit.framework.AssertionFailedError;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -255,7 +255,6 @@ public class IdManagerTest {
     }
 
     @Test
-    @Ignore // TODO make less brittle and completely reliable, see https://jira.opendaylight.org/browse/GENIUS-105
     @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
     public void testMultithreadedIdAllocationForSameKeyFromAvailableIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
@@ -268,7 +267,6 @@ public class IdManagerTest {
     }
 
     @Test
-    @Ignore
     @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
     public void testMultithreadedIdAllocationForSameKeyFromReleasedIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
@@ -300,7 +298,7 @@ public class IdManagerTest {
     private void requestIdsConcurrently(boolean isSameKey) throws Throwable {
         int numberOfTasks = 3;
         CountDownLatch latch = new CountDownLatch(numberOfTasks);
-        Set<Long> idSet = new HashSet<>();
+        Set<Long> idSet = Sets.newConcurrentHashSet();
         ExecutorService executor = Executors.newCachedThreadPool("requestIdsConcurrently()", LOG);
         AtomicReference<Throwable> exceptionInExecutorAtomic = new AtomicReference<>();
         for (int i = 0; i < numberOfTasks; i++) {
