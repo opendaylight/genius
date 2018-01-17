@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e47d601_8dc7f4a5",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/ifm-config.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-17T14:48:04Z",
+      "side": 1,
+      "message": "Why do we need to expose an initial delay? That\u0027s really just an internal implementation detail which should be the same as the poll interval.",
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0938897_302302d0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-17T14:48:04Z",
+      "side": 1,
+      "message": "So the initial delay configuration isn\u0027t even used. As mentioned, this should be the same as the poll interval.",
+      "range": {
+        "startLine": 114,
+        "startChar": 91,
+        "endLine": 114,
+        "endChar": 99
+      },
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
