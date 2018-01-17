@@ -47,4 +47,33 @@ public interface IfmConstants {
     String INTERFACE_CONFIG_ENTITY = "interface_config";
     String INTERFACE_SERVICE_BINDING_ENTITY = "interface_service_binding";
     String INTERFACE_SERVICE_NAME = "IFM";
+
+    //IFM counter name strings
+    String IFM_PORT_COUNTER_OFPORT_DURATION = "OFPortDuration";
+    String IFM_PORT_COUNTER_OFPORT_PKT_RECVDROP = "PacketsPerOFPortReceiveDrop";
+    String IFM_PORT_COUNTER_OFPORT_PKT_RECVERROR = "PacketsPerOFPortReceiveError";
+    String IFM_PORT_COUNTER_OFPORT_PKT_SENT = "PacketsPerOFPortSent";
+    String IFM_PORT_COUNTER_OFPORT_PKT_RECV = "PacketsPerOFPortReceive";
+    String IFM_PORT_COUNTER_OFPORT_BYTE_SENT = "BytesPerOFPortSent";
+    String IFM_PORT_COUNTER_OFPORT_BYTE_RECV = "BytesPerOFPortReceive";
+    String IFM_FLOW_TBL_COUNTER_FLOWS_PER_TBL = "EntriesPerOFTable";
+
+    /*
+     * IFM counter key constants
+     *
+     * Pattern to be followed:
+     *
+     * /entitycounter/entitytype:<port>/entityid:<switchid=value;portid=value;aliasid=value>/<countername>
+     * /entitycounter/entitytype:<flowtable>/entityid:<switchid=value;flowtableid=value>/<countername>
+     *
+     */
+    String ENTITY_CNT_KEYWORD = "/entitycounter";
+    String ENTITY_TYPE_PORT_KEYWORD = "/entitytype:port";
+    String ENTITY_TYPE_FLOWTBL_KEYWORD = "/entitytype:flowtable";
+    String ENTITY_ID_KEYWORD = "/entityid:<";
+    String ENTITY_ID_SWITCHID_KEYWORD = "switchid=";
+    String ENTITY_ID_PORTID_KEYWORD = ";portid=";
+    String ENTITY_ID_FLOWTBLID_KEYWORD = ";flowtableid=";
+    String ENTITY_ID_ALIASID_KEYWORD = ";aliasid=";
+    String ENTITY_ID_BLOCK_CLOSURE_KEYWORD = ">/";
 }
