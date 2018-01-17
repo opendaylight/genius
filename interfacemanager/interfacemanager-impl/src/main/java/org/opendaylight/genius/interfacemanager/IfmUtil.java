@@ -558,4 +558,37 @@ public final class IfmUtil {
     public static long getLogicalTunnelSelectGroupId(int lportTag) {
         return org.opendaylight.genius.interfacemanager.globals.IfmConstants.VXLAN_GROUPID_MIN + lportTag;
     }
+
+    /*
+     * This method returns metric key
+     *
+     * Pattern to be followed for key generation:
+     *
+     * odl.<projectName>.<moduleName>.entitycounter/entitytype:port.entityid:<switchid=value;portid=value;
+     * aliasid=value>.<countername>
+     * odl.<projectName>.<moduleName>.entitycounter.entitytype:flowtable.entityid:<switchid=value;flowtableid=value>
+     * .<countername>
+     *
+     */
+    public static String getMetricKey(String switchId, String port, String aliasId, String tableId) {
+        String odlKeyword = "odl";
+        String projectName = "genius";
+        String moduleName = "interfacemanager";
+
+        String counterKey = odlKeyword + "." + projectName + "." + moduleName + ".";
+        if (port != null) {
+            counterKey += IfmConstants.ENTITY_CNT_KEYWORD + "." + IfmConstants.ENTITY_TYPE_PORT_KEYWORD + "."
+                    + IfmConstants.ENTITY_ID_KEYWORD + ":" + "<" + IfmConstants.ENTITY_ID_SWITCHID_KEYWORD + "="
+                    + switchId + ";" + IfmConstants.ENTITY_ID_PORTID_KEYWORD + "=" + port + ";"
+                    + IfmConstants.ENTITY_ID_ALIASID_KEYWORD + "=" + aliasId + ">" + ".";
+        }
+
+        if (tableId != null) {
+            counterKey += IfmConstants.ENTITY_CNT_KEYWORD + "." + IfmConstants.ENTITY_TYPE_FLOWTBL_KEYWORD + "."
+                    + IfmConstants.ENTITY_ID_KEYWORD + ":" + "<" + IfmConstants.ENTITY_ID_SWITCHID_KEYWORD + "="
+                    + switchId + ";" + IfmConstants.ENTITY_ID_FLOWTBLID_KEYWORD + "=" + tableId + ">" + ".";
+        }
+
+        return counterKey;
+    }
 }

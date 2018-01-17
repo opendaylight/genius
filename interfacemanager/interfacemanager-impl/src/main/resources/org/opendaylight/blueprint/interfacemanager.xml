@@ -40,6 +40,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="jobCoordinator"
              interface="org.opendaylight.infrautils.jobcoordinator.JobCoordinator"/>
 
+    <reference id="metricProvider"
+               interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <service ref="interfacemgrProvider"
