@@ -16,11 +16,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <odl:rpc-service id="idManagerService"
                      interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService" />
 
-    <odl:rpc-service id="opendaylightFlowTableStatisticsService"
-                     interface="org.opendaylight.yang.gen.v1.urn.opendaylight.flow.table.statistics.rev131215.OpendaylightFlowTableStatisticsService" />
-
-    <odl:rpc-service id="opendaylightPortStatisticsService"
-                     interface="org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.OpendaylightPortStatisticsService" />
+    <odl:rpc-service id="opendaylightDirectStatisticsService"
+                     interface="org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.OpendaylightDirectStatisticsService" />
 
     <reference id="dataBroker"
                interface="org.opendaylight.controller.md.sal.binding.api.DataBroker" />
@@ -39,6 +36,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <reference id="jobCoordinator"
              interface="org.opendaylight.infrautils.jobcoordinator.JobCoordinator"/>
+
+    <reference id="metricProvider"
+               interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
 
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
