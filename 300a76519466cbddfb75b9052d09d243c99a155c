@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f6a013f2_fa94b955",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-17T15:45:15Z",
+      "side": 1,
+      "message": "these IDs for MetricProvder look a bit weird, to me, with the : and the ; why is that?  Is it because in JMX those then get categorized by some particular UI?  But such IDs should not be JMX specific.. because the same Metric IDs may in the future be exposed to other systems, such as http://Prometheus.io or OpenStack Ceilometer Telemetry, and those won\u0027t understand such \"magic String conventions\".  Perhaps we need to improve the Metrics API which lets applications express what you are wanting to achieve here?",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1420c55f_92c43cf1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-17T15:45:15Z",
+      "side": 1,
+      "message": "there should be a @PreDestroy public void close() method here which does a close() on all Counter instances contained (nested) inside your metricsCountersPerNodeMap",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "987a874a_31b3f0be",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-17T15:45:15Z",
+      "side": 1,
+      "message": "does this have to be synchronous and block this task, or could it be async?",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0dcde075_f149bbef",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-17T15:45:15Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "76451097_117d1891",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-17T15:45:15Z",
+      "side": 1,
+      "message": "this Metric IDs do not respect the convention documented in the org.opendaylight.infrautils.metrics.MetricProvider JavaDoc (odl.\u003cprojectName\u003e.\u003cmoduleName\u003e.\u003cmetricName\u003e) ... do I really need to make that explicit in the API :) by having a Meter newMeter(Object anchor, String projectName, String moduleName, String id); kind of signature? ;) Or perhaps we should instead have a Builder there, in case in the future we also want e.g. like Description or what not... thoughts, anyone?",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71235009_291e87dc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-17T15:45:15Z",
+      "side": 1,
+      "message": "how about having a helper method for creating these ID strings, given some parameters, instead of this hard to read huge String concat?  And then perhaps even consider using e.g. String.format() in such a method.  And remove the respective constants from the public IfmConstants - you would only need them inside such a method.",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
