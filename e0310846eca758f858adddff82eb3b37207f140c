@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "477b1feb_4d9668b5",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/ifm-config.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-01-17T13:14:08Z",
+      "side": 1,
+      "message": "At the very least the unit (minutes in this case, I believe) should be in the description if not in the actual leaf name.",
+      "revId": "e0310846eca758f858adddff82eb3b37207f140c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13cadb45_e0a9063b",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/ifm-config.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-01-17T13:14:08Z",
+      "side": 1,
+      "message": "ditto...also this does not appear to be used anywhere, intentional?",
+      "revId": "e0310846eca758f858adddff82eb3b37207f140c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
