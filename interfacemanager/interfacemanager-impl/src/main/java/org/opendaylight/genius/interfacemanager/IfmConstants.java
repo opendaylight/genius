@@ -47,4 +47,14 @@ public interface IfmConstants {
     String INTERFACE_CONFIG_ENTITY = "interface_config";
     String INTERFACE_SERVICE_BINDING_ENTITY = "interface_service_binding";
     String INTERFACE_SERVICE_NAME = "IFM";
+
+    //IFM counter name strings
+    String IFM_PORT_COUNTER_OFPORT_DURATION = "OFPortDuration";
+    String IFM_PORT_COUNTER_OFPORT_PKT_RECVDROP = "PacketsPerOFPortReceiveDrop";
+    String IFM_PORT_COUNTER_OFPORT_PKT_RECVERROR = "PacketsPerOFPortReceiveError";
+    String IFM_PORT_COUNTER_OFPORT_PKT_SENT = "PacketsPerOFPortSent";
+    String IFM_PORT_COUNTER_OFPORT_PKT_RECV = "PacketsPerOFPortReceive";
+    String IFM_PORT_COUNTER_OFPORT_BYTE_SENT = "BytesPerOFPortSent";
+    String IFM_PORT_COUNTER_OFPORT_BYTE_RECV = "BytesPerOFPortReceive";
+    String IFM_FLOW_TBL_COUNTER_FLOWS_PER_TBL = "EntriesPerOFTable";
 }

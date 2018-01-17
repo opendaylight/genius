@@ -100,6 +100,17 @@ public final class IfmUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final int INVALID_ID = 0;
+    /*
+     * IFM counter key constants
+     */
+    private static final String ENTITY_CNT_KEYWORD = "entitycounter";
+    private static final String ENTITY_TYPE_PORT_KEYWORD = "entitytype:port";
+    private static final String ENTITY_TYPE_FLOWTBL_KEYWORD = "entitytype:flowtable";
+    private static final String ENTITY_ID_KEYWORD = "entityid";
+    private static final String ENTITY_ID_SWITCHID_KEYWORD = "switchid";
+    private static final String ENTITY_ID_PORTID_KEYWORD = "portid";
+    private static final String ENTITY_ID_FLOWTBLID_KEYWORD = "flowtableid";
+    private static final String ENTITY_ID_ALIASID_KEYWORD = "aliasid";
 
     private IfmUtil() {
         throw new IllegalStateException("Utility class");
@@ -557,5 +568,42 @@ public final class IfmUtil {
 
     public static long getLogicalTunnelSelectGroupId(int lportTag) {
         return org.opendaylight.genius.interfacemanager.globals.IfmConstants.VXLAN_GROUPID_MIN + lportTag;
+    }
+
+    /**
+     * This method prepares metric key.
+     * @param switchId datapath-id value
+     * @param port port-id value
+     * @param aliasId alias-id value
+     * @param tableId table-id value of switch
+     * @return countey key string
+     */
+    public static String getMetricKey(String switchId, String port, String aliasId, String tableId) {
+        String odlKeyword = "odl";
+        String projectName = "genius";
+        String moduleName = "interfacemanager";
+        /*
+         * Pattern to be followed for key generation:
+         *
+         * odl.genius.interfacemanager.entitycounter/entitytype:port.entityid:<switchid=value;portid=value;aliasid=
+         * value>.<countername>
+         * odl.genius.interfacemanager.entitycounter.entitytype:flowtable.entityid:<switchid=value;flowtableid=value>.
+         * <countername>
+         */
+        String counterKey = odlKeyword + "." + projectName + "." + moduleName + ".";
+        if (port != null) {
+            counterKey += ENTITY_CNT_KEYWORD + "." + ENTITY_TYPE_PORT_KEYWORD + "."
+                    + ENTITY_ID_KEYWORD + ":" + "<" + ENTITY_ID_SWITCHID_KEYWORD + "="
+                    + switchId + ";" + ENTITY_ID_PORTID_KEYWORD + "=" + port + ";"
+                    + ENTITY_ID_ALIASID_KEYWORD + "=" + aliasId + ">" + ".";
+        }
+
+        if (tableId != null) {
+            counterKey += ENTITY_CNT_KEYWORD + "." + ENTITY_TYPE_FLOWTBL_KEYWORD + "."
+                    + ENTITY_ID_KEYWORD + ":" + "<" + ENTITY_ID_SWITCHID_KEYWORD + "="
+                    + switchId + ";" + ENTITY_ID_FLOWTBLID_KEYWORD + "=" + tableId + ">" + ".";
+        }
+
+        return counterKey;
     }
 }
