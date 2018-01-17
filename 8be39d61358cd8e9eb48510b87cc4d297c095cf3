@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dbada296_77f11ace",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 10
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-17T13:21:17Z",
+      "side": 1,
+      "message": "Please add a short title summary as per convention and reference any associated JIRA item, \"GENIUS-123: ....\"",
+      "revId": "8be39d61358cd8e9eb48510b87cc4d297c095cf3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8ff6157e_6a520321",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-17T13:21:17Z",
+      "side": 1,
+      "message": "Minor thing but declare this just before it\u0027s actually used on line 275. This avoids creating a useless object if the return path on line 266 is taken.",
+      "revId": "8be39d61358cd8e9eb48510b87cc4d297c095cf3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
