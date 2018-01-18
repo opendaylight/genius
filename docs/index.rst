@@ -14,5 +14,6 @@ Contents:
    :maxdepth: 1
 
    pipeline
+   genius-csit-howto
    genius-design-doc
    specs/index
