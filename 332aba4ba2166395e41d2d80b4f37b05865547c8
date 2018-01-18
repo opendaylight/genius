@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d6663801_d2085f33",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "IFF we add this to the listener base class, then it should be added, in the same change, to both the deprecated as well as (David\u0027s) new ones?  BUT I\u0027m not sure yet it should be added here at all; see next feedback.",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1cc42734_fcb3554e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "So... what are we metric-ifying here, exactly? ;)  Do you want a per-Listener metric or a per-DataObject type metric? Because you call eventClazz but that is the K so the DataTreeChangeListener not the T DataOject.. so it\u0027s per-Listener, right?  That\u0027s all the more reason then for just having the metrics as fields of this class without your funky intermediate helper with the ugly static.",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e7d5c00_c81d259f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncDataTreeChangeListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "you know what could be quite fun/interesting/useful as well?  Running remove(), update() and add() inside org.opendaylight.infrautils.metrics.Timer ...",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eb562476_964bba2c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/MetricsUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "this design with the \"trick\" of using a static doesn\u0027t make much sense to me, and I really do think we need to avoid using static, at all cost.  I\u0027m guessing that the the point here is to avoid needing an @Inject MetricProvider, right?  I understand the tempation of working around like that, but that\u0027s a hack.  Just make the Listener base class have a constructor with MetricProvider, let it simply have 3 Counter (Meter) fields, and make metrics collection optional and gradually add it where needed.  More work yes, but the clean right way.  However, before you do, I\u0027m not sure we need this in the listener base class at all... so let\u0027s first discuss on the see feedback in other class?",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "60dfeb66_64a1f3ba",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/MetricsUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "using a Cache here seems... weird. This doesn\u0027t really \"cache\" anything; a Counter is NOT a value you can recreate if it gets evicted.",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83f71bba_055cf025",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/MetricsUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "don\u0027t use Object; it\u0027s really is a String of a EventClass name?",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f21e66fa_dc6080ef",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/MetricsUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T13:07:56Z",
+      "side": 1,
+      "message": "please change to a Meter instead of a Counter as metric here; see https://git.opendaylight.org/gerrit/#/c/67017/",
+      "revId": "332aba4ba2166395e41d2d80b4f37b05865547c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
