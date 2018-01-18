@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7aacbf65_4a00be2f",
+        "filename": "docs/testplans/running-genius-csit-on-dev-environment.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2018-01-18T22:14:33Z",
+      "side": 1,
+      "message": "space after ,",
+      "range": {
+        "startLine": 10,
+        "startChar": 25,
+        "endLine": 10,
+        "endChar": 32
+      },
+      "revId": "c4e3ef7deae88a5716813cec474acffb40299ab5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "514cf96b_b5c3682f",
+        "filename": "docs/testplans/running-genius-csit-on-dev-environment.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 2264
+      },
+      "writtenOn": "2018-01-18T22:14:33Z",
+      "side": 1,
+      "message": "you could also point to this script:\nhttps://github.com/opendaylight/releng-builder/blob/master/jjb/integration/integration-install-robotframework.sh\n\nthat\u0027s more than you need, but it\u0027s likely to stay up to date over time. It\u0027s what we use in upstream CSIT.\n\nbtw, I like the venv suggestion too, like you\u0027ll see happening in the above script",
+      "range": {
+        "startLine": 61,
+        "startChar": 0,
+        "endLine": 68,
+        "endChar": 27
+      },
+      "revId": "c4e3ef7deae88a5716813cec474acffb40299ab5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
