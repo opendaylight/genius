@@ -98,6 +98,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>caches-api</artifactId>
       <version>${genius.infrautils.version}</version>
     </dependency>
+      <dependency>
+          <groupId>org.opendaylight.infrautils</groupId>
+          <artifactId>metrics-api</artifactId>
+          <version>${genius.infrautils.version}</version>
+      </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>caches-guava-impl</artifactId>

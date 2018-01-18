@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.PreDestroy;
+
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -20,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredAsyncDataTreeChangeListener;
+import org.opendaylight.genius.utils.MetricsUtil;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -43,15 +45,18 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
     private final ExecutorService dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
+    protected final Class<K> eventClazz;
 
     protected AsyncClusteredDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
+        this.eventClazz = SuperTypeUtil.getTypeParameter(getClass(), 1);
         this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
     }
 
     @Deprecated
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
+        this.eventClazz = Preconditions.checkNotNull(eventClazz, "Class can not be null!");
         this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
     }
 
@@ -111,6 +116,14 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
     protected abstract K getDataTreeChangeListener();
 
+    private String getCounterName() {
+        return eventClazz.getSimpleName() + "." + clazz.getSimpleName();
+    }
+
+    private String getEventClazzName() {
+        return eventClazz.getSimpleName();
+    }
+
     public class DataTreeChangeHandler implements Runnable {
         private final Collection<DataTreeModification<T>> changes;
 
@@ -127,15 +140,19 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
                 switch (mod.getModificationType()) {
                     case DELETE:
+                        MetricsUtil.incrementDeleted(getEventClazzName(), getCounterName());
                         remove(key, mod.getDataBefore());
                         break;
                     case SUBTREE_MODIFIED:
+                        MetricsUtil.incrementUpdated(getEventClazzName(), getCounterName());
                         update(key, mod.getDataBefore(), mod.getDataAfter());
                         break;
                     case WRITE:
                         if (mod.getDataBefore() == null) {
+                            MetricsUtil.incrementAdded(getEventClazzName(), getCounterName());
                             add(key, mod.getDataAfter());
                         } else {
+                            MetricsUtil.incrementUpdated(getEventClazzName(), getCounterName());
                             update(key, mod.getDataBefore(), mod.getDataAfter());
                         }
                         break;
