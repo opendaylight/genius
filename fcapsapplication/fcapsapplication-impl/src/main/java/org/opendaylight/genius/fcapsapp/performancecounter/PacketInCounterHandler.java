@@ -7,14 +7,13 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.opendaylight.infrautils.metrics.Counter;
+import org.opendaylight.infrautils.metrics.Labeled;
+import org.opendaylight.infrautils.metrics.MetricDescriptor;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.slf4j.Logger;
@@ -23,18 +22,23 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class PacketInCounterHandler implements PacketProcessingListener {
     private static final Logger LOG = LoggerFactory.getLogger(PacketInCounterHandler.class);
-    private static final Long FIRST_VALUE = 0L;
 
     private final PMAgent agent;
-    private final ConcurrentMap<String, AtomicLong> ingressPacketMap = new ConcurrentHashMap<>();
+    private final MetricProvider metricProvider;
+    private final Labeled<Labeled<Labeled<Counter>>> packetInCounter;
 
     @Inject
-    public PacketInCounterHandler(final PMAgent agent) {
+    public PacketInCounterHandler(final PMAgent agent, MetricProvider metricProvider) {
         this.agent = agent;
+        this.metricProvider = metricProvider;
+        packetInCounter =  metricProvider.newCounter(MetricDescriptor.builder().anchor(this)
+                .project("genius").module("fcapsapplication").id("entitycounter")
+                .build(), "entitytype", "switchid","name");
     }
 
     @Override
     public void onPacketReceived(PacketReceived notification) {
+        Counter counter;
         LOG.debug("Ingress packet notification received");
         if (notification.getIngress() == null) {
             if (LOG.isWarnEnabled()) {
@@ -43,20 +47,14 @@ public class PacketInCounterHandler implements PacketProcessingListener {
             return;
         }
         String dpnId = getDpnId(notification.getIngress().getValue().toString());
-        ingressPacketMap.computeIfAbsent(dpnId, (counter -> new AtomicLong(FIRST_VALUE))).incrementAndGet();
-        connectToPMAgent();
-    }
-
-    private void connectToPMAgent() {
-        Map<String, String> packetInMap = new HashMap<>();
-        ingressPacketMap.forEach((dpnId, count) -> packetInMap
-                .put("InjectedOFMessagesSent:" + "dpnId_" + dpnId + "_InjectedOFMessagesSent", String.valueOf(count)));
-        agent.sendPacketInCounterUpdate(packetInMap);
+        counter = packetInCounter.label("OFSwitch").label(dpnId).label("packetin");
+        counter.increment();
     }
 
     /*
      * Method to extract DpnId
      */
+
     @Nonnull
     private String getDpnId(@Nonnull String id) {
         String[] nodeNo = id.split(":");
@@ -65,14 +63,12 @@ public class PacketInCounterHandler implements PacketProcessingListener {
     }
 
     public void nodeRemovedNotification(String dpnId) {
+        Counter counter;
         if (dpnId != null) {
             dpnId = dpnId.split(":")[1];
             LOG.debug("Dpnvalue Id {}", dpnId);
-            if (ingressPacketMap.containsKey(dpnId)) {
-                ingressPacketMap.remove(dpnId);
-                connectToPMAgent();
-                LOG.debug("Node {} Removed for PacketIn counter", dpnId);
-            }
+            counter = packetInCounter.label("OFSwitch").label(dpnId).label("packetin");
+            counter.close();
         } else {
             LOG.error("DpnId is null upon nodeRemovedNotification");
         }
