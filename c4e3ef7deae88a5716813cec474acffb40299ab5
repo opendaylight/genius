@@ -25,6 +25,40 @@
     },
     {
       "key": {
+        "uuid": "d16ca8e9_5a7ca19c",
+        "filename": "docs/testplans/running-genius-csit-on-dev-environment.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-01-18T22:47:16Z",
+      "side": 1,
+      "message": "do we know minimum cpu and ram or at least suggested?",
+      "revId": "c4e3ef7deae88a5716813cec474acffb40299ab5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5944d4ae_45556a9f",
+        "filename": "docs/testplans/running-genius-csit-on-dev-environment.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-01-18T22:47:16Z",
+      "side": 1,
+      "message": "mention 2.6 as a minimum rather than exact",
+      "revId": "c4e3ef7deae88a5716813cec474acffb40299ab5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "514cf96b_b5c3682f",
         "filename": "docs/testplans/running-genius-csit-on-dev-environment.rst",
         "patchSetId": 1
