@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "43a5388f_bd39d901",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "1 or 3 node ODL",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2edd9fe0_d1217f1a",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "Remove",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5ed5bb0_eb949921",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "2 OVS Nodes with OVS 2.6",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "842c657b_3593e640",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "Remove",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc763094_e028fad4",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "1 controller with 2 OVS for functional testing\n\n3 controller with 2 OVS for functional testing",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "254abc30_692984ee",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "Remove",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a54f442b_c7176fb3",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 347,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-18T11:52:21Z",
+      "side": 1,
+      "message": "Only 2 DPNs",
+      "revId": "daf736fb4be6ccbba5804b2e3044f43ab53d4536",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
