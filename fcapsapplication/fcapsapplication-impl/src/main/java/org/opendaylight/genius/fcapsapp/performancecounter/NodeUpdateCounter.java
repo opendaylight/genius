@@ -7,11 +7,13 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.opendaylight.infrautils.metrics.Counter;
+import org.opendaylight.infrautils.metrics.Labeled;
+import org.opendaylight.infrautils.metrics.MetricDescriptor;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,34 +24,30 @@ public class NodeUpdateCounter {
     private String nodeListEFSCountStr;
     private static HashSet<String> dpnList = new HashSet<>();
     public final PMAgent agent;
-    private final Map<String, String> countersMap = new HashMap<>();
+    private final MetricProvider metricProvider;
+    private final Labeled<Labeled<Labeled<Counter>>> packetInCounter;
 
     @Inject
-    public NodeUpdateCounter(final PMAgent agent) {
+    public NodeUpdateCounter(final PMAgent agent, final MetricProvider metricProvider) {
         this.agent = agent;
+        this.metricProvider = metricProvider;
+        packetInCounter =  metricProvider.newCounter(MetricDescriptor.builder().anchor(this)
+                .project("genius").module("fcapsapplication")
+                .id("entitycounter").build(), "entitytype", "hostid","name");
     }
 
     public void nodeAddedNotification(String node, String hostName) {
+        Counter counter;
         dpnList.add(node);
-        sendNodeUpdation(dpnList.size(), hostName);
+        counter = packetInCounter.label("OFSwitch").label(hostName).label("switchespernode");
+        counter.increment();
     }
 
     public void nodeRemovedNotification(String node, String hostName) {
+        Counter counter;
         dpnList.remove(node);
-        sendNodeUpdation(dpnList.size(), hostName);
-    }
-
-    private void sendNodeUpdation(Integer count, String hostName) {
-
-        if (hostName != null) {
-            nodeListEFSCountStr = "Node_" + hostName + "_NumberOfEFS";
-            LOG.debug("NumberOfEFS: {} dpnList.size {}", nodeListEFSCountStr, count);
-
-            countersMap.put("NumberOfEFS:" + nodeListEFSCountStr, "" + count);
-            agent.connectToPMAgent(countersMap);
-        } else {
-            LOG.error("Hostname is null upon NumberOfEFS counter");
-        }
+        counter = packetInCounter.label("OFSwitch").label(hostName).label("switchespernode");
+        counter.close();
     }
 
     public boolean isDpnConnectedLocal(String node) {
