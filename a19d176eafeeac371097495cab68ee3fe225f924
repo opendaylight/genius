@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ab9d91a_f4276985",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T14:20:56Z",
+      "side": 1,
+      "message": "personally I would not have these as visible constants here, just put them inside IfmUtil.getMetricKey, only .. but this is more of a suggestion than a hard -1 criteria.",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "21a75bdb_f7b5b162",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T14:20:56Z",
+      "side": 1,
+      "message": "use /** instead of /* so it\u0027s real method JavaDoc, not just comment",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "47c8c4ba_f2c8c033",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T14:20:56Z",
+      "side": 1,
+      "message": "here better to document, concretely \"odl.genius.interfacemanager\" not general \"odl.\u003cprojectName\u003e.\u003cmoduleName\u003e.\", no?",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1a4c331_24444c42",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 571,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T14:20:56Z",
+      "side": 1,
+      "message": "remove empty new line",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5779395_7c55040e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T14:20:56Z",
+      "side": 1,
+      "message": "put Counter counter inside the for loop and directly assign it:\n\nfor (...) {\n   Counter counter \u003d nodeMetricCounterMapEntry.getValue();\n\nor even better why not just even:\n\nfor (...) {\n   nodeMetricCounterMapEntry.getValue().close();",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28427f53_abd62c79",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-18T14:20:56Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
