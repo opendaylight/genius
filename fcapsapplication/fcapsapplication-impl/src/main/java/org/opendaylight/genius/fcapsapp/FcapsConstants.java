@@ -10,4 +10,10 @@ package org.opendaylight.genius.fcapsapp;
 
 public interface FcapsConstants {
     String SERVICE_ENTITY_TYPE = "org.opendaylight.mdsal.ServiceEntityType";
+    String ENTITY_TYPE_OFSWITCH = "entitycounter.entitytype:OFSwitch.entityid:";
+    String ENTITY_TYPE_OFPORT = "entitycounter.entitytype:OFPort.entityid:";
+    String MODULENAME = "odl.genius.fcapsapplication.";
+    String COUNTERPORTPERSWITCH = "portsperswitch";
+    String COUNTERSWITCHPERNODE = "switchespernode";
+    String COUNTERPACKETIN = "packetIn";
 }

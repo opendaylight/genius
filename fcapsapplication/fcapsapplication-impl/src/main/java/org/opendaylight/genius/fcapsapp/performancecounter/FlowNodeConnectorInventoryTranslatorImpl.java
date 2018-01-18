@@ -12,8 +12,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -21,8 +21,11 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.fcapsapp.FcapsConstants;
+import org.opendaylight.genius.fcapsapp.FcapsUtil;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.metrics.Counter;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -45,8 +48,8 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
     private static final String SEPARATOR = ":";
-    private final PMAgent agent;
-
+    private Map<String,Counter> counterMap = new ConcurrentHashMap<>();
+    private final MetricProvider metricProvider;
     private static final InstanceIdentifier<FlowCapableNodeConnector>
             II_TO_FLOW_CAPABLE_NODE_CONNECTOR = InstanceIdentifier
             .builder(Nodes.class).child(Node.class).child(NodeConnector.class)
@@ -55,15 +58,15 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     private static Multimap<Long, String> dpnToPortMultiMap = Multimaps
             .synchronizedListMultimap(ArrayListMultimap.<Long, String>create());
 
-    private static HashMap<String, String> nodeConnectorCountermap = new HashMap<>();
 
     @Inject
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker, final PMAgent agent,
-                                                    final EntityOwnershipUtils entityOwnershipUtils) {
+    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,
+                                                    final EntityOwnershipUtils entityOwnershipUtils,
+                                                    MetricProvider metricProvider) {
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
         this.entityOwnershipUtils = entityOwnershipUtils;
-        this.agent = agent;
+        this.metricProvider = metricProvider;
         final DataTreeIdentifier<FlowCapableNodeConnector> treeId = new DataTreeIdentifier<>(
                 LogicalDatastoreType.OPERATIONAL, getWildCardPath());
         try {
@@ -102,7 +105,9 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
             if (dpnToPortMultiMap.containsKey(dataPathId)) {
                 LOG.debug("Node Connector {} removed", nodeConnectorIdentifier);
                 dpnToPortMultiMap.remove(dataPathId, nodeConnectorIdentifier);
-                sendNodeConnectorUpdation(dataPathId);
+                String counterKey = FcapsUtil.getCounterName(String.valueOf(dataPathId),
+                        FcapsConstants.COUNTERPORTPERSWITCH);
+                counterMap.get(counterKey).decrement();
                 PortNameMapping.updatePortMap("openflow:" + dataPathId + ":" + del.getName(), nodeConnectorIdentifier,
                         "DELETE");
             }
@@ -127,7 +132,10 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
                 if (!dpnToPortMultiMap.containsEntry(dataPathId, nodeConnectorIdentifier)) {
                     LOG.debug("Node Connector {} added", nodeConnectorIdentifier);
                     dpnToPortMultiMap.put(dataPathId, nodeConnectorIdentifier);
-                    sendNodeConnectorUpdation(dataPathId);
+                    String counterKey = FcapsUtil.getCounterName(String.valueOf(dataPathId),
+                            FcapsConstants.COUNTERPORTPERSWITCH);
+                    counterMap.computeIfAbsent(counterKey,
+                            (counter -> metricProvider.newCounter(this, counterKey))).increment();
                     PortNameMapping.updatePortMap("openflow:" + dataPathId + ":" + add.getName(),
                             nodeConnectorIdentifier, "ADD");
                 } else {
@@ -158,17 +166,11 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         return Long.parseLong(dpId);
     }
 
-    private void sendNodeConnectorUpdation(Long dpnId) {
-        Collection<String> portname = dpnToPortMultiMap.get(dpnId);
-        String nodeListPortsCountStr = "dpnId_" + dpnId + "_NumberOfOFPorts";
-        String counterkey = "NumberOfOFPorts:" + nodeListPortsCountStr;
-
-        if (!portname.isEmpty()) {
-            nodeConnectorCountermap.put(counterkey, "" + portname.size());
-        } else {
-            nodeConnectorCountermap.remove(counterkey);
+    public void nodeRemovedNotification(String node) {
+        String[] switchId = node.split(":");
+        if (counterMap.containsKey(FcapsUtil.getCounterName(switchId[1],FcapsConstants.COUNTERPORTPERSWITCH))) {
+            counterMap.get(FcapsUtil.getCounterName(switchId[1],FcapsConstants.COUNTERPORTPERSWITCH)).close();
+            counterMap.remove(FcapsUtil.getCounterName(switchId[1],FcapsConstants.COUNTERPORTPERSWITCH));
         }
-        LOG.debug("NumberOfOFPorts: {} portlistsize {}", nodeListPortsCountStr, portname.size());
-        agent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
     }
 }
