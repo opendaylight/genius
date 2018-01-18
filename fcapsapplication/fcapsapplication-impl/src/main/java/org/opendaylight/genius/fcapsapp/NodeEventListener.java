@@ -19,6 +19,7 @@ import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeLis
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.genius.fcapsapp.alarm.AlarmAgent;
+import org.opendaylight.genius.fcapsapp.performancecounter.FlowNodeConnectorInventoryTranslatorImpl;
 import org.opendaylight.genius.fcapsapp.performancecounter.NodeUpdateCounter;
 import org.opendaylight.genius.fcapsapp.performancecounter.PacketInCounterHandler;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -38,17 +39,20 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
     public final PacketInCounterHandler packetInCounterHandler;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final EntityOwnershipService entityOwnershipService;
+    private final FlowNodeConnectorInventoryTranslatorImpl nodeConnectorInventoryTranslator;
 
     @Inject
     public NodeEventListener(final AlarmAgent alarmAgent, final NodeUpdateCounter nodeUpdateCounter,
                              final PacketInCounterHandler packetInCounterHandler,
                              final EntityOwnershipUtils entityOwnershipUtils,
-                             final EntityOwnershipService entityOwnershipService) {
+                             final EntityOwnershipService entityOwnershipService,
+                             FlowNodeConnectorInventoryTranslatorImpl nodeConnectorInventoryTranslator) {
         this.alarmAgent = alarmAgent;
         this.nodeUpdateCounter = nodeUpdateCounter;
         this.packetInCounterHandler = packetInCounterHandler;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.entityOwnershipService = entityOwnershipService;
+        this.nodeConnectorInventoryTranslator = nodeConnectorInventoryTranslator;
     }
 
     @PostConstruct
@@ -84,6 +88,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
                     if (nodeUpdateCounter.isDpnConnectedLocal(nodeId)) {
                         alarmAgent.raiseControlPathAlarm(nodeId, hostName);
                         nodeUpdateCounter.nodeRemovedNotification(nodeId, hostName);
+                        nodeConnectorInventoryTranslator.nodeRemovedNotification(nodeId);
                     }
                     packetInCounterHandler.nodeRemovedNotification(nodeId);
                     break;
