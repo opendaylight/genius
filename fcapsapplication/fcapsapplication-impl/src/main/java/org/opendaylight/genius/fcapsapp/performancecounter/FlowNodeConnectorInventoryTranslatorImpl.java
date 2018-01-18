@@ -14,6 +14,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -23,6 +24,8 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.fcapsapp.FcapsConstants;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.infrautils.metrics.Counter;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -32,6 +35,8 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.opendaylight.genius.fcapsapp.FcapsConstants.MODULENAME;
 
 @Singleton
 public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEventListener<FlowCapableNodeConnector> {
@@ -45,7 +50,8 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
     private static final String SEPARATOR = ":";
-    private final PMAgent agent;
+    private Map<String,Counter> counterMap = new HashMap<>();
+    private final MetricProvider metricProvider;
 
     private static final InstanceIdentifier<FlowCapableNodeConnector>
             II_TO_FLOW_CAPABLE_NODE_CONNECTOR = InstanceIdentifier
@@ -59,11 +65,11 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     @Inject
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker, final PMAgent agent,
-                                                    final EntityOwnershipUtils entityOwnershipUtils) {
+    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,
+                                                    final EntityOwnershipUtils entityOwnershipUtils, MetricProvider metricProvider) {
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
         this.entityOwnershipUtils = entityOwnershipUtils;
-        this.agent = agent;
+        this.metricProvider = metricProvider;
         final DataTreeIdentifier<FlowCapableNodeConnector> treeId = new DataTreeIdentifier<>(
                 LogicalDatastoreType.OPERATIONAL, getWildCardPath());
         try {
@@ -160,15 +166,20 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     private void sendNodeConnectorUpdation(Long dpnId) {
         Collection<String> portname = dpnToPortMultiMap.get(dpnId);
-        String nodeListPortsCountStr = "dpnId_" + dpnId + "_NumberOfOFPorts";
-        String counterkey = "NumberOfOFPorts:" + nodeListPortsCountStr;
 
         if (!portname.isEmpty()) {
-            nodeConnectorCountermap.put(counterkey, "" + portname.size());
+            Counter  counter =metricProvider.newCounter(this,getCounterName(String.valueOf(dpnId)));
+            counter.increment();
+            counterMap.put(getCounterName(String.valueOf(dpnId)),counter);
         } else {
-            nodeConnectorCountermap.remove(counterkey);
+            if(counterMap.containsKey(getCounterName(String.valueOf(dpnId)))){
+                counterMap.get(getCounterName(String.valueOf(dpnId))).decrement();
+            }
         }
-        LOG.debug("NumberOfOFPorts: {} portlistsize {}", nodeListPortsCountStr, portname.size());
-        agent.connectToPMAgentForNOOfPorts(nodeConnectorCountermap);
+    }
+
+    private String getCounterName(String dpnId){
+        String dpnName=MODULENAME + FcapsConstants.ENTITY_TYPE_OFSWITCH + "switchid= " + dpnId + "/portsperswitch";
+        return dpnName;
     }
 }
