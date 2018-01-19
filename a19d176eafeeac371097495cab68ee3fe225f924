@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "dac2c26e_58fbe767",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T09:05:14Z",
+      "side": 1,
+      "message": "use {genius.infrautils.version}",
+      "range": {
+        "startLine": 109,
+        "startChar": 5,
+        "endLine": 109,
+        "endChar": 39
+      },
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ab9d91a_f4276985",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
         "patchSetId": 2
@@ -81,6 +104,29 @@
       "writtenOn": "2018-01-18T14:20:56Z",
       "side": 1,
       "message": "put Counter counter inside the for loop and directly assign it:\n\nfor (...) {\n   Counter counter \u003d nodeMetricCounterMapEntry.getValue();\n\nor even better why not just even:\n\nfor (...) {\n   nodeMetricCounterMapEntry.getValue().close();",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6b862f8_8548cf90",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T09:05:14Z",
+      "side": 1,
+      "message": "remove this log..its printing large chunk of data.",
+      "range": {
+        "startLine": 298,
+        "startChar": 8,
+        "endLine": 298,
+        "endChar": 58
+      },
       "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
