@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "7bed3541_f6a14ea0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:05:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ab9d91a_f4276985",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21a75bdb_f7b5b162",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
         "patchSetId": 2
@@ -53,6 +71,24 @@
       "writtenOn": "2018-01-18T14:20:56Z",
       "side": 1,
       "message": "use /** instead of /* so it\u0027s real method JavaDoc, not just comment",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "449507d4_9dba67c8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 562,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:05:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21a75bdb_f7b5b162",
       "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -76,6 +112,24 @@
     },
     {
       "key": {
+        "uuid": "efb1c9e6_d581d62e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 567,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:05:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47c8c4ba_f2c8c033",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c1a4c331_24444c42",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
         "patchSetId": 2
@@ -93,6 +147,24 @@
     },
     {
       "key": {
+        "uuid": "81a2b338_4dc7e1f5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 571,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:05:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1a4c331_24444c42",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b5779395_7c55040e",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 2
@@ -104,6 +176,24 @@
       "writtenOn": "2018-01-18T14:20:56Z",
       "side": 1,
       "message": "put Counter counter inside the for loop and directly assign it:\n\nfor (...) {\n   Counter counter \u003d nodeMetricCounterMapEntry.getValue();\n\nor even better why not just even:\n\nfor (...) {\n   nodeMetricCounterMapEntry.getValue().close();",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "91636220_7f619caf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:05:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5779395_7c55040e",
       "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -144,6 +234,24 @@
       "writtenOn": "2018-01-18T14:20:56Z",
       "side": 1,
       "message": "as above",
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "245e5b82_39a18705",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:05:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "28427f53_abd62c79",
       "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
