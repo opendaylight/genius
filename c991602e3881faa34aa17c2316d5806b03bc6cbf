@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6da8ec78_890c06ef",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 10
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T18:46:29Z",
+      "side": 1,
+      "message": "For dataObjectCache constructor\u0027s CacheProvider\nnew GuavaCacheProvider(new CacheManagersRegistryImpl()));",
+      "parentUuid": "1a46738b_9b9ee008",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5c648678_bd58cd87",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
         "patchSetId": 10
@@ -30,6 +48,24 @@
       "writtenOn": "2018-01-19T14:29:11Z",
       "side": 1,
       "message": "final",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ecb62518_119d5401",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T18:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c648678_bd58cd87",
       "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "f167ddef_f73c7239",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T18:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ca6f2292_fa587ba3",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c1cd7f15_051eeae2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
         "patchSetId": 10
@@ -64,6 +118,24 @@
       "writtenOn": "2018-01-19T14:29:11Z",
       "side": 1,
       "message": "This doesn\u0027t look right. instanceIdentifierPath is wildcarded to the list itself and is used to register the listener. For lookups you need to create an IID that references the specific list instance keyed by parentInterfaceName.",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c09099db_56c06cd5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T18:46:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c1cd7f15_051eeae2",
       "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
