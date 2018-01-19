@@ -1,0 +1,434 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18222de6_d66fbaab",
+        "filename": "fcapsapplication/fcapsapplication-impl/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "use {genius.infrautils.version}",
+      "range": {
+        "startLine": 35,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 39
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "98baf256_e04f264a",
+        "filename": "fcapsapplication/fcapsapplication-impl/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "remove..if it gonna lie as dead code.",
+      "range": {
+        "startLine": 37,
+        "startChar": 3,
+        "endLine": 41,
+        "endChar": 24
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a161c98_7b59017e",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "use concurrentHAshMap",
+      "range": {
+        "startLine": 53,
+        "startChar": 48,
+        "endLine": 53,
+        "endChar": 60
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b023fab_6e63aa2f",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "use computeIfAbsent",
+      "range": {
+        "startLine": 170,
+        "startChar": 11,
+        "endLine": 172,
+        "endChar": 74
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "22b92ece_a2c8ba05",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "space between",
+      "range": {
+        "startLine": 174,
+        "startChar": 76,
+        "endLine": 174,
+        "endChar": 78
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14a7e2be_d1a7ac35",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "space between if and bracket",
+      "range": {
+        "startLine": 174,
+        "startChar": 14,
+        "endLine": 174,
+        "endChar": 15
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3428e661_a8e45798",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "not required this separate method, as it is only adding one more check whether it an add/remove notification. Take care of this in individual add and remove methods.",
+      "range": {
+        "startLine": 167,
+        "startChar": 4,
+        "endLine": 178,
+        "endChar": 5
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87524e86_b9ae22f1",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "space before and after",
+      "range": {
+        "startLine": 181,
+        "startChar": 22,
+        "endLine": 181,
+        "endChar": 23
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7cbfbeb4_9258fe3b",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": ".* will lead to checkstyle error.\nimport required individual class separately",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 19
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "79be1c1a_a4133d9f",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "use concurrentHashmap",
+      "range": {
+        "startLine": 30,
+        "startChar": 49,
+        "endLine": 30,
+        "endChar": 61
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac9e4965_cc5c6ef6",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "space after equal to",
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5199da8_23410764",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "use computeifabsent",
+      "range": {
+        "startLine": 40,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 57
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8bd50897_a80ae1d8",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 54,
+        "startChar": 46,
+        "endLine": 54,
+        "endChar": 48
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7e05f5e6_b536b9bc",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "space",
+      "range": {
+        "startLine": 55,
+        "startChar": 22,
+        "endLine": 55,
+        "endChar": 24
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "850797c2_77c2d5cd",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "remove this if it not used",
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55bd7fe8_68b8b63a",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "remove this if not used",
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e57fd04c_795a66df",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "remove the map if not used",
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f780961_34e0af73",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "this list is not required.",
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4dd5861_cc8775d9",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "use ConcurrentHashMap",
+      "range": {
+        "startLine": 40,
+        "startChar": 49,
+        "endLine": 40,
+        "endChar": 61
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b7f8fde3_a14b38d0",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T08:16:04Z",
+      "side": 1,
+      "message": "All these can be rewritten with computeifabsent and eliminates dpnList map\n\nString counterKey \u003d getCounterName(dpnId);\ncounterMap.computeIfAbsent(counterKey, (counter -\u003e metricProvider.newCounter(this, counterKey))).increment();",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 70,
+        "endChar": 5
+      },
+      "revId": "5ca27cb445a7d51ef3de71774b67817a50caf010",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
