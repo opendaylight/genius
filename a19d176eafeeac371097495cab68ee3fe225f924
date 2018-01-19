@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "0c58a9b3_82bbff6d",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:08:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dac2c26e_58fbe767",
+      "range": {
+        "startLine": 109,
+        "startChar": 5,
+        "endLine": 109,
+        "endChar": 39
+      },
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ab9d91a_f4276985",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
         "patchSetId": 2
@@ -211,6 +235,30 @@
       "writtenOn": "2018-01-19T09:05:14Z",
       "side": 1,
       "message": "remove this log..its printing large chunk of data.",
+      "range": {
+        "startLine": 298,
+        "startChar": 8,
+        "endLine": 298,
+        "endChar": 58
+      },
+      "revId": "a19d176eafeeac371097495cab68ee3fe225f924",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dce5f53d_68567874",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-19T09:08:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c6b862f8_8548cf90",
       "range": {
         "startLine": 298,
         "startChar": 8,
