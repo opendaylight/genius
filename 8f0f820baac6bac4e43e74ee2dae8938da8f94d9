@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f590bb7a_7f033d8b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCacheListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T14:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "88241b1f_e26c546d",
+      "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "04ec3c97_1d75126e",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCacheListener.java",
         "patchSetId": 8
@@ -53,6 +71,30 @@
       "writtenOn": "2018-01-11T14:57:19Z",
       "side": 1,
       "message": "ConcurrentMap",
+      "range": {
+        "startLine": 19,
+        "startChar": 18,
+        "endLine": 19,
+        "endChar": 35
+      },
+      "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5c951b8_0002f59e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T14:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a7a69db3_5b7ab42c",
       "range": {
         "startLine": 19,
         "startChar": 18,
@@ -111,6 +153,30 @@
     },
     {
       "key": {
+        "uuid": "9eb8ca7e_245572ec",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T14:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8a420f49_23c54474",
+      "range": {
+        "startLine": 21,
+        "startChar": 38,
+        "endLine": 21,
+        "endChar": 53
+      },
+      "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1c9c828e_f06692f2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
         "patchSetId": 8
@@ -145,6 +211,30 @@
       "writtenOn": "2018-01-11T14:57:19Z",
       "side": 1,
       "message": "just call it \"remove\"",
+      "range": {
+        "startLine": 25,
+        "startChar": 19,
+        "endLine": 25,
+        "endChar": 34
+      },
+      "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e781d14d_13cc6672",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T14:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "93bad4e6_a04d3df9",
       "range": {
         "startLine": 25,
         "startChar": 19,
@@ -203,6 +293,30 @@
     },
     {
       "key": {
+        "uuid": "3824ca3b_2a9f4829",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T14:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5bccf4c0_c252b840",
+      "range": {
+        "startLine": 29,
+        "startChar": 56,
+        "endLine": 29,
+        "endChar": 71
+      },
+      "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da4ee369_60dd1a50",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
         "patchSetId": 8
@@ -214,6 +328,24 @@
       "writtenOn": "2018-01-11T14:57:19Z",
       "side": 1,
       "message": "Is this method needed - I didn\u0027t see it called anywhere",
+      "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6a06a54_0318d51c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/PortNameCache.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-19T14:17:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da4ee369_60dd1a50",
       "revId": "8f0f820baac6bac4e43e74ee2dae8938da8f94d9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
