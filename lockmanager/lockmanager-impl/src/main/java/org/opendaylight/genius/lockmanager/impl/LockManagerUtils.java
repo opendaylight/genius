@@ -30,11 +30,11 @@ public class LockManagerUtils {
     private static final String SEPARATOR = ":";
 
     private final AtomicInteger counter;
-    private final int bladeId;
+    private final long bladeId;
 
     public LockManagerUtils() throws UnknownHostException {
         counter = new AtomicInteger(0);
-        bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
+        bladeId = Integer.toUnsignedLong(InetAddresses.coerceToInteger(InetAddress.getLocalHost()));
     }
 
     public TimeUnit convertToTimeUnit(TimeUnits timeUnit) {
@@ -71,7 +71,7 @@ public class LockManagerUtils {
         return bladeId + SEPARATOR + lockId;
     }
 
-    public int getBladeId() {
+    public long getBladeId() {
         return bladeId;
     }
 }

@@ -65,10 +65,10 @@ public class IdUtils {
     private final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
 
-    private final int bladeId;
+    private final long bladeId;
 
     public IdUtils() throws UnknownHostException {
-        bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
+        bladeId = Integer.toUnsignedLong(InetAddresses.coerceToInteger(InetAddress.getLocalHost()));
     }
 
     public CompletableFuture<List<Long>> removeAllocatedIds(String uniqueIdKey) {
