@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a46738b_9b9ee008",
+        "filename": "interfacemanager/interfacemanager-impl/pom.xml",
+        "patchSetId": 10
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-19T14:29:11Z",
+      "side": 1,
+      "message": "What is this for?",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c648678_bd58cd87",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-19T14:29:11Z",
+      "side": 1,
+      "message": "final",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca6f2292_fa587ba3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-19T14:29:11Z",
+      "side": 1,
+      "message": "no need to store this",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1cd7f15_051eeae2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-19T14:29:11Z",
+      "side": 1,
+      "message": "This doesn\u0027t look right. instanceIdentifierPath is wildcarded to the list itself and is used to register the listener. For lookups you need to create an IID that references the specific list instance keyed by parentInterfaceName.",
+      "revId": "c991602e3881faa34aa17c2316d5806b03bc6cbf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
