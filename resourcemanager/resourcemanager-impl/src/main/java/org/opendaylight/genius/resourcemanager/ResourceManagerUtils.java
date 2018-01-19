@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 final class ResourceManagerUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ResourceManagerUtils.class);
 
-    private static Integer localHostAddress;
+    private static Long localHostAddress;
 
     private ResourceManagerUtils() {
     }
@@ -34,7 +34,7 @@ final class ResourceManagerUtils {
     protected static String getLocalPoolName(String poolName) {
         if (localHostAddress == null) {
             try {
-                localHostAddress = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
+                localHostAddress = Integer.toUnsignedLong(InetAddresses.coerceToInteger(InetAddress.getLocalHost()));
             } catch (UnknownHostException e) {
                 LOG.error("Cannot build the local pool name: ", e);
             }
