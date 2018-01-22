@@ -8,21 +8,21 @@
 package org.opendaylight.genius.itm.rpc;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
+import com.google.common.util.concurrent.*;
+
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -33,6 +33,7 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
@@ -58,35 +59,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.BuildExternalTunnelFromDpnsInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.CreateTerminatingServiceActionsInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetInternalOrExternalInterfaceNameInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetInternalOrExternalInterfaceNameOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetInternalOrExternalInterfaceNameOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsTunnelInternalOrExternalInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsTunnelInternalOrExternalOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsTunnelInternalOrExternalOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.Computes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.ComputesBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -830,4 +808,100 @@ public class ItmManagerRpcService implements ItmRpcService {
         return Futures.immediateFuture(resultBld.build());
     }
 
+    @Override
+    public Future<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
+        Map<String, BigInteger> computeNamesVsDpnIds = getDpnIdByComputeNodeNameFromOpInventoryNodes(input.getComputeNames());
+        if (computeNamesVsDpnIds.isEmpty()) {
+            LOG.info("No DPN found with provided compute names {}", input.getComputeNames());
+            RpcResultBuilder<GetDpnInfoOutput> result = RpcResultBuilder.success();
+            return Futures.immediateFuture(result.build());
+        }
+        Map<BigInteger, ComputesBuilder> dpnIdVsVtepsComputes = getTunnelEndPointByDpnIdFromTranPortZone(computeNamesVsDpnIds.values());
+        if (dpnIdVsVtepsComputes.isEmpty()) {
+            LOG.info("No DPNinfo found with provided DPNID in transport zones", input.getComputeNames());
+            RpcResultBuilder<GetDpnInfoOutput> result = RpcResultBuilder.success();
+            return Futures.immediateFuture(result.build());
+        }
+        List<Computes> computes = computeNamesVsDpnIds.entrySet().stream()
+                .filter(entry -> dpnIdVsVtepsComputes.get(entry.getValue()) != null)
+                .map(entry -> dpnIdVsVtepsComputes.get(entry.getValue())
+                        .setComputeName(entry.getKey())
+                        .build()).collect(Collectors.toList());
+
+        RpcResultBuilder<GetDpnInfoOutput> result = RpcResultBuilder.<GetDpnInfoOutput>success()
+                .withResult(new GetDpnInfoOutputBuilder().setComputes(computes).build());
+        return Futures.immediateFuture(result.build());
+    }
+
+
+    public Map<BigInteger, ComputesBuilder> getTunnelEndPointByDpnIdFromTranPortZone(Collection<BigInteger> dpnIds) {
+        Map<BigInteger, ComputesBuilder> result = new HashMap<>();
+
+        InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
+        Optional<TransportZones> tZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+        if (tZonesOptional.isPresent()) {
+            TransportZones tZones = tZonesOptional.get();
+            if (tZones.getTransportZone() == null || tZones.getTransportZone().isEmpty()) {
+                LOG.error("No TransportZone configured");
+                return result;
+            }
+            for (TransportZone tZ : tZones.getTransportZone()) {
+                if (tZ.getSubnets() == null || tZ.getSubnets().isEmpty()) {
+                    LOG.error("Transport Zone {} has no subnets");
+                    continue;
+                }
+                for (Subnets sub : tZ.getSubnets()) {
+                    if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
+                        LOG.error("Transport Zone {} subnet {} has no vteps", tZ.getZoneName(), sub.getPrefix());
+                        continue;
+                    }
+                    for (Vteps vtep : sub.getVteps()) {
+                        if (dpnIds.contains(vtep.getDpnId())) {
+                            Map<String,IpAddress> resultList = new HashMap<>();
+                            resultList.put(vtep.getPortname(),vtep.getIpAddress());
+                            result.putIfAbsent(vtep.getDpnId(),
+                                    new ComputesBuilder()
+                                            .setZoneName(tZ.getZoneName())
+                                            .setPrefix(sub.getPrefix())
+                                            .setDpnId(vtep.getDpnId())
+                                            .setPortName(vtep.getPortname())
+                                            .setTepIp(Collections.singletonList(vtep.getIpAddress())));
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+
+    public Map<String, BigInteger> getDpnIdByComputeNodeNameFromOpInventoryNodes(List<String> nodeNames) {
+        Map<String, BigInteger> result = new HashMap<>();
+        Optional<Nodes> nodesOptional;
+
+        ReadOnlyTransaction tx = this.dataBroker.newReadOnlyTransaction();
+        List<Node> nodes = new ArrayList<>();
+        CheckedFuture<Optional<Nodes>, ReadFailedException> checkedFuture =
+                tx.read(LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(Nodes.class).build());
+        try {
+            nodesOptional = checkedFuture.checkedGet();
+        } catch (ReadFailedException e) {
+            LOG.error("Not able to read Operationa Node Inventory DS");
+            return result;
+        }
+        if (nodesOptional.isPresent()) {
+            nodes = nodesOptional.get().getNode();
+        }
+        if (nodes == null || nodes.isEmpty()) {
+            return result;
+        }
+        for (Node node : nodes) {
+            String name = node.<FlowCapableNode>getAugmentation(FlowCapableNode.class).getDescription();
+            if (nodeNames.contains(name)) {
+                String nodeId[] = node.getId().getValue().split(":");
+                result.put(name, new BigInteger(nodeId[1]));
+            }
+        }
+        return result;
+    }
 }
