@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6aea6af1_7f7d59f1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-22T17:23:48Z",
+      "side": 1,
+      "message": "LOG.error(\"ReadFailedException exception\", ex); -- missing cause\n\nThis would have been automatically detected by https://git.opendaylight.org/gerrit/#/c/43331/ ... :-(",
+      "revId": "ff3c2b4225d9a7146cb1347ae69deefad3698174",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5f2f54a_2ab65571",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-22T17:23:48Z",
+      "side": 1,
+      "message": "I don\u0027t understand what this code really does obviously, but it strikes me as weird that portUuid may be un-assigned and remain \"\", so nodePortStr could be just \"..._portUuid_\". Is that intentionally, or would such a case really be a clear error which should lead to an exception?",
+      "revId": "ff3c2b4225d9a7146cb1347ae69deefad3698174",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
