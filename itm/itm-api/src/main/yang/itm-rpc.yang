@@ -289,4 +289,38 @@ module itm-rpc {
             }
         }
 
+        rpc get-dpn-info {
+            description "Gets the dpn id and tep ip information of compute nodes";
+            input {
+                leaf-list compute-names {
+                    type string;
+                }
+            }
+            output {
+                list computes {
+                    key "compute-name";
+                    leaf compute-name {
+                        type string;
+                    }
+                    leaf zone-name {
+                        type string;
+                    }
+                    leaf prefix {
+                        type inet:ip-prefix;
+                    }
+                    leaf dpn-id {
+                        type uint64;
+                    }
+                    leaf-list tep-ip {
+                        type inet:ip-address;
+                    }
+                    leaf port-name {
+                        type string;
+                    }
+                    leaf node-id {
+                        type string;
+                    }
+                }
+            }
+        }
     }
