@@ -24,6 +24,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.D
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutputBuilder;
+
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnInfoInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnInfoOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInput;
@@ -83,6 +86,11 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     @Override
     public synchronized Future<RpcResult<Void>> removeExternalTunnelEndpoint(RemoveExternalTunnelEndpointInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
+    }
+
+    @Override
+    public Future<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
+        throw new UnsupportedOperationException("getDpnInfo");
     }
 
     @Override
