@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "87dda650_59704acf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceChildCache.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-23T10:09:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6aea6af1_7f7d59f1",
+      "revId": "ff3c2b4225d9a7146cb1347ae69deefad3698174",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d5f2f54a_2ab65571",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 14
@@ -30,6 +48,24 @@
       "writtenOn": "2018-01-22T17:23:48Z",
       "side": 1,
       "message": "I don\u0027t understand what this code really does obviously, but it strikes me as weird that portUuid may be un-assigned and remain \"\", so nodePortStr could be just \"..._portUuid_\". Is that intentionally, or would such a case really be a clear error which should lead to an exception?",
+      "revId": "ff3c2b4225d9a7146cb1347ae69deefad3698174",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0b8b6ee_3eb51ebf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-23T10:09:36Z",
+      "side": 1,
+      "message": "This class collects statistics for all OFport.\nWe also want additional information for neutron ports its uuid. Now, here there will be only one entry of uuid for these ports, so it was directly queried.\nIt was kept intentional, that only for neutron portd uuid will be present in the string, other/tunnel ports will remain empty.",
+      "parentUuid": "d5f2f54a_2ab65571",
       "revId": "ff3c2b4225d9a7146cb1347ae69deefad3698174",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
