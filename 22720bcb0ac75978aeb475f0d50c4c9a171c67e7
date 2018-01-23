@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "851b44b4_fdcadd1f",
+        "filename": "docs/genius-csit-howto.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 6464
+      },
+      "writtenOn": "2018-01-23T13:46:50Z",
+      "side": 1,
+      "message": "I also had to change linux prompt in the Netvirt test suite (or you can do on the machine also). Did you had to do the same?",
+      "range": {
+        "startLine": 83,
+        "startChar": 54,
+        "endLine": 83,
+        "endChar": 69
+      },
+      "revId": "22720bcb0ac75978aeb475f0d50c4c9a171c67e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
