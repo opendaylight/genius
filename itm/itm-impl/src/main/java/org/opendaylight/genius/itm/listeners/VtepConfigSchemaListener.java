@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -13,8 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
@@ -22,12 +21,13 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractAsyncDataTreeChangeListener;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
@@ -56,19 +56,17 @@ import org.slf4j.LoggerFactory;
  * @see VtepConfigSchema
  */
 @Singleton
-public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<VtepConfigSchema,
-        VtepConfigSchemaListener> implements AutoCloseable {
+public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListener<VtepConfigSchema> {
 
-    /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger(VtepConfigSchemaListener.class);
 
-    /** The data broker. */
     private final DataBroker dataBroker;
+
     /** Blueprint XML config file handle. */
     private final ItmConfig itmConfig;
 
     /**
-     * Instantiates a new vtep config schema listener.
+     * Instantiates a new VTEP config schema listener.
      *
      * @param dataBroker
      *            the db
@@ -76,133 +74,53 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
      *            ITM config file handle
      */
     @Inject
-    public VtepConfigSchemaListener(final DataBroker dataBroker, final ItmConfig itmConfig) {
-        super(VtepConfigSchema.class, VtepConfigSchemaListener.class);
+    public VtepConfigSchemaListener(DataBroker dataBroker, ItmConfig itmConfig) {
+        super(dataBroker, LogicalDatastoreType.CONFIGURATION,
+              InstanceIdentifier.create(VtepConfigSchemas.class).child(VtepConfigSchema.class), Executors
+                      .newSingleThreadExecutor("VtepConfigSchemaListener", LOG));
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
     }
 
-    @PostConstruct
-    public void start() {
-        registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
-        LOG.info("VtepConfigSchemaListener Started");
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.AutoCloseable#close()
-     */
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    @PreDestroy
-    public void close() {
-        LOG.info("VtepConfigSchemaListener Closed");
-    }
-
-    /**
-     * Gets the wild card path.
-     *
-     * @return the wild card path
-     */
-    @Override
-    public InstanceIdentifier<VtepConfigSchema> getWildCardPath() {
-        return ItmUtils.getVtepConfigSchemaIdentifier();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.opendaylight.genius.mdsalutil.AbstractDataChangeListener#remove(
-     * org.opendaylight.yangtools.yang.binding.InstanceIdentifier,
-     * org.opendaylight.yangtools.yang.binding.DataObject)
-     */
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    @Override
-    protected void remove(InstanceIdentifier<VtepConfigSchema> identifier, VtepConfigSchema schema) {
-        LOG.trace("Received notification for VTEP config schema [{}] deleted.", schema.getSchemaName());
-        try {
-            List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(schema.getDpnIds());
-            if (lstDpnIds != null && !lstDpnIds.isEmpty()) {
-                deleteVteps(schema, lstDpnIds);
-            }
-
-            // Delete IP pool corresponding to schema
-            // TODO: Ensure no schema exists with same subnet before deleting
-            String subnetCidr = ItmUtils.getSubnetCidrAsString(schema.getSubnet());
-            deleteVtepIpPool(subnetCidr);
-        } catch (Exception e) {
-            String error = "Failed to handle DCN for delete VtepConfigSchema: " + schema;
-            LOG.error(error, e);
+    public void remove(@Nonnull VtepConfigSchema vtepConfigSchema) {
+        LOG.trace("Received notification for VTEP config schema [{}] deleted.", vtepConfigSchema.getSchemaName());
+        List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(vtepConfigSchema.getDpnIds());
+        if (lstDpnIds != null && !lstDpnIds.isEmpty()) {
+            deleteVteps(vtepConfigSchema, lstDpnIds);
         }
+        // Delete IP pool corresponding to schema
+        // TODO: Ensure no schema exists with same subnet before deleting
+        String subnetCidr = ItmUtils.getSubnetCidrAsString(vtepConfigSchema.getSubnet());
+        deleteVtepIpPool(subnetCidr);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.opendaylight.genius.mdsalutil.AbstractDataChangeListener#update(
-     * org.opendaylight.yangtools.yang.binding.InstanceIdentifier,
-     * org.opendaylight.yangtools.yang.binding.DataObject,
-     * org.opendaylight.yangtools.yang.binding.DataObject)
-     */
-    @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    protected void update(InstanceIdentifier<VtepConfigSchema> identifier, VtepConfigSchema original,
-                          VtepConfigSchema updated) {
+    public void update(@Nonnull VtepConfigSchema original, @Nonnull VtepConfigSchema updated) {
         LOG.error("Received DCN for updating VTEP Original schema: {}. Updated schema: {}", original, updated);
-        //LOG.trace("Received notification for VTEP config schema [{}] updated.", original.getSchemaName());
+        VtepConfigSchema originalSchema = ItmUtils.validateVtepConfigSchema(original);
+        VtepConfigSchema updatedSchema = ItmUtils.validateVtepConfigSchema(updated);
 
-        try {
-            VtepConfigSchema orignalSchema = ItmUtils.validateVtepConfigSchema(original);
-            VtepConfigSchema updatedSchema = ItmUtils.validateVtepConfigSchema(updated);
-
-            if (doesDeleteAndAddSchemaRequired(original, updated)) {
-                LOG.error("Failed to handle DCN for updating VTEP schema {}. Original schema: {}. Updated schema: {}",
-                        original, updated);
-                // TODO: handle updates
-                return;
-            }
-
-            handleUpdateOfDpnIds(orignalSchema, updatedSchema);
-
-        } catch (Exception e) {
-            String error = "Failed to handle DCN for update VtepConfigSchema original:"
-                    + original + ", updated: " + updated;
-            LOG.error(error, e);
+        if (doesDeleteAndAddSchemaRequired(original, updated)) {
+            LOG.error("Failed to handle DCN for updating VTEP schema {}. Original schema: {}. Updated schema: {}",
+                      original, updated);
+            // TODO: handle updates
+            return;
         }
-    }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.opendaylight.genius.mdsalutil.AbstractDataChangeListener#add(org.
-     * opendaylight.yangtools.yang.binding.InstanceIdentifier,
-     * org.opendaylight.yangtools.yang.binding.DataObject)
-     */
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    @Override
-    protected void add(InstanceIdentifier<VtepConfigSchema> identifier, VtepConfigSchema schema) {
-        // Construct the transport zones from the provided schemas and push it
-        // to config DS.
-        LOG.trace("Add VtepConfigSchema: key: {} , value: {}", identifier, schema);
-
-        try {
-            VtepConfigSchema validatedSchema = ItmUtils.validateForAddVtepConfigSchema(schema,
-                    getAllVtepConfigSchemas());
-
-            VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
-            addVteps(validatedSchema, vtepIpPool);
-        } catch (Exception e) {
-            LOG.error("Failed to handle DCN for add VtepConfigSchema", e);
-        }
+        handleUpdateOfDpnIds(originalSchema, updatedSchema);
     }
 
     @Override
-    protected VtepConfigSchemaListener getDataTreeChangeListener() {
-        return VtepConfigSchemaListener.this;
+    public void add(@Nonnull VtepConfigSchema vtepConfigSchema) {
+        // Construct the transport zones from the provided schemas and push it to config DS
+        LOG.trace("Add VtepConfigSchema: {}", vtepConfigSchema);
+
+        VtepConfigSchema validatedSchema = ItmUtils
+                .validateForAddVtepConfigSchema(vtepConfigSchema, getAllVtepConfigSchemas());
+
+        VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
+        addVteps(validatedSchema, vtepIpPool);
     }
 
     /**
@@ -411,7 +329,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
                     .child(TransportZone.class, new TransportZoneKey(schema.getTransportZoneName()))
                     .child(Subnets.class, new SubnetsKey(schema.getSubnet())).child(Vteps.class, vtepkey).build();
 
-            Vteps vtep = null;
+            Vteps vtep;
             Optional<Vteps> vtepOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, vpath, dataBroker);
             if (vtepOptional.isPresent()) {
                 vtep = vtepOptional.get();
@@ -486,7 +404,7 @@ public class VtepConfigSchemaListener extends AsyncDataTreeChangeListenerBase<Vt
     /**
      * Gets the an available ip.
      *
-     * @param availableIps
+     * @param availableIps list of all available IPs
      *
      * @return the an available ip
      */
