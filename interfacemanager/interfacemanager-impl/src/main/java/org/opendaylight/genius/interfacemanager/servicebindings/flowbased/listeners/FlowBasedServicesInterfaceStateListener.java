@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -11,11 +11,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
@@ -34,8 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesInterfaceStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
+public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSyncDataTreeChangeListener<Interface> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
@@ -45,70 +45,60 @@ public class FlowBasedServicesInterfaceStateListener
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
-    public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
-        super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
+    public FlowBasedServicesInterfaceStateListener(DataBroker dataBroker,
+            EntityOwnershipUtils entityOwnershipUtils, JobCoordinator coordinator,
+            FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+              InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @Override
-    protected InstanceIdentifier<Interface> getWildCardPath() {
-        return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
-    }
-
-    @Override
-    protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
-        if (Other.class.equals(interfaceStateOld.getType())
+    public void remove(@Nonnull Interface removedInterface) {
+        if (Other.class.equals(removedInterface.getType())
                 || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
-                        IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
+                                                       IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 
-        LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream()
-                .forEach(serviceMode -> coordinator.enqueueJob(interfaceStateOld.getName(),
-                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRendererFactoryResolver
-                            .getFlowBasedServicesStateRendererFactory(serviceMode)
-                                .getFlowBasedServicesStateRemoveRenderer(), interfaceStateOld, serviceMode),
-                        IfmConstants.JOB_MAX_RETRIES));
+        LOG.debug("Received interface state remove event for {}", removedInterface.getName());
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator
+                .enqueueJob(removedInterface.getName(), new RendererStateInterfaceUnbindWorker(
+                                    flowBasedServicesStateRendererFactoryResolver
+                                            .getFlowBasedServicesStateRendererFactory(serviceMode)
+                                            .getFlowBasedServicesStateRemoveRenderer(), removedInterface, serviceMode),
+                            IfmConstants.JOB_MAX_RETRIES));
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
+    public void update(@Nonnull Interface originalDataObject, @Nonnull Interface updatedDataObject) {
         // Do nothing
     }
 
     @Override
-    protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if (interfaceStateNew.getType() == null
-            || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
-                    IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
+    public void add(@Nonnull Interface newInterface) {
+        if (newInterface.getType() == null || !entityOwnershipUtils
+                .isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                               IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 
-        LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
-                interfaceStateNew.getName(),
-                new RendererStateInterfaceBindWorker(flowBasedServicesStateRendererFactoryResolver
-                        .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer(),
-                        interfaceStateNew, serviceMode),
-                IfmConstants.JOB_MAX_RETRIES));
-    }
-
-    @Override
-    protected FlowBasedServicesInterfaceStateListener getDataTreeChangeListener() {
-        return FlowBasedServicesInterfaceStateListener.this;
+        LOG.debug("Received interface state add event for {}", newInterface.getName());
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator
+                .enqueueJob(newInterface.getName(), new RendererStateInterfaceBindWorker(
+                                    flowBasedServicesStateRendererFactoryResolver
+                                            .getFlowBasedServicesStateRendererFactory(serviceMode)
+                                            .getFlowBasedServicesStateAddRenderer(), newInterface, serviceMode),
+                            IfmConstants.JOB_MAX_RETRIES));
     }
 
     private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
-        Interface iface;
-        FlowBasedServicesStateAddable flowBasedServicesStateAddable;
-        Class<? extends ServiceModeBase> serviceMode;
+        final Interface iface;
+        final FlowBasedServicesStateAddable flowBasedServicesStateAddable;
+        final Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable,
                                          Interface iface, Class<? extends ServiceModeBase> serviceMode) {
@@ -141,9 +131,9 @@ public class FlowBasedServicesInterfaceStateListener
     }
 
     private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
-        Interface iface;
-        FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
-        Class<? extends ServiceModeBase> serviceMode;
+        final Interface iface;
+        final FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+        final Class<? extends ServiceModeBase> serviceMode;
 
         RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
                 Interface iface, Class<? extends ServiceModeBase> serviceMode) {
