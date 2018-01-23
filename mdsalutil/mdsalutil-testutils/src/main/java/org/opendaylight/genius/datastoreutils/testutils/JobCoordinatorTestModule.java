@@ -7,10 +7,14 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+
 import com.google.inject.AbstractModule;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
 import org.opendaylight.infrautils.jobcoordinator.internal.JobCoordinatorImpl;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 
 /**
  * Guice Binding for using {@link JobCoordinator} in components tests.
@@ -26,7 +30,8 @@ public class JobCoordinatorTestModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        JobCoordinatorImpl jobCoordinatorImpl = new JobCoordinatorImpl();
+        MetricProvider metricProvider = mock(MetricProvider.class, RETURNS_DEEP_STUBS);
+        JobCoordinatorImpl jobCoordinatorImpl = new JobCoordinatorImpl(metricProvider);
         bind(JobCoordinator.class).toInstance(jobCoordinatorImpl);
         bind(JobCoordinatorMonitor.class).toInstance(jobCoordinatorImpl);
     }
