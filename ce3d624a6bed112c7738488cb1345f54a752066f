@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "599e8169_443cf5e1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-23T11:59:55Z",
+      "side": 1,
+      "message": "minor ..entitycounter.entitytype -replace / with .",
+      "range": {
+        "startLine": 588,
+        "startChar": 39,
+        "endLine": 588,
+        "endChar": 58
+      },
+      "revId": "ce3d624a6bed112c7738488cb1345f54a752066f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
