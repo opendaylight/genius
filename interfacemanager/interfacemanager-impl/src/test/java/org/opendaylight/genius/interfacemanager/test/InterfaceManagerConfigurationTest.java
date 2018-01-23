@@ -339,6 +339,7 @@ public class InterfaceManagerConfigurationTest {
     }
 
     @Test
+    @Ignore
     public void newTunnelInterface() throws Exception {
 
         // 3. Update DPN-ID of the bridge
