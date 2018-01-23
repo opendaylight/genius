@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "64d26585_c866ab4e",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-23T12:15:37Z",
+      "side": 1,
+      "message": "put in fcapsConstant class",
+      "range": {
+        "startLine": 53,
+        "startChar": 2,
+        "endLine": 53,
+        "endChar": 50
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "58e3692c_6987b30d",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-23T12:15:37Z",
+      "side": 1,
+      "message": "put in common class- fcapsConstants",
+      "range": {
+        "startLine": 30,
+        "startChar": 2,
+        "endLine": 30,
+        "endChar": 51
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fa13f90_562f7307",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2018-01-23T12:15:37Z",
+      "side": 1,
+      "message": "put in common class - Fcapsconstants",
+      "range": {
+        "startLine": 33,
+        "startChar": 4,
+        "endLine": 33,
+        "endChar": 44
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
