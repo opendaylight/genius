@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeListener<Config> implements UpgradeState {
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateListener.class);
 
-    private AtomicBoolean isUpgradeInProgress = new AtomicBoolean(false);
+    private final AtomicBoolean isUpgradeInProgress = new AtomicBoolean(false);
 
     @Inject
     public UpgradeStateListener(@OsgiService final DataBroker dataBroker, final Config config) {
@@ -66,7 +66,7 @@ public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeLis
     }
 
     @Override
-    public void update(@Nonnull Config originalDataObject, Config updatedDataObject) {
+    public void update(@Nonnull Config originalDataObject, @Nonnull Config updatedDataObject) {
         isUpgradeInProgress.set(updatedDataObject.isUpgradeInProgress());
         LOG.info("UpgradeStateListener.update: isUpgradeInProgress = {}", updatedDataObject.isUpgradeInProgress());
     }
