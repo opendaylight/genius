@@ -48,7 +48,6 @@ public class TestableJobCoordinatorEventsWaiterTest {
     public @Rule LogRule logRule = new LogRule();
 
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    //    when https://git.opendaylight.org/gerrit/#/c/60204/ is merged in infrautils
 
     public @Rule GuiceRule guice = new GuiceRule(CloseableModule.class, Jsr250Module.class,
             JobCoordinatorTestModule.class);
