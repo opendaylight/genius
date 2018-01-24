@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "af69dad3_025ad4f1",
+        "filename": "docs/images/pipeline-high-level.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2018-01-24T08:58:58Z",
+      "side": 1,
+      "message": "Keep the existing path intact. Add new path indiacting it is only selected if \u0027itm-direct-tunnel\u0027 flag is ON.",
+      "revId": "ce1f18102064f985073e5f28669b487df99fb6cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
