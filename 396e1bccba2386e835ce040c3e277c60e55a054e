@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1e8b92c1_d359aa49",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T14:01:18Z",
+      "side": 1,
+      "message": "Put this in a NodeConnectorCounters class along with the constants and util methods you added elsewhere.",
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00ffefc7_dddba876",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T14:01:18Z",
+      "side": 1,
+      "message": "This not a word - should be \"updating\"",
+      "range": {
+        "startLine": 354,
+        "startChar": 89,
+        "endLine": 354,
+        "endChar": 97
+      },
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9bf3bd7b_55f28331",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T14:01:18Z",
+      "side": 1,
+      "message": "You can just call get w/o containsKey on line 358 to avoid 2 lookups. Also this avoids a potential NPE b/c the map entry could be removed between lines 358 and 360.",
+      "range": {
+        "startLine": 360,
+        "startChar": 82,
+        "endLine": 360,
+        "endChar": 85
+      },
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd8d78a7_e5f64072",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T14:01:18Z",
+      "side": 1,
+      "message": "This can all be simplified using\n\n  nodeMetricCounterMap.computeIfIbsent(...).increment(...)",
+      "range": {
+        "startLine": 361,
+        "startChar": 12,
+        "endLine": 386,
+        "endChar": 13
+      },
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
