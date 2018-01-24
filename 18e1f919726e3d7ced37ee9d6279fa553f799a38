@@ -2,6 +2,75 @@
   "comments": [
     {
       "key": {
+        "uuid": "bbac8bd3_03e1db71",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsConstants.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-24T07:45:43Z",
+      "side": 1,
+      "message": "should be colon.",
+      "range": {
+        "startLine": 13,
+        "startChar": 59,
+        "endLine": 13,
+        "endChar": 60
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e2001e21_425a9ab2",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-24T07:45:43Z",
+      "side": 1,
+      "message": "Below pattern is not specified.",
+      "range": {
+        "startLine": 20,
+        "startChar": 44,
+        "endLine": 20,
+        "endChar": 60
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "67000192_a4c687c4",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-24T07:45:43Z",
+      "side": 1,
+      "message": "Misleading name, should be counterName.",
+      "range": {
+        "startLine": 25,
+        "startChar": 15,
+        "endLine": 25,
+        "endChar": 22
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "64d26585_c866ab4e",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
         "patchSetId": 7
@@ -18,6 +87,29 @@
         "startChar": 2,
         "endLine": 53,
         "endChar": 50
+      },
+      "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02c75aa1_dda20457",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-24T07:45:43Z",
+      "side": 1,
+      "message": "in lambda, it is like arg passing to function, but where \u0027counter\u0027 is being used.",
+      "range": {
+        "startLine": 137,
+        "startChar": 29,
+        "endLine": 137,
+        "endChar": 36
       },
       "revId": "18e1f919726e3d7ced37ee9d6279fa553f799a38",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
