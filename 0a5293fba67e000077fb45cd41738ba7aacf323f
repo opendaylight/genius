@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6fd8129c_b26cb5f2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-24T13:12:48Z",
+      "side": 1,
+      "message": "this futures does not actually seem to be used anywhere here?  It\u0027s never added to nor passed into any of the called methods, right?  Then it would be clearer, and a nano second ;) faster to just drop this and just x3 return Collections.emptyList();",
+      "revId": "0a5293fba67e000077fb45cd41738ba7aacf323f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
