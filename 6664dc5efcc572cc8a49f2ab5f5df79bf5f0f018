@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fed6bdb9_d69b98c0",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/HwVtepTunnelsStateHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T16:12:17Z",
+      "side": 1,
+      "message": "Do we really need this to be async with dedicated thread? Only the updated method is implemented and doesn\u0027t look like it really needs to be offloaded (most of the work is done async read callbak).",
+      "range": {
+        "startLine": 70,
+        "startChar": 47,
+        "endLine": 70,
+        "endChar": 82
+      },
+      "revId": "6664dc5efcc572cc8a49f2ab5f5df79bf5f0f018",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
