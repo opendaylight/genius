@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3bfcb332_90d1f984",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 8
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-24T17:18:19Z",
+      "side": 1,
+      "message": "added read method to ResourceBatchingManager",
+      "revId": "d6ab32e32d23d503be3b7919752cff10b27fb020",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
