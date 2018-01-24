@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -27,7 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
-import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
@@ -65,42 +65,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVtepTunnelsStateHandler>
+public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListener<Tunnels>
         implements AlivenessProtocolHandler<Packet> {
 
     private static final Logger LOG = LoggerFactory.getLogger(HwVtepTunnelsStateHandler.class);
+
     private final DataBroker dataBroker;
     private final AlivenessMonitor alivenessMonitor;
 
     @Inject
     public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
-            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
-        super(Tunnels.class, HwVtepTunnelsStateHandler.class);
+                                     final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
+        super(dataBroker, LogicalDatastoreType.CONFIGURATION,
+              InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
+                      .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class));
         this.dataBroker = dataBroker;
         this.alivenessMonitor = alivenessMonitor;
         alivenessProtocolHandlerRegistry.register(EtherTypes.Bfd, this);
-        registerListener(LogicalDatastoreType.CONFIGURATION, this.dataBroker);
-        LOG.info("{} started", getClass().getSimpleName());
     }
 
     @Override
-    protected InstanceIdentifier<Tunnels> getWildCardPath() {
-        return InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
-                .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class);
+    public void remove(@Nonnull Tunnels removedDataObject) {
+        // Do nothing
     }
 
     @Override
-    protected HwVtepTunnelsStateHandler getDataTreeChangeListener() {
-        return HwVtepTunnelsStateHandler.this;
-    }
-
-    @Override
-    protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels del) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels oldTunnelInfo, Tunnels updatedTunnelInfo) {
+    public void update(@Nonnull Tunnels oldTunnelInfo, @Nonnull Tunnels updatedTunnelInfo) {
         List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
         List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
@@ -112,7 +102,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         updatedTunnelInfo.getTunnelUuid();
         String interfaceName = "<TODO>";
         // TODO: find out the corresponding interface using tunnelIdentifier or
-        // any attributes of tunneInfo object
+        // any attributes of tunnelInfo object
         final String monitorKey = getBfdMonitorKey(interfaceName);
         LOG.debug("Processing monitorKey: {} for received Tunnels update DCN", monitorKey);
 
@@ -157,7 +147,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
                         }
 
                         @Override
-                        public void onFailure(Throwable error) {
+                        public void onFailure(@Nonnull Throwable error) {
                             alivenessMonitor.releaseLock(lock);
                             LOG.warn("Error in writing monitoring state : {} to Datastore", monitorKey, error);
                             if (LOG.isTraceEnabled()) {
@@ -174,7 +164,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
             }
 
             @Override
-            public void onFailure(Throwable error) {
+            public void onFailure(@Nonnull Throwable error) {
                 LOG.error("Error when reading Monitoring State for key: {} to process the Packet received", monitorKey,
                         error);
                 // FIXME: Not sure if the transaction status is valid to cancel
@@ -204,7 +194,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     }
 
     @Override
-    protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels add) {
+    public void add(@Nonnull Tunnels newDataObject) {
         // TODO: need to add the code to enable BFD if tunnels are created
         // dynamically by TOR switch
     }
@@ -224,8 +214,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
     @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
     void resetMonitoringTask(boolean isEnable) {
         // TODO: get the corresponding hwvtep tunnel from the sourceInterface
-        // once InterfaceMgr
-        // implments renderer for hwvtep vxlan tunnels
+        // once InterfaceMgr implements renderer for HWVTEP VXLAN tunnels
 
         // tunnelKey, nodeId, topologyId are initialized to null and immediately passed to getTunnelIdentifier which
         // FindBugs flags as a "Load of known null value" violation. Not sure sure what the intent...
@@ -235,7 +224,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         Optional<Tunnels> tunnelsOptional = alivenessMonitor.read(LogicalDatastoreType.CONFIGURATION,
                 getTunnelIdentifier(topologyId, nodeId, tunnelKey));
         if (!tunnelsOptional.isPresent()) {
-            LOG.warn("Tunnel {} is not present on the Node {}. So not disabling the BFD monitoing", tunnelKey, nodeId);
+            LOG.warn("Tunnel {} is not present on the Node {}. So not disabling the BFD monitoring", tunnelKey, nodeId);
             return;
         }
         Tunnels tunnel = tunnelsOptional.get();
@@ -245,11 +234,11 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
             return;
         }
 
-        Iterator<BfdParams> tunnelBfdParamsInterator = tunnelBfdParams.iterator();
-        while (tunnelBfdParamsInterator.hasNext()) {
-            BfdParams bfdParam = tunnelBfdParamsInterator.next();
+        Iterator<BfdParams> tunnelBfdParamsIterator = tunnelBfdParams.iterator();
+        while (tunnelBfdParamsIterator.hasNext()) {
+            BfdParams bfdParam = tunnelBfdParamsIterator.next();
             if (bfdParam.getBfdParamKey().equals(AlivenessMonitorConstants.BFD_PARAM_ENABLE)) {
-                tunnelBfdParamsInterator.remove();
+                tunnelBfdParamsIterator.remove();
                 break;
             }
         }
@@ -281,7 +270,7 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         }
         // TODO: get the corresponding hwvtep tunnel from the sourceInterface
         // once InterfaceMgr
-        // Implements renderer for hwvtep vxlan tunnels
+        // Implements renderer for hwvtep VXLAN tunnels
         String tunnelLocalMacAddress = "<TODO>";
         String tunnelLocalIpAddress = "<TODO>";
         String tunnelRemoteMacAddress = "<TODO>";
@@ -303,8 +292,6 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         // into hwvtep datastore. if tunnels are not created during that time,
         // then start monitoring has to
         // be done as part of tunnel add DCN handling.
-//        HwvtepPhysicalLocatorRef remoteRef = null;
-//        HwvtepPhysicalLocatorRef localRef = null;
         String topologyId = "";
         String nodeId = "";
         MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
@@ -370,8 +357,8 @@ public class HwVtepTunnelsStateHandler extends HwvtepAbstractDataTreeChangeListe
         return interfaceName;
     }
 
-    public static InstanceIdentifier<Tunnels> getTunnelIdentifier(String topologyId, String nodeId,
-            TunnelsKey tunnelsKey) {
+    private static InstanceIdentifier<Tunnels> getTunnelIdentifier(String topologyId, String nodeId,
+                                                                   TunnelsKey tunnelsKey) {
         return InstanceIdentifier.builder(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId(topologyId)))
                 .child(Node.class, new NodeKey(new NodeId(nodeId))).augmentation(PhysicalSwitchAugmentation.class)
