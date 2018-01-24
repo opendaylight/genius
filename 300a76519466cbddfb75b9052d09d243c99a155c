@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "5e493485_10f351f5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/IfmConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-24T12:22:16Z",
+      "side": 1,
+      "message": "I thought more about this meanwhile, and am now actively working on API for \"labels\" for metrics; will -1 hoping you would consider using that here.",
+      "parentUuid": "6f57fbd8_904c1f11",
+      "revId": "300a76519466cbddfb75b9052d09d243c99a155c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1420c55f_92c43cf1",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 1
