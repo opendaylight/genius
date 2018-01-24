@@ -1,0 +1,135 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "728801a4_3ef577ec",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsConstants.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "These shouldn\u0027t need to be exposed here - see subsequent comments.",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 40
+      },
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b865f671_7a6ee04b",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "This class isn\u0027t needed - see subsequent comments.",
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b2ec7d6_64a62c56",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/NodeEventListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "Creating and injecting a singleton counter class (see subsequent comments) avoids coupling this class with FlowNodeConnectorInventoryTranslatorImpl.",
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "786c0111_9280dbd6",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "This should be in a singleton FcapsCounters class and injected.",
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9bbdbb02_84be2539",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "You don\u0027t need to do containsKey, get and remove - you can simply do:\n\n  Counter counter \u003d counterMap.remove(...); \n  if (counter !\u003d null) {\n      counter.close();\n  }",
+      "range": {
+        "startLine": 171,
+        "startChar": 8,
+        "endLine": 174,
+        "endChar": 9
+      },
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "deed853b_2f5fdedf",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/NodeUpdateCounter.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "Another class with its own counterMap?  Consolidate into singleton...",
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7280711a_e89ed124",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-24T13:44:17Z",
+      "side": 1,
+      "message": "...same here",
+      "revId": "870cf9fa98514727f01260977171b8b2c11ff5b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
