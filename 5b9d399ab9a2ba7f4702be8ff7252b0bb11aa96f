@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2ab9e52d_884b646b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-25T12:59:44Z",
+      "side": 1,
+      "message": "I had commented earlier about declaring interfacesList here instead of on line 280 to avoid creating a useless object if the return paths on lines 286 or 292 are taken. Minor thing but it\u0027s better to declare variables just before first usage.",
+      "parentUuid": "da11d5f0_8352458b",
+      "revId": "5b9d399ab9a2ba7f4702be8ff7252b0bb11aa96f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_a561c0aa",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 6
