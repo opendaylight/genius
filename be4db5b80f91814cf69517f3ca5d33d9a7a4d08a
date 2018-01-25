@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "799b0d07_c03daeb5",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceListFromDpn.xtend",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-01-25T03:39:23Z",
+      "side": 1,
+      "message": "can you retain the older interface-name and interfaceType\u003dL2Vlan?",
+      "revId": "be4db5b80f91814cf69517f3ca5d33d9a7a4d08a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
