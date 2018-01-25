@@ -11,6 +11,7 @@ Contents:
    :maxdepth: 1
 
    Design Specification Template <specs-template>
+   itm-scale-improvements
    itm-tunnel-auto-config
    multiple-vxlan-tunnels
    of-tunnels

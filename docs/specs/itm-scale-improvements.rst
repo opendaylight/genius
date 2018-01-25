@@ -5,7 +5,7 @@
 ITM Scale Enhancements
 ======================
 
-Gerrit Topic Branch Name :- ``ITM-Scale-Improvements``
+https://git.opendaylight.org/gerrit/#/q/topic:ITM-Scale-Improvements
 
 ITM creates tunnel mesh among switches with the help of interfacemanager.
 This spec describes re-designing of ITM to create the tunnel mesh independently without interface manager.
