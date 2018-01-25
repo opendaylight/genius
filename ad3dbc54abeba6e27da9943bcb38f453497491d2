@@ -129,6 +129,54 @@
       "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13db6446_88a48ee0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-25T20:16:17Z",
+      "side": 1,
+      "message": "In latest code, which is rebased now, NO_DELAY is removed and INITIAL_DELAY has been introduced which I have put into blueprint. Check patchset 4 changes. Thnx.",
+      "parentUuid": "bc7f3d80_73cb2eda",
+      "range": {
+        "startLine": 114,
+        "startChar": 91,
+        "endLine": 114,
+        "endChar": 99
+      },
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7df844d0_8bb1a1b5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-25T20:16:17Z",
+      "side": 1,
+      "message": "In current patchset 4, INITIAL_DELAY is being read from blueprint xml file and this delay is part of patch raised by Viji which is recently merged few days back, so now I have considered adding that initial delay parameter into blueprint.",
+      "parentUuid": "43c81708_5ddf95a4",
+      "range": {
+        "startLine": 114,
+        "startChar": 91,
+        "endLine": 114,
+        "endChar": 99
+      },
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
