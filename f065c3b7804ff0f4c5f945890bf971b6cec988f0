@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "41d25131_558dae8a",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/itm/ItmRpcTestImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "instead of return null please use throw new UnsupportedOperationException();",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a4eb83b_6b8ce902",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 856,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "Riyazahmed, could I invite you to use our new org.opendaylight.genius.infra.FutureRpcResults utility to implement this RPC?  We really should use that for new RPCs such as this... and also convert all existing RPCs to use it (not for this change, of course).  See the FutureRpcResults JavaDoc and find other existing usages of it in genius to see how to.",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8ee63738_271be1b7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "this is technically wrong error handling (you can\u0027t just return null) - but with FutureRpcResults, you can just let it propagate and it will do the right thing.",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1edacc5_5b94c247",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 890,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "could \u0026 should this method be private instead of public?",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6e2eddd_42c8802a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 933,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "remove extra double new line here",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "419e77dd_9d7dbf9d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 935,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "could \u0026 should this method be private instead of public?",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0b20f1a7_93bec57f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 939,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "please use the utility SingleTransactionDataBroker\u0027s syncReadOptional() method instad of directly the DataBroker (because that makes sure that you close the Tx, which you forgot here, which will lead to Tx leaks...)",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5de99aa2_03363049",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 945,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "do not do this, just add \"throws ReadFailedException\" to this method\u0027s signature to let it propagate, and be handled by FutureRpcResults (see above)",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14674bdc_0b92f604",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 965,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "could \u0026 should this method be private instead of public?",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef9b9e5b_896d5c73",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 968,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "as above, please use the utility SingleTransactionDataBroker\u0027s syncReadOptional() method instad of directly the DataBroker (because that makes sure that you close the Tx, which you forgot here, which will lead to Tx leaks...)",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74cecd3b_7eb4d9ed",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 974,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-25T15:54:34Z",
+      "side": 1,
+      "message": "as above, do not do this, just add \"throws ReadFailedException\" to this method\u0027s signature to let it propagate, and be handled by FutureRpcResults (see above)",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
