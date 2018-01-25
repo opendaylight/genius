@@ -105,6 +105,30 @@
       "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "43c81708_5ddf95a4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-25T16:01:02Z",
+      "side": 1,
+      "message": "yes - or pick a randomize the initial  delay over the poll interval.",
+      "parentUuid": "bc7f3d80_73cb2eda",
+      "range": {
+        "startLine": 114,
+        "startChar": 91,
+        "endLine": 114,
+        "endChar": 99
+      },
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
