@@ -103,77 +103,7 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
         OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation =
             ovsdbNodeNew.getAugmentation(OvsdbBridgeAugmentation.class);
         if (ovsdbNewBridgeAugmentation != null) {
-            bridgeName = ovsdbNewBridgeAugmentation.getBridgeName().getValue();
-
-            // Read DPID from OVSDBBridgeAugmentation
-            strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
-            if (strDpnId == null || strDpnId.isEmpty()) {
-                LOG.info("OvsdbBridgeAugmentation ADD: DPID for bridge {} is NULL.",
-                    bridgeName);
-                return;
-            }
-
-            // TBD: Move this time taking operations into DataStoreJobCoordinator
-            Node ovsdbNodeFromBridge = ItmUtils.getOvsdbNode(ovsdbNewBridgeAugmentation, dataBroker);
-            // check for OVSDB node
-            if (ovsdbNodeFromBridge != null) {
-                ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.getAugmentation(OvsdbNodeAugmentation.class);
-            } else {
-                LOG.error("Ovsdb Node could not be fetched from Oper DS for bridge {}.",
-                    bridgeName);
-                return;
-            }
-        }
-
-        if (ovsdbNewNodeAugmentation != null) {
-            // get OVSDB TEP info from old ovsdb node
-            OvsdbTepInfo ovsdbTepInfo = getOvsdbTepInfo(ovsdbNewNodeAugmentation);
-            // get OVSDB other_config list from old ovsdb node
-            if (ovsdbTepInfo == null) {
-                return;
-            }
-            // store TEP info required parameters
-            String newLocalIp = ovsdbTepInfo.getLocalIp();
-            String tzName = ovsdbTepInfo.getTzName();
-            String newBridgeName = ovsdbTepInfo.getBrName();
-            boolean ofTunnel = ovsdbTepInfo.getOfTunnel();
-
-            // check if Local IP is configured or not
-            if (newLocalIp != null && !newLocalIp.isEmpty()) {
-                // if bridge received is the one configured for TEPs from OVS side or
-                // if it is br-int, then add TEP into Config DS
-                if (newBridgeName.equals(bridgeName)) {
-                    LOG.trace("Ovs Node [{}] is configured with Local IP.", ovsdbNodeNew.getNodeId().getValue());
-
-                    // check if defTzEnabled flag is false in config file,
-                    // if flag is OFF, then no need to add TEP into ITM config DS.
-                    if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
-                        boolean defTzEnabled = itmConfig.isDefTzEnabled();
-                        if (!defTzEnabled) {
-                            LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.", newLocalIp,
-                                     ITMConstants.DEFAULT_TRANSPORT_ZONE);
-                            return;
-                        }
-                    }
-
-                    LOG.trace("Local-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}," + "of-tunnel flag: {}",
-                            newLocalIp, tzName, newBridgeName, strDpnId, ofTunnel);
-
-                    // Enqueue 'add TEP received from southbound OVSDB into ITM config DS' operation
-                    // into DataStoreJobCoordinator
-                    DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
-                    OvsdbTepAddWorker addWorker =
-                        new OvsdbTepAddWorker(newLocalIp, strDpnId, tzName, ofTunnel, dataBroker);
-                    coordinator.enqueueJob(newLocalIp, addWorker);
-                } else {
-                    LOG.trace("TEP ({}) would be added later when bridge ({}) gets added into Ovs Node [{}].",
-                            newLocalIp, newBridgeName, ovsdbNodeNew.getNodeId().getValue());
-                }
-            } else {
-                LOG.trace("Ovs Node [{}] is not configured with Local IP. Nothing to do.",
-                          ovsdbNodeNew.getNodeId().getValue());
-                return;
-            }
+            processBridgeUpdate(ovsdbNewBridgeAugmentation);
         }
     }
 
@@ -196,6 +126,15 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Update.",
             ovsdbNodeOld.getNodeId().getValue());
+
+        LOG.trace("Update: ovsdbNodeOld: {}  ovsdbNodeNew: {}", ovsdbNodeOld, ovsdbNodeNew);
+
+        // If this is a bridge update, see if dpid was added. If so, need to
+        // addTep, as TEP would not be added in node add case above
+        if (isBridgeDpIdAdded(ovsdbNodeOld, ovsdbNodeNew)) {
+            processBridgeUpdate(ovsdbNodeNew);
+            return;
+        }
 
         // get OVSDB TEP info from old ovsdb node
         OvsdbTepInfo newTepInfoObj = getOvsdbTepInfo(
@@ -382,6 +321,33 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
                 || oldDpnBridgeName != null && !oldDpnBridgeName.equals(dpnBridgeName);
     }
 
+    private boolean isBridgeDpIdAdded(Node ovsdbNodeOld, Node ovsdbNodeNew) {
+        String oldBridgeName = null;
+        String oldDpId = null;
+        String newDpId = null;
+
+        OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation =
+                ovsdbNodeNew.getAugmentation(OvsdbBridgeAugmentation.class);
+        if (ovsdbNewBridgeAugmentation != null) {
+            // Read DPID from OVSDBBridgeAugmentation
+            newDpId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
+        }
+
+        OvsdbBridgeAugmentation ovsdbOldBridgeAugmentation =
+                ovsdbNodeOld.getAugmentation(OvsdbBridgeAugmentation.class);
+        if (ovsdbOldBridgeAugmentation != null) {
+            oldBridgeName = ovsdbNewBridgeAugmentation.getBridgeName().getValue();
+            // Read DPID from OVSDBBridgeAugmentation
+            oldDpId = ItmUtils.getStrDatapathId(ovsdbOldBridgeAugmentation);
+        }
+        if (oldDpId == null && newDpId != null) {
+            LOG.trace("DpId changed from {} to {} for bridge {}",
+                    oldDpId, newDpId, oldBridgeName);
+            return true;
+        }
+        return false;
+    }
+
     private OvsdbTepInfo getOvsdbTepInfo(OvsdbNodeAugmentation ovsdbNodeAugmentation) {
         if (ovsdbNodeAugmentation == null) {
             return null;
@@ -423,6 +389,92 @@ public class OvsdbNodeListener extends AsyncDataTreeChangeListenerBase<Node, Ovs
 
         LOG.trace("{}", ovsdbTepInfoObj.toString());
         return ovsdbTepInfoObj;
+    }
+
+    private void processBridgeUpdate(Node ovsdbNodeNew) {
+        OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation =
+               ovsdbNodeNew.getAugmentation(OvsdbBridgeAugmentation.class);
+        if (ovsdbNewBridgeAugmentation != null) {
+            processBridgeUpdate(ovsdbNewBridgeAugmentation);
+        }
+    }
+
+    private void processBridgeUpdate(OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation) {
+        String bridgeName = null;
+        String strDpnId = null;
+        OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
+
+        if (ovsdbNewBridgeAugmentation != null) {
+            bridgeName = ovsdbNewBridgeAugmentation.getBridgeName().getValue();
+
+            // Read DPID from OVSDBBridgeAugmentation
+            strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
+            if (strDpnId == null || strDpnId.isEmpty()) {
+                LOG.info("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
+                return;
+            }
+
+            // TBD: Move this time taking operations into DataStoreJobCoordinator
+            Node ovsdbNodeFromBridge = ItmUtils.getOvsdbNode(ovsdbNewBridgeAugmentation, dataBroker);
+            // check for OVSDB node
+            if (ovsdbNodeFromBridge != null) {
+                ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.getAugmentation(OvsdbNodeAugmentation.class);
+            } else {
+                LOG.error("processBridgeUpdate: Ovsdb Node could not be fetched from Oper DS for bridge {}.",
+                        bridgeName);
+                return;
+            }
+        }
+
+        if (ovsdbNewNodeAugmentation != null) {
+            OvsdbTepInfo ovsdbTepInfo = getOvsdbTepInfo(ovsdbNewNodeAugmentation);
+
+            if (ovsdbTepInfo == null) {
+                LOG.trace("processBridgeUpdate: No Tep Info");
+                return;
+            }
+            // store TEP info required parameters
+            String newLocalIp = ovsdbTepInfo.getLocalIp();
+            String tzName = ovsdbTepInfo.getTzName();
+            String newBridgeName = ovsdbTepInfo.getBrName();
+            boolean ofTunnel = ovsdbTepInfo.getOfTunnel();
+
+            // check if Local IP is configured or not
+            if (newLocalIp != null && !newLocalIp.isEmpty()) {
+                // if bridge received is the one configured for TEPs from OVS side or
+                // if it is br-int, then add TEP into Config DS
+                if (newBridgeName.equals(bridgeName)) {
+                    LOG.trace("Ovs Node with bridge {} is configured with Local IP.", bridgeName);
+
+                    // check if defTzEnabled flag is false in config file,
+                    // if flag is OFF, then no need to add TEP into ITM config DS.
+                    if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+                        boolean defTzEnabled = itmConfig.isDefTzEnabled();
+                        if (!defTzEnabled) {
+                            LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.", newLocalIp,
+                                    ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                            return;
+                        }
+                    }
+
+                    LOG.trace("Local-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}," + "of-tunnel flag: {}",
+                            newLocalIp, tzName, newBridgeName, strDpnId, ofTunnel);
+
+                    // Enqueue 'add TEP received from southbound OVSDB into ITM config DS' operation
+                    // into DataStoreJobCoordinator
+                    DataStoreJobCoordinator coordinator = DataStoreJobCoordinator.getInstance();
+                    OvsdbTepAddWorker addWorker =
+                            new OvsdbTepAddWorker(newLocalIp, strDpnId, tzName, ofTunnel, dataBroker);
+                    coordinator.enqueueJob(newLocalIp, addWorker);
+                } else {
+                    LOG.trace("TEP ({}) would be added later when bridge {} gets added into Ovs Node.",
+                            newLocalIp, newBridgeName);
+                }
+            } else {
+                LOG.trace("Ovs Node with bridge {} is not configured with Local IP. Nothing to do.",
+                    bridgeName);
+            }
+        }
     }
     // End of class
 }
