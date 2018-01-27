@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
@@ -59,9 +60,10 @@ public class OvsInterfaceTopologyStateUpdateHelper {
      * This code is used to handle only a dpnId change scenario for a particular
      * change, which is not expected to happen in usual cases.
      */
-    public List<ListenableFuture<Void>> updateBridgeRefEntry(
-            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
-            OvsdbBridgeAugmentation bridgeOld) {
+    public List<ListenableFuture<Void>> updateBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+                                                             OvsdbBridgeAugmentation bridgeNew,
+                                                             OvsdbBridgeAugmentation bridgeOld,
+                                                             InterfacemgrProvider interfacemgrProvider) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
@@ -83,7 +85,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             futures.add(writeTransaction.submit());
             return futures;
         }
-        southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, bridgeIid, bridgeNew);
+        southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, bridgeIid, bridgeNew,
+                interfacemgrProvider);
 
         futures.add(writeTransaction.submit());
         return futures;
