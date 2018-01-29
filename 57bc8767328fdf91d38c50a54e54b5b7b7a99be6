@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e6ef9a2_0c1d1fd1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 967,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2018-01-29T09:40:14Z",
+      "side": 1,
+      "message": "This bridge reference is topology node iid\nyou have to get the node key from this iid",
+      "range": {
+        "startLine": 967,
+        "startChar": 77,
+        "endLine": 967,
+        "endChar": 80
+      },
+      "revId": "57bc8767328fdf91d38c50a54e54b5b7b7a99be6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
