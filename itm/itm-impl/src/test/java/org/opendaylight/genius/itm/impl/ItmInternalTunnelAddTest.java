@@ -148,6 +148,7 @@ public class ItmInternalTunnelAddTest {
     @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
     @Mock JobCoordinator jobCoordinator;
+    @Mock ItmTepUtils itmTepUtils;
     ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
@@ -170,7 +171,8 @@ public class ItmInternalTunnelAddTest {
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
 
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())));
+                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+            itmTepUtils);
     }
 
     @After
