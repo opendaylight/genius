@@ -18,6 +18,8 @@ public interface ITMConstants {
     BigInteger COOKIE_ITM_EXTERNAL = new BigInteger("9050000", 16);
 
     String ITM_IDPOOL_NAME = "Itmservices";
+    // FIXME: Move these to NwConstants
+    long ITM_GROUPID_POOL_START = 300000L;
     long ITM_IDPOOL_START = 1L;
     String ITM_IDPOOL_SIZE = "100000";
 
