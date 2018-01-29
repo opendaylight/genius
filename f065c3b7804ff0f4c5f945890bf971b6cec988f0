@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "150f27f7_bc8035fe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 856,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2018-01-29T10:23:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a4eb83b_6b8ce902",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ee63738_271be1b7",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 5
@@ -83,6 +101,24 @@
       "writtenOn": "2018-01-25T15:54:34Z",
       "side": 1,
       "message": "this is technically wrong error handling (you can\u0027t just return null) - but with FutureRpcResults, you can just let it propagate and it will do the right thing.",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b9b1950e_3d851e33",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 868,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2018-01-29T10:23:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ee63738_271be1b7",
       "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
