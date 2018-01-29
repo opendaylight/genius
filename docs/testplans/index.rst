@@ -10,4 +10,4 @@ Contents:
    :maxdepth: 1
 
    Interface Manager <interface-manager>
-   Testplan Template <testplan-template>
+   ITM Scalability <itm-scalability>
