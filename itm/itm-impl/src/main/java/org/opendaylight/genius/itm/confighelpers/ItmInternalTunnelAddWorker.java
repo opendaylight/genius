@@ -22,6 +22,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
+import org.opendaylight.genius.itm.impl.ItmTepUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -56,12 +57,15 @@ public final class ItmInternalTunnelAddWorker {
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
 
     private final DataBroker dataBroker;
+    private final ItmTepUtils itmTepUtils;
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
-            TunnelMonitoringConfig tunnelMonitoringConfig) {
+                                      TunnelMonitoringConfig tunnelMonitoringConfig,
+                                      ItmTepUtils itmTepUtils) {
         this.dataBroker = dataBroker;
+        this.itmTepUtils = itmTepUtils;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
 
@@ -178,9 +182,11 @@ public final class ItmInternalTunnelAddWorker {
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
             parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId);
         }
-        createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
+        //createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
         // also update itm-state ds?
-        createInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName, transaction);
+        // TODO: This is just for WiP testing, don't merge with this
+        //createInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName, transaction);
+        itmTepUtils.createTunnelPort(srcte, dstte, srcDpnId, dstDpnId);
         return true;
     }
 

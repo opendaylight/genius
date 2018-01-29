@@ -35,6 +35,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedMoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.ItmTepUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -72,6 +73,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
+    private final ItmTepUtils itmTepUtils;
     private final IMdsalApiManager mdsalManager;
     private final ItmConfig itmConfig;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
@@ -84,11 +86,13 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final IMdsalApiManager mdsalManager,
                                  final ItmConfig itmConfig, final JobCoordinator jobCoordinator,
                                  final TunnelMonitoringConfig tunnelMonitoringConfig,
-                                 final DPNTEPsInfoCache dpnTEPsInfoCache) {
+                                 final DPNTEPsInfoCache dpnTEPsInfoCache,
+                                 final ItmTepUtils itmTepUtils) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
+        this.itmTepUtils = itmTepUtils;
         initializeTZNode(dataBroker);
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
@@ -96,7 +100,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig);
+                tunnelMonitoringConfig, itmTepUtils);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
     }
 
