@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -84,6 +84,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
@@ -864,4 +865,22 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public long getLogicalTunnelSelectGroupId(int lportTag) {
         return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
     }
+
+    @Override
+    public String getOvsdbBridgeNodeId(BigInteger dpId) {
+        OvsdbBridgeRef ovsdbBridgeRef = interfaceMetaUtils.getOvsdbBridgeRef(dpId);
+        if (ovsdbBridgeRef != null) {
+            InstanceIdentifier<Node> nodeIid = ovsdbBridgeRef.getValue().firstIdentifierOf(Node.class);
+            return nodeIid.firstKeyOf(Node.class).getNodeId().getValue();
+        }
+        /*FIXME: Remove this when hook into appropriate code
+         *       We may still need this, depending on how orchestration
+         *       is done. It could be possible that NodeId is not known if device
+         *       hasn't connected even once. Not an actual deployment scenario,
+         *       not possible with auto tunnels, only in certain test setups
+         *       with mininet may run into this.
+         */
+        return "";
+    }
+
 }
