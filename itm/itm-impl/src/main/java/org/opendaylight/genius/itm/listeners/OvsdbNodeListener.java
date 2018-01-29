@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -19,7 +19,9 @@ import org.opendaylight.genius.itm.commons.OvsdbExternalIdsInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.ItmCacheManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
@@ -44,14 +46,17 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
     private final ItmConfig itmConfig;
+    private final ItmCacheManager itmCacheManager;
 
     @Inject
-    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator) {
+    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator,
+                             ItmCacheManager itmCacheManager) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         this.itmConfig = itmConfig;
+        this.itmCacheManager = itmCacheManager;
     }
 
     @Override
@@ -75,7 +80,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.info("OvsdbBridgeAugmentation ADD: DPID for bridge {} is NULL.", bridgeName);
                 return;
             }
-
+            itmCacheManager.addDpnIdNodeId(MDSALUtil.getDpnId(strDpnId).toString(),
+                ovsdbNodeNew.getNodeId().getValue());
             // TBD: Move this time taking operations into DataStoreJobCoordinator
             Node ovsdbNodeFromBridge = ItmUtils.getOvsdbNode(ovsdbNewBridgeAugmentation, dataBroker);
             // check for OVSDB node
