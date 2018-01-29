@@ -27,6 +27,10 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DpnIdIpCache;
+import org.opendaylight.genius.itm.cache.DpnIdNodeIdCache;
+import org.opendaylight.genius.itm.cache.IpDpnIdCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -148,6 +152,8 @@ public class ItmInternalTunnelAddTest {
     @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
     @Mock JobCoordinator jobCoordinator;
+    @Mock IInterfaceManager ifManager;
+    ItmTepUtils itmTepUtils;
     ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
@@ -168,9 +174,17 @@ public class ItmInternalTunnelAddTest {
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
-
+        DpnIdIpCache dpnIdIpCache =
+            new DpnIdIpCache(new GuavaCacheProvider(new CacheManagersRegistryImpl()), ifManager);
+        IpDpnIdCache ipDpnIdCache =
+            new IpDpnIdCache(new GuavaCacheProvider(new CacheManagersRegistryImpl()), ifManager);
+        DpnIdNodeIdCache dpnIdNodeIdCache =
+            new DpnIdNodeIdCache(new GuavaCacheProvider(new CacheManagersRegistryImpl()), ifManager);
+        itmTepUtils = new ItmTepUtils(dataBroker, ifManager, idManagerService,
+            new ItmCacheManager(dataBroker, dpnIdIpCache, ipDpnIdCache, dpnIdNodeIdCache));
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())));
+                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+            itmTepUtils);
     }
 
     @After
