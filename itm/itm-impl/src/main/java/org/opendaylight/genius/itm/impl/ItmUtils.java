@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
@@ -146,13 +147,14 @@ public final class ItmUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
-    public static final ImmutableMap<String, Class<? extends TunnelTypeBase>>
+    public static final ImmutableBiMap<String, Class<? extends TunnelTypeBase>>
         TUNNEL_TYPE_MAP =
-        new ImmutableMap.Builder<String, Class<? extends TunnelTypeBase>>()
+        new ImmutableBiMap.Builder<String, Class<? extends TunnelTypeBase>>()
             .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class)
             .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE, TunnelTypeMplsOverGre.class)
             .put(ITMConstants.TUNNEL_TYPE_VXLAN, TunnelTypeVxlan.class)
             .build();
+
 
     private ItmUtils() {
     }
@@ -1389,5 +1391,26 @@ public final class ItmUtils {
             }
         }
         return exTunnel;
+    }
+
+    public static StateTunnelList buildStateTunnelList(DataBroker broker, StateTunnelListKey tlKey, String name,
+                                                       boolean state, TunnelOperStatus tunOpStatus, IpAddress srcIp,
+                                                       IpAddress dstIp, String srcDpnId, String dstDpnId,
+                                                       Class<? extends TunnelTypeBase> tunnelType) {
+        StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
+        DstInfoBuilder dstInfoBuilder = new DstInfoBuilder();
+        SrcInfoBuilder srcInfoBuilder = new SrcInfoBuilder();
+        dstInfoBuilder.setTepIp(dstIp);
+        srcInfoBuilder.setTepIp(srcIp);
+
+        //currently called only used for internal tunnels.
+        srcInfoBuilder.setTepDeviceId(srcDpnId)
+            .setTepDeviceType(TepTypeInternal.class);
+        dstInfoBuilder.setTepDeviceId(dstDpnId)
+            .setTepDeviceType(TepTypeInternal.class);
+        stlBuilder.setTransportType(tunnelType);
+        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setOperState(tunOpStatus).setTunnelState(state)
+            .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build());
+        return stlBuilder.build();
     }
 }
