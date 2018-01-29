@@ -12,14 +12,14 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import javax.annotation.PostConstruct;
+import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.JMException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<StateTunnelList, ItmTunnelEventListener> {
+public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<StateTunnelList> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelEventListener.class);
 
@@ -42,8 +42,9 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     private JMXAlarmAgent alarmAgent;
 
     @Inject
-    public ItmTunnelEventListener(final DataBroker dataBroker, JobCoordinator jobCoordinator) {
-        super(StateTunnelList.class, ItmTunnelEventListener.class);
+    public ItmTunnelEventListener(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+              InstanceIdentifier.create(TunnelsState.class).child(StateTunnelList.class));
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         try {
@@ -51,15 +52,6 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         } catch (JMException e) {
             LOG.error("Can not initialize the Alarm agent", e);
         }
-    }
-
-    @PostConstruct
-    public void start() throws JMException {
-        registerListener(this.broker);
-        if (alarmAgent != null) {
-            alarmAgent.registerMbean();
-        }
-        LOG.info("ItmTunnelEventListener Started");
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -75,55 +67,39 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
     }
 
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    private void registerListener(final DataBroker db) {
-        try {
-            registerListener(LogicalDatastoreType.OPERATIONAL,db);
-        } catch (final Exception e) {
-            LOG.error("ITM Monitor Tunnel Interfaces DataTreeChange listener registration fail!", e);
-            throw new IllegalStateException("ITM Monitor registration Listener failed.", e);
-        }
-    }
-
     @Override
-    protected InstanceIdentifier<StateTunnelList> getWildCardPath() {
-        return InstanceIdentifier.create(TunnelsState.class).child(StateTunnelList.class);
-    }
-
-    @Override
-    protected ItmTunnelEventListener getDataTreeChangeListener() {
-        return this;
-    }
-
-    @Override
-    protected void remove(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList del) {
-        LOG.trace("Tunnel Interface added: {}", del.getTunnelInterfaceName());
-        ItmTunnelRemoveAlarmWorker itmTunnelRemoveAlarmWorker = new ItmTunnelRemoveAlarmWorker(del);
+    public void remove(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
+                       @Nonnull StateTunnelList stateTunnelList) {
+        LOG.trace("Tunnel Interface added: {}", stateTunnelList.getTunnelInterfaceName());
+        ItmTunnelRemoveAlarmWorker itmTunnelRemoveAlarmWorker = new ItmTunnelRemoveAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelRemoveAlarmWorker);
     }
 
     @Override
-    protected void update(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList original,
-                          StateTunnelList update) {
-        LOG.trace("Tunnel Interface updated. Old: {} New: {}", original, update);
-        TunnelOperStatus operStatus = update.getOperState();
-        if (!Objects.equals(original.getOperState(), update.getOperState())) {
-            LOG.debug("Tunnel Interface {} changed state to {}", original.getTunnelInterfaceName(), operStatus);
-            ItmTunnelUpdateAlarmWorker itmTunnelUpdateAlarmWorker = new ItmTunnelUpdateAlarmWorker(original, update);
+    public void update(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
+                       @Nonnull StateTunnelList originalTunnelList, @Nonnull StateTunnelList updatedTunnelList) {
+        LOG.trace("Tunnel Interface updated. Old: {} New: {}", originalTunnelList, updatedTunnelList);
+        TunnelOperStatus operStatus = updatedTunnelList.getOperState();
+        if (!Objects.equals(originalTunnelList.getOperState(), updatedTunnelList.getOperState())) {
+            LOG.debug("Tunnel Interface {} changed state to {}", originalTunnelList.getTunnelInterfaceName(),
+                      operStatus);
+            ItmTunnelUpdateAlarmWorker itmTunnelUpdateAlarmWorker = new ItmTunnelUpdateAlarmWorker(originalTunnelList,
+                                                                                                   updatedTunnelList);
             jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelUpdateAlarmWorker);
         }
     }
 
     @Override
-    protected void add(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList add) {
-        LOG.debug("Tunnel Interface of type Tunnel added: {}", add.getTunnelInterfaceName());
-        ItmTunnelAddAlarmWorker itmTunnelAddAlarmWorker = new ItmTunnelAddAlarmWorker(add);
+    public void add(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
+                    @Nonnull StateTunnelList stateTunnelList) {
+        LOG.debug("Tunnel Interface of type Tunnel added: {}", stateTunnelList.getTunnelInterfaceName());
+        ItmTunnelAddAlarmWorker itmTunnelAddAlarmWorker = new ItmTunnelAddAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelAddAlarmWorker);
     }
 
-    public void raiseInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
+    private void raiseInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
         source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId)
                 .append("-tunnelType").append(tunnelType);
@@ -135,7 +111,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
     }
 
-    public void clearInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
+    private void clearInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
 
         source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId)
@@ -147,7 +123,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
     }
 
-    public void raiseExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
+    private void raiseExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
 
         StringBuilder source = new StringBuilder();
         source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType")
@@ -160,7 +136,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
     }
 
-    public void clearExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
+    private void clearExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
         source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType")
                 .append(tunnelType);
@@ -172,7 +148,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private boolean isTunnelInterfaceUp(StateTunnelList intf) {
-        return intf.getOperState() == TunnelOperStatus.Up;
+        return (intf.getOperState() == TunnelOperStatus.Up);
     }
 
     private String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
@@ -197,21 +173,21 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            String ifName = add.getTunnelInterfaceName() ;
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
+        public List<ListenableFuture<Void>> call() {
+            String ifName = add.getTunnelInterfaceName();
+            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 if (!isTunnelInterfaceUp(add)) {
                     LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: "
-                            + "{}", srcDpId, dstDpId, tunnelType);
+                                      + "{}", srcDpId, dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
                 }
             } else {
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
+                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
                 if (externalTunnel != null) {
                     String srcNode = externalTunnel.getSourceDevice();
                     String dstNode = externalTunnel.getDestinationDevice();
@@ -224,7 +200,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
                     String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
                     if (!isTunnelInterfaceUp(add)) {
                         LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcNode: {} and dstNode: {} for "
-                                + "tunnelType: {}", srcNode, dstNode, tunnelType);
+                                          + "tunnelType: {}", srcNode, dstNode, tunnelType);
                         String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
                         raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
                     }
@@ -242,32 +218,31 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            String ifName = del.getTunnelInterfaceName() ;
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
+        public List<ListenableFuture<Void>> call() {
+            String ifName = del.getTunnelInterfaceName();
+            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}",
-                        srcDpId, dstDpId, tunnelType);
+                LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId,
+                          tunnelType);
                 String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                 clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
             } else {
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
+                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
                 if (externalTunnel != null) {
                     String srcNode = externalTunnel.getSourceDevice();
                     String dstNode = externalTunnel.getDestinationDevice();
                     String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    LOG.trace("ITM Tunnel removed b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode,
-                            dstNode, tunnelType);
+                    LOG.trace("ITM Tunnel removed b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode,
+                              tunnelType);
                     String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
                     clearExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
                 }
             }
             return null;
         }
-
     }
 
     private class ItmTunnelUpdateAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
@@ -280,22 +255,22 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             String ifName = update.getTunnelInterfaceName();
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName,broker);
+            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
                 BigInteger srcDpId = internalTunnel.getSourceDPN();
                 BigInteger dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
-                            isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
+                              isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
                 }
                 if (update.getOperState() == TunnelOperStatus.Unknown) {
                     return null;
                 } else if (update.getOperState() == TunnelOperStatus.Up) {
-                    LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ",
-                            srcDpId, dstDpId, tunnelType);
+                    LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ", srcDpId,
+                              dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
                 } else if (update.getOperState() == TunnelOperStatus.Down) {
@@ -303,8 +278,9 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
                     raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
                 }
-            } /*else{
-                    // Uncomment this when tunnel towards DC gateway or HwVtep is supported
+            }
+             /*else{
+                    // TODO: Uncomment this when tunnel towards DC gateway or HwVtep is supported
                     ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
                     if (externalTunnel != null) {
                         String srcNode = externalTunnel.getSourceDevice();
@@ -332,6 +308,5 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
                 }*/
             return null;
         }
-
     }
 }
