@@ -1,0 +1,371 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ffa1247_3e9741ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Does the name CacheManager imply it will be used to house  various unrelated caches? If os I\u0027d prefer to put unrelated caches in their own classes named appropriately. So this one stores dpnId \u003c--\u003e IP mappings so call it DpnIdIPCache.",
+      "range": {
+        "startLine": 24,
+        "startChar": 13,
+        "endLine": 24,
+        "endChar": 28
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5789805b_fed778e0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Please order statics before non-statics.",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 72
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b25fd3b_e8d8520e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "\"to dpnId\"",
+      "range": {
+        "startLine": 59,
+        "startChar": 47,
+        "endLine": 59,
+        "endChar": 50
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3be942e6_b442608b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Create these in the constructor so they can be final and don\u0027t need to check for null in close.",
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "898bc8c4_3c0eb0b0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Order statics before non-statics.",
+      "range": {
+        "startLine": 75,
+        "startChar": 4,
+        "endLine": 78,
+        "endChar": 50
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dd485b43_4eb7ed91",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Perhaps all these should be in a Constants interface.",
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0736a6ff_56d5a26c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "can be static",
+      "range": {
+        "startLine": 250,
+        "startChar": 4,
+        "endLine": 250,
+        "endChar": 11
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99d49e27_9e99a005",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "\"get\" implies this method retrieves something from somewhere but it really creates/converts something so I\u0027d name it \"toUniqueIdString\"",
+      "range": {
+        "startLine": 250,
+        "startChar": 19,
+        "endLine": 250,
+        "endChar": 36
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6bbf813_fd03829a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Same here",
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10e9c272_fb659610",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Same here",
+      "range": {
+        "startLine": 276,
+        "startChar": 19,
+        "endLine": 276,
+        "endChar": 41
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b52b624_0192c8f1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "can be static",
+      "range": {
+        "startLine": 280,
+        "startChar": 4,
+        "endLine": 280,
+        "endChar": 10
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "efa9270c_48f23b78",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 340,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "inline with return",
+      "range": {
+        "startLine": 340,
+        "startChar": 31,
+        "endLine": 340,
+        "endChar": 64
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8536c328_a831b44c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "since this does a conversion, how about toDpnId?",
+      "range": {
+        "startLine": 346,
+        "startChar": 22,
+        "endLine": 346,
+        "endChar": 30
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b690d58b_03fcf7bb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "can be static",
+      "range": {
+        "startLine": 346,
+        "startChar": 4,
+        "endLine": 346,
+        "endChar": 10
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8cf1ee7d_d4d539e5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Can return null so annotate with @Nullable or better yet return Optional.",
+      "range": {
+        "startLine": 359,
+        "startChar": 11,
+        "endLine": 359,
+        "endChar": 15
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "682bc28f_86408309",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Please consider the input/output \"nullability\" of each method and annotate appropriately with @Nullable or @Nonnull. Or on output use Optional.",
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b45497d_4a9dc5ed",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-01-30T13:59:19Z",
+      "side": 1,
+      "message": "Why was this changed?",
+      "range": {
+        "startLine": 149,
+        "startChar": 24,
+        "endLine": 149,
+        "endChar": 38
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
