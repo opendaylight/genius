@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4c2d2023_e06220ae",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "Haven\u0027t made final call on it. Single manager for various caches makes it easier to init/close all caches. It ties into some of the SnD stuff where we don\u0027t report OPERATIONAL statys until all the bits we need are ready.ItmTepUtils will be only direct consumer of these caches. It will end up having a really really long constructor with 8-9 just caches.",
+      "parentUuid": "3ffa1247_3e9741ef",
+      "range": {
+        "startLine": 24,
+        "startChar": 13,
+        "endLine": 24,
+        "endChar": 28
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5789805b_fed778e0",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2018-01-30T13:59:19Z",
       "side": 1,
       "message": "Please order statics before non-statics.",
+      "range": {
+        "startLine": 31,
+        "startChar": 4,
+        "endLine": 32,
+        "endChar": 72
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae354769_c20e703b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "will do",
+      "parentUuid": "5789805b_fed778e0",
       "range": {
         "startLine": 31,
         "startChar": 4,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "d09ccc04_7aaf44cd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "will do",
+      "parentUuid": "3b25fd3b_e8d8520e",
+      "range": {
+        "startLine": 59,
+        "startChar": 47,
+        "endLine": 59,
+        "endChar": 50
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3be942e6_b442608b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
         "patchSetId": 2
@@ -82,6 +154,41 @@
       "writtenOn": "2018-01-30T13:59:19Z",
       "side": 1,
       "message": "Create these in the constructor so they can be final and don\u0027t need to check for null in close.",
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c23a430b_e0b40fe2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCacheManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "thanks, was looking for comment on this. So final means I can still call get/put/evict to \u0027update\u0027 this, right?",
+      "parentUuid": "3be942e6_b442608b",
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "97e20c69_a05d234d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "will address all comments in this file.",
       "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -329,6 +436,30 @@
     },
     {
       "key": {
+        "uuid": "ea33adc8_55958dbd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "Java question: What is the advanatage of making it Optional vs return null? Caller will have to still check .isPresent() instead of \u003d\u003d null. How does it help?",
+      "parentUuid": "8cf1ee7d_d4d539e5",
+      "range": {
+        "startLine": 359,
+        "startChar": 11,
+        "endLine": 359,
+        "endChar": 15
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "682bc28f_86408309",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmTepUtils.java",
         "patchSetId": 2
@@ -357,6 +488,30 @@
       "writtenOn": "2018-01-30T13:59:19Z",
       "side": 1,
       "message": "Why was this changed?",
+      "range": {
+        "startLine": 149,
+        "startChar": 24,
+        "endLine": 149,
+        "endChar": 38
+      },
+      "revId": "89bb06b1d31fb87845b0ae69dba708f9786add1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edfef7d8_2577076d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-01-30T16:16:10Z",
+      "side": 1,
+      "message": "Needed a reverse map too. better than adding a new map with same contents but reserved. I use .inverse() of this in ItmTepUtils.java#210.",
+      "parentUuid": "6b45497d_4a9dc5ed",
       "range": {
         "startLine": 149,
         "startChar": 24,
