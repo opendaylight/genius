@@ -1,0 +1,276 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03cc33fa_31b0081d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "nit: new line before and after",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dcba8f91_92122482",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "final x3",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c20f39d_abdf2462",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "don\u0027t write separate new private classes for tihs, you can just put what you have in call() into a lambda in line 64, and save a ton of lines, see https://git.opendaylight.org/gerrit/#/c/67519/2/interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java .... unless the toString() is super important (is it?) - but even then you can write a new anonymous inner class instead.",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "17166ea4_ce799361",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5e7981_33c3f734",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "nit: new line before and after",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "17833fa2_dbe790cb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "add final to all these fields, because they are assigned in constructor",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b484db8_5d28e489",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6b5bbb3_29bdbd59",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "not static, and maybe private?",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a134460c_7a2f244d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "Here also: no no no, not more static stuff, please... ;-) This can very well be non-static, and @Singleton, and @Inject wherever you need it.",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a5c832cb_bb0f29ca",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/listeners/ServiceRecoveryListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "this field does not seem to be used - remove?",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92fe97f6_ac024e82",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "no no no, not more static stuff, please... ;-) This can very well be non-static, and @Singleton, and @Inject wherever you need it.",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33953012_ea51a23a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "please move logger up to be first, and (nit) separate it with a blank line before and after",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3b21d55_ff41ca24",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "too noisy IMHO, but if you must (and cannot debug instead of info) then \"init()\" instead of start",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6268f8b2_243a5949",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "as above + \"close()\"",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1dd25592_b0ce36b6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "no, not static, never",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f7cdeccc_e3a03973",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-01-31T12:35:38Z",
+      "side": 1,
+      "message": "not static",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
