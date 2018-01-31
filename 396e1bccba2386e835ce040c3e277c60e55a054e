@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "683efc78_c1fd5df1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-31T07:40:06Z",
+      "side": 1,
+      "message": "For maps, let us wait for Michael\u0027s review (to introduce label) get completed, as you gave comment to support maps of metrices. Omce it is aligned, we can adapt to same.",
+      "parentUuid": "1e8b92c1_d359aa49",
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00ffefc7_dddba876",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 8
@@ -30,6 +48,30 @@
       "writtenOn": "2018-01-24T14:01:18Z",
       "side": 1,
       "message": "This not a word - should be \"updating\"",
+      "range": {
+        "startLine": 354,
+        "startChar": 89,
+        "endLine": 354,
+        "endChar": 97
+      },
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0747c42_eeb5e55b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-31T07:40:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "00ffefc7_dddba876",
       "range": {
         "startLine": 354,
         "startChar": 89,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "65bbc0c3_005a1866",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-31T07:40:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9bf3bd7b_55f28331",
+      "range": {
+        "startLine": 360,
+        "startChar": 82,
+        "endLine": 360,
+        "endChar": 85
+      },
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd8d78a7_e5f64072",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
         "patchSetId": 8
@@ -76,6 +142,30 @@
       "writtenOn": "2018-01-24T14:01:18Z",
       "side": 1,
       "message": "This can all be simplified using\n\n  nodeMetricCounterMap.computeIfIbsent(...).increment(...)",
+      "range": {
+        "startLine": 361,
+        "startChar": 12,
+        "endLine": 386,
+        "endChar": 13
+      },
+      "revId": "396e1bccba2386e835ce040c3e277c60e55a054e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dcf4da8d_20c3e9e1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-01-31T07:40:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fd8d78a7_e5f64072",
       "range": {
         "startLine": 361,
         "startChar": 12,
