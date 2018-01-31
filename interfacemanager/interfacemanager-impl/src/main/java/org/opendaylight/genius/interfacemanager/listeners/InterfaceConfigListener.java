@@ -9,16 +9,14 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.List;
-import java.util.concurrent.Callable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
@@ -36,16 +34,25 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
  * This is used to handle interfaces for base of-ports.
  */
 @Singleton
 public class InterfaceConfigListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener>
+        implements RecoverableListener {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
+
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final DataBroker dataBroker;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
@@ -59,7 +66,8 @@ public class InterfaceConfigListener
             final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
             final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
-            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper) {
+            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Interface.class, InterfaceConfigListener.class);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
@@ -68,7 +76,19 @@ public class InterfaceConfigListener
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
         this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
         this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
+        this.dataBroker = dataBroker;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -81,10 +101,10 @@ public class InterfaceConfigListener
         return InterfaceConfigListener.this;
     }
 
-    private void updateInterfaceParentRefs(Interface iface) {
-        String ifName = iface.getName();
+    private void updateInterfaceParentRefs(final Interface iface) {
+        final String ifName = iface.getName();
         // try to acquire the parent interface name from Southbound
-        String parentRefName = interfaceMgrProvider.getParentRefNameForInterface(ifName);
+        final String parentRefName = interfaceMgrProvider.getParentRefNameForInterface(ifName);
         if (parentRefName == null) {
             LOG.debug("parent refs not specified for {}, failed acquiring it from southbound", ifName);
             return;
@@ -96,7 +116,7 @@ public class InterfaceConfigListener
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
+    protected void remove(final InstanceIdentifier<Interface> key, final Interface interfaceOld) {
         interfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
 
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -104,22 +124,22 @@ public class InterfaceConfigListener
             return;
         }
         LOG.debug("Received Interface Remove Event: {}, {}", key, interfaceOld);
-        ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
+        final ParentRefs parentRefs = interfaceOld.getAugmentation(ParentRefs.class);
         if (parentRefs == null
                 || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
             LOG.debug("parent refs not specified for {}", interfaceOld.getName());
             return;
         }
-        boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
-        RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
+        final boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
+        final RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
                 interfaceOld.getName(), parentRefs);
-        String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
+        final String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
                 : parentRefs.getParentInterface();
         coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> key, Interface interfaceOld, Interface interfaceNew) {
+    protected void update(final InstanceIdentifier<Interface> key, final Interface interfaceOld, final Interface interfaceNew) {
         interfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
 
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -127,7 +147,7 @@ public class InterfaceConfigListener
             return;
         }
         LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
-        ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
+        final ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getParentInterface() == null
                 && !InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew)) {
             // If parentRefs are missing, try to find a matching parent and
@@ -141,14 +161,14 @@ public class InterfaceConfigListener
                     interfaceNew.getName(), parentRefs);
             return;
         }
-        RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew,
+        final RendererConfigUpdateWorker configWorker = new RendererConfigUpdateWorker(key, interfaceOld, interfaceNew,
                 interfaceNew.getName());
-        String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
+        final String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
         coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void add(InstanceIdentifier<Interface> key, Interface interfaceNew) {
+    protected void add(final InstanceIdentifier<Interface> key, final Interface interfaceNew) {
         interfaceManagerCommonUtils.addInterfaceToCache(interfaceNew);
 
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -156,7 +176,7 @@ public class InterfaceConfigListener
             return;
         }
         LOG.debug("Received Interface Add Event: {}, {}", key, interfaceNew);
-        ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
+        final ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getParentInterface() == null) {
             // If parentRefs are missing, try to find a matching parent and
             // update - this will trigger another DCN
@@ -169,13 +189,13 @@ public class InterfaceConfigListener
             return;
         }
 
-        RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs,
+        final RendererConfigAddWorker configWorker = new RendererConfigAddWorker(key, interfaceNew, parentRefs,
                 interfaceNew.getName());
-        String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
+        final String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
         coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private String getSynchronizationKey(Interface theInterface, ParentRefs theParentRefs) {
+    private String getSynchronizationKey(final Interface theInterface, final ParentRefs theParentRefs) {
         if (InterfaceManagerCommonUtils.isOfTunnelInterface(theInterface)) {
             return SouthboundUtils.generateOfTunnelName(
                     theParentRefs.getDatapathNodeIdentifier(),
@@ -193,8 +213,8 @@ public class InterfaceConfigListener
         String portName;
         ParentRefs parentRefs;
 
-        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, ParentRefs parentRefs,
-                String portName) {
+        RendererConfigAddWorker(final InstanceIdentifier<Interface> key, final Interface interfaceNew, final ParentRefs parentRefs,
+                                final String portName) {
             this.key = key;
             this.interfaceNew = interfaceNew;
             this.portName = portName;
@@ -221,8 +241,8 @@ public class InterfaceConfigListener
         Interface interfaceNew;
         String portNameNew;
 
-        RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceOld,
-                Interface interfaceNew, String portNameNew) {
+        RendererConfigUpdateWorker(final InstanceIdentifier<Interface> key, final Interface interfaceOld,
+                                   final Interface interfaceNew, final String portNameNew) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.interfaceNew = interfaceNew;
@@ -249,8 +269,8 @@ public class InterfaceConfigListener
         String portName;
         ParentRefs parentRefs;
 
-        RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld, String portName,
-                ParentRefs parentRefs) {
+        RendererConfigRemoveWorker(final InstanceIdentifier<Interface> key, final Interface interfaceOld, final String portName,
+                                   final ParentRefs parentRefs) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.portName = portName;
