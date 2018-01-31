@@ -8,16 +8,20 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -32,18 +36,33 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class HwVTEPTunnelsStateListener
-        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
+        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
 
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator coordinator;
+    private final DataBroker dataBroker;
 
     @Inject
-    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
+    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
+                                      final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
+        this.dataBroker = dataBroker;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -58,26 +77,28 @@ public class HwVTEPTunnelsStateListener
     }
 
     @Override
-    protected void removed(InstanceIdentifier<Tunnels> identifier, Tunnels tunnel) {
+    protected void removed(final InstanceIdentifier<Tunnels> identifier, final Tunnels tunnel) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, physicalSwitchAugmentation: {}",
                 identifier, tunnel);
-        RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier);
+        final RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier);
         coordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), rendererStateRemoveWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld, Tunnels tunnelNew) {
+    protected void updated(final InstanceIdentifier<Tunnels> identifier, final Tunnels tunnelOld,
+                           final Tunnels tunnelNew) {
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
-        RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelOld);
+        final RendererStateUpdateWorker rendererStateUpdateWorker =
+                new RendererStateUpdateWorker(identifier, tunnelOld);
         coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void added(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelNew) {
+    protected void added(final InstanceIdentifier<Tunnels> identifier, final Tunnels tunnelNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}", identifier, tunnelNew);
-        RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, tunnelNew);
+        final RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, tunnelNew);
         coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateAddWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
@@ -86,7 +107,7 @@ public class HwVTEPTunnelsStateListener
         InstanceIdentifier<Tunnels> instanceIdentifier;
         Tunnels tunnelsOld;
 
-        RendererStateUpdateWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnelsOld) {
+        RendererStateUpdateWorker(final InstanceIdentifier<Tunnels> instanceIdentifier, final Tunnels tunnelsOld) {
             this.instanceIdentifier = instanceIdentifier;
             this.tunnelsOld = tunnelsOld;
         }
@@ -101,7 +122,7 @@ public class HwVTEPTunnelsStateListener
         InstanceIdentifier<Tunnels> instanceIdentifier;
         Tunnels tunnelsNew;
 
-        RendererStateAddWorker(InstanceIdentifier<Tunnels> instanceIdentifier, Tunnels tunnelsNew) {
+        RendererStateAddWorker(final InstanceIdentifier<Tunnels> instanceIdentifier, final Tunnels tunnelsNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.tunnelsNew = tunnelsNew;
         }
@@ -115,7 +136,7 @@ public class HwVTEPTunnelsStateListener
     private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<Tunnels> instanceIdentifier;
 
-        RendererStateRemoveWorker(InstanceIdentifier<Tunnels> instanceIdentifier) {
+        RendererStateRemoveWorker(final InstanceIdentifier<Tunnels> instanceIdentifier) {
             this.instanceIdentifier = instanceIdentifier;
         }
 
