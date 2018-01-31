@@ -91,6 +91,10 @@ public class InterfaceInventoryStateListener
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
+        registerListener();
+    }
+
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
