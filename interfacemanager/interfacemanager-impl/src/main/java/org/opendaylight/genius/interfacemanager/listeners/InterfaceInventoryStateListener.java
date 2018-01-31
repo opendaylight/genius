@@ -24,6 +24,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -57,7 +59,8 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class InterfaceInventoryStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
@@ -69,6 +72,7 @@ public class InterfaceInventoryStateListener
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final PortNameCache portNameCache;
+    private InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
@@ -79,7 +83,8 @@ public class InterfaceInventoryStateListener
             final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
             final AlivenessMonitorUtils alivenessMonitorUtils,
             final InterfaceMetaUtils interfaceMetaUtils,
-            final PortNameCache portNameCache) {
+            final PortNameCache portNameCache,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -91,7 +96,20 @@ public class InterfaceInventoryStateListener
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
+        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
+        registerListener();
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        this.interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
+        this.interfaceServiceRecoveryHandler.removeRecoverableListener(this);
     }
 
     @Override

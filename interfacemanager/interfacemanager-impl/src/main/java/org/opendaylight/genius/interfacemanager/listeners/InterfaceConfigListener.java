@@ -19,6 +19,8 @@ import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListen
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
@@ -42,15 +44,20 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class InterfaceConfigListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener>
+        implements RecoverableListener {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
+
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final DataBroker dataBroker;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
     private final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper;
     private final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper;
+    private final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
@@ -59,7 +66,8 @@ public class InterfaceConfigListener
             final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
             final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
-            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper) {
+            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Interface.class, InterfaceConfigListener.class);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
@@ -68,7 +76,21 @@ public class InterfaceConfigListener
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
         this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
         this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
+        this.dataBroker = dataBroker;
+        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
+        registerListener();
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        this.interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
+        this.interfaceServiceRecoveryHandler.removeRecoverableListener(this);
     }
 
     @Override
