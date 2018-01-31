@@ -9,16 +9,20 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
@@ -42,10 +46,14 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class InterfaceConfigListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceConfigListener>
+        implements RecoverableListener {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceConfigListener.class);
+
     private final InterfacemgrProvider interfaceMgrProvider;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final DataBroker dataBroker;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper;
@@ -59,7 +67,8 @@ public class InterfaceConfigListener
             final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
             final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
-            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper) {
+            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Interface.class, InterfaceConfigListener.class);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
@@ -68,7 +77,19 @@ public class InterfaceConfigListener
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
         this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
         this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
+        this.dataBroker = dataBroker;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -193,8 +214,9 @@ public class InterfaceConfigListener
         String portName;
         ParentRefs parentRefs;
 
-        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew, ParentRefs parentRefs,
-                String portName) {
+        RendererConfigAddWorker(InstanceIdentifier<Interface> key, Interface interfaceNew,
+                                ParentRefs parentRefs,
+                                String portName) {
             this.key = key;
             this.interfaceNew = interfaceNew;
             this.portName = portName;
@@ -222,7 +244,7 @@ public class InterfaceConfigListener
         String portNameNew;
 
         RendererConfigUpdateWorker(InstanceIdentifier<Interface> key, Interface interfaceOld,
-                Interface interfaceNew, String portNameNew) {
+                                   Interface interfaceNew, String portNameNew) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.interfaceNew = interfaceNew;
@@ -250,7 +272,7 @@ public class InterfaceConfigListener
         ParentRefs parentRefs;
 
         RendererConfigRemoveWorker(InstanceIdentifier<Interface> key, Interface interfaceOld, String portName,
-                ParentRefs parentRefs) {
+                                   ParentRefs parentRefs) {
             this.key = key;
             this.interfaceOld = interfaceOld;
             this.portName = portName;
