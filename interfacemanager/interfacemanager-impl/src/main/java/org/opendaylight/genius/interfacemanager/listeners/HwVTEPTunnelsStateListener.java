@@ -18,6 +18,8 @@ import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChang
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -32,18 +34,36 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class HwVTEPTunnelsStateListener
-        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
+        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
 
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator coordinator;
+    private final DataBroker dataBroker;
+    private InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
-    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
+    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
+                                      final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
+        this.dataBroker = dataBroker;
+        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
+        registerListener();
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
+        this.interfaceServiceRecoveryHandler.removeRecoverableListener(this);
     }
 
     @Override
