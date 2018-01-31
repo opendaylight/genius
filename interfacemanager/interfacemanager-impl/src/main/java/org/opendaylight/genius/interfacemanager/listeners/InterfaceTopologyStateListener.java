@@ -24,6 +24,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -41,7 +43,8 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InterfaceTopologyStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
     private final DataBroker dataBroker;
     private final InterfacemgrProvider interfaceMgrProvider;
@@ -51,13 +54,15 @@ public class InterfaceTopologyStateListener
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final SouthboundUtils southboundUtils;
+    private InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
-            final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils) {
+            final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -67,7 +72,20 @@ public class InterfaceTopologyStateListener
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
+        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
+        registerListener();
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        this.interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
+        this.interfaceServiceRecoveryHandler.removeRecoverableListener(this);
     }
 
     @Override

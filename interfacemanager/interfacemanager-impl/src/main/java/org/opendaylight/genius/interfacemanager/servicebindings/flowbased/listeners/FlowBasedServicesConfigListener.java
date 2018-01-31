@@ -26,6 +26,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesConfigRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.factory.FlowBasedServicesRendererFactoryResolver;
@@ -47,7 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeListener<ServicesInfo> {
+public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeListener<ServicesInfo>,
+        RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
 
@@ -57,27 +60,42 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     private final JobCoordinator coordinator;
     private final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
     public FlowBasedServicesConfigListener(final DataBroker dataBroker,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
             final FlowBasedServicesRendererFactoryResolver flowBasedServicesRendererFactoryResolver,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesRendererFactoryResolver = flowBasedServicesRendererFactoryResolver;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
+        registerListener();
     }
 
     protected InstanceIdentifier<ServicesInfo> getWildCardPath() {
         return InstanceIdentifier.create(ServiceBindings.class).child(ServicesInfo.class);
     }
 
+    @Override
+    public void registerListener() {
+        registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
+        this.interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
     public void registerListener(LogicalDatastoreType dsType, final DataBroker db) {
         final DataTreeIdentifier<ServicesInfo> treeId = new DataTreeIdentifier<>(dsType, getWildCardPath());
         listenerRegistration = db.registerDataTreeChangeListener(treeId, FlowBasedServicesConfigListener.this);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
+        this.interfaceServiceRecoveryHandler.removeRecoverableListener(this);
     }
 
     @PreDestroy
