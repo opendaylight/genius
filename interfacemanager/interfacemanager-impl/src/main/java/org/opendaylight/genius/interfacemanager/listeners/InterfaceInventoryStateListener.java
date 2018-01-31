@@ -8,13 +8,6 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -24,6 +17,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -45,6 +40,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+
 /**
  * This Class is a Data Change Listener for FlowCapableNodeConnector updates.
  * This creates an entry in the interface-state OperDS for every node-connector
@@ -57,7 +60,8 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class InterfaceInventoryStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
@@ -79,7 +83,8 @@ public class InterfaceInventoryStateListener
             final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
             final AlivenessMonitorUtils alivenessMonitorUtils,
             final InterfaceMetaUtils interfaceMetaUtils,
-            final PortNameCache portNameCache) {
+            final PortNameCache portNameCache,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -91,7 +96,18 @@ public class InterfaceInventoryStateListener
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -106,26 +122,26 @@ public class InterfaceInventoryStateListener
     }
 
     @Override
-    protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
-            FlowCapableNodeConnector flowCapableNodeConnectorOld) {
+    protected void remove(final InstanceIdentifier<FlowCapableNodeConnector> key,
+                          final FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
+        final NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
             .getId();
-        String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
+        final String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
 
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
 
-    private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
-            FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
-        boolean isNodePresent = interfaceManagerCommonUtils.isNodePresent(nodeConnectorIdNew);
-        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
+    private void remove(final NodeConnectorId nodeConnectorIdNew, final NodeConnectorId nodeConnectorIdOld,
+                        final FlowCapableNodeConnector fcNodeConnectorNew, final String portName, final boolean isNetworkEvent) {
+        final boolean isNodePresent = interfaceManagerCommonUtils.isNodePresent(nodeConnectorIdNew);
+        final InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
         LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
@@ -133,46 +149,46 @@ public class InterfaceInventoryStateListener
     }
 
     @Override
-    protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
-            FlowCapableNodeConnector fcNodeConnectorNew) {
+    protected void update(final InstanceIdentifier<FlowCapableNodeConnector> key, final FlowCapableNodeConnector fcNodeConnectorOld,
+                          final FlowCapableNodeConnector fcNodeConnectorNew) {
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
         LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
+        final NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
             .getId();
-        String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
+        final String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
-        InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
+        final InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
             fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
+    protected void add(final InstanceIdentifier<FlowCapableNodeConnector> key, final FlowCapableNodeConnector fcNodeConnectorNew) {
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
+        final NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
             .getId();
         LOG.trace("Adding entry for portid {} portname {} in map", nodeConnectorId.getValue(),
                 fcNodeConnectorNew.getName());
         portNameCache.put(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
-        String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
+        final String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
         if (InterfaceManagerCommonUtils.isNovaPort(portName) || InterfaceManagerCommonUtils.isK8SPort(portName)) {
-            NodeConnectorId nodeConnectorIdOld =
+            final NodeConnectorId nodeConnectorIdOld =
                     FlowBasedServicesUtils.getNodeConnectorIdFromInterface(portName, interfaceManagerCommonUtils);
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
-                BigInteger dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
-                BigInteger dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                final BigInteger dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
+                final BigInteger dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 if (!Objects.equals(dpnIdOld, dpnIdNew)) {
                     if (fcNodeConnectorNew.getReason() != PortReason.Add) {
                         LOG.error("Dropping Port update event for {}, as DPN id is changed from {} to {}",
@@ -190,13 +206,13 @@ public class InterfaceInventoryStateListener
                 // for processing remove before add
                 try {
                     Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     LOG.error("Error while waiting for the vm migration remove events to get processed");
                 }
             }
         }
 
-        InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
+        final InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
             fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
@@ -208,8 +224,8 @@ public class InterfaceInventoryStateListener
         private final String interfaceName;
         private final IdManagerService idManager;
 
-        InterfaceStateAddWorker(IdManagerService idManager, NodeConnectorId nodeConnectorId,
-                FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
+        InterfaceStateAddWorker(final IdManagerService idManager, final NodeConnectorId nodeConnectorId,
+                                final FlowCapableNodeConnector fcNodeConnectorNew, final String portName) {
             this.nodeConnectorId = nodeConnectorId;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
             this.interfaceName = portName;
@@ -218,11 +234,11 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId, interfaceName,
+            final List<ListenableFuture<Void>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId, interfaceName,
                     fcNodeConnectorNew);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
-                InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
+            final List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
+            for (final InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                final InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
                         nodeConnectorId, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
                 coordinator.enqueueJob(interfaceName, interfaceStateAddWorker);
             }
@@ -242,9 +258,9 @@ public class InterfaceInventoryStateListener
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
 
-        InterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
-                FlowCapableNodeConnector fcNodeConnectorOld, FlowCapableNodeConnector fcNodeConnectorNew,
-                String portName) {
+        InterfaceStateUpdateWorker(final InstanceIdentifier<FlowCapableNodeConnector> key,
+                                   final FlowCapableNodeConnector fcNodeConnectorOld, final FlowCapableNodeConnector fcNodeConnectorNew,
+                                   final String portName) {
             this.key = key;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
@@ -253,11 +269,11 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
+            final List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
-                InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
+            final List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
+            for (final InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                final InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
                         fcNodeConnectorOld, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
                 coordinator.enqueueJob(interfaceName, interfaceStateUpdateWorker);
             }
@@ -281,9 +297,9 @@ public class InterfaceInventoryStateListener
         private final boolean isNetworkEvent;
         private final boolean isParentInterface;
 
-        InterfaceStateRemoveWorker(IdManagerService idManager, NodeConnectorId nodeConnectorIdNew,
-                NodeConnectorId nodeConnectorIdOld, FlowCapableNodeConnector fcNodeConnectorOld, String interfaceName,
-                boolean isNodePresent, boolean isNetworkEvent, boolean isParentInterface) {
+        InterfaceStateRemoveWorker(final IdManagerService idManager, final NodeConnectorId nodeConnectorIdNew,
+                                   final NodeConnectorId nodeConnectorIdOld, final FlowCapableNodeConnector fcNodeConnectorOld, final String interfaceName,
+                                   final boolean isNodePresent, final boolean isNetworkEvent, final boolean isParentInterface) {
             this.nodeConnectorIdNew = nodeConnectorIdNew;
             this.nodeConnectorIdOld = nodeConnectorIdOld;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
@@ -311,11 +327,11 @@ public class InterfaceInventoryStateListener
 
             futures = removeInterfaceStateConfiguration();
 
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+            final List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
+            for (final InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 // Fetch all interfaces on this port and trigger remove worker
                 // for each of them
-                InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
+                final InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                         nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld,
                         interfaceChildEntry.getChildInterface(), isNodePresent, isNetworkEvent, false);
                 coordinator.enqueueJob(interfaceName, interfaceStateRemoveWorker);
@@ -325,14 +341,14 @@ public class InterfaceInventoryStateListener
 
         private List<ListenableFuture<Void>> removeInterfaceStateConfiguration() {
             LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
+            final List<ListenableFuture<Void>> futures = new ArrayList<>();
+            final WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
             //VM Migration: Use old nodeConnectorId to delete the interface entry
-            NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
+            final NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
                     && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ? nodeConnectorIdOld : nodeConnectorIdNew;
             // delete the port entry from interface operational DS
-            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            final BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
             //VM Migration: Update the interface state to unknown only if remove event received for same switch
             if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
@@ -342,7 +358,7 @@ public class InterfaceInventoryStateListener
                         defaultOperationalShardTransaction);
             } else {
                 InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, defaultOperationalShardTransaction);
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
                     .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
 
                 if (iface != null) {
@@ -369,8 +385,8 @@ public class InterfaceInventoryStateListener
             return futures;
         }
 
-        private void handleTunnelMonitoringRemoval(BigInteger dpId, String removedInterfaceName,
-                IfTunnel ifTunnel, WriteTransaction transaction, List<ListenableFuture<Void>> futures) {
+        private void handleTunnelMonitoringRemoval(final BigInteger dpId, final String removedInterfaceName,
+                                                   final IfTunnel ifTunnel, final WriteTransaction transaction, final List<ListenableFuture<Void>> futures) {
             interfaceManagerCommonUtils.removeTunnelIngressFlow(ifTunnel, dpId, removedInterfaceName);
 
             IfmUtil.unbindService(dataBroker, coordinator, removedInterfaceName,
@@ -388,8 +404,8 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    public List<InterfaceChildEntry> getInterfaceChildEntries(String interfaceName) {
-        InterfaceParentEntry interfaceParentEntry =
+    public List<InterfaceChildEntry> getInterfaceChildEntries(final String interfaceName) {
+        final InterfaceParentEntry interfaceParentEntry =
                 interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceName);
         if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
             return interfaceParentEntry.getInterfaceChildEntry();

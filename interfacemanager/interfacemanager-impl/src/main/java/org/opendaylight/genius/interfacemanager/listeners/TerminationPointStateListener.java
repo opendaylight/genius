@@ -8,16 +8,14 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.List;
-import java.util.concurrent.Callable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -31,27 +29,50 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 @Singleton
 public class TerminationPointStateListener extends
-        AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener> {
+        AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
+
     private final InterfacemgrProvider interfaceMgrProvider;
+    private final DataBroker dataBroker;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
+    private final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
-    public TerminationPointStateListener(DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper) {
+    public TerminationPointStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
+                                         final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
+                                         final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                         final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
+                                         final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
+        this.dataBroker = dataBroker;
+        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
+        registerListener();
+        this.interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -66,11 +87,11 @@ public class TerminationPointStateListener extends
     }
 
     @Override
-    protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
-            OvsdbTerminationPointAugmentation tpOld) {
+    protected void remove(final InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+                          final OvsdbTerminationPointAugmentation tpOld) {
         LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
 
-        String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+        final String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
         if (oldInterfaceName == null && InterfaceManagerCommonUtils.isTunnelPort(tpOld.getName())) {
             interfaceMgrProvider.removeTerminationPointForInterface(tpOld.getName());
             interfaceMgrProvider.removeNodeIidForInterface(tpOld.getName());
@@ -80,24 +101,24 @@ public class TerminationPointStateListener extends
         }
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
-            RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
+            final RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
             coordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
         }
     }
 
     @Override
-    protected void update(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
-            OvsdbTerminationPointAugmentation tpOld, OvsdbTerminationPointAugmentation tpNew) {
+    protected void update(final InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+                          final OvsdbTerminationPointAugmentation tpOld, final OvsdbTerminationPointAugmentation tpNew) {
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
         if (tpNew.getInterfaceBfdStatus() != null
                 && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
             LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.", identifier,
                     tpOld, tpNew);
-            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
+            final RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
             coordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
-        InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
-        String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
+        final InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
+        final String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
         if (newInterfaceName == null && InterfaceManagerCommonUtils.isTunnelPort(tpNew.getName())) {
             interfaceMgrProvider.addTerminationPointForInterface(tpNew.getName(), tpNew);
             interfaceMgrProvider.addNodeIidForInterface(tpNew.getName(), nodeIid);
@@ -113,11 +134,11 @@ public class TerminationPointStateListener extends
                     IfmConstants.INTERFACE_CONFIG_ENTITY)) {
                 return;
             }
-            String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName, nodeIid);
-            String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
+            final String dpnId = interfaceMgrProvider.getDpidForInterface(newInterfaceName, nodeIid);
+            final String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
             if (dpnId != null && newInterfaceName != null && (oldInterfaceName == null
                 || !oldInterfaceName.equals(newInterfaceName))) {
-                String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
+                final String parentRefName = InterfaceManagerCommonUtils.getPortNameForInterface(dpnId, tpNew.getName());
                 LOG.debug("Detected update to termination point {} with external ID {}, updating parent ref "
                     + "of that interface ID to this termination point's interface-state name {}", tpNew.getName(),
                     newInterfaceName, parentRefName);
@@ -127,15 +148,15 @@ public class TerminationPointStateListener extends
     }
 
     @Override
-    protected void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
-            OvsdbTerminationPointAugmentation tpNew) {
+    protected void add(final InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+                       final OvsdbTerminationPointAugmentation tpNew) {
         update(identifier, null, tpNew);
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         OvsdbTerminationPointAugmentation terminationPointNew;
 
-        RendererStateUpdateWorker(OvsdbTerminationPointAugmentation tpNew) {
+        RendererStateUpdateWorker(final OvsdbTerminationPointAugmentation tpNew) {
             this.terminationPointNew = tpNew;
         }
 
@@ -148,7 +169,7 @@ public class TerminationPointStateListener extends
     private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         OvsdbTerminationPointAugmentation terminationPointOld;
 
-        RendererStateRemoveWorker(OvsdbTerminationPointAugmentation tpNew) {
+        RendererStateRemoveWorker(final OvsdbTerminationPointAugmentation tpNew) {
             this.terminationPointOld = tpNew;
         }
 
