@@ -8,12 +8,14 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -21,6 +23,8 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -40,7 +44,8 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class FlowBasedServicesInterfaceStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener>
+        implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
 
@@ -52,13 +57,25 @@ public class FlowBasedServicesInterfaceStateListener
     @Inject
     public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
+            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -67,7 +84,7 @@ public class FlowBasedServicesInterfaceStateListener
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
+    protected void remove(final InstanceIdentifier<Interface> key, final Interface interfaceStateOld) {
         if (Other.class.equals(interfaceStateOld.getType())
                 || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                         IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
@@ -82,7 +99,8 @@ public class FlowBasedServicesInterfaceStateListener
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
+    protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld,
+                          Interface interfaceStateNew) {
         // Do nothing
     }
 

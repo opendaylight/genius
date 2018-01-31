@@ -8,16 +8,20 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.hwvtep.HwvtepAbstractDataTreeChangeListener;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -32,18 +36,33 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class HwVTEPTunnelsStateListener
-        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener> {
+        extends HwvtepAbstractDataTreeChangeListener<Tunnels, HwVTEPTunnelsStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPTunnelsStateListener.class);
 
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator coordinator;
+    private final DataBroker dataBroker;
 
     @Inject
-    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
+    public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
+                                      final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
+        this.dataBroker = dataBroker;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -67,9 +86,11 @@ public class HwVTEPTunnelsStateListener
     }
 
     @Override
-    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld, Tunnels tunnelNew) {
+    protected void updated(InstanceIdentifier<Tunnels> identifier, Tunnels tunnelOld,
+                           Tunnels tunnelNew) {
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", identifier);
-        RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(identifier, tunnelOld);
+        RendererStateUpdateWorker rendererStateUpdateWorker =
+                new RendererStateUpdateWorker(identifier, tunnelOld);
         coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), rendererStateUpdateWorker,
                 IfmConstants.JOB_MAX_RETRIES);
     }
