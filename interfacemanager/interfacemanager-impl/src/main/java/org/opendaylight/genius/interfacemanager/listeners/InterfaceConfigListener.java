@@ -68,6 +68,10 @@ public class InterfaceConfigListener
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
         this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
         this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
+        registerListener(dataBroker);
+    }
+
+    public void registerListener(DataBroker dataBroker) {
         this.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
