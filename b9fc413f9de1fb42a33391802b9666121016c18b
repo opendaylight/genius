@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "046927e4_028dcb09",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-01-31T03:20:10Z",
+      "side": 1,
+      "message": "Can we rename it as \"set-bfd-param-on-tunnel\" or remove word \"enable\" as this RPC can be used to configure bfd interval param too.",
+      "revId": "b9fc413f9de1fb42a33391802b9666121016c18b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5831ed3d_5ecab72d",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 6
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-01-31T03:20:10Z",
+      "side": 1,
+      "message": "Better to rename it as monitoring-enable to reflect the correct significance of the field.",
+      "revId": "b9fc413f9de1fb42a33391802b9666121016c18b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
