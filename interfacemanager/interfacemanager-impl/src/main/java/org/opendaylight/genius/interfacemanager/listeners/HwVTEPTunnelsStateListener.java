@@ -43,6 +43,10 @@ public class HwVTEPTunnelsStateListener
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
+        registerListener(dataBroker);
+    }
+
+    public void registerListener(DataBroker dataBroker) {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 

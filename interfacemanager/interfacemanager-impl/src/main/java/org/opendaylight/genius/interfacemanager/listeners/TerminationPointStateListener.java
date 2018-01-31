@@ -51,6 +51,10 @@ public class TerminationPointStateListener extends
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
+        registerListener(dataBroker);
+    }
+
+    public void registerListener(DataBroker dataBroker) {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
