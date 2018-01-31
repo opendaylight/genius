@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -24,6 +26,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
+import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -41,7 +45,8 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InterfaceTopologyStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener> {
+        extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener>
+        implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
     private final DataBroker dataBroker;
     private final InterfacemgrProvider interfaceMgrProvider;
@@ -57,7 +62,8 @@ public class InterfaceTopologyStateListener
             final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
-            final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils) {
+            final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils,
+            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -67,7 +73,18 @@ public class InterfaceTopologyStateListener
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
+        registerListener();
+        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+    }
+
+    @Override
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+    }
+
+    @Override
+    public  void deregisterListener() {
+        close();
     }
 
     @Override
@@ -87,7 +104,8 @@ public class InterfaceTopologyStateListener
     }
 
     @Override
-    protected void remove(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeOld) {
+    protected void remove(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+                          OvsdbBridgeAugmentation bridgeOld) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                 identifier, bridgeOld);
 
@@ -95,15 +113,17 @@ public class InterfaceTopologyStateListener
         interfaceMgrProvider.removeBridgeForNodeIid(nodeIid);
 
         runOnlyInOwnerNode("OVSDB bridge removed", () -> {
-            RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
+            RendererStateRemoveWorker rendererStateRemoveWorker =
+                    new RendererStateRemoveWorker(identifier, bridgeOld);
             coordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker,
                 IfmConstants.JOB_MAX_RETRIES);
         });
     }
 
     @Override
-    protected void update(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeOld,
-            OvsdbBridgeAugmentation bridgeNew) {
+    protected void update(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+                          OvsdbBridgeAugmentation bridgeOld,
+                          OvsdbBridgeAugmentation bridgeNew) {
         LOG.debug(
                 "Received Update DataChange Notification for identifier: {}, ovsdbBridgeAugmentation old: {}, new: {}.",
                 identifier, bridgeOld, bridgeNew);
@@ -119,8 +139,8 @@ public class InterfaceTopologyStateListener
                 coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                         IfmConstants.JOB_MAX_RETRIES);
             } else if (oldDpid != null && !oldDpid.equals(newDpid)) {
-                RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(identifier, bridgeNew,
-                        bridgeOld);
+                RendererStateUpdateWorker rendererStateAddWorker =
+                        new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
                 coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                         IfmConstants.JOB_MAX_RETRIES);
             }
@@ -128,7 +148,8 @@ public class InterfaceTopologyStateListener
     }
 
     @Override
-    protected void add(InstanceIdentifier<OvsdbBridgeAugmentation> identifier, OvsdbBridgeAugmentation bridgeNew) {
+    protected void add(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+                       OvsdbBridgeAugmentation bridgeNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                 identifier, bridgeNew);
 
@@ -147,7 +168,7 @@ public class InterfaceTopologyStateListener
         OvsdbBridgeAugmentation bridgeNew;
 
         RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                OvsdbBridgeAugmentation bridgeNew) {
+                               OvsdbBridgeAugmentation bridgeNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
         }
@@ -185,7 +206,7 @@ public class InterfaceTopologyStateListener
         OvsdbBridgeAugmentation bridgeNew;
 
         RendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                OvsdbBridgeAugmentation bridgeNew) {
+                                  OvsdbBridgeAugmentation bridgeNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
         }
@@ -221,7 +242,7 @@ public class InterfaceTopologyStateListener
         OvsdbBridgeAugmentation bridgeOld;
 
         RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
+                                  OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
             this.bridgeOld = bridgeOld;
