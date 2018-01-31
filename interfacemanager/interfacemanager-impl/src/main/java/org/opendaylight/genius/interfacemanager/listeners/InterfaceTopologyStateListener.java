@@ -67,6 +67,10 @@ public class InterfaceTopologyStateListener
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
+        registerListener();
+    }
+
+    public void registerListener() {
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
