@@ -31,6 +31,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="cacheProvider"
                interface="org.opendaylight.infrautils.caches.CacheProvider"/>
 
+    <reference id="entityOwnershipService"
+               interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService" />
+
     <odl:rpc-implementation ref="itmManagerRpcService" />
 
     <odl:clustered-app-config id="itmConfig"
@@ -38,6 +41,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                               default-config-file-name="genius-itm-config.xml"
                               update-strategy="none">
     </odl:clustered-app-config>
+
+    <bean id="entityOwnershipUtils" class="org.opendaylight.genius.utils.clustering.EntityOwnershipUtils">
+        <argument ref="entityOwnershipService"/>
+    </bean>
 
     <!--To assert references for CLI implementations-->
     <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">

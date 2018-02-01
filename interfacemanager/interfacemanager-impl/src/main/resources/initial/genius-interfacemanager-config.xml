@@ -1,0 +1,3 @@
+<interface-config xmlns="urn:opendaylight:genius:interface:config">
+    <itm-direct-tunnels>true</itm-direct-tunnels>
+</interface-config>
