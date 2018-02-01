@@ -225,6 +225,30 @@
       "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ded7106a_28411c1f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-01T15:05:01Z",
+      "side": 1,
+      "message": "I don\u0027t know specifically why INITIAL_DELAY was introduced by that patch - you can ask Viji. But an initial delay before polling does make sense so as not to add load to the system on startup. That patch hard-coded it b/c the poll interval was also hard-coded. Now that you\u0027re making the poll interval configurable, the initial delay should not/cannot be hard-coded to an arbitrary 5 min. I worked on several polling engines in the past and we randomized the first poll over the interval (with a reasonable minimum).",
+      "parentUuid": "60d9535a_4f776f7e",
+      "range": {
+        "startLine": 114,
+        "startChar": 91,
+        "endLine": 114,
+        "endChar": 99
+      },
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
