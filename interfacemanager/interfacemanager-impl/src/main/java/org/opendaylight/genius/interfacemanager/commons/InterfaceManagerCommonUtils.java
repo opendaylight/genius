@@ -721,6 +721,14 @@ public final class InterfaceManagerCommonUtils {
         }
     }
 
+    public boolean isTunnelInternal(String interfaceName) {
+        IfTunnel ifTunnel = getInterfaceFromConfigDS(interfaceName).getAugmentation(IfTunnel.class);
+        if (ifTunnel != null) {
+            return ifTunnel.isInternal();
+        }
+        return false;
+    }
+
     public static String getPortNameForInterface(NodeConnectorId nodeConnectorId, String portName) {
         if (isNovaOrTunnelPort(portName) || isK8SPort(portName)) {
             return portName;

@@ -25,7 +25,9 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
@@ -37,10 +39,13 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.scaling.workers.TepInterfaceAddWorker;
+import org.opendaylight.genius.itm.scaling.workers.TepInterfaceRemoveWorker;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -73,30 +78,41 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
     private final IMdsalApiManager mdsalManager;
+    private final IdManagerService idManagerService;
     private final ItmConfig itmConfig;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final IInterfaceManager interfaceManager;
+    private final TunnelMonitoringConfig tunnelMonitoringConfig;
+    private final TunnelStateCache tunnelStateCache;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
+                                 final IdManagerService idManagerService,
                                  final IMdsalApiManager mdsalManager,
                                  final ItmConfig itmConfig, final JobCoordinator jobCoordinator,
                                  final TunnelMonitoringConfig tunnelMonitoringConfig,
-                                 final DPNTEPsInfoCache dpnTEPsInfoCache) {
+                                 final TunnelStateCache tunnelStateCache,
+                                 final DPNTEPsInfoCache dpnTEPsInfoCache,
+                                 final IInterfaceManager interfaceManager) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
-              InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
+            InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         initializeTZNode(dataBroker);
         this.mdsalManager = mdsalManager;
+        this.interfaceManager = interfaceManager;
+        this.idManagerService = idManagerService;
         this.itmConfig = itmConfig;
+        this.tunnelMonitoringConfig = tunnelMonitoringConfig;
+        this.tunnelStateCache = tunnelStateCache;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig);
+            tunnelMonitoringConfig);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig);
+            tunnelMonitoringConfig);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
     }
 
@@ -105,7 +121,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         ReadWriteTransaction transaction = db.newReadWriteTransaction();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.create(TransportZones.class);
         CheckedFuture<Optional<TransportZones>, ReadFailedException> tzones = transaction
-                .read(LogicalDatastoreType.CONFIGURATION, path);
+            .read(LogicalDatastoreType.CONFIGURATION, path);
         try {
             if (!tzones.get().isPresent()) {
                 TransportZonesBuilder tzb = new TransportZonesBuilder();
@@ -152,10 +168,19 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
             List<HwVtep> hwVtepList = createhWVteps(transportZone);
             LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
             if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
-                LOG.trace("Delete: Invoking ItmManager with hwVtep List {} ", hwVtepList);
-                jobCoordinator.enqueueJob(transportZone.getZoneName(),
+                if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                    LOG.trace("TEP Remove:ITM Direct Tunnels is enabled ");
+                    TepInterfaceRemoveWorker tepInterfaceRemoveWorker =
+                            new TepInterfaceRemoveWorker(opDpnList, hwVtepList, transportZone, dataBroker,
+                                    idManagerService, mdsalManager,dpnTEPsInfoCache, tunnelMonitoringConfig,
+                                    tunnelStateCache);
+                    jobCoordinator.enqueueJob(transportZone.getZoneName(), tepInterfaceRemoveWorker);
+                } else {
+                    LOG.trace("Delete: Invoking ItmManager with hwVtep List {} ", hwVtepList);
+                    jobCoordinator.enqueueJob(transportZone.getZoneName(),
                         new ItmTepRemoveWorker(opDpnList, hwVtepList, transportZone, dataBroker, mdsalManager,
-                                itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
+                            itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
+                }
             }
         }
     }
@@ -163,7 +188,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     @Override
     public void update(@Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
-                  updatedTransportZone);
+            updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -184,15 +209,31 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         LOG.trace("newcopy Size {}", newDpnTepsList.size());
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                LOG.trace("TEP UPDATE:ITM Direct Tunnels is enabled");
+                TepInterfaceAddWorker tepInterfaceAddWorker =
+                        new TepInterfaceAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker,
+                                idManagerService, mdsalManager, itmConfig, dpnTEPsInfoCache, tunnelMonitoringConfig);
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), tepInterfaceAddWorker);
+            } else {
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
                     new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager, itmConfig,
-                            itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+                        itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+            }
         }
         if (!oldDpnTepsList.isEmpty()) {
             LOG.trace("Removing TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                LOG.trace("HWTEP UPDATE:ITM Direct Tunnel is enabled");
+                TepInterfaceRemoveWorker tepInterfaceRemoveWorker = new TepInterfaceRemoveWorker(
+                    oldDpnTepsList, Collections.emptyList(),originalTransportZone, dataBroker, idManagerService,
+                    mdsalManager, dpnTEPsInfoCache, tunnelMonitoringConfig, tunnelStateCache);
+                jobCoordinator.enqueueJob(originalTransportZone.getZoneName(), tepInterfaceRemoveWorker);
+            } else {
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
                     new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), originalTransportZone, dataBroker,
-                            mdsalManager, itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
+                        mdsalManager, itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
+            }
         }
         List<HwVtep> oldHwList = createhWVteps(originalTransportZone);
         List<HwVtep> newHwList = createhWVteps(updatedTransportZone);
@@ -211,15 +252,31 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         LOG.trace("newHwListcopy {}", newHwListcopy);
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), new ItmTepAddWorker(Collections.emptyList(),
-                    newHwList, dataBroker, mdsalManager, itmConfig, itmInternalTunnelAddWorker, externalTunnelAddWorker,
-                    dpnTEPsInfoCache));
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                LOG.trace("HWTEP UPDATE:ITM Direct Tunnel is enabled");
+                TepInterfaceAddWorker tepInterfaceAddWorker =
+                        new TepInterfaceAddWorker(Collections.emptyList(), newHwList,dataBroker, idManagerService,
+                                mdsalManager, itmConfig, dpnTEPsInfoCache, tunnelMonitoringConfig);
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), tepInterfaceAddWorker);
+            } else {
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                        new ItmTepAddWorker(Collections.emptyList(), newHwList, dataBroker, mdsalManager, itmConfig,
+                                itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+            }
         }
         if (!oldHwList.isEmpty()) {
             LOG.trace("Removing HW TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), new ItmTepRemoveWorker(
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                LOG.trace("HWTEP UPDATE:ITM Direct Tunnel is enabled");
+                TepInterfaceRemoveWorker tepInterfaceRemoveWorker = new TepInterfaceRemoveWorker(
+                    Collections.emptyList(),oldHwList, originalTransportZone, dataBroker, idManagerService,
+                    mdsalManager, dpnTEPsInfoCache, tunnelMonitoringConfig, tunnelStateCache);
+                jobCoordinator.enqueueJob(originalTransportZone.getZoneName(), tepInterfaceRemoveWorker);
+            } else {
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), new ItmTepRemoveWorker(
                     Collections.emptyList(), oldHwList, originalTransportZone, dataBroker, mdsalManager,
                     itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
+            }
         }
     }
 
@@ -233,9 +290,16 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
             LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
-            jobCoordinator.enqueueJob(transportZone.getZoneName(),
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                LOG.trace("TEP ADD:ITM Direct Tunnel is enabled");
+                TepInterfaceAddWorker tepInterfaceAddWorker = new TepInterfaceAddWorker(opDpnList, hwVtepList,
+                    dataBroker, idManagerService, mdsalManager, itmConfig, dpnTEPsInfoCache, tunnelMonitoringConfig);
+                jobCoordinator.enqueueJob(transportZone.getZoneName(), tepInterfaceAddWorker);
+            } else {
+                jobCoordinator.enqueueJob(transportZone.getZoneName(),
                     new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, mdsalManager, itmConfig,
-                            itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+                        itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+            }
         }
     }
 
@@ -274,8 +338,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                     tos = itmConfig.getDefaultTunnelTos();
                 }
                 TunnelEndPoints tunnelEndPoints =
-                        ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, useOfTunnel,vlanID, ipPrefix,
-                                gatewayIP, zones, tunnelType, tos);
+                    ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, useOfTunnel,vlanID, ipPrefix,
+                        gatewayIP, zones, tunnelType, tos);
                 List<TunnelEndPoints> tunnelEndPointsList = mapNotHostedDPNToTunnelEndpt.get(dpnID);
                 if (tunnelEndPointsList != null) {
                     tunnelEndPointsList.add(tunnelEndPoints);
@@ -315,7 +379,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
         VtepsKey vtepkey = new VtepsKey(dpnID, port);
         Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).setKey(vtepkey)
-                .setPortname(port).build();
+            .setPortname(port).build();
         return vtepObj;
     }
 
@@ -329,10 +393,10 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     public  Optional<TepsNotHostedInTransportZone> getNotHostedTransportZone(String transportZoneName) {
         InstanceIdentifier<TepsNotHostedInTransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
-                .child(TepsNotHostedInTransportZone.class,
-                        new TepsNotHostedInTransportZoneKey(transportZoneName)).build();
+            .child(TepsNotHostedInTransportZone.class,
+                new TepsNotHostedInTransportZoneKey(transportZoneName)).build();
         Optional<TepsNotHostedInTransportZone> tzNotHostedOptional =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
+            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
         return tzNotHostedOptional;
     }
 
@@ -411,7 +475,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                         IpAddress ipAddress = vteps.getIpAddress();
                         LOG.trace("topo-id: {}, node-id: {}, ipAddress: {}", topologyId, nodeId, ipAddress);
                         HwVtep hwVtep = ItmUtils.createHwVtepObject(topologyId, nodeId, ipAddress, ipPrefix, gatewayIP,
-                                vlanID, tunnelType, transportZone);
+                            vlanID, tunnelType, transportZone);
 
                         if (hwVtepsList != null) {
                             LOG.trace("Existing hwVteps");
