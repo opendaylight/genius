@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fe0681bd_740dd192",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-01T14:09:00Z",
+      "side": 1,
+      "message": "This was in response to my comment re: the naming and purpose of ItmCacheManager, ie using it to hold unrelated caches rather than separating such caches inot their own classes (my preference). However the 2 current caches, dpn -\u003e IP and IP -\u003e dpn, are related so I was suggesting to  create a DpnIdIpCache that houses both and eliminate ItmCacheManager.",
+      "parentUuid": "677ce693_ad8cba04",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba66301d_2f8658bb",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
         "patchSetId": 4
