@@ -16,6 +16,24 @@
       "revId": "e7ec296b09ebe0b7e5d42f709ce4daf15877a2c8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0d3699bc_861472cd",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-02-01T08:45:09Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1f4e8727_bd34b191",
+      "revId": "e7ec296b09ebe0b7e5d42f709ce4daf15877a2c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
