@@ -1,0 +1,21 @@
+module interface-config {
+
+    namespace "urn:opendaylight:genius:interface:config";
+
+    prefix ifm-config;
+
+    description "This YANG module defines configuration parameter for interface manager.";
+    revision "2018-01-22";
+
+     /* Configuration data */
+
+     container interface-config {
+       config true;
+       leaf itm-direct-tunnels {
+                description "Enable the ITM to handle tunnels directly by-passing
+                           interface manager.";
+                type boolean;
+                default true;
+       }
+    }
+}
