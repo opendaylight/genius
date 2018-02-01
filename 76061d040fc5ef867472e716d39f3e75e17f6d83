@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "677ce693_ad8cba04",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "FTR: I\u0027m not sure why this separate class is really needed..  you only use it in ItmCacheManager - why not just inline a Cache\u003cString, String\u003e dpnIdCache there?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba66301d_2f8658bb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "@Inject would be needed here - but see above, I would do away with this entire class?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fe0305d5_54277211",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "@PreDestroy, but actually more importantly why are you even repeating this method here? You already have it, identical, in the ItmCache?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6fa89642_e23a8cd3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/IpDpnIdCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "FTR: I\u0027m not sure why this separate class is really needed..  you only use it in ItmCacheManager - why not just inline a Cache\u003cString, String\u003e ipDpnIdCache there?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "20e588cb_84f603d8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/IpDpnIdCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "@Inject would be needed here - but see above, I would do away with this entire class?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "560fea01_c9ad61fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/IpDpnIdCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "@PreDestroy, but actually more importantly why are you even repeating this method here? You already have it, identical, in the ItmCache?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7bac9ce_da744b8a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/IpDpnIdCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "erm, is this change proposed for merge with this (and other liks it) TODO, or is this WIP? If it\u0027s the latter then could you self -1 it until you want us (me) to re-review it?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c45ce3fc_6c764fb5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "FTR: I don\u0027t think this class is really needed.. at least as-is currently, this doesn\u0027t really \"do\" anything at all.  You explained in our chat on IRC that you may want to add things to it later though - so up to you. But if this is inly for getAllPresent() I would rather just add that to Caches next week... ;)",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d7eaceb_58133c7f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "ItmCache\u003cK, V\u003e no need for \u003cT extends Object\u003e FYI",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ae78414_6ab60a5c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "@PreDestroy",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0378de09_a7dbd3b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "nope - better no more direct usage of WriteTransaction - use the new ManagedNewTransactionRunner instead here?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "37933df3_52822f4c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-01T11:17:23Z",
+      "side": 1,
+      "message": "remove this TODO (and its OK to leave the trace, IMHO)",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
