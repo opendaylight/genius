@@ -33,6 +33,8 @@ import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManag
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius._interface.config.rev180122.InterfaceConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius._interface.config.rev180122.InterfaceConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
@@ -58,6 +60,10 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN)
                 .setGpeExtensionEnabled(false)
                 .build();
+
+        InterfaceConfig interfaceConfig = new InterfaceConfigBuilder().setItmDirectTunnels(false).build();
+        bind(InterfaceConfig.class).toInstance(interfaceConfig);
+
         bind(ItmConfig.class).toInstance(itmConfigObj);
         bind(TunnelMonitorIntervalListener.class);
         bind(TransportZoneListener.class);
