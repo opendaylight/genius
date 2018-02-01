@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f4e8727_bd34b191",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-02-01T05:46:07Z",
+      "side": 1,
+      "message": "Interval need not be mandatory. Internally the default will be set to 1000. It can be optional and if user didn\u0027t provide it the default will be set.",
+      "revId": "e7ec296b09ebe0b7e5d42f709ce4daf15877a2c8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
