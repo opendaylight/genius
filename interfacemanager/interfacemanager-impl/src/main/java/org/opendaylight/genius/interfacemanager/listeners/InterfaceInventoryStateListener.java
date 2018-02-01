@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -69,6 +70,7 @@ public class InterfaceInventoryStateListener
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final PortNameCache portNameCache;
+    private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
@@ -79,7 +81,9 @@ public class InterfaceInventoryStateListener
             final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
             final AlivenessMonitorUtils alivenessMonitorUtils,
             final InterfaceMetaUtils interfaceMetaUtils,
-            final PortNameCache portNameCache) {
+            final PortNameCache portNameCache,
+            final InterfacemgrProvider interfacemgrProvider) {
+
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -91,6 +95,7 @@ public class InterfaceInventoryStateListener
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
+        this.interfacemgrProvider = interfacemgrProvider;
         this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
@@ -108,6 +113,14 @@ public class InterfaceInventoryStateListener
     @Override
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
             FlowCapableNodeConnector flowCapableNodeConnectorOld) {
+
+        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(flowCapableNodeConnectorOld.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring node connector removed for internal tunnel {}",
+                    flowCapableNodeConnectorOld.getName());
+            return;
+        }
+
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
@@ -118,6 +131,7 @@ public class InterfaceInventoryStateListener
             .getId();
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
+
 
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
@@ -135,6 +149,14 @@ public class InterfaceInventoryStateListener
     @Override
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
             FlowCapableNodeConnector fcNodeConnectorNew) {
+
+        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(fcNodeConnectorNew.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring node connector Update for"
+                    + " internal tunnel {}",fcNodeConnectorNew.getName());
+            return;
+        }
+
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
@@ -153,6 +175,13 @@ public class InterfaceInventoryStateListener
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
+
+        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(fcNodeConnectorNew.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring node connector add for internal tunnel {}",
+                    fcNodeConnectorNew.getName());
+            return;
+        }
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
