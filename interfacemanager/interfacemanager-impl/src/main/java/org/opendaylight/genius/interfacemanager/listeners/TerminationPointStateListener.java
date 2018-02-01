@@ -23,6 +23,7 @@ import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -68,6 +69,12 @@ public class TerminationPointStateListener extends
     @Override
     protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
             OvsdbTerminationPointAugmentation tpOld) {
+        if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(tpOld.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for internal tunnel {}",
+                    tpOld.getName());
+            return;
+        }
         LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
 
         String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
@@ -88,9 +95,21 @@ public class TerminationPointStateListener extends
     @Override
     protected void update(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
             OvsdbTerminationPointAugmentation tpOld, OvsdbTerminationPointAugmentation tpNew) {
+
+        if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(tpNew.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point update - "
+                    + "old {}, new {} internal tunnel", tpOld.getName(), tpNew.getName());
+            return;
+        }
+
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
-        if (tpNew.getInterfaceBfdStatus() != null
-                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
+        if ((org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                .bfdMonitoringEnabled(tpNew.getInterfaceBfd())
+                != org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                .bfdMonitoringEnabled(tpOld.getInterfaceBfd()))
+                || (tpNew.getInterfaceBfdStatus() != null
+                && !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
             LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.", identifier,
                     tpOld, tpNew);
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
@@ -129,7 +148,14 @@ public class TerminationPointStateListener extends
     @Override
     protected void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
             OvsdbTerminationPointAugmentation tpNew) {
-        update(identifier, null, tpNew);
+        if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(tpNew.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for internal tunnel {}",
+                    tpNew.getName());
+            return;
+        }
+        OvsdbTerminationPointAugmentation builder = new OvsdbTerminationPointAugmentationBuilder().build();
+        update(identifier, builder, tpNew);
     }
 
     private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
