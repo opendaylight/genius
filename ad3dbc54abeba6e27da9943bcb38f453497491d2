@@ -177,6 +177,30 @@
       "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "43eab416_d9473415",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-01T14:16:16Z",
+      "side": 1,
+      "message": "yes but it seems you\u0027re missing my point. I\u0027m saying that a user-configurable initial delay isn\u0027t needed - either use the poll interval or pick a randomized initial  delay from the poll interval.",
+      "parentUuid": "13db6446_88a48ee0",
+      "range": {
+        "startLine": 114,
+        "startChar": 91,
+        "endLine": 114,
+        "endChar": 99
+      },
+      "revId": "ad3dbc54abeba6e27da9943bcb38f453497491d2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
