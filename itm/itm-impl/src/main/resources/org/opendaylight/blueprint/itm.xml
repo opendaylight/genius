@@ -39,6 +39,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                               update-strategy="none">
     </odl:clustered-app-config>
 
+    <bean id="entityOwnershipUtils" class="org.opendaylight.genius.utils.clustering.EntityOwnershipUtils">
+        <argument ref="entityOwnershipService"/>
+    </bean>
+
     <!--To assert references for CLI implementations-->
     <command-bundle xmlns="http://karaf.apache.org/xmlns/shell/v1.1.0">
         <command>
