@@ -333,6 +333,24 @@
     },
     {
       "key": {
+        "uuid": "1fe2e386_9a3fa52c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:51:44Z",
+      "side": 1,
+      "message": "@Michael: Need some help with this, it is puzzling. I don\u0027t actually need this at all. I am using ItmBatchingUtils. Only reason this is here is so I can do a dummy tx.submit on this so it can return List\u003cListenableFuture\u003e that is used to enqueue on JobCoordinator. Any suggestions on good way to address this?",
+      "parentUuid": "10492c95_c903e57d",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "37933df3_52822f4c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
         "patchSetId": 4
