@@ -351,6 +351,24 @@
     },
     {
       "key": {
+        "uuid": "3abe578d_a0cf77b5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-02T13:32:13Z",
+      "side": 1,
+      "message": "You should not be purposely create/submit an empty WriteTransaction just to get a future. Why return List\u003cListenableFuture\u003cVoid\u003e\u003e at all? You don\u0027t actually need it for the JobCoordinator.  In fact why enqueue this on the JobCoordinator at all if all the writes are done async via ITMBatchingUtils?",
+      "parentUuid": "1fe2e386_9a3fa52c",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "37933df3_52822f4c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
         "patchSetId": 4
