@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "37d50613_790356f3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "This is the cache that made me ask about reverse lookup. I\u0027m waiting to see how others will use these and based on that will refactor all this. ItmCacheManager is in here coz I forsee about 5-6 more such caches. I thought would be easier for Util classes to depend on one CacheManager than 5-6 individual Caches.",
+      "parentUuid": "fe0681bd_740dd192",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba66301d_2f8658bb",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
         "patchSetId": 4
@@ -65,6 +83,24 @@
       "writtenOn": "2018-02-01T11:17:23Z",
       "side": 1,
       "message": "@PreDestroy, but actually more importantly why are you even repeating this method here? You already have it, identical, in the ItmCache?",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "54a51082_3757da00",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnIdIpCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "Oops! Forgot to remove when wrote ItmCache",
+      "parentUuid": "fe0305d5_54277211",
       "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -139,6 +175,24 @@
     },
     {
       "key": {
+        "uuid": "fc8a73cd_98cdac9c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/IpDpnIdCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "This patch is adding early version of code that will be used and modified by others as rest of feature code comes in. TODO is here coz I don\u0027t have yang models to pull this info from. If this goes in, whosoever works on populating yang models can fill the caches too.",
+      "parentUuid": "c7bac9ce_da744b8a",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c45ce3fc_6c764fb5",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
         "patchSetId": 4
@@ -150,6 +204,24 @@
       "writtenOn": "2018-02-01T11:17:23Z",
       "side": 1,
       "message": "FTR: I don\u0027t think this class is really needed.. at least as-is currently, this doesn\u0027t really \"do\" anything at all.  You explained in our chat on IRC that you may want to add things to it later though - so up to you. But if this is inly for getAllPresent() I would rather just add that to Caches next week... ;)",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c9c97d36_20ee25fe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "No, not just getAllPresent, but other stuff on top of it. If eventually don\u0027t do that, will refactor this. I think Edwin, Hema will be needing something similar.",
+      "parentUuid": "c45ce3fc_6c764fb5",
       "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -173,6 +245,24 @@
     },
     {
       "key": {
+        "uuid": "3fe7c3be_66ff339a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "Oh, must be issue with my IDE then, was showing reds.",
+      "parentUuid": "3d7eaceb_58133c7f",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ae78414_6ab60a5c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
         "patchSetId": 4
@@ -184,6 +274,24 @@
       "writtenOn": "2018-02-01T11:17:23Z",
       "side": 1,
       "message": "@PreDestroy",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e10d9c1_fb38f1c3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/ItmCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "thanks, was wondering about this.",
+      "parentUuid": "5ae78414_6ab60a5c",
       "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -207,6 +315,24 @@
     },
     {
       "key": {
+        "uuid": "10492c95_c903e57d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "will do",
+      "parentUuid": "0378de09_a7dbd3b4",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "37933df3_52822f4c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
         "patchSetId": 4
@@ -218,6 +344,24 @@
       "writtenOn": "2018-02-01T11:17:23Z",
       "side": 1,
       "message": "remove this TODO (and its OK to leave the trace, IMHO)",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8157770f_5144ead1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-02T08:37:04Z",
+      "side": 1,
+      "message": "too much data to be useful in longer run, only needed during early development to track changes and figure out how to best handle creates/updates.",
+      "parentUuid": "37933df3_52822f4c",
       "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
