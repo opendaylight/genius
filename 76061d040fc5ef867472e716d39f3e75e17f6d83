@@ -351,6 +351,24 @@
     },
     {
       "key": {
+        "uuid": "b0c35933_1a8aebd1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-05T07:48:05Z",
+      "side": 1,
+      "message": "Agree. Helper/worker come in handy for reusable DJC, though in this case it may not be needed as different callers will use different addTunnels. I\u0027d prefer to have these in a common util and have respective workers call util methods. Maybe should take it up as a separate refactor activity?",
+      "parentUuid": "17f12cc3_c74cd566",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
