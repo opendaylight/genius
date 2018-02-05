@@ -369,6 +369,24 @@
     },
     {
       "key": {
+        "uuid": "9d6cd185_ea68907b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-05T05:34:17Z",
+      "side": 1,
+      "message": "JC is used to hand off heavy lifting to a different thread and also to queue up events for a given interface in order. We don\u0027t want to do any DS read/writes in listener thread as it can block processing notifications. This one avoids all reads/writes [batching] but ordering may still require use of DJC.\n\nI was under impression that JC requires List\u003cListenableFuture\u003e as return.",
+      "parentUuid": "3abe578d_a0cf77b5",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "37933df3_52822f4c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
         "patchSetId": 4
