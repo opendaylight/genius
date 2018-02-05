@@ -29,6 +29,9 @@ import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.scaling.renderer.ovs.confighelpers.OvsTunnelConfigUpdateHelper;
+import org.opendaylight.genius.itm.scaling.renderer.ovs.utilities.DpnTepInterfaceInfo;
+import org.opendaylight.genius.itm.scaling.renderer.ovs.utilities.ItmScaleUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -858,4 +861,50 @@ public class ItmManagerRpcService implements ItmRpcService {
         return Futures.immediateFuture(resultBld.build());
     }
 
+    public Future<RpcResult<java.lang.Void>> setBfdParamOnTunnel(SetBfdParamOnTunnelInput input){
+        final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
+        BigInteger srcDpnId =  new BigInteger(input.getSourceNode());
+        BigInteger destDpnId =  new BigInteger(input.getDestinationNode());
+        List<RemoteDpns> remoteDpnTepList = new ArrayList<>();
+        WriteTransaction t = dataBroker.newWriteOnlyTransaction();
+
+        DpnTepInterfaceInfo dpnTepConfigInfo = ItmScaleUtils.getDpnTepInterfaceFromCache(srcDpnId, destDpnId);
+        if (dpnTepConfigInfo != null) {
+            RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
+            remoteDpnsBuilder.setKey(new RemoteDpnsKey(destDpnId));
+            remoteDpnsBuilder.setDestinationDpnId(destDpnId);
+            remoteDpnsBuilder.setTunnelName(dpnTepConfigInfo.getTunnelName());
+            remoteDpnsBuilder.setInternal(dpnTepConfigInfo.isInternal());
+            if(input.isMonitoringEnabled()&& input.getMonitoringInterval()!=null)
+                remoteDpnsBuilder.setMonitoringInterval(input.getMonitoringInterval());
+            remoteDpnsBuilder.setMonitoringEnabled(input.isMonitoringEnabled());
+            RemoteDpns remoteDpn = remoteDpnsBuilder.build();
+            remoteDpnTepList.add(remoteDpn);
+            OvsTunnelConfigUpdateHelper.updateConfiguration(dataBroker, srcDpnId, remoteDpn);
+            InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class,
+                new DpnsTepsKey(srcDpnId)).child(RemoteDpns.class, new RemoteDpnsKey(destDpnId)).build();
+            t.merge(LogicalDatastoreType.CONFIGURATION, iid, remoteDpn);
+            ListenableFuture<Void> futureCheck = t.submit();
+            Futures.addCallback(futureCheck, new FutureCallback<Void>(){
+
+                @Override
+                public void onSuccess(Void aVoid) {
+                    result.set(RpcResultBuilder.<Void>success().build());
+                }
+
+                @Override
+                public void onFailure(Throwable error) {
+                    String msg = "Unable to configure BFD params for the srcDpnId " + srcDpnId +"destinationDpnId " + destDpnId;
+                    LOG.error("DpnTepINfo is NULL for the srcDpnId {} destinationDpnId {}",
+                        srcDpnId, destDpnId);
+                    result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+                }
+            });
+        } else {
+            LOG.error("DpnTepINfo is NULL for the srcDpnId {} destinationDpnId {}",
+                srcDpnId, destDpnId);
+        }
+        result.set(RpcResultBuilder.<Void>success().build());
+        return result;
+    }
 }
