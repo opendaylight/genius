@@ -315,6 +315,24 @@
     },
     {
       "key": {
+        "uuid": "a393fb45_2a87bd19",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-05T06:23:03Z",
+      "side": 1,
+      "message": "That same argument can be applied why all these helpers are needed at all as they all are called from single place. Putting it here ensures that all code to create tunnel state is present in single file. BTW, dataBroker is only used for creating empty Transaction which am looking to eliminate. Once I do that, will remove it altogether.",
+      "parentUuid": "76575d65_7be3a5e7",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
@@ -422,6 +440,24 @@
     },
     {
       "key": {
+        "uuid": "5a579082_66b209e0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-05T06:23:03Z",
+      "side": 1,
+      "message": "DJC is used to order all events for a given interface using a key.",
+      "parentUuid": "748da08c_414cde3b",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "336a2561_3db5a0da",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
         "patchSetId": 4
@@ -433,6 +469,24 @@
       "writtenOn": "2018-02-05T05:57:59Z",
       "side": 1,
       "message": "You should derive from AbstractSyncDataTreeChangeListener.",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51722d29_b9c928dc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbTerminationPointListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-05T06:23:03Z",
+      "side": 1,
+      "message": "Don\u0027t want to. Abstract classes were designed mostly as a wrapper to make it easy to port existing classes which used add/update/remove methods, but end up losing some of the additions DTCL/CDTCL provide e.g. getRootIdentifier, getRootPath. Even when we did recent changes, aim was always for new classes to use DTCL/CDTCL directly.",
+      "parentUuid": "336a2561_3db5a0da",
       "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
