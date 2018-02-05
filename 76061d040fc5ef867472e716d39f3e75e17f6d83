@@ -333,6 +333,24 @@
     },
     {
       "key": {
+        "uuid": "17f12cc3_c74cd566",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-05T06:51:18Z",
+      "side": 1,
+      "message": "\"That same argument ...\" - right - many of these myriad static helper and utils methods/classes are really not needed. To me, you put code into util/helper classes for reuse.",
+      "parentUuid": "a393fb45_2a87bd19",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
