@@ -387,6 +387,24 @@
     },
     {
       "key": {
+        "uuid": "a422e1b0_ef4aefd4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-06T14:19:19Z",
+      "side": 1,
+      "message": "Actually I agree with you, my only issue is to do it as part of this patch or keep it as a separate refactoring activity. Note that I already have a follow up patch that moves this back to listener for the new code at least, so as not to continue bad patterns. Unification of listeners is only possible if input is same. Code path to call addTunnel method that I am adding and the one already present are very different with notification coming in from different listeners. I would prefer to do what is needed to get your +1 to make sure we identify better patterns instead of doing what is always done.",
+      "parentUuid": "241afb5a_6d2e3a60",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
