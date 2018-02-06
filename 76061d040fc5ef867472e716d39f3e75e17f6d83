@@ -423,6 +423,24 @@
     },
     {
       "key": {
+        "uuid": "ccde989a_154cd88d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-06T15:23:24Z",
+      "side": 1,
+      "message": "As I said, I do have a patchset with this new code in listener itself. Maven issues delayed testing and pushing it so far.\n\nListener unification: I am not familiar enough with Java to write code with lambdas confidently, but that sounds like something I\u0027d like to try and learn.",
+      "parentUuid": "13d53846_28b9dbaa",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
