@@ -8,6 +8,7 @@
 package org.opendaylight.genius.datastoreutils.listeners.internal;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.MoreObjects;
 import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -27,8 +28,6 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of DataTreeEventCallbackRegistrar.
@@ -41,8 +40,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @OsgiServiceProvider(classes = DataTreeEventCallbackRegistrar.class)
 public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallbackRegistrar {
-
-    private static final Logger LOG = LoggerFactory.getLogger(DataTreeEventCallbackRegistrarImpl.class);
 
     // This implementation is, intentionally, kept very simple and thin.  If during usage we see
     // that registering many listeners to the DataBroker causes any sort of real overhead, then we will
@@ -81,7 +78,17 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
     }
 
     private <T, U, R> BiFunction<T, T, R> biify(Function<T, R> function) {
-        return (first, second) -> function.apply(first);
+        return new BiFunction<T, T, R>() {
+            @Override
+            public R apply(T first, T second) {
+                return function.apply(first);
+            }
+
+            @Override
+            public String toString() {
+                return "IgnoringSecondBiFunction{" + function + "}";
+            }
+        };
     }
 
     @SuppressWarnings("resource") // thanks but we're good
@@ -190,6 +197,12 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
             }
         }
 
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this).add("operation", operation)
+                    .add("gotNotification", gotNotification)
+                    .add("callback", callback).toString();
+        }
     }
 
     private enum Operation { ADD, UPDATE, ADD_OR_UPDATE, REMOVE }
