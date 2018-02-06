@@ -441,6 +441,24 @@
     },
     {
       "key": {
+        "uuid": "a37949e3_2a70ef4a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-06T15:30:12Z",
+      "side": 1,
+      "message": "Again - I\u0027ll ask why not just put the new code in listener in this patch? Makes more sense to me than introducing it elsewhere and then moving it, ie put it in the right place in the first place.\n\nYou don\u0027t need to use lambdas - I\u0027m just saying you can encapsulate 2 internal DTCLs that share code.",
+      "parentUuid": "ccde989a_154cd88d",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
