@@ -9,6 +9,5 @@
  * This package contains component and unit tests for the Resource Manager service.
  *
  * @author David Suárez
- *
  */
-package org.opendaylight.resourcemanager.tests;
+package org.opendaylight.genius.resourcemanager.tests;
