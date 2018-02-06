@@ -459,6 +459,24 @@
     },
     {
       "key": {
+        "uuid": "6882a43f_7735e476",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-02-06T15:43:33Z",
+      "side": 1,
+      "message": "That is exactly what I have done. I have another patchSET, not patch but pathchset, to add it to listener in this patch. As in, another patchset to push to THIS patch which moves code to listener, not a separate gerrit patch. Maven issues delayed testing and that is why not pushed yet.",
+      "parentUuid": "a37949e3_2a70ef4a",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
