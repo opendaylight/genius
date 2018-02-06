@@ -405,6 +405,24 @@
     },
     {
       "key": {
+        "uuid": "13d53846_28b9dbaa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-06T14:59:10Z",
+      "side": 1,
+      "message": "OK but why not just put the new code in the listener now in this patch instead of doing it in a follow-up? \n\nRe: listener unification, you can have 2 internal DTCLs that basically are just lambdas that call methods in the outer class. This has the advantage of keeping similar code together and also private. \n\nI\u0027m not saying the current heavy use of static utils/helpers not for the purpose of code reuse is necessarily a bad pattern - that\u0027s kind of subjective. It\u0027s not how I\u0027ve typically seen and done things in my career. I can say that the pattern naturally leads to mutable static fields which is generally a bad pattern and it\u0027s been even more problematic  when converting such classes to non-static singletons - as now you have to inject instances which can lead to circular dependencies. In most cases what I had to do was move methods that only had one caller local to that caller to eliminate dependencies and unravel the spaghetti mess.",
+      "parentUuid": "a422e1b0_ef4aefd4",
+      "revId": "76061d040fc5ef867472e716d39f3e75e17f6d83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0378de09_a7dbd3b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateAddHelper.java",
         "patchSetId": 4
