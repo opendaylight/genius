@@ -14,6 +14,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -42,8 +43,15 @@ public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> e
         super(dataBroker, datastoreType, instanceIdentifier);
     }
 
+    @Inject
+    public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
+                                              InstanceIdentifier<T> instanceIdentifier,
+                                              MetricProvider metricProvider) {
+        super(dataBroker, datastoreType, instanceIdentifier, metricProvider);
+    }
+
     @Override
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        DataTreeChangeListenerActions.super.onDataTreeChanged(collection);
+        DataTreeChangeListenerActions.super.onDataTreeChanged(collection, this);
     }
 }
