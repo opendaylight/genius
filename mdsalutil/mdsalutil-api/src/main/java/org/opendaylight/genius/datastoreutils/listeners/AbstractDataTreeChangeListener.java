@@ -14,6 +14,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -33,6 +35,7 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
     private final DataBroker dataBroker;
     private final DataTreeIdentifier<T> dataTreeIdentifier;
     private ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
+    private DataStoreMetrics dataStoreMetrics;
 
     @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
@@ -46,6 +49,15 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
     }
 
+    @Inject
+    AbstractDataTreeChangeListener(DataBroker dataBroker,
+                                   LogicalDatastoreType datastoreType,
+                                   InstanceIdentifier<T> instanceIdentifier,
+                                   MetricProvider metricProvider) {
+        this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
+        this.dataStoreMetrics = new DataStoreMetrics(metricProvider, getClass());
+    }
+
     @PostConstruct
     public void register() {
         this.dataChangeListenerRegistration = dataBroker.registerDataTreeChangeListener(dataTreeIdentifier, this);
@@ -53,6 +65,10 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
 
     protected DataBroker getDataBroker() {
         return dataBroker;
+    }
+
+    protected DataStoreMetrics getDataStoreMetrics() {
+        return dataStoreMetrics;
     }
 
     @Override

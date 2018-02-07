@@ -20,6 +20,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractAsyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.SuperTypeUtil;
+import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -41,10 +43,16 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
     private final ExecutorService dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
+    private DataStoreMetrics dataStoreMetrics;
 
     protected AsyncDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
         this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
+    }
+
+    protected AsyncDataTreeChangeListenerBase(MetricProvider metricProvider) {
+        this();
+        this.dataStoreMetrics = new DataStoreMetrics(metricProvider, getClass());
     }
 
     @Deprecated
@@ -140,15 +148,27 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
 
                 switch (mod.getModificationType()) {
                     case DELETE:
+                        if (dataStoreMetrics != null) {
+                            dataStoreMetrics.incrementDeleted();
+                        }
                         remove(key, mod.getDataBefore());
                         break;
                     case SUBTREE_MODIFIED:
+                        if (dataStoreMetrics != null) {
+                            dataStoreMetrics.incrementUpdated();
+                        }
                         update(key, mod.getDataBefore(), mod.getDataAfter());
                         break;
                     case WRITE:
                         if (mod.getDataBefore() == null) {
+                            if (dataStoreMetrics != null) {
+                                dataStoreMetrics.incrementAdded();
+                            }
                             add(key, mod.getDataAfter());
                         } else {
+                            if (dataStoreMetrics != null) {
+                                dataStoreMetrics.incrementUpdated();
+                            }
                             update(key, mod.getDataBefore(), mod.getDataAfter());
                         }
                         break;

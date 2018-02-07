@@ -11,6 +11,7 @@ package org.opendaylight.genius.datastoreutils;
 import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
+import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -21,6 +22,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.SuperTypeUtil;
+import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -43,6 +46,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
     private final ExecutorService dataTreeChangeHandlerExecutor;
     protected final Class<T> clazz;
+    private @Nullable DataStoreMetrics dataStoreMetrics;
 
     protected AsyncClusteredDataTreeChangeListenerBase() {
         this.clazz = SuperTypeUtil.getTypeParameter(getClass(), 0);
@@ -53,6 +57,11 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     public AsyncClusteredDataTreeChangeListenerBase(Class<T> clazz, Class<K> eventClazz) {
         this.clazz = Preconditions.checkNotNull(clazz, "Class can not be null!");
         this.dataTreeChangeHandlerExecutor = newThreadPoolExecutor(clazz);
+    }
+
+    protected AsyncClusteredDataTreeChangeListenerBase(MetricProvider metricProvider) {
+        this();
+        this.dataStoreMetrics = new DataStoreMetrics(metricProvider, getClass());
     }
 
     private static ExecutorService newThreadPoolExecutor(Class<?> clazz) {
@@ -127,15 +136,27 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
 
                 switch (mod.getModificationType()) {
                     case DELETE:
+                        if (dataStoreMetrics != null) {
+                            dataStoreMetrics.incrementDeleted();
+                        }
                         remove(key, mod.getDataBefore());
                         break;
                     case SUBTREE_MODIFIED:
+                        if (dataStoreMetrics != null) {
+                            dataStoreMetrics.incrementUpdated();
+                        }
                         update(key, mod.getDataBefore(), mod.getDataAfter());
                         break;
                     case WRITE:
                         if (mod.getDataBefore() == null) {
+                            if (dataStoreMetrics != null) {
+                                dataStoreMetrics.incrementAdded();
+                            }
                             add(key, mod.getDataAfter());
                         } else {
+                            if (dataStoreMetrics != null) {
+                                dataStoreMetrics.incrementUpdated();
+                            }
                             update(key, mod.getDataBefore(), mod.getDataAfter());
                         }
                         break;
