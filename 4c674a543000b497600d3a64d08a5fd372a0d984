@@ -22,6 +22,30 @@
       "revId": "4c674a543000b497600d3a64d08a5fd372a0d984",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5e9cf38d_04075027",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-02-07T10:05:09Z",
+      "side": 1,
+      "message": "Vivek in the very next test case we are checking same scenarios with disabled IFM Bypass.\nand secondly we will have separate Testplan for genius-auto-tunnels feature in which we will include with/without IFM Bypass.",
+      "parentUuid": "4568e1f5_436ab7aa",
+      "range": {
+        "startLine": 70,
+        "startChar": 31,
+        "endLine": 70,
+        "endChar": 48
+      },
+      "revId": "4c674a543000b497600d3a64d08a5fd372a0d984",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
