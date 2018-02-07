@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4568e1f5_436ab7aa",
+        "filename": "docs/testplans/itm-scalability.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 3502
+      },
+      "writtenOn": "2018-02-07T08:37:44Z",
+      "side": 1,
+      "message": "We also need to verify the all scenarios mentioned below with \u0027IFM bypass\u0027 flag disabled. We should also verify genius-auto-tunnels feature with/without IFM Bypass.",
+      "range": {
+        "startLine": 70,
+        "startChar": 31,
+        "endLine": 70,
+        "endChar": 48
+      },
+      "revId": "4c674a543000b497600d3a64d08a5fd372a0d984",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
