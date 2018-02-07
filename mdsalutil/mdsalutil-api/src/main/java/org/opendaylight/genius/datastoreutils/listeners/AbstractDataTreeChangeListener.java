@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners;
 
+import java.util.concurrent.atomic.LongAdder;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -14,6 +16,9 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.infrautils.metrics.Counter;
+import org.opendaylight.infrautils.metrics.MetricDescriptor;
+import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -33,6 +38,10 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
     private final DataBroker dataBroker;
     private final DataTreeIdentifier<T> dataTreeIdentifier;
     private ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
+    private MetricProvider metricProvider;
+    private Counter added;
+    private Counter updated;
+    private Counter deleted;
 
     @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
@@ -44,6 +53,84 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
     AbstractDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                    InstanceIdentifier<T> instanceIdentifier) {
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
+    }
+
+    @Inject
+    AbstractDataTreeChangeListener(DataBroker dataBroker,
+                                   LogicalDatastoreType datastoreType,
+                                   InstanceIdentifier<T> instanceIdentifier,
+                                   MetricProvider metricProvider) {
+        this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
+        this.metricProvider = metricProvider;
+        added = initCounter("added:");
+        updated = initCounter("updated:");
+        deleted = initCounter("deleted:");
+    }
+
+    void incrementAdded() {
+        added.increment();
+    }
+
+    void incrementUpdated() {
+        updated.increment();
+    }
+
+    void incrementDeleted() {
+        deleted.increment();
+    }
+
+    private Counter initCounter(String type) {
+        if (metricProvider == null) {
+            //Default incase metric provider is not available
+            return new Counter() {
+                LongAdder longAdder = new LongAdder();
+
+                @Override
+                public void close() {
+                }
+
+                @Override
+                public void increment(long howMany) {
+                    for (long l = 0 ; l < howMany; l++) {
+                        longAdder.increment();
+                    }
+                }
+
+                @Override
+                public void decrement(long howMany) {
+                    for (long l = 0 ; l < howMany; l++) {
+                        longAdder.decrement();
+                    }
+                }
+
+                @Override
+                public long get() {
+                    return longAdder.longValue();
+                }
+            };
+        }
+        String className = getClass().getSimpleName();
+        return metricProvider.newCounter(new MetricDescriptor() {
+            @Override
+            public Object anchor() {
+                return this;
+            }
+
+            @Override
+            public String project() {
+                return "genius";
+            }
+
+            @Override
+            public String module() {
+                return "genius";
+            }
+
+            @Override
+            public String id() {
+                return type + className;
+            }
+        });
     }
 
     @PostConstruct
