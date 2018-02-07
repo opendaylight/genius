@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
+import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
@@ -31,8 +32,10 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * appropriate method (add, update, remove) depending on the type of change.
      *
      * @param changes collection of changes
+     * @param dataStoreMetrics data store metrics
      */
-    default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> changes) {
+    default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> changes,
+                                   DataStoreMetrics dataStoreMetrics) {
         // This code is also in DataTreeEventCallbackRegistrarImpl and any changes should be applied there as well
         for (final DataTreeModification<T> dataTreeModification : changes) {
             final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
@@ -41,15 +44,27 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
 
             switch (dataObjectModification.getModificationType()) {
                 case SUBTREE_MODIFIED:
+                    if (dataStoreMetrics != null) {
+                        dataStoreMetrics.incrementUpdated();
+                    }
                     update(dataBefore, dataAfter);
                     break;
                 case DELETE:
+                    if (dataStoreMetrics != null) {
+                        dataStoreMetrics.incrementDeleted();
+                    }
                     remove(dataBefore);
                     break;
                 case WRITE:
                     if (dataBefore == null) {
+                        if (dataStoreMetrics != null) {
+                            dataStoreMetrics.incrementAdded();
+                        }
                         add(dataAfter);
                     } else {
+                        if (dataStoreMetrics != null) {
+                            dataStoreMetrics.incrementUpdated();
+                        }
                         update(dataBefore, dataAfter);
                     }
                     break;
