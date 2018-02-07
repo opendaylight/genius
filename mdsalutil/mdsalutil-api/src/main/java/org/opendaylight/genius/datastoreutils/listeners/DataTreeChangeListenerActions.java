@@ -31,8 +31,10 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * appropriate method (add, update, remove) depending on the type of change.
      *
      * @param changes collection of changes
+     * @param abstractDataTreeChangeListener data change listener
      */
-    default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> changes) {
+    default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> changes,
+                                   AbstractDataTreeChangeListener abstractDataTreeChangeListener) {
         // This code is also in DataTreeEventCallbackRegistrarImpl and any changes should be applied there as well
         for (final DataTreeModification<T> dataTreeModification : changes) {
             final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
@@ -41,15 +43,27 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
 
             switch (dataObjectModification.getModificationType()) {
                 case SUBTREE_MODIFIED:
+                    if (abstractDataTreeChangeListener.getDataStoreMetrics() != null) {
+                        abstractDataTreeChangeListener.getDataStoreMetrics().incrementUpdated();
+                    }
                     update(dataBefore, dataAfter);
                     break;
                 case DELETE:
+                    if (abstractDataTreeChangeListener.getDataStoreMetrics() != null) {
+                        abstractDataTreeChangeListener.getDataStoreMetrics().incrementDeleted();
+                    }
                     remove(dataBefore);
                     break;
                 case WRITE:
                     if (dataBefore == null) {
+                        if (abstractDataTreeChangeListener.getDataStoreMetrics() != null) {
+                            abstractDataTreeChangeListener.getDataStoreMetrics().incrementAdded();
+                        }
                         add(dataAfter);
                     } else {
+                        if (abstractDataTreeChangeListener.getDataStoreMetrics() != null) {
+                            abstractDataTreeChangeListener.getDataStoreMetrics().incrementUpdated();
+                        }
                         update(dataBefore, dataAfter);
                     }
                     break;
