@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7806bbd4_e333532b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-08T14:46:46Z",
+      "side": 1,
+      "message": "shoudn\u0027t it be GeniusIfmListener ?",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c1d7d79_e43085e0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-08T14:46:46Z",
+      "side": 1,
+      "message": "you do same thing regiserLister/close for all the listeners. can you add listeners into List\u003cRecoverableListener\u003e and just iterate over list for performing register/deregister in recoveryService.\n\nyou need to create RecoverableListener interface having register/deregister methods implemented by the listener classes.",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aedf65b5_72507776",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-08T14:46:46Z",
+      "side": 1,
+      "message": "@Override missing",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef382240_7f01d007",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-08T14:46:46Z",
+      "side": 1,
+      "message": "what is the use of entityId here ?",
+      "range": {
+        "startLine": 84,
+        "startChar": 38,
+        "endLine": 84,
+        "endChar": 46
+      },
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
