@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e3a7ce7c_00644c0c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "03cc33fa_31b0081d",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dcba8f91_92122482",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
         "patchSetId": 10
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "25dd3e85_e8987195",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dcba8f91_92122482",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6c20f39d_abdf2462",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
         "patchSetId": 10
@@ -47,6 +83,24 @@
       "writtenOn": "2018-01-31T12:35:38Z",
       "side": 1,
       "message": "don\u0027t write separate new private classes for tihs, you can just put what you have in call() into a lambda in line 64, and save a ton of lines, see https://git.opendaylight.org/gerrit/#/c/67519/2/interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java .... unless the toString() is super important (is it?) - but even then you can write a new anonymous inner class instead.",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ad02f01_398067ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceInstanceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6c20f39d_abdf2462",
       "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "51f9a326_f8c9ffc8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da5e7981_33c3f734",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17833fa2_dbe790cb",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
         "patchSetId": 10
@@ -98,6 +170,24 @@
       "writtenOn": "2018-01-31T12:35:38Z",
       "side": 1,
       "message": "add final to all these fields, because they are assigned in constructor",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4d6e7845_f8b57d21",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "17833fa2_dbe790cb",
       "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +211,24 @@
     },
     {
       "key": {
+        "uuid": "05a201a1_830f0a1c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b484db8_5d28e489",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6b5bbb3_29bdbd59",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
         "patchSetId": 10
@@ -132,6 +240,24 @@
       "writtenOn": "2018-01-31T12:35:38Z",
       "side": 1,
       "message": "not static, and maybe private?",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cfd19119_600a53f5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6b5bbb3_29bdbd59",
       "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -172,6 +298,24 @@
     },
     {
       "key": {
+        "uuid": "58cf9578_2b3318f7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/listeners/ServiceRecoveryListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a5c832cb_bb0f29ca",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "92fe97f6_ac024e82",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
         "patchSetId": 10
@@ -183,6 +327,24 @@
       "writtenOn": "2018-01-31T12:35:38Z",
       "side": 1,
       "message": "no no no, not more static stuff, please... ;-) This can very well be non-static, and @Singleton, and @Inject wherever you need it.",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11edf2bf_0f0203e7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "92fe97f6_ac024e82",
       "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -206,6 +368,24 @@
     },
     {
       "key": {
+        "uuid": "ca13b7cb_f214d7b9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "33953012_ea51a23a",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3b21d55_ff41ca24",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
         "patchSetId": 10
@@ -217,6 +397,24 @@
       "writtenOn": "2018-01-31T12:35:38Z",
       "side": 1,
       "message": "too noisy IMHO, but if you must (and cannot debug instead of info) then \"init()\" instead of start",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25962057_6b25b480",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3b21d55_ff41ca24",
       "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -240,6 +438,24 @@
     },
     {
       "key": {
+        "uuid": "dc2cfedb_37d717bb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6268f8b2_243a5949",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1dd25592_b0ce36b6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
         "patchSetId": 10
@@ -257,6 +473,24 @@
     },
     {
       "key": {
+        "uuid": "640ab8b9_1531c1d8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1dd25592_b0ce36b6",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f7cdeccc_e3a03973",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
         "patchSetId": 10
@@ -268,6 +502,24 @@
       "writtenOn": "2018-01-31T12:35:38Z",
       "side": 1,
       "message": "not static",
+      "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11a49d6a_cb824415",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7cdeccc_e3a03973",
       "revId": "58f9c4f8e691c3021c4a6cb57c26fe7ba6295ef2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
