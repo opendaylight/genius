@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d05670c_e14517ed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/ServiceRecoveryManager.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "@Inject needed here (I didn\u0027t even know it works without it.. but this could lead to surprises, and perhaps inconsistency between BP XML and Tests which wire with Guice, so best to add it).\n\nPS: If we were not @Inject this ServiceRecoveryManager itself but constructing it with new ServiceRecoveryManager(...) then you could you can \u0026 to avoid confusion should remove the @Singleton and not put @Inject - but we see that @Singleton ServiceRecoveryListener has @Inject ServiceRecoveryManager so the right thing to do here is to make this ServiceRecoveryManager a @Singleton and have it @Inject all of its dependencies, like ServiceRecoveryRegistry.",
+      "revId": "1b9c3aa6c78c8eada4381eead8f718f09acddde7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "654f6fd2_10c838d1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/registry/ServiceRecoveryRegistry.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-08T10:53:51Z",
+      "side": 1,
+      "message": "final",
+      "revId": "1b9c3aa6c78c8eada4381eead8f718f09acddde7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
