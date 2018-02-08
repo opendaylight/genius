@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,12 +12,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRemovable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
@@ -31,24 +30,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChangeListener<Node> {
+public class FlowBasedServicesNodeStateListener
+        extends AsyncDataTreeChangeListenerBase<Node, FlowBasedServicesNodeStateListener> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesNodeStateListener.class);
 
-    private final JobCoordinator jobCoordinator;
+    private final JobCoordinator coordinator;
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
-    public FlowBasedServicesNodeStateListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
-            FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
-        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class));
-        this.jobCoordinator = jobCoordinator;
+    public FlowBasedServicesNodeStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
+            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver) {
+        this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
+        registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @Override
-    public void remove(@Nonnull Node node) {
-        BigInteger dpId = getDpnID(node);
+    protected FlowBasedServicesNodeStateListener getDataTreeChangeListener() {
+        return FlowBasedServicesNodeStateListener.this;
+    }
+
+    @Override
+    public InstanceIdentifier<Node> getWildCardPath() {
+        return InstanceIdentifier.create(Nodes.class).child(Node.class);
+    }
+
+
+    @Override
+    protected void remove(InstanceIdentifier<Node> identifier, Node del) {
+        BigInteger dpId = getDpnID(del);
         if (dpId == null) {
             return;
         }
@@ -56,13 +67,13 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
     }
 
     @Override
-    public void update(@Nonnull Node originalNode, @Nonnull Node updatedNode) {
-        // Nothing to do
+    protected void update(InstanceIdentifier<Node> identifier, Node original, Node update) {
+
     }
 
     @Override
-    public void add(@Nonnull Node node) {
-        BigInteger dpId = getDpnID(node);
+    protected void add(InstanceIdentifier<Node> identifier, Node add) {
+        BigInteger dpId = getDpnID(add);
         if (dpId == null) {
             return;
         }
@@ -76,9 +87,8 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
                 FlowBasedServicesStateAddable flowBasedServicesStateAddable =
                     flowBasedServicesStateRendererFactoryResolver
                         .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer();
-                jobCoordinator.enqueueJob(interfaceName,
-                                          new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId,
-                                                                               interfaceName));
+                coordinator.enqueueJob(interfaceName,
+                        new RendererStateInterfaceBindWorker(flowBasedServicesStateAddable, dpId, interfaceName));
             }
         }
     }
@@ -90,17 +100,16 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
                 FlowBasedServicesStateRemovable flowBasedServicesStateRemovable =
                     flowBasedServicesStateRendererFactoryResolver.getFlowBasedServicesStateRendererFactory(serviceMode)
                         .getFlowBasedServicesStateRemoveRenderer();
-                jobCoordinator.enqueueJob(interfaceName,
-                                          new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId,
-                                                                                 interfaceName));
+                coordinator.enqueueJob(interfaceName,
+                        new RendererStateInterfaceUnbindWorker(flowBasedServicesStateRemovable, dpId, interfaceName));
             }
         }
     }
 
     private static class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
         private final String iface;
-        final BigInteger dpnId;
-        final FlowBasedServicesStateAddable flowBasedServicesStateAddable;
+        BigInteger dpnId;
+        FlowBasedServicesStateAddable flowBasedServicesStateAddable;
 
         RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable, BigInteger dpnId,
                                          String iface) {
@@ -119,8 +128,8 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
 
     private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
         private final String iface;
-        final BigInteger dpnId;
-        final FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
+        BigInteger dpnId;
+        FlowBasedServicesStateRemovable flowBasedServicesStateRemovable;
 
         RendererStateInterfaceUnbindWorker(FlowBasedServicesStateRemovable flowBasedServicesStateRemovable,
                                            BigInteger dpnId, String iface) {
