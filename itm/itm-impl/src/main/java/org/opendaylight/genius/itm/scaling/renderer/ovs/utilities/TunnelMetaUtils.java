@@ -85,12 +85,8 @@ public class TunnelMetaUtils {
         return bridgeRefEntry.getOvsBridgeReference();
     }
 
-    // SF419 Is this Required ??
-    public static OvsBridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo,
-                                                                DataBroker dataBroker) {
-        ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
-        BigInteger dpn = parentRefs.getDatapathNodeIdentifier();
-        return getOvsBridgeRefEntryFromOperDS(dpn, dataBroker);
+    public static OvsBridgeRefEntry getBridgeReferenceForInterface(BigInteger srcDpnId, DataBroker dataBroker) {
+        return getOvsBridgeRefEntryFromOperDS(srcDpnId, dataBroker);
     }
 
     public static boolean bridgeExists(OvsBridgeRefEntry bridgeRefEntry,

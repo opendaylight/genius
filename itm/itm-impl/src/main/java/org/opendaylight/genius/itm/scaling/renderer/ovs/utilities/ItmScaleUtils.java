@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -25,11 +26,18 @@ import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeInternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
@@ -188,21 +196,26 @@ public class ItmScaleUtils {
         }
     }
 
-    public static List<DpnsTeps> getAllDpnsTeps() {
+    public static List<DpnsTeps> getAllDpnsTeps(DataBroker broker) {
         List<DpnsTeps> dpnsTeps = null;
         Collection<DpnsTeps> values = null ;
         values = DpnsTepsMap.values();
+        if (values == null) {
+            updateDpnsTepsCache(broker);
+        }
         if (values != null) {
             dpnsTeps = new ArrayList<>();
-            for (DpnsTeps value : values) {
+            for( DpnsTeps value : values ) {
                 dpnsTeps.add(value);
             }
+        } else {
+            dpnsTeps = Collections.emptyList();
         }
         return dpnsTeps;
     }
 
-    public static void removeTepFromDpnTepInterfaceConfigDS(BigInteger srcDpnId) {
-        List<DpnsTeps> dpnsTeps = getAllDpnsTeps();
+    public static void removeTepFromDpnTepInterfaceConfigDS(BigInteger srcDpnId, DataBroker dataBroker) {
+        List<DpnsTeps> dpnsTeps = getAllDpnsTeps(dataBroker);
         for (DpnsTeps dpnTep : dpnsTeps) {
             if (!dpnTep.getSourceDpnId().equals(srcDpnId)) {
                 List<RemoteDpns> remoteDpns = dpnTep.getRemoteDpns();
@@ -211,8 +224,9 @@ public class ItmScaleUtils {
                         // Remote the SrcDpnId from the remote List. Remove it from COnfig DS. 4
                         // This will be reflected in cache by the ClusteredDTCN. Not removing it here !
                         //Caution :- Batching Delete !!
+
                         InstanceIdentifier<RemoteDpns> remoteDpnII = buildRemoteDpnsInstanceIdentifier(
-                                dpnTep.getSourceDpnId(), remoteDpn.getDestinationDpnId());
+                            dpnTep.getSourceDpnId(), remoteDpn.getDestinationDpnId());
                         ITMBatchingUtils.delete(remoteDpnII, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
                         break;
                     }
@@ -270,6 +284,26 @@ public class ItmScaleUtils {
 
     public static void removeNodeConnectorInfoFromCache(String tunnelName) {
         UnprocessedNodeConnectorMap.remove(tunnelName);
+    }
+
+    public static void updateDpnsTepsCache(DataBroker broker) {
+        Collection<DpnsTeps> internalTunnels = getAllDpnsTepsFromDS(broker, LogicalDatastoreType.CONFIGURATION);
+        for (DpnsTeps dpnTep : internalTunnels) {
+            addDpnsTepsToCache( dpnTep.getSourceDpnId(), dpnTep);
+        }
+    }
+
+    public static List<DpnsTeps> getAllDpnsTepsFromDS(DataBroker dataBroker, LogicalDatastoreType datastoreType) {
+        List<DpnsTeps> result = null;
+        InstanceIdentifier<DpnTepsState> iid = InstanceIdentifier.builder(DpnTepsState.class).build();
+        Optional<DpnTepsState> dpnsTepsList = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
+        if (dpnsTepsList.isPresent()) {
+            result = dpnsTepsList.get().getDpnsTeps();
+        }
+        if (result == null) {
+            result = Collections.emptyList();
+        }
+        return result;
     }
 
     // Convert Interface Oper State to Tunnel Oper state
@@ -418,4 +452,70 @@ public class ItmScaleUtils {
         }
         return result;
     }
+
+    public static Boolean readMonitoringStateFromCache(DataBroker dataBroker) {
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
+        TunnelMonitorParams tunnelMonitorParams = (TunnelMonitorParams) DataStoreCache.get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"MonitorParams",dataBroker,true);
+        if(tunnelMonitorParams!=null) {
+            return tunnelMonitorParams.isEnabled();
+        } else {
+            return ITMConstants.DEFAULT_MONITOR_ENABLED;
+        }
+    }
+
+    public static Integer readMonitorIntervalfromCache(DataBroker dataBroker) {
+        InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.create(TunnelMonitorInterval.class);
+        TunnelMonitorInterval tunnelMonitorIOptional = (TunnelMonitorInterval) DataStoreCache.get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"Interval",dataBroker,true);
+        if(tunnelMonitorIOptional!=null) {
+            return tunnelMonitorIOptional.getInterval();
+        }
+        return null;
+
+    }
+
+    public static Integer determineMonitorInterval(DataBroker dataBroker) {
+        Integer monitorInterval = readMonitorIntervalfromCache(dataBroker);
+        LOG.debug("determineMonitorInterval: monitorInterval from DS = {}", monitorInterval);
+        if(monitorInterval==null){
+            Class<? extends TunnelMonitoringTypeBase> monitorProtocol = determineMonitorProtocol(dataBroker);
+            if(monitorProtocol.isAssignableFrom(TunnelMonitoringTypeBfd.class)) {
+                monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
+            } else {
+                monitorInterval = ITMConstants.DEFAULT_MONITOR_INTERVAL;
+            }
+        }
+        LOG.debug("determineMonitorInterval: monitorInterval = {}", monitorInterval);
+        InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
+        TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(monitorInterval).build();
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        return monitorInterval;
+    }
+
+    public static Class<? extends TunnelMonitoringTypeBase> determineMonitorProtocol(DataBroker dataBroker) {
+        Class<? extends TunnelMonitoringTypeBase> monitoringProtocol = readMonitoringProtocolFromCache(dataBroker);
+        LOG.debug("determineMonitorProtocol: monitorProtocol from DS = {}", monitoringProtocol);
+        if(monitoringProtocol==null) {
+            monitoringProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
+        }
+        LOG.debug("determineMonitorProtocol: monitorProtocol = {}", monitoringProtocol);
+        Boolean monitorState = ItmScaleUtils.readMonitoringStateFromCache(dataBroker);
+        if(monitorState==null) {
+            monitorState = true;
+        }
+        LOG.debug("determineMonitorProtocol: monitorState = {}", monitorState);
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
+        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder().setEnabled(monitorState).setMonitorProtocol(monitoringProtocol).build();
+        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder, dataBroker, ItmUtils.DEFAULT_CALLBACK);
+        return monitoringProtocol;
+    }
+
+    public static Class<? extends TunnelMonitoringTypeBase> readMonitoringProtocolFromCache(DataBroker dataBroker) {
+        InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
+        TunnelMonitorParams tunnelMonitorParams = (TunnelMonitorParams) DataStoreCache.get(ITMConstants.ITM_MONIRORING_PARAMS_CACHE_NAME,iid,"MonitorParams",dataBroker,true);
+        if(tunnelMonitorParams!=null) {
+            return tunnelMonitorParams.getMonitorProtocol();
+        }
+        return null;
+    }
+
 }

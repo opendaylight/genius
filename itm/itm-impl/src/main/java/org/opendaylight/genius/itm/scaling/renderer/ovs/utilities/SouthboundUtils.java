@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
+import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -35,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
@@ -240,13 +242,15 @@ public class SouthboundUtils {
     }
 
     // Update is allowed only for tunnel monitoring attributes
-    public static void updateBfdParamtersForTerminationPoint(InstanceIdentifier<?> bridgeIid, IfTunnel ifTunnel,
-            String portName, WriteTransaction transaction) {
+    public static void updateBfdParamtersForTerminationPoint(InstanceIdentifier<?> bridgeIid, DataBroker dataBroker,
+                                                             RemoteDpns remoteDpn, WriteTransaction transaction) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
-                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
+            InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), remoteDpn.getTunnelName());
         LOG.debug("update bfd parameters for interface {}", tpIid);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
-        List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
+        // Do this when per tunnel bfd params come in
+        //List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
+        List<InterfaceBfd> bfdParams = getBfdParams(remoteDpn,dataBroker);
         tpAugmentationBuilder.setInterfaceBfd(bfdParams);
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
@@ -301,10 +305,18 @@ public class SouthboundUtils {
 
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
         List<InterfaceBfd> bfdParams = new ArrayList<>();
-        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE, ifTunnel != null
-                ? ifTunnel.isMonitorEnabled().toString() : "false"));
-        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
-                ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,ifTunnel != null ? ifTunnel.isMonitorEnabled().toString() :"false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null ?
+            ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        return bfdParams;
+    }
+
+    private static List<InterfaceBfd> getBfdParams(RemoteDpns remoteDpn, DataBroker dataBroker) {
+        List<InterfaceBfd> bfdParams = new ArrayList<>();
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE, remoteDpn.isMonitoringEnabled().toString()));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ItmScaleUtils.readMonitorIntervalfromCache(dataBroker) != null ?
+            ItmScaleUtils.readMonitorIntervalfromCache(dataBroker).toString(): BFD_MIN_TX_VAL));
         bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
         return bfdParams;
     }

@@ -329,7 +329,7 @@ module itm-rpc {
             }
         }
 
-        rpc set-bfd-enable-on-tunnel {
+        rpc set-bfd-param-on-tunnel {
             description "used for turning ON/OFF to monitor individual tunnels";
             input {
                 leaf source-node {

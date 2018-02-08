@@ -141,7 +141,7 @@ public class TepInternalTunnelDeleteWorker {
                 LOGGER.debug("Deleting TEP Interface information CONFIGURATION datastore with DPNs-Teps "
                         + "for source Dpn", srcDpn.getDPNID());
                 // Clean up the DPN TEPs State DS
-                ItmScaleUtils.removeTepFromDpnTepInterfaceConfigDS(srcDpn.getDPNID());
+                ItmScaleUtils.removeTepFromDpnTepInterfaceConfigDS(srcDpn.getDPNID(), dataBroker);
                 // ITM DIRECT TUNNELS Clean up the container when its empty -- How ???
             }
             return Collections.singletonList(writeTransaction.submit());

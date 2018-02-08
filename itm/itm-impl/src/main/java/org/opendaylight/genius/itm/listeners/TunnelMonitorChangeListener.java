@@ -15,9 +15,11 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.confighelpers.ItmMonitorToggleWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.scaling.workers.TepMonitorToggleWorker;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
@@ -36,12 +38,15 @@ public class TunnelMonitorChangeListener
 
     private final DataBroker broker;
     private final JobCoordinator jobCoordinator;
+    private final IInterfaceManager iInterfaceManager;
 
     @Inject
-    public TunnelMonitorChangeListener(final DataBroker dataBroker, JobCoordinator jobCoordinator) {
+    public TunnelMonitorChangeListener(final DataBroker dataBroker, JobCoordinator jobCoordinator,
+                                       final IInterfaceManager iInterfaceManager) {
         super(TunnelMonitorParams.class, TunnelMonitorChangeListener.class);
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
+        this.iInterfaceManager = iInterfaceManager;
     }
 
     @PostConstruct
@@ -72,11 +77,20 @@ public class TunnelMonitorChangeListener
         if (transportZonesOptional.isPresent()) {
             TransportZones transportZones = transportZonesOptional.get();
             for (TransportZone tzone : transportZones.getTransportZone()) {
-                LOG.debug("Remove - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
+                if (iInterfaceManager.isItmDirectTunnelsEnabled()) {
+                    LOG.trace( "Tunnel Monitor Toggled: ITM Direct Tunnels is enabled, toggling parameters through directly");
+                    LOG.debug("Remove - TepMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
-                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                    TepMonitorToggleWorker toggleWorker = new TepMonitorToggleWorker(tzone.getZoneName(),
                         false,monitorProtocol, broker);
-                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                } else {
+                    LOG.debug("Remove - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
+                        tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
+                    ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                        false,monitorProtocol, broker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                }
             }
         }
     }
@@ -108,11 +122,20 @@ public class TunnelMonitorChangeListener
         if (transportZonesOptional.isPresent()) {
             TransportZones tzones = transportZonesOptional.get();
             for (TransportZone tzone : tzones.getTransportZone()) {
-                LOG.debug("Update - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
+                if (iInterfaceManager.isItmDirectTunnelsEnabled()) {
+                    LOG.trace( "Tunnel Monitor Toggled: ITM Direct Tunnels is enabled, toggling parameters through directly");
+                    LOG.debug("Update - TepMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModificationAfter.isEnabled(), monitorProtocol);
-                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                    TepMonitorToggleWorker toggleWorker = new TepMonitorToggleWorker(tzone.getZoneName(),
                         dataObjectModificationAfter.isEnabled(), monitorProtocol, broker);
-                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                } else {
+                    LOG.debug("Update - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
+                        tzone.getZoneName(), dataObjectModificationAfter.isEnabled(), monitorProtocol);
+                    ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                        dataObjectModificationAfter.isEnabled(), monitorProtocol, broker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                }
             }
         }
     }
@@ -131,12 +154,21 @@ public class TunnelMonitorChangeListener
         if (transportZonesOptional.isPresent()) {
             TransportZones tzones = transportZonesOptional.get();
             for (TransportZone tzone : tzones.getTransportZone()) {
-                LOG.debug("Add: TunnelMonitorToggleWorker with tzone = {} monitoringEnabled {} and "
-                        + "monitoringProtocol {}",tzone.getZoneName(),dataObjectModification.isEnabled(),
-                        dataObjectModification.getMonitorProtocol());
-                ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                if (iInterfaceManager.isItmDirectTunnelsEnabled()) {
+                    LOG.trace( "Tunnel Monitor Toggled: ITM Direct Tunnels is enabled, toggling parameters through directly");
+                    LOG.debug("Add: TepMonitorToggleWorker with tzone = {} monitoringEnabled {} and monitoringProtocol {}",
+                        tzone.getZoneName(),dataObjectModification.isEnabled(), dataObjectModification.getMonitorProtocol());
+                    TepMonitorToggleWorker toggleWorker = new TepMonitorToggleWorker(tzone.getZoneName(),
                         dataObjectModification.isEnabled(), monitorProtocol, broker);
-                jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                } else {
+                    LOG.debug("Add: TunnelMonitorToggleWorker with tzone = {} monitoringEnabled {} and "
+                            + "monitoringProtocol {}", tzone.getZoneName(), dataObjectModification.isEnabled(),
+                        dataObjectModification.getMonitorProtocol());
+                    ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
+                        dataObjectModification.isEnabled(), monitorProtocol, broker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
+                }
             }
         }
     }
