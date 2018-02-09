@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "b9903fdb_33ecc327",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/itm/ItmRpcTestImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:53:20Z",
+      "side": 1,
+      "message": "FYI I just realized you probably just copy/pasted this from other methods in this class?  I\u0027ll try to clean that up in https://git.opendaylight.org/gerrit/#/c/68102/.",
+      "parentUuid": "cf91ba3d_0fb2645e",
+      "revId": "f065c3b7804ff0f4c5f945890bf971b6cec988f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a4eb83b_6b8ce902",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 5
