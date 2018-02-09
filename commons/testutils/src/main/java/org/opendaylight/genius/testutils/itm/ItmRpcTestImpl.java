@@ -108,8 +108,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     @Override
     public synchronized Future<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
             IsTunnelInternalOrExternalInput input) {
-        IsTunnelInternalOrExternalOutput output = null;
-        return RpcResultBuilder.success(output).buildFuture();
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -160,8 +159,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     @Override
     public synchronized Future<RpcResult<GetInternalOrExternalInterfaceNameOutput>> getInternalOrExternalInterfaceName(
             GetInternalOrExternalInterfaceNameInput input) {
-        GetInternalOrExternalInterfaceNameOutput output = null;
-        return RpcResultBuilder.success(output).buildFuture();
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
@@ -177,18 +175,17 @@ public final class ItmRpcTestImpl implements ItmRpcService {
 
     @Override
     public synchronized Future<RpcResult<Void>> setBfdEnableOnTunnel(SetBfdEnableOnTunnelInput input) {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public synchronized Future<RpcResult<GetEgressActionsForTunnelOutput>>
         getEgressActionsForTunnel(GetEgressActionsForTunnelInput input) {
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 
     @Override
     public synchronized Future<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
-        // To Do
-        return null;
+        throw new UnsupportedOperationException("TODO");
     }
 }
