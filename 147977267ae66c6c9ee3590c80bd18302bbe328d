@@ -22,6 +22,30 @@
       "revId": "147977267ae66c6c9ee3590c80bd18302bbe328d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a688fe4_c49cd4aa",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-02-09T04:42:27Z",
+      "side": 1,
+      "message": "This is TUNNEL_TYPE_MPLS_OVER_GRE as its using the RPC getInternalOrExternalInterfaceName(this is common RPC for internal and external) Since the Destination IpAddress is being set - this is looking for the External tunnel Interface Name.",
+      "parentUuid": "711d1f74_802dbe61",
+      "range": {
+        "startLine": 204,
+        "startChar": 48,
+        "endLine": 204,
+        "endChar": 73
+      },
+      "revId": "147977267ae66c6c9ee3590c80bd18302bbe328d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
