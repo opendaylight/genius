@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "275281ca_29aa52b2",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:11:34Z",
+      "side": 1,
+      "message": "+1 - should be local",
+      "parentUuid": "68d67318_bce2cd4f",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c6ec0cc1_541ed433",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
         "patchSetId": 9
@@ -115,6 +133,23 @@
       "writtenOn": "2018-02-09T13:00:37Z",
       "side": 1,
       "message": "as above",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a8e3deb_6e625aa6",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:11:34Z",
+      "side": 1,
+      "message": "same here - make local",
       "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
