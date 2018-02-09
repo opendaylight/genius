@@ -1,0 +1,188 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "55f3b22d_15d6d9b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "Do not use an internal netty class. Use ConcurrentHashMap.newKeySet()",
+      "range": {
+        "startLine": 17,
+        "startChar": 30,
+        "endLine": 17,
+        "endChar": 43
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "32e3dd2f_5aa845b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "spaces",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 77,
+        "endChar": 2
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "238dd6e4_6772e995",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "Simplify to:\n\n  metricsCountersPerNodeMapEntry.values().forEach(Counter::close)",
+      "range": {
+        "startLine": 122,
+        "startChar": 8,
+        "endLine": 128,
+        "endChar": 9
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9dc8abb0_2de8db94",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "You can use AtomicInteger here and simply do :\n\n  flowTableMap.computeIfAbsent(tableId, key -\u003e new AtomicInteger(0))\n       .incrementAndGet();",
+      "range": {
+        "startLine": 350,
+        "startChar": 12,
+        "endLine": 356,
+        "endChar": 13
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0f11f547_5da35d4f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "Populate the Map here:\n\n  metricsCountersPerNodeMap.computeIfAbsent(switchId. \n      key -\u003e ConcurrentHashMap.newKeySet()).add(counter);",
+      "range": {
+        "startLine": 409,
+        "startChar": 8,
+        "endLine": 414,
+        "endChar": 9
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ed7f308_e9f6a4fb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 441,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "check for null",
+      "range": {
+        "startLine": 441,
+        "startChar": 74,
+        "endLine": 441,
+        "endChar": 80
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8a5e07ff_83561b10",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 445,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "You can simplify using forEach",
+      "range": {
+        "startLine": 443,
+        "startChar": 12,
+        "endLine": 445,
+        "endChar": 13
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee87c6d0_94465f99",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 472,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-09T13:56:19Z",
+      "side": 1,
+      "message": "don\u0027t need this",
+      "range": {
+        "startLine": 471,
+        "startChar": 12,
+        "endLine": 472,
+        "endChar": 70
+      },
+      "revId": "5794a533ebdaa3c2e570393155c33185c9cf291d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
