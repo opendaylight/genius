@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "50dccfeb_e93d8081",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:13:18Z",
+      "side": 1,
+      "message": "private final",
+      "revId": "0a29ab5d1acab79ec7b0ac7bcd5f5a0934ed1b1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c37a6f50_5fa4241b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:13:18Z",
+      "side": 1,
+      "message": "plz remove the toString() here, this can in theory be a performance problem... slf4j will call toString() IFF needed when log trace level is enabled.",
+      "revId": "0a29ab5d1acab79ec7b0ac7bcd5f5a0934ed1b1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b421c424_b8bbf65e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:13:18Z",
+      "side": 1,
+      "message": "here also, remove toString()",
+      "revId": "0a29ab5d1acab79ec7b0ac7bcd5f5a0934ed1b1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee386123_599c2dd0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/resources/org/opendaylight/blueprint/interfacemanager.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:13:18Z",
+      "side": 1,
+      "message": "what do these 2 particular changed lines here have to do with the rest of the code change here?  This seems to switch some (openflowplugin related?) RPC service to a *Direct* one.. I\u0027ve no idea what that is - is it required for interfacemanager to adopt infrautils.metrics?  What is the impact of changing this?",
+      "revId": "0a29ab5d1acab79ec7b0ac7bcd5f5a0934ed1b1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
