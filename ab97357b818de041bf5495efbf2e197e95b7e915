@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dee6551e_d814a770",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/NodeEventListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "minor nit: \"final\" here, like all other args?",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68d67318_bce2cd4f",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "if I understand this correctly, having the Counter as a field instead of a local variable inside the remove() and update() methods will lead to concurrency issues, no?  Just remove this..",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6ec0cc1_541ed433",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "minor nit: \"final\" here, like all other args?",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fc9db28_2d0db9e1",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "minor nit: \"this.\" here, like all other field assigments?",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc475cde_32d76fc6",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "Counter counter, as local variable, see above, or even just directly:\n\n  \n  packetInCounter.label(\"OFSwitch\").label(String.valueOf(dataPathId)).label(\"portsperswitch\").decrement();",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "23ca293f_18f3abdb",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "668394f9_4401f5a2",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T13:00:37Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "ab97357b818de041bf5495efbf2e197e95b7e915",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
