@@ -67,6 +67,24 @@
       "revId": "0a29ab5d1acab79ec7b0ac7bcd5f5a0934ed1b1a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c87b7c32_96c7d9ed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/resources/org/opendaylight/blueprint/interfacemanager.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-02-09T11:24:37Z",
+      "side": 1,
+      "message": "opendaylightFlowTableStatisticsService, opendaylightPortStatisticsService these were older RPCs which are deprecated now and we need to use new direct stats RPC i.e. opendaylightDirectStatisticsService to fetch NodeConnectorStats from this new RPC.",
+      "parentUuid": "ee386123_599c2dd0",
+      "revId": "0a29ab5d1acab79ec7b0ac7bcd5f5a0934ed1b1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
