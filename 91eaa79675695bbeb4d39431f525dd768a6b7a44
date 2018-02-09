@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2599f43b_d86ff625",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "annote @javax.annotation.Nullable, just for clarity",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aa34c0f1_44f16a48",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractSyncDataTreeChangeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "how about just passing getDataStoreMetrics() instead of \"this\" here?",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dac087ab_ed3984f3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "how about directly having a DataStoreMetrics instead of an AbstractDataTreeChangeListener argument here?  Not really for anything like performance, but I feel it makes the change/code more easy to understand for review now and to follow in the future.",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9c125276_37b8df0e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "IMHO these should be Meter instead of Counter?",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29c13157_f88558a0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "does this actually work?  FYI the \u0027:\u0027 character is not allowed for MetricDescriptor id() ... but just use an underscore.  \\n Or perhaps it could be fun to use a label for this? Like labelName \u003d \"op\" (or something like that) and labelValue \u003d added/updated/deleted?  Just an idea.\n\nPS: If we had a simple test as part of this change that could be useful, I think; feel free to ask if not clear how to write one.",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0667cd3f_a083e49f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "this.added/update/delete, just for consistence, as you used it for this.metricProvider/class",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "61b1bdf3_57e1e229",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-09T11:24:35Z",
+      "side": 1,
+      "message": "this is a nice trick... ;) I\u0027m OK with it.  In theory it could break if someone used this internally for com.something.MyListener.. but I don\u0027t care.",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
