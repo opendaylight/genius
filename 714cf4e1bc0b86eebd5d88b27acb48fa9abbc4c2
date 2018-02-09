@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ee6db240_6f44f490",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-09T18:45:58Z",
+      "side": 1,
+      "message": "These yang models are already defined long time back, and merged, and in use.",
+      "parentUuid": "7806bbd4_e333532b",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3c1d7d79_e43085e0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
         "patchSetId": 13
@@ -30,6 +48,24 @@
       "writtenOn": "2018-02-08T14:46:46Z",
       "side": 1,
       "message": "you do same thing regiserLister/close for all the listeners. can you add listeners into List\u003cRecoverableListener\u003e and just iterate over list for performing register/deregister in recoveryService.\n\nyou need to create RecoverableListener interface having register/deregister methods implemented by the listener classes.",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5f723a5f_d2345aa7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-09T18:45:58Z",
+      "side": 1,
+      "message": "Started doing this, feels like we are adding one unnecessary level of abstraction, without gaining much.",
+      "parentUuid": "3c1d7d79_e43085e0",
       "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -64,6 +100,30 @@
       "writtenOn": "2018-02-08T14:46:46Z",
       "side": 1,
       "message": "what is the use of entityId here ?",
+      "range": {
+        "startLine": 84,
+        "startChar": 38,
+        "endLine": 84,
+        "endChar": 46
+      },
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee1b86b1_bcc5b011",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-09T18:45:58Z",
+      "side": 1,
+      "message": "Not used ;) But since the interface had only one recoverService(String), and the other handler needed entity-id, kept it this way. What will be the right way to change this Peri? Have two interfaces, and make the handlers Abstract classes?",
+      "parentUuid": "ef382240_7f01d007",
       "range": {
         "startLine": 84,
         "startChar": 38,
