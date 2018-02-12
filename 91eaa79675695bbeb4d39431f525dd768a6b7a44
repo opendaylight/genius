@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f68a167b_3f3425b4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/AsyncClusteredDataTreeChangeListenerBase.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T11:11:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2599f43b_d86ff625",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "aa34c0f1_44f16a48",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractSyncDataTreeChangeListener.java",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2018-02-09T11:24:35Z",
       "side": 1,
       "message": "how about just passing getDataStoreMetrics() instead of \"this\" here?",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c00b7184_0256714e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractSyncDataTreeChangeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T11:11:39Z",
+      "side": 1,
+      "message": "NOK, but minor; I\u0027ve no objection if this is amended later",
+      "parentUuid": "aa34c0f1_44f16a48",
       "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "cf312195_2bc3f9cb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T11:11:39Z",
+      "side": 1,
+      "message": "NOK, but minor; I\u0027ve no objection if this is amended later",
+      "parentUuid": "dac087ab_ed3984f3",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9c125276_37b8df0e",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
         "patchSetId": 7
@@ -64,6 +118,24 @@
       "writtenOn": "2018-02-09T11:24:35Z",
       "side": 1,
       "message": "IMHO these should be Meter instead of Counter?",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08cfac7d_21a1c297",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T11:11:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c125276_37b8df0e",
       "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "90d4a662_48267313",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T11:11:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "29c13157_f88558a0",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0667cd3f_a083e49f",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
         "patchSetId": 7
@@ -98,6 +188,24 @@
       "writtenOn": "2018-02-09T11:24:35Z",
       "side": 1,
       "message": "this.added/update/delete, just for consistence, as you used it for this.metricProvider/class",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aa8b4978_ec7b5583",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T11:11:39Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "0667cd3f_a083e49f",
       "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
