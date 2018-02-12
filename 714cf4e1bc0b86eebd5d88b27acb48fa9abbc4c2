@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "a4c44786_999911ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-12T12:30:34Z",
+      "side": 1,
+      "message": "I don\u0027t think we can do it for Oxygen Peri.. It is in another module altogether, which is like external facing.",
+      "parentUuid": "ee6db240_6f44f490",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3c1d7d79_e43085e0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
         "patchSetId": 13
@@ -102,6 +120,24 @@
       "side": 1,
       "message": "Actually I meant we should make InterfaceServiceRecoveryHandler to be closed for modification. we could make this by having listeners to implement RecoverableListener interface and let listeners itself to register it with InterfaceServiceRecoveryHandler (i.e. by passing InterfaceServiceRecoveryHandler reference to the listener\u0027s constructor and provide api\u0027s like addListener/removeListener in InterfaceServiceRecoveryHandler class). This provides flexibility for adding recovery capability for future listeners without any changes in this class.",
       "parentUuid": "5f723a5f_d2345aa7",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ccb597b0_0105216f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-12T12:30:34Z",
+      "side": 1,
+      "message": "Could you please check if the change i have done in the latest patchset is what you had asked for?",
+      "parentUuid": "3c18e32e_aed21207",
       "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
