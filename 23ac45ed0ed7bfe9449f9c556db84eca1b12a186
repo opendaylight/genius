@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "037c25f2_5010f871",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/PacketInCounterHandler.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-12T15:49:06Z",
+      "side": 1,
+      "message": "just inline Counter counter \u003d ... in line 50 is easier and more readable, but that\u0027s not a reason to -1",
+      "revId": "23ac45ed0ed7bfe9449f9c556db84eca1b12a186",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
