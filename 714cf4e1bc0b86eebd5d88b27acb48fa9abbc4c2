@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "137cd4a9_6730bf2c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-12T09:12:34Z",
+      "side": 1,
+      "message": "Not sure. I felt this name was bit confusing. Can\u0027t you change yang model with this review or with dependent reviews ?",
+      "parentUuid": "ee6db240_6f44f490",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3c1d7d79_e43085e0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
         "patchSetId": 13
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Started doing this, feels like we are adding one unnecessary level of abstraction, without gaining much.",
       "parentUuid": "3c1d7d79_e43085e0",
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c18e32e_aed21207",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-12T09:12:34Z",
+      "side": 1,
+      "message": "Actually I meant we should make InterfaceServiceRecoveryHandler to be closed for modification. we could make this by having listeners to implement RecoverableListener interface and let listeners itself to register it with InterfaceServiceRecoveryHandler (i.e. by passing InterfaceServiceRecoveryHandler reference to the listener\u0027s constructor and provide api\u0027s like addListener/removeListener in InterfaceServiceRecoveryHandler class). This provides flexibility for adding recovery capability for future listeners without any changes in this class.",
+      "parentUuid": "5f723a5f_d2345aa7",
       "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -124,6 +160,30 @@
       "side": 1,
       "message": "Not used ;) But since the interface had only one recoverService(String), and the other handler needed entity-id, kept it this way. What will be the right way to change this Peri? Have two interfaces, and make the handlers Abstract classes?",
       "parentUuid": "ef382240_7f01d007",
+      "range": {
+        "startLine": 84,
+        "startChar": 38,
+        "endLine": 84,
+        "endChar": 46
+      },
+      "revId": "714cf4e1bc0b86eebd5d88b27acb48fa9abbc4c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb5d49b5_6e9212c2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-12T09:12:34Z",
+      "side": 1,
+      "message": "Okay, I think you can at least check recoverService is called with right entityId.",
+      "parentUuid": "ee1b86b1_bcc5b011",
       "range": {
         "startLine": 84,
         "startChar": 38,
