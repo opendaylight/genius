@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "dc3e1e5c_10367954",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-13T09:22:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c34cd717_45f834b2",
+      "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9d565cb0_e5cba92a",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
         "patchSetId": 17
@@ -30,6 +48,24 @@
       "writtenOn": "2018-02-13T08:54:28Z",
       "side": 1,
       "message": "you shouldn\u0027t deregister this listener from recoveryhandler at this point of time.",
+      "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3cb369cb_0e65dab2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-13T09:22:33Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9d565cb0_e5cba92a",
       "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
