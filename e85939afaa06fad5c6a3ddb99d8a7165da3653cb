@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c34cd717_45f834b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-13T08:54:28Z",
+      "side": 1,
+      "message": "can you move this line to constructor to make it more appropriate ?",
+      "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d565cb0_e5cba92a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-13T08:54:28Z",
+      "side": 1,
+      "message": "you shouldn\u0027t deregister this listener from recoveryhandler at this point of time.",
+      "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ece1f82e_a1f8d01a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/listeners/RecoverableListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-13T08:54:28Z",
+      "side": 1,
+      "message": "change the method name to start()",
+      "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a615bf97_b463fac4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/listeners/RecoverableListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2018-02-13T08:54:28Z",
+      "side": 1,
+      "message": "stop()",
+      "revId": "e85939afaa06fad5c6a3ddb99d8a7165da3653cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
