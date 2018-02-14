@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d199acaa_704b54ab",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-14T09:13:33Z",
+      "side": 1,
+      "message": "No need for this debugEnabled check, as there is no heavy precomputation in the log statement",
+      "revId": "b6d93db0bc3b9b760ae1647c8bda3ab56837dd1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
