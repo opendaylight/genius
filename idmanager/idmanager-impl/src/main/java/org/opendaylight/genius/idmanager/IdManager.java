@@ -13,6 +13,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,10 +29,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -287,7 +290,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
             String idKey, long size) throws OperationFailedException, IdManagerException {
-        LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
+        }
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
         CompletableFuture<List<Long>> existingFutureIdValue =
@@ -309,7 +314,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
             //This get will not help in concurrent reads. Hence the same read needs to be done again.
             IdLocalPool localIdPool = getOrCreateLocalIdPool(parentPoolName, localPoolName);
-            LOG.info("Got pool {}", localIdPool);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Got pool {}", localIdPool);
+            }
             long newIdValue = -1;
             localPoolName = localPoolName.intern();
             if (size == 1) {
@@ -318,7 +325,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             } else {
                 getRangeOfIds(parentPoolName, localPoolName, size, newIdValuesList, localIdPool, newIdValue);
             }
-            LOG.info("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("The newIdValues {} for the idKey {}", newIdValuesList, idKey);
+            }
             idUtils.putReleaseIdLatch(uniqueIdKey, new CountDownLatch(1));
             UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, newIdValuesList, txRunner,
                     idUtils, lockManager);
