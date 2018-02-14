@@ -7,28 +7,24 @@
  */
 package org.opendaylight.genius.utils.metrics;
 
-import javax.inject.Inject;
-
 import org.opendaylight.infrautils.metrics.Meter;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 
-
 public class DataStoreMetrics {
 
     private final MetricProvider metricProvider;
-    private final Class clazz;
+    private final Class<?> clazz;
     private final Meter added;
     private final Meter updated;
     private final Meter deleted;
 
-    @Inject
-    public DataStoreMetrics(MetricProvider metricProvider, Class clazz) {
+    public DataStoreMetrics(MetricProvider metricProvider, Class<?> clazz) {
         this.metricProvider = metricProvider;
         this.clazz = clazz;
-        added = initCounter("_added");
-        updated = initCounter("_updated");
-        deleted = initCounter("_deleted");
+        this.added = initCounter("_added");
+        this.updated = initCounter("_updated");
+        this.deleted = initCounter("_deleted");
     }
 
     public void incrementAdded() {
@@ -45,7 +41,7 @@ public class DataStoreMetrics {
 
     private Meter initCounter(String type) {
         String className = clazz.getSimpleName();
-        //expects the form org.opendaylight.project.module
+        // expects the form org.opendaylight.project.module
         String project = clazz.getName().split("\\.")[2];
         String module = clazz.getName().split("\\.")[3];
         return metricProvider.newMeter(new MetricDescriptor() {
