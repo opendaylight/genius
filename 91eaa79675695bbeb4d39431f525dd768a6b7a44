@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "933ccbf5_589a6062",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/AbstractSyncDataTreeChangeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-14T13:21:25Z",
+      "side": 1,
+      "message": "OK, thanks (sorry if I did not see this on last review?)",
+      "parentUuid": "cd9695b2_65b70f6c",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dac087ab_ed3984f3",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeChangeListenerActions.java",
         "patchSetId": 7
@@ -260,6 +278,24 @@
       "side": 1,
       "message": "they indicate no of added/deleted/updated entities.\nis that what you are asking ?",
       "parentUuid": "aa8b4978_ec7b5583",
+      "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9308b6e9_a780bc17",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/metrics/DataStoreMetrics.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-14T13:21:25Z",
+      "side": 1,
+      "message": "no I just meant that just for consistence with the this.metricProvider/class lines above you it\u0027s good practice to use the \"this.\" prefix when initializing final variables in the constructor, so like \"this.added \u003d initCounter(...)\", but forget about it; it\u0027s super minor and doesn\u0027t matter.",
+      "parentUuid": "3a5cd872_2b8bd98e",
       "revId": "91eaa79675695bbeb4d39431f525dd768a6b7a44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
