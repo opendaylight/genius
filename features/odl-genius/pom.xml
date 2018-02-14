@@ -73,6 +73,13 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.ovsdb</groupId>
+      <artifactId>odl-ovsdb-utils</artifactId>
+      <version>1.6.0-SNAPSHOT</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-southbound</artifactId>
       <version>${openflowplugin.version}</version>
@@ -113,13 +120,6 @@
       <version>${daexim.version}</version>
       <type>xml</type>
       <classifier>features</classifier>
-    </dependency>
-
-    <!-- Libraries from other projects -->
-    <dependency>
-      <groupId>org.opendaylight.ovsdb</groupId>
-      <artifactId>utils.southbound-utils</artifactId>
-      <version>${ovsdb.version}</version>
     </dependency>
 
     <!-- External libraries to wrap -->
