@@ -83,24 +83,16 @@ public final class NWUtil {
     }
 
     public static String toStringIpAddress(byte[] ipAddress) {
+        String ip = "";
         if (ipAddress == null) {
-            return "";
+            return ip;
         }
 
         try {
-            return InetAddress.getByAddress(ipAddress).getHostAddress();
-        } catch (UnknownHostException e) {
-            // educated guess on separator
-            String sep = ipAddress.length <= 4 ? NwConstants.IPV4_SEP : NwConstants.IPV6_SEP;
-            StringBuilder sb = new StringBuilder(ipAddress.length * 2);
-            for (byte b : ipAddress) {
-                sb.append(b).append(sep);
-            }
-            LOG.error("toStringIpAddress: Unable to translate byte[]={} to String representation",
-                      sb.deleteCharAt(sb.lastIndexOf(sep)).toString(), e);
-        }
+            ip = InetAddress.getByAddress(ipAddress).getHostAddress();
+        } catch(UnknownHostException e) {  }
 
-        return "";
+        return ip;
     }
 
     /**
