@@ -30,7 +30,7 @@ public class ICMP extends Packet {
     private static final String SEQNUMBER = "SequenceNumber";
 
     @SuppressWarnings("serial")
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+    private static final Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(TYPE, new ImmutablePair<>(0, 8));
                 put(CODE, new ImmutablePair<>(8, 8));
@@ -182,11 +182,11 @@ public class ICMP extends Packet {
     short computeChecksum(byte[] data, int start) {
         int sum = 0;
         int wordData;
-        int end = start + this.getHeaderSize() / NetUtils.NumBitsInAByte;
+        int end = start + this.getHeaderSize() / NetUtils.NUM_BITS_IN_A_BYTE;
         if (rawPayload != null) {
             end += rawPayload.length;
         }
-        int checksumStartByte = start + getfieldOffset(CHECKSUM) / NetUtils.NumBitsInAByte;
+        int checksumStartByte = start + getfieldOffset(CHECKSUM) / NetUtils.NUM_BITS_IN_A_BYTE;
         int even = end & ~1;
 
         for (int i = start; i < even; i = i + 2) {
@@ -223,7 +223,7 @@ public class ICMP extends Packet {
 
     @Override
     protected void postDeserializeCustomOperation(byte[] data, int endBitOffset) {
-        short computedChecksum = computeChecksum(data, endBitOffset / NetUtils.NumBitsInAByte);
+        short computedChecksum = computeChecksum(data, endBitOffset / NetUtils.NUM_BITS_IN_A_BYTE);
         short actualChecksum = BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
 
         if (computedChecksum != actualChecksum) {
