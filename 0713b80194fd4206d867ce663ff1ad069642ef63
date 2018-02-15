@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "050ac717_7ac97cf3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-15T07:27:06Z",
+      "side": 1,
+      "message": "please use the new abstract listener, instead of using the deprecated one",
+      "revId": "0713b80194fd4206d867ce663ff1ad069642ef63",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
