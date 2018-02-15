@@ -378,7 +378,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 byte[] data = packetReceived.getPayload();
                 Ethernet ethernet = new Ethernet();
 
-                ethernet.deserialize(data, 0, data.length * NetUtils.NumBitsInAByte);
+                ethernet.deserialize(data, 0, data.length * NetUtils.NUM_BITS_IN_A_BYTE);
                 if (ethernet.getEtherType() != ArpConstants.ETH_TYPE_ARP) {
                     return;
                 }

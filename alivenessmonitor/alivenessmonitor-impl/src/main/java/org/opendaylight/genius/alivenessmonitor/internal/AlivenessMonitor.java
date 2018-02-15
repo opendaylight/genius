@@ -281,7 +281,7 @@ public class AlivenessMonitor
             Ethernet res = new Ethernet();
 
             try {
-                packetInFormatted = res.deserialize(data, 0, data.length * NetUtils.NumBitsInAByte);
+                packetInFormatted = res.deserialize(data, 0, data.length * NetUtils.NUM_BITS_IN_A_BYTE);
             } catch (PacketException e) {
                 LOG.warn("Failed to decode packet: ", e);
                 return;

@@ -237,7 +237,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         lldpDiscoveryPacket.setChassisId(lldpTlvChassisId).setPortId(lldpTlvPortId).setTtl(lldpTlvTTL)
                 .setSystemNameId(lldpTlvSystemName).setOptionalTLVList(lstLLDPTLVCustom);
 
-        byte[] destMac = LLDP.LLDPMulticastMac;
+        byte[] destMac = LLDP.LLDP_MULTICAST_MAC;
 
         Ethernet ethernetPacket = new Ethernet();
         ethernetPacket.setSourceMACAddress(srcMac).setDestinationMACAddress(destMac)
