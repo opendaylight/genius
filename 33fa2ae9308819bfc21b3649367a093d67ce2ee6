@@ -16,6 +16,97 @@
       "revId": "33fa2ae9308819bfc21b3649367a093d67ce2ee6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ec6afa8_49fcb479",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/listeners/CacheDpnTepsListener.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-15T22:48:50Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 70,
+        "startChar": 24,
+        "endLine": 70,
+        "endChar": 40
+      },
+      "revId": "33fa2ae9308819bfc21b3649367a093d67ce2ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d8f88d6f_a106ecfa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-15T22:48:50Z",
+      "side": 1,
+      "message": "Make this class immutable - no setters - s fields can be final",
+      "revId": "33fa2ae9308819bfc21b3649367a093d67ce2ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edd273bc_fb65d7be",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-15T22:48:50Z",
+      "side": 1,
+      "message": "private - also move to the top with the rest of the fields.",
+      "revId": "33fa2ae9308819bfc21b3649367a093d67ce2ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6a4f6e6_e66308f9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-15T22:48:50Z",
+      "side": 1,
+      "message": "Make immutable",
+      "revId": "33fa2ae9308819bfc21b3649367a093d67ce2ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a36cc3c_a0cab075",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelEndPointInfo.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-15T22:48:50Z",
+      "side": 1,
+      "message": "private. also make immutable.",
+      "revId": "33fa2ae9308819bfc21b3649367a093d67ce2ee6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
