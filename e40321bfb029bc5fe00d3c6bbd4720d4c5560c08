@@ -68,6 +68,24 @@
       "revId": "e40321bfb029bc5fe00d3c6bbd4720d4c5560c08",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f567fbf6_6da0c709",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-15T16:05:55Z",
+      "side": 1,
+      "message": "you forgot this? ;)",
+      "parentUuid": "7a0a506a_91d72c8f",
+      "revId": "e40321bfb029bc5fe00d3c6bbd4720d4c5560c08",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
