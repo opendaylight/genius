@@ -33,6 +33,24 @@
       "revId": "7ce185f358a490669f28d760aa1aedaad1a4c1f7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3fe5ac7d_012c1fb1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-15T17:32:23Z",
+      "side": 1,
+      "message": "I think I just got confused between the two methods, and put it at the wrong place... will fix",
+      "parentUuid": "5c2280ea_70cf2624",
+      "revId": "7ce185f358a490669f28d760aa1aedaad1a4c1f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
