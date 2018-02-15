@@ -62,7 +62,7 @@ public class IPv4 extends Packet {
     }
 
     @SuppressWarnings("serial")
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
+    private static final Map<String, Pair<Integer, Integer>> fieldCoordinates
         = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
                 put(VERSION, new ImmutablePair<>(0, 4));
                 put(HEADERLENGTH, new ImmutablePair<>(4, 4));
@@ -154,7 +154,7 @@ public class IPv4 extends Packet {
             headerLen = MIN_HEADER_SIZE;
         }
 
-        return headerLen * NetUtils.NumBitsInAByte;
+        return headerLen * NetUtils.NUM_BITS_IN_A_BYTE;
     }
 
     /**
@@ -489,7 +489,7 @@ public class IPv4 extends Packet {
         int sum = 0;
         int wordData;
         int checksumStart = start
-                + getfieldOffset(CHECKSUM) / NetUtils.NumBitsInAByte;
+                + getfieldOffset(CHECKSUM) / NetUtils.NUM_BITS_IN_A_BYTE;
 
         for (int i = start; i <= end - 1; i = i + 2) {
             // Skip, if the current bytes are checkSum bytes
@@ -515,7 +515,7 @@ public class IPv4 extends Packet {
      */
     public int getfieldnumBits(String fieldName) {
         if (fieldName.equals(OPTIONS)) {
-            return (getHeaderLen() - MIN_HEADER_SIZE) * NetUtils.NumBitsInAByte;
+            return (getHeaderLen() - MIN_HEADER_SIZE) * NetUtils.NUM_BITS_IN_A_BYTE;
         }
         return hdrFieldCoordMap.get(fieldName).getRight();
     }
@@ -584,7 +584,7 @@ public class IPv4 extends Packet {
      */
     @Override
     protected void postDeserializeCustomOperation(byte[] data, int startBitOffset) {
-        int start = startBitOffset / NetUtils.NumBitsInAByte;
+        int start = startBitOffset / NetUtils.NUM_BITS_IN_A_BYTE;
         short computedChecksum = computeChecksum(data, start);
         short actualChecksum = BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
         if (computedChecksum != actualChecksum) {
