@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf72cfcd_95166ec8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-02-15T14:59:42Z",
+      "side": 1,
+      "message": "I left the \"else\" part intentionally so that when external tunnels such as tunnels towards DC gateway are being monitored this comment can be removed. EVPN feature in netvirt is available in Oxygen and this may need external tunnels to be monitored. My suggestion would be to leave it as it is.",
+      "revId": "bf7a5796358f0110f5f3649b2b817e85c72f28dc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
