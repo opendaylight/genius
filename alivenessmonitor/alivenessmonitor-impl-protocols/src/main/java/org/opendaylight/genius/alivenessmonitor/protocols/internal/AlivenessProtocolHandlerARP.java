@@ -25,7 +25,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NWUtil;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
@@ -80,42 +79,41 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             LOG.trace("packet: {}, tableId {}, arpType {}", packetReceived, tableId, arpType);
         }
 
-        if (tableId == NwConstants.L3_INTERFACE_TABLE || tableId == NwConstants.L3_GW_MAC_TABLE) {
-            if (arpType == ARP.REPLY) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("packet: {}, monitorKey {}", packetReceived);
-                }
+        if (arpType == ARP.REPLY) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("packet: {}, monitorKey {}", packetReceived);
+            }
 
-                BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();
-                int portTag = MetaDataUtil.getLportFromMetadata(metadata).intValue();
-                String interfaceName = null;
+            BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();
+            int portTag = MetaDataUtil.getLportFromMetadata(metadata).intValue();
+            String interfaceName = null;
 
-                try {
-                    GetInterfaceFromIfIndexInput input = new GetInterfaceFromIfIndexInputBuilder().setIfIndex(portTag)
-                            .build();
-                    Future<RpcResult<GetInterfaceFromIfIndexOutput>> output = interfaceManager
-                            .getInterfaceFromIfIndex(input);
-                    RpcResult<GetInterfaceFromIfIndexOutput> result = output.get();
-                    if (result.isSuccessful()) {
-                        GetInterfaceFromIfIndexOutput ifIndexOutput = result.getResult();
-                        interfaceName = ifIndexOutput.getInterfaceName();
-                    } else {
-                        LOG.warn("RPC call to get interface name for if index {} failed with errors {}", portTag,
-                                result.getErrors());
-                        return null;
-                    }
-                } catch (InterruptedException | ExecutionException e) {
-                    LOG.warn("Error retrieving interface Name for tag {}", portTag, e);
-                }
-                if (!Strings.isNullOrEmpty(interfaceName)) {
-                    String sourceIp = NWUtil.toStringIpAddress(packet.getSenderProtocolAddress());
-                    String targetIp = NWUtil.toStringIpAddress(packet.getTargetProtocolAddress());
-                    return getMonitoringKey(interfaceName, targetIp, sourceIp);
+            try {
+                GetInterfaceFromIfIndexInput input = new GetInterfaceFromIfIndexInputBuilder().setIfIndex(portTag)
+                        .build();
+                Future<RpcResult<GetInterfaceFromIfIndexOutput>> output = interfaceManager
+                        .getInterfaceFromIfIndex(input);
+                RpcResult<GetInterfaceFromIfIndexOutput> result = output.get();
+                if (result.isSuccessful()) {
+                    GetInterfaceFromIfIndexOutput ifIndexOutput = result.getResult();
+                    interfaceName = ifIndexOutput.getInterfaceName();
                 } else {
-                    LOG.debug("No interface associated with tag {} to interpret the received ARP Reply", portTag);
+                    LOG.warn("RPC call to get interface name for if index {} failed with errors {}", portTag,
+                            result.getErrors());
+                    return null;
                 }
+            } catch (InterruptedException | ExecutionException e) {
+                LOG.warn("Error retrieving interface Name for tag {}", portTag, e);
+            }
+            if (!Strings.isNullOrEmpty(interfaceName)) {
+                String sourceIp = NWUtil.toStringIpAddress(packet.getSenderProtocolAddress());
+                String targetIp = NWUtil.toStringIpAddress(packet.getTargetProtocolAddress());
+                return getMonitoringKey(interfaceName, targetIp, sourceIp);
+            } else {
+                LOG.debug("No interface associated with tag {} to interpret the received ARP Reply", portTag);
             }
         }
+
         return null;
     }
 
