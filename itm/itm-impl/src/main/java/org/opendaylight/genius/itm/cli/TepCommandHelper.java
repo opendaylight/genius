@@ -520,6 +520,8 @@ public class TepCommandHelper {
                 case ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME:
                     cacheContent = ItmUtils.ITM_CACHE.getAllExternalInterfaces();
                     break;
+                case ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME:
+                    cacheContent = ItmUtils.ITM_CACHE.getAllUnprocessedTunnels();
                 default:
                     cacheContent = null;
             }
@@ -537,7 +539,8 @@ public class TepCommandHelper {
     public boolean isInMemoryCacheNameValid(String name) {
         boolean valid = false;
         valid = name.equals(ITMConstants.INTERNAL_TUNNEL_CACHE_NAME)
-                || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME);
+                || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME)
+                || name.equals(ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME);
         return valid;
     }
 
