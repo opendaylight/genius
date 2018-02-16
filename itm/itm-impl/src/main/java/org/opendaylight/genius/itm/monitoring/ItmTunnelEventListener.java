@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.monitoring;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -18,7 +19,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.JMException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -28,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +44,16 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     private final DataBroker broker;
     private final JobCoordinator jobCoordinator;
     private JMXAlarmAgent alarmAgent;
+    private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     @Inject
-    public ItmTunnelEventListener(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+    public ItmTunnelEventListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
+                                  UnprocessedTunnelsStateCache unprocessedTunnelsStateCache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(TunnelsState.class).child(StateTunnelList.class));
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
+        this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
         try {
             alarmAgent = new JMXAlarmAgent();
             alarmAgent.registerMbean();
@@ -75,6 +82,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         ItmTunnelRemoveAlarmWorker itmTunnelRemoveAlarmWorker = new ItmTunnelRemoveAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelRemoveAlarmWorker);
+        unprocessedTunnelsStateCache.remove(stateTunnelList.getTunnelInterfaceName());
     }
 
     @Override
@@ -98,6 +106,18 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         ItmTunnelAddAlarmWorker itmTunnelAddAlarmWorker = new ItmTunnelAddAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelAddAlarmWorker);
+        TunnelOperStatus operStatus = unprocessedTunnelsStateCache.remove(stateTunnelList.getTunnelInterfaceName());
+        if (operStatus != null) {
+            if (operStatus != stateTunnelList.getOperState()) {
+                jobCoordinator.enqueueJob(stateTunnelList.getTunnelInterfaceName(),
+                        new ItmTunnelStatusOutOfOrderEventWorker(instanceIdentifier, stateTunnelList, operStatus));
+            } else {
+                LOG.debug("BFD status in unprocessed cache is the same as in DTCN for {} "
+                    + "hence no operations ",stateTunnelList.getTunnelInterfaceName());
+            }
+        } else {
+            LOG.debug("No Unprocessed tunnel state for {} ", stateTunnelList.getTunnelInterfaceName());
+        }
     }
 
     private void raiseInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
@@ -314,6 +334,33 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
                     }
                 }*/
             return null;
+        }
+    }
+
+    private class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<ListenableFuture<Void>>> {
+        private InstanceIdentifier<StateTunnelList> identifier;
+        private StateTunnelList add;
+        private TunnelOperStatus operStatus;
+
+        ItmTunnelStatusOutOfOrderEventWorker(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList add,
+                                             TunnelOperStatus operStatus) {
+            this.identifier = identifier;
+            this.add = add;
+            this.operStatus = operStatus;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            // Process any unprocessed interface bfd updates
+            final List<ListenableFuture<Void>> futures = new ArrayList<>();
+            LOG.debug(" Tunnel events are processed out order for {} hence updating it from cache",
+                    add.getTunnelInterfaceName());
+            WriteTransaction transaction = broker.newWriteOnlyTransaction();
+            StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder(add);
+            stlBuilder.setOperState(operStatus);
+            transaction.merge(LogicalDatastoreType.OPERATIONAL, identifier, stlBuilder.build(), false);
+            futures.add(transaction.submit());
+            return futures;
         }
     }
 }
