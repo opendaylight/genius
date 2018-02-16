@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
@@ -50,11 +51,12 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     private final IInterfaceManager interfaceManager;
     private final ItmTunnelAggregationHelper tunnelAggregationHelper;
     private final TunnelStateCache tunnelStateCache;
+    private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     @Inject
     public InterfaceStateListener(final DataBroker dataBroker, IInterfaceManager iinterfacemanager,
             final ItmTunnelAggregationHelper tunnelAggregation, JobCoordinator jobCoordinator,
-            TunnelStateCache tunnelStateCache) {
+            TunnelStateCache tunnelStateCache, UnprocessedTunnelsStateCache unprocessedTunnelsStateCache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
         this.dataBroker = dataBroker;
@@ -62,6 +64,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
         this.interfaceManager = iinterfacemanager;
         this.tunnelAggregationHelper = tunnelAggregation;
         this.tunnelStateCache = tunnelStateCache;
+        this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
     }
 
     @Override
@@ -145,6 +148,9 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
             StateTunnelList stList = stlBuilder.build();
             LOG.trace("Batching the updation of tunnel_state: {} for Id: {}", stList, stListId);
             ITMBatchingUtils.update(stListId, stList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        } else {
+            LOG.debug("Tunnel is not yet added but an update has come in for {},so cache it",updated.getName());
+            unprocessedTunnelsStateCache.add(updated.getName(),tunnelOperStatus);
         }
 
         return Collections.singletonList(writeTransaction.submit());

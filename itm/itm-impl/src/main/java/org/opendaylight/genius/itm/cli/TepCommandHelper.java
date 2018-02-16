@@ -29,6 +29,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
@@ -80,6 +81,7 @@ public class TepCommandHelper {
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final ItmConfig itmConfig;
+    private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     /*
      * boolean flag add_or_delete --- can be set to true if the last called tep
@@ -95,10 +97,12 @@ public class TepCommandHelper {
     // ArrayList<>();
 
     @Inject
-    public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig) {
+    public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig,
+                            final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.itmConfig = itmConfig;
+        this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
     }
 
     @PostConstruct
@@ -166,6 +170,7 @@ public class TepCommandHelper {
             }
             return;
         }
+
         Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).withKey(vtepkey)
                 .setPortname(portName).build();
         validateForDuplicates(vtepCli, transportZone);
@@ -536,6 +541,9 @@ public class TepCommandHelper {
                 case ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME:
                     cacheContent = ItmUtils.ITM_CACHE.getAllExternalInterfaces();
                     break;
+                case ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME:
+                    cacheContent = unprocessedTunnelsStateCache.getAllUnprocessedTunnels();
+                    break;
                 default:
                     cacheContent = Collections.emptyList();
             }
@@ -553,7 +561,8 @@ public class TepCommandHelper {
     public boolean isInMemoryCacheNameValid(String name) {
         boolean valid = false;
         valid = name.equals(ITMConstants.INTERNAL_TUNNEL_CACHE_NAME)
-                || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME);
+                || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME)
+                || name.equals(ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME);
         return valid;
     }
 
