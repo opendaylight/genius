@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
@@ -26,6 +27,7 @@ public class ItmCache {
     private final ConcurrentHashMap<String, ExternalTunnel> externalTunnels;
     private final ConcurrentHashMap<String, InternalTunnel> internalTunnels;
     private final ConcurrentHashMap<ExternalTunnelKey, ExternalTunnel> externalTunnelKeyToExternalTunnels;
+    private ConcurrentHashMap<String, TunnelOperStatus> unProcessedtunnelStateMap;
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmCache.class);
 
@@ -34,6 +36,7 @@ public class ItmCache {
         this.internalTunnels = new ConcurrentHashMap<>();
         this.externalTunnels = new ConcurrentHashMap<>();
         this.externalTunnelKeyToExternalTunnels = new ConcurrentHashMap<>();
+        this.unProcessedtunnelStateMap = new ConcurrentHashMap<>();
     }
 
     public void addInterface(Interface iface) {
@@ -110,11 +113,28 @@ public class ItmCache {
         this.externalTunnelKeyToExternalTunnels.remove(key);
     }
 
+    public void addTunnelState(String tunnelName,TunnelOperStatus operStatus) {
+        this.unProcessedtunnelStateMap.put(tunnelName, operStatus);
+    }
+
+    public TunnelOperStatus getTunnelState(String tunnelName) {
+        return this.unProcessedtunnelStateMap.get(tunnelName);
+    }
+
+    public void removeTunnelState(String tunnelName) {
+        this.unProcessedtunnelStateMap.remove(tunnelName);
+    }
+
+    public Set<String> getAllUnprocessedTunnels() {
+        return this.unProcessedtunnelStateMap.keySet();
+    }
+
     // non-public package local method for use only in ItmTestUtils
     void clear() {
         interfaces.clear();
         externalTunnels.clear();
         internalTunnels.clear();
         externalTunnelKeyToExternalTunnels.clear();
+        unProcessedtunnelStateMap.clear();
     }
 }
