@@ -49,6 +49,7 @@ public interface ITMConstants {
             = TunnelMonitoringTypeBfd.class;
     String INTERNAL_TUNNEL_CACHE_NAME = "InternalTunnelCache";
     String EXTERNAL_TUNNEL_CACHE_NAME = "ExternalTunnelCache";
+    String UNPROCESSED_TUNNELS_CACHE_NAME = "ItmUnprocessedTunnelsCache";
     String TUNNEL_STATE_UP = "UP";
     String TUNNEL_STATE_DOWN = "DOWN";
     String TUNNEL_STATE_UNKNOWN = "UNKNOWN";
