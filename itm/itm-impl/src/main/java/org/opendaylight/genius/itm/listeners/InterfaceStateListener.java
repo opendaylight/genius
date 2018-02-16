@@ -144,6 +144,9 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
             StateTunnelList stList = stlBuilder.build();
             LOG.trace("Batching the updation of tunnel_state: {} for Id: {}", stList, stListId);
             ITMBatchingUtils.update(stListId, stList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        } else {
+            LOG.debug("Tunnel is not yet added but an update has come in for {},so cache it",updated.getName());
+            ItmUtils.ITM_CACHE.addTunnelState(updated.getName(),tunnelOperStatus);
         }
 
         return Collections.singletonList(writeTransaction.submit());
