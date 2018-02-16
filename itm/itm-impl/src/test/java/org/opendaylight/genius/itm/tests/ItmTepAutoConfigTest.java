@@ -19,11 +19,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
+import org.mockito.Mock;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -68,6 +70,8 @@ public class ItmTepAutoConfigTest {
     InstanceIdentifier<TransportZones> tzonesPath = InstanceIdentifier.builder(TransportZones.class).build();
 
     @Inject DataBroker dataBroker;
+    @Mock
+    private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     @Before
     public void start() throws InterruptedException {
@@ -92,7 +96,8 @@ public class ItmTepAutoConfigTest {
         }
         // Create TepCommandHelper object which creates/deletes default-TZ based
         // on def-tz-enabled flag
-        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj);
+        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
+                unprocessedTunnelsStateCache);
         tepCmdHelper.start();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
@@ -125,6 +130,7 @@ public class ItmTepAutoConfigTest {
 
         // set def-tz-enabled flag to true
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true).build();
+
 
         // write into config DS
         CheckedFuture<Void, TransactionCommitFailedException> futures =
@@ -218,7 +224,8 @@ public class ItmTepAutoConfigTest {
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
             .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_GRE).build();
 
-        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj);
+        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
+                unprocessedTunnelsStateCache);
         tepCmdHelper.start();
 
         // Create TepCommandHelper object which creates/deletes default-TZ based on def-tz-enabled flag
@@ -234,7 +241,7 @@ public class ItmTepAutoConfigTest {
         itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(false).build();
 
         // Create TepCommandHelper object which creates/deletes default-TZ based on def-tz-enabled flag
-        tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj);
+        tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj, unprocessedTunnelsStateCache);
         tepCmdHelper.start();
 
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
@@ -247,7 +254,8 @@ public class ItmTepAutoConfigTest {
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
             .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
 
-        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj);
+        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
+                unprocessedTunnelsStateCache);
         tepCmdHelper.start();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
