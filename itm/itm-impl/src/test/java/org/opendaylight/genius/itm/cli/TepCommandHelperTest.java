@@ -33,6 +33,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -164,6 +165,7 @@ public class TepCommandHelperTest {
     @Mock
     private WriteTransaction mockWriteTx;
     @Mock Map<String, Map<SubnetObject, List<Vteps>>> tzones;
+    @Mock private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     private Optional<TransportZones> optionalTransportZones;
 
@@ -201,7 +203,8 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,interfaceIdentifierNew);
 
-        tepCommandHelper = new TepCommandHelper(dataBroker, itmConfig);
+        tepCommandHelper = new TepCommandHelper(dataBroker, itmConfig,
+                unprocessedTunnelsStateCache);
 
     }
 

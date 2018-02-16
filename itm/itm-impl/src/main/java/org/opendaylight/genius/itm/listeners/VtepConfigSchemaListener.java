@@ -21,6 +21,7 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -64,6 +65,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
 
     /** Blueprint XML config file handle. */
     private final ItmConfig itmConfig;
+    private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     /**
      * Instantiates a new VTEP config schema listener.
@@ -74,12 +76,14 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
      *            ITM config file handle
      */
     @Inject
-    public VtepConfigSchemaListener(DataBroker dataBroker, ItmConfig itmConfig) {
+    public VtepConfigSchemaListener(DataBroker dataBroker, ItmConfig itmConfig,
+                                    UnprocessedTunnelsStateCache unprocessedTunnelsStateCache) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(VtepConfigSchemas.class).child(VtepConfigSchema.class), Executors
                       .newSingleThreadExecutor("VtepConfigSchemaListener", LOG));
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
+        this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
     }
 
     @Override
@@ -246,7 +250,8 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
                     schema);
             return;
         }
-        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig);
+        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig,
+                unprocessedTunnelsStateCache);
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
@@ -316,7 +321,8 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
      *            the dpn ids list to be deleted
      */
     private void deleteVteps(VtepConfigSchema schema, List<BigInteger> lstDpnIdsToBeDeleted) {
-        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig);
+        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig,
+                unprocessedTunnelsStateCache);
         List<IpAddress> freeIps = new ArrayList<>();
 
         String subnetCidr = ItmUtils.getSubnetCidrAsString(schema.getSubnet());
