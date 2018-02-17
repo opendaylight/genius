@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.itm.scaling.renderer.ovs.statehelpers;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -42,13 +44,16 @@ public class InterfaceStateAddWorkerForUnprocessedNC implements Callable {
 
     @Override
     public Object call() throws Exception {
-        //TODO
-        return null;
+        // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+        // to call the respective helpers.
+        List<ListenableFuture<Void>> futures = OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
+                mdsalApiManager, key, interfaceName, fcNodeConnectorNew, dpntePsInfoCache);
+        return futures;
     }
 
     @Override
     public String toString() {
-        //TODO
-        return null;
+        return "InterfaceStateAddWorker{fcNodeConnectorIdentifier=" + key + ", fcNodeConnectorNew="
+                + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
     }
 }
