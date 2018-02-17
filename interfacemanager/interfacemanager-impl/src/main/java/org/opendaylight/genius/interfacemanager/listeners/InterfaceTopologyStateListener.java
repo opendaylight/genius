@@ -195,8 +195,8 @@ public class InterfaceTopologyStateListener
                 return futures;
             }
             futures.add(writeTransaction.submit());
-            southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, instanceIdentifier,
-                    bridgeNew);
+            southboundUtils
+                    .addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, instanceIdentifier, bridgeNew);
             return futures;
         }
     }
