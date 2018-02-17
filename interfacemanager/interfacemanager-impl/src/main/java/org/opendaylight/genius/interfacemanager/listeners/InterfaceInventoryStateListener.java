@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +15,13 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -31,12 +30,10 @@ import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableLi
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -74,18 +71,20 @@ public class InterfaceInventoryStateListener
     private final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final PortNameCache portNameCache;
+    private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
-            final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
-            final AlivenessMonitorUtils alivenessMonitorUtils,
-            final InterfaceMetaUtils interfaceMetaUtils,
-            final PortNameCache portNameCache,
-            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                           final EntityOwnershipUtils entityOwnershipUtils,
+                                           final JobCoordinator coordinator,
+                                           final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                           final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
+                                           final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
+                                           final AlivenessMonitorUtils alivenessMonitorUtils,
+                                           final InterfaceMetaUtils interfaceMetaUtils,
+                                           final PortNameCache portNameCache,
+                                           final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                           final InterfacemgrProvider interfacemgrProvider) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -97,6 +96,7 @@ public class InterfaceInventoryStateListener
         this.ovsInterfaceStateAddHelper = ovsInterfaceStateAddHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
+        this.interfacemgrProvider = interfacemgrProvider;
         registerListener();
         interfaceServiceRecoveryHandler.addRecoverableListener(this);
     }
@@ -125,6 +125,13 @@ public class InterfaceInventoryStateListener
     @Override
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
+        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(flowCapableNodeConnectorOld.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector removed for internal tunnel {}",
+                    flowCapableNodeConnectorOld.getName());
+            return;
+        }
+
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
@@ -152,8 +159,16 @@ public class InterfaceInventoryStateListener
 
     @Override
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
-                          FlowCapableNodeConnector fcNodeConnectorNew) {
-        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+        FlowCapableNodeConnector fcNodeConnectorNew) {
+        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(fcNodeConnectorNew.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector Update for internal tunnel {}",
+                    fcNodeConnectorNew.getName());
+            return;
+        }
+
+        if (fcNodeConnectorNew.getReason() == PortReason.Delete
+                || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
@@ -170,6 +185,13 @@ public class InterfaceInventoryStateListener
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
+        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
+                && interfaceManagerCommonUtils.isTunnelInternal(fcNodeConnectorNew.getName())) {
+            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector add for internal tunnel {}",
+                    fcNodeConnectorNew.getName());
+            return;
+        }
+
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
