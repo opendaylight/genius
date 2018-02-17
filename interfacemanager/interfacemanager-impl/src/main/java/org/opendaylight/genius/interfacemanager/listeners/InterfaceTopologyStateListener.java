@@ -135,12 +135,13 @@ public class InterfaceTopologyStateListener
             DatapathId oldDpid = bridgeOld.getDatapathId();
             DatapathId newDpid = bridgeNew.getDatapathId();
             if (oldDpid == null && newDpid != null) {
-                RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
+                RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew,
+                        interfaceMgrProvider);
                 coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                         IfmConstants.JOB_MAX_RETRIES);
             } else if (oldDpid != null && !oldDpid.equals(newDpid)) {
                 RendererStateUpdateWorker rendererStateAddWorker =
-                        new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
+                        new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld, interfaceMgrProvider);
                 coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                         IfmConstants.JOB_MAX_RETRIES);
             }
@@ -157,7 +158,8 @@ public class InterfaceTopologyStateListener
         interfaceMgrProvider.addBridgeForNodeIid(nodeIid, bridgeNew);
 
         runOnlyInOwnerNode("OVSDB bridge added", () -> {
-            RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
+            RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew,
+                    interfaceMgrProvider);
             coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                 IfmConstants.JOB_MAX_RETRIES);
         });
@@ -166,11 +168,13 @@ public class InterfaceTopologyStateListener
     private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
+        InterfacemgrProvider interfacemgrProvider;
 
         RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                               OvsdbBridgeAugmentation bridgeNew) {
+                               OvsdbBridgeAugmentation bridgeNew, InterfacemgrProvider interfacemgrProvider) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
+            this.interfacemgrProvider = interfaceMgrProvider;
         }
 
         @Override
@@ -196,7 +200,7 @@ public class InterfaceTopologyStateListener
             }
             futures.add(writeTransaction.submit());
             southboundUtils.addAllPortsToBridge(bridgeEntry, interfaceManagerCommonUtils, instanceIdentifier,
-                    bridgeNew);
+                    bridgeNew, interfacemgrProvider);
             return futures;
         }
     }
@@ -240,17 +244,21 @@ public class InterfaceTopologyStateListener
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
         OvsdbBridgeAugmentation bridgeOld;
+        InterfacemgrProvider interfacemgrProvider;
 
         RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                  OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
+                                  OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld,
+                                  InterfacemgrProvider interfacemgrProvider) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
             this.bridgeOld = bridgeOld;
+            this.interfacemgrProvider = interfacemgrProvider;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return ovsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld);
+            return ovsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew,
+                    bridgeOld, interfacemgrProvider);
         }
     }
 }
