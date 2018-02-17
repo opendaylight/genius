@@ -33,7 +33,8 @@ public final class ITMBatchingUtils {
     // This could extend in future
     public enum EntityType  {
         DEFAULT_OPERATIONAL,
-        DEFAULT_CONFIG
+        DEFAULT_CONFIG,
+        TOPOLOGY_CONFIG
     }
 
     private ITMBatchingUtils() { }
