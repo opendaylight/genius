@@ -59,6 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
@@ -104,6 +105,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final IfmConfig ifmConfig;
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
@@ -114,7 +116,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
             final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
             final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final InterfaceMetaUtils interfaceMetaUtils) {
+            final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
@@ -123,6 +125,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.ifmConfig = ifmConfig;
     }
 
     @PostConstruct
@@ -863,5 +866,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public long getLogicalTunnelSelectGroupId(int lportTag) {
         return IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
+    }
+
+    @Override
+    public boolean isItmDirectTunnelsEnabled() {
+        return ifmConfig.isItmDirectTunnels();
     }
 }
