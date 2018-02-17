@@ -16,6 +16,7 @@ import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
+import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerServiceImpl;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
@@ -34,6 +35,9 @@ import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfigBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
@@ -58,6 +62,10 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN)
                 .setGpeExtensionEnabled(false)
                 .build();
+
+        IfmConfig interfaceConfig = new IfmConfigBuilder().setItmDirectTunnels(false).build();
+        bind(IfmConfig.class).toInstance(interfaceConfig);
+
         bind(ItmConfig.class).toInstance(itmConfigObj);
         bind(TunnelMonitorIntervalListener.class);
         bind(TransportZoneListener.class);
@@ -76,6 +84,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
+        bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
 
         // Bindings to test infra (fakes & mocks)
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
