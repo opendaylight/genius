@@ -753,4 +753,12 @@ public final class InterfaceManagerCommonUtils {
     private static String getDpnPrefixedPortName(String dpnId, String portName) {
         return dpnId + IfmConstants.OF_URI_SEPARATOR + portName;
     }
+
+    public boolean isTunnelInternal(String interfaceName) {
+        IfTunnel ifTunnel = getInterfaceFromConfigDS(interfaceName).getAugmentation(IfTunnel.class);
+        if (ifTunnel != null) {
+            return ifTunnel.isInternal();
+        }
+        return false;
+    }
 }
