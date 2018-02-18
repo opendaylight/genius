@@ -27,8 +27,12 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
@@ -42,6 +46,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
@@ -174,6 +179,9 @@ public class ItmManagerRpcServiceTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock ItmConfig itmConfig;
+    @Mock IInterfaceManager interfaceManager;
+    @Mock OdlInterfaceRpcService odlInterfaceRpcService;
+    @Mock DirectTunnelUtils directTunnelUtils;
 
     ItmManagerRpcService itmManagerRpcService ;
 
@@ -204,8 +212,15 @@ public class ItmManagerRpcServiceTest {
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
+        DPNTEPsInfoCache dpntePsInfoCache =
+                new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
+
         itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
-                new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())));
+                dpntePsInfoCache,
+                new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+                interfaceManager, odlInterfaceRpcService,
+                new DpnTepStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+                directTunnelUtils, dpntePsInfoCache), directTunnelUtils);
     }
 
     @After
