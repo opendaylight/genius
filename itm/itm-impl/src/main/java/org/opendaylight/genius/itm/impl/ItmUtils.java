@@ -9,6 +9,8 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
@@ -143,6 +145,13 @@ public final class ItmUtils {
     private static final IpPrefix DUMMY_IP_PREFIX = new IpPrefix(ITMConstants.DUMMY_PREFIX.toCharArray());
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
     public static final ItmCache ITM_CACHE = new ItmCache();
+
+    private static final BiMap<String,Class<? extends TunnelTypeBase>> STRING_TO_TUNNEL_TYPE_CLASS_BI_MAP =
+            ImmutableBiMap.copyOf(
+                    new ImmutableMap.Builder<String,Class<? extends TunnelTypeBase>>()
+                            .put(ITMConstants.TUNNEL_TYPE_VXLAN,TunnelTypeVxlan.class)
+                            .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE,TunnelTypeMplsOverGre.class)
+                            .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class).build());
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
@@ -328,8 +337,8 @@ public final class ItmUtils {
                                                  List<TunnelOptions> tunOptions) {
 
         return buildTunnelInterface(dpn, ifName, desc, enabled, tunType, localIp, remoteIp,  gatewayIp,  vlanId,
-                                    internal,  monitorEnabled, monitorProtocol, monitorInterval,  useOfTunnel, null,
-                                    tunOptions);
+                                    internal,  monitorEnabled, monitorProtocol, monitorInterval,  useOfTunnel,
+                        null, tunOptions);
     }
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
@@ -1076,12 +1085,23 @@ public final class ItmUtils {
      */
     // FIXME: Better is to implement cache to avoid datastore read.
     public static TransportZone getTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
-        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
-                .child(TransportZone.class, new TransportZoneKey(tzName)).build();
+        InstanceIdentifier<TransportZone> tzonePath =
+                InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class,
+                        new TransportZoneKey(tzName)).build();
         Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
             dataBroker);
         if (transportZoneOptional.isPresent()) {
             return transportZoneOptional.get();
+        }
+        return null;
+    }
+
+    public static TransportZone getTransportZoneFromConfigDS(InstanceIdentifier<TransportZone> tzIdentifier,
+                                                             DataBroker dataBroker) {
+        Optional<TransportZone> tzoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzIdentifier,
+                dataBroker);
+        if (tzoneOptional.isPresent()) {
+            return tzoneOptional.get();
         }
         return null;
     }
@@ -1389,5 +1409,20 @@ public final class ItmUtils {
             }
         }
         return exTunnel;
+    }
+
+    public static InstanceIdentifier<TransportZone> getTransportZoneIdentifierFromName(String tzName) {
+        InstanceIdentifier<TransportZone> tzIdentifier =
+                InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class,
+                        new TransportZoneKey(tzName)).build();
+        return tzIdentifier;
+    }
+
+    public static Class<? extends TunnelTypeBase> convertStringToTunnelType(String tunnelType) {
+        Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
+        if (STRING_TO_TUNNEL_TYPE_CLASS_BI_MAP.containsKey(tunnelType)) {
+            tunType = STRING_TO_TUNNEL_TYPE_CLASS_BI_MAP.get(tunnelType);
+        }
+        return tunType ;
     }
 }
