@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "536771b5_8ac5cea8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-19T11:27:24Z",
+      "side": 1,
+      "message": "Inject directly wherever it is being used",
+      "revId": "30e952e1d52fa86ddbc32f946ee487458cb806d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "87355c85_286a4067",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-19T11:27:24Z",
+      "side": 1,
+      "message": "Inject it directly, no need to pass like this",
+      "revId": "30e952e1d52fa86ddbc32f946ee487458cb806d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24a47bae_e7f495a9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-19T11:27:24Z",
+      "side": 1,
+      "message": "remove this and pass null",
+      "revId": "30e952e1d52fa86ddbc32f946ee487458cb806d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf75dc73_43f05f65",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-19T11:27:24Z",
+      "side": 1,
+      "message": "please inject InterfaceMgrProvider here",
+      "revId": "30e952e1d52fa86ddbc32f946ee487458cb806d7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
