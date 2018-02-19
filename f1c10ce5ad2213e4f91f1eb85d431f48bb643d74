@@ -33,6 +33,24 @@
       "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48c1d030_92206b6b",
+        "filename": "mdsalutil/mdsalutil-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-19T12:53:12Z",
+      "side": 1,
+      "message": "yes - this is temporary until last patch. The subsequent 2 patches are drafts b/c they won\u0027t build until this is merged.",
+      "parentUuid": "23a39eaf_e4f96266",
+      "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
