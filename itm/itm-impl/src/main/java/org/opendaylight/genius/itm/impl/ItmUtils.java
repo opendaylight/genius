@@ -9,6 +9,8 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
@@ -143,6 +145,13 @@ public final class ItmUtils {
     private static final IpPrefix DUMMY_IP_PREFIX = new IpPrefix(ITMConstants.DUMMY_PREFIX.toCharArray());
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
     public static final ItmCache ITM_CACHE = new ItmCache();
+
+    private final static BiMap<String,Class<? extends TunnelTypeBase>> stringToTunnelTypeClassBiMap =
+            ImmutableBiMap.copyOf(
+                    new ImmutableMap.Builder<String,Class<? extends TunnelTypeBase>>()
+                            .put(ITMConstants.TUNNEL_TYPE_VXLAN,TunnelTypeVxlan.class)
+                            .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE,TunnelTypeMplsOverGre.class)
+                            .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class).build());
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
@@ -1389,5 +1398,28 @@ public final class ItmUtils {
             }
         }
         return exTunnel;
+    }
+
+    public static InstanceIdentifier<TransportZone> getTransportZoneIdentifierFromName(String tzName){
+        InstanceIdentifier<TransportZone> tzIdentifier =
+                InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class, new TransportZoneKey(tzName))
+                        .build();
+        return tzIdentifier;
+    }
+
+    public static TransportZone getTransportZoneFromConfigDS(InstanceIdentifier<TransportZone> tzIdentifier, DataBroker dataBroker){
+        Optional<TransportZone> tZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzIdentifier, dataBroker);
+        if (tZoneOptional.isPresent()) {
+            return tZoneOptional.get();
+        }
+        return null;
+    }
+
+    public static Class<? extends TunnelTypeBase> convertStringToTunnelType(String tunnelType) {
+        Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
+        if (stringToTunnelTypeClassBiMap.containsKey(tunnelType)) {
+            tunType = stringToTunnelTypeClassBiMap.get(tunnelType);
+        }
+        return tunType ;
     }
 }
