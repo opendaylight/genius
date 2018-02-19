@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d2f3f44a_c3e69a72",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPTunnelsStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-19T12:57:41Z",
+      "side": 1,
+      "message": "I know but the rest of the services are in the BP xml and I\u0027d rather keep it consistent and not a mix of both methods. If/when someone wants to convert this bundle to use service annotations, they can do it all n one go.",
+      "parentUuid": "37a231ca_4ac5d3b5",
+      "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "23a39eaf_e4f96266",
         "filename": "mdsalutil/mdsalutil-impl/pom.xml",
         "patchSetId": 5
