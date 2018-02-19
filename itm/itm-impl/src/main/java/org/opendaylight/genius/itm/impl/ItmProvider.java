@@ -34,6 +34,8 @@ import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
+import org.opendaylight.genius.itm.recovery.impl.*;
+import org.opendaylight.genius.itm.recovery.listeners.*;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -67,6 +69,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final TunnelMonitorIntervalListener tnlIntervalListener;
     private final VtepConfigSchemaListener vtepConfigSchemaListener;
     private final InterfaceStateListener ifStateListener;
+    private final ItmServiceRecoveryListener itmServiceRecoveryListener;
+    private final ItmServiceRecoveryManager itmrecoveryManager;
     private RpcProviderRegistry rpcProviderRegistry;
     private final ItmTunnelEventListener itmStateListener;
     private final OvsdbNodeListener ovsdbChangeListener;
@@ -85,7 +89,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        TransportZoneListener transportZoneListener,
                        VtepConfigSchemaListener vtepConfigSchemaListener,
                        OvsdbNodeListener ovsdbNodeListener,
-                       TunnelMonitoringConfig tunnelMonitoringConfig) {
+                       TunnelMonitoringConfig tunnelMonitoringConfig,
+                       ItmServiceRecoveryListener itmServiceRecoveryListener,
+                       ItmServiceRecoveryManager itmrecoveryManager) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -99,6 +105,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.vtepConfigSchemaListener = vtepConfigSchemaListener;
         this.ovsdbChangeListener = ovsdbNodeListener;
         this.tunnelMonitoringConfig = tunnelMonitoringConfig;
+        this.itmServiceRecoveryListener = itmServiceRecoveryListener;
+        this.itmrecoveryManager = itmrecoveryManager;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
@@ -128,6 +136,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         if (ovsdbChangeListener != null) {
             ovsdbChangeListener.close();
         }
+        if (itmServiceRecoveryListener != null){
+            itmServiceRecoveryListener.close();
+        }
         LOG.info("ItmProvider Closed");
     }
 
@@ -150,6 +161,10 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public DataBroker getDataBroker() {
         return dataBroker;
+    }
+
+    public TransportZoneListener getTransportZoneListener() {
+        return tzChangeListener ;
     }
 
     @Override
