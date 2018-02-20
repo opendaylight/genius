@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3d87bfb5_1fe5bba1",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T13:10:42Z",
+      "side": 1,
+      "message": "This check isn\u0027t needed. Also you can decease indentation by immediate return if interfaceBfds \u003d\u003d null.",
+      "range": {
+        "startLine": 334,
+        "startChar": 37,
+        "endLine": 334,
+        "endChar": 61
+      },
+      "revId": "26d085a3fbc2bcc6705dbb9800ddd0bbb6762efd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b3d1fb32_11d4c0db",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T13:10:42Z",
+      "side": 1,
+      "message": "Not needed as equalsIgnoreCase already returns boolean.",
+      "range": {
+        "startLine": 338,
+        "startChar": 88,
+        "endLine": 338,
+        "endChar": 102
+      },
+      "revId": "26d085a3fbc2bcc6705dbb9800ddd0bbb6762efd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
