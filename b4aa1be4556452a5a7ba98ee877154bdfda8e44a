@@ -1,0 +1,346 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f1eff4ac_15923317",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Why Integer and not int?",
+      "range": {
+        "startLine": 72,
+        "startChar": 4,
+        "endLine": 72,
+        "endChar": 11
+      },
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08b6f8c7_b76f4120",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1402,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "These 2 methods are duplicated from IfmUtil. How about creating an IdManagerServiceUtils class in idmanager-api to avoid the duplication?",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eb7c8c7d_c7b43c7a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1403,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Can this be null? If not, return int?",
+      "range": {
+        "startLine": 1403,
+        "startChar": 18,
+        "endLine": 1403,
+        "endChar": 25
+      },
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9e2082b_5c301072",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1436,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Since the 2 methods below operate on DPNTEPsInfoCache, why not just put these methods in DPNTEPsInfoCache instead of passing DPNTEPsInfoCache to static methods on some Utils class...",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "feb492ca_598db195",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1439,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "This can\u0027t be null (doesn\u0027t look like findbugs is running in itm).",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2135a5ff_9a835995",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1452,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Return java.util.Optional.",
+      "range": {
+        "startLine": 1452,
+        "startChar": 18,
+        "endLine": 1452,
+        "endChar": 29
+      },
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "57638308_e55ae2c5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1455,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc2a43b8_0ef8c8b2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1460,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "This can be simplified to:\n\n  return meshedDpnList.stream().filter(info -\u003e \n          dpnId.equals(info.getDPNID())).findFirst();",
+      "range": {
+        "startLine": 1456,
+        "startChar": 12,
+        "endLine": 1460,
+        "endChar": 13
+      },
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd96139c_2d273a8c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "private",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "047bdf47_6d486cdc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Make this class immutable - fields can then be final and avoids potential need for synchronization.  You can use a Builder (see e.g. netvirt AclInterface) to avoid unwieldy ctor(s).",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baef50d8_efe028ee",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ItmScaleUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "The term \"Scale\" seems a bit odd in a class name. Why not put the general, reusable, non-cache methods into ItmUtils instead of introducing another static Utils class?",
+      "range": {
+        "startLine": 49,
+        "startChar": 19,
+        "endLine": 49,
+        "endChar": 32
+      },
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f6d5145_1abca10a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ItmScaleUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "first letter should be lower case (why didn\u0027t checkstyle flag this...)",
+      "range": {
+        "startLine": 52,
+        "startChar": 59,
+        "endLine": 52,
+        "endChar": 70
+      },
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ed2d22c_98aadf0f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ItmScaleUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "No static maps please  - please put these into singleton Cache class(es).",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4932771a_58b527db",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Make this immutable - no setters.",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0b88a5b_0e241dfd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "This class looks to be duplicated from interface-manager. How about moving the  interface-manager class somewhere common? interface-api?",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e92e755_40328808",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelEndPointInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "Again immutable...",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6b180c3_cd781f46",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelMetaUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "no static Maps.",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab2eb881_8a3fb0b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-20T14:30:34Z",
+      "side": 1,
+      "message": "no static Maps, especially public.",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
