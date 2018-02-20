@@ -74,6 +74,39 @@ public class DataTreeEventCallbackRegistrarTest {
         checkAdd(NextAction.CALL_AGAIN);
     }
 
+    @Test
+    public void testAddOrUpdateAdd() throws TransactionCommitFailedException {
+        DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar = new DataTreeEventCallbackRegistrarImpl(db);
+        AtomicBoolean added = new AtomicBoolean(false);
+        dataTreeEventCallbackRegistrar.onAddOrUpdate(OPERATIONAL, FOO_PATH, (first, second) -> {
+            if (first == null && second != null) {
+                added.set(true);
+                return NextAction.UNREGISTER;
+            }
+            return NextAction.CALL_AGAIN;
+        });
+        db1.syncWrite(OPERATIONAL, FOO_PATH, FOO_DATA);
+        await().untilTrue(added);
+
+    }
+
+    @Test
+    public void testAddOrUpdateUpdate() throws TransactionCommitFailedException {
+        DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar = new DataTreeEventCallbackRegistrarImpl(db);
+        AtomicBoolean updated = new AtomicBoolean(false);
+        dataTreeEventCallbackRegistrar.onAddOrUpdate(OPERATIONAL, FOO_PATH, (first, second) -> {
+            if (first != null && second != null) {
+                updated.set(true);
+                return NextAction.UNREGISTER;
+            }
+            return NextAction.CALL_AGAIN;
+        });
+        db1.syncWrite(OPERATIONAL, FOO_PATH, FOO_DATA);
+        db1.syncWrite(OPERATIONAL, FOO_PATH, FOO_DATA);
+        await().untilTrue(updated);
+
+    }
+
     private void checkAdd(NextAction nextAction) throws TransactionCommitFailedException {
         AtomicBoolean added = new AtomicBoolean(false);
         DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar = new DataTreeEventCallbackRegistrarImpl(db);
