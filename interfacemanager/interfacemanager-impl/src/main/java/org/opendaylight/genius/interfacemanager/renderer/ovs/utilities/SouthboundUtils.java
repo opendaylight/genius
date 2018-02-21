@@ -20,7 +20,6 @@ import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -73,8 +72,6 @@ public class SouthboundUtils {
     private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
 
     // BFD parameters
-    public static final String BFD_ENABLE_KEY = "enable";
-    public static final String BFD_ENABLE_VALUE = "true";
     public static final String BFD_OP_STATE = "state";
     public static final String BFD_STATE_UP = "up";
     private static final String BFD_MIN_TX_VAL = "100";
@@ -119,12 +116,10 @@ public class SouthboundUtils {
         };
 
     private final BatchingUtils batchingUtils;
-    private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
-    public SouthboundUtils(BatchingUtils batchingUtils, InterfacemgrProvider interfacemgrProvider) {
+    public SouthboundUtils(BatchingUtils batchingUtils) {
         this.batchingUtils = batchingUtils;
-        this.interfacemgrProvider = interfacemgrProvider;
     }
 
     public void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
@@ -138,8 +133,8 @@ public class SouthboundUtils {
      * Add all tunnels ports corresponding to the bridge to the topology config DS.
      */
     public void addAllPortsToBridge(BridgeEntry bridgeEntry, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-                                    InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                    OvsdbBridgeAugmentation bridgeNew) {
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+            OvsdbBridgeAugmentation bridgeNew) {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
@@ -151,9 +146,8 @@ public class SouthboundUtils {
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        if (!(interfacemgrProvider.isItmDirectTunnelsEnabled() && ifTunnel.isInternal())) {
-                            addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
-                        }
+                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
+
                         if (isOfTunnel(ifTunnel)) {
                             LOG.debug("Using OFTunnel. Only one tunnel port will be added");
                             return;
@@ -328,18 +322,6 @@ public class SouthboundUtils {
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
         return ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
-    }
-
-    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
-        if (interfaceBfds == null) {
-            return false;
-        }
-        for (InterfaceBfd interfaceBfd : interfaceBfds) {
-            if (interfaceBfd.getBfdKey().equalsIgnoreCase(SouthboundUtils.BFD_ENABLE_KEY)) {
-                return SouthboundUtils.BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());//checkBfdEnabled
-            }
-        }
-        return false;
     }
 
     public static boolean isMonitorProtocolBfd(IfTunnel ifTunnel) {
