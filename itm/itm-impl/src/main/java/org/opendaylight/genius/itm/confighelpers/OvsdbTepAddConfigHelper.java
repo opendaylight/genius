@@ -10,7 +10,6 @@ package org.opendaylight.genius.itm.confighelpers;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -191,16 +190,15 @@ public final class OvsdbTepAddConfigHelper {
             // Add vtep obtained from bridge into list
             updatedVtepList.add(vtepObj);
 
-            LOG.trace("Adding TEP (TZ: {} Subnet: {} TEP IP: {} DPID: {}, of-tunnel: {})"
-                    + "in ITM Config DS.", tzName, subnetMaskObj.getValue().toString(), tepIpAddress,
-                dpid, ofTunnel);
+            LOG.trace("Adding TEP (TZ: {} Subnet: {} TEP IP: {} DPID: {}, of-tunnel: {}) in ITM Config DS.", tzName,
+                    subnetMaskObj, tepIpAddress, dpid, ofTunnel);
         } else {
             // this is case when this function is called while TEPs movement from tepsNotHosted list when
             // corresponding TZ is configured from northbound.
             for (Vteps vtep: updatedVtepList) {
                 LOG.trace("Moving TEP (TEP IP: {} DPID: {}, of-tunnel: {})"
                         + "from tepNotHosted list into transport-zone {} in  ITM Config DS.",
-                    vtep.getIpAddress().getValue().toString(), vtep.getDpnId(), ofTunnel, tzName);
+                    vtep.getIpAddress(), vtep.getDpnId(), ofTunnel, tzName);
             }
         }
 

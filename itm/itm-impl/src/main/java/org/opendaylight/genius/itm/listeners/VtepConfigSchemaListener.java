@@ -86,7 +86,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     public void remove(@Nonnull VtepConfigSchema vtepConfigSchema) {
         LOG.trace("Received notification for VTEP config schema [{}] deleted.", vtepConfigSchema.getSchemaName());
         List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(vtepConfigSchema.getDpnIds());
-        if (lstDpnIds != null && !lstDpnIds.isEmpty()) {
+        if (!lstDpnIds.isEmpty()) {
             deleteVteps(vtepConfigSchema, lstDpnIds);
         }
         // Delete IP pool corresponding to schema

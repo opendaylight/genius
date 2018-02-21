@@ -33,8 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<StateTunnelList,
-        ItmTunnelEventListener> implements AutoCloseable {
+public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<StateTunnelList, ItmTunnelEventListener> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelEventListener.class);
 
@@ -173,7 +172,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private boolean isTunnelInterfaceUp(StateTunnelList intf) {
-        return (intf.getOperState() == TunnelOperStatus.Up);
+        return intf.getOperState() == TunnelOperStatus.Up;
     }
 
     private String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
@@ -191,7 +190,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private class ItmTunnelAddAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
-        private StateTunnelList add;
+        private final StateTunnelList add;
 
         ItmTunnelAddAlarmWorker(StateTunnelList tnlIface) {
             this.add = tnlIface;
@@ -236,7 +235,7 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private class ItmTunnelRemoveAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
-        private StateTunnelList del;
+        private final StateTunnelList del;
 
         ItmTunnelRemoveAlarmWorker(StateTunnelList tnlIface) {
             this.del = tnlIface;
@@ -272,8 +271,8 @@ public class ItmTunnelEventListener extends AsyncDataTreeChangeListenerBase<Stat
     }
 
     private class ItmTunnelUpdateAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
-        private StateTunnelList update;
-        private StateTunnelList original;
+        private final StateTunnelList update;
+        private final StateTunnelList original;
 
         ItmTunnelUpdateAlarmWorker(StateTunnelList original, StateTunnelList update) {
             this.update = update;

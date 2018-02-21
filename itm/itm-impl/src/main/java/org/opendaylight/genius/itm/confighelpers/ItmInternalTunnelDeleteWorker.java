@@ -270,9 +270,7 @@ public class ItmInternalTunnelDeleteWorker {
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
             Collection<InternalTunnel> tunnels = ItmUtils.ITM_CACHE.getAllInternalTunnel();
-            if (tunnels == null) {
-                return Collections.emptyList();
-            }
+
             //The logical tunnel interface be removed only when the last tunnel interface on each OVS is deleted
             boolean emptyTunnelGroup = true;
             boolean foundLogicGroupIface = false;

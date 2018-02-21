@@ -59,10 +59,9 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         LOG.debug("toggleTunnelMonitoring: Updating Operational DS");
         ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder,
                 dataBroker, ItmUtils.DEFAULT_CALLBACK);
-        if (tunnelList != null && !tunnelList.isEmpty()) {
-            for (String tunnel : tunnelList) {
-                toggle(tunnel, transaction);
-            }
+
+        for (String tunnel : tunnelList) {
+            toggle(tunnel, transaction);
         }
     }
 

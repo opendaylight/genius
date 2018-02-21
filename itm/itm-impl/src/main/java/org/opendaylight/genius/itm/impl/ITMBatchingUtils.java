@@ -21,11 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ITMBatchingUtils {
-    private static final Logger LOG = LoggerFactory.getLogger((Class)ITMBatchingUtils.class);
-    public static final int BATCH_SIZE = 1000;
-    public static final int PERIODICITY = 500;
-    public static Integer batchSize;
-    public static Integer batchInterval;
+    private static final Logger LOG = LoggerFactory.getLogger(ITMBatchingUtils.class);
+    private static final int DEF_BATCH_SIZE = 1000;
+    private static final int DEF_PERIODICITY = 500;
     private static DataBroker dataBroker;
     private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
     private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
@@ -48,14 +46,8 @@ public final class ITMBatchingUtils {
 
     public static void registerWithBatchManager(DataBroker broker) {
         ITMBatchingUtils.setBroker(broker);
-        batchSize = 1000;
-        if (Integer.getInteger("batch.size") != null) {
-            batchSize = Integer.getInteger("batch.size");
-        }
-        batchInterval = 500;
-        if (Integer.getInteger("batch.wait.time") != null) {
-            batchInterval = Integer.getInteger("batch.wait.time");
-        }
+        Integer batchSize = Integer.getInteger("batch.size", DEF_BATCH_SIZE);
+        Integer batchInterval = Integer.getInteger("batch.wait.time", DEF_PERIODICITY);
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
         resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ,
                 new DefaultBatchHandler(broker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));

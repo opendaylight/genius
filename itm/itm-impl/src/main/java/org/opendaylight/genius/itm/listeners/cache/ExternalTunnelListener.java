@@ -24,8 +24,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ExternalTunnelListener extends
-        AsyncClusteredDataTreeChangeListenerBase<ExternalTunnel,ExternalTunnelListener>
-        implements AutoCloseable {
+        AsyncClusteredDataTreeChangeListenerBase<ExternalTunnel,ExternalTunnelListener> {
     private static final Logger LOG = LoggerFactory.getLogger(ExternalTunnelListener.class);
     private final DataBroker broker;
 
