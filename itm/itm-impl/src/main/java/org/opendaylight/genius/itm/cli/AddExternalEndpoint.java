@@ -40,7 +40,7 @@ public class AddExternalEndpoint extends OsgiCommandSupport {
 
         try {
             LOG.debug("AddExternalEndpoint: destinationIP {} with tunnelType {}", destinationIp, tunnelType);
-            Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
+            Class<? extends TunnelTypeBase> tunType;
             if (tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN)) {
                 tunType = TunnelTypeVxlan.class;
             } else if (tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_GRE)) {

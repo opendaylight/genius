@@ -29,8 +29,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TunnelMonitorChangeListener
-        extends AsyncDataTreeChangeListenerBase<TunnelMonitorParams, TunnelMonitorChangeListener>
-        implements  AutoCloseable {
+        extends AsyncDataTreeChangeListenerBase<TunnelMonitorParams, TunnelMonitorChangeListener> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitorChangeListener.class);
 

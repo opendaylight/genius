@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -96,7 +96,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig);
+                tunnelMonitoringConfig, itmConfig);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
     }
 
@@ -302,9 +302,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         jobCoordinator.enqueueJob(newZoneName, moveWorker);
 
         if (mapNotHostedDPNToTunnelEndpt.size() > 0) {
-            Set<BigInteger> keys = mapNotHostedDPNToTunnelEndpt.keySet();
-            for (BigInteger key: keys) {
-                DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(key, mapNotHostedDPNToTunnelEndpt.get(key));
+            for (Entry<BigInteger, List<TunnelEndPoints>> entry: mapNotHostedDPNToTunnelEndpt.entrySet()) {
+                DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(entry.getKey(), entry.getValue());
                 notHostedDpnTepInfo.add(newDpnTepsInfo);
             }
         }
@@ -380,10 +379,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         }
 
         if (!mapDPNToTunnelEndpt.isEmpty()) {
-            Set<BigInteger> keys = mapDPNToTunnelEndpt.keySet();
-            LOG.trace("List of dpns in the Map: {} ", keys);
-            for (BigInteger key : keys) {
-                DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(key, mapDPNToTunnelEndpt.get(key));
+            LOG.trace("List of dpns in the Map: {} ", mapDPNToTunnelEndpt.keySet());
+            for (Entry<BigInteger, List<TunnelEndPoints>> entry : mapDPNToTunnelEndpt.entrySet()) {
+                DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(entry.getKey(), entry.getValue());
                 dpnTepInfo.add(newDpnTepsInfo);
             }
         }
@@ -413,13 +411,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                         HwVtep hwVtep = ItmUtils.createHwVtepObject(topologyId, nodeId, ipAddress, ipPrefix, gatewayIP,
                                 vlanID, tunnelType, transportZone);
 
-                        if (hwVtepsList != null) {
-                            LOG.trace("Existing hwVteps");
-                            hwVtepsList.add(hwVtep);
-                        } else {
-                            LOG.trace("Adding new HwVtep {} info ", hwVtep.getHwIp());
-                            hwVtepsList.add(hwVtep);
-                        }
+                        LOG.trace("Adding new HwVtep {} info ", hwVtep.getHwIp());
+                        hwVtepsList.add(hwVtep);
                     }
                 }
             }

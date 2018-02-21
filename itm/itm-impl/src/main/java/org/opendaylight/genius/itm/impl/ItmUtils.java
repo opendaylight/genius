@@ -13,8 +13,10 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -410,7 +412,8 @@ public final class ItmUtils {
     }
 
     private static String getUniqueIdString(String idKey) {
-        return UUID.nameUUIDFromBytes(idKey.getBytes()).toString().substring(0, 12).replace("-", "");
+        return UUID.nameUUIDFromBytes(idKey.getBytes(StandardCharsets.UTF_8)).toString().substring(0, 12)
+                .replace("-", "");
     }
 
     public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DPNTEPsInfoCache dpnTEPsInfoCache, List<BigInteger> dpnIds) {
@@ -688,7 +691,7 @@ public final class ItmUtils {
             }
         }
         if (isNotEmpty(lstDpnsForDelete)) {
-            if (existingDpnIds == null || existingDpnIds.isEmpty()) {
+            if (existingDpnIds.isEmpty()) {
                 String builder = "DPN ID's " + lstDpnsForDelete
                         + " specified for delete from VTEP schema [" + schemaName
                         + "] are not configured in the schema.";
@@ -721,6 +724,7 @@ public final class ItmUtils {
         return !isEmpty(collection);
     }
 
+    @Nonnull
     public static HwVtep createHwVtepObject(String topoId, String nodeId, IpAddress ipAddress, IpPrefix ipPrefix,
                                             IpAddress gatewayIP, int vlanID,
                                             Class<? extends TunnelTypeBase> tunneltype, TransportZone transportZone) {
@@ -752,6 +756,7 @@ public final class ItmUtils {
         }
     }
 
+    @Nonnull
     public static List<BigInteger> getDpnIdList(List<DpnIds> dpnIds) {
         List<BigInteger> dpnList = new ArrayList<>() ;
         for (DpnIds dpn : dpnIds) {
@@ -780,6 +785,7 @@ public final class ItmUtils {
                                interfaceName)).build();
     }
 
+    @Nonnull
     public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
         List<String> tunnelList = new ArrayList<>();
         Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
@@ -913,13 +919,16 @@ public final class ItmUtils {
         return null;
     }
 
+    @SuppressFBWarnings("RV_CHECK_FOR_POSITIVE_INDEXOF")
     public static ExternalTunnelKey getExternalTunnelKey(String dst , String src,
                                                          Class<? extends TunnelTypeBase> tunType) {
-        if (src.indexOf("physicalswitch") > 0) {
-            src = src.substring(0, src.indexOf("physicalswitch") - 1);
+        final int srcIndex = src.indexOf("physicalswitch");
+        if (srcIndex > 0) {
+            src = src.substring(0, srcIndex - 1);
         }
-        if (dst.indexOf("physicalswitch") > 0) {
-            dst = dst.substring(0, dst.indexOf("physicalswitch") - 1);
+        final int dstIndex = dst.indexOf("physicalswitch");
+        if (dstIndex > 0) {
+            dst = dst.substring(0, dstIndex - 1);
         }
         return new ExternalTunnelKey(dst, src, tunType);
     }
@@ -1283,7 +1292,7 @@ public final class ItmUtils {
                 ItmUtils.getInterface(name, ifaceManager);
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
-        if (ifTunnel == null && parentRefs == null) {
+        if (ifTunnel == null || parentRefs == null) {
             return null;
         }
         DstInfoBuilder dstInfoBuilder = new DstInfoBuilder();

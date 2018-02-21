@@ -36,6 +36,7 @@ import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
@@ -157,7 +158,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         AddExternalTunnelEndpointInput addExternalTunnelEndpointInput =
                 new AddExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType)
                         .setDestinationIp(dcgwIP).build();
-        itmRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
+        JdkFutures.addErrorLogging(itmRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput),
+                LOG, "addExternalTunnelEndpoint");
     }
 
     @Override
@@ -165,7 +167,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         RemoveExternalTunnelEndpointInput removeExternalTunnelEndpointInput =
                 new RemoveExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType)
                         .setDestinationIp(dcgwIP).build();
-        itmRpcService.removeExternalTunnelEndpoint(removeExternalTunnelEndpointInput);
+        JdkFutures.addErrorLogging(itmRpcService.removeExternalTunnelEndpoint(removeExternalTunnelEndpointInput),
+                LOG, "removeExternalTunnelEndpoint");
     }
 
     @Override

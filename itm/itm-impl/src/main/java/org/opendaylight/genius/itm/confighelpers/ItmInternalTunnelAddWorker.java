@@ -49,8 +49,8 @@ import org.slf4j.LoggerFactory;
 public final class ItmInternalTunnelAddWorker {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
-    private static ItmConfig itmCfg;
 
+    private final ItmConfig itmCfg;
     private final Integer monitorInterval;
     private final boolean isTunnelMonitoringEnabled;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
@@ -60,10 +60,11 @@ public final class ItmInternalTunnelAddWorker {
     private final JobCoordinator jobCoordinator;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
-            TunnelMonitoringConfig tunnelMonitoringConfig) {
+            TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
+        this.itmCfg = itmCfg;
 
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
@@ -71,9 +72,8 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
-                                                        Collection<DPNTEPsInfo> meshedDpnList, ItmConfig itmConfig) {
+                                                        Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
-        itmCfg = itmConfig;
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             LOG.error(" Build Tunnels was invoked with empty list");
             return Collections.emptyList();

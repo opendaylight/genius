@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -256,7 +257,7 @@ public class ItmExternalTunnelAddWorker {
                                         useOfTunnel, hwTep.getNodeId(),hwTep.getHwIp(),sub.getPrefix(),
                                         sub.getGatewayIp(),hwTep.getIpPrefix(), tunType, false,
                                         monitorInterval, monitorProtocol, transaction)) {
-                                    //do nothing
+                                    LOG.debug("wireUp returned false");
                                 }
                             }
 
@@ -333,9 +334,11 @@ public class ItmExternalTunnelAddWorker {
         return true;
     }
 
+    @SuppressFBWarnings("RV_CHECK_FOR_POSITIVE_INDEXOF")
     static String getExternalTunnelKey(String nodeid) {
-        if (nodeid.indexOf("physicalswitch") > 0) {
-            nodeid = nodeid.substring(0, nodeid.indexOf("physicalswitch") - 1);
+        final int index = nodeid.indexOf("physicalswitch");
+        if (index > 0) {
+            nodeid = nodeid.substring(0, index - 1);
         }
         return nodeid;
     }
