@@ -112,7 +112,7 @@ public class OvsInterfaceStateUpdateHelper {
         }
     }
 
-    public static void handleInterfaceStateUpdates(
+    private void handleInterfaceStateUpdates(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface,
             WriteTransaction transaction, DataBroker dataBroker, InterfaceBuilder ifaceBuilder, boolean opStateModified,
@@ -123,6 +123,14 @@ public class OvsInterfaceStateUpdateHelper {
         if (iface == null && !interfaceName.equals(portName)) {
             return;
         }
+
+        final Interface interfaceState = interfaceManagerCommonUtils.getInterfaceStateFromOperDS(interfaceName);
+        if (interfaceState == null || (interfaceState.getOperStatus() == opState)) {
+            LOG.warn("Ignoring: updating interface state for interface {}",
+                    interfaceName);
+            return;
+        }
+
         LOG.debug("updating interface state entry for {}", interfaceName);
         InstanceIdentifier<Interface> ifStateId = IfmUtil.buildStateInterfaceId(interfaceName);
         ifaceBuilder.setKey(new InterfaceKey(interfaceName));
