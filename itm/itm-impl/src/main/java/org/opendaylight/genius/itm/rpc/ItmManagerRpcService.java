@@ -7,12 +7,13 @@
  */
 package org.opendaylight.genius.itm.rpc;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +27,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -345,15 +345,6 @@ public class ItmManagerRpcService implements ItmRpcService {
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         int serviceId = input.getServiceId() ;
         final List<MatchInfo> mkMatches = getTunnelMatchesForServiceId(serviceId);
-        byte[] vxLANHeader = new byte[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        // Flags Byte
-        byte flags = (byte) 0x08;
-        vxLANHeader[0] = flags;
-
-        // Extract the serviceId details and imprint on the VxLAN Header
-        vxLANHeader[4] = (byte) (serviceId >> 16);
-        vxLANHeader[5] = (byte) (serviceId >> 8);
-        vxLANHeader[6] = (byte) (serviceId >> 0);
 
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
                 getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,serviceId), 5,
@@ -376,7 +367,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
                         .build());
             }
-        });
+        }, MoreExecutors.directExecutor());
         // result.set(RpcResultBuilder.<Void>success().build());
         return result;
     }
@@ -409,7 +400,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
                         .build());
             }
-        });
+        }, MoreExecutors.directExecutor());
         //result.set(RpcResultBuilder.<Void>success().build());
 
         return result ;
@@ -418,16 +409,6 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     public List<MatchInfo> getTunnelMatchesForServiceId(int serviceId) {
         final List<MatchInfo> mkMatches = new ArrayList<>();
-        byte[] vxLANHeader = new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-        // Flags Byte
-        byte flag = (byte) 0x08;
-        vxLANHeader[0] = flag;
-
-        // Extract the serviceId details and imprint on the VxLAN Header
-        vxLANHeader[4] = (byte) (serviceId >> 16);
-        vxLANHeader[5] = (byte) (serviceId >> 8);
-        vxLANHeader[6] = (byte) (serviceId >> 0);
 
         // Matching metadata
         mkMatches.add(new MatchTunnelId(BigInteger.valueOf(serviceId)));
@@ -444,7 +425,6 @@ public class ItmManagerRpcService implements ItmRpcService {
             GetInternalOrExternalInterfaceNameInput input) {
         RpcResultBuilder<GetInternalOrExternalInterfaceNameOutput> resultBld = RpcResultBuilder.failed();
         BigInteger srcDpn = input.getSourceDpid() ;
-        srcDpn.toString();
         IpAddress dstIp = input.getDestinationIp() ;
         InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class,
@@ -461,10 +441,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             resultBld.withResult(output.build()) ;
         } else {
             Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-            if (meshedDpnList == null) {
-                LOG.error("There are no tunnel mesh info in config DS");
-                return Futures.immediateFuture(resultBld.build());
-            }
+
             // Look for external tunnels if not look for internal tunnel
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
@@ -726,10 +703,10 @@ public class ItmManagerRpcService implements ItmRpcService {
                         result.set(RpcResultBuilder.<Void>failed().withError(RpcError.ErrorType.APPLICATION, msg, error)
                                 .build());
                     }
-                });
+                }, MoreExecutors.directExecutor());
             }
             return result;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             RpcResultBuilder<java.lang.Void> resultBuilder = RpcResultBuilder.<Void>failed()
                     .withError(RpcError.ErrorType.APPLICATION, "Adding l2 Gateway to DS Failed", e);
             return Futures.immediateFuture(resultBuilder.build());
@@ -836,9 +813,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         IpAddress dcgwIpAddr = new IpAddress(dcgwIpStr.toCharArray());
         long retVal;
 
-        if (dcGatewayIpList != null
-                && !dcGatewayIpList.isEmpty()
-                && dcGatewayIpList.contains(dcgwIpAddr)) {
+        if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()
+                && dcGatewayIpList.stream().anyMatch(gwIp -> Objects.equal(gwIp.getIpAddress(), dcgwIpAddr))) {
             //Match found
             retVal = 1;
             IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);

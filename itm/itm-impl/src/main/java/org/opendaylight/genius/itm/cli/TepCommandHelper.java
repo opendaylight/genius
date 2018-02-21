@@ -12,9 +12,12 @@ import com.google.common.base.Preconditions;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -66,9 +69,12 @@ import org.slf4j.LoggerFactory;
 public class TepCommandHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
+
+    private static final AtomicInteger CHECK = new AtomicInteger();
+
     private final DataBroker dataBroker;
     private final ItmConfig itmConfig;
-    static int check = 0;
+
     /*
      * boolean flag add_or_delete --- can be set to true if the last called tep
      * command is Tep-add else set to false when Tep-delete is called
@@ -116,7 +122,7 @@ public class TepCommandHelper {
                                  String subnetMask, String gatewayIp, String transportZone,
                                  CommandSession session) throws TepException {
 
-        check++;
+        CHECK.incrementAndGet();
         IpAddress ipAddressObj = null;
         IpAddress gatewayIpObj = null;
         IpPrefix subnetMaskObj = null;
@@ -129,7 +135,7 @@ public class TepCommandHelper {
             } else {
                 LOG.debug("gateway is null");
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
             return;
         }
@@ -210,11 +216,11 @@ public class TepCommandHelper {
 
         boolean isConfiguredTepGreType = isGreTunnelType(transportZone, allTransportZonesAsMap);
         // Checking for duplicates in local cache
-        for (String tz : transportZonesHashMap.keySet()) {
+        for (Entry<String, Map<SubnetObject, List<Vteps>>> entry : transportZonesHashMap.entrySet()) {
+            String tz = entry.getKey();
             boolean isGreType = isGreTunnelType(tz, allTransportZonesAsMap);
-            Map<SubnetObject, List<Vteps>> subVtepMapTemp = transportZonesHashMap.get(tz);
-            for (SubnetObject subOb : subVtepMapTemp.keySet()) {
-                List<Vteps> vtepList = subVtepMapTemp.get(subOb);
+            Map<SubnetObject, List<Vteps>> subVtepMapTemp = entry.getValue();
+            for (List<Vteps> vtepList : subVtepMapTemp.values()) {
                 validateForDuplicateAndSingleGreTep(inputVtep, isConfiguredTepGreType, isGreType, vtepList);
             }
         }
@@ -327,8 +333,7 @@ public class TepCommandHelper {
         // check in local cache
         if (transportZonesHashMap.containsKey(tzone)) {
             Map<SubnetObject, List<Vteps>> subVtepMapTemp = transportZonesHashMap.get(tzone);
-            for (SubnetObject subOb : subVtepMapTemp.keySet()) {
-                List<Vteps> vtepList = subVtepMapTemp.get(subOb);
+            for (List<Vteps> vtepList : subVtepMapTemp.values()) {
                 for (Vteps vtep : vtepList) {
                     if (vtep.getDpnId().equals(dpnId)) {
                         return true;
@@ -367,16 +372,18 @@ public class TepCommandHelper {
         TransportZones transportZonesBuilt = null;
         TransportZone transportZone = null;
         try {
-            LOG.debug("no of teps added {}", check);
-            if (transportZonesHashMap != null || !transportZonesHashMap.isEmpty()) {
+            LOG.debug("no of teps added {}", CHECK);
+            if (transportZonesHashMap != null && !transportZonesHashMap.isEmpty()) {
                 transportZoneArrayList = new ArrayList<>();
-                for (String tz : transportZonesHashMap.keySet()) {
+                for (Entry<String, Map<SubnetObject, List<Vteps>>> mapEntry : transportZonesHashMap.entrySet()) {
+                    String tz = mapEntry.getKey();
                     LOG.debug("transportZonesHashMap {}", tz);
                     subnetList = new ArrayList<>();
-                    Map<SubnetObject, List<Vteps>> subVtepMapTemp = transportZonesHashMap.get(tz);
-                    for (SubnetObject subOb : subVtepMapTemp.keySet()) {
+                    Map<SubnetObject, List<Vteps>> subVtepMapTemp = mapEntry.getValue();
+                    for (Entry<SubnetObject, List<Vteps>> entry : subVtepMapTemp.entrySet()) {
+                        SubnetObject subOb = entry.getKey();
                         LOG.debug("subnets {}", subOb.get_prefix());
-                        List<Vteps> vtepList = subVtepMapTemp.get(subOb);
+                        List<Vteps> vtepList = entry.getValue();
                         Subnets subnet = new SubnetsBuilder().setGatewayIp(subOb.get_gatewayIp())
                                 .setKey(subOb.get_key()).setPrefix(subOb.get_prefix()).setVlanId(subOb.get_vlanId())
                                 .setVteps(vtepList).build();
@@ -426,8 +433,8 @@ public class TepCommandHelper {
             } else {
                 LOG.debug("NO vteps were configured");
             }
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
+        } catch (RuntimeException e) {
+            LOG.error("Error building TEPs", e);
         }
     }
 
@@ -512,7 +519,7 @@ public class TepCommandHelper {
             }
         } else if (inMemoryCache) {
             System.out.println("Dumping the data in cache for " + cacheName);
-            Collection<String> cacheContent = null;
+            Collection<String> cacheContent;
             switch (cacheName) {
                 case ITMConstants.INTERNAL_TUNNEL_CACHE_NAME:
                     cacheContent = ItmUtils.ITM_CACHE.getAllInternalInterfaces();
@@ -521,10 +528,10 @@ public class TepCommandHelper {
                     cacheContent = ItmUtils.ITM_CACHE.getAllExternalInterfaces();
                     break;
                 default:
-                    cacheContent = null;
+                    cacheContent = Collections.emptyList();
             }
             System.out.println("Number of data in cache " + cacheContent.size());
-            if (cacheContent != null && !cacheContent.isEmpty()) {
+            if (!cacheContent.isEmpty()) {
                 for (String key : cacheContent) {
                     System.out.println(key + " ");
                 }
@@ -557,7 +564,7 @@ public class TepCommandHelper {
             } else {
                 LOG.debug("gateway is null");
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
             return;
         }
@@ -697,8 +704,8 @@ public class TepCommandHelper {
                 allPaths.clear();
                 vtepDelCommitList.clear();
             }
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
+        } catch (RuntimeException e) {
+            LOG.error("Unexpected error", e);
         }
     }
 

@@ -160,6 +160,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <!--Build Dependencies-->
   <build>
     <plugins>
+    <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+           <failOnError>true</failOnError>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>

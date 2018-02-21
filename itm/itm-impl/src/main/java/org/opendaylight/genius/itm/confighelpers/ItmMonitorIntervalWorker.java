@@ -54,10 +54,9 @@ public class ItmMonitorIntervalWorker implements Callable<List<ListenableFuture<
         TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
         ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, intervalBuilder,
                 dataBroker, ItmUtils.DEFAULT_CALLBACK);
-        if (tunnelList != null && !tunnelList.isEmpty()) {
-            for (String tunnel : tunnelList) {
-                toggle(tunnel, transaction);
-            }
+
+        for (String tunnel : tunnelList) {
+            toggle(tunnel, transaction);
         }
     }
 

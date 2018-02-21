@@ -280,8 +280,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             oldDpId = ItmUtils.getStrDatapathId(ovsdbOldBridgeAugmentation);
         }
         if (oldDpId == null && newDpId != null) {
-            LOG.trace("DpId changed from {} to {} for bridge {}",
-                    oldDpId, newDpId, oldBridgeName);
+            LOG.trace("DpId changed to {} for bridge {}", newDpId, oldBridgeName);
             return true;
         }
         return false;
@@ -299,11 +298,6 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             return null;
         }
 
-        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
-        if (ovsdbNodeExternalIdsList == null) {
-            LOG.debug("ExternalIds list does not exist in the OVSDB Node Augmentation.");
-        }
-
         OvsdbTepInfo ovsdbTepInfoObj = new OvsdbTepInfo();
 
         for (OpenvswitchOtherConfigs otherConfigs : ovsdbNodeOtherConfigsList) {
@@ -313,16 +307,21 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
         }
 
-        for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-            if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
-                String tzName = externalId.getExternalIdValue();
-                ovsdbTepInfoObj.setTzName(tzName);
-            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
-                String bridgeName = externalId.getExternalIdValue();
-                ovsdbTepInfoObj.setBrName(bridgeName);
-            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
-                boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
-                ovsdbTepInfoObj.setOfTunnel(ofTunnel);
+        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
+        if (ovsdbNodeExternalIdsList == null) {
+            LOG.debug("ExternalIds list does not exist in the OVSDB Node Augmentation.");
+        } else {
+            for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
+                if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
+                    String tzName = externalId.getExternalIdValue();
+                    ovsdbTepInfoObj.setTzName(tzName);
+                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
+                    String bridgeName = externalId.getExternalIdValue();
+                    ovsdbTepInfoObj.setBrName(bridgeName);
+                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
+                    boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
+                    ovsdbTepInfoObj.setOfTunnel(ofTunnel);
+                }
             }
         }
 

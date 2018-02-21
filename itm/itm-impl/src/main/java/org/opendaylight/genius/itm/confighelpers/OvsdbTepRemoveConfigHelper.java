@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import java.math.BigInteger;
 import java.util.List;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -99,7 +98,6 @@ public final class OvsdbTepRemoveConfigHelper {
         if (subnetList == null || subnetList.isEmpty()) {
             LOG.trace("No subnet list in transport-zone. Nothing to do.");
         } else {
-            String portName = ITMConstants.DUMMY_PORT;
             IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
 
             List<Vteps> vtepList = null;
@@ -126,8 +124,6 @@ public final class OvsdbTepRemoveConfigHelper {
                     if (vtep.getDpnId().equals(dpnId)) {
                         vtepFound = true;
                         oldVtep = vtep;
-                        // get portName of existing vtep
-                        portName = vtep.getPortname();
                         break;
                     }
                 }
@@ -135,7 +131,7 @@ public final class OvsdbTepRemoveConfigHelper {
                     // vtep is found, update it with tep-ip
                     LOG.trace("Remove TEP from vtep list in subnet list of transport-zone.");
                     dpnId = oldVtep.getDpnId();
-                    portName = oldVtep.getPortname();
+                    String portName = oldVtep.getPortname();
                     removeVtepFromTZConfig(subnetMaskObj, tzName, dpnId, portName, wrTx);
                 } else {
                     LOG.trace(
@@ -164,8 +160,7 @@ public final class OvsdbTepRemoveConfigHelper {
             .child(TransportZone.class, new TransportZoneKey(tzName))
             .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
 
-        LOG.trace("Removing TEP (TZ: {} Subnet: {} DPN-ID: {}) in ITM Config DS.", tzName,
-                subnetMaskObj.getValue().toString(), dpnId);
+        LOG.trace("Removing TEP (TZ: {} Subnet: {} DPN-ID: {}) in ITM Config DS.", tzName, subnetMaskObj, dpnId);
         // remove vtep
         wrTx.delete(LogicalDatastoreType.CONFIGURATION, vtepPath);
     }
