@@ -60,6 +60,24 @@
     },
     {
       "key": {
+        "uuid": "75fa850a_1c04f3e6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1402,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-21T13:54:35Z",
+      "side": 1,
+      "message": "I don\u0027t understand what you mean by \"take the functionality away from the RPC\". The wrapper is related to the IdManager and augments the API so it makes sense to me to reside in idmanager-api. mdsal-util is already way overloaded.",
+      "parentUuid": "bf86421d_4e5bb0b7",
+      "revId": "b4aa1be4556452a5a7ba98ee877154bdfda8e44a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eb7c8c7d_c7b43c7a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 3
