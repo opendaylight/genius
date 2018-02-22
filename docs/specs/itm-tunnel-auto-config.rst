@@ -106,7 +106,7 @@ for TEP parameters can be determined to perform TEP add/update/delete operations
 **Sample JSON output**
 
 .. code-block:: json
-   :emphasize-lines: 16,17,20,21,24,25
+   :emphasize-lines: 16,17,20,21,30,31
 
     {
       "topology": [
@@ -123,16 +123,22 @@ for TEP parameters can be determined to perform TEP add/update/delete operations
               "external-id-value": "e93a266a-9399-4881-83ff-27094a648e2b"
             },
             {
-              "external-id-key": "tep-ip",
-              "external-id-value": "20.0.0.1"
-            },
-            {
               "external-id-key": "tzname",
               "external-id-value": "TZA"
             },
             {
               "external-id-key": "of-tunnel",
               "external-id-value": "true"
+            }
+          ],
+          "ovsdb:openvswitch-other-configs": [
+            {
+              "other-config-key": "provider_mappings",
+              "other-config-value": "physnet1:br-physnet1"
+            },
+            {
+              "other-config-key": "local_ip",
+              "other-config-value": "20.0.0.1"
             }
           ],
           "ovsdb:datapath-type-entry": [
@@ -170,7 +176,7 @@ ITM TEP parameter         OVSDB field
 DPN-ID                    ``ovsdb:datapath-id`` from bridge whose name is pre-configured
                           with openvswitch:external_ids:br-name:value
 
-IP-Address                ``openvswitch:external_ids:tep-ip``:value
+IP-Address                ``openvswitch:other_config:local_ip``:value
 
 Transport Zone Name       ``openvswitch:external_ids:tzname``:value
 
@@ -290,15 +296,15 @@ Workflow
 
 TEP Addition
 ^^^^^^^^^^^^
-When TEP IP ``external_ids:tep-ip`` and ``external_ids:tzname`` are configured at OVS side
+When TEP IP ``other_config:local_ip`` and ``external_ids:tzname`` are configured at OVS side
 using ``ovs-vsctl`` commands to add TEP, then TEP parameters details are passed to the OVSDB
 plugin via OVSDB connection which in turn, is updated into Network Topology Operational DS.
 ITM listens for change in Network Topology Node.
 
-When TEP parameters (like ``tep-ip``, ``tzname``, ``br-name``, ``of-tunnel``) are
+When TEP parameters (like ``local_ip``, ``tzname``, ``br-name``, ``of-tunnel``) are
 received in add notification of OVSDB Node, then TEP is added.
 
-For TEP addition, TEP-IP and DPN-ID are mandatory. TEP-IP is obtained from ``tep-ip``
+For TEP addition, TEP-IP and DPN-ID are mandatory. TEP-IP is obtained from ``local_ip``
 TEP parameter and DPN-ID is fetched from OVSDB node based on ``br-name`` TEP parameter:
 
 * if bridge name is specified, then datapath ID of the specified bridge is fetched.
@@ -337,7 +343,7 @@ in ITM config DS and then TEPs are added to the tunnel mesh of that transport zo
 TEP Updation
 ^^^^^^^^^^^^
 * TEP updation for IP address is considered as TEP deletion followed by TEP addition.
-  Remove existing TEP-IP ``external_ids:tep-ip`` and then add new TEP-IP using ``ovs-vsctl``
+  Remove existing TEP-IP ``other_config:local_ip`` and then add new TEP-IP using ``ovs-vsctl``
   commands. TEP with old TEP-IP is deleted and then TEP with new TEP-IP gets added.
 * TEP updation for transport zone can be done dynamically. When ``external_ids:tzname``
   is updated at OVS side, then such change will be notified to OVSDB plugin via OVSDB
@@ -350,7 +356,7 @@ TEP Updation
 
 TEP Deletion
 ^^^^^^^^^^^^
-When an ``openvswitch:external_ids:tep-ip`` parameter gets deleted through *ovs-vsctl*
+When an ``openvswitch:other_config:local_ip`` parameter gets deleted through *ovs-vsctl*
 command, then network topology Operational DS gets updated via OVSB update notification.
 ITM which has registered for the network-topology DTCNs, gets notified and this deletes
 the TEP from Transport zone or ``tepsNotHostedInTransportZone`` stored in ITM config DS
@@ -523,19 +529,21 @@ the ``ovs-vsctl`` command:
 
   * To set TEP params on OVS table:
 
-  ovs-vsctl    set O . external_ids:tep-ip=192.168.56.102
+  ovs-vsctl    set O . other_config:local_ip=192.168.56.102
   ovs-vsctl    set O . external_ids:tzname=TZA
   ovs-vsctl    set O . external_ids:br-name=br0
   ovs-vsctl    set O . external_ids:of-tunnel=true
 
-  * To clear TEP params in one go by clearing external_ids column from
-    OVS table:
+  * To clear TEP params in one go by clearing external_ids and other_config
+    column from OVS table:
 
   ovs-vsctl clear O . external_ids
+  ovs-vsctl clear O . other_config
 
-  * To clear specific TEP paramter from external_ids column in OVS table:
+  * To clear specific TEP paramter from external_ids or other_config column 
+    in OVS table:
 
-  ovs-vsctl remove O . external_ids tep-ip
+  ovs-vsctl remove O . other_config local_ip
   ovs-vsctl remove O . external_ids tzname
 
   * To check TEP params are set or cleared on OVS table:
