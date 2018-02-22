@@ -9,6 +9,7 @@
 package org.opendaylight.genius.srm.shell;
 
 import com.google.common.collect.ImmutableMap;
+import java.util.Locale;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityNameBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityTypeInstance;
@@ -67,7 +68,7 @@ public final class SrmCliUtils {
      */
     public static Class<? extends EntityTypeBase> getEntityType(String strType) {
         LOG.debug("Getting entityType for type {}", strType);
-        return ENTITY_TYPE_MAP.get(strType.toUpperCase());
+        return ENTITY_TYPE_MAP.get(strType.toUpperCase(Locale.ROOT));
     }
 
     /**
@@ -80,9 +81,9 @@ public final class SrmCliUtils {
     public static Class<? extends EntityNameBase> getEntityName(Class<? extends EntityTypeBase> type, String strName) {
         LOG.debug("Getting entityName for type {} and name: {}", type, strName);
         if (EntityTypeService.class.equals(type)) {
-            return SERVICE_NAME_MAP.get(strName.toUpperCase());
+            return SERVICE_NAME_MAP.get(strName.toUpperCase(Locale.ROOT));
         } else if (EntityTypeInstance.class.equals(type)) {
-            return INSTANCE_NAME_MAP.get(strName.toUpperCase());
+            return INSTANCE_NAME_MAP.get(strName.toUpperCase(Locale.ROOT));
         } else {
             return null;
         }
@@ -91,7 +92,7 @@ public final class SrmCliUtils {
     public static String getTypeHelp() {
         StringBuilder help = new StringBuilder("Supported Entity Types are:\n");
         for (String entityType : SrmCliUtils.ENTITY_TYPE_MAP.keySet()) {
-            help.append("\t").append(entityType).append("/").append(entityType.toLowerCase()).append("\n");
+            help.append("\t").append(entityType).append("/").append(entityType.toLowerCase(Locale.ROOT)).append("\n");
         }
         return help.toString();
     }
@@ -102,12 +103,12 @@ public final class SrmCliUtils {
         if (EntityTypeService.class.equals(entityType)) {
             help.append(" SERVICE are:\n");
             for (String entityName : SrmCliUtils.SERVICE_NAME_MAP.keySet()) {
-                help.append(String.format("\t%s/%s\n", entityName.toLowerCase(), entityName));
+                help.append(String.format("\t%s/%s%n", entityName.toLowerCase(Locale.ROOT), entityName));
             }
         } else if (EntityTypeInstance.class.equals(entityType)) {
             help.append(" INSTANCE are:\n");
             for (String entityName : SrmCliUtils.INSTANCE_NAME_MAP.keySet()) {
-                help.append(String.format("\t%s/%s\n", entityName.toLowerCase(), entityName));
+                help.append(String.format("\t%s/%s%n", entityName.toLowerCase(Locale.ROOT), entityName));
             }
         }
         return help.toString();
