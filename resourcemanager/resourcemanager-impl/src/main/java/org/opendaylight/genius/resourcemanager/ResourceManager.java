@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
@@ -129,11 +130,10 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
         Future<RpcResult<AllocateIdRangeOutput>> output = idManager.allocateIdRange(allocateIdRangeBuilder.build());
         AllocateResourceOutputBuilder allocateResourceOutputBuilder = new AllocateResourceOutputBuilder();
         RpcResultBuilder<AllocateResourceOutput> allocateResourceOutputRpcBuilder = null;
-        List<Long> idValues = new ArrayList<>();
         try {
             if (output.get().isSuccessful()) {
                 AllocateIdRangeOutput allocateIdRangeOutput = output.get().getResult();
-                idValues = allocateIdRangeOutput.getIdValues();
+                List<Long> idValues = allocateIdRangeOutput.getIdValues();
                 allocateResourceOutputBuilder.setIdValues(idValues);
                 allocateResourceOutputRpcBuilder = RpcResultBuilder.success();
                 allocateResourceOutputRpcBuilder.withResult(allocateResourceOutputBuilder.build());
@@ -280,24 +280,17 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
 
         ReleaseIdInputBuilder releaseIdInputBuilder = new ReleaseIdInputBuilder();
         releaseIdInputBuilder.setIdKey(input.getIdKey()).setPoolName(resourcesCache.get(input.getResourceType()));
-        RpcResultBuilder<Void> releaseIdRpcBuilder;
-        try {
-            idManager.releaseId(releaseIdInputBuilder.build());
-            releaseIdRpcBuilder = RpcResultBuilder.success();
-        } catch (NullPointerException e) {
-            LOG.error("Release resource failed for resource {} due to ", input.getResourceType(), e);
-            releaseIdRpcBuilder = RpcResultBuilder.failed();
-            releaseIdRpcBuilder.withError(RpcError.ErrorType.APPLICATION, e.getMessage());
-        }
-        return Futures.immediateFuture(releaseIdRpcBuilder.build());
+
+        return idManager.releaseId(releaseIdInputBuilder.build());
     }
 
     private void createIdPool(String poolNameProperty, String lowIdProperty, String highIdProperty,
             String poolDefaultName) {
-        idManager.createIdPool(
+        JdkFutures.addErrorLogging(idManager.createIdPool(
                 new CreateIdPoolInputBuilder().setPoolName(System.getProperty(poolNameProperty, poolDefaultName))
                         .setLow(Long.valueOf(System.getProperty(lowIdProperty, DEFAULT_LOW_RANGE)))
-                        .setHigh(Long.valueOf(System.getProperty(highIdProperty, DEFAULT_HIGH_RANGE))).build());
+                        .setHigh(Long.valueOf(System.getProperty(highIdProperty, DEFAULT_HIGH_RANGE))).build()),
+                LOG, "createIdPool");
     }
 
     private void createIdpools() {
