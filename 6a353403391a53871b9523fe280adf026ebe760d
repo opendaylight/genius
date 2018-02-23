@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "58028b8e_20cfc3db",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-23T02:28:50Z",
+      "side": 1,
+      "message": "i hope of-tunnel is not mandatory..can we mention that as well?",
+      "revId": "6a353403391a53871b9523fe280adf026ebe760d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec85631a_28eb4dd9",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 1
