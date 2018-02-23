@@ -21,8 +21,9 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
@@ -56,7 +57,8 @@ public class TerminationPointStateListener extends
                                          final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                          final OvsInterfaceTopologyStateUpdateHelper
                                                      ovsInterfaceTopologyStateUpdateHelper,
-                                         final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                         final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                         final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
@@ -65,7 +67,8 @@ public class TerminationPointStateListener extends
         this.dataBroker = dataBroker;
         this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
         registerListener();
-        this.interfaceServiceRecoveryHandler.addRecoverableListener(this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
+                this);
     }
 
     @Override

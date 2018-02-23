@@ -7,15 +7,13 @@
  */
 package org.opendaylight.genius.interfacemanager.recovery.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.opendaylight.genius.interfacemanager.recovery.ServiceRecoveryInterface;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
-import org.opendaylight.genius.interfacemanager.recovery.registry.ServiceRecoveryRegistry;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryInterface;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusIfm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,33 +22,25 @@ import org.slf4j.LoggerFactory;
 public class InterfaceServiceRecoveryHandler implements ServiceRecoveryInterface {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceServiceRecoveryHandler.class);
-
-    private final List<RecoverableListener> recoverableListeners = Collections.synchronizedList(new ArrayList<>());
+    private final ServiceRecoveryRegistry serviceRecoveryRegistry;
 
     @Inject
     public InterfaceServiceRecoveryHandler(final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         LOG.info("registering IFM service recovery handlers");
+        this.serviceRecoveryRegistry = serviceRecoveryRegistry;
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(buildServiceRegistryKey(), this);
     }
 
-    public void addRecoverableListener(final RecoverableListener recoverableListener) {
-        recoverableListeners.add(recoverableListener);
-    }
-
-    public void removeRecoverableListener(final RecoverableListener recoverableListener) {
-        recoverableListeners.add(recoverableListener);
-    }
-
     private void deregisterListeners() {
-        synchronized (recoverableListeners) {
-            recoverableListeners.forEach((recoverableListener -> recoverableListener.deregisterListener()));
-        }
+        List<RecoverableListener> recoverableListeners =
+                serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey());
+        recoverableListeners.forEach((recoverableListener -> recoverableListener.deregisterListener()));
     }
 
     private void registerListeners() {
-        synchronized (recoverableListeners) {
-            recoverableListeners.forEach((recoverableListener -> recoverableListener.registerListener()));
-        }
+        List<RecoverableListener> recoverableListeners =
+                serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey());
+        recoverableListeners.forEach((recoverableListener -> recoverableListener.registerListener()));
     }
 
     @Override

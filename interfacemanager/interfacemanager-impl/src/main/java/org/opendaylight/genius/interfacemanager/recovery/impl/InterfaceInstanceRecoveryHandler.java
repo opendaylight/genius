@@ -17,8 +17,9 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.recovery.ServiceRecoveryInterface;
-import org.opendaylight.genius.interfacemanager.recovery.registry.ServiceRecoveryRegistry;
+import org.opendaylight.genius.srm.ServiceRecoveryInterface;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -35,20 +36,27 @@ public class InterfaceInstanceRecoveryHandler implements ServiceRecoveryInterfac
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final JobCoordinator jobCoordinator;
     private final ManagedNewTransactionRunner txRunner;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public InterfaceInstanceRecoveryHandler(DataBroker dataBroker,
                                             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                             JobCoordinator jobCoordinator,
-                                            ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                            ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                            EntityOwnershipUtils entityOwnershipUtils) {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.jobCoordinator = jobCoordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.entityOwnershipUtils = entityOwnershipUtils;
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(buildServiceRegistryKey(), this);
     }
 
     @Override
     public void recoverService(String entityId) {
+        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+                IfmConstants.INTERFACE_CONFIG_ENTITY)) {
+            return;
+        }
         LOG.info("recover interface instance {}", entityId);
         // Fetch the interface from interface config DS first.
         Interface interfaceConfig = interfaceManagerCommonUtils.getInterfaceFromConfigDS(entityId);
