@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.genius.interfacemanager.recovery.listeners;
+package org.opendaylight.genius.srm.impl;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -14,19 +14,16 @@ import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
-import org.opendaylight.genius.interfacemanager.recovery.impl.ServiceRecoveryManager;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.ServiceOps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.Services;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.ServicesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.services.Operations;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusIfm;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ServiceRecoveryListener extends AbstractSyncDataTreeChangeListener<Operations> {
+public class ServiceRecoveryListener extends AbstractClusteredSyncDataTreeChangeListener<Operations> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServiceRecoveryListener.class);
 
@@ -35,7 +32,7 @@ public class ServiceRecoveryListener extends AbstractSyncDataTreeChangeListener<
     @Inject
     public ServiceRecoveryListener(DataBroker dataBroker, ServiceRecoveryManager serviceRecoveryManager) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(ServiceOps.class)
-                .child(Services.class, new ServicesKey(GeniusIfm.class)).child(Operations.class));
+                .child(Services.class).child(Operations.class));
         this.serviceRecoveryManager = serviceRecoveryManager;
     }
 

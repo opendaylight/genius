@@ -27,11 +27,12 @@ import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -77,15 +78,18 @@ public class InterfaceInventoryStateListener
 
     @Inject
     public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
-            final IMdsalApiManager mdsalApiManager, final AlivenessMonitorService alivenessMonitorService,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
-            final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
-            final AlivenessMonitorUtils alivenessMonitorUtils,
-            final InterfaceMetaUtils interfaceMetaUtils,
-            final PortNameCache portNameCache,
-            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                           final IMdsalApiManager mdsalApiManager,
+                                           final AlivenessMonitorService alivenessMonitorService,
+                                           final EntityOwnershipUtils entityOwnershipUtils,
+                                           final JobCoordinator coordinator,
+                                           final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                           final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
+                                           final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
+                                           final AlivenessMonitorUtils alivenessMonitorUtils,
+                                           final InterfaceMetaUtils interfaceMetaUtils,
+                                           final PortNameCache portNameCache,
+                                           final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                           final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -98,7 +102,8 @@ public class InterfaceInventoryStateListener
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
         registerListener();
-        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
+                this);
     }
 
     @Override
