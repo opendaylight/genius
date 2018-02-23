@@ -22,12 +22,13 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsInterfaceConfigUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
@@ -62,13 +63,17 @@ public class InterfaceConfigListener
 
     @Inject
     public InterfaceConfigListener(final DataBroker dataBroker, final IdManagerService idManager,
-            final IMdsalApiManager mdsalApiManager, final InterfacemgrProvider interfaceMgrProvider,
-            final AlivenessMonitorService alivenessMonitorService, final EntityOwnershipUtils entityOwnershipUtils,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
-            final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
-            final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper,
-            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                   final IMdsalApiManager mdsalApiManager,
+                                   final InterfacemgrProvider interfaceMgrProvider,
+                                   final AlivenessMonitorService alivenessMonitorService,
+                                   final EntityOwnershipUtils entityOwnershipUtils,
+                                   final JobCoordinator coordinator,
+                                   final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                   final OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
+                                   final OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
+                                   final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper,
+                                   final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                   final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(Interface.class, InterfaceConfigListener.class);
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
@@ -79,7 +84,8 @@ public class InterfaceConfigListener
         this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
         this.dataBroker = dataBroker;
         registerListener();
-        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
+                this);
     }
 
     @Override
