@@ -26,7 +26,9 @@ import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
 import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
@@ -171,7 +173,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 flowBasedServicesRendererFactoryResolver.getFlowBasedServicesRendererFactory(
                         serviceKey.getServiceMode()).getFlowBasedServicesRemoveRenderer();
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(serviceKey.getInterfaceName(),
-            serviceKey.getServiceMode(), flowBasedServicesConfigRemovable, boundServiceOld, boundServicesList);
+            serviceKey.getServiceMode(), flowBasedServicesConfigRemovable, boundServiceOld,
+                boundServicesList, coordinator);
         coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -261,15 +264,18 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable;
         BoundServices boundServicesNew;
         List<BoundServices> boundServicesList;
+        JobCoordinator jobCoordinator;
 
         RendererConfigRemoveWorker(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
                                    FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable,
-                                   BoundServices boundServicesNew, List<BoundServices> boundServicesList) {
+                                   BoundServices boundServicesNew, List<BoundServices> boundServicesList,
+                                   JobCoordinator jobCoordinator) {
             this.interfaceName = interfaceName;
             this.serviceMode = serviceMode;
             this.flowBasedServicesConfigRemovable = flowBasedServicesConfigRemovable;
             this.boundServicesNew = boundServicesNew;
             this.boundServicesList = boundServicesList;
+            this.jobCoordinator = jobCoordinator;
         }
 
         @Override
@@ -286,6 +292,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             if (boundServicesList.isEmpty()) {
                 FlowBasedServicesUtils.removeBoundServicesState(futures, dataBroker, interfaceName, serviceMode);
+                IfmUtil.removeBoundServicesParent(new ManagedNewTransactionRunnerImpl(dataBroker),
+                        jobCoordinator, interfaceName, serviceMode);
             }
             flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew, boundServicesList,
                     boundServiceState);

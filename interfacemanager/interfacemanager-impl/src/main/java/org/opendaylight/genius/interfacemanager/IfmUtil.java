@@ -532,8 +532,14 @@ public final class IfmUtil {
                 .child(BoundServices.class, new BoundServicesKey(servicePriority)).build();
     }
 
+    public static InstanceIdentifier<ServicesInfo> buildBoundServicesParentIId(
+            String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
+        return InstanceIdentifier.builder(ServiceBindings.class)
+                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode)).build();
+    }
+
     public static void bindService(WriteTransaction writeTransaction, String interfaceName, BoundServices serviceInfo,
-            Class<? extends ServiceModeBase> serviceMode) {
+                                   Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
                 serviceInfo.getServicePriority(), interfaceName, serviceMode);
@@ -552,6 +558,17 @@ public final class IfmUtil {
         coordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier)
+                )));
+    }
+
+    public static void removeBoundServicesParent(ManagedNewTransactionRunner txRunner, JobCoordinator coordinator,
+                                                 String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
+        LOG.info("Removing bound services parent as all services for this interface are unbound : {} : {}",
+                interfaceName, serviceMode);
+        coordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, buildBoundServicesParentIId(interfaceName,
+                    serviceMode))
                 )));
     }
 
