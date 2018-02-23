@@ -8,25 +8,30 @@
 
 package org.opendaylight.genius.fcapsappjmx;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import javax.management.AttributeChangeNotification;
-import javax.management.Notification;
 import javax.management.NotificationBroadcasterSupport;
 
 public class ControlPathFailureAlarm extends NotificationBroadcasterSupport implements ControlPathFailureAlarmMBean {
 
-    private List<String> raiseAlarmObject = new ArrayList<>();
-    private List<String> clearAlarmObject = new ArrayList<>();
-    private long sequenceNumber = 1;
+    private volatile List<String> raiseAlarmObject = new ArrayList<>();
+    private volatile List<String> clearAlarmObject = new ArrayList<>();
+    private final AtomicLong sequenceNumber = new AtomicLong(1);
 
     @Override
     public void setRaiseAlarmObject(List<String> raiseAlarmObject) {
         this.raiseAlarmObject = raiseAlarmObject;
 
-        Notification notif = new AttributeChangeNotification(this, sequenceNumber++, System.currentTimeMillis(),
-                "raise alarm object notified ", "raiseAlarmObject", "ArrayList", "", this.raiseAlarmObject);
-        sendNotification(notif);
+        sendRaiseAlarmNotification(this.raiseAlarmObject);
+    }
+
+    private void sendRaiseAlarmNotification(List<String> alarmObject) {
+        sendNotification(new AttributeChangeNotification(this, sequenceNumber.incrementAndGet(),
+                System.currentTimeMillis(), "raise alarm object notified ", "raiseAlarmObject", "ArrayList", "",
+                alarmObject));
     }
 
     @Override
@@ -38,9 +43,13 @@ public class ControlPathFailureAlarm extends NotificationBroadcasterSupport impl
     public void setClearAlarmObject(List<String> clearAlarmObject) {
         this.clearAlarmObject = clearAlarmObject;
 
-        Notification notif = new AttributeChangeNotification(this, sequenceNumber++, System.currentTimeMillis(),
-                "clear alarm object notified ", "clearAlarmObject", "ArrayList", "", this.clearAlarmObject);
-        sendNotification(notif);
+        sendClearAlarmNotification(this.clearAlarmObject);
+    }
+
+    private void sendClearAlarmNotification(List<String> alarmObject) {
+        sendNotification(new AttributeChangeNotification(this, sequenceNumber.incrementAndGet(),
+                System.currentTimeMillis(), "clear alarm object notified ", "clearAlarmObject", "ArrayList", "",
+                alarmObject));
     }
 
     @Override
@@ -49,20 +58,12 @@ public class ControlPathFailureAlarm extends NotificationBroadcasterSupport impl
     }
 
     @Override
-    public synchronized void raiseAlarm(String alarmName, String additionalText, String source) {
-        raiseAlarmObject.add(alarmName);
-        raiseAlarmObject.add(additionalText);
-        raiseAlarmObject.add(source);
-        setRaiseAlarmObject(raiseAlarmObject);
-        raiseAlarmObject.clear();
+    public void raiseAlarm(String alarmName, String additionalText, String source) {
+        sendRaiseAlarmNotification(ImmutableList.of(alarmName, additionalText, source));
     }
 
     @Override
-    public synchronized void clearAlarm(String alarmName, String additionalText, String source) {
-        clearAlarmObject.add(alarmName);
-        clearAlarmObject.add(additionalText);
-        clearAlarmObject.add(source);
-        setClearAlarmObject(clearAlarmObject);
-        clearAlarmObject.clear();
+    public void clearAlarm(String alarmName, String additionalText, String source) {
+        sendClearAlarmNotification(ImmutableList.of(alarmName, additionalText, source));
     }
 }
