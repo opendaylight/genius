@@ -21,9 +21,10 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
@@ -46,13 +47,15 @@ public class HwVTEPTunnelsStateListener
 
     @Inject
     public HwVTEPTunnelsStateListener(final DataBroker dataBroker, final JobCoordinator coordinator,
-                                      final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                      final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                      final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(Tunnels.class, HwVTEPTunnelsStateListener.class);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
         this.dataBroker = dataBroker;
         registerListener();
-        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
+                this);
     }
 
     @Override
