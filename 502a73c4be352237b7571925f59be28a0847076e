@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "472f5769_3c16a6d8",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-23T18:26:52Z",
+      "side": 1,
+      "message": "Josh, I don\u0027t understand much of this.. Can we have Michael review this and merge? Btw, I am using this utility for coe, and did not face any issue so far. When exactly this issue will show up?",
+      "revId": "502a73c4be352237b7571925f59be28a0847076e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
