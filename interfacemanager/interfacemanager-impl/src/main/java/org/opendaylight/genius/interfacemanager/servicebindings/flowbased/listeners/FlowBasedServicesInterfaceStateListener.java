@@ -24,10 +24,11 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
@@ -56,16 +57,21 @@ public class FlowBasedServicesInterfaceStateListener
 
     @Inject
     public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver,
-            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                                   final EntityOwnershipUtils entityOwnershipUtils,
+                                                   final JobCoordinator coordinator,
+                                                   final FlowBasedServicesStateRendererFactoryResolver
+                                                               flowBasedServicesStateRendererFactoryResolver,
+                                                   final InterfaceServiceRecoveryHandler
+                                                               interfaceServiceRecoveryHandler,
+                                                   final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
         registerListener();
-        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
+                this);
     }
 
     @Override

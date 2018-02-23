@@ -27,9 +27,10 @@ import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
-import org.opendaylight.genius.interfacemanager.recovery.listeners.RecoverableListener;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
@@ -59,11 +60,15 @@ public class InterfaceTopologyStateListener
 
     @Inject
     public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
-            final EntityOwnershipUtils entityOwnershipUtils, final JobCoordinator coordinator,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper,
-            final InterfaceMetaUtils interfaceMetaUtils, final SouthboundUtils southboundUtils,
-            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler) {
+                                          final EntityOwnershipUtils entityOwnershipUtils,
+                                          final JobCoordinator coordinator,
+                                          final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                          final OvsInterfaceTopologyStateUpdateHelper
+                                                      ovsInterfaceTopologyStateUpdateHelper,
+                                          final InterfaceMetaUtils interfaceMetaUtils,
+                                          final SouthboundUtils southboundUtils,
+                                          final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                          final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -74,7 +79,8 @@ public class InterfaceTopologyStateListener
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
         registerListener();
-        interfaceServiceRecoveryHandler.addRecoverableListener(this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
+                this);
     }
 
     @Override
