@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f0873b56_c32815e8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateUpdateHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-23T05:59:06Z",
+      "side": 1,
+      "message": "wanted to ignore if interfaceState.getOperStatus() \u003d\u003d opStateModified",
+      "revId": "437a8ea606d841238fe74ecc8bc48c25f8c33341",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
