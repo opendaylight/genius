@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "edc63e7c_692a1b89",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-02-23T11:53:49Z",
+      "side": 1,
+      "message": "of-tunnel is not mandatory, and the default is false. This is described in the yang model, but I can add a note here to make sure it is clear. BTW, this patch didn\u0027t affect this this parameter.",
+      "parentUuid": "58028b8e_20cfc3db",
+      "revId": "6a353403391a53871b9523fe280adf026ebe760d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec85631a_28eb4dd9",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-02-23T02:19:08Z",
       "side": 1,
       "message": "white space",
+      "revId": "6a353403391a53871b9523fe280adf026ebe760d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7e5ce70b_dcc5057d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-02-23T11:53:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ec85631a_28eb4dd9",
       "revId": "6a353403391a53871b9523fe280adf026ebe760d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
