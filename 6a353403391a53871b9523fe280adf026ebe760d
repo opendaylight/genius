@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec85631a_28eb4dd9",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-23T02:19:08Z",
+      "side": 1,
+      "message": "white space",
+      "revId": "6a353403391a53871b9523fe280adf026ebe760d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
