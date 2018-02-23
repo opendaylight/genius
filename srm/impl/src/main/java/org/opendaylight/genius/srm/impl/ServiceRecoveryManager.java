@@ -5,22 +5,21 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.interfacemanager.recovery.impl;
+package org.opendaylight.genius.srm.impl;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.opendaylight.genius.interfacemanager.recovery.registry.ServiceRecoveryRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityNameBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.EntityTypeBase;
 
 @Singleton
 public final class ServiceRecoveryManager {
 
-    private final ServiceRecoveryRegistry serviceRecoveryRegistry;
+    private final ServiceRecoveryRegistryImpl serviceRecoveryRegistry;
 
     @Inject
-    public ServiceRecoveryManager(ServiceRecoveryRegistry serviceRecoveryRegistry) {
+    public ServiceRecoveryManager(ServiceRecoveryRegistryImpl serviceRecoveryRegistry) {
         this.serviceRecoveryRegistry = serviceRecoveryRegistry;
     }
 
