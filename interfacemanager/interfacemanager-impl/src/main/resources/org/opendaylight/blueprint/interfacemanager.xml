@@ -43,6 +43,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="metricProvider"
                interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
 
+    <reference id="serviceRecoveryRegistry"
+               interface="org.opendaylight.genius.srm.ServiceRecoveryRegistry"/>
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <odl:clustered-app-config id="ifmConfig"
