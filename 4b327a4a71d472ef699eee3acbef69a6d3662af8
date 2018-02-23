@@ -1,0 +1,186 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a369d39_20448401",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "I assume this should be non-null so check with Objects.requireNonNull",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89ff7a90_5d3437ee",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "107fb339_d9f9cf93",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "Ensure non-null",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f4d9ecc_f23e613a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "57ef9565_6c26b8c4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d12a93f_94b4ec17",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "shouldn\u0027t be null",
+      "range": {
+        "startLine": 41,
+        "startChar": 12,
+        "endLine": 41,
+        "endChar": 32
+      },
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b492d98d_c54f8ce8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "same here",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0dab71c1_1bceafe9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelEndPointInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "extra space",
+      "range": {
+        "startLine": 11,
+        "startChar": 17,
+        "endLine": 11,
+        "endChar": 19
+      },
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30e02c64_3f03bbb6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelEndPointInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "Ensure non-null",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f1154430_4fbfff96",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelEndPointInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-23T12:49:22Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "4b327a4a71d472ef699eee3acbef69a6d3662af8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
