@@ -6,7 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.opendaylight.genius.srm;
+package org.opendaylight.genius.srm.impl;
 
 import com.google.common.util.concurrent.Futures;
 import java.util.concurrent.Future;
