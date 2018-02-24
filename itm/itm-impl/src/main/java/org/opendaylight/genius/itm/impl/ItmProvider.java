@@ -319,7 +319,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Override
     public boolean validateIP(final String ip) {
-        if (ip == null || ip.equals("")) {
+        if ((ip == null) || ip.isEmpty() || "null".equals(ip) || "0.0.0.0".equals(ip)) {
             return false;
         }
         final String PTRN =
