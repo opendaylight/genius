@@ -316,7 +316,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Override
     public boolean validateIP(final String ip) {
-        if (ip == null || ip.equals("")) {
+        if ("null".equals(ip) || "0.0.0.0".equals(ip) || ip == null || ip.equals("") ) {
             return false;
         }
         final String PTRN =
