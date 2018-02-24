@@ -124,10 +124,11 @@ public class TepCommandHelper {
         try {
             ipAddressObj = new IpAddress(ipAddress.toCharArray());
             gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
-            if (gatewayIp != null) {
+            if (!("null".equals(gatewayIp)) || ("0.0.0.0".equals(gatewayIp)) && (gatewayIp != null)) {
                 gatewayIpObj = new IpAddress(gatewayIp.toCharArray());
             } else {
                 LOG.debug("gateway is null");
+                gatewayIp = null;
             }
         } catch (Exception e) {
             handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
@@ -552,10 +553,11 @@ public class TepCommandHelper {
         try {
             ipAddressObj = new IpAddress(ipAddress.toCharArray());
             gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
-            if (gatewayIp != null) {
+            if (!("null".equals(gatewayIp)) || ("0.0.0.0".equals(gatewayIp)) && (gatewayIp != null)) {
                 gatewayIpObj = new IpAddress(gatewayIp.toCharArray());
             } else {
                 LOG.debug("gateway is null");
+                gatewayIp = null;
             }
         } catch (Exception e) {
             handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
