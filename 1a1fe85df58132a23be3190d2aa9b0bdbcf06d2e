@@ -1,0 +1,153 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e8a68dde_751066b7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "Objects.requireNonNul",
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "614bbfb2_a039c2ff",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "@Nonnull",
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7cdd126b_3366e310",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "Please put this on separate line",
+      "range": {
+        "startLine": 43,
+        "startChar": 5,
+        "endLine": 43,
+        "endChar": 12
+      },
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80eedfd3_64387bdb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "should be \u003d\u003d",
+      "range": {
+        "startLine": 62,
+        "startChar": 28,
+        "endLine": 62,
+        "endChar": 31
+      },
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd151b0e_152066a6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "\"NodeConnectorInfo\" - you really don\u0027t need to specify the class name in the message as the stack tract will indicate that.",
+      "range": {
+        "startLine": 23,
+        "startChar": 61,
+        "endLine": 23,
+        "endChar": 80
+      },
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b69cebcc_69ecc224",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/NodeConnectorInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "separate line",
+      "range": {
+        "startLine": 27,
+        "startChar": 5,
+        "endLine": 27,
+        "endChar": 12
+      },
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee61e34a_405a33e7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/TunnelEndPointInfo.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-24T13:44:55Z",
+      "side": 1,
+      "message": "\"TunnelEndPointInfo\" but you can omit class name",
+      "range": {
+        "startLine": 18,
+        "startChar": 97,
+        "endLine": 18,
+        "endChar": 115
+      },
+      "revId": "1a1fe85df58132a23be3190d2aa9b0bdbcf06d2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
