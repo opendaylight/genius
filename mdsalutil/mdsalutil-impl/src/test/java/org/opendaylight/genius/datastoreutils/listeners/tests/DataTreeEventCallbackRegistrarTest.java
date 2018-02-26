@@ -81,9 +81,8 @@ public class DataTreeEventCallbackRegistrarTest {
         dataTreeEventCallbackRegistrar.onAddOrUpdate(OPERATIONAL, FOO_PATH, (first, second) -> {
             if (first == null && second != null) {
                 added.set(true);
-                return NextAction.UNREGISTER;
             }
-            return NextAction.CALL_AGAIN;
+            return NextAction.UNREGISTER;
         });
         db1.syncWrite(OPERATIONAL, FOO_PATH, FOO_DATA);
         await().untilTrue(added);
