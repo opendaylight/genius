@@ -14,6 +14,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -70,11 +71,23 @@ public interface DataTreeEventCallbackRegistrar {
         });
     }
 
+    /**
+     * Call back when expected instance was added or updated, with NextAction support.
+     * @param store the expected data store
+     * @param path the path to watch for changes on
+     * @param callback the callback as {@link BiFunction}, where the first argument is the data before the update
+     *             or null in case of an add, the second argument is the data after the update (or add; never null),
+     *             and the returned value determines whether to keep listening for changes or not anymore.
+     */
     <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
-                                              BiFunction<T, T, NextAction> callback);
+                                              BiFunction<@Nullable T, T, NextAction> callback);
 
+    /**
+     * Call back when expected instance was added or updated, with implicit {@link NextAction#UNREGISTER}.
+     * See {@link #onAddOrUpdate(LogicalDatastoreType, InstanceIdentifier, BiFunction)} for more details.
+     */
     default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
-                                                 BiConsumer<T, T> callback) {
+                                                 BiConsumer<@Nullable T, T> callback) {
         onUpdate(store, path, (BiFunction<T, T, NextAction>) (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
