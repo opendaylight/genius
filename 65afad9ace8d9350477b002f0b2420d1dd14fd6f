@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df0f16a3_c8dc220c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-26T19:15:29Z",
+      "side": 1,
+      "message": "seems natural to put this check first",
+      "range": {
+        "startLine": 127,
+        "startChar": 80,
+        "endLine": 127,
+        "endChar": 99
+      },
+      "revId": "65afad9ace8d9350477b002f0b2420d1dd14fd6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d52ffcea_48f62dcd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-26T19:15:29Z",
+      "side": 1,
+      "message": "seems more nature to check this first",
+      "range": {
+        "startLine": 319,
+        "startChar": 57,
+        "endLine": 319,
+        "endChar": 67
+      },
+      "revId": "65afad9ace8d9350477b002f0b2420d1dd14fd6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ec198d90_331fdbbd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-26T19:15:29Z",
+      "side": 1,
+      "message": "isEmpty()",
+      "range": {
+        "startLine": 319,
+        "startChar": 74,
+        "endLine": 319,
+        "endChar": 84
+      },
+      "revId": "65afad9ace8d9350477b002f0b2420d1dd14fd6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
