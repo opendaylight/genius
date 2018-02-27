@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d66364b_300a69c2",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/ControlPathFailureAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T07:28:57Z",
+      "side": 1,
+      "message": "I believe this is wrong and should be getAndIncrement() instead of incrementAndGet() to correspond to sequenceNumber++ as before, because an incrementAndGet() would mean ++sequenceNumber.",
+      "revId": "9cf5395b832dfaf04aa2d68d3fcda05942e4f18a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fbcdaeb2_c07e62ca",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/ControlPathFailureAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T07:28:57Z",
+      "side": 1,
+      "message": "to be safe, shouldn\u0027t this return a copy, e.g. ImmutableList.copyOf(clearAlarmObject) ?",
+      "revId": "9cf5395b832dfaf04aa2d68d3fcda05942e4f18a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74884ba4_cb698567",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/ControlPathFailureAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T07:28:57Z",
+      "side": 1,
+      "message": "as above, getAndIncrement() instead of incrementAndGet()",
+      "revId": "9cf5395b832dfaf04aa2d68d3fcda05942e4f18a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a60653fc_5b0c1f3e",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/ControlPathFailureAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T07:28:57Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "9cf5395b832dfaf04aa2d68d3fcda05942e4f18a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "caaff0c6_6b1b7cc8",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/ControlPathFailureAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T07:28:57Z",
+      "side": 1,
+      "message": "FTR: it took me a moment to grasp that this is indeed only a FindBugs compliance bug fix but does not actually change the behaviour of this (admitedly IMHO a bit weirdly designed..) class - at first I suspected that if you did raiseAlarm() and then getRaiseAlarmObject() it would not behave the same, but then seeing the clear() I understood that it does.",
+      "revId": "9cf5395b832dfaf04aa2d68d3fcda05942e4f18a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f53b258_fe4e0522",
+        "filename": "fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/NumberOfOFPorts.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T07:28:57Z",
+      "side": 1,
+      "message": "this removal of static technically is not only a FindBugs compliance bug fix but could actually change the behaviour of this class (if there were several instances).  Having verified however that this class seems to be only used in a static field in the PMAgent in fcapsapplication-impl, it seems to happen to a safe change nevertheless.",
+      "revId": "9cf5395b832dfaf04aa2d68d3fcda05942e4f18a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
