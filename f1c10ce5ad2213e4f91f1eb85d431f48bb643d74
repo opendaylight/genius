@@ -87,6 +87,24 @@
       "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8da73621_cf922a51",
+        "filename": "mdsalutil/mdsalutil-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T14:32:42Z",
+      "side": 1,
+      "message": "the 2nd patch is in netvirt and won\u0027t build until this is merged. I can make them all the same topic though.",
+      "parentUuid": "498c2b7a_dcd6b5fa",
+      "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
