@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4ff4336c_3fcab29f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-02-27T09:19:16Z",
+      "side": 1,
+      "message": "I did not put synchronized() for the iterator here. I was thinking all these registrations are happening when bundles come up, and receovery happens far way later. So do we really need it?",
+      "revId": "3885456e76f639a6084ca716941967be020aae7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
