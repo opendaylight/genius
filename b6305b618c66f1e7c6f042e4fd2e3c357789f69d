@@ -34,6 +34,24 @@
       "revId": "b6305b618c66f1e7c6f042e4fd2e3c357789f69d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "966ff6d7_fb23bedc",
+        "filename": "resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T23:44:57Z",
+      "side": 1,
+      "message": "I realized I don\u0027t need to do any of this - just return idManager.releaseId(...)",
+      "parentUuid": "2fa6639b_4a534b60",
+      "revId": "b6305b618c66f1e7c6f042e4fd2e3c357789f69d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
