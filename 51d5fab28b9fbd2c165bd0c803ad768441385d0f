@@ -138,6 +138,24 @@
     },
     {
       "key": {
+        "uuid": "5267b411_3b1228da",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 0,
+      "message": "this removal of static technically is not only a FindBugs compliance bug fix but could actually change the behaviour of this class (if there were several instances).  Having verified however that this class seems to be only used once in @Singleton TransportZoneListener, it seems to happen to be a safe change nevertheless.",
+      "parentUuid": "9568a5b8_328614f0",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "daa402e0_ed8f598d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 1
@@ -263,6 +281,24 @@
     },
     {
       "key": {
+        "uuid": "58050bd6_da42ee96",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 0,
+      "message": "you actually made it not package protected but a local variable in registerWithBatchManager(), which -given that everything still builds after this change- seems like a Great Idea to me too.",
+      "parentUuid": "eaebae06_4010546b",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9e0af53a_ead7fd7b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 1
@@ -337,6 +373,24 @@
     },
     {
       "key": {
+        "uuid": "60aa76d4_ad8855f0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1286,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 0,
+      "message": "\u003e Null pointer dereference on line 1291 if parentRefs !\u003d null. parentRefs is not used other than this check\n\nI don\u0027t see the Null pointer dereference (of parentRefs) on line 1291, do you?  Not clear to me yet what FindBugs is flagging up here, and as this changes behaviour, worth clarifying first IMHO.  The intention may have been (and I\u0027m just guessing) that some code subsequent invoked in this call chain has an assumption on both that Interface having both an IfTunnel AND a ParentRefs augmentation, whereas your change makes it that an OR - we should thread carefully here.",
+      "parentUuid": "0060dfff_659c2c83",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "030f5115_3060620b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 1
@@ -348,6 +402,24 @@
       "writtenOn": "2018-02-21T19:43:20Z",
       "side": 0,
       "message": "Load of known null value",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8c61eac_9313ff6f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 0,
+      "message": "minor nit suggestion: hard-coded \"from null to...\" ?",
+      "parentUuid": "030f5115_3060620b",
       "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -411,6 +483,24 @@
     },
     {
       "key": {
+        "uuid": "96ce59ed_7ac0bd74",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/DataPathAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 0,
+      "message": "Huh - FTR this class is a copy/paste of (and you fixed it in the same way as in) https://git.opendaylight.org/gerrit/#/c/68516/1/fcapsapplication/fcapsapplication-jmxapi/src/main/java/org/opendaylight/genius/fcapsappjmx/ControlPathFailureAlarm.java@62 ... this really should be refactored by someone to share this identical code!",
+      "parentUuid": "5bf9b8e1_40f42e9d",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3d4f8958_015e3760",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 1
@@ -422,6 +512,24 @@
       "writtenOn": "2018-02-21T19:43:20Z",
       "side": 0,
       "message": "Useless object created",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa1b8173_0be9e1b5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 0,
+      "message": "WOW.  Anyone else reading this, isn\u0027t this an indication of a bug?",
+      "parentUuid": "3d4f8958_015e3760",
       "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false

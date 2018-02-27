@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "44fca9cf_b4806080",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 1,
+      "message": "check++ is strictly speaking CHECK.getAndIncrement(); and not incrementAndGet(), but that makes no difference in this case here, of course.",
+      "revId": "253e2142861fec06dc39c8c99fa9b4a49e71e7aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b1412353_2c82036b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 1
@@ -13,6 +30,80 @@
       "writtenOn": "2018-02-21T19:43:20Z",
       "side": 1,
       "message": "Exception is caught when Exception is not thrown",
+      "revId": "253e2142861fec06dc39c8c99fa9b4a49e71e7aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6ff1911_1ab66b04",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 1,
+      "message": "wow, nice",
+      "revId": "253e2142861fec06dc39c8c99fa9b4a49e71e7aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a0aa31b_982f8159",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 437,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 1,
+      "message": "Tx for already fixing things which will be violation failing the build once we bump to an odlparent including https://git.opendaylight.org/gerrit/#/c/66449/",
+      "revId": "253e2142861fec06dc39c8c99fa9b4a49e71e7aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a37980f_0ac60931",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 1,
+      "message": "I don\u0027t like seeing explicit @Nonnull anywhere, and think that we need to converge on / configure our tooling to always assume @NonNullByDefault unless @Nullable, but I won\u0027t -1 this change just because of that; if that\u0027s what you had to do for FindBugs here, then so be it, for now.",
+      "range": {
+        "startLine": 727,
+        "startChar": 5,
+        "endLine": 727,
+        "endChar": 12
+      },
+      "revId": "253e2142861fec06dc39c8c99fa9b4a49e71e7aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5fc0108_6befc0c1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T08:54:12Z",
+      "side": 1,
+      "message": "I would have used LOG.error instead of debug in this case, as this seems to be a real unexpected error that perhaps we should know about if it ever were to happen (because in the original code before your change it would have caused an NPE), not almost silently ignored as it would be now?",
       "revId": "253e2142861fec06dc39c8c99fa9b4a49e71e7aa",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
