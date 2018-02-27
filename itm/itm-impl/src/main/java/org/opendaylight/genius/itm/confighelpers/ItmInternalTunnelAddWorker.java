@@ -87,18 +87,18 @@ public final class ItmInternalTunnelAddWorker {
                     meshedDpnList.add(dpn);
                 }
                 // Update the config datastore -- FIXME -- Error Handling
-                updateDpnTepInfoToConfig(dpn);
+                updateDpnTepInfoToConfig(dpn, transaction);
             }
         }));
     }
 
-    private static void updateDpnTepInfoToConfig(DPNTEPsInfo dpn) {
+    private static void updateDpnTepInfoToConfig(DPNTEPsInfo dpn, WriteTransaction tx) {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
-        ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        tx.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder);
     }
 
     private void buildTunnelFrom(DPNTEPsInfo srcDpn, Collection<DPNTEPsInfo> meshedDpnList,
