@@ -69,6 +69,24 @@
       "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "498c2b7a_dcd6b5fa",
+        "filename": "mdsalutil/mdsalutil-impl/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T13:08:19Z",
+      "side": 1,
+      "message": "why? if you \"chain\" them and make The subsequent 2 patches have this (or the 3rd the 2nd) as parent, then they WILL build just fine, no?  Put them on a common Topic, and then it\u0027s all easily reviewable together... in 3 separate patches - that\u0027s great.",
+      "parentUuid": "48c1d030_92206b6b",
+      "revId": "f1c10ce5ad2213e4f91f1eb85d431f48bb643d74",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
