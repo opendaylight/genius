@@ -16,6 +16,24 @@
       "revId": "65215ddf9bdf4c6a4a936ec91dab6209d2640c05",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29cdfffe_f840854b",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmCliUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T14:29:55Z",
+      "side": 1,
+      "message": "yup - I discovered that recently. It\u0027s better than Locale.ENGLISH and Locale.getDefault.",
+      "parentUuid": "dcc1037c_bfe71411",
+      "revId": "65215ddf9bdf4c6a4a936ec91dab6209d2640c05",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
