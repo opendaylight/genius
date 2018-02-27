@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e99a2e31_b73fabe6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-02-27T07:10:52Z",
+      "side": 1,
+      "message": "needed a conditional instantiation of cache, \nas we need the newly introduced caches if only \nthe performance logic is enabled.\nthis is checked via an api in Ifm.",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "5672ee58bcf3930f6c4ab73228f86a138f5c33e3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
