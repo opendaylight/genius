@@ -40,9 +40,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class DataObjectCache<V extends DataObject> implements AutoCloseable {
 
-    private final SingleTransactionDataBroker broker;
-    private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
-    private final ListenerRegistration<?> listenerRegistration;
+    private SingleTransactionDataBroker broker;
+    private LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
+    private ListenerRegistration<?> listenerRegistration;
 
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
             InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
