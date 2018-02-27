@@ -40,12 +40,53 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class DataObjectCache<V extends DataObject> implements AutoCloseable {
 
-    private final SingleTransactionDataBroker broker;
-    private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
-    private final ListenerRegistration<?> listenerRegistration;
+    private SingleTransactionDataBroker broker;
+    private LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
+    private ListenerRegistration<?> listenerRegistration;
 
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
             InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
+        this.broker = new SingleTransactionDataBroker(dataBroker);
+
+        requireNonNull(cacheProvider, "cacheProvider");
+        cache = CacheBuilder.newBuilder().build(new CacheLoader<InstanceIdentifier<V>, Optional<V>>() {
+            @Override
+            public Optional<V> load(InstanceIdentifier<V> path) throws ReadFailedException {
+                return broker.syncReadOptional(datastoreType, path);
+            }
+        });
+
+        ClusteredDataTreeChangeListener<V> dataObjectListener = (ClusteredDataTreeChangeListener<V>) changes -> {
+            for (DataTreeModification<V> dataTreeModification : changes) {
+                DataObjectModification<V> rootNode = dataTreeModification.getRootNode();
+                InstanceIdentifier<V> path = dataTreeModification.getRootPath().getRootIdentifier();
+                switch (rootNode.getModificationType()) {
+                    case WRITE:
+                    case SUBTREE_MODIFIED:
+                        V dataAfter = rootNode.getDataAfter();
+                        cache.put(path, Optional.of(dataAfter));
+                        added(path, dataAfter);
+                        break;
+                    case DELETE:
+                        cache.invalidate(path);
+                        removed(path, rootNode.getDataBefore());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
+        listenerRegistration = dataBroker.registerDataTreeChangeListener(new DataTreeIdentifier<>(
+                datastoreType, listetenerRegistrationPath), dataObjectListener);
+    }
+
+    public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
+                           InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider,
+                           boolean registerDTCL) {
+        if (!registerDTCL) {
+            return;
+        }
         this.broker = new SingleTransactionDataBroker(dataBroker);
 
         requireNonNull(cacheProvider, "cacheProvider");
