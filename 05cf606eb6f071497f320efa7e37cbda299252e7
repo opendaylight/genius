@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "38b26ce9_7bc5d35b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-27T09:02:02Z",
+      "side": 1,
+      "message": "you can (and should) write these 2 lines in 1 like this instead:\n\n    this.tunnelType \u003d Objects.requireNonNull(builder.tunnelType, \"tunnelType\");\n\nSame comment in other classes.",
+      "revId": "05cf606eb6f071497f320efa7e37cbda299252e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
