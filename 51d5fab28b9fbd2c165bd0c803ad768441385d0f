@@ -156,6 +156,24 @@
     },
     {
       "key": {
+        "uuid": "4a398b6f_88e4054e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T14:24:44Z",
+      "side": 0,
+      "message": "Even if there were multiple users, I changed it so ItmConfig has to be passed in so all call sites wold have to do so.",
+      "parentUuid": "5267b411_3b1228da",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "daa402e0_ed8f598d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 1
@@ -391,6 +409,24 @@
     },
     {
       "key": {
+        "uuid": "79c08045_fce9d6e9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1286,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T14:24:44Z",
+      "side": 0,
+      "message": "The dereference could occur if ifTunnel \u003d\u003d null \u0026\u0026 parentRefs !\u003d null. I know what you\u0027re saying and that crossed my mind too but I really don\u0027t know the intention here and the code is potentially broken as is so I took a guess.",
+      "parentUuid": "60aa76d4_ad8855f0",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "030f5115_3060620b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 1
@@ -501,6 +537,24 @@
     },
     {
       "key": {
+        "uuid": "9bbf7ce5_2ac2a8ce",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/DataPathAlarm.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T14:24:44Z",
+      "side": 0,
+      "message": "It\u0027s been copy/pasted in netvirt too. I\u0027ve had to fix the same bad code in several places now.  Refactoring to share common code is well beyond the scope of this patch.",
+      "parentUuid": "96ce59ed_7ac0bd74",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3d4f8958_015e3760",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 1
@@ -530,6 +584,24 @@
       "side": 0,
       "message": "WOW.  Anyone else reading this, isn\u0027t this an indication of a bug?",
       "parentUuid": "3d4f8958_015e3760",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27ed3e4f_b2c1905e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 348,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-02-27T14:24:44Z",
+      "side": 0,
+      "message": "My guess is it was used at one point but wasn\u0027t totally cleaned up. I\u0027ve seen this in various places in genius/netvirt. Once FB/SB is enabled across the board these things won\u0027t happen anymore",
+      "parentUuid": "fa1b8173_0be9e1b5",
       "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
