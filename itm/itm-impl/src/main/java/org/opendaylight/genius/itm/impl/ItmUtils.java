@@ -1399,4 +1399,14 @@ public final class ItmUtils {
         }
         return exTunnel;
     }
+
+    public static List<DPNTEPsInfo> getDpnTEPsInfos(DataBroker dataBroker) {
+        InstanceIdentifier<DpnEndpoints> iid = InstanceIdentifier.builder(DpnEndpoints.class).build();
+        Optional<DpnEndpoints> dpnEndpoints = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
+        if (dpnEndpoints.isPresent()) {
+            return dpnEndpoints.get().getDPNTEPsInfo();
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

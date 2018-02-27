@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -255,9 +254,8 @@ public class ItmInternalTunnelAddTest {
                 internalTunnel1,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2,
                 internalTunnel2,true);
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
+                dpnEndpointsVxlan);
     }
 
     @Test
@@ -286,10 +284,8 @@ public class ItmInternalTunnelAddTest {
                 internalTunnel1,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
                 internalTunnel2,true);
-
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsGre,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
+                dpnEndpointsGre);
     }
 
     @Test
@@ -318,8 +314,7 @@ public class ItmInternalTunnelAddTest {
                 internalTunnel1,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
                 internalTunnel2,true);
-        PowerMockito.verifyStatic(Mockito.times(1));
-        ITMBatchingUtils.update(dpnEndpointsIdentifier,dpnEndpointsVxlan,
-                ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
+                dpnEndpointsVxlan);
     }
 }
