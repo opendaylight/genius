@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTz;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInstance;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQos;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQosPolicyInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpnInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.Ofplugin;
@@ -49,6 +51,7 @@ public final class SrmCliUtils {
             .put("VPN", NetvirtVpn.class)
             .put("ELAN", NetvirtElan.class)
             .put("OFPLUGIN", Ofplugin.class)
+            .put("QOS", NetvirtQos.class)
             .build();
 
     private static final ImmutableMap<String, Class<? extends EntityNameBase>> INSTANCE_NAME_MAP =
@@ -58,6 +61,7 @@ public final class SrmCliUtils {
             .put("IFM-IFACE", GeniusIfmInterface.class)
             .put("VPN-INSTANCE", NetvirtVpnInstance.class)
             .put("ELAN-INSTANCE", NetvirtElanInstance.class)
+            .put("QOS-POLICY-INSTANCE", NetvirtQosPolicyInstance.class)
             .build();
 
     /**
