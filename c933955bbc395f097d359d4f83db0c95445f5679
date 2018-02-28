@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "14c018d8_0f8e116f",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-28T10:18:09Z",
+      "side": 1,
+      "message": "remove this version; we provide one from odlparent, and we\u0027ll keep updating that globally",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b56a8685_6b761c23",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-28T10:18:09Z",
+      "side": 1,
+      "message": "FYI if you don\u0027t need any method bodies at all, then it\u0027s much \"prettier\" to just use \"interface\" instead of \"class\", because then you can ditch the \"public abstract\" for each property!",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15098cc6_d904708c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-28T10:18:09Z",
+      "side": 1,
+      "message": "Out of curiosity, what does this do?  I don\u0027t think I\u0027ve typically used it to create a Builder class and immutable impl.",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8beb45a6_0d501d37",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-28T10:18:09Z",
+      "side": 1,
+      "message": "also new to me, just curious, what does this do?",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2bacadd1_c26d8900",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ImmutableStyle.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-02-28T10:18:09Z",
+      "side": 1,
+      "message": "This somehow looks very familiar.. you copy/pasted this from.. somewhere I originally created, did you?  Instead of each project copy/pasting this, could we not just re-use a global shared one?  Where was this again orginally?",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
