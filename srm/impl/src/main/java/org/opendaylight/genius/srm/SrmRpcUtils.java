@@ -40,6 +40,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTz;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInstance;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQos;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQosPolicyInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpnInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.Ofplugin;
@@ -76,6 +78,8 @@ public final class SrmRpcUtils {
             .put(GeniusIfmInterface.class, EntityTypeInstance.class)
             .put(NetvirtVpnInstance.class, EntityTypeInstance.class)
             .put(NetvirtElanInstance.class, EntityTypeInstance.class)
+            .put(NetvirtQos.class, EntityTypeService.class)
+            .put(NetvirtQosPolicyInstance.class, EntityTypeInstance.class)
             .build();
 
     private static final ImmutableMap<Class<? extends EntityNameBase>, Class<? extends EntityNameBase>>
@@ -91,6 +95,8 @@ public final class SrmRpcUtils {
             .put(NetvirtElan.class, NetvirtElan.class)
             .put(NetvirtElanInstance.class, NetvirtElan.class)
             .put(Ofplugin.class, Ofplugin.class)
+            .put(NetvirtQos.class, NetvirtQos.class)
+            .put(NetvirtQosPolicyInstance.class, NetvirtQos.class)
             .build();
 
 
