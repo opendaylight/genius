@@ -151,6 +151,7 @@ public class ActionNxConntrack extends ActionInfo {
     }
 
     public static class NxNat implements NxCtAction {
+        private final int actionKey;
         private final int flags;
         private final int rangePresent;
         private final IpAddress ipAddressMin;
@@ -158,14 +159,19 @@ public class ActionNxConntrack extends ActionInfo {
         private final int portMin;
         private final int portMax;
 
-        public NxNat(int actionKey, int flags, int natType, IpAddress ipAddressMin,
+        public NxNat(int actionKey, int flags, int rangePresent, IpAddress ipAddressMin,
                 IpAddress ipAddressMax,int portMin, int portMax) {
+            this.actionKey = actionKey;
             this.flags = flags;
-            this.rangePresent = natType;
+            this.rangePresent = rangePresent;
             this.ipAddressMin = ipAddressMin;
             this.ipAddressMax = ipAddressMax;
             this.portMin = portMin;
             this.portMax = portMax;
+        }
+
+        public int getActionKey() {
+            return actionKey;
         }
 
         public int getFlags() {
