@@ -89,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "918d6eae_9b44202a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T16:20:30Z",
+      "side": 1,
+      "message": "Oh this http://immutables.github.io/immutable.html#constructor so that it generates a Constructor instead of (or in addition) a *Builder... just for consistency with what everyone is used to from the YANG generated code, I would not do that, and only use Builders (and hide the *Immutable)",
+      "parentUuid": "dece8796_e83de985",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "47ecdca4_a1318ca3",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -142,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "e89f01a8_2c6ff6dd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T16:20:30Z",
+      "side": 1,
+      "message": "Tom, I\u0027m REALLY ;) not a fan of adding @Nonnull everywhere... I think assuming Nonnull-ness by default is now widely accepted - and Immutables.org does that to - we don\u0027t have to specify that a getter cannot return null, it assumes so if you don\u0027t say (and will throw an Exception if you don\u0027t set a value for that property in the Builder; try Immutables once, it\u0027s really cool), but if you use @Nullable String getName() then you\u0027re explicitly telling it you don\u0027t want it to make sure that name has been set.",
+      "parentUuid": "af337b4e_d261b3fc",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8beb45a6_0d501d37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -171,6 +207,24 @@
       "side": 1,
       "message": "auxilary helps you specify fields that are omitted from \nfrom equals and hashcode, \nas we don\u0027t need the respective fields as mandatory.",
       "parentUuid": "8beb45a6_0d501d37",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6d983b2_2fabd28f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T16:20:30Z",
+      "side": 1,
+      "message": "After reading http://immutables.github.io/immutable.html#auxiliary-attributes, I don\u0027t think that is a good idea at all... this can lead to VERY confusing bugs, if you put such objects into  Map as a key, or add them to a Set.",
+      "parentUuid": "d9ee5db3_c419cf27",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -265,6 +319,24 @@
     },
     {
       "key": {
+        "uuid": "79030285_d93f1779",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T16:20:30Z",
+      "side": 1,
+      "message": "I\u0027m assuming that this \"internal\" property is optional, probbably a tri-state kind of it can be internal true, or not (false), or not have any value.. in that case in Immutables you can use Optional\u003cBoolean\u003e or @Nullable Boolean.  If it\u0027s a mandatory attribute, then I would remove the Optional as well, and just primitive boolean - but it depends if this is a mandatory or optional property of this type.",
+      "parentUuid": "acb4564c_eecd15ac",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2bacadd1_c26d8900",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ImmutableStyle.java",
         "patchSetId": 9
@@ -294,6 +366,24 @@
       "side": 1,
       "message": "Looked it up on the man page, not sure if genius uses has one.\nhttp://immutables.github.io/style.html",
       "parentUuid": "2bacadd1_c26d8900",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bac1eff9_cef882eb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ImmutableStyle.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T16:20:30Z",
+      "side": 1,
+      "message": "Oh OK.  I now found again why this looked so familiar... see my earlier org.opendaylight.genius.infra.OpenDaylightImmutableStyle - do you want to just use that?  You can always add anything you do here and that you think is missing there - but then I\u0027ll ask you exactly what it does and why it\u0027s needed... ;-)",
+      "parentUuid": "57c097e6_621bf539",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
