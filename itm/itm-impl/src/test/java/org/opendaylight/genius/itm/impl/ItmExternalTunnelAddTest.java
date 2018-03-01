@@ -33,8 +33,6 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
-import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -163,6 +161,7 @@ public class ItmExternalTunnelAddTest {
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock ItmConfig itmConfig;
+    @Mock DPNTEPsInfoCache dpnTEPsInfoCache;
 
     private ItmExternalTunnelAddWorker externalTunnelAddWorker;
 
@@ -181,8 +180,7 @@ public class ItmExternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional))
                 .when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
 
-        externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
-                new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())));
+        externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
 
     }
 
@@ -283,17 +281,15 @@ public class ItmExternalTunnelAddTest {
                 .setVteps(vtepsList).setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnets);
 
+        doReturn(cfgdDpnListVxlan).when(dpnTEPsInfoCache).getAllPresent();
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
-
     }
 
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
-
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(cfgdDpnListVxlan, ipAddress2, tunnelType1);
-
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(ipAddress2, tunnelType1);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier,externalTunnel,true);
 
