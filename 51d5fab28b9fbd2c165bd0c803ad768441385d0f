@@ -445,6 +445,24 @@
     },
     {
       "key": {
+        "uuid": "c8e78f3f_69dd06f1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1286,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T10:35:49Z",
+      "side": 0,
+      "message": "Still doesn\u0027t make any sense to me, but trusting Hema then.. ;)",
+      "parentUuid": "92c5cbdf_3cb889fd",
+      "revId": "51d5fab28b9fbd2c165bd0c803ad768441385d0f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "030f5115_3060620b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 1
