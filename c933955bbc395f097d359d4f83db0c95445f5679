@@ -124,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "af337b4e_d261b3fc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-01T12:50:15Z",
+      "side": 1,
+      "message": "It generates the implementation. We should be able to specify whether or not a getter can return null.",
+      "parentUuid": "11eef508_af21911b",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8beb45a6_0d501d37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -223,6 +241,24 @@
       "side": 1,
       "message": "will change in the next patch, sure.",
       "parentUuid": "7d129318_f3982208",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "acb4564c_eecd15ac",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-01T12:50:15Z",
+      "side": 1,
+      "message": "Why not in this patch? Let\u0027s get this right in the first place (best we can anyway) rather than accumuate tech debt.",
+      "parentUuid": "85f27609_089c8e21",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
