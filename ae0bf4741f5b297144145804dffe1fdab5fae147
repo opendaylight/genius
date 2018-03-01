@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45f26215_36e8cae7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionNxConntrack.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T14:53:11Z",
+      "side": 1,
+      "message": "an alternative to rename the constructor argument would be to change this getter to getNatType(), because they have to be in sync (for https://github.com/vorburger/xtendbeans) - can someone comment on which solution is better?",
+      "revId": "ae0bf4741f5b297144145804dffe1fdab5fae147",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
