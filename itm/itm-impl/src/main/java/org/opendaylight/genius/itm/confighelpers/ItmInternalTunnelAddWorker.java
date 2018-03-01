@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
@@ -50,7 +51,7 @@ public final class ItmInternalTunnelAddWorker {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
     private static ItmConfig itmCfg;
-
+    private Collection<DPNTEPsInfo> meshedDpnList ;
     private final Integer monitorInterval;
     private final boolean isTunnelMonitoringEnabled;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
@@ -58,20 +59,23 @@ public final class ItmInternalTunnelAddWorker {
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
+    private final DPNTEPsInfoCache dpnTEPsInfoCache;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
-            TunnelMonitoringConfig tunnelMonitoringConfig) {
+            TunnelMonitoringConfig tunnelMonitoringConfig, DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
-
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
         monitorInterval = Integer.valueOf(tunnelMonitoringConfig.getMonitorInterval());
     }
 
     public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
-                                                        Collection<DPNTEPsInfo> meshedDpnList, ItmConfig itmConfig) {
+                                                        ItmConfig itmConfig) {
+        LOG.debug("Fetching the configured DPN List ONLY at the time of meshing");
+        meshedDpnList = dpnTEPsInfoCache.getAllPresent() ;
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         itmCfg = itmConfig;
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
@@ -99,6 +103,9 @@ public final class ItmInternalTunnelAddWorker {
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
         ITMBatchingUtils.update(dep, tnlBuilder, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        // Commenting out the batching to see if the batching delay affects full mesh creation when teps
+        // are added in quick succession
+        ITMBatchingUtils.update(dep,tnlBuilder , ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     private void buildTunnelFrom(DPNTEPsInfo srcDpn, Collection<DPNTEPsInfo> meshedDpnList,

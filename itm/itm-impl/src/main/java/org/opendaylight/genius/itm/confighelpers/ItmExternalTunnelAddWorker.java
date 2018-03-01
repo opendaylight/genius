@@ -53,6 +53,7 @@ public class ItmExternalTunnelAddWorker {
     private final DataBroker dataBroker;
     private final ItmConfig itmConfig;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private Collection<DPNTEPsInfo> cfgDpnList;
 
     public ItmExternalTunnelAddWorker(DataBroker dataBroker, ItmConfig itmConfig, DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.dataBroker = dataBroker;
@@ -60,8 +61,9 @@ public class ItmExternalTunnelAddWorker {
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
     }
 
-    public List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(Collection<DPNTEPsInfo> cfgDpnList,
-            IpAddress extIp, Class<? extends TunnelTypeBase> tunType) {
+    public List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(IpAddress extIp,
+                                                                       Class<? extends TunnelTypeBase> tunType) {
+        cfgDpnList = dpnTEPsInfoCache.getAllPresent();
         if (null != cfgDpnList) {
             WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
             for (DPNTEPsInfo teps : cfgDpnList) {
@@ -111,7 +113,7 @@ public class ItmExternalTunnelAddWorker {
             Class<? extends TunnelTypeBase> tunType) {
         Collection<DPNTEPsInfo> cfgDpnList = dpnId == null ? dpnTEPsInfoCache.getAllPresent()
                         : ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, dpnId);
-        return buildTunnelsToExternalEndPoint(cfgDpnList, extIp, tunType);
+        return buildTunnelsToExternalEndPoint(extIp, tunType);
     }
 
     public List<ListenableFuture<Void>> buildHwVtepsTunnels(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdHwVteps) {

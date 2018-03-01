@@ -54,17 +54,16 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     @Override
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        this.meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
-                cfgdDpnList, meshedDpnList);
+        LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ", cfgdDpnList);
         futures.addAll(itmInternalTunnelAddWorker.buildAllTunnels(mdsalManager, cfgdDpnList,
-                meshedDpnList, itmConfig)) ;
+                itmConfig)) ;
+
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
         if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
-                futures.addAll(externalTunnelAddWorker.buildTunnelsToExternalEndPoint(cfgdDpnList,
-                        dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+                futures.addAll(externalTunnelAddWorker.buildTunnelsToExternalEndPoint(dcGatewayIp.getIpAddress(),
+                        dcGatewayIp.getTunnnelType()));
             }
         }
         //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
@@ -76,7 +75,8 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     @Override
     public String toString() {
         return "ItmTepAddWorker  { "
-                + "Configured Dpn List : " + cfgdDpnList
-                + "  Meshed Dpn List : " + meshedDpnList + " }" ;
+                + "Configured Dpn List : "
+                + cfgdDpnList
+                + " }" ;
     }
 }
