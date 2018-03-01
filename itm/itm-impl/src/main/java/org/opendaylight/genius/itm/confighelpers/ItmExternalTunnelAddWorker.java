@@ -54,6 +54,7 @@ public class ItmExternalTunnelAddWorker {
     private final DataBroker dataBroker;
     private final ItmConfig itmConfig;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private Collection<DPNTEPsInfo> cfgDpnList;
 
     public ItmExternalTunnelAddWorker(DataBroker dataBroker, ItmConfig itmConfig, DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.dataBroker = dataBroker;
@@ -61,48 +62,47 @@ public class ItmExternalTunnelAddWorker {
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
     }
 
-    public List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(Collection<DPNTEPsInfo> cfgDpnList,
-            IpAddress extIp, Class<? extends TunnelTypeBase> tunType) {
-        if (null != cfgDpnList) {
-            WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-            for (DPNTEPsInfo teps : cfgDpnList) {
-                // CHECK -- Assumption -- Only one End Point / Dpn for GRE/Vxlan Tunnels
-                TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
-                String interfaceName = firstEndPt.getInterfaceName();
-                String tunTypeStr = tunType.getName();
-                String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
-                        new String(firstEndPt.getIpAddress().getValue()),
-                        new String(extIp.getValue()), tunTypeStr);
-                char[] subnetMaskArray = firstEndPt.getSubnetMask().getValue();
-                boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
-                List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(firstEndPt, itmConfig);
-                String subnetMaskStr = String.valueOf(subnetMaskArray);
-                SubnetUtils utils = new SubnetUtils(subnetMaskStr);
-                String dcGwyIpStr = String.valueOf(extIp.getValue());
-                IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
-                IpAddress gwyIpAddress =
-                        utils.getInfo().isInRange(dcGwyIpStr) ? gatewayIpObj : firstEndPt.getGwIpAddress();
-                LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {},"
-                        + " source IP - {}, DC Gateway IP - {} gateway IP - {}", trunkInterfaceName, interfaceName,
-                        firstEndPt.getIpAddress(), extIp, gwyIpAddress);
-                Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
-                    String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"), true,
-                    tunType, firstEndPt.getIpAddress(), extIp, gwyIpAddress, firstEndPt.getVLANID(), false, false,
-                    ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
+    public List<ListenableFuture<Void>> buildTunnelsToExternalEndPoint(IpAddress extIp,
+                                                                       Class<? extends TunnelTypeBase> tunType) {
+        cfgDpnList = dpnTEPsInfoCache.getAllPresent();
 
-                LOG.debug(" Trunk Interface builder - {} ", iface);
-                InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
-                LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
-                LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
-                transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
-                // update external_tunnel_list ds
-                InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
-                        .child(ExternalTunnel.class, new ExternalTunnelKey(extIp.toString(),
-                                teps.getDPNID().toString(), tunType));
-                ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(), extIp.toString(),
-                        tunType, trunkInterfaceName);
-                transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
-            }
+        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        for (DPNTEPsInfo teps : cfgDpnList) {
+           // CHECK -- Assumption -- Only one End Point / Dpn for GRE/Vxlan Tunnels
+            TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
+            String interfaceName = firstEndPt.getInterfaceName();
+            String tunTypeStr = tunType.getName();
+            String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
+                     new String(firstEndPt.getIpAddress().getValue()),
+                     new String(extIp.getValue()), tunTypeStr);
+            char[] subnetMaskArray = firstEndPt.getSubnetMask().getValue();
+            boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
+            List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(firstEndPt, itmConfig);
+            String subnetMaskStr = String.valueOf(subnetMaskArray);
+            SubnetUtils utils = new SubnetUtils(subnetMaskStr);
+            String dcGwyIpStr = String.valueOf(extIp.getValue());
+            IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+            IpAddress gwyIpAddress =
+                utils.getInfo().isInRange(dcGwyIpStr) ? gatewayIpObj : firstEndPt.getGwIpAddress();
+            LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {},"
+                + " source IP - {}, DC Gateway IP - {} gateway IP - {}", trunkInterfaceName, interfaceName,
+                firstEndPt.getIpAddress(), extIp, gwyIpAddress);
+            Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
+                String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"), true,
+                tunType, firstEndPt.getIpAddress(), extIp, gwyIpAddress, firstEndPt.getVLANID(), false, false,
+                ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
+            LOG.debug(" Trunk Interface builder - {} ", iface);
+            InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
+            LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
+            LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
+            transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
+           // update external_tunnel_list ds
+            InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
+                  .child(ExternalTunnel.class, new ExternalTunnelKey(extIp.toString(),
+                  teps.getDPNID().toString(), tunType));
+            ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(), extIp.toString(),
+                  tunType, trunkInterfaceName);
+            transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
             return Collections.singletonList(transaction.submit());
         }
         return Collections.emptyList();
@@ -110,9 +110,7 @@ public class ItmExternalTunnelAddWorker {
 
     public List<ListenableFuture<Void>> buildTunnelsFromDpnToExternalEndPoint(List<BigInteger> dpnId, IpAddress extIp,
             Class<? extends TunnelTypeBase> tunType) {
-        Collection<DPNTEPsInfo> cfgDpnList = dpnId == null ? dpnTEPsInfoCache.getAllPresent()
-                        : ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, dpnId);
-        return buildTunnelsToExternalEndPoint(cfgDpnList, extIp, tunType);
+        return buildTunnelsToExternalEndPoint(extIp, tunType);
     }
 
     public List<ListenableFuture<Void>> buildHwVtepsTunnels(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdHwVteps) {

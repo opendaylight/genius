@@ -282,9 +282,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
-        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList,
-                input.getDestinationIp(), input.getTunnelType());
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(input.getDestinationIp(), input.getTunnelType());
         InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                 .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp =
