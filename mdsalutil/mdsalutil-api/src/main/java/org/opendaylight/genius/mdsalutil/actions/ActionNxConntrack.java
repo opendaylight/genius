@@ -263,6 +263,10 @@ public class ActionNxConntrack extends ActionInfo {
             this.ctMark = ctMark;
         }
 
+        public long getCtMark() {
+            return ctMark;
+        }
+
         @Override
         public CtActions buildCtActions() {
             NxActionCtMarkBuilder nxActionCtMarkBuilder = new NxActionCtMarkBuilder()
