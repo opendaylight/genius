@@ -16,6 +16,24 @@
       "revId": "ae0bf4741f5b297144145804dffe1fdab5fae147",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a973dd65_4715e7e8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionNxConntrack.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-03-01T15:37:34Z",
+      "side": 1,
+      "message": "It depends on what the value actually represents, which Aswin would know. Is it a NAT type, or a range present flag, or something else? Given the use in NetVirt, I think rangePresent is the intended use.",
+      "parentUuid": "45f26215_36e8cae7",
+      "revId": "ae0bf4741f5b297144145804dffe1fdab5fae147",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
