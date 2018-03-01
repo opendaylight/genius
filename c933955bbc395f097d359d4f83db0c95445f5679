@@ -178,6 +178,24 @@
     },
     {
       "key": {
+        "uuid": "c7d6794d_a9937935",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-01T17:00:38Z",
+      "side": 1,
+      "message": "I don\u0027t know how Immutables works - never used it. If you don\u0027t need @Nonnull then that\u0027s fine.\n\nIn general, outside of Immutables, I\u0027ve gotten used to adding @Nonnull - I personally like it b/c tells me I don\u0027t have to worry about null and I don\u0027t have to dig thru code to find out if it could return null. There\u0027s a lot of defensive code in this code base that checks for null where it really doesn\u0027t need to and caused FB violations in some cases (I\u0027ve fixed a lot of those) and also other cases where it didn\u0027t handle null where it should have so I\u0027m not sure I would say assuming Nonnull-ness by default is now widely accepted - I would say it certainly isn\u0027t in this code base. So while it would be nice to be able to assume that and just use @Nullable appropriately, we\u0027re just not there in this code base.\n\nThat said,  I\u0027 OK as is.",
+      "parentUuid": "e89f01a8_2c6ff6dd",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8beb45a6_0d501d37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -331,6 +349,24 @@
       "side": 1,
       "message": "I\u0027m assuming that this \"internal\" property is optional, probbably a tri-state kind of it can be internal true, or not (false), or not have any value.. in that case in Immutables you can use Optional\u003cBoolean\u003e or @Nullable Boolean.  If it\u0027s a mandatory attribute, then I would remove the Optional as well, and just primitive boolean - but it depends if this is a mandatory or optional property of this type.",
       "parentUuid": "acb4564c_eecd15ac",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "346b7da3_419fce48",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-01T17:00:38Z",
+      "side": 1,
+      "message": "yeah but it would seem odd to me for this boolean to require tri-state - I don\u0027t know the intent of it (javadocs hint, hint :)) but I would think callers would know whether it should be \"internal\" or not. Same with isMonitoringEnabled - in fact that would seem in general for any boolean. Also how would callers handle it... so if it really doesn\u0027t need to be optional then I say let\u0027s not put the burden on the callers to have to handle a non-present Optional.",
+      "parentUuid": "79030285_d93f1779",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
