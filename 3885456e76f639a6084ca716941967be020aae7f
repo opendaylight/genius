@@ -16,6 +16,64 @@
       "revId": "3885456e76f639a6084ca716941967be020aae7f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "168d3b34_6edd898f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/recovery/impl/InterfaceServiceRecoveryHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T10:27:21Z",
+      "side": 1,
+      "message": "It may be OK, but it\u0027s probably safer if you do what I suggested in ServiceRecoveryRegistryImpl ..",
+      "parentUuid": "4ff4336c_3fcab29f",
+      "revId": "3885456e76f639a6084ca716941967be020aae7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b51ee67b_531df39c",
+        "filename": "srm/api/src/main/java/org/opendaylight/genius/srm/ServiceRecoveryRegistry.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T10:27:21Z",
+      "side": 1,
+      "message": "this may have to be change to Queue instead of List, following my other suggestion.. or you could just use Iterable\u003c\u003e here, I guess.",
+      "revId": "3885456e76f639a6084ca716941967be020aae7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "495d5aed_3fd76040",
+        "filename": "srm/impl/src/main/java/org/opendaylight/genius/srm/impl/ServiceRecoveryRegistryImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-01T10:27:21Z",
+      "side": 1,
+      "message": "use ConcurrentLinkedQueue instead here, and change:\n\n    private final Map\u003cString, List\u003cRecoverableListener\u003e\u003e recoverableListenersMap\n\nto\n\n    private final Map\u003cString, Queue\u003cRecoverableListener\u003e\u003e recoverableListenersMap\n\nbut a Queue instead of a List is perfectly fine, because the only use you make of this is to iterate over the listeners, which you can do with a Queue just like with a List.",
+      "range": {
+        "startLine": 46,
+        "startChar": 35,
+        "endLine": 46,
+        "endChar": 60
+      },
+      "revId": "3885456e76f639a6084ca716941967be020aae7f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
