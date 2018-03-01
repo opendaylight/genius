@@ -291,9 +291,7 @@ public class ItmExternalTunnelAddTest {
 
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
-
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(cfgdDpnListVxlan, ipAddress2, tunnelType1);
-
+        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(ipAddress2, tunnelType1);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
         verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier,externalTunnel,true);
 
