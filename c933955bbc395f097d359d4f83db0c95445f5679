@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "927a64f5_5d1f666e",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "done, \nmoved the immutable to api, since duplicate artifacts do not come up in that case.\nProbably some parent pom handles annotations better in api poms",
+      "parentUuid": "14c018d8_0f8e116f",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b56a8685_6b761c23",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -48,6 +66,24 @@
       "side": 1,
       "message": "ooh, I missed out on that.",
       "parentUuid": "b56a8685_6b761c23",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "797c843f_050524b3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "207c9005_f229062f",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -101,6 +137,24 @@
       "side": 1,
       "message": "Oh this http://immutables.github.io/immutable.html#constructor so that it generates a Constructor instead of (or in addition) a *Builder... just for consistency with what everyone is used to from the YANG generated code, I would not do that, and only use Builders (and hide the *Immutable)",
       "parentUuid": "dece8796_e83de985",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "17be300b_0991c7a3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "918d6eae_9b44202a",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -196,6 +250,24 @@
     },
     {
       "key": {
+        "uuid": "9dc17e49_bd1ce3f0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "Hi Tom, \nif you see the generated sources, \nthere is an annotation @ParametersAreNonnullByDefault\nthis should take care of keeping the params non-null internally.",
+      "parentUuid": "c7d6794d_a9937935",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8beb45a6_0d501d37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -243,6 +315,24 @@
       "side": 1,
       "message": "After reading http://immutables.github.io/immutable.html#auxiliary-attributes, I don\u0027t think that is a good idea at all... this can lead to VERY confusing bugs, if you put such objects into  Map as a key, or add them to a Set.",
       "parentUuid": "d9ee5db3_c419cf27",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "50e9d3d1_f7178fd4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "sure micheal, \nI have removed the annotation in-line with your comments.",
+      "parentUuid": "e6d983b2_2fabd28f",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -373,6 +463,24 @@
     },
     {
       "key": {
+        "uuid": "0dcd2ca0_15af13bd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "Hi Micheal, \n   Tom, \n\nyes we do want to keep groupId, isInternal, and isMonitoringEnabled as optional, \nwhich is why their return type is optional which would default to null. \nif that\u0027s an issue let me know.",
+      "parentUuid": "346b7da3_419fce48",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2bacadd1_c26d8900",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ImmutableStyle.java",
         "patchSetId": 9
@@ -420,6 +528,24 @@
       "side": 1,
       "message": "Oh OK.  I now found again why this looked so familiar... see my earlier org.opendaylight.genius.infra.OpenDaylightImmutableStyle - do you want to just use that?  You can always add anything you do here and that you think is missing there - but then I\u0027ll ask you exactly what it does and why it\u0027s needed... ;-)",
       "parentUuid": "57c097e6_621bf539",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75c26e36_84e53209",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/ImmutableStyle.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T05:35:55Z",
+      "side": 1,
+      "message": "ha ha, \nyou got me on that. \nI have refactored my changes and I\u0027m using odlstyle defined in mdsal-api.\n\nThanks.",
+      "parentUuid": "bac1eff9_cef882eb",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
