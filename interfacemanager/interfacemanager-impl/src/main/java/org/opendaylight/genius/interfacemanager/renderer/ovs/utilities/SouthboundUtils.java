@@ -13,16 +13,24 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
+import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
+import org.opendaylight.infrautils.caches.Cache;
+import org.opendaylight.infrautils.caches.CacheConfigBuilder;
+import org.opendaylight.infrautils.caches.CachePolicyBuilder;
+import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -42,6 +50,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbPortInterfaceAttributes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
@@ -52,6 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
@@ -118,13 +128,34 @@ public class SouthboundUtils {
             }
         };
 
+    // OVS Detection statics
+    private static final String DEFAULT_OVS_VERSION = "2.8.0";
+    private static final String MIN_GRE_VERSION = "2.8.0";
+    private static final long MAX_CACHE_SIZE = 1024;
+
+    private final SingleTransactionDataBroker singleTxDB;
+
     private final BatchingUtils batchingUtils;
     private final InterfacemgrProvider interfacemgrProvider;
+    private final CacheProvider cacheProvider;
+    private final Cache<String, String> ovsVersionCache;
 
     @Inject
-    public SouthboundUtils(BatchingUtils batchingUtils, InterfacemgrProvider interfacemgrProvider) {
+    public SouthboundUtils(final DataBroker dataBroker,
+                           final BatchingUtils batchingUtils, InterfacemgrProvider interfacemgrProvider,
+                           final CacheProvider cacheProvider) {
         this.batchingUtils = batchingUtils;
         this.interfacemgrProvider = interfacemgrProvider;
+        this.cacheProvider = cacheProvider;
+        this.singleTxDB = new SingleTransactionDataBroker(dataBroker);
+        ovsVersionCache = cacheProvider.newCache(
+            new CacheConfigBuilder<String, String>()
+                .anchor(this)
+                .id("ovsVersionCache")
+                .cacheFunction(key -> getVersionForBridgeNodeId(key))
+                .description("BridgeNodeId to OVS Version cache")
+                .build(),
+            new CachePolicyBuilder().statsEnabled(true).maxEntries(MAX_CACHE_SIZE).build());
     }
 
     public void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
@@ -200,7 +231,17 @@ public class SouthboundUtils {
         }
         // Specific options for each type of tunnel
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
-            options.put(TUNNEL_OPTIONS_PKT_TYPE, TUNNEL_OPTIONS_VALUE_LEGACY_L3);
+            String switchVersion = getSwitchVersion((InstanceIdentifier<Node>) bridgeIid);
+            LOG.debug("Switch OVS Version: {}", switchVersion);
+            if (org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils.compareDbVersionToMinVersion(
+                switchVersion, MIN_GRE_VERSION)) {
+                options.put(TUNNEL_OPTIONS_PKT_TYPE, TUNNEL_OPTIONS_VALUE_LEGACY_L3);
+            } else {
+                LOG.warn("{} OVS version {} less than {} required for MplsOverGre",
+                    bridgeIid.firstKeyOf(Node.class).getNodeId().getValue(),
+                    switchVersion, MIN_GRE_VERSION);
+                return;
+            }
         } else {
             options.put(TUNNEL_OPTIONS_KEY, TUNNEL_OPTIONS_VALUE_FLOW);
         }
@@ -306,6 +347,26 @@ public class SouthboundUtils {
         InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
         bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
         return bfdBuilder.build();
+    }
+
+    private String getSwitchVersion(InstanceIdentifier<Node> bridgeIid) {
+        String ovsNodeId = bridgeIid.firstKeyOf(Node.class).getNodeId().getValue().split("/bridge")[0];
+        return ovsVersionCache.get(ovsNodeId);
+    }
+
+    private String getVersionForBridgeNodeId(String ovsNodeId) {
+        InstanceIdentifier<Node> ovsNodeIid = InstanceIdentifier.create(NetworkTopology.class)
+            .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID))
+            .child(Node.class, new NodeKey(new NodeId(ovsNodeId)));
+        String ovsVersion = DEFAULT_OVS_VERSION;
+        try {
+            Node ovsNode = singleTxDB.syncRead(LogicalDatastoreType.OPERATIONAL, ovsNodeIid);
+            ovsVersion = ovsNode.getAugmentation(OvsdbNodeAugmentation.class).getOvsVersion()
+                .toLowerCase(Locale.ROOT);
+        } catch (ReadFailedException e) {
+            LOG.error("OVS Node {} not present", ovsNodeId);
+        }
+        return ovsVersion;
     }
 
     public static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodekey,
