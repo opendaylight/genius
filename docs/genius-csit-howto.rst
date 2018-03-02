@@ -81,7 +81,7 @@ Below are the requirements for running genius CSIT.
   [Same can be imported after RIDE opens up, if you don't want to specify the path in the prompt]
 * In the RIDE window that opens up, Genius test suite will be imported now
 * Click on the Run panel, and Click Start, by passing below arguments
-  -v ODL_SYSTEM_IP:<ODL_IP>  -v TOOLS_SYSTEM_IP:<OVS1_IP>  -v TOOLS_SYSTEM_2_IP:<OVS2_IP> -v USER_HOME:<home-folder> -v TOOLS_SYSTEM_USER:<user-name>
+  -v ODL_SYSTEM_IP:<ODL_IP>  -v TOOLS_SYSTEM_IP:<OVS1_IP> -v TOOLS_SYSTEM_2_IP:<OVS2_IP> -v USER_HOME:<HOME_FOLDER> -v TOOLS_SYSTEM_USER:<USER NAME> -v DEFAULT_USER:<USER NAME> -v DEFAULT_LINUX_PROMPT:<LINUX PROMPT> -v ODL_SYSTEM_USER:<ODL USER NAME> -v ODL_SYSTEM_PROMPT:<ODL PROMPT> -v ODL_STREAM:<ODL STREAM> -v ODL_SYSTEM_1_IP:<ODL1_IP> -v KARAF_HOME:<KARAF-HOME-FOLDER>
   Any arguments defined in Variables.py can be overriden, by passing the argument value like above.
   For eg:, there was a recent change in karaf prompt, in that case we could run genius csit by passing argument "-v KARAF_PROMPT:karaf@root"
 
