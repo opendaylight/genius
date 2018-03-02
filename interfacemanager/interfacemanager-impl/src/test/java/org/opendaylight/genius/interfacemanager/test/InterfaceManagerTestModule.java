@@ -43,6 +43,7 @@ import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManag
 import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
+import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
@@ -110,5 +111,6 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(InterfaceStateListener.class);
         bind(HwvtepNodeHACache.class).toInstance(mock(HwvtepNodeHACache.class));
         bind(IfmConfig.class).toInstance(mock(IfmConfig.class));
+        bind(CacheProvider.class).toInstance(mock(CacheProvider.class));
     }
 }

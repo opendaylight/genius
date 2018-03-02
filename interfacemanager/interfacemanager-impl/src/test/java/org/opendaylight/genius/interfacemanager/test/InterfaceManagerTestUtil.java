@@ -23,7 +23,6 @@ import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
@@ -211,7 +210,7 @@ public final class InterfaceManagerTestUtil {
 
     static InstanceIdentifier<TerminationPoint> getTerminationPointId(InstanceIdentifier<?> bridgeIid,
                                                                       String portName) {
-        InstanceIdentifier<TerminationPoint> tpIid = SouthboundUtils.createTerminationPointInstanceIdentifier(
+        InstanceIdentifier<TerminationPoint> tpIid = OvsdbSouthboundTestUtil.createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
                         org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns
                         .yang.network.topology.rev131021.network.topology.topology.Node.class)), portName);
