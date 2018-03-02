@@ -11,6 +11,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.is;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,11 +28,15 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     private final Supplier<Long> incompleteTaskCountSupplier;
     private final Object incompleteTaskCountDetailsToStringer;
+    private final AtomicLong clearedTaskCount = new AtomicLong();
+    private final Object clearedTaskCountDetailsToStringer;
 
     @Inject
     public TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor coordinatorMonitor) {
         incompleteTaskCountSupplier = () -> coordinatorMonitor.getIncompleteTaskCount();
         incompleteTaskCountDetailsToStringer = coordinatorMonitor;
+        clearedTaskCount.addAndGet(coordinatorMonitor.getClearedTaskCount());
+        clearedTaskCountDetailsToStringer = coordinatorMonitor;
     }
 
     @Override
@@ -39,7 +44,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
         try {
             Awaitility.await("TestableJobCoordinatorEventsWaiter")
                 .atMost(120, SECONDS)
-                .pollDelay(0, MILLISECONDS)
+                .pollDelay(10, MILLISECONDS)
                 .conditionEvaluationListener(condition -> LOG.info(
                         "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; incompleteTaskCount: {}",
                             condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
@@ -48,6 +53,27 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
         } catch (ConditionTimeoutException e) {
             LOG.error("Details about stuck JobCoordinator: " + incompleteTaskCountDetailsToStringer.toString());
             throw e;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean awaitEventsConsumption(long eventCount) throws ConditionTimeoutException {
+        try {
+            Awaitility.await("TestableJobCoordinatorEventsWaiter")
+                    .atMost(120, SECONDS)
+                    .pollDelay(0, MILLISECONDS)
+                    .conditionEvaluationListener(condition -> LOG.info(
+                            "awaitEventsConsumption: Elapsed time {}s, remaining time {}s; clearedTaskCount: {}",
+                            condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
+                            condition.getValue()))
+                    .until(() -> clearedTaskCount.get(), is(eventCount));
+        } catch (ConditionTimeoutException e) {
+            LOG.error("Details about stuck JobCoordinator: " + clearedTaskCountDetailsToStringer.toString());
+            throw e;
+        }
+        finally {
+            clearedTaskCount.set(0L);
         }
         return true;
     }

@@ -7,5 +7,18 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import org.awaitility.core.ConditionTimeoutException;
+
 public interface JobCoordinatorEventsWaiter extends AsyncEventsWaiter {
+    /**
+     * Wait by blocking calling thread until an expected number of events have been processed
+     * by other threads in the background.  Implementations must have some
+     * sensible fixed timeout value.  This method is normally called from
+     * the JUnit Test main thread.
+     *
+     * @return true if all the expected number of events have been processed, false otherwise
+     *
+     * @throws ConditionTimeoutException if timed out while waiting
+     */
+    boolean awaitEventsConsumption(long eventCount) throws ConditionTimeoutException;
 }
