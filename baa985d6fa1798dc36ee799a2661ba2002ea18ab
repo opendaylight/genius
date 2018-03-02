@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "156bf28a_681090b3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-02T06:59:30Z",
+      "side": 1,
+      "message": "needed this to have conditional instantiation of cache. \nis there a better way to do this ? i\u0027m not sure, AFAIK.",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
