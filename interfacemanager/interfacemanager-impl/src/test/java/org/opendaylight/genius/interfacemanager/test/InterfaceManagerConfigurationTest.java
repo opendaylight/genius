@@ -189,6 +189,7 @@ public class InterfaceManagerConfigurationTest {
     @Inject BatchingUtils batchingUtils;
     @Inject FlowAssertTestUtils flowAssertTestUtils;
 
+
     @Before
     public void start() throws InterruptedException, TransactionCommitFailedException {
         // Create the bridge and make sure it is ready
