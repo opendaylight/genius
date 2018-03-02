@@ -226,6 +226,23 @@
     },
     {
       "key": {
+        "uuid": "be522a29_4972462a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T15:09:23Z",
+      "side": 1,
+      "message": "Actually you don\u0027t even need this method as DataObjectCache provides getAllPresent.",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9066f5f9_8eabc6d8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
         "patchSetId": 3
@@ -318,6 +335,47 @@
     },
     {
       "key": {
+        "uuid": "e96993c7_cabb497c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T15:09:23Z",
+      "side": 1,
+      "message": "Actually since the class is named OvsBridgeEntryCache, you can just name this method get.",
+      "parentUuid": "3d81a69b_a21cce77",
+      "range": {
+        "startLine": 45,
+        "startChar": 43,
+        "endLine": 45,
+        "endChar": 52
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "de768627_55ff41cd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T15:09:23Z",
+      "side": 1,
+      "message": "Thinking about this further,  I don\u0027t think you need to maintain your own own map keyed by dpnId as it really duplicates the cache in DataObjectCache.  To look up by dpnId you can construct an OvsBridgeEntry InstanceIdentifier and call DataObjectCache.get. It\u0027s a little more overhead on lookup but should be negligible and saves extra memory overhead.",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ef62e73_da5426aa",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
         "patchSetId": 3
@@ -381,6 +439,23 @@
         "endLine": 39,
         "endChar": 66
       },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b5a33b5_ebceb6f9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T15:09:23Z",
+      "side": 1,
+      "message": "Same comments as in OvsBridgeEntryCache",
       "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
