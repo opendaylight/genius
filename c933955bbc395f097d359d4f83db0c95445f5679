@@ -268,6 +268,24 @@
     },
     {
       "key": {
+        "uuid": "f075e06a_78eae153",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T13:29:45Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "9dc17e49_bd1ce3f0",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8beb45a6_0d501d37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
         "patchSetId": 9
@@ -475,6 +493,24 @@
       "side": 1,
       "message": "Hi Micheal, \n   Tom, \n\nyes we do want to keep groupId, isInternal, and isMonitoringEnabled as optional, \nwhich is why their return type is optional which would default to null. \nif that\u0027s an issue let me know.",
       "parentUuid": "346b7da3_419fce48",
+      "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff3f3b64_47df63cf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/scaling/renderer/ovs/utilities/DpnTepInterfaceInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T13:29:45Z",
+      "side": 1,
+      "message": "it\u0027s not an issue - I can see groupId not being set and representing that with an optional, that\u0027s more clear than using some magic value like 0 or negative. I was just wondering about the booleans but if there\u0027s a use case for \"not-set\" then that\u0027s fine.",
+      "parentUuid": "0dcd2ca0_15af13bd",
       "revId": "c933955bbc395f097d359d4f83db0c95445f5679",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
