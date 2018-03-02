@@ -198,6 +198,7 @@ public class InterfaceManagerConfigurationTest {
     @Inject InterfaceMetaUtils interfaceMetaUtils;
     @Inject BatchingUtils batchingUtils;
 
+
     @Before
     @Ignore
     public void start() throws InterruptedException, TransactionCommitFailedException {
