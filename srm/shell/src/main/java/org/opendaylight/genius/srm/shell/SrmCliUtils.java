@@ -18,6 +18,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItm;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTz;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAcl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInstance;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQos;
@@ -49,6 +52,7 @@ public final class SrmCliUtils {
             .put("IFM", GeniusIfm.class)
             .put("VPN", NetvirtVpn.class)
             .put("ELAN", NetvirtElan.class)
+            .put("ACL", NetvirtAcl.class)
             .put("OFPLUGIN", Ofplugin.class)
             .put("QOS", NetvirtQos.class)
             .build();
@@ -61,6 +65,8 @@ public final class SrmCliUtils {
             .put("VPN-INSTANCE", NetvirtVpnInstance.class)
             .put("ELAN-INSTANCE", NetvirtElanInstance.class)
             .put("QOS-POLICY-INSTANCE", NetvirtQosPolicyInstance.class)
+            .put("ACL-INTERFACE", NetvirtAclInterface.class)
+            .put("ACL-INSTANCE", NetvirtAclInstance.class)
             .build();
 
     /**
