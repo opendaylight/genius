@@ -39,5 +39,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>org.opendaylight.mdsal.model</groupId>
       <artifactId>ietf-interfaces</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+    </dependency>
   </dependencies>
 </project>
