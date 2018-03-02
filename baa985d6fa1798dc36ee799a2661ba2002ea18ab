@@ -2,6 +2,408 @@
   "comments": [
     {
       "key": {
+        "uuid": "ac63682e_1d3244ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Minor thing but it\u0027s generally better to declare the interface instead of a concrete class so ConcurrentMap.",
+      "range": {
+        "startLine": 36,
+        "startChar": 18,
+        "endLine": 36,
+        "endChar": 35
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4cbb9db_b020bd5b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "This couples this class to IInterfaceManager only to obtain the enabled flag which is a pass-thru to IfmConfig. I think it would be better to inject IfmConfig directly to avoid that coupling.",
+      "range": {
+        "startLine": 40,
+        "startChar": 80,
+        "endLine": 40,
+        "endChar": 97
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65f7ac4a_eadaa0c8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Can this be null? If so, ConcurrentHashMap doesn\u0027t allow null keys.",
+      "range": {
+        "startLine": 48,
+        "startChar": 33,
+        "endLine": 48,
+        "endChar": 49
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5796780a_4583880a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "possibly null?",
+      "range": {
+        "startLine": 49,
+        "startChar": 46,
+        "endLine": 49,
+        "endChar": 61
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41ef9aa9_8650b7ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "toString() isn\u0027t needed.",
+      "range": {
+        "startLine": 65,
+        "startChar": 51,
+        "endLine": 65,
+        "endChar": 61
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "233e46da_9751bbfc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Since this class is already named \"Cache\", I think \"FromCache\" is redundant.",
+      "range": {
+        "startLine": 70,
+        "startChar": 31,
+        "endLine": 70,
+        "endChar": 40
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a369849_2534709d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "same here.",
+      "range": {
+        "startLine": 74,
+        "startChar": 49,
+        "endLine": 74,
+        "endChar": 58
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99bd9ba2_76060330",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Since this snippet is done 3 times, perhaps put it in a method,",
+      "range": {
+        "startLine": 75,
+        "startChar": 38,
+        "endLine": 75,
+        "endChar": 85
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f7f1fad2_62081b85",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Return Collection instead.",
+      "range": {
+        "startLine": 78,
+        "startChar": 11,
+        "endLine": 78,
+        "endChar": 15
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f88737a9_bf15b419",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "You can simplify/shorten all this to:\n\n  return Collections.unmodifiableCollection(dpnsTepsMap.values());",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9066f5f9_8eabc6d8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "no static",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 18
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1b18e3e1_11bd5243",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "ConcurrentMap",
+      "range": {
+        "startLine": 26,
+        "startChar": 19,
+        "endLine": 26,
+        "endChar": 36
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6bfe4cd_d47c334b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Can these be null?",
+      "range": {
+        "startLine": 37,
+        "startChar": 45,
+        "endLine": 37,
+        "endChar": 63
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d81a69b_a21cce77",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "omit?",
+      "range": {
+        "startLine": 45,
+        "startChar": 43,
+        "endLine": 45,
+        "endChar": 52
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ef62e73_da5426aa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "ConcurrentMap",
+      "range": {
+        "startLine": 27,
+        "startChar": 19,
+        "endLine": 27,
+        "endChar": 36
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66e37089_37d1136f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "no static",
+      "range": {
+        "startLine": 27,
+        "startChar": 12,
+        "endLine": 27,
+        "endChar": 18
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d32a01c1_f3ba5f8c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "possibly null?",
+      "range": {
+        "startLine": 39,
+        "startChar": 48,
+        "endLine": 39,
+        "endChar": 66
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d5b3961_958de07b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "Why were these downgraded from final?",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "156bf28a_681090b3",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 3
@@ -13,6 +415,30 @@
       "writtenOn": "2018-03-02T06:59:30Z",
       "side": 1,
       "message": "needed this to have conditional instantiation of cache. \nis there a better way to do this ? i\u0027m not sure, AFAIK.",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a5a34c15_271f4d2f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-02T14:27:35Z",
+      "side": 1,
+      "message": "First, the code below is duplicated - you should have the other ctor call this one.\n\nSecond,  this class  is pretty much useless without registering a DTCL as the cache would always be empty so I\u0027d rather not make it optional here. To conditionally elide DTCL registration for your caches, I would suggest using an internal DataObjectCache that is conditionally created instead of deriving from DataObjectCache.",
+      "parentUuid": "156bf28a_681090b3",
       "range": {
         "startLine": 84,
         "startChar": 0,
