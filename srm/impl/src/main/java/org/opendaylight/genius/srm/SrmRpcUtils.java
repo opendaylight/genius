@@ -38,6 +38,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItm;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTz;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAcl;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInstance;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpn;
@@ -70,12 +73,15 @@ public final class SrmRpcUtils {
             .put(GeniusIfm.class, EntityTypeService.class)
             .put(NetvirtVpn.class, EntityTypeService.class)
             .put(NetvirtElan.class, EntityTypeService.class)
+            .put(NetvirtAcl.class, EntityTypeService.class)
             .put(Ofplugin.class, EntityTypeService.class)
             .put(GeniusItmTep.class, EntityTypeInstance.class)
             .put(GeniusItmTz.class, EntityTypeInstance.class)
             .put(GeniusIfmInterface.class, EntityTypeInstance.class)
             .put(NetvirtVpnInstance.class, EntityTypeInstance.class)
             .put(NetvirtElanInstance.class, EntityTypeInstance.class)
+            .put(NetvirtAclInterface.class, EntityTypeInstance.class)
+            .put(NetvirtAclInstance.class, EntityTypeInstance.class)
             .build();
 
     private static final ImmutableMap<Class<? extends EntityNameBase>, Class<? extends EntityNameBase>>
@@ -90,6 +96,9 @@ public final class SrmRpcUtils {
             .put(NetvirtVpnInstance.class, NetvirtVpn.class)
             .put(NetvirtElan.class, NetvirtElan.class)
             .put(NetvirtElanInstance.class, NetvirtElan.class)
+            .put(NetvirtAcl.class, NetvirtAcl.class)
+            .put(NetvirtAclInterface.class, NetvirtAcl.class)
+            .put(NetvirtAclInstance.class, NetvirtAcl.class)
             .put(Ofplugin.class, Ofplugin.class)
             .build();
 
