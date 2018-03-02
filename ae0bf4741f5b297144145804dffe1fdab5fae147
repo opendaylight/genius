@@ -34,6 +34,24 @@
       "revId": "ae0bf4741f5b297144145804dffe1fdab5fae147",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92429dc1_31bae4fe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionNxConntrack.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 4269
+      },
+      "writtenOn": "2018-03-02T07:23:31Z",
+      "side": 1,
+      "message": "Yes it is rangepresent, the ovs call this that way. While coding this was name natType but later changed to rangepresent, missed to change it is the constructor.",
+      "parentUuid": "a973dd65_4715e7e8",
+      "revId": "ae0bf4741f5b297144145804dffe1fdab5fae147",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
