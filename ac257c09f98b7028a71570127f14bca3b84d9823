@@ -16,6 +16,58 @@
       "revId": "ac257c09f98b7028a71570127f14bca3b84d9823",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ebe6eb4_c7c195c5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T09:42:00Z",
+      "side": 1,
+      "message": "LGTM!",
+      "parentUuid": "d098f9bb_c327ef4a",
+      "revId": "ac257c09f98b7028a71570127f14bca3b84d9823",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "911216e2_2a237fd9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1397,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T09:42:00Z",
+      "side": 1,
+      "message": "return dpnEndpoints.transform(dpnEndpoints -\u003e dpnEndpoints.getDPNTEPsInfo()).or(Collections.emptyList());",
+      "revId": "ac257c09f98b7028a71570127f14bca3b84d9823",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1d8efe4_c2562ab5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1400,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T09:42:00Z",
+      "side": 1,
+      "message": "return Collections.emptyList();",
+      "revId": "ac257c09f98b7028a71570127f14bca3b84d9823",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
