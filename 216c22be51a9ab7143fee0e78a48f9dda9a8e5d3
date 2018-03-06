@@ -16,6 +16,24 @@
       "revId": "216c22be51a9ab7143fee0e78a48f9dda9a8e5d3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6022675e_97e6fa21",
+        "filename": "itm/itm-api/pom.xml",
+        "patchSetId": 12
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-06T12:41:03Z",
+      "side": 1,
+      "message": "my bad, have removed in the latest patch",
+      "parentUuid": "cdd71ac7_5b36e117",
+      "revId": "216c22be51a9ab7143fee0e78a48f9dda9a8e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
