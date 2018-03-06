@@ -7,6 +7,10 @@
  */
 package org.opendaylight.genius.itm.cache;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -30,5 +34,31 @@ public class DPNTEPsInfoCache extends DataObjectCache<DPNTEPsInfo> {
     public DPNTEPsInfoCache(DataBroker dataBroker, CacheProvider cacheProvider) {
         super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class).build(), cacheProvider);
+    }
+
+    public static List<DPNTEPsInfo> getDPNTepListFromDPNId(DPNTEPsInfoCache dpntePsInfoCache, List<BigInteger> dpnIds) {
+        Collection<DPNTEPsInfo> meshedDpnList = dpntePsInfoCache.getAllPresent() ;
+        List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
+        for (BigInteger dpnId : dpnIds) {
+            for (DPNTEPsInfo teps : meshedDpnList) {
+                if (dpnId.equals(teps.getDPNID())) {
+                    cfgDpnList.add(teps);
+                }
+            }
+        }
+        return cfgDpnList;
+    }
+
+    public static DPNTEPsInfo getDPNTepFromDPNId(DPNTEPsInfoCache dpntePsInfoCache, BigInteger dpnId) {
+        Collection<DPNTEPsInfo> meshedDpnList = dpntePsInfoCache.getAllPresent() ;
+        DPNTEPsInfo cfgDpn = null;
+        meshedDpnList.stream().filter(info -> dpnId.equals(info.getDPNID())).findFirst();
+        for (DPNTEPsInfo teps : meshedDpnList) {
+            if (dpnId.equals(teps.getDPNID())) {
+                cfgDpn = teps;
+            }
+        }
+
+        return cfgDpn;
     }
 }
