@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.cache;
 
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.annotation.PreDestroy;
@@ -21,8 +22,16 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfoBuilder;
+import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
@@ -33,8 +42,15 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class DpnsTepsStateCache implements ClusteredDataTreeChangeListener<DpnsTeps> {
+
     private static final Logger LOG = LoggerFactory.getLogger(DpnsTepsStateCache.class);
 
+    private final DataBroker dataBroker;
+    private final IdManagerService idManager;
+    private final IMdsalApiManager mdsalApiManager;
+    private final DPNTEPsInfoCache dpntePsInfoCache;
+    private final JobCoordinator coordinator;
+    private final DirectTunnelUtils directTunnelUtils;
     private ListenerRegistration<DpnsTepsStateCache> registration;
     private final DataTreeIdentifier<DpnsTeps> treeId =
             new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION, getWildcardPath());
@@ -43,7 +59,16 @@ public class DpnsTepsStateCache implements ClusteredDataTreeChangeListener<DpnsT
 
     @Inject
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public DpnsTepsStateCache(final DataBroker dataBroker, final IInterfaceManager interfaceManager) {
+    public DpnsTepsStateCache(final DataBroker dataBroker,final IdManagerService idManager,
+                              final IMdsalApiManager mdsalApiManager, final DPNTEPsInfoCache dpntePsInfoCache,
+                              final JobCoordinator jobCoordinator, final IInterfaceManager interfaceManager,
+                              final DirectTunnelUtils directTunnelUtils) {
+        this.dataBroker = dataBroker;
+        this.idManager = idManager;
+        this.mdsalApiManager = mdsalApiManager;
+        this.dpntePsInfoCache = dpntePsInfoCache;
+        this.coordinator = jobCoordinator;
+        this.directTunnelUtils = directTunnelUtils;
         try {
             LOG.trace("Registering on path: {}", treeId);
             if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -97,6 +122,13 @@ public class DpnsTepsStateCache implements ClusteredDataTreeChangeListener<DpnsT
                     .setIsMonitoringEnabled(remoteDpns.isInternal())
                     .setTunnelType(dpnsTeps.getTunnelType()).build();
             dpnsTepsInfInfoCache.put(key, value);
+            directTunnelUtils.addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
+                    dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+            NodeConnectorInfo nodeConnectorInfo =
+                    directTunnelUtils.getUnprocessedNodeConnector(remoteDpns.getTunnelName());
+            if (nodeConnectorInfo != null) {
+                processUnporcessedNodeConnectorForTunnel(nodeConnectorInfo, remoteDpns);
+            }
         }
     }
 
@@ -111,6 +143,11 @@ public class DpnsTepsStateCache implements ClusteredDataTreeChangeListener<DpnsT
         return src + ":" + dst;
     }
 
+    protected String getKey(String src, String dst) {
+        return src + ":" + dst;
+    }
+
+
     public Collection<DpnsTeps> getAllPresent() {
         return dpnsTepsCache.values();
     }
@@ -121,5 +158,69 @@ public class DpnsTepsStateCache implements ClusteredDataTreeChangeListener<DpnsT
 
     public DpnTepInterfaceInfo getDpnTepInterfaceInfo(BigInteger srcDpnId, BigInteger dstDpnId) {
         return dpnsTepsInfInfoCache.get(getKey(srcDpnId,dstDpnId));
+    }
+
+    public DpnTepInterfaceInfo getDpnTepInterfaceInfo(String srcDpn, String dstDpn) {
+        return dpnsTepsInfInfoCache.get(getKey(srcDpn, dstDpn));
+    }
+
+    private void processUnporcessedNodeConnectorForTunnel(NodeConnectorInfo nodeConnectorInfo, RemoteDpns
+            remoteDpns) {
+        LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+
+        String portName = nodeConnectorInfo.getNodeConnector().getName();
+        InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
+                new InterfaceStateAddWorkerForUnprocessedNC(dataBroker, idManager, mdsalApiManager,
+                        nodeConnectorInfo.getNodeConnectorId(), nodeConnectorInfo.getNodeConnector(),
+                        portName, dpntePsInfoCache, this, directTunnelUtils);
+
+        coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+        // Remove the NodeConnector Entry from Unprocessed Map -- Check if this is the best place to remove ?
+        directTunnelUtils.removeNodeConnectorInfoFromCache(remoteDpns.getTunnelName());
+    }
+
+    private static class InterfaceStateAddWorkerForUnprocessedNC implements Callable {
+        DataBroker dataBroker;
+        IdManagerService idManager;
+        IMdsalApiManager mdsalApiManager;
+        DPNTEPsInfoCache dpntePsInfoCache;
+        InstanceIdentifier<FlowCapableNodeConnector> key;
+        FlowCapableNodeConnector fcNodeConnectorNew;
+        String interfaceName;
+        DpnsTepsStateCache dpnTepStateCache;
+        DirectTunnelUtils directTunnelUtils;
+
+        InterfaceStateAddWorkerForUnprocessedNC(DataBroker dataBroker,  IdManagerService idManager,
+                                                IMdsalApiManager mdsalApiManager,
+                                                InstanceIdentifier<FlowCapableNodeConnector> key,
+                                                FlowCapableNodeConnector fcNodeConnectorNew,
+                                                String portName, DPNTEPsInfoCache dpntePsInfoCache,
+                                                DpnsTepsStateCache dpnTepStateCache,
+                                                DirectTunnelUtils directTunnelUtils) {
+            this.key = key;
+            this.fcNodeConnectorNew = fcNodeConnectorNew;
+            this.interfaceName = portName;
+            this.dataBroker = dataBroker;
+            this.idManager = idManager;
+            this.mdsalApiManager = mdsalApiManager;
+            this.dpntePsInfoCache = dpntePsInfoCache;
+            this.dpnTepStateCache = dpnTepStateCache;
+            this.directTunnelUtils = directTunnelUtils;
+        }
+
+        @Override
+        public Object call() throws Exception {
+            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // to call the respective helpers.
+            return OvsInterfaceStateAddHelper.addState(dataBroker, idManager,
+                    mdsalApiManager, key, interfaceName, fcNodeConnectorNew, dpntePsInfoCache, dpnTepStateCache,
+                    directTunnelUtils);
+        }
+
+        @Override
+        public String toString() {
+            return "InterfaceStateAddWorker{fcNodeConnectorIdentifier=" + key + ", fcNodeConnectorNew="
+                    + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
+        }
     }
 }
