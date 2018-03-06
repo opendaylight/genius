@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6784a12e_ea187c00",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T12:11:29Z",
+      "side": 1,
+      "message": "what would it take to make you use the infrautils.Cache (via a CacheProvider you could @Inject int this SouthboundUtils constructor) here?  If it\u0027s just that that Cache should be unbounded by default, then let\u0027s do that - Tom offered to raise a change for that - otherwise I could take care of that.",
+      "revId": "34bf3fa54b9847242a8840b73faae0a690334dc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5011aeb_df3b482b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T12:11:29Z",
+      "side": 1,
+      "message": "singleTxDB is perhaps a clearer name than stBroker? I think that\u0027s what you called it elsewhere.",
+      "revId": "34bf3fa54b9847242a8840b73faae0a690334dc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3026dc9_0e5633de",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T12:11:29Z",
+      "side": 1,
+      "message": "import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils ?",
+      "revId": "34bf3fa54b9847242a8840b73faae0a690334dc1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
