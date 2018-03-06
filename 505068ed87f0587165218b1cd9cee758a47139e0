@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c0df49f9_12f2ee65",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "given the existing name \"DpnsTeps\" (and DpnTepInterfaceInfo), why not just name this DpnTepStateCache instead, and avoid the @SuppressWarnings(\"checkstyle:AbbreviationAsWordInName\"), and be more consistent with the existing code?",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd5d0625_c2277ea0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "Q to both Tom and Edwin - what would it take to make you use the infrautils.Cache (via the CacheProvider that is anyway passed to the constructor) here?  If it\u0027s just that that Cache should be unbounded by default, then let\u0027s do that - Tom offered to raise a change for that - otherwise I could take care of that.",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27e9dc56_c234dd83",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "no no no, not \"static\" - really not",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93f6ecd8_9788b961",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "nit: remove double empty new line",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7e62fc17_4e739b69",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "remove static",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6944c8c_857ef70f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "removal of final can probably be avoided if below is solved",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3bc1e1fb_ee6751f1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-06T11:50:10Z",
+      "side": 1,
+      "message": "nope; you never just copy/paste entire constructors only to have a if (!registerDTCL) return; at the beginning of them... there are better ways to design and solve what you are after here, and avoid the copy/paste.",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
