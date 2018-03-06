@@ -64,4 +64,17 @@ public interface ITMConstants {
     String EXT_ID_TEP_PARAM_KEY_TZNAME = "tzname";
     String EXT_ID_TEP_PARAM_KEY_BR_NAME = "br-name";
     String EXT_ID_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
+
+    // ITM DIRECT TUNNELS RELATED CONSTANTS
+    int JOB_MAX_RETRIES = 6;
+    int INVALID_PORT_NO = -1;
+    int DEFAULT_FLOW_PRIORITY = 5;
+    Integer MAC_STRING_LENGTH = 17;
+    String OF_URI_SEPARATOR = ":";
+    String DPN_TEPS_STATE_CACHE_NAME = "ItmDpnTepsStateCache";
+    String ITM_CONFIG_ENTITY = "itm_config";
+
+    String DEAD_BEEF_MAC_PREFIX = "DEADBEEF";
+    String INVALID_MAC = "00:00:00:00:00:00";
+    String MAC_SEPARATOR = ":";
 }
