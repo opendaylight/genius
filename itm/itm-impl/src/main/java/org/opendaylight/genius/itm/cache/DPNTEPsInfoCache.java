@@ -7,6 +7,11 @@
  */
 package org.opendaylight.genius.itm.cache;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -30,5 +35,23 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
     public DPNTEPsInfoCache(DataBroker dataBroker, CacheProvider cacheProvider) {
         super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class).build(), cacheProvider);
+    }
+
+    public List<DPNTEPsInfo> getDPNTepListFromDPNId(List<BigInteger> dpnIds) {
+        Collection<DPNTEPsInfo> meshedDpnList = this.getAllPresent() ;
+        List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
+        for (BigInteger dpnId : dpnIds) {
+            for (DPNTEPsInfo teps : meshedDpnList) {
+                if (dpnId.equals(teps.getDPNID())) {
+                    cfgDpnList.add(teps);
+                }
+            }
+        }
+        return cfgDpnList;
+    }
+
+    public Optional<DPNTEPsInfo> getDPNTepFromDPNId(BigInteger dpnId) {
+        Collection<DPNTEPsInfo> meshedDpnList = this.getAllPresent() ;
+        return meshedDpnList.stream().filter(info -> dpnId.equals(info.getDPNID())).findFirst();
     }
 }
