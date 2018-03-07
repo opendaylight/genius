@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d86fe76f_9eb1e344",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ac63682e_1d3244ef",
+      "range": {
+        "startLine": 36,
+        "startChar": 18,
+        "endLine": 36,
+        "endChar": 35
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e4cbb9db_b020bd5b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
         "patchSetId": 3
@@ -36,6 +60,30 @@
       "writtenOn": "2018-03-02T14:27:35Z",
       "side": 1,
       "message": "This couples this class to IInterfaceManager only to obtain the enabled flag which is a pass-thru to IfmConfig. I think it would be better to inject IfmConfig directly to avoid that coupling.",
+      "range": {
+        "startLine": 40,
+        "startChar": 80,
+        "endLine": 40,
+        "endChar": 97
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7110359e_1187e25c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "rewired the logic, \nwe still need the api, and we do not want to introduce \nifm-impl dependency",
+      "parentUuid": "e4cbb9db_b020bd5b",
       "range": {
         "startLine": 40,
         "startChar": 80,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1d6272f2_54dcbcf8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "it cannot be null, as per the data model it\u0027s a mandatory field",
+      "parentUuid": "65f7ac4a_eadaa0c8",
+      "range": {
+        "startLine": 48,
+        "startChar": 33,
+        "endLine": 48,
+        "endChar": 49
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5796780a_4583880a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2018-03-02T14:27:35Z",
       "side": 1,
       "message": "possibly null?",
+      "range": {
+        "startLine": 49,
+        "startChar": 46,
+        "endLine": 49,
+        "endChar": 61
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42db56ea_f363aa07",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTepStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "same as above",
+      "parentUuid": "5796780a_4583880a",
       "range": {
         "startLine": 49,
         "startChar": 46,
@@ -289,6 +385,54 @@
     },
     {
       "key": {
+        "uuid": "7a63152f_22ca7fb8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9066f5f9_8eabc6d8",
+      "range": {
+        "startLine": 26,
+        "startChar": 12,
+        "endLine": 26,
+        "endChar": 18
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f969337_5accc8d2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1b18e3e1_11bd5243",
+      "range": {
+        "startLine": 26,
+        "startChar": 19,
+        "endLine": 26,
+        "endChar": 36
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6bfe4cd_d47c334b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
         "patchSetId": 3
@@ -300,6 +444,30 @@
       "writtenOn": "2018-03-02T14:27:35Z",
       "side": 1,
       "message": "Can these be null?",
+      "range": {
+        "startLine": 37,
+        "startChar": 45,
+        "endLine": 37,
+        "endChar": 63
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b40fbb6_df415277",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "key is usually mandatory in yang models, hence not needed",
+      "parentUuid": "b6bfe4cd_d47c334b",
       "range": {
         "startLine": 37,
         "startChar": 45,
@@ -359,6 +527,30 @@
     },
     {
       "key": {
+        "uuid": "ebbbe29c_e9bbbda1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3d81a69b_a21cce77",
+      "range": {
+        "startLine": 45,
+        "startChar": 43,
+        "endLine": 45,
+        "endChar": 52
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "de768627_55ff41cd",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
         "patchSetId": 3
@@ -370,6 +562,24 @@
       "writtenOn": "2018-03-02T15:09:23Z",
       "side": 1,
       "message": "Thinking about this further,  I don\u0027t think you need to maintain your own own map keyed by dpnId as it really duplicates the cache in DataObjectCache.  To look up by dpnId you can construct an OvsBridgeEntry InstanceIdentifier and call DataObjectCache.get. It\u0027s a little more overhead on lookup but should be negligible and saves extra memory overhead.",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "af8f28b5_0fa8b0a4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "in the code/helpers we need this data, \nif we don\u0027t cache it we would be doing a lot of read/writes, which is why the cache",
+      "parentUuid": "de768627_55ff41cd",
       "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -422,6 +632,54 @@
     },
     {
       "key": {
+        "uuid": "27f826fd_10e07e30",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3ef62e73_da5426aa",
+      "range": {
+        "startLine": 27,
+        "startChar": 19,
+        "endLine": 27,
+        "endChar": 36
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "180b13e9_f20ec438",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66e37089_37d1136f",
+      "range": {
+        "startLine": 27,
+        "startChar": 12,
+        "endLine": 27,
+        "endChar": 18
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d32a01c1_f3ba5f8c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
         "patchSetId": 3
@@ -433,6 +691,30 @@
       "writtenOn": "2018-03-02T14:27:35Z",
       "side": 1,
       "message": "possibly null?",
+      "range": {
+        "startLine": 39,
+        "startChar": 48,
+        "endLine": 39,
+        "endChar": 66
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "37a846d1_0bd3dcb9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "key is usually non-null for the yang model key, \nwhich is why not needed.",
+      "parentUuid": "d32a01c1_f3ba5f8c",
       "range": {
         "startLine": 39,
         "startChar": 48,
@@ -462,6 +744,24 @@
     },
     {
       "key": {
+        "uuid": "6adf8308_8ff3c522",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "same as previous",
+      "parentUuid": "9b5a33b5_ebceb6f9",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6d5b3961_958de07b",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 3
@@ -473,6 +773,24 @@
       "writtenOn": "2018-03-02T14:27:35Z",
       "side": 1,
       "message": "Why were these downgraded from final?",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "90bc8ae8_98322278",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "undone",
+      "parentUuid": "6d5b3961_958de07b",
       "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -514,6 +832,30 @@
       "side": 1,
       "message": "First, the code below is duplicated - you should have the other ctor call this one.\n\nSecond,  this class  is pretty much useless without registering a DTCL as the cache would always be empty so I\u0027d rather not make it optional here. To conditionally elide DTCL registration for your caches, I would suggest using an internal DataObjectCache that is conditionally created instead of deriving from DataObjectCache.",
       "parentUuid": "156bf28a_681090b3",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 89,
+        "endChar": 9
+      },
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "560d8476_9e57634a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T07:12:53Z",
+      "side": 1,
+      "message": "my bad, \nI have removed duplicate constructor. \nusing conditional .close instead.",
+      "parentUuid": "a5a34c15_271f4d2f",
       "range": {
         "startLine": 84,
         "startChar": 0,
