@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "41933269_3f4e973d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/NoopDataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-07T12:08:58Z",
+      "side": 1,
+      "message": "the use case I was looking for\n- I define a custom cache \u003cdataObject.name(), dataObject\u003e\nwhich is why I was not using the cache defined by the base class\n- I bring up the mbean of the cache, based on a config parameter. Which is why the .close() in the code.\n- I would need the add/remove methods to update my custom cache",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 10
+      },
+      "revId": "61b8bfcdd924c58a332472ab4574bcba5ee797ed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
