@@ -50,6 +50,57 @@
       "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ea57b84_6716810e",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T09:02:34Z",
+      "side": 1,
+      "message": "this seems weird to me, this field and the fact that you copy the clearedTaskCount from the JobCoordinatorMonitor to this TestableJobCoordinatorEventsWaiter.. they are both @Singleton, so unless you manually do new TestableJobCoordinatorEventsWaiter() in the wrong places in a test, they have (should have..) the same \"lifecycle\" as the JobCoordinatorMonitor[Impl] @Singleton, no?  Each new @Test will create a new JobCoordinatorMonitor[Impl] and TestableJobCoordinatorEventsWaiter, with the clearedTaskCount reset...",
+      "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a02131a3_b628b22a",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T09:02:34Z",
+      "side": 1,
+      "message": "remove?",
+      "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "048862e9_218502e7",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T09:02:34Z",
+      "side": 1,
+      "message": "should be able to just use coordinatorMonitor.getClearedTaskCount() here like for incompleteTaskCount, may be indirectly via a Supplier (although I\u0027m not sure if that indirection if even still needed)",
+      "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
