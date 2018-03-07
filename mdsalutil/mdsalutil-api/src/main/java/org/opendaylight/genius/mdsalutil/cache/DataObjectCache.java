@@ -17,6 +17,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,6 +36,8 @@ import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Caches DataObjects of a particular type. The cache is updated by a DataTreeChangeListener.
@@ -43,9 +46,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataObjectCache.class);
+
     private final SingleTransactionDataBroker broker;
     private final LoadingCache<K, Optional<V>> cache;
     private final ListenerRegistration<?> listenerRegistration;
+    private final AtomicBoolean isClosed = new AtomicBoolean();
 
     /**
      * Constructor.
@@ -103,8 +109,18 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
     @Override
     @PreDestroy
     public void close() {
-        listenerRegistration.close();
-        cache.cleanUp();
+        if (isClosed.compareAndSet(false, true)) {
+            listenerRegistration.close();
+            cache.cleanUp();
+        } else {
+            LOG.warn("Lifecycled object already closed; ignoring extra close()");
+        }
+    }
+
+    protected void checkIsClosed() throws ReadFailedException {
+        if (isClosed.get()) {
+            throw new ReadFailedException("Lifecycled object is already closed: " + this.toString());
+        }
     }
 
     /**
@@ -121,6 +137,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     @SuppressWarnings("checkstyle:AvoidHidingCauseException")
     public Optional<V> get(@Nonnull K key) throws ReadFailedException {
+        checkIsClosed();
         try {
             return cache.get(key);
         } catch (ExecutionException e) {
@@ -144,4 +161,5 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
 
     protected void removed(InstanceIdentifier<V> path, V dataObject) {
     }
+
 }
