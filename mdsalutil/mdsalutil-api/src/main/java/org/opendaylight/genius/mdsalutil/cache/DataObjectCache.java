@@ -16,6 +16,7 @@ import com.google.common.cache.LoadingCache;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -43,6 +44,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     private final SingleTransactionDataBroker broker;
     private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
     private final ListenerRegistration<?> listenerRegistration;
+    private final AtomicBoolean isClosed = new AtomicBoolean();
 
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
             InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
@@ -86,6 +88,13 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     public void close() {
         listenerRegistration.close();
         cache.cleanUp();
+        isClosed.set(true);
+    }
+
+    protected void checkIsClosed() {
+        if (isClosed.get()) {
+            throw new IllegalStateException("Lifecycled object is already stopped: " + this.toString());
+        }
     }
 
     /**
@@ -102,6 +111,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     @SuppressWarnings("checkstyle:AvoidHidingCauseException")
     public Optional<V> get(@Nonnull InstanceIdentifier<V> path) throws ReadFailedException {
+        checkIsClosed();
         try {
             return cache.get(path);
         } catch (ExecutionException e) {
@@ -116,6 +126,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
      */
     @Nonnull
     public Collection<V> getAllPresent() {
+        checkIsClosed();
         return cache.asMap().values().stream().flatMap(optional -> optional.isPresent()
                 ? Stream.of(optional.get()) : Stream.empty()).collect(Collectors.toList());
     }
@@ -125,4 +136,5 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
 
     protected void removed(InstanceIdentifier<V> path, V dataObject) {
     }
+
 }
