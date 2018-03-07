@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "c95e5d82_bba47b03",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-07T12:41:58Z",
+      "side": 1,
+      "message": "This map is duplicated with DataObjectCache. See my previous comment regarding this. To make lookup more efficient we could change DataObjectCache to make the cache key configurable:\n\n  protected K extractKey(V value);\n\nand in this case:\n\n  protected BigInteger extractKey(DpnsTeps dpnsTeps) {\n      return dpnsTeps.getSourceDpnId();\n  }",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bb6888bb_2c6ee359",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 9
