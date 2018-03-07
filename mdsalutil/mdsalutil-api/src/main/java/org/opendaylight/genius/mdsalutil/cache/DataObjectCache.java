@@ -29,6 +29,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.infrautils.inject.AbstractLifecycle;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -38,7 +39,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * @author Thomas Pantelis
  */
-public class DataObjectCache<V extends DataObject> implements AutoCloseable {
+public class DataObjectCache<V extends DataObject> extends AbstractLifecycle implements AutoCloseable {
 
     private final SingleTransactionDataBroker broker;
     private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
@@ -82,10 +83,25 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     }
 
     @Override
-    @PreDestroy
-    public void close() {
+    protected void start() throws Exception {
+    }
+
+    @Override
+    protected void stop() {
         listenerRegistration.close();
         cache.cleanUp();
+    }
+
+    @Override
+    @PreDestroy
+    public void close() {
+        stop();
+    }
+
+    protected void checkIsRunning() {
+        if (!isRunning()) {
+            throw new IllegalStateException("Lifecycled object is already stopped: " + this.toString());
+        }
     }
 
     /**
@@ -102,6 +118,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     @SuppressWarnings("checkstyle:AvoidHidingCauseException")
     public Optional<V> get(@Nonnull InstanceIdentifier<V> path) throws ReadFailedException {
+        checkIsRunning();
         try {
             return cache.get(path);
         } catch (ExecutionException e) {
@@ -116,6 +133,7 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
      */
     @Nonnull
     public Collection<V> getAllPresent() {
+        checkIsRunning();
         return cache.asMap().values().stream().flatMap(optional -> optional.isPresent()
                 ? Stream.of(optional.get()) : Stream.empty()).collect(Collectors.toList());
     }
@@ -125,4 +143,5 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
 
     protected void removed(InstanceIdentifier<V> path, V dataObject) {
     }
+
 }
