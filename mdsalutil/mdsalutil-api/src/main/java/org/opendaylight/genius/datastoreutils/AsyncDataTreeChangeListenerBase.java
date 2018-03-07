@@ -107,11 +107,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     protected void init() {
     }
 
-    @Override
-    @PreDestroy
-    public void close() {
-        dataTreeChangeHandlerExecutor.shutdownNow();
-
+    public void deregisterListener() {
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();
@@ -119,6 +115,13 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
                 listenerRegistration = null;
             }
         }
+    }
+
+    @Override
+    @PreDestroy
+    public void close() {
+        dataTreeChangeHandlerExecutor.shutdownNow();
+        deregisterListener();
     }
 
     protected abstract InstanceIdentifier<T> getWildCardPath();
