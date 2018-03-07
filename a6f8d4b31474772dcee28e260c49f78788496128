@@ -16,6 +16,24 @@
       "revId": "a6f8d4b31474772dcee28e260c49f78788496128",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4aca31b5_1b1dba72",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:58:39Z",
+      "side": 1,
+      "message": "Done - hope you like it better like this?",
+      "parentUuid": "d26be5a1_a92ba280",
+      "revId": "a6f8d4b31474772dcee28e260c49f78788496128",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
