@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7891f088_d5c6ee84",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T11:46:09Z",
+      "side": 1,
+      "message": "FYI personally I\u0027ve stopped putting \"final\" for method arguments, but up to you (in infrautils we have something fancy which checks that you do not assign new values to arguments by mistake)",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0c6a40d_1ab95714",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T11:46:09Z",
+      "side": 1,
+      "message": "final x2 (FYI you can configure your IDE to do it automatically; my opendaylight-eclipse-setup will do it for you, or ask Faseela how to do this in IntelliJ)",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3fa542f_145a6b60",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InternalTunnelListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T11:46:09Z",
+      "side": 1,
+      "message": "nit: it\u0027s \"prettier\" to have an empty line after class and before first fields, and to separate constants (LOG) from instance fields with a new line",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9cf6cad3_972d52e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InternalTunnelListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T11:46:09Z",
+      "side": 1,
+      "message": "final x2",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
