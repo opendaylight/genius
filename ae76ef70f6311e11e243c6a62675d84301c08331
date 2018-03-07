@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "53258313_8cd56215",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "why is this a static function taking the type of this class as a first argument, instead of just:\n\n    public List\u003cDPNTEPsInfo\u003e getDPNTepListFromDPNId(List\u003cBigInteger\u003e dpnIds) {",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "775f016a_aaf835b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "this could be made a ms faster if you did new ArrayList\u003c\u003e(meshedDpnList.size());\n\nor you could write in more readable functional style, if you like",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4f90b40_18a149f7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "49ff0b30_12701378",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "erm... this line does nothing, no, or do I misunderstand?  Did you perhaps first attempt to write it functional style, then couldn\u0027t figure out how, so you used a classical loop, but left the functional experiment in, but without using it? Then delete it... ;-)",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c40d3061_7b0b7e0d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "nope, NOK; please *NEVER* directly use WriteTransaction yourself like this anymore, anywhere.  This can, and in this case clearly does, lead to Tx leaks, which lead to memory leaks, which over time can lead to OOMs.  Instead, please use ManagedNewTransactionRunner and one of its implementations (retrying or not; up to you).",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fbaf28e_e3c7e158",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/ItmScaleUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "I\u0027m not sure in how many different ways I need to say it how many more times, but no static state fields anymore please, anywhere, ever. Please? ;)",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25417ace_08e8b636",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/ItmScaleUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "nope",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71f90bd5_9eb543b0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/ItmScaleUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:46:36Z",
+      "side": 1,
+      "message": "you typically never throw new NullPointerException directly in appplication code, becaues it\u0027s confusing - there is no NPE that happened here (but you are PREVENTING one from happening later) - but this is really a functional error, so I would use either something like an IllegalStateException or even have some sort of ItmInterfaceMissingException kind of thing.",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
