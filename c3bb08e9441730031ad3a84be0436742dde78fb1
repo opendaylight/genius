@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7bac08e3_60823795",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:19:56Z",
+      "side": 1,
+      "message": "nit: empty new line before fields",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a71f270d_e24d0186",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:19:56Z",
+      "side": 1,
+      "message": "final and Map as type for new ConcurrentHashMap",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "857d950d_ae84f5d1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:19:56Z",
+      "side": 1,
+      "message": "nit: empty new line before fields",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "de95afaa_e1212dbe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:19:56Z",
+      "side": 1,
+      "message": "final and Map as type for new ConcurrentHashMap",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
