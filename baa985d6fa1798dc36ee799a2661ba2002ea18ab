@@ -586,6 +586,24 @@
     },
     {
       "key": {
+        "uuid": "53ef3645_9508a66d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-07T12:15:43Z",
+      "side": 1,
+      "message": "I know why you\u0027re caching - not questioning that. I\u0027m questioning the duplicate caching.",
+      "parentUuid": "af8f28b5_0fa8b0a4",
+      "revId": "baa985d6fa1798dc36ee799a2661ba2002ea18ab",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ef62e73_da5426aa",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
         "patchSetId": 3
