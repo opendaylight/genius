@@ -226,6 +226,24 @@
       "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee1fd8e6_16549fa5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T10:19:56Z",
+      "side": 1,
+      "message": "I don\u0027t think so... this is very weird - what is the exact expected behaviour of the DataObjectCache if you immediately close it (so it will internally listenerRegistration.close()), yet you continue to use it to get() and getAllPresent() from it?  I find this very confusing.  Then why not just if (interfaceManager.isItmDirectTunnelsEnabled()) new NoopDataObjectCache(...) else new DataObjectCache(...), see c/69197 ?  Also note c/69198, which would break what you do here (rightfully so, I think).",
+      "parentUuid": "9ff2ab54_c5565a38",
+      "revId": "505068ed87f0587165218b1cd9cee758a47139e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
