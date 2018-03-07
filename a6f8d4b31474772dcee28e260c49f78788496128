@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d26be5a1_a92ba280",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-03-07T10:33:44Z",
+      "side": 1,
+      "message": "From a class structure perspective, I think this should use a delegation rather than derive from AbstractLifecycle. The fact that DataObjectCache uses AbstractLifecycle’s features is an implementation detail, not something which should be part of its class hierarchy.",
+      "revId": "a6f8d4b31474772dcee28e260c49f78788496128",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
