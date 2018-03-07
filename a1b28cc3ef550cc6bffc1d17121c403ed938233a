@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2ae2165f_b49505b4",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/JobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T08:51:28Z",
+      "side": 1,
+      "message": "\"number of jobs\" instead events?",
+      "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62ebe352_5f1025b2",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/JobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T08:51:28Z",
+      "side": 1,
+      "message": "\"by the JobCoordinator\" ?",
+      "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "349932bf_2746c5c7",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/JobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-07T08:51:28Z",
+      "side": 1,
+      "message": "jobCount ?",
+      "revId": "a1b28cc3ef550cc6bffc1d17121c403ed938233a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
