@@ -77,4 +77,36 @@ public abstract class AbstractClusteredAsyncDataTreeChangeListener<T extends Dat
     protected ExecutorService getExecutorService() {
         return executorService;
     }
+
+
+    @Override
+    public void add(@Nonnull T newDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void add(@Nonnull InstanceIdentifier<T> key, @Nonnull T newDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void remove(@Nonnull T removedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void remove(@Nonnull InstanceIdentifier<T> key, @Nonnull T removedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void update(@Nonnull InstanceIdentifier<T> key, @Nonnull T originalDataObject,
+                       @Nonnull T updatedDataObject) {
+        // do nothing
+    }
 }

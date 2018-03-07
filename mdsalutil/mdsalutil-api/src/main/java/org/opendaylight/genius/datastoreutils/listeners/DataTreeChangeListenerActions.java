@@ -14,6 +14,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
 import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Interface to be implemented by classes interested in receiving notifications
@@ -47,25 +48,25 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
                     if (dataStoreMetrics != null) {
                         dataStoreMetrics.incrementUpdated();
                     }
-                    update(dataBefore, dataAfter);
+                    update(dataTreeModification.getRootPath().getRootIdentifier(), dataBefore, dataAfter);
                     break;
                 case DELETE:
                     if (dataStoreMetrics != null) {
                         dataStoreMetrics.incrementDeleted();
                     }
-                    remove(dataBefore);
+                    remove(dataTreeModification.getRootPath().getRootIdentifier(), dataBefore);
                     break;
                 case WRITE:
                     if (dataBefore == null) {
                         if (dataStoreMetrics != null) {
                             dataStoreMetrics.incrementAdded();
                         }
-                        add(dataAfter);
+                        add(dataTreeModification.getRootPath().getRootIdentifier(), dataAfter);
                     } else {
                         if (dataStoreMetrics != null) {
                             dataStoreMetrics.incrementUpdated();
                         }
-                        update(dataBefore, dataAfter);
+                        update(dataTreeModification.getRootPath().getRootIdentifier(),dataBefore, dataAfter);
                     }
                     break;
                 default:
@@ -79,20 +80,28 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      *
      * @param newDataObject newly added object
      */
+
     void add(@Nonnull T newDataObject);
+
+    void add(@Nonnull InstanceIdentifier<T> key, @Nonnull T newDataObject);
 
     /**
      * Invoked when the data object has been removed.
      *
      * @param removedDataObject existing object being removed
      */
-    void remove(@Nonnull T removedDataObject);
 
+    void remove(@Nonnull InstanceIdentifier<T> key, @Nonnull T removedDataObject);
+
+    void remove(@Nonnull T removedDataObject);
     /**
      * Invoked when there is a change in the data object.
      *
      * @param originalDataObject existing object being modified
      * @param updatedDataObject  modified data object
      */
+
     void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject);
+
+    void update(@Nonnull InstanceIdentifier<T> key, @Nonnull T originalDataObject, @Nonnull T updatedDataObject);
 }
