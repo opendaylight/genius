@@ -95,11 +95,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
         listenerRegistration = db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener());
     }
 
-    @Override
-    @PreDestroy
-    public void close() {
-        dataTreeChangeHandlerExecutor.shutdownNow();
-
+    public void deregisterListener() {
         if (listenerRegistration != null) {
             try {
                 listenerRegistration.close();
@@ -107,6 +103,13 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
                 listenerRegistration = null;
             }
         }
+    }
+
+    @Override
+    @PreDestroy
+    public void close() {
+        dataTreeChangeHandlerExecutor.shutdownNow();
+        deregisterListener();
     }
 
     protected abstract InstanceIdentifier<T> getWildCardPath();

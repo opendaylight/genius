@@ -64,11 +64,6 @@ public class HwVTEPTunnelsStateListener
     }
 
     @Override
-    public  void deregisterListener() {
-        close();
-    }
-
-    @Override
     protected InstanceIdentifier<Tunnels> getWildCardPath() {
         return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
                 .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class).build();
