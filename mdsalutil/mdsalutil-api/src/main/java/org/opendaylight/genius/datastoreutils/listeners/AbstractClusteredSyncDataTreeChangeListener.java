@@ -57,4 +57,35 @@ public abstract class AbstractClusteredSyncDataTreeChangeListener<T extends Data
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
         DataTreeChangeListenerActions.super.onDataTreeChanged(collection, getDataStoreMetrics());
     }
+
+    @Override
+    public void add(@Nonnull T newDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void add(@Nonnull InstanceIdentifier<T> key, @Nonnull T newDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void remove(@Nonnull T removedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void remove(@Nonnull InstanceIdentifier<T> key, @Nonnull T removedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void update(@Nonnull InstanceIdentifier<T> key, @Nonnull T originalDataObject,
+                       @Nonnull T updatedDataObject) {
+        // do nothing
+    }
 }

@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * just use the {@link AbstractSyncDataTreeChangeListener}.
  *
  * <p>- If the listener is heavy or could be blocked: use a multi-threaded executor.
- * We recommend using one of the factory methods in {@link org.opendaylight.yangtools.util.concurrent.SpecialExecutors}.
+ * We recommend using one of the factory methods in {@link SpecialExecutors}.
  * You could and probably should share such an Executor among several listeners in your project.
  *
  * <p>- If the listener needs to preserve the order of notifications, then (only) use a single thread executor typically
@@ -90,5 +90,36 @@ public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> 
      */
     protected ExecutorService getExecutorService() {
         return executorService;
+    }
+
+    @Override
+    public void add(@Nonnull T newDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void add(@Nonnull InstanceIdentifier<T> key, @Nonnull T newDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void remove(@Nonnull T removedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void remove(@Nonnull InstanceIdentifier<T> key, @Nonnull T removedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject) {
+        // do nothing
+    }
+
+    @Override
+    public void update(@Nonnull InstanceIdentifier<T> key, @Nonnull T originalDataObject,
+                       @Nonnull T updatedDataObject) {
+        // do nothing
     }
 }
