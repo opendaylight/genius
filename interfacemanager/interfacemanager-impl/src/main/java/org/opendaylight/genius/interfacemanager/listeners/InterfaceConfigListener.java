@@ -94,11 +94,6 @@ public class InterfaceConfigListener
     }
 
     @Override
-    public  void deregisterListener() {
-        close();
-    }
-
-    @Override
     protected InstanceIdentifier<Interface> getWildCardPath() {
         return InstanceIdentifier.create(Interfaces.class).child(Interface.class);
     }
