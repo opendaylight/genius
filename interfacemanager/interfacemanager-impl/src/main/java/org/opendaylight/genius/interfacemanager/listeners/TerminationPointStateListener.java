@@ -77,11 +77,6 @@ public class TerminationPointStateListener extends
     }
 
     @Override
-    public  void deregisterListener() {
-        close();
-    }
-
-    @Override
     protected InstanceIdentifier<OvsdbTerminationPointAugmentation> getWildCardPath() {
         return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
                 .child(TerminationPoint.class).augmentation(OvsdbTerminationPointAugmentation.class).build();
