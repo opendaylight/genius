@@ -107,11 +107,6 @@ public class InterfaceInventoryStateListener
     }
 
     @Override
-    public  void deregisterListener() {
-        close();
-    }
-
-    @Override
     protected InstanceIdentifier<FlowCapableNodeConnector> getWildCardPath() {
         return InstanceIdentifier.create(Nodes.class).child(Node.class).child(NodeConnector.class)
                 .augmentation(FlowCapableNodeConnector.class);

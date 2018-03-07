@@ -83,11 +83,6 @@ public class InterfaceTopologyStateListener
     }
 
     @Override
-    public  void deregisterListener() {
-        close();
-    }
-
-    @Override
     protected InstanceIdentifier<OvsdbBridgeAugmentation> getWildCardPath() {
         return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
                 .augmentation(OvsdbBridgeAugmentation.class).build();
