@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Abstract class providing some common functionality to abstract listeners. This is class is not designed to be
+ * Abstract class providing some common functionality to abstract listeners. This class is not designed to be
  * extended by the specific listeners, that's why it is package-private. It provides subclasses with access to the
  * {@link DataBroker} passed as constructor argument, listener registration/de-registration and a shutdown method to
  * be implemented if needed by the subclasses (e.g. shutting down services, closing resources, etc.)
@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 abstract class AbstractDataTreeChangeListener<T extends DataObject> implements DataTreeChangeListener<T>,
-        AutoCloseable {
+        DataTreeChangeListenerActions<T>, AutoCloseable {
 
     private final DataBroker dataBroker;
     private final DataTreeIdentifier<T> dataTreeIdentifier;
