@@ -32,6 +32,8 @@ public class TunnelListenerCreator implements AutoCloseable {
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
     private final TunnelInventoryStateListener tunnelInventoryStateListener;
     private final TerminationPointStateListener terminationPointStateListener;
+    private final InterfaceConfigListener interfaceConfigListener;
+    private final InternalTunnelListener internalTunnelListener;
 
     @Inject
     public TunnelListenerCreator(final DataBroker dataBroker,
@@ -57,12 +59,16 @@ public class TunnelListenerCreator implements AutoCloseable {
                     unprocessedNodeConnectorCache, directTunnelUtils);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
                     coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
+            this.interfaceConfigListener = new InterfaceConfigListener(dataBroker, coordinator);
+            this.internalTunnelListener = new InternalTunnelListener(dataBroker, coordinator);
         } else {
             LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.dpnTepStateListener = null;
             this.tunnelTopologyStateListener = null;
             this.tunnelInventoryStateListener = null;
             this.terminationPointStateListener = null;
+            this.interfaceConfigListener = null;
+            this.internalTunnelListener = null;
         }
     }
 
@@ -79,6 +85,12 @@ public class TunnelListenerCreator implements AutoCloseable {
         }
         if (terminationPointStateListener != null) {
             this.terminationPointStateListener.close();
+        }
+        if (interfaceConfigListener != null) {
+            this.interfaceConfigListener.close();
+        }
+        if (internalTunnelListener != null) {
+            this.internalTunnelListener.close();
         }
     }
 }
