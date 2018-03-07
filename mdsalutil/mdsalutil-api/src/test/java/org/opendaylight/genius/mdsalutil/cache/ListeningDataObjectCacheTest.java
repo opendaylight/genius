@@ -38,12 +38,12 @@ import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Unit tests for DataObjectCache.
+ * Unit tests for ListeningDataObjectCache.
  *
  * @author Thomas Pantelis
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class DataObjectCacheTest {
+public class ListeningDataObjectCacheTest {
     private static final InstanceIdentifier<Config> PATH = InstanceIdentifier.create(Config.class);
     private static final Config CONFIG_OBJ = new ConfigBuilder().build();
 
@@ -55,7 +55,7 @@ public class DataObjectCacheTest {
     private final DataBroker mockDataBroker = mock(DataBroker.class);
     private final ReadOnlyTransaction mockReadTx = mock(ReadOnlyTransaction.class);
 
-    private DataObjectCache<Config> cache;
+    private ListeningDataObjectCache<Config> cache;
 
     @Before
     public void setup() {
@@ -64,7 +64,7 @@ public class DataObjectCacheTest {
         doReturn(mockListenerReg).when(mockDataBroker).registerDataTreeChangeListener(eq(new DataTreeIdentifier<>(
                 LogicalDatastoreType.OPERATIONAL, PATH)), any());
 
-        cache = new DataObjectCache<>(Config.class, mockDataBroker, LogicalDatastoreType.OPERATIONAL, PATH,
+        cache = new ListeningDataObjectCache<>(Config.class, mockDataBroker, LogicalDatastoreType.OPERATIONAL, PATH,
                 new GuavaCacheProvider(new CacheManagersRegistryImpl()));
 
         verify(mockDataBroker).registerDataTreeChangeListener(eq(new DataTreeIdentifier<>(
