@@ -70,6 +70,23 @@
     },
     {
       "key": {
+        "uuid": "d4624f19_c06ce04e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-07T13:09:28Z",
+      "side": 1,
+      "message": "See comment in https://git.opendaylight.org/gerrit/#/c/69109/2/itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/ItmScaleUtils.java re: static Utils/Helpers.",
+      "revId": "ae76ef70f6311e11e243c6a62675d84301c08331",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c40d3061_7b0b7e0d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
         "patchSetId": 2
