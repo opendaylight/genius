@@ -29,6 +29,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.infrautils.caches.CheckedCacheFunction;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -44,15 +45,26 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
     private final ListenerRegistration<?> listenerRegistration;
 
+    protected final CheckedCacheFunction<InstanceIdentifier<V>, Optional<V>, ReadFailedException> cacheFunction;
+
+    // just for NoopDataObjectCache; don't otherwise use this in your own sub-classes!
+    protected DataObjectCache(DataBroker dataBroker, LogicalDatastoreType datastoreType) {
+        broker = new SingleTransactionDataBroker(dataBroker);
+        cacheFunction = path -> broker.syncReadOptional(datastoreType, path);
+        cache = null;
+        listenerRegistration = null;
+    }
+
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
             InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
-        this.broker = new SingleTransactionDataBroker(dataBroker);
+        broker = new SingleTransactionDataBroker(dataBroker);
+        cacheFunction = path -> broker.syncReadOptional(datastoreType, path);
 
         requireNonNull(cacheProvider, "cacheProvider");
         cache = CacheBuilder.newBuilder().build(new CacheLoader<InstanceIdentifier<V>, Optional<V>>() {
             @Override
             public Optional<V> load(InstanceIdentifier<V> path) throws ReadFailedException {
-                return broker.syncReadOptional(datastoreType, path);
+                return cacheFunction.get(path);
             }
         });
 
