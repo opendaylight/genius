@@ -47,7 +47,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> extends
-        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T> {
+        AbstractDataTreeChangeListener<T> {
 
     private final ExecutorService executorService;
 
@@ -78,7 +78,7 @@ public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> 
 
     @Override
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        executorService.execute(() -> DataTreeChangeListenerActions.super.onDataTreeChanged(collection,
+        executorService.execute(() -> super.onDataTreeChanged(collection,
                 getDataStoreMetrics()));
     }
 
