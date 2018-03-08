@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
+import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -24,7 +24,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Singleton
-public class DPNTEPsInfoCache extends DataObjectCache<DPNTEPsInfo> {
+public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
 
     @Inject
     public DPNTEPsInfoCache(DataBroker dataBroker, CacheProvider cacheProvider) {
