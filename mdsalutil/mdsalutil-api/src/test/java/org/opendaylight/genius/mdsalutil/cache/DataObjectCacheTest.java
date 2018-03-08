@@ -55,7 +55,7 @@ public class DataObjectCacheTest {
     private final DataBroker mockDataBroker = mock(DataBroker.class);
     private final ReadOnlyTransaction mockReadTx = mock(ReadOnlyTransaction.class);
 
-    private DataObjectCache<Config> cache;
+    private InstanceIdDataObjectCache<Config> cache;
 
     @Before
     public void setup() {
@@ -64,7 +64,7 @@ public class DataObjectCacheTest {
         doReturn(mockListenerReg).when(mockDataBroker).registerDataTreeChangeListener(eq(new DataTreeIdentifier<>(
                 LogicalDatastoreType.OPERATIONAL, PATH)), any());
 
-        cache = new DataObjectCache<>(Config.class, mockDataBroker, LogicalDatastoreType.OPERATIONAL, PATH,
+        cache = new InstanceIdDataObjectCache<>(Config.class, mockDataBroker, LogicalDatastoreType.OPERATIONAL, PATH,
                 new GuavaCacheProvider(new CacheManagersRegistryImpl()));
 
         verify(mockDataBroker).registerDataTreeChangeListener(eq(new DataTreeIdentifier<>(
