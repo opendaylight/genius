@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "722895c5_dac8c4d7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/ListeningDataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-08T05:06:52Z",
+      "side": 1,
+      "message": "can this be excluded from the constructor?\nas @Michael pointed out, it\u0027s simply being passed by default.",
+      "range": {
+        "startLine": 48,
+        "startChar": 61,
+        "endLine": 48,
+        "endChar": 89
+      },
+      "revId": "45f553ec0a07d2532c04a8998e042d25c2270788",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf61cc6c_1cc31417",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/NoopDataObjectCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-08T05:06:52Z",
+      "side": 1,
+      "message": "can there be an add/remove method which lets us update a cache of our own? \nthat\u0027s a requirement in genius.",
+      "range": {
+        "startLine": 22,
+        "startChar": 3,
+        "endLine": 22,
+        "endChar": 34
+      },
+      "revId": "45f553ec0a07d2532c04a8998e042d25c2270788",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
