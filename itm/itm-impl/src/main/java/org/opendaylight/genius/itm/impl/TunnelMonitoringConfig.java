@@ -15,7 +15,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
+import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
@@ -39,14 +39,14 @@ public class TunnelMonitoringConfig implements AutoCloseable {
     private static final InstanceIdentifier<TunnelMonitorInterval> TUNNEL_MONITOR_INTERVAL_PATH =
             InstanceIdentifier.create(TunnelMonitorInterval.class);
 
-    private final DataObjectCache<TunnelMonitorInterval> tunnelMonitorIntervalCache;
-    private final DataObjectCache<TunnelMonitorParams> tunnelMonitorParamsCache;
+    private final InstanceIdDataObjectCache<TunnelMonitorInterval> tunnelMonitorIntervalCache;
+    private final InstanceIdDataObjectCache<TunnelMonitorParams> tunnelMonitorParamsCache;
 
     @Inject
     public TunnelMonitoringConfig(DataBroker dataBroker, CacheProvider cacheProvider) {
-        tunnelMonitorIntervalCache = new DataObjectCache<>(TunnelMonitorInterval.class, dataBroker,
+        tunnelMonitorIntervalCache = new InstanceIdDataObjectCache<>(TunnelMonitorInterval.class, dataBroker,
                 LogicalDatastoreType.CONFIGURATION, TUNNEL_MONITOR_INTERVAL_PATH, cacheProvider);
-        tunnelMonitorParamsCache = new DataObjectCache<>(TunnelMonitorParams.class, dataBroker,
+        tunnelMonitorParamsCache = new InstanceIdDataObjectCache<>(TunnelMonitorParams.class, dataBroker,
                 LogicalDatastoreType.CONFIGURATION, TUNNEL_MONITOR_PARAMS_PATH, cacheProvider);
     }
 
