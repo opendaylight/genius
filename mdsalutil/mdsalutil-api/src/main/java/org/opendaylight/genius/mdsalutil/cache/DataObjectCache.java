@@ -15,7 +15,10 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
@@ -38,21 +41,36 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * @author Thomas Pantelis
  */
-public class DataObjectCache<V extends DataObject> implements AutoCloseable {
+public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
 
     private final SingleTransactionDataBroker broker;
-    private final LoadingCache<InstanceIdentifier<V>, Optional<V>> cache;
+    private final LoadingCache<K, Optional<V>> cache;
     private final ListenerRegistration<?> listenerRegistration;
 
+    /**
+     * Constructor.
+     *
+     * @param dataObjectClass the DataObject class to cache
+     * @param dataBroker the DataBroker
+     * @param datastoreType the LogicalDatastoreType
+     * @param listetenerRegistrationPath the yang path for which register the listener
+     * @param cacheProvider the CacheProvider used to instantiate the Cache
+     * @param keyFunction the function used to convert or extract the key instance on change notification
+     * @param instanceIdFunction the function used to convert a key instance to an InstanceIdentifier on read
+     */
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
-            InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider) {
-        this.broker = new SingleTransactionDataBroker(dataBroker);
+            InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider,
+            BiFunction<InstanceIdentifier<V>, V, K> keyFunction,
+            Function<K, InstanceIdentifier<V>> instanceIdFunction) {
+        Objects.requireNonNull(keyFunction);
+        Objects.requireNonNull(instanceIdFunction);
+        this.broker = new SingleTransactionDataBroker(Objects.requireNonNull(dataBroker));
 
         requireNonNull(cacheProvider, "cacheProvider");
-        cache = CacheBuilder.newBuilder().build(new CacheLoader<InstanceIdentifier<V>, Optional<V>>() {
+        cache = CacheBuilder.newBuilder().build(new CacheLoader<K, Optional<V>>() {
             @Override
-            public Optional<V> load(InstanceIdentifier<V> path) throws ReadFailedException {
-                return broker.syncReadOptional(datastoreType, path);
+            public Optional<V> load(K key) throws ReadFailedException {
+                return broker.syncReadOptional(datastoreType, instanceIdFunction.apply(key));
             }
         });
 
@@ -64,12 +82,13 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
                     case WRITE:
                     case SUBTREE_MODIFIED:
                         V dataAfter = rootNode.getDataAfter();
-                        cache.put(path, Optional.of(dataAfter));
+                        cache.put(keyFunction.apply(path, dataAfter), Optional.of(dataAfter));
                         added(path, dataAfter);
                         break;
                     case DELETE:
-                        cache.invalidate(path);
-                        removed(path, rootNode.getDataBefore());
+                        V dataBefore = rootNode.getDataBefore();
+                        cache.invalidate(keyFunction.apply(path, dataBefore));
+                        removed(path, dataBefore);
                         break;
                     default:
                         break;
@@ -89,11 +108,11 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     }
 
     /**
-     * Gets the DataObject for the given path. If there's no DataObject cached, it will be read from the data store
+     * Gets the DataObject for the given key. If there's no DataObject cached, it will be read from the data store
      * and put in the cache if it exists.
      *
-     * @param path identifies the subtree to query
-     * @return if the data at the supplied path exists, returns an Optional object containing the data; otherwise,
+     * @param key identifies the DataObject to query
+     * @return if the data for the supplied key exists, returns an Optional object containing the data; otherwise,
      *         returns Optional#absent()
      * @throws ReadFailedException if that data isn't cached and the read to fetch it fails
      */
@@ -101,9 +120,9 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
     // The ExecutionException cause should be a ReadFailedException - ok to cast.
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     @SuppressWarnings("checkstyle:AvoidHidingCauseException")
-    public Optional<V> get(@Nonnull InstanceIdentifier<V> path) throws ReadFailedException {
+    public Optional<V> get(@Nonnull K key) throws ReadFailedException {
         try {
-            return cache.get(path);
+            return cache.get(key);
         } catch (ExecutionException e) {
             throw (ReadFailedException) e.getCause();
         }
