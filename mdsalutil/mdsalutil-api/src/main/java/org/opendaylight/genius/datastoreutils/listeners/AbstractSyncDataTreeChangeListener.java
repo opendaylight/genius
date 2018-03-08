@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> extends
-        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T> {
+        AbstractDataTreeChangeListener<T> {
 
     @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
@@ -52,6 +52,21 @@ public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> e
 
     @Override
     public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        DataTreeChangeListenerActions.super.onDataTreeChanged(collection, getDataStoreMetrics());
+        super.onDataTreeChanged(collection, getDataStoreMetrics());
+    }
+
+    @Override
+    public void add(@Nonnull T newDataObject) {
+        // TODO: to be removed after all listeners migrated to use the new methods
+    }
+
+    @Override
+    public void remove(@Nonnull T removedDataObject) {
+        // TODO: to be removed after all listeners migrated to use the new methods
+    }
+
+    @Override
+    public void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject) {
+        // TODO: to be removed after all listeners migrated to use the new methods
     }
 }
