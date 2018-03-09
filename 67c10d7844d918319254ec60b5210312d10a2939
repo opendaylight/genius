@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5580cdc1_421b2196",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-09T19:31:05Z",
+      "side": 1,
+      "message": "Actually we don\u0027t really need this. The only reason for incompleteTaskCountSupplier was for when we were transitioning to the infrautils JC. But it doesn\u0027t matter - no need to -1 for that.",
+      "revId": "67c10d7844d918319254ec60b5210312d10a2939",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
