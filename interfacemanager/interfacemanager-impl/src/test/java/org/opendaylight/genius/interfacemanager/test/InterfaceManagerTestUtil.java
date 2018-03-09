@@ -322,6 +322,12 @@ public final class InterfaceManagerTestUtil {
         asyncEventsWaiter.awaitEventsConsumption();
     }
 
+    static void waitTillOperationCompletes(JobCoordinatorEventsWaiter coordinatorEventsWaiter, int jobCount,
+                                           AsyncEventsWaiter asyncEventsWaiter) {
+        coordinatorEventsWaiter.awaitJobsConsumption(jobCount);
+        asyncEventsWaiter.awaitEventsConsumption();
+    }
+
     static BoundServices buildServicesInfo(String serviceName, short serviceIndex) {
         int instructionKey = 0;
         List<Instruction> instructions = new ArrayList<>();
