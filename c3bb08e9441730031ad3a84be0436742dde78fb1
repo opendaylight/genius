@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3c6890c7_62dd38fc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "taken care by refactoring add()/remove(),\nplease check the latest patch.",
+      "parentUuid": "c95e5d82_bba47b03",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bb6888bb_2c6ee359",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 9
@@ -30,6 +48,30 @@
       "writtenOn": "2018-03-07T12:26:05Z",
       "side": 1,
       "message": "getDpnId(...)",
+      "range": {
+        "startLine": 57,
+        "startChar": 31,
+        "endLine": 57,
+        "endChar": 98
+      },
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fe817056_d6def683",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb6888bb_2c6ee359",
       "range": {
         "startLine": 57,
         "startChar": 31,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "2e9c6a1e_10a34545",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "839933ab_02154975",
+      "range": {
+        "startLine": 84,
+        "startChar": 32,
+        "endLine": 84,
+        "endChar": 46
+      },
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b9825791_c4aee658",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 9
@@ -76,6 +142,24 @@
       "writtenOn": "2018-03-07T12:26:05Z",
       "side": 1,
       "message": "you can make this static",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f356f76_b6e4ebc5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b9825791_c4aee658",
       "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "083705a2_f8afad20",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7bac08e3_60823795",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a71f270d_e24d0186",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
         "patchSetId": 9
@@ -110,6 +212,24 @@
       "writtenOn": "2018-03-07T10:19:56Z",
       "side": 1,
       "message": "final and Map as type for new ConcurrentHashMap",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "054a12d7_0cb3e474",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a71f270d_e24d0186",
       "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -139,6 +259,30 @@
     },
     {
       "key": {
+        "uuid": "2b7932a6_cebb885d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a501384_78c1403c",
+      "range": {
+        "startLine": 54,
+        "startChar": 26,
+        "endLine": 54,
+        "endChar": 43
+      },
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "857d950d_ae84f5d1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
         "patchSetId": 9
@@ -150,6 +294,24 @@
       "writtenOn": "2018-03-07T10:19:56Z",
       "side": 1,
       "message": "nit: empty new line before fields",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b64d8943_77c64237",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "857d950d_ae84f5d1",
       "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -173,6 +335,24 @@
     },
     {
       "key": {
+        "uuid": "27730d24_ce428e0f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de95afaa_e1212dbe",
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0041d67f_7894d62e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
         "patchSetId": 9
@@ -184,6 +364,30 @@
       "writtenOn": "2018-03-07T12:26:05Z",
       "side": 1,
       "message": "get",
+      "range": {
+        "startLine": 56,
+        "startChar": 29,
+        "endLine": 56,
+        "endChar": 58
+      },
+      "revId": "c3bb08e9441730031ad3a84be0436742dde78fb1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "59bc1bbf_939faa59",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-09T07:25:29Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0041d67f_7894d62e",
       "range": {
         "startLine": 56,
         "startChar": 29,
