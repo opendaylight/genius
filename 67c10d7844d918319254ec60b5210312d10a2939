@@ -16,6 +16,24 @@
       "revId": "67c10d7844d918319254ec60b5210312d10a2939",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b001154a_9af12315",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-09T20:45:10Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/#/c/69323/",
+      "parentUuid": "5580cdc1_421b2196",
+      "revId": "67c10d7844d918319254ec60b5210312d10a2939",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
