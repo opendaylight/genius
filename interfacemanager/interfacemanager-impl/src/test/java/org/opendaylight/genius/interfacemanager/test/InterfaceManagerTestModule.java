@@ -10,14 +10,18 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.mockito.Mockito.mock;
 
 import java.net.UnknownHostException;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
 import org.opendaylight.genius.interfacemanager.listeners.HwVTEPConfigListener;
@@ -29,18 +33,26 @@ import org.opendaylight.genius.interfacemanager.listeners.InterfaceTopologyState
 import org.opendaylight.genius.interfacemanager.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.interfacemanager.listeners.VlanMemberConfigListener;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
+import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerServiceImpl;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesConfigListener;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
 import org.opendaylight.genius.lockmanager.impl.LockListener;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
+import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
+import org.ops4j.pax.cdi.api.OsgiService;
 
 /**
  * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTest}.
@@ -59,10 +71,12 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
 
-        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
+        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
 
-        bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
+        bind(DataImportBootReady.class).annotatedWith(OsgiService.class).toInstance(new DataImportBootReady() {});
 
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
@@ -72,10 +86,14 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
-
-        EntityOwnershipService entityOwnershipService = mock(EntityOwnershipService.class);
+        bind(AbstractTestableListener.class).to(TestableDataTreeChangeListener.class);
+        bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
+        bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
+        bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
+        EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
+                new SimpleDOMEntityOwnershipService(), dataBrokerTestModule.getBindingToNormalizedNodeCodec());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
-
+        bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(CacheBridgeEntryConfigListener.class);
@@ -90,6 +108,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(TerminationPointStateListener.class);
         bind(VlanMemberConfigListener.class);
         bind(InterfaceStateListener.class);
-        bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
+        bind(HwvtepNodeHACache.class).toInstance(mock(HwvtepNodeHACache.class));
+        bind(IfmConfig.class).toInstance(mock(IfmConfig.class));
     }
 }
