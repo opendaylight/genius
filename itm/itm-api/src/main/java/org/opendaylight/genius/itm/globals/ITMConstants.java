@@ -64,4 +64,6 @@ public interface ITMConstants {
     String EXT_ID_TEP_PARAM_KEY_TZNAME = "tzname";
     String EXT_ID_TEP_PARAM_KEY_BR_NAME = "br-name";
     String EXT_ID_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
+    // ITM DIRECT TUNNELS RELATED CONSTANTS
+    String ITM_CONFIG_ENTITY = "itm_config";
 }
