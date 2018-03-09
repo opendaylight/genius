@@ -8,4 +8,5 @@
 package org.opendaylight.genius.datastoreutils.testutils;
 
 public interface JobCoordinatorEventsWaiter extends AsyncEventsWaiter {
+
 }
