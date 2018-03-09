@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3e706af5_19b7d572",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-09T12:41:42Z",
+      "side": 0,
+      "message": "This will break existing users - one would have to also call super.add to get the IID cache populated.  I don\u0027t think this is what we want to do though b/c if a user doesn\u0027t call suoer.add then the get method will never return any data. The custom key solution will solve this.",
+      "revId": "472a2c7f07d92295d082509cf2ede81ca9ac57f6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
