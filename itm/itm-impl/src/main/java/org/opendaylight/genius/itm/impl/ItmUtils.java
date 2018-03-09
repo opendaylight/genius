@@ -9,6 +9,8 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
@@ -139,20 +141,23 @@ import org.slf4j.LoggerFactory;
 
 public final class ItmUtils {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
+
     private static final String TUNNEL = "tun";
     private static final IpPrefix DUMMY_IP_PREFIX = new IpPrefix(ITMConstants.DUMMY_PREFIX.toCharArray());
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
     public static final ItmCache ITM_CACHE = new ItmCache();
 
-    private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
-
     public static final ImmutableMap<String, Class<? extends TunnelTypeBase>>
-        TUNNEL_TYPE_MAP =
-        new ImmutableMap.Builder<String, Class<? extends TunnelTypeBase>>()
-            .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class)
-            .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE, TunnelTypeMplsOverGre.class)
-            .put(ITMConstants.TUNNEL_TYPE_VXLAN, TunnelTypeVxlan.class)
-            .build();
+            TUNNEL_TYPE_MAP =
+            new ImmutableMap.Builder<String, Class<? extends TunnelTypeBase>>()
+                    .put(ITMConstants.TUNNEL_TYPE_GRE, TunnelTypeGre.class)
+                    .put(ITMConstants.TUNNEL_TYPE_MPLSoGRE, TunnelTypeMplsOverGre.class)
+                    .put(ITMConstants.TUNNEL_TYPE_VXLAN, TunnelTypeVxlan.class)
+                    .build();
+
+    private static final BiMap<String,Class<? extends TunnelTypeBase>> STRING_CLASS_IMMUTABLE_BI_MAP =
+            ImmutableBiMap.copyOf(TUNNEL_TYPE_MAP);
 
     private ItmUtils() {
     }
@@ -1068,25 +1073,6 @@ public final class ItmUtils {
     }
 
     /**
-     * Returns the transport zone from Configuration datastore.
-     *
-     * @param tzName transport zone name
-     * @param dataBroker data broker handle to perform operations on datastore
-     * @return the TransportZone object in Config DS
-     */
-    // FIXME: Better is to implement cache to avoid datastore read.
-    public static TransportZone getTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
-        InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
-                .child(TransportZone.class, new TransportZoneKey(tzName)).build();
-        Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
-            dataBroker);
-        if (transportZoneOptional.isPresent()) {
-            return transportZoneOptional.get();
-        }
-        return null;
-    }
-
-    /**
      * Gets the transport zone in TepsNotHosted list in the Configuration Datastore, based on transport zone name.
      *
      * @param unknownTz transport zone name
@@ -1213,8 +1199,7 @@ public final class ItmUtils {
         if (transportZoneFromConfigDS != null) {
             // it exists, delete default-TZ now
             InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
-                    .child(TransportZone.class,
-                    new TransportZoneKey(tzName)).build();
+                    .child(TransportZone.class, new TransportZoneKey(tzName)).build();
             LOG.debug("Removing {} transport-zone from config DS.", tzName);
             try {
                 SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, path);
@@ -1259,7 +1244,7 @@ public final class ItmUtils {
     }
 
     public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, BigInteger dpnId,
-            Collection<DPNTEPsInfo> meshedDpnList) {
+                                                             Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
         for (DPNTEPsInfo dstDpn : meshedDpnList) {
             if (dpnId.equals(dstDpn.getDPNID())) {
@@ -1348,7 +1333,7 @@ public final class ItmUtils {
     public static boolean isTunnelAggregationUsed(Class<? extends TunnelTypeBase> tunType) {
         return ItmTunnelAggregationHelper.isTunnelAggregationEnabled()
                 && (tunType.isAssignableFrom(TunnelTypeVxlan.class)
-                        || tunType.isAssignableFrom(TunnelTypeLogicalGroup.class));
+                || tunType.isAssignableFrom(TunnelTypeLogicalGroup.class));
     }
 
     public static List<TunnelOptions> buildTunnelOptions(TunnelEndPoints tep, ItmConfig itmConfig) {
@@ -1374,13 +1359,12 @@ public final class ItmUtils {
             optionsBuilder.setValue("gpe");
             tunOptions.add(optionsBuilder.build());
         }
-
         return tunOptions.isEmpty() ? null : tunOptions;
     }
 
     public static ExternalTunnel getExternalTunnelbyExternalTunnelKey(ExternalTunnelKey externalTunnelKey,
-                                             InstanceIdentifier<ExternalTunnel> path,
-                                             DataBroker dataBroker) {
+                                                                      InstanceIdentifier<ExternalTunnel> path,
+                                                                      DataBroker dataBroker) {
         ExternalTunnel exTunnel = ITM_CACHE.getExternalTunnelKeyToExternalTunnels().get(externalTunnelKey);
         if (exTunnel == null) {
             Optional<ExternalTunnel> ext = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
@@ -1399,5 +1383,36 @@ public final class ItmUtils {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public static InstanceIdentifier<TransportZone> getTZInstanceIdentifier(String tzName) {
+        return InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class,
+                new TransportZoneKey(tzName)).build();
+    }
+
+    /**
+     * Returns the transport zone from Configuration datastore.
+     *
+     * @param tzName transport zone name
+     * @param dataBroker data broker handle to perform operations on datastore
+     * @return the TransportZone object in Config DS
+     */
+    // FIXME: Better is to implement cache to avoid datastore read.
+    public static TransportZone getTransportZoneFromConfigDS(String tzName, DataBroker dataBroker) {
+        InstanceIdentifier<TransportZone> tzonePath = getTZInstanceIdentifier(tzName);
+        Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath,
+                dataBroker);
+        if (transportZoneOptional.isPresent()) {
+            return transportZoneOptional.get();
+        }
+        return null;
+    }
+
+    public static Class<? extends TunnelTypeBase> convertStringToTunnelType(String tunnelType) {
+        Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
+        if (STRING_CLASS_IMMUTABLE_BI_MAP.containsKey(tunnelType)) {
+            tunType = STRING_CLASS_IMMUTABLE_BI_MAP.get(tunnelType);
+        }
+        return tunType ;
     }
 }

@@ -36,6 +36,9 @@ import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.mdsal.eos.binding.api.Entity;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
+import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
@@ -67,6 +70,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final TunnelMonitorIntervalListener tnlIntervalListener;
     private final VtepConfigSchemaListener vtepConfigSchemaListener;
     private final InterfaceStateListener ifStateListener;
+    private final EntityOwnershipService entityOwnershipService;
     private RpcProviderRegistry rpcProviderRegistry;
     private final ItmTunnelEventListener itmStateListener;
     private final OvsdbNodeListener ovsdbChangeListener;
@@ -85,7 +89,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        TransportZoneListener transportZoneListener,
                        VtepConfigSchemaListener vtepConfigSchemaListener,
                        OvsdbNodeListener ovsdbNodeListener,
-                       TunnelMonitoringConfig tunnelMonitoringConfig) {
+                       TunnelMonitoringConfig tunnelMonitoringConfig,
+                       EntityOwnershipService entityOwnershipService) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -99,6 +104,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.vtepConfigSchemaListener = vtepConfigSchemaListener;
         this.ovsdbChangeListener = ovsdbNodeListener;
         this.tunnelMonitoringConfig = tunnelMonitoringConfig;
+        this.entityOwnershipService = entityOwnershipService;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
@@ -107,9 +113,19 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     public void start() {
         try {
             createIdPool();
+            registerEntityForOwnership();
             LOG.info("ItmProvider Started");
         } catch (Exception ex) {
             LOG.info("ItmProvider failed to start");
+        }
+    }
+
+    private void registerEntityForOwnership() {
+        try {
+            Entity registryCandidate = new Entity(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
+            entityOwnershipService.registerCandidate(registryCandidate);
+        } catch (CandidateAlreadyRegisteredException e) {
+            LOG.error("failed to register entity {} for entity-ownership-service", e.getEntity());
         }
     }
 
