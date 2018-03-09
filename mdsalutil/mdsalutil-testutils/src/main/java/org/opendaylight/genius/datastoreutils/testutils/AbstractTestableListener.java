@@ -37,6 +37,12 @@ public abstract class AbstractTestableListener implements AsyncEventsWaiter {
         return awaitEventsConsumption(Duration.ofSeconds(30));
     }
 
+    @Override
+    public boolean awaitEventsConsumption(long eventCount) {
+        // TODO
+        return true;
+    }
+
     public boolean awaitEventsConsumption(Duration timeout) {
         return awaitEventsConsumption(timeout.toMillis(), MILLISECONDS);
     }

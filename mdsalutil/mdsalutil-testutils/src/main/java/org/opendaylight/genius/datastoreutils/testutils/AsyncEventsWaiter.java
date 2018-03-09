@@ -22,11 +22,22 @@ public interface AsyncEventsWaiter extends AutoCloseable {
      * sensible fixed timeout value.  This method is normally called from
      * the JUnit Test main thread.
      *
-     * @return true if if anything was pending to be processed and has been
+     * @return true if anything was pending to be processed and has been
      *         processed, false if nothing needed to be
      *
      * @throws ConditionTimeoutException if timed out while waiting
      */
     boolean awaitEventsConsumption() throws ConditionTimeoutException;
 
+    /**
+     * Wait by blocking calling thread until an expected number of events have been processed
+     * by other threads in the background.  Implementations must have some
+     * sensible fixed timeout value.  This method is normally called from
+     * the JUnit Test main thread.
+     *
+     * @return true if all the expected number of events have been processed, false otherwise
+     *
+     * @throws ConditionTimeoutException if timed out while waiting
+     */
+    boolean awaitEventsConsumption(long eventCount) throws ConditionTimeoutException;
 }

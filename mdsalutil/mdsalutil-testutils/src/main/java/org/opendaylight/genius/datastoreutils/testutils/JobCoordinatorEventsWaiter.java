@@ -7,5 +7,8 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import org.awaitility.core.ConditionTimeoutException;
+
 public interface JobCoordinatorEventsWaiter extends AsyncEventsWaiter {
+
 }
