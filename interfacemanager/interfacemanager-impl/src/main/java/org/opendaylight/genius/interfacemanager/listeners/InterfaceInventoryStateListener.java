@@ -141,10 +141,8 @@ public class InterfaceInventoryStateListener
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
                         FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
-        boolean isNodePresent = interfaceManagerCommonUtils.isNodePresent(nodeConnectorIdNew);
-        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent,
-                isNetworkEvent, true);
+        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
+                nodeConnectorIdOld, fcNodeConnectorNew, portName, isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
         LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
         portNameCache.remove(nodeConnectorIdNew.getValue());
@@ -152,8 +150,9 @@ public class InterfaceInventoryStateListener
 
     @Override
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
-                          FlowCapableNodeConnector fcNodeConnectorNew) {
-        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+        FlowCapableNodeConnector fcNodeConnectorNew) {
+        if (fcNodeConnectorNew.getReason() == PortReason.Delete
+                || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
@@ -295,21 +294,18 @@ public class InterfaceInventoryStateListener
         FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
         private final IdManagerService idManager;
-        private final boolean isNodePresent;
         private final boolean isNetworkEvent;
         private final boolean isParentInterface;
 
         InterfaceStateRemoveWorker(IdManagerService idManager, NodeConnectorId nodeConnectorIdNew,
                                    NodeConnectorId nodeConnectorIdOld,
                                    FlowCapableNodeConnector fcNodeConnectorOld, String interfaceName,
-                                   boolean isNodePresent, boolean isNetworkEvent,
-                                   boolean isParentInterface) {
+                                   boolean isNetworkEvent, boolean isParentInterface) {
             this.nodeConnectorIdNew = nodeConnectorIdNew;
             this.nodeConnectorIdOld = nodeConnectorIdOld;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.interfaceName = interfaceName;
             this.idManager = idManager;
-            this.isNodePresent = isNodePresent;
             this.isNetworkEvent = isNetworkEvent;
             this.isParentInterface = isParentInterface;
         }
@@ -328,7 +324,6 @@ public class InterfaceInventoryStateListener
                     return futures;
                 }
             }
-
             futures = removeInterfaceStateConfiguration();
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
@@ -337,25 +332,27 @@ public class InterfaceInventoryStateListener
                 // for each of them
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                         nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld,
-                        interfaceChildEntry.getChildInterface(), isNodePresent, isNetworkEvent, false);
+                        interfaceChildEntry.getChildInterface(), isNetworkEvent, false);
                 coordinator.enqueueJob(interfaceName, interfaceStateRemoveWorker);
             }
             return futures;
         }
 
         private List<ListenableFuture<Void>> removeInterfaceStateConfiguration() {
-            LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
+            LOG.debug("Removing interface state information for interface: {} ", interfaceName);
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             WriteTransaction defaultOperationalShardTransaction = dataBroker.newWriteOnlyTransaction();
 
             //VM Migration: Use old nodeConnectorId to delete the interface entry
             NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
                     && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ? nodeConnectorIdOld : nodeConnectorIdNew;
-            // delete the port entry from interface operational DS
-            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
-            //VM Migration: Update the interface state to unknown only if remove event received for same switch
-            if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
+            // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
+            // scenario, and should be treated as port removal.
+
+            if (fcNodeConnectorOld.getReason() != PortReason.Delete && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                 //Remove event is because of connection lost between controller and switch, or switch shutdown.
                 // Hence, don't remove the interface but set the status as "unknown"
                 ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
