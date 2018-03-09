@@ -37,7 +37,10 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.recovery.impl.ItmServiceRecoveryHandler;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.srm.RecoverableListener;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -66,7 +69,8 @@ import org.slf4j.LoggerFactory;
  * This is used to handle interfaces for base of-ports.
  */
 @Singleton
-public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<TransportZone> {
+public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<TransportZone>
+        implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransportZoneListener.class);
 
@@ -84,7 +88,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final IMdsalApiManager mdsalManager,
                                  final ItmConfig itmConfig, final JobCoordinator jobCoordinator,
                                  final TunnelMonitoringConfig tunnelMonitoringConfig,
-                                 final DPNTEPsInfoCache dpnTEPsInfoCache) {
+                                 final DPNTEPsInfoCache dpnTEPsInfoCache,
+                                 final ItmServiceRecoveryHandler itmServiceRecoveryHandler,
+                                 final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
         this.dataBroker = dataBroker;
@@ -98,6 +104,17 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
+        serviceRecoveryRegistry.addRecoverableListener(itmServiceRecoveryHandler.getServiceRegistryKey(), this);
+    }
+
+    @Override
+    public void registerListener() {
+        register();
+    }
+
+    @Override
+    public void deregisterListener() {
+        close();
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
