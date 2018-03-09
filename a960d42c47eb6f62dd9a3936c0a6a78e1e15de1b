@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5d073fd_6ff07270",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-09T16:05:29Z",
+      "side": 1,
+      "message": "Do we need a separate such field here? How about just have a  \n\n  private JobCoordinatorMonitor coordinatorMonitor;\n\nfield and use that for toString()...",
+      "revId": "a960d42c47eb6f62dd9a3936c0a6a78e1e15de1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fa49006_db21e801",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-09T16:05:29Z",
+      "side": 1,
+      "message": "So this is hard-coded to inspect clearedTaskCount but the method name \"awaitEventsConsumption\" doesn\u0027t indicate which events to wait for nor is any such info passed in. Perhaps we should change the name to make it clear or pass in the event metric supplier to measure.",
+      "revId": "a960d42c47eb6f62dd9a3936c0a6a78e1e15de1b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
