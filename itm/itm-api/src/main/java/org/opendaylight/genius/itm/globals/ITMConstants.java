@@ -24,6 +24,7 @@ public interface ITMConstants {
     long DELAY_TIME_IN_MILLISECOND = 5000;
     int REG6_START_INDEX = 0;
     int REG6_END_INDEX = 31;
+    int JOB_MAX_RETRIES = 6;
 
     int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring
@@ -64,4 +65,6 @@ public interface ITMConstants {
     String EXT_ID_TEP_PARAM_KEY_TZNAME = "tzname";
     String EXT_ID_TEP_PARAM_KEY_BR_NAME = "br-name";
     String EXT_ID_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
+    // ITM DIRECT TUNNELS RELATED CONSTANTS
+    String ITM_CONFIG_ENTITY = "itm_config";
 }
