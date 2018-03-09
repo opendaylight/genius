@@ -30,6 +30,7 @@ import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -80,6 +81,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
+        bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
 
         // Bindings to test infra (fakes & mocks)
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
