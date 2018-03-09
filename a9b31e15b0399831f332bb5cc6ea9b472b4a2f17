@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "26cc4f77_ae06efc6",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-09T21:47:24Z",
+      "side": 1,
+      "message": "Can we inline these in the method calls? They don\u0027t need to be stored - that was only done to temporarily support both the new JC and the old DJC.",
+      "revId": "a9b31e15b0399831f332bb5cc6ea9b472b4a2f17",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
