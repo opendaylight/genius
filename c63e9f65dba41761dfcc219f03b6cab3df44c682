@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c99b313b_9cf8e468",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-09T14:19:35Z",
+      "side": 1,
+      "message": "what are all these???",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bcbefbfd_6f8fb491",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-09T14:19:35Z",
+      "side": 1,
+      "message": "what is this doing???",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae5cca37_52447857",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-09T14:19:35Z",
+      "side": 1,
+      "message": "No need for this.. please take a look at the latest ifm code.",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93312e7e_ad37fd69",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-09T14:19:35Z",
+      "side": 1,
+      "message": "what is this TODO??",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
