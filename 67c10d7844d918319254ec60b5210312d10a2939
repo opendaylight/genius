@@ -16,6 +16,24 @@
       "revId": "67c10d7844d918319254ec60b5210312d10a2939",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "56d8ffb6_341709b1",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-10T02:38:49Z",
+      "side": 0,
+      "message": "I just made it 10 ms, while testing. there was no specific reason for doing that :)",
+      "parentUuid": "1c3f0d9c_c73cbcb8",
+      "revId": "67c10d7844d918319254ec60b5210312d10a2939",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
