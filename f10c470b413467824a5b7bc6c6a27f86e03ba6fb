@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6be851b7_59897068",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/MultiAsyncEventsWaiter.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-10T02:46:34Z",
+      "side": 1,
+      "message": "is it just to replace by waitTillOperationCompletes() utils in IfmTest, where I call each waiter\u0027s awaitEventsConsumption one by one?",
+      "revId": "f10c470b413467824a5b7bc6c6a27f86e03ba6fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
