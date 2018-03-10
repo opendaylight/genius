@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -95,6 +95,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfacemgrProvider.class);
 
     private final DataBroker dataBroker;
@@ -129,7 +130,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @PostConstruct
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         createIdPool();
         try {
@@ -150,7 +150,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         if (configEntityCandidate != null) {
             configEntityCandidate.close();
         }
@@ -158,7 +158,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (bindingEntityCandidate != null) {
             bindingEntityCandidate.close();
         }
-
         LOG.info("InterfacemgrProvider Closed");
     }
 
@@ -216,7 +215,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public InterfaceInfo getInterfaceInfo(String interfaceName) {
-
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
@@ -248,14 +246,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
         }
-        InterfaceInfo.InterfaceOpState opState;
-        if (ifState.getOperStatus() == OperStatus.Up) {
-            opState = InterfaceInfo.InterfaceOpState.UP;
-        } else if (ifState.getOperStatus() == OperStatus.Down) {
-            opState = InterfaceInfo.InterfaceOpState.DOWN;
-        } else {
-            opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
-        }
         interfaceInfo.setDpId(dpId);
         interfaceInfo.setPortNo(portNo);
         interfaceInfo.setAdminState(intf.isEnabled() ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
@@ -264,14 +254,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
-        interfaceInfo.setOpState(opState);
+        interfaceInfo.setOpState(getInterfaceOperationalState(ifState));
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
         }
 
         return interfaceInfo;
-
     }
 
     @Override
@@ -290,14 +279,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
-        InterfaceInfo.InterfaceOpState opState;
-        if (ifState.getOperStatus() == OperStatus.Up) {
-            opState = InterfaceInfo.InterfaceOpState.UP;
-        } else if (ifState.getOperStatus() == OperStatus.Down) {
-            opState = InterfaceInfo.InterfaceOpState.DOWN;
-        } else {
-            opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
-        }
         interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
                 : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
@@ -305,7 +286,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
-        interfaceInfo.setOpState(opState);
+        interfaceInfo.setOpState(getInterfaceOperationalState(ifState));
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
@@ -326,9 +307,22 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return populateInterfaceInfo(interfaceName, ifState);
     }
 
-    public InterfaceInfo populateInterfaceInfo(String interfaceName,
-            org.opendaylight.yang.gen.v1.urn
-                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+    private InterfaceInfo.InterfaceOpState getInterfaceOperationalState(
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface theInterface) {
+        switch (theInterface.getOperStatus()) {
+            case Up:
+                return InterfaceInfo.InterfaceOpState.UP;
+            case Down:
+                return InterfaceInfo.InterfaceOpState.DOWN;
+            default:
+                return InterfaceInfo.InterfaceOpState.UNKNOWN;
+        }
+    }
+
+    private InterfaceInfo populateInterfaceInfo(String interfaceName,
+                                                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                                                        .interfaces.rev140508.interfaces.state.Interface ifState) {
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
@@ -344,14 +338,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
-        InterfaceInfo.InterfaceOpState opState;
-        if (ifState.getOperStatus() == OperStatus.Up) {
-            opState = InterfaceInfo.InterfaceOpState.UP;
-        } else if (ifState.getOperStatus() == OperStatus.Down) {
-            opState = InterfaceInfo.InterfaceOpState.DOWN;
-        } else {
-            opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
-        }
         interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
                 : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
@@ -359,7 +345,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (lportTag != null) {
             interfaceInfo.setInterfaceTag(lportTag);
         }
-        interfaceInfo.setOpState(opState);
+        interfaceInfo.setOpState(getInterfaceOperationalState(ifState));
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
@@ -426,7 +412,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (isExternal) {
             interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
         }
-        InstanceIdentifier<Interface> interfaceIId = interfaceManagerCommonUtils
+        InstanceIdentifier<Interface> interfaceIId = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
         ListenableFutures.addErrorLogging(
             txRunner.callWithNewWriteOnlyTransactionAndSubmit(
@@ -606,7 +592,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
     }
 
-    public OvsdbTerminationPointAugmentation getTerminationPoint(String interfaceName) {
+    private OvsdbTerminationPointAugmentation getTerminationPoint(String interfaceName) {
         return ifaceToTpMap.get(interfaceName);
     }
 
@@ -629,7 +615,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
     }
 
-    public InstanceIdentifier<Node> getNodeIidForInterface(String interfaceName) {
+    private InstanceIdentifier<Node> getNodeIidForInterface(String interfaceName) {
         if (interfaceName != null) {
             return ifaceToNodeIidMap.get(interfaceName);
         }
@@ -643,10 +629,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             nodeIid = getNodeIidForInterface(interfaceName);
         }
         return getBridgeForNodeIid(nodeIid);
-    }
-
-    public String getDpidForInterface(String interfaceName) {
-        return getDpidForInterface(interfaceName, null);
     }
 
     public String getDpidForInterface(String interfaceName, InstanceIdentifier<Node> nodeInstanceId) {
@@ -672,7 +654,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
     }
 
-    public OvsdbBridgeAugmentation getBridgeForNodeIid(InstanceIdentifier<Node> nodeIid) {
+    private OvsdbBridgeAugmentation getBridgeForNodeIid(InstanceIdentifier<Node> nodeIid) {
         if (nodeIid == null) {
             return null;
         }
@@ -746,9 +728,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     public class ParentRefUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
-        String interfaceName;
-        String parentInterfaceName;
-        Boolean readInterfaceBeforeWrite;
+        final String interfaceName;
+        final String parentInterfaceName;
+        final Boolean readInterfaceBeforeWrite;
 
         public ParentRefUpdateWorker(String interfaceName, String parentInterfaceName,
                 boolean readInterfaceBeforeWrite) {
@@ -758,7 +740,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             if (readInterfaceBeforeWrite) {
                 Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
                 if (iface == null) {
@@ -786,7 +768,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return getBridgeForNodeIid(nodeIid);
     }
 
-    @Override
     /**
      * Get all termination points on a given DPN.
      * This API uses read on Operational DS. If there are perf issues in cluster
@@ -798,6 +779,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      * @return If the data at the supplied path exists, returns a list of all termination point
      *         Augmentations
      */
+    @Override
     public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId) {
         List<OvsdbTerminationPointAugmentation> ports = new ArrayList<>();
         List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
