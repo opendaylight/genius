@@ -16,6 +16,24 @@
       "revId": "472a2c7f07d92295d082509cf2ede81ca9ac57f6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0031d1f4_54513f9d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-11T09:51:20Z",
+      "side": 0,
+      "message": "as you can see I have modified add() and remove()\nnow this logic will be taken care in add and remove, and based on the user these methods can be overridden to implement custom logic, that way there is no need for a custom key solution and existing caches wouldn\u0027t break too.\nAfaik, the custom key solution still does not help with\nhaving a cache keyed with a simple string.",
+      "parentUuid": "3e706af5_19b7d572",
+      "revId": "472a2c7f07d92295d082509cf2ede81ca9ac57f6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
