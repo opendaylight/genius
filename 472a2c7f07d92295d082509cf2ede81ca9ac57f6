@@ -34,6 +34,24 @@
       "revId": "472a2c7f07d92295d082509cf2ede81ca9ac57f6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "259e3b3a_340abe74",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-11T11:57:35Z",
+      "side": 0,
+      "message": "This will break an existing derived class that is also using this cache - in order for this cache to be populated the derived class has to call super,add(). This a subtle nuance.  If the derived class purposely doesn\u0027t invoke super.add as in your case, then this cache is left empty and will result in reads to the DS when get is called. This is another unwanted nuance and goes against the purpose of this class, which is to cache data via notification to avoid reads. Plus there\u0027s still 2 caches with 2 separate getters, the IID-based one here and the derived class\u0027s.\n\nThe custom key solution solves this more elegantly as it eliminates the IID cache which you don\u0027t want. There\u0027s only one cache and getter and avoids having to derive and override add/remove to maintain your own cache.  And it avoids the nuances I outlined above. I\u0027m not sure why say \"the custom key solution still does not help with...\" - as long as you can extract the custom key from the DataObject then it will work, unless I\u0027m missing something.",
+      "parentUuid": "0031d1f4_54513f9d",
+      "revId": "472a2c7f07d92295d082509cf2ede81ca9ac57f6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

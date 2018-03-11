@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "f31c8303_20adc9e2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-11T11:57:35Z",
+      "side": 1,
+      "message": "The custom key solution eliminates this Map and the associated getter. You declare DataObjectCache\u003cBigInteger, DpnsTeps\u003e and  provide it with the key function:\n\n  iid -\u003e iid.getTargetType().getSourceDpnId()",
+      "revId": "a06868c478d0ab2e3d3de1e310366011a57a05fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a218e2bd_cda76066",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 11
