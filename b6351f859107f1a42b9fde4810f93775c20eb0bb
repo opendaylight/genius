@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e8e69df7_ad97522c",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-11T16:03:00Z",
+      "side": 1,
+      "message": "why is check style plugin being added? do only the findbugs part",
+      "revId": "b6351f859107f1a42b9fde4810f93775c20eb0bb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
