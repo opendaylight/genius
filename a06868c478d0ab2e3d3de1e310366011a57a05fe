@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a218e2bd_cda76066",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 122,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-11T09:52:43Z",
+      "side": 1,
+      "message": "the cache update has been moved to this method, \nI don\u0027t think it would break any functionality.\n@tom",
+      "range": {
+        "startLine": 122,
+        "startChar": 7,
+        "endLine": 122,
+        "endChar": 49
+      },
+      "revId": "a06868c478d0ab2e3d3de1e310366011a57a05fe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
