@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b248aa0d_6b1fcd7f",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c99b313b_9cf8e468",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bcbefbfd_6f8fb491",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 8
@@ -53,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "468893de_301d87cd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "According to new IFM code i need to change ITM base classes  thatswhy I am implementing register and deregister methods here.",
+      "parentUuid": "ae5cca37_52447857",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bb7dd390_6d266949",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
         "patchSetId": 8
@@ -64,6 +100,30 @@
       "writtenOn": "2018-03-10T12:37:56Z",
       "side": 1,
       "message": "followed by newline",
+      "range": {
+        "startLine": 25,
+        "startChar": 4,
+        "endLine": 25,
+        "endChar": 95
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "280296c9_577b741c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb7dd390_6d266949",
       "range": {
         "startLine": 25,
         "startChar": 4,
@@ -99,6 +159,30 @@
     },
     {
       "key": {
+        "uuid": "e71af2ba_8bcf68aa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6d57d5bc_b575b50a",
+      "range": {
+        "startLine": 26,
+        "startChar": 11,
+        "endLine": 26,
+        "endChar": 12
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d7502a10_5994a064",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
         "patchSetId": 8
@@ -116,6 +200,24 @@
     },
     {
       "key": {
+        "uuid": "9db6a0c2_d7391fc9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d7502a10_5994a064",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d3bc7329_1894a949",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
         "patchSetId": 8
@@ -127,6 +229,30 @@
       "writtenOn": "2018-03-10T12:37:56Z",
       "side": 1,
       "message": "can go to previous line",
+      "range": {
+        "startLine": 29,
+        "startChar": 11,
+        "endLine": 29,
+        "endChar": 12
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a413c161_0bddd58a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d3bc7329_1894a949",
       "range": {
         "startLine": 29,
         "startChar": 11,
@@ -179,6 +305,30 @@
     },
     {
       "key": {
+        "uuid": "7a61dd82_03f4b18e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "486abc55_fc465eea",
+      "range": {
+        "startLine": 58,
+        "startChar": 11,
+        "endLine": 58,
+        "endChar": 12
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "50e8345b_e26449cb",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 8
@@ -190,6 +340,30 @@
       "writtenOn": "2018-03-10T12:37:56Z",
       "side": 1,
       "message": "get, build is misleading",
+      "range": {
+        "startLine": 87,
+        "startChar": 19,
+        "endLine": 87,
+        "endChar": 24
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33c20c9f_28b51f0e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "50e8345b_e26449cb",
       "range": {
         "startLine": 87,
         "startChar": 19,
@@ -237,6 +411,24 @@
     },
     {
       "key": {
+        "uuid": "bc2a955d_51887a3d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "93312e7e_ad37fd69",
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "855c46b2_2b02849b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 8
@@ -248,6 +440,30 @@
       "writtenOn": "2018-03-10T12:37:56Z",
       "side": 1,
       "message": "type Integer, look up yang model",
+      "range": {
+        "startLine": 131,
+        "startChar": 8,
+        "endLine": 131,
+        "endChar": 11
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "12c97efb_bfe9070f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "855c46b2_2b02849b",
       "range": {
         "startLine": 131,
         "startChar": 8,
@@ -283,6 +499,30 @@
     },
     {
       "key": {
+        "uuid": "1e7cb280_3b7e2bfc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2e3cf1ea_5e04ca60",
+      "range": {
+        "startLine": 163,
+        "startChar": 20,
+        "endLine": 164,
+        "endChar": 82
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6e94f9f_6ff4eefa",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 8
@@ -306,6 +546,30 @@
     },
     {
       "key": {
+        "uuid": "df6b2947_c2da2d04",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6e94f9f_6ff4eefa",
+      "range": {
+        "startLine": 177,
+        "startChar": 8,
+        "endLine": 177,
+        "endChar": 41
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f1d36b51_9bcec4a2",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
         "patchSetId": 8
@@ -317,6 +581,30 @@
       "writtenOn": "2018-03-10T12:37:56Z",
       "side": 1,
       "message": "newline after static fields, helps read code better",
+      "range": {
+        "startLine": 35,
+        "startChar": 4,
+        "endLine": 35,
+        "endChar": 98
+      },
+      "revId": "c63e9f65dba41761dfcc219f03b6cab3df44c682",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ea626667_372391c6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-12T07:21:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1d36b51_9bcec4a2",
       "range": {
         "startLine": 35,
         "startChar": 4,
