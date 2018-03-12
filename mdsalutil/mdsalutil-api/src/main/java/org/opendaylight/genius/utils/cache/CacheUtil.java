@@ -49,9 +49,7 @@ public final class CacheUtil {
     }
 
     public static void createCache(String cacheName) {
-        if (MAP_OF_MAP.get(cacheName) == null) {
-            MAP_OF_MAP.put(cacheName, new ConcurrentHashMap<>());
-        }
+        MAP_OF_MAP.computeIfAbsent(cacheName, k -> new ConcurrentHashMap<>());
     }
 
     public static boolean isCacheValid(String cacheName) {

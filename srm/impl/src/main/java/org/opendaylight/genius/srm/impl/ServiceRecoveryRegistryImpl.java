@@ -40,13 +40,9 @@ public class ServiceRecoveryRegistryImpl implements ServiceRecoveryRegistry {
 
     @Override
     public synchronized void addRecoverableListener(String serviceName, final RecoverableListener recoverableListener) {
-        List<RecoverableListener> recoverableListeners = recoverableListenersMap.get(serviceName);
-        if (recoverableListeners == null) {
-            recoverableListeners = Collections.synchronizedList(new ArrayList<>());
-            recoverableListenersMap.put(serviceName, recoverableListeners);
-        }
-
-        recoverableListeners.add(recoverableListener);
+        recoverableListenersMap
+                .computeIfAbsent(serviceName, k -> Collections.synchronizedList(new ArrayList<>()))
+                .add(recoverableListener);
     }
 
     @Override
