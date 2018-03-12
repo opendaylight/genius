@@ -348,7 +348,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         // Get all flows for node from RPC result
         List<FlowAndStatisticsMapList> flowTableAndStatisticsMapList = flowStatsOutput.getFlowAndStatisticsMapList();
         for (FlowAndStatisticsMapList flowAndStatisticsMap : flowTableAndStatisticsMapList) {
-            short tableId = flowAndStatisticsMap.getTableId().shortValue();
+            short tableId = flowAndStatisticsMap.getTableId();
             // populate map to maintain flow count per table
             flowTableMap.computeIfAbsent(tableId, key -> new AtomicInteger(0)).incrementAndGet();
         }

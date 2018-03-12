@@ -68,7 +68,7 @@ public final class ItmInternalTunnelAddWorker {
 
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
-        monitorInterval = Integer.valueOf(tunnelMonitoringConfig.getMonitorInterval());
+        monitorInterval = tunnelMonitoringConfig.getMonitorInterval();
     }
 
     public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
