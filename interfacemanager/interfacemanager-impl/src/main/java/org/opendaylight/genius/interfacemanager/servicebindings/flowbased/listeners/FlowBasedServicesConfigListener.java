@@ -119,14 +119,15 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
     @Override
     public void onDataTreeChanged(@Nonnull final Collection<DataTreeModification<ServicesInfo>> collection) {
-        collection.stream().forEach(servicesInfoDataTreeModification -> {
-            servicesInfoDataTreeModification.getRootNode().getModifiedChildren().stream().filter(
-                dataObjectModification -> dataObjectModification.getDataType().equals(BoundServices.class)).forEach(
-                    dataObjectModification -> onBoundServicesChanged(
-                        (DataObjectModification<BoundServices>) dataObjectModification,
-                        servicesInfoDataTreeModification.getRootPath().getRootIdentifier(),
-                        servicesInfoDataTreeModification.getRootNode()));
-            }
+        collection.forEach(
+            servicesInfoDataTreeModification -> servicesInfoDataTreeModification.getRootNode()
+                    .getModifiedChildren().stream()
+                    .filter(dataObjectModification -> dataObjectModification.getDataType().equals(
+                            BoundServices.class))
+                    .forEach(dataObjectModification -> onBoundServicesChanged(
+                            (DataObjectModification<BoundServices>) dataObjectModification,
+                            servicesInfoDataTreeModification.getRootPath().getRootIdentifier(),
+                            servicesInfoDataTreeModification.getRootNode()))
         );
     }
 

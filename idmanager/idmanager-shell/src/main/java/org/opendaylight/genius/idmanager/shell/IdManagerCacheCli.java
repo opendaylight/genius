@@ -38,7 +38,7 @@ public class IdManagerCacheCli extends OsgiCommandSupport {
         session.getConsole().println("No of pools in cluster " + cache.keySet().size());
         session.getConsole().println(DEMARCATION);
         if (poolName == null) {
-            cache.keySet().stream().forEach(idPoolName -> {
+            cache.keySet().forEach(idPoolName -> {
                 print(idPoolName, cache.get(idPoolName));
                 session.getConsole().println(DEMARCATION);
                 session.getConsole().println(DEMARCATION);
