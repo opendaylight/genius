@@ -214,12 +214,18 @@ public final class IfmCLIUtil {
             String localIp = UNSET;
             String key = UNSET;
             for (Options portOption: port.getOptions()) {
-                if (portOption.getOption().equals("local_ip")) {
-                    localIp = portOption.getValue();
-                } else if (portOption.getOption().equals("remote_ip")) {
-                    remoteIp = portOption.getValue();
-                } else if (portOption.getOption().equals("key")) {
-                    key = portOption.getValue();
+                switch (portOption.getOption()) {
+                    case "local_ip":
+                        localIp = portOption.getValue();
+                        break;
+                    case "remote_ip":
+                        remoteIp = portOption.getValue();
+                        break;
+                    case "key":
+                        key = portOption.getValue();
+                        break;
+                    default:
+                        break;
                 }
             }
             return String.format(TP_VXLAN_OUTPUT_FORMAT_LINE1, localIp, remoteIp, key);
