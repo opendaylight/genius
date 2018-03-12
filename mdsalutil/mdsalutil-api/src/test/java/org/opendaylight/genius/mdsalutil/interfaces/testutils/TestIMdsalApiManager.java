@@ -22,7 +22,6 @@ import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
@@ -158,11 +157,10 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     private List<FlowEntity> sortFlows(Iterable<FlowEntity> flowsToSort) {
         List<FlowEntity> sortedFlows = Lists.newArrayList(flowsToSort);
-        Collections.sort(sortedFlows,
-            (flow1, flow2) -> ComparisonChain.start()
-                .compare(flow1.getTableId(),  flow2.getTableId())
+        sortedFlows.sort((flow1, flow2) -> ComparisonChain.start()
+                .compare(flow1.getTableId(), flow2.getTableId())
                 .compare(flow1.getPriority(), flow2.getPriority())
-                .compare(flow1.getFlowId(),   flow2.getFlowId())
+                .compare(flow1.getFlowId(), flow2.getFlowId())
                 .result());
         return sortedFlows;
     }
