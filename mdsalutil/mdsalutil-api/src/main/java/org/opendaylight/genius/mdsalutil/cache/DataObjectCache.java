@@ -74,7 +74,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
             }
         });
 
-        ClusteredDataTreeChangeListener<V> dataObjectListener = (ClusteredDataTreeChangeListener<V>) changes -> {
+        ClusteredDataTreeChangeListener<V> dataObjectListener = changes -> {
             for (DataTreeModification<V> dataTreeModification : changes) {
                 DataObjectModification<V> rootNode = dataTreeModification.getRootNode();
                 InstanceIdentifier<V> path = dataTreeModification.getRootPath().getRootIdentifier();
