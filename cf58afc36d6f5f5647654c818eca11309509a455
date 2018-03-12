@@ -25,6 +25,23 @@
     },
     {
       "key": {
+        "uuid": "1789114e_a531e4a8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-12T11:58:24Z",
+      "side": 1,
+      "message": "Nidhi, I hope you understand what is being done by your code :( This will not work.  Please check with Hema on how to use registerListener/deregisterListener with the new listener frameworks. Please test this code before pushing the patch",
+      "revId": "cf58afc36d6f5f5647654c818eca11309509a455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "198c62ba_18f40b4a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 9
