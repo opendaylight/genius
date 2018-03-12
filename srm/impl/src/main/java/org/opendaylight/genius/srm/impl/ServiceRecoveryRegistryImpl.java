@@ -29,8 +29,7 @@ public class ServiceRecoveryRegistryImpl implements ServiceRecoveryRegistry {
 
     private final Map<String, ServiceRecoveryInterface> serviceRecoveryRegistry = new ConcurrentHashMap<>();
 
-    private final Map<String, List<RecoverableListener>> recoverableListenersMap =
-            new ConcurrentHashMap<String, List<RecoverableListener>>();
+    private final Map<String, List<RecoverableListener>> recoverableListenersMap = new ConcurrentHashMap<>();
 
     @Override
     public void registerServiceRecoveryRegistry(String entityName,
