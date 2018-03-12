@@ -95,7 +95,7 @@ public class ResourceManagerTest extends AbstractConcurrentDataBrokerTest {
             assertSuccessfulFutureRpcResult(result);
             for (org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.getresourcepool.output
                      .AvailableIds availableIds : result.getResult().getAvailableIds()) {
-                assertTrue(availableIds.getStart().longValue() < availableIds.getEnd().longValue());
+                assertTrue(availableIds.getStart() < availableIds.getEnd());
             }
             assertTrue(result.getResult().getDelayedResourceEntries().isEmpty());
         }
