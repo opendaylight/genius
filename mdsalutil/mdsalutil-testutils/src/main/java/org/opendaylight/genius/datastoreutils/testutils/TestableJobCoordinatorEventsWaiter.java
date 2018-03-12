@@ -34,12 +34,12 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     @Override
     public boolean awaitEventsConsumption() throws ConditionTimeoutException {
-        return awaitJobsConsumption(() -> jobCoordinatorMonitor.getIncompleteTaskCount(), 0);
+        return awaitJobsConsumption(jobCoordinatorMonitor::getIncompleteTaskCount, 0);
     }
 
     @Override
     public boolean awaitJobsConsumption(long clearedJobCount) throws ConditionTimeoutException {
-        return awaitJobsConsumption(() -> jobCoordinatorMonitor.getClearedTaskCount(), clearedJobCount);
+        return awaitJobsConsumption(jobCoordinatorMonitor::getClearedTaskCount, clearedJobCount);
     }
 
     private boolean awaitJobsConsumption(Supplier<Long> countSupplier, long expectedCount)
@@ -53,7 +53,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
                                     + " expected event count: {}",
                             condition.getElapsedTimeInMS() / 1000, condition.getRemainingTimeInMS() / 1000,
                             condition.getValue(), expectedCount))
-                    .until(() -> countSupplier.get(), is(expectedCount));
+                    .until(countSupplier::get, is(expectedCount));
         } catch (ConditionTimeoutException e) {
             LOG.error("Details about stuck JobCoordinator: {}", jobCoordinatorMonitor.toString());
             throw e;

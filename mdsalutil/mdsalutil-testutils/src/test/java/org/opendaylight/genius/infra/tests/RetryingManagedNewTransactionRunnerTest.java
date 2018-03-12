@@ -33,9 +33,8 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
         // contrary to the super() test implementation for (just) ManagedNewTransactionRunnerImpl, in the parent class
         // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
         testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-            writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
-        }).get();
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
         singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH);
     }
 }
