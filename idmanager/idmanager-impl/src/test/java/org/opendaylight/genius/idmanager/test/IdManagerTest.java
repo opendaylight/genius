@@ -366,7 +366,7 @@ public class IdManagerTest {
             delayedIdEntries.add(new DelayedIdEntriesBuilder().setId(id).setReadyTimeSec(0L).build());
         }
         return new ReleasedIdsHolderBuilder().setDelayedIdEntries(delayedIdEntries)
-                .setAvailableIdCount(Long.valueOf(delayedIds.size())).build();
+                .setAvailableIdCount((long) delayedIds.size()).build();
     }
 
     private AvailableIdsHolder createAvailableIdHolder(long start, long end, long cursor) {
