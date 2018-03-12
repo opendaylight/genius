@@ -248,14 +248,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             LOG.error("Type of Interface {} is unknown", interfaceName);
             return null;
         }
-        InterfaceInfo.InterfaceOpState opState;
-        if (ifState.getOperStatus() == OperStatus.Up) {
-            opState = InterfaceInfo.InterfaceOpState.UP;
-        } else if (ifState.getOperStatus() == OperStatus.Down) {
-            opState = InterfaceInfo.InterfaceOpState.DOWN;
-        } else {
-            opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
-        }
         interfaceInfo.setDpId(dpId);
         interfaceInfo.setPortNo(portNo);
         interfaceInfo.setAdminState(intf.isEnabled() ? InterfaceAdminState.ENABLED : InterfaceAdminState.DISABLED);
@@ -264,7 +256,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
-        interfaceInfo.setOpState(opState);
+        interfaceInfo.setOpState(InterfaceInfo.InterfaceOpState.fromModel(ifState.getOperStatus()));
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
@@ -290,14 +282,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
-        InterfaceInfo.InterfaceOpState opState;
-        if (ifState.getOperStatus() == OperStatus.Up) {
-            opState = InterfaceInfo.InterfaceOpState.UP;
-        } else if (ifState.getOperStatus() == OperStatus.Down) {
-            opState = InterfaceInfo.InterfaceOpState.DOWN;
-        } else {
-            opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
-        }
         interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
                 : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
@@ -305,7 +289,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         interfaceInfo.setInterfaceTag(lportTag);
         interfaceInfo.setInterfaceType(interfaceType);
         interfaceInfo.setGroupId(IfmUtil.getGroupId(lportTag, interfaceType));
-        interfaceInfo.setOpState(opState);
+        interfaceInfo.setOpState(InterfaceInfo.InterfaceOpState.fromModel(ifState.getOperStatus()));
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
@@ -344,14 +328,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             interfaceInfo.setDpId(IfmUtil.getDpnFromNodeConnectorId(ncId));
             interfaceInfo.setPortNo(Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId)));
         }
-        InterfaceInfo.InterfaceOpState opState;
-        if (ifState.getOperStatus() == OperStatus.Up) {
-            opState = InterfaceInfo.InterfaceOpState.UP;
-        } else if (ifState.getOperStatus() == OperStatus.Down) {
-            opState = InterfaceInfo.InterfaceOpState.DOWN;
-        } else {
-            opState = InterfaceInfo.InterfaceOpState.UNKNOWN;
-        }
         interfaceInfo.setAdminState(ifState.getAdminStatus() == AdminStatus.Up ? InterfaceAdminState.ENABLED
                 : InterfaceAdminState.DISABLED);
         interfaceInfo.setInterfaceName(interfaceName);
@@ -359,7 +335,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (lportTag != null) {
             interfaceInfo.setInterfaceTag(lportTag);
         }
-        interfaceInfo.setOpState(opState);
+        interfaceInfo.setOpState(InterfaceInfo.InterfaceOpState.fromModel(ifState.getOperStatus()));
         PhysAddress phyAddress = ifState.getPhysAddress();
         if (phyAddress != null) {
             interfaceInfo.setMacAddress(ifState.getPhysAddress().getValue());
