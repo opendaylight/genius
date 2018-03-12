@@ -86,9 +86,7 @@ public class FutureRpcResultsTest {
         TestFutureRpcResults.assertRpcErrorCause(fromListenableFuture(
             LOG, "testFromListenableFutureException", null, () -> {
                 throw new IllegalArgumentException("bam");
-            }).onFailure(e -> {
-                afterLogActionCalled.set(true);
-            }).build(), IllegalArgumentException.class, "bam");
+            }).onFailure(e -> afterLogActionCalled.set(true)).build(), IllegalArgumentException.class, "bam");
         assertThat(afterLogActionCalled.get()).isTrue();
     }
 

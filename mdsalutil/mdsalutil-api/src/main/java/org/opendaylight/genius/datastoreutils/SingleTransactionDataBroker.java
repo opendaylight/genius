@@ -191,9 +191,9 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            tx.put(datastoreType, path, data, true);
-        }), SUBMIT_MAPPER);
+        ListenableFutures.checkedGet(
+                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(datastoreType, path, data, true)),
+                SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncUpdate(
@@ -218,9 +218,9 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
             throws TransactionCommitFailedException {
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            tx.merge(datastoreType, path, data, true);
-        }), SUBMIT_MAPPER);
+        ListenableFutures.checkedGet(
+                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(datastoreType, path, data, true)),
+                SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncDelete(
@@ -246,9 +246,8 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            tx.delete(datastoreType, path);
-        }), SUBMIT_MAPPER);
+        ListenableFutures.checkedGet(
+                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(datastoreType, path)), SUBMIT_MAPPER);
     }
 
     // TODO Move asyncWrite/asyncUpdate/asyncRemove from org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils to here
