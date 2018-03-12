@@ -312,15 +312,18 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             LOG.debug("ExternalIds list does not exist in the OVSDB Node Augmentation.");
         } else {
             for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-                if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
-                    String tzName = externalId.getExternalIdValue();
-                    ovsdbTepInfoObj.setTzName(tzName);
-                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
-                    String bridgeName = externalId.getExternalIdValue();
-                    ovsdbTepInfoObj.setBrName(bridgeName);
-                } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
-                    boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
-                    ovsdbTepInfoObj.setOfTunnel(ofTunnel);
+                switch (externalId.getExternalIdKey()) {
+                    case ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME:
+                        ovsdbTepInfoObj.setTzName(externalId.getExternalIdValue());
+                        break;
+                    case ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME:
+                        ovsdbTepInfoObj.setBrName(externalId.getExternalIdValue());
+                        break;
+                    case ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL:
+                        ovsdbTepInfoObj.setOfTunnel(Boolean.parseBoolean(externalId.getExternalIdValue()));
+                        break;
+                    default:
+                        break;
                 }
             }
         }

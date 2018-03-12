@@ -266,17 +266,23 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
                     LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
                               isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
                 }
-                if (update.getOperState() == TunnelOperStatus.Unknown) {
-                    return null;
-                } else if (update.getOperState() == TunnelOperStatus.Up) {
-                    LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ", srcDpId,
-                              dstDpId, tunnelType);
-                    String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
-                    clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-                } else if (update.getOperState() == TunnelOperStatus.Down) {
-                    LOG.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
-                    String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
-                    raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
+                switch (update.getOperState()) {
+                    case Up: {
+                        LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ", srcDpId,
+                                dstDpId, tunnelType);
+                        String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
+                        clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
+                        break;
+                    }
+                    case Down: {
+                        LOG.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
+                        String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
+                        raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
+                        break;
+                    }
+                    case Unknown:
+                    default:
+                        return null;
                 }
             }
              /*else{
