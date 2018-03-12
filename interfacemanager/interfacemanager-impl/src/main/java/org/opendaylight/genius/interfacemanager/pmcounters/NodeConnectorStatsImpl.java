@@ -43,6 +43,7 @@ import org.opendaylight.infrautils.metrics.Counter;
 import org.opendaylight.infrautils.metrics.Labeled;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
 import org.opendaylight.infrautils.metrics.MetricProvider;
+import org.opendaylight.infrautils.utils.UncheckedCloseable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsOutput;
@@ -118,7 +119,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     @PreDestroy
     public void close() {
         // close the nested counter objects for each node
-        metricsCountersPerNodeMap.values().forEach(counterSet -> counterSet.forEach(counter -> counter.close()));
+        metricsCountersPerNodeMap.values().forEach(counterSet -> counterSet.forEach(UncheckedCloseable::close));
     }
 
     /*
@@ -435,7 +436,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             Set<Counter> nodeMetricCounterSet = metricsCountersPerNodeMap.remove(dpId);
             if (nodeMetricCounterSet != null) {
                 // remove counters
-                nodeMetricCounterSet.forEach(counter -> counter.close());
+                nodeMetricCounterSet.forEach(UncheckedCloseable::close);
             }
         }
         if (nodes.size() > 0) {

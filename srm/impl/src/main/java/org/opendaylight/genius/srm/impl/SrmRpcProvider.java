@@ -37,16 +37,14 @@ public class SrmRpcProvider implements SrmRpcsService {
 
     @Override
     public Future<RpcResult<RecoverOutput>> recover(RecoverInput input) {
-        return FutureRpcResults.fromListenableFuture(LOG, "recover", input, () -> {
-            return Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input));
-        }).build();
+        return FutureRpcResults.fromListenableFuture(LOG, "recover", input,
+            () -> Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input))).build();
     }
 
     @Override
     public Future<RpcResult<ReinstallOutput>> reinstall(ReinstallInput input) {
-        return FutureRpcResults.fromListenableFuture(LOG, "reinstall", input, () -> {
-            return Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input));
-        }).build();
+        return FutureRpcResults.fromListenableFuture(LOG, "reinstall", input,
+            () -> Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input))).build();
     }
 
 }

@@ -104,16 +104,15 @@ public class LockManagerServiceImpl implements LockManagerService {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
-        return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
-            return txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+        return FutureRpcResults.fromListenableFuture(LOG, input,
+            () -> txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                 Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
                 if (!result.isPresent()) {
                     LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
                 } else {
                     tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
                 }
-            });
-        }).build();
+            })).build();
     }
 
     public CompletableFuture<Void> getSynchronizerForLock(String lockName) {

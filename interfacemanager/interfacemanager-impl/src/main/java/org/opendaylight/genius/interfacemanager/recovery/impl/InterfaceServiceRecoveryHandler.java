@@ -34,13 +34,13 @@ public class InterfaceServiceRecoveryHandler implements ServiceRecoveryInterface
     private void deregisterListeners() {
         List<RecoverableListener> recoverableListeners =
                 serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey());
-        recoverableListeners.forEach((recoverableListener -> recoverableListener.deregisterListener()));
+        recoverableListeners.forEach((RecoverableListener::deregisterListener));
     }
 
     private void registerListeners() {
         List<RecoverableListener> recoverableListeners =
                 serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey());
-        recoverableListeners.forEach((recoverableListener -> recoverableListener.registerListener()));
+        recoverableListeners.forEach((RecoverableListener::registerListener));
     }
 
     @Override
