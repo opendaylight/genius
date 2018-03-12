@@ -925,7 +925,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         Map<String, BigInteger> result = new HashMap<>();
         for (Node node : operInventoryNodes.getNode()) {
-            String name = node.<FlowCapableNode>getAugmentation(FlowCapableNode.class).getDescription();
+            String name = node.getAugmentation(FlowCapableNode.class).getDescription();
             if (nodeNames.contains(name)) {
                 String[] nodeId = node.getId().getValue().split(":");
                 result.put(name, new BigInteger(nodeId[1]));
@@ -946,8 +946,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 .child(BridgeRefEntry.class, new BridgeRefEntryKey(dpnId)).build();
         BridgeRefEntry bridgeRefEntry =
                 singleTransactionDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, path);
-        return ((InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology
-                .rev131021.network.topology.topology.Node>)bridgeRefEntry.getBridgeReference().getValue())
+        return bridgeRefEntry.getBridgeReference().getValue()
                 .firstKeyOf(org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
                         .network.topology.topology.Node.class).getNodeId().getValue();
     }

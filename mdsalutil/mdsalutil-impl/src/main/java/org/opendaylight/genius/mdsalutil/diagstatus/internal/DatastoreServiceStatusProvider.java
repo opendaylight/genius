@@ -54,7 +54,7 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
                         + "DistributedConfigDatastore,Category=ShardManager,name=shard-manager-config",
                 "SyncStatus");
         if (operSyncStatusValue != null && configSyncStatusValue != null) {
-            if ((boolean) operSyncStatusValue && (boolean) configSyncStatusValue) {
+            if (operSyncStatusValue && configSyncStatusValue) {
                 dataStoreServiceState =  ServiceState.OPERATIONAL;
                 statusDesc = dataStoreServiceState.name();
             } else {

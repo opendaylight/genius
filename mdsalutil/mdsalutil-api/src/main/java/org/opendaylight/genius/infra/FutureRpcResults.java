@@ -195,7 +195,7 @@ public final class FutureRpcResults {
                 public void onFailure(Throwable cause) {
                     onFailureLogLevel.log(logger, "RPC {}() failed; input = {}", rpcMethodName, input, cause);
                     onFailureConsumer.accept(cause);
-                    RpcResultBuilder<O> rpcResultBuilder =  RpcResultBuilder.<O>failed();
+                    RpcResultBuilder<O> rpcResultBuilder =  RpcResultBuilder.failed();
                     if (cause instanceof OperationFailedException) {
                         // NB: This looses (not not propagate) the cause, and only preserves the error list
                         // But we did log the cause above, so it can still be found.
