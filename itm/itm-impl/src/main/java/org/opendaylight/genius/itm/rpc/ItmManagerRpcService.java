@@ -850,9 +850,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
 
         List<IpAddress> nexthopIpList = new ArrayList<>();
-        tunnelEndPointList.forEach(tunnelEndPoint -> {
-            nexthopIpList.add(tunnelEndPoint.getIpAddress());
-        });
+        tunnelEndPointList.forEach(tunnelEndPoint -> nexthopIpList.add(tunnelEndPoint.getIpAddress()));
 
         GetDpnEndpointIpsOutputBuilder output = new GetDpnEndpointIpsOutputBuilder().setNexthopipList(nexthopIpList);
         resultBld = RpcResultBuilder.success();
@@ -862,9 +860,8 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     @Override
     public Future<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
-        return FutureRpcResults.fromListenableFuture(LOG, "getDpnInfo", input, () -> {
-            return Futures.immediateFuture(getDpnInfoInternal(input));
-        }).build();
+        return FutureRpcResults.fromListenableFuture(LOG, "getDpnInfo", input,
+            () -> Futures.immediateFuture(getDpnInfoInternal(input))).build();
     }
 
     private GetDpnInfoOutput getDpnInfoInternal(GetDpnInfoInput input) throws ReadFailedException {
