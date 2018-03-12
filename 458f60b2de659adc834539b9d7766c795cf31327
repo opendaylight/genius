@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da6e4750_7f9c1d71",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-12T17:08:24Z",
+      "side": 1,
+      "message": "this change actually does a lot more than just that now? ;-) \n\nIn an ideal world, perhaps this could have been split into separate changes (but I personally don\u0027t mind merging it as is anyway, if you just want to remove the weird thing in InterfaceManagerConfigurationTest).",
+      "revId": "458f60b2de659adc834539b9d7766c795cf31327",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fb79555_4c1b8804",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-12T17:08:24Z",
+      "side": 1,
+      "message": "I don\u0027t really understand this (and the getExpectedJobCount() and its usage below).  Wouldn\u0027t everything work just the same way here if you just completely removed this?  If the idea is to be able to do something like \"cumulative\" JobCoordinatorEventsWaiter.awaitJobsConsumption(n), then would that not better be a new functionality offered in TestableJobCoordinatorEventsWaiter itself (with a test of it in TestableJobCoordinatorEventsWaiterTest...), instead of bolting that on to this InterfaceManagerConfigurationTest here?",
+      "revId": "458f60b2de659adc834539b9d7766c795cf31327",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
