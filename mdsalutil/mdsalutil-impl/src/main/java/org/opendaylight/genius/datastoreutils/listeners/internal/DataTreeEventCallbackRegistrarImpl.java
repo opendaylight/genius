@@ -174,12 +174,13 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         }
 
         NextAction add(T newDataObject) {
-            if (operation == Operation.ADD) {
-                return callback.apply(newDataObject, null);
-            } else if (operation == Operation.ADD_OR_UPDATE) {
-                return callback.apply(null, newDataObject);
-            } else {
-                return NextAction.CALL_AGAIN;
+            switch (operation) {
+                case ADD:
+                    return callback.apply(newDataObject, null);
+                case ADD_OR_UPDATE:
+                    return callback.apply(null, newDataObject);
+                default:
+                    return NextAction.CALL_AGAIN;
             }
         }
 
