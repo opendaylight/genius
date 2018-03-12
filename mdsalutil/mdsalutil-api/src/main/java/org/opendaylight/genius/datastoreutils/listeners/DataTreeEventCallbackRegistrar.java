@@ -54,7 +54,7 @@ public interface DataTreeEventCallbackRegistrar {
 
     default <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
             Consumer<T> callback) {
-        onAdd(store, path, (Function<T, NextAction>) t -> {
+        onAdd(store, path, t -> {
             callback.accept(t);
             return UNREGISTER;
         });
@@ -65,7 +65,7 @@ public interface DataTreeEventCallbackRegistrar {
 
     default <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
             BiConsumer<T, T> callback) {
-        onUpdate(store, path, (BiFunction<T, T, NextAction>) (t1, t2) -> {
+        onUpdate(store, path, (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
         });
@@ -88,7 +88,7 @@ public interface DataTreeEventCallbackRegistrar {
      */
     default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
                                                  BiConsumer<@Nullable T, T> callback) {
-        onUpdate(store, path, (BiFunction<T, T, NextAction>) (t1, t2) -> {
+        onUpdate(store, path, (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
         });
@@ -100,7 +100,7 @@ public interface DataTreeEventCallbackRegistrar {
 
     default <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
             Consumer<T> callback) {
-        onRemove(store, path, (Function<T, NextAction>) t -> {
+        onRemove(store, path, t -> {
             callback.accept(t);
             return UNREGISTER;
         });
