@@ -64,11 +64,9 @@ public class DataObjectCache<V extends DataObject> implements AutoCloseable {
                     case WRITE:
                     case SUBTREE_MODIFIED:
                         V dataAfter = rootNode.getDataAfter();
-                        cache.put(path, Optional.of(dataAfter));
                         added(path, dataAfter);
                         break;
                     case DELETE:
-                        cache.invalidate(path);
                         removed(path, rootNode.getDataBefore());
                         break;
                     default:
