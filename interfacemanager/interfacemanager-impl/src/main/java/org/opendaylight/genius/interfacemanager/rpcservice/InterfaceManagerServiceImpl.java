@@ -271,7 +271,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
             return buildEmptyInterfaceListResult();
         }
         List<Interfaces> interfaceList = new ArrayList<>();
-        interfaceNameEntries.stream().forEach(
+        interfaceNameEntries.forEach(
             (interfaceNameEntry) -> {
                 InterfacesBuilder intf = new InterfacesBuilder()
                     .setInterfaceName(interfaceNameEntry.getInterfaceName())

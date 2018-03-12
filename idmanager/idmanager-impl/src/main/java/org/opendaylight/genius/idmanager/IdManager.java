@@ -121,7 +121,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     @Override
     public Map<String, String> getLocalPoolsDetails() {
         Map<String, String> map = new HashMap<>();
-        localPool.entrySet().stream().forEach(entry -> map.put(entry.getKey(), entry.getValue().toString()));
+        localPool.forEach((key, value) -> map.put(key, value.toString()));
         return map;
     }
 
@@ -254,7 +254,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 IdPool idPool = singleTxDB.syncRead(CONFIGURATION, idPoolToBeDeleted);
                 List<ChildPools> childPoolList = idPool.getChildPools();
                 if (childPoolList != null) {
-                    childPoolList.stream().forEach(childPool -> deletePool(childPool.getChildPoolName()));
+                    childPoolList.forEach(childPool -> deletePool(childPool.getChildPoolName()));
                 }
                 singleTxDB.syncDelete(CONFIGURATION, idPoolToBeDeleted);
             }

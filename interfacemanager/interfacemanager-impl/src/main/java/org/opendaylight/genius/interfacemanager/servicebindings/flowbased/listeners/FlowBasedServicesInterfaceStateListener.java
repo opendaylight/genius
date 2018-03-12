@@ -114,7 +114,7 @@ public class FlowBasedServicesInterfaceStateListener
         }
 
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().forEach(serviceMode -> coordinator.enqueueJob(
                 interfaceStateNew.getName(),
                 new RendererStateInterfaceBindWorker(flowBasedServicesStateRendererFactoryResolver
                         .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer(),
