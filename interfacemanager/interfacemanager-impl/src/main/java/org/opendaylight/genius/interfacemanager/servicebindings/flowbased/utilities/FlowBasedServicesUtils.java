@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -593,8 +594,7 @@ public final class FlowBasedServicesUtils {
         BoundServices lower = null;
 
         List<BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
-        Collections.sort(availableServiceInfos, (serviceInfo1, serviceInfo2) -> serviceInfo1.getServicePriority()
-                .compareTo(serviceInfo2.getServicePriority()));
+        availableServiceInfos.sort(Comparator.comparing(BoundServices::getServicePriority));
         for (BoundServices availableServiceInfo : availableServiceInfos) {
             if (currentServiceInfo.getServicePriority() < availableServiceInfo.getServicePriority()) {
                 lower = availableServiceInfo;

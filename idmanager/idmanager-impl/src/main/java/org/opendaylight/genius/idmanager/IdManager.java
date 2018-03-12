@@ -424,7 +424,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         List<ChildPools> childPoolsList = parentIdPool.getChildPools();
         // Sorting the child pools on last accessed time so that the pool that
         // was not accessed for a long time comes first.
-        Collections.sort(childPoolsList, comparing(ChildPools::getLastAccessTime));
+        childPoolsList.sort(comparing(ChildPools::getLastAccessTime));
         long currentTime = System.currentTimeMillis() / 1000;
         for (ChildPools childPools : childPoolsList) {
             if (childPools.getLastAccessTime() + DEFAULT_IDLE_TIME > currentTime) {
