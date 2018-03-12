@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.globals;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
 import java.math.BigInteger;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 
 public class InterfaceInfo implements Serializable {
 
@@ -31,7 +32,20 @@ public class InterfaceInfo implements Serializable {
     }
 
     public enum InterfaceOpState {
-        UP, DOWN, UNKNOWN
+        UP, DOWN, UNKNOWN;
+
+        public static InterfaceOpState fromModel(Interface.OperStatus modelStatus) {
+            switch (modelStatus) {
+                case Up:
+                    return UP;
+                case Down:
+                    return DOWN;
+                case Unknown:
+                    return UNKNOWN;
+                default:
+                    throw new IllegalStateException("Unknown operational status " + modelStatus);
+            }
+        }
     }
 
     protected InterfaceType interfaceType;
