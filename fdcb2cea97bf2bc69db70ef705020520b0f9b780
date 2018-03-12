@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cde300c7_4eadecd1",
+        "filename": "commons/binding-parent/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-12T02:26:25Z",
+      "side": 1,
+      "message": "findbugs-plugin is added twice.. You have to add the new dependenices and configuration inside the existing plugin",
+      "revId": "fdcb2cea97bf2bc69db70ef705020520b0f9b780",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
