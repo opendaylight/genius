@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71a43174_437a5787",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 1402,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-12T11:14:02Z",
+      "side": 1,
+      "message": "need not create a variable, return directly.",
+      "range": {
+        "startLine": 1397,
+        "startChar": 4,
+        "endLine": 1402,
+        "endChar": 5
+      },
+      "revId": "cf58afc36d6f5f5647654c818eca11309509a455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "198c62ba_18f40b4a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-12T11:14:02Z",
+      "side": 1,
+      "message": "if they aren\u0027t doing anything, please remove them.",
+      "range": {
+        "startLine": 110,
+        "startChar": 3,
+        "endLine": 117,
+        "endChar": 5
+      },
+      "revId": "cf58afc36d6f5f5647654c818eca11309509a455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b01daa4c_9ac72e61",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmServiceRecoveryHandler.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-12T11:14:02Z",
+      "side": 1,
+      "message": "get.....()",
+      "range": {
+        "startLine": 37,
+        "startChar": 24,
+        "endLine": 37,
+        "endChar": 30
+      },
+      "revId": "cf58afc36d6f5f5647654c818eca11309509a455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
