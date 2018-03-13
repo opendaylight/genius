@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b4b9044_05c05bad",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 1401,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-13T14:11:59Z",
+      "side": 1,
+      "message": "return without creating a variable",
+      "range": {
+        "startLine": 1398,
+        "startChar": 8,
+        "endLine": 1401,
+        "endChar": 28
+      },
+      "revId": "d7d9a1c509a5acdd26916b7e23170cecbf76a177",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "771c8d4e_9aac92c9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-13T14:11:59Z",
+      "side": 1,
+      "message": "can be null, please take care of that",
+      "range": {
+        "startLine": 106,
+        "startChar": 26,
+        "endLine": 106,
+        "endChar": 54
+      },
+      "revId": "d7d9a1c509a5acdd26916b7e23170cecbf76a177",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "86988599_d2a7f001",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-13T14:11:59Z",
+      "side": 1,
+      "message": "guard this with a null check, as the util can throw null.",
+      "range": {
+        "startLine": 110,
+        "startChar": 11,
+        "endLine": 110,
+        "endChar": 92
+      },
+      "revId": "d7d9a1c509a5acdd26916b7e23170cecbf76a177",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f9ae0e18_738cbcb3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-13T14:11:59Z",
+      "side": 1,
+      "message": "avoid using db.newWriteOnlytTransaction();\nuse something like managedNewTransactionRunner",
+      "range": {
+        "startLine": 100,
+        "startChar": 12,
+        "endLine": 100,
+        "endChar": 85
+      },
+      "revId": "d7d9a1c509a5acdd26916b7e23170cecbf76a177",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3157ed50_5b46f42e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-13T14:11:59Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 124,
+        "startChar": 12,
+        "endLine": 124,
+        "endChar": 86
+      },
+      "revId": "d7d9a1c509a5acdd26916b7e23170cecbf76a177",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
