@@ -141,6 +141,30 @@
       "revId": "72e112f466816b87200bcb3c7b5b0617221be4cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a7f7d26_9523214b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-13T14:18:10Z",
+      "side": 1,
+      "message": "We\u0027re using Java generics to declare the key type and a function to map V -\u003e actual key. So the actual key is extracted from V which is exactly what you\u0027re doing  in the derived cache to maintain a duplicate cache. I don\u0027t understand why you think it can\u0027t work. \n\nAnyway I\u0027m going to let you finish up the rest of this (see my previous comment - it\u0027s straightforward).",
+      "parentUuid": "9b6389af_b5b39c43",
+      "range": {
+        "startLine": 51,
+        "startChar": 12,
+        "endLine": 51,
+        "endChar": 58
+      },
+      "revId": "72e112f466816b87200bcb3c7b5b0617221be4cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
