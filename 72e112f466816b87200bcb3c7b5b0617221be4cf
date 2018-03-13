@@ -45,6 +45,54 @@
       "revId": "72e112f466816b87200bcb3c7b5b0617221be4cf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1024436b_c429a72c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-13T06:46:24Z",
+      "side": 1,
+      "message": "yeah - InstanceIdentifier doesn\u0027t contain the DataObject - my bad. So change it to BiFunction\u003c InstanceIdentifier\u003cV\u003e, V, K\u003e.",
+      "parentUuid": "ada304ec_502b97da",
+      "range": {
+        "startLine": 51,
+        "startChar": 12,
+        "endLine": 51,
+        "endChar": 58
+      },
+      "revId": "72e112f466816b87200bcb3c7b5b0617221be4cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c75dd1f_4605bdc9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-13T06:46:24Z",
+      "side": 1,
+      "message": "huh... why would you want to cast?",
+      "parentUuid": "12c07758_61085a9c",
+      "range": {
+        "startLine": 51,
+        "startChar": 60,
+        "endLine": 51,
+        "endChar": 94
+      },
+      "revId": "72e112f466816b87200bcb3c7b5b0617221be4cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
