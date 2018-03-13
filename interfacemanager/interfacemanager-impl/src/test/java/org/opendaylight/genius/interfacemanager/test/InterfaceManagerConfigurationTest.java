@@ -199,6 +199,7 @@ public class InterfaceManagerConfigurationTest {
     @Inject BatchingUtils batchingUtils;
 
     @Before
+    @Ignore
     public void start() throws InterruptedException, TransactionCommitFailedException {
         // Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
@@ -206,6 +207,7 @@ public class InterfaceManagerConfigurationTest {
     }
 
     @After
+    @Ignore
     public void end() throws InterruptedException {
         setupAndAssertBridgeDeletion();
     }
@@ -228,6 +230,10 @@ public class InterfaceManagerConfigurationTest {
                 .orNull();
         assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_1), bridgeRefEntry);
         assertEqualBeans(bridgeRefEntry.getDpid(), DPN_ID_1);
+    }
+
+    @Test
+    public void testBindings() {
     }
 
     @Test
