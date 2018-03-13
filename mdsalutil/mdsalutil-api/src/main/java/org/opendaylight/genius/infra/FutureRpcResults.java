@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -100,7 +101,7 @@ public final class FutureRpcResults {
          * otherwise you will lose error messages.
          */
         NONE;
-
+        @SuppressWarnings({"SLF4J_UNKNOWN_ARRAY","SLF4J_FORMAT_SHOULD_BE_CONST"})
         public void log(Logger logger, String format, Object... arguments) {
             switch (this) {
                 case NONE:

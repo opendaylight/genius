@@ -183,7 +183,7 @@ public final class NWUtil {
         } catch (UnknownHostException e) {
             final String msg = "UnknownHostException while checking whether '" + ipAddress + "' is an IPv4 address";
             // Double LOG & re-throw anti pattern usually bad, exceptionally OK here, just to be sure this is seen:
-            LOG.error(msg, e);
+            LOG.error("UnknownHostException while checking whether {} is an IPv4 address",ipAddress,e);
             throw new RuntimeException(msg, e);
         }
     }

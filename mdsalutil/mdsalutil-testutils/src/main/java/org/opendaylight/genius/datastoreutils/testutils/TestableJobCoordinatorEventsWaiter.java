@@ -48,7 +48,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
                             condition.getValue()))
                 .until(() -> incompleteTaskCountSupplier.get(), is(0L));
         } catch (ConditionTimeoutException e) {
-            LOG.error("Details about stuck JobCoordinator: " + coordinatorMonitorStringer.toString());
+            LOG.error("Details about stuck JobCoordinator:{}",coordinatorMonitorStringer.toString());
             throw e;
         }
         return true;
@@ -67,7 +67,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
                             condition.getValue(), clearedJobCount))
                     .until(() -> (clearedJobCountSupplier.get()), is(clearedJobCount));
         } catch (ConditionTimeoutException e) {
-            LOG.error("Details about stuck JobCoordinator: " + coordinatorMonitorStringer.toString());
+            LOG.error("Details about stuck JobCoordinator:{}",coordinatorMonitorStringer.toString());
             throw e;
         }
         return true;
