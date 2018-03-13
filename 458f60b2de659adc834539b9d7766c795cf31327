@@ -33,6 +33,24 @@
       "revId": "458f60b2de659adc834539b9d7766c795cf31327",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f7633e69_fff8d0ed",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-13T05:57:36Z",
+      "side": 1,
+      "message": "The clearedTask meter given by JC will be a cumulative count of all the jobs enqueued so far. interface-manager uses JC heavily, and if you check there are jobs being enqueued even for our beforeTest and afterTest methods. For each functional piece of code, I felt it is not right to pass the cumulative count hardcoded, and felt it will be good to somehow track the \"jobCount so far\", and the \"new job count to be introduced by the new functional part of TC\" . Do you think it makes sense to move this to JCEventsWaiter, as it will have to maintain something like \"clearedTaskCountPrev\" and then add it to the incoming count?",
+      "parentUuid": "5fb79555_4c1b8804",
+      "revId": "458f60b2de659adc834539b9d7766c795cf31327",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
