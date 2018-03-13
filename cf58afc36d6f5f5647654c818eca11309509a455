@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "b5006a31_2955b44a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-13T04:08:24Z",
+      "side": 1,
+      "message": "Yes Faseela I am yet to do this.",
+      "parentUuid": "1789114e_a531e4a8",
+      "revId": "cf58afc36d6f5f5647654c818eca11309509a455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "198c62ba_18f40b4a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 9
@@ -53,6 +71,30 @@
       "writtenOn": "2018-03-12T11:14:02Z",
       "side": 1,
       "message": "if they aren\u0027t doing anything, please remove them.",
+      "range": {
+        "startLine": 110,
+        "startChar": 3,
+        "endLine": 117,
+        "endChar": 5
+      },
+      "revId": "cf58afc36d6f5f5647654c818eca11309509a455",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "67e45272_e66143b9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-13T04:08:24Z",
+      "side": 1,
+      "message": "Edwin its WIP",
+      "parentUuid": "198c62ba_18f40b4a",
       "range": {
         "startLine": 110,
         "startChar": 3,
