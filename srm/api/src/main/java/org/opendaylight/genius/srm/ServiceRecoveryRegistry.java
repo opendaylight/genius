@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.srm;
 
-import java.util.List;
+import java.util.Queue;
 
 public interface ServiceRecoveryRegistry {
 
@@ -18,5 +18,5 @@ public interface ServiceRecoveryRegistry {
 
     void removeRecoverableListener(String serviceName, RecoverableListener recoverableListener);
 
-    List<RecoverableListener> getRecoverableListeners(String serviceName);
+    Queue<RecoverableListener> getRecoverableListeners(String serviceName);
 }
