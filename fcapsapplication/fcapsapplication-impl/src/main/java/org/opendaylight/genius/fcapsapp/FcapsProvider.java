@@ -32,7 +32,7 @@ public class FcapsProvider implements AutoCloseable {
     private final PacketInCounterHandler packetInCounterHandler;
     private final NodeEventListener<FlowCapableNode> nodeEventListener;
 
-    public static final Logger LOG = LoggerFactory.getLogger(FcapsProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FcapsProvider.class);
 
     /**
      * Constructor sets the services.
