@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -77,6 +78,24 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
         if (dataChangeListenerRegistration != null) {
             dataChangeListenerRegistration.close();
         }
+    }
+
+    @Override
+    @Deprecated
+    public void add(@Nonnull T newDataObject) {
+        // TODO: to be removed after all listeners migrated to use the new methods
+    }
+
+    @Override
+    @Deprecated
+    public void remove(@Nonnull T removedDataObject) {
+        // TODO: to be removed after all listeners migrated to use the new methods
+    }
+
+    @Override
+    @Deprecated
+    public void update(@Nonnull T originalDataObject, @Nonnull T updatedDataObject) {
+        // TODO: to be removed after all listeners migrated to use the new methods
     }
 }
 
