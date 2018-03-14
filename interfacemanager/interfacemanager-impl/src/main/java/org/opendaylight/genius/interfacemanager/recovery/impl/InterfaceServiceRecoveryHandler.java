@@ -7,11 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.recovery.impl;
 
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.opendaylight.genius.srm.RecoverableListener;
 import org.opendaylight.genius.srm.ServiceRecoveryInterface;
 import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusIfm;
@@ -32,15 +30,13 @@ public class InterfaceServiceRecoveryHandler implements ServiceRecoveryInterface
     }
 
     private void deregisterListeners() {
-        List<RecoverableListener> recoverableListeners =
-                serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey());
-        recoverableListeners.forEach((recoverableListener -> recoverableListener.deregisterListener()));
+        serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey())
+                .forEach((recoverableListener -> recoverableListener.deregisterListener()));
     }
 
     private void registerListeners() {
-        List<RecoverableListener> recoverableListeners =
-                serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey());
-        recoverableListeners.forEach((recoverableListener -> recoverableListener.registerListener()));
+        serviceRecoveryRegistry.getRecoverableListeners(buildServiceRegistryKey())
+                .forEach((recoverableListener -> recoverableListener.registerListener()));
     }
 
     @Override
