@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class TunnelMonitoringConfig implements AutoCloseable {
-    private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TunnelMonitoringConfig.class);
 
     private static final InstanceIdentifier<TunnelMonitorParams> TUNNEL_MONITOR_PARAMS_PATH =
             InstanceIdentifier.create(TunnelMonitorParams.class);
