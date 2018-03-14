@@ -59,12 +59,12 @@ public class RecoverCommand extends OsgiCommandSupport {
         StringBuilder strResult = new StringBuilder("");
         if (recoverResult.isSuccessful()) {
             strResult.append("RPC call to recover was successful");
-            LOG.trace("RPC Result: ", recoverResult.getResult());
+            LOG.trace("RPC Result: {}", recoverResult.getResult());
         } else {
             strResult.append("RPC Call to recover failed.\n")
                 .append("ErrorCode: ").append(recoverResult.getResult().getResponse().getSimpleName())
                 .append("ErrorMsg: ").append(recoverResult.getResult().getMessage());
-            LOG.trace("RPC Result: ", recoverResult.getResult());
+            LOG.trace("RPC Result: {}", recoverResult.getResult());
         }
         session.getConsole().println(strResult.toString());
     }
