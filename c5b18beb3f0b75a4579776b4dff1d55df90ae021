@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4cfee2d7_a999ed3c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:22:08Z",
+      "side": 1,
+      "message": "can you guys check if *ALL* code in genius uses this binding-parent?",
+      "revId": "c5b18beb3f0b75a4579776b4dff1d55df90ae021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c6f060d_5277ef17",
+        "filename": "commons/binding-parent/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:22:08Z",
+      "side": 1,
+      "message": "I know that this is exactly how it\u0027s done in netvirt, but personally I\u0027m not very comfortable with using another version of odlparent here than the rest of the build, because this means that if one now wanted to build genius entirely from source (e.g. for an in-house downstream build), you would have need to first mvn install two different branches of the odlparent project - which is weird.  In GENIUS-118 I had therefore proposed to re-use how we\u0027ve done it in project infrautils, see https://git.opendaylight.org/gerrit/#/c/69132/5/common/parent/pom.xml, and would therefore suggest you also use org.opendaylight.infrautils:findbugs here instead.",
+      "revId": "c5b18beb3f0b75a4579776b4dff1d55df90ae021",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
