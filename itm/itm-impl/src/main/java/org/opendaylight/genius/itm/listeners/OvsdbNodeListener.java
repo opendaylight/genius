@@ -325,7 +325,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
         }
 
-        LOG.trace("{}", ovsdbTepInfoObj.toString());
+        LOG.trace("ovsdbTepInfo retrived {}", ovsdbTepInfoObj);
         return ovsdbTepInfoObj;
     }
 

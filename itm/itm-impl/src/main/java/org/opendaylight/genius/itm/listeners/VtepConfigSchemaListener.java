@@ -102,7 +102,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
         VtepConfigSchema updatedSchema = ItmUtils.validateVtepConfigSchema(updated);
 
         if (doesDeleteAndAddSchemaRequired(original, updated)) {
-            LOG.error("Failed to handle DCN for updating VTEP schema {}. Original schema: {}. Updated schema: {}",
+            LOG.error("Failed to handle DCN for updating VTEP schema. Original schema: {}. Updated schema: {}",
                       original, updated);
             // TODO: handle updates
             return;
@@ -274,7 +274,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
                         String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp,
                         schema.getTransportZoneName(), null);
             } catch (TepException e) {
-                LOG.error(e.getMessage());
+                LOG.error("tepCommandHelper.createLocalCache() {}", e.getMessage());
             }
             newlyAllocatedIps.add(ipAddress);
         }
@@ -343,7 +343,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
                 tepCommandHelper.deleteVtep(dpnId, vtep.getPortname(), schema.getVlanId(),
                     String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
             } catch (TepException e) {
-                LOG.error(e.getMessage());
+                LOG.error("tepCommandHelper.deleteVtep() {}", e.getMessage());
             }
 
             freeIps.add(ipAddress);
