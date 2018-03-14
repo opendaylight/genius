@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c738fd8c_472cf088",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:10:17Z",
+      "side": 1,
+      "message": "remove getMessage() and {}",
+      "parentUuid": "7282d94d_e008c794",
+      "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "31bc08b3_bca97887",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-14T16:51:14Z",
       "side": 1,
       "message": "show teps failed {}",
+      "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ec64d44_36a23f5f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:10:17Z",
+      "side": 1,
+      "message": "remove getMessage() and {}",
+      "parentUuid": "31bc08b3_bca97887",
       "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "c8cb61a1_07163436",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:10:17Z",
+      "side": 1,
+      "message": "remove getMessage() and {}",
+      "parentUuid": "c654ce11_59172d48",
+      "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dc3003a2_da2b1ce4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2018-03-14T16:51:14Z",
       "side": 1,
       "message": "refer above",
+      "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0f0602c_6d42f92f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:10:17Z",
+      "side": 1,
+      "message": "remove getMessage() and {}",
+      "parentUuid": "dc3003a2_da2b1ce4",
       "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -98,6 +170,41 @@
       "writtenOn": "2018-03-14T16:51:14Z",
       "side": 1,
       "message": "same as the previous ItmProvider comments",
+      "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b98cc48f_c8df4b10",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:10:17Z",
+      "side": 1,
+      "message": "remove getMessage() and {}",
+      "parentUuid": "dc3b5612_f71ea1bd",
+      "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e26c51f7_16792881",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 346,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:10:17Z",
+      "side": 1,
+      "message": "remove getMessage() and {}",
       "revId": "bc23f6afd11c27b7627afffa3b9bd54f21938d21",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
