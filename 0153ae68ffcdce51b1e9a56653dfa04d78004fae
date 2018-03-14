@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f48927ee_139cd68b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:29:16Z",
+      "side": 1,
+      "message": "Is this still an issue now or meanwhile clarified?",
+      "parentUuid": "f9c16944_f624ce40",
+      "range": {
+        "startLine": 47,
+        "startChar": 30,
+        "endLine": 47,
+        "endChar": 53
+      },
+      "revId": "0153ae68ffcdce51b1e9a56653dfa04d78004fae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c41528ee_d405375f",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2018-03-14T04:39:33Z",
       "side": 1,
       "message": "curious, are we gonna use cacheProvider later and this is a placeholder for it ?\nas of now this is the only thing that is using the ref.",
+      "range": {
+        "startLine": 69,
+        "startChar": 8,
+        "endLine": 69,
+        "endChar": 55
+      },
+      "revId": "0153ae68ffcdce51b1e9a56653dfa04d78004fae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6d767e0_bdb5b200",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T19:29:16Z",
+      "side": 1,
+      "message": "Edwin yeah the idea that Tom and I discussed was to soon switch this to using the CacheProvider abstraction instead of directly Guava cache here.  The advantages is that all of these DataObjectCache will then be automatically monitorable via the \"cache:list\" and \"cache:policy \u003ccache-id\u003e statsEnabled true\" CLI (in infrautils). FYI there were 2 pre-reqs that needed to be done first (in infrautils), which Tom recently did and I merged, so this could happen soon now - I think Tom was going to do this.",
+      "parentUuid": "c41528ee_d405375f",
       "range": {
         "startLine": 69,
         "startChar": 8,
