@@ -194,7 +194,7 @@ public class ItmInternalTunnelDeleteWorker {
                 new String(srcTep.getIpAddress().getValue()),
                 new String(dstTep.getIpAddress().getValue()),
                 srcTep.getTunnelType().getName());
-        LOG.trace("Removing forward Trunk Interface " + trunkfwdIfName);
+        LOG.trace("Removing forward Trunk Interface {}" , trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
         LOG.debug(" Removing Trunk Interface Name - {} , Id - {} from Config DS ",
                 trunkfwdIfName, trunkIdentifier) ;

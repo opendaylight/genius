@@ -179,7 +179,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                 tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask,
                         gatewayIp, transportZone, session);
             } catch (TepException e) {
-                LOG.error(e.getMessage());
+                LOG.error("Create Local Cache failed", e);
             }
         } else {
             LOG.trace("tepCommandHelper doesnt exist");
@@ -198,7 +198,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             tepCommandHelper.showTeps(tunnelMonitoringConfig.isTunnelMonitoringEnabled(),
                     tunnelMonitoringConfig.getMonitorInterval(), session);
         } catch (TepException e) {
-            LOG.error(e.getMessage());
+            LOG.error("show teps failed", e);
         }
     }
 
@@ -208,7 +208,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             try {
                 tepCommandHelper.showState(tunnels, tunnelMonitoringConfig.isTunnelMonitoringEnabled(), session);
             } catch (TepException e) {
-                LOG.error(e.getMessage());
+                LOG.error("show state failed", e);
             }
         } else {
             LOG.debug("No tunnels available");
@@ -227,7 +227,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress,
                     subnetMask, gatewayIp, transportZone, session);
         } catch (TepException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Delete Vteps Failed", e);
         }
     }
 
