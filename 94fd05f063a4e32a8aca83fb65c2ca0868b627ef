@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3dc1c051_ec9709f2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:52:47Z",
+      "side": 1,
+      "message": "There is a hole with this cache in that if the DpnsTeps entry doesn\u0027t exist yet in the parent class then the lookup will return null. Also if the parent\u0027s get is called and the entry doesn\u0027t yet exist, it will be read from the DS but this cache will not be updated b/c it relies on the DTCL notification. So there might be discrepancies between this cache and the DpnsTeps cache. To alleviate this, in getDpnTepInterface, if the entry doesn\u0027t exist, you could call super.get(srcDpnId) and populate this cache.",
+      "revId": "94fd05f063a4e32a8aca83fb65c2ca0868b627ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
