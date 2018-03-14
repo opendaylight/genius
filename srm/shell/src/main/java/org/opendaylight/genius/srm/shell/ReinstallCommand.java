@@ -56,11 +56,11 @@ public class ReinstallCommand extends OsgiCommandSupport {
         StringBuilder strResult = new StringBuilder("");
         if (reinstallResult.isSuccessful()) {
             strResult.append("RPC call to reinstall was successful");
-            LOG.trace("RPC Result: ", reinstallResult.getResult());
+            LOG.trace("RPC Result: {}", reinstallResult.getResult());
         } else {
             strResult.append("RPC Call to reinstall failed.\n")
                 .append("ErrorMsg: ").append(reinstallResult.getResult().getMessage());
-            LOG.trace("RPC Result: ", reinstallResult.getResult());
+            LOG.trace("RPC Result: {}", reinstallResult.getResult());
         }
         session.getConsole().println(strResult.toString());
     }
