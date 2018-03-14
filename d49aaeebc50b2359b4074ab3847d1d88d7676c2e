@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a7ac116_ea155cf0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 1397,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-14T18:26:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e5a17ba9_dc508735",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e30c32d5_175b561e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 13
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-14T13:43:09Z",
       "side": 1,
       "message": "The above getInstanceIdentifier method can be called here instead of having the same logic here again.",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "022de1bb_b4db4839",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 1411,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-14T18:26:10Z",
+      "side": 1,
+      "message": "oh yes.",
+      "parentUuid": "e30c32d5_175b561e",
       "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "58613aab_e98c8dde",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-14T18:26:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "680e072b_d9288d13",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "85760808_07c48dfc",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 13
@@ -64,6 +118,24 @@
       "writtenOn": "2018-03-14T13:43:09Z",
       "side": 1,
       "message": "The flag should not be set to true here. It should be inside the ipaddress comparison. Alternatively, instead of the flag you can also check if the DPN Id field is not null to ensure that the tep ip input is a valid one.",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "319f4d83_f0158abb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-14T18:26:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85760808_07c48dfc",
       "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +176,54 @@
       "writtenOn": "2018-03-14T13:43:09Z",
       "side": 1,
       "message": "Instead of encapsulating the while logic in a if loop, check either the flag is false or DPN Id is null, then log and return.",
+      "parentUuid": "b08715db_3f54470a",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 19
+      },
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5bb6b60f_88441556",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-14T18:26:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f93de8f_dc5096fe",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 19
+      },
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d7d8cc0e_58b64498",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-14T18:26:10Z",
+      "side": 1,
+      "message": "Thanks for pointing out that.\nAnd yes I will remove flag :) .",
       "parentUuid": "b08715db_3f54470a",
       "range": {
         "startLine": 166,
