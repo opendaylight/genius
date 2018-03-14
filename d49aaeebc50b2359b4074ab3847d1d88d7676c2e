@@ -2,6 +2,74 @@
   "comments": [
     {
       "key": {
+        "uuid": "e5a17ba9_dc508735",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 1397,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-03-14T13:43:09Z",
+      "side": 1,
+      "message": "The name getInstanceIdentifier seems too generic, can we have something like getTZInstanceIdentifier?",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e30c32d5_175b561e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 1411,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-03-14T13:43:09Z",
+      "side": 1,
+      "message": "The above getInstanceIdentifier method can be called here instead of having the same logic here again.",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "680e072b_d9288d13",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-03-14T13:43:09Z",
+      "side": 1,
+      "message": "Why is this 8? Previously, the CLI arguments were 8 but now its only 2.",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "85760808_07c48dfc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-03-14T13:43:09Z",
+      "side": 1,
+      "message": "The flag should not be set to true here. It should be inside the ipaddress comparison. Alternatively, instead of the flag you can also check if the DPN Id field is not null to ensure that the tep ip input is a valid one.",
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b08715db_3f54470a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 13
@@ -13,6 +81,30 @@
       "writtenOn": "2018-03-14T10:00:52Z",
       "side": 1,
       "message": "can lead to faulty logic. \nhaving a Subnet which doesn\u0027t poplulate any of the fields would set this to true.\nAlso, try avoiding such flags :)",
+      "range": {
+        "startLine": 166,
+        "startChar": 0,
+        "endLine": 169,
+        "endChar": 19
+      },
+      "revId": "d49aaeebc50b2359b4074ab3847d1d88d7676c2e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f93de8f_dc5096fe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-03-14T13:43:09Z",
+      "side": 1,
+      "message": "Instead of encapsulating the while logic in a if loop, check either the flag is false or DPN Id is null, then log and return.",
+      "parentUuid": "b08715db_3f54470a",
       "range": {
         "startLine": 166,
         "startChar": 0,
