@@ -7,11 +7,10 @@
  */
 package org.opendaylight.genius.srm.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.inject.Singleton;
 
 import org.opendaylight.genius.srm.RecoverableListener;
@@ -29,8 +28,8 @@ public class ServiceRecoveryRegistryImpl implements ServiceRecoveryRegistry {
 
     private final Map<String, ServiceRecoveryInterface> serviceRecoveryRegistry = new ConcurrentHashMap<>();
 
-    private final Map<String, List<RecoverableListener>> recoverableListenersMap =
-            new ConcurrentHashMap<String, List<RecoverableListener>>();
+    private final Map<String, Queue<RecoverableListener>> recoverableListenersMap =
+            new ConcurrentHashMap<>();
 
     @Override
     public void registerServiceRecoveryRegistry(String entityName,
@@ -41,13 +40,9 @@ public class ServiceRecoveryRegistryImpl implements ServiceRecoveryRegistry {
 
     @Override
     public synchronized void addRecoverableListener(String serviceName, final RecoverableListener recoverableListener) {
-        List<RecoverableListener> recoverableListeners = recoverableListenersMap.get(serviceName);
-        if (recoverableListeners == null) {
-            recoverableListeners = Collections.synchronizedList(new ArrayList<>());
-            recoverableListenersMap.put(serviceName, recoverableListeners);
-        }
-
-        recoverableListeners.add(recoverableListener);
+        recoverableListenersMap
+                .computeIfAbsent(serviceName, k -> new ConcurrentLinkedQueue<>())
+                .add(recoverableListener);
     }
 
     @Override
@@ -58,7 +53,7 @@ public class ServiceRecoveryRegistryImpl implements ServiceRecoveryRegistry {
     }
 
     @Override
-    public List<RecoverableListener> getRecoverableListeners(String serviceName) {
+    public Queue<RecoverableListener> getRecoverableListeners(String serviceName) {
         return recoverableListenersMap.get(serviceName);
     }
 
