@@ -1275,7 +1275,7 @@ public final class ItmUtils {
                 List<TunnelEndPoints> endPts = dstDpn.getTunnelEndPoints();
                 for (TunnelEndPoints tep : endPts) {
                     if (tep.getIpAddress().equals(srcTep.getIpAddress())) {
-                        LOG.debug("Original Membership size " + tep.getTzMembership().size()) ;
+                        LOG.debug("Original Membership size {}", tep.getTzMembership().size()) ;
                         return tep.getTzMembership();
                     }
                 }
