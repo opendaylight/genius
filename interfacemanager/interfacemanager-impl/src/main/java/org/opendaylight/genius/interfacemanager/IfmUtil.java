@@ -414,7 +414,7 @@ public final class IfmUtil {
             Future<RpcResult<Void>> result = idManager.releaseId(idInput);
             RpcResult<Void> rpcResult = result.get();
             if (!rpcResult.isSuccessful()) {
-                LOG.warn("RPC Call to release Id {} with Key {} returned with Errors {}", idKey, rpcResult.getErrors());
+                LOG.warn("RPC Call to release Id with Key {} returned with Errors {}", idKey, rpcResult.getErrors());
             }
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Exception when releasing Id for key {}", idKey, e);
