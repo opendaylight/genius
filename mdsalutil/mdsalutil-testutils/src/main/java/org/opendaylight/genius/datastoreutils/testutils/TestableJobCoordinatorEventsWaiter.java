@@ -55,7 +55,7 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
                             condition.getValue(), expectedCount))
                     .until(() -> countSupplier.get(), is(expectedCount));
         } catch (ConditionTimeoutException e) {
-            LOG.error("Details about stuck JobCoordinator: " + jobCoordinatorMonitor.toString());
+            LOG.error("Details about stuck JobCoordinator: {}", jobCoordinatorMonitor.toString());
             throw e;
         }
         return true;

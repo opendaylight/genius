@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTestableListener implements AsyncEventsWaiter {
 
     // intentionally logging as interface type instead of implementation, clearer for developers
-    private static final Logger LOG = LoggerFactory.getLogger(AsyncEventsWaiter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractTestableListener.class);
 
     // see http://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html
     private final AtomicInteger numberOfConsumedEvents = new AtomicInteger();
