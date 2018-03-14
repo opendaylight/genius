@@ -81,7 +81,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
 
         if (arpType == ARP.REPLY) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("packet: {}, monitorKey {}", packetReceived);
+                LOG.trace("packet: {}", packetReceived);
             }
 
             BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();

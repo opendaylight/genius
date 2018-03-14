@@ -261,7 +261,7 @@ public class AlivenessMonitor
             Future<RpcResult<Void>> result = idManager.releaseId(idInput);
             RpcResult<Void> rpcResult = result.get();
             if (!rpcResult.isSuccessful()) {
-                LOG.warn("RPC Call to release Id {} with Key {} returned with Errors {}", idKey, rpcResult.getErrors());
+                LOG.warn("RPC Call to release Id {} returned with Errors {}", idKey, rpcResult.getErrors());
             }
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Exception when releasing Id for key {}", idKey, e);
@@ -499,7 +499,8 @@ public class AlivenessMonitor
                 String message = String.format(
                         "Monitoring for the interface %s with this configuration " + "is already registered.",
                         interfaceName);
-                LOG.warn(message);
+                LOG.warn("Monitoring for the interface {} with this configuration is already registered.",
+                        interfaceName);
                 MonitorStartOutput output = new MonitorStartOutputBuilder().setMonitorId(monitorId).build();
                 rpcResultBuilder = RpcResultBuilder.success(output).withWarning(ErrorType.APPLICATION, "config-exists",
                         message);
@@ -539,7 +540,7 @@ public class AlivenessMonitor
                     public void onFailure(Throwable error) {
                         String errorMsg = String.format("Adding Monitoring info: %s in Datastore failed",
                                 monitoringInfo);
-                        LOG.warn(errorMsg, error);
+                        LOG.warn("Adding Monitoring info: {} in Datastore failed", monitoringInfo, error);
                         throw new RuntimeException(errorMsg, error);
                     }
 
@@ -563,7 +564,7 @@ public class AlivenessMonitor
 
             rpcResultBuilder = RpcResultBuilder.success(output);
         } catch (UnsupportedConfigException e) {
-            LOG.error("Start Monitoring Failed. {}", e.getMessage(), e);
+            LOG.error("Start Monitoring Failed. ", e);
             rpcResultBuilder = RpcResultBuilder.<MonitorStartOutput>failed().withError(ErrorType.APPLICATION,
                     e.getMessage(), e);
         }
@@ -923,7 +924,7 @@ public class AlivenessMonitor
                             public void onFailure(Throwable error) {
                                 String msg = String.format("Error when storing monitorprofile %s in datastore",
                                         monitorProfile);
-                                LOG.error(msg, error);
+                                LOG.error("Error when storing monitorprofile {} in datastore", monitorProfile, error);
                                 returnFuture.set(RpcResultBuilder.<MonitorProfileCreateOutput>failed()
                                         .withError(ErrorType.APPLICATION, msg, error).build());
                             }
@@ -946,7 +947,7 @@ public class AlivenessMonitor
                 String msg = String.format("Error in creating monitorprofile - %s", input);
                 returnFuture.set(RpcResultBuilder.<MonitorProfileCreateOutput>failed()
                         .withError(ErrorType.APPLICATION, msg, error).build());
-                LOG.error(msg, error);
+                LOG.error("Error in creating monitorprofile - {} ", input, error);
             }
 
             @Override
@@ -1006,7 +1007,7 @@ public class AlivenessMonitor
                         public void onFailure(Throwable error) {
                             String msg = String.format("Error when removing monitor profile %d from datastore",
                                     profileId);
-                            LOG.error(msg, error);
+                            LOG.error("Error when removing monitor profile {} from datastore", profileId, error);
                             result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error)
                                     .build());
                         }
@@ -1035,7 +1036,7 @@ public class AlivenessMonitor
             @Override
             public void onFailure(Throwable error) {
                 String msg = String.format("Error when removing monitor profile %d from datastore", profileId);
-                LOG.error(msg, error);
+                LOG.error("Error when removing monitor profile {} from datastore", profileId, error);
                 result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error).build());
             }
 
