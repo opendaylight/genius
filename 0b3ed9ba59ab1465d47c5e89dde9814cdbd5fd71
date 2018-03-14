@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3464f321_d2295d1d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsKeyedCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-14T04:43:03Z",
+      "side": 1,
+      "message": "this would not work as \nload(K key) in cache builder expects an instanceIdentifier.\nwhich is dictated by LoadingCache\u003cK, V\u003e\nbut we want to have a loadingCache of the type \n\u003cBigInt, dataObj\u003e",
+      "range": {
+        "startLine": 24,
+        "startChar": 46,
+        "endLine": 24,
+        "endChar": 56
+      },
+      "revId": "0b3ed9ba59ab1465d47c5e89dde9814cdbd5fd71",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
