@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bdf9e782_4ad9488c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "this is a fixed constant, so you would typically make this static, and put it above the DataBroker after the LOG (with whitespace lines)",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2c2b5e03_70bd1d10",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "final x2",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fbbf0276_b2738037",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "Edwin, if you don\u0027t mind I would like to share with you a perhaps more general code design feedback, upon seeing this class: \n\nIt\u0027s normally considered much better design to not write C like code with static methods taking a ton of arguments, like this one here, but think about which of these arguments are \"dependent services\" (stuff you need to do the work in this method; like DataBroker, IdManagerService, IMdsalApiManager) -VS- the \"real\" arguments this method needs (InstanceIdentifier, String etc.).  You should keep the former as (final) fields, with a @Inject constructor, and then @Inejct this @Singleton where oyu need it.  I suspect you may think that is overhead ;) but it does make code like this a bit simpler and more harmonious with how we generally (should.. :) write code everywhere.\n\nYou would then typically also make something like the ManagedNewTransactionRunner a field of the class, instead of new it in the method (and assign it in the constructor).\n\nThe other question of course is if we need such a class at all, or instead want to put this single method into some other existing class (which should also be designed as suggested above) - I\u0027ll have to leave that up to you.",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6eb0bf88_82650c2a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "there should be no empty TODO methods in changes proposed for merge.  If this is WIP, then what you should do is self -1 it to signal that you don\u0027t want us to review it, just yet.",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f42a6101_96225ebe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "final x2 ?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be2182c7_94ea904f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "should this be trace or error ?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f61e9ab_38236024",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "perhaps put this inside the catch, tiny bit clearer to read?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd68f884_a2920228",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "put this return into an else, would make it a tiny bit clearer to read?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96f7a2c6_546b94a8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T13:19:54Z",
+      "side": 1,
+      "message": "should this throw an Exception instead of return null?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
