@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bceeadcd_69bb25a9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-03-14T10:07:14Z",
+      "side": 1,
+      "message": "Woulnd\u0027t be better to use https://git.opendaylight.org/gerrit/#/c/69390/",
+      "range": {
+        "startLine": 294,
+        "startChar": 16,
+        "endLine": 310,
+        "endChar": 36
+      },
+      "revId": "673a1dc3a4e0452b212c82396ea623c82f0322fb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
