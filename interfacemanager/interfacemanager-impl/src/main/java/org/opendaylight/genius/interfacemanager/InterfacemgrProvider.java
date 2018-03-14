@@ -412,7 +412,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         Interface interfaceOptional = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(new InterfaceKey(interfaceName));
         if (interfaceOptional != null) {
-            LOG.debug("VLAN interface is already exist", interfaceOptional.getDescription());
+            LOG.debug("VLAN interface is already exist {} ", interfaceOptional.getDescription());
             throw new InterfaceAlreadyExistsException(interfaceOptional.getName());
         }
         IfL2vlanBuilder l2vlanBuilder = new IfL2vlanBuilder().setL2vlanMode(l2vlanMode);
@@ -688,7 +688,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             node = SingleTransactionDataBroker.syncRead(
                                         dataBroker, LogicalDatastoreType.OPERATIONAL, nodeIid);
         } catch (ReadFailedException e) {
-            LOG.error("Failed to read Node for " + nodeIid, e);
+            LOG.error("Failed to read Node for {} ", nodeIid, e);
             return null;
         }
 

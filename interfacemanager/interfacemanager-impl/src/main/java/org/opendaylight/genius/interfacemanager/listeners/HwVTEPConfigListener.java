@@ -80,7 +80,8 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
             ParentRefs parentRefs = originalInterface.getAugmentation(ParentRefs.class);
             if (parentRefs != null && parentRefs.getNodeIdentifier() != null) {
                 LOG.debug("Received HwVTEP Interface Update Event: {}", originalInterface.getName());
-                LOG.trace("Received HwVTEP Interface Update Event: {}", updatedInterface, originalInterface);
+                LOG.trace("Received HwVTEP Interface Update Event: updatedInterface: {}, OriginalInterface: {}",
+                        updatedInterface, originalInterface);
                 for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(originalInterface.getName(), () -> HwVTEPInterfaceConfigUpdateHelper
