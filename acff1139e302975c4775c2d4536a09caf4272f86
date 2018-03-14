@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "3f48ff12_d7e84f30",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:20:43Z",
+      "side": 1,
+      "message": "How about return Optional\u003cDPNTEPsInfo\u003e?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bdf9e782_4ad9488c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsStateCache.java",
         "patchSetId": 3
@@ -53,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "50e0dc9e_91e48ab4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:20:43Z",
+      "side": 1,
+      "message": "well said. The latter is what I mentioned in an earlier comment, ie \"to avoid dumping code into static Utils classes just for the sake of it. These really should be for code that is general and reusable. If a method has only one caller then co-locate it privately with the caller. If you later find you need it elsewhere, then move it somewhere common for reuse.\". \n\nThat said, there\u0027s also the pattern of spitting code into smaller, modular classes. However, the potential problem with having too many of such small singleton helpers/utils is that the dependency graph gets unwieldy and hard to understand and can lead to circular dependencies. I\u0027ve been thru this in netvirt - trying to break circular dependencies and simplify the spaghetti mess. In doing that, in some cases, I eliminated helpers/utils and/or in-lined code with the lone caller.\n\nIn looking at the user of this class, DpnsTepsStateCache, it basically comes down to whether or not we want to inject all these dependencies into DpnsTepsStateCache... I think it might be better to keep DpnsTepsStateCache clean of all these dependencies. Therefore, make this a singleton and inject into DpnsTepsStateCache.",
+      "parentUuid": "fbbf0276_b2738037",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6eb0bf88_82650c2a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
         "patchSetId": 3
@@ -81,6 +116,24 @@
       "writtenOn": "2018-03-14T13:19:54Z",
       "side": 1,
       "message": "final x2 ?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "52015165_f8232ebb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:20:43Z",
+      "side": 1,
+      "message": "These 2 maps aren\u0027t really used in this class, ie it\u0027s just a holder with accessors. Therefore I think these should really be in separate classes and injected into the users.",
+      "parentUuid": "f42a6101_96225ebe",
       "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -138,6 +191,29 @@
     },
     {
       "key": {
+        "uuid": "eb94dbf6_3c2c0ed4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:20:43Z",
+      "side": 1,
+      "message": "inject this or perhaps this method should be on DpnsTepsStateCache.",
+      "range": {
+        "startLine": 128,
+        "startChar": 93,
+        "endLine": 128,
+        "endChar": 111
+      },
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "96f7a2c6_546b94a8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 3
@@ -149,6 +225,52 @@
       "writtenOn": "2018-03-14T13:19:54Z",
       "side": 1,
       "message": "should this throw an Exception instead of return null?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d24e5b87_afcb5f3c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/TunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:20:43Z",
+      "side": 1,
+      "message": "Perhaps this method should be in DpnsTepsStateCache.",
+      "range": {
+        "startLine": 42,
+        "startChar": 60,
+        "endLine": 42,
+        "endChar": 78
+      },
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4c2ae8d_a5f05fdf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/TunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-14T14:20:43Z",
+      "side": 1,
+      "message": "Perhaps this method should be in TunnelStateCache",
+      "range": {
+        "startLine": 58,
+        "startChar": 34,
+        "endLine": 58,
+        "endChar": 60
+      },
       "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
