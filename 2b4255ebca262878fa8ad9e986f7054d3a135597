@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "30a90414_91f6277c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-14T11:20:39Z",
+      "side": 1,
+      "message": "how about this one?",
+      "revId": "2b4255ebca262878fa8ad9e986f7054d3a135597",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
