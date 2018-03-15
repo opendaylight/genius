@@ -16,6 +16,24 @@
       "revId": "94fd05f063a4e32a8aca83fb65c2ca0868b627ef",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff190b5b_3c13eeb2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-15T07:15:03Z",
+      "side": 1,
+      "message": "HI tom, \nhave incorporated the changes, \nplease have a look.\n@michael",
+      "parentUuid": "3dc1c051_ec9709f2",
+      "revId": "94fd05f063a4e32a8aca83fb65c2ca0868b627ef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
