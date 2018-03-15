@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d4c5bc4_2b20813b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 1400,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-15T05:26:08Z",
+      "side": 1,
+      "message": "now that I noticed, there is only a single call to this. \nit makes sense to keep this as a method only if it\u0027s being used frequently, otherwise call directly :)\nalso yeah, such getters are usually private, intelliJ would tell you that.",
+      "range": {
+        "startLine": 1397,
+        "startChar": 0,
+        "endLine": 1400,
+        "endChar": 5
+      },
+      "revId": "ed9219e58a34eec2308f92477c0c1fad7113c493",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "18ec1f37_c83be3f1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-15T05:26:08Z",
+      "side": 1,
+      "message": "tepsToRecover will never be empty, \nplease make sure you don\u0027t populate it with null and check \n.isEmpty().\nhttps://stackoverflow.com/questions/27107072/adding-null-values-to-arraylist",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 109,
+        "endChar": 9
+      },
+      "revId": "ed9219e58a34eec2308f92477c0c1fad7113c493",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aa1ee8b8_c54df925",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-15T05:26:08Z",
+      "side": 1,
+      "message": "if we are checking for dpnID, might as well ditch the flag altogether ? \nnot a fan of booleans being used like this.",
+      "range": {
+        "startLine": 169,
+        "startChar": 8,
+        "endLine": 172,
+        "endChar": 9
+      },
+      "revId": "ed9219e58a34eec2308f92477c0c1fad7113c493",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
