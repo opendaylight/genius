@@ -16,6 +16,24 @@
       "revId": "3c2529a75746cd52c0b7d0f093afd1629620b084",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "140f790a_f38474ee",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T06:18:02Z",
+      "side": 1,
+      "message": "one is debug and one is trace, it is kept like that purposefully..We want detailed log only in trace",
+      "parentUuid": "88f4192b_3d4f6cca",
+      "revId": "3c2529a75746cd52c0b7d0f093afd1629620b084",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
