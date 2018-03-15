@@ -15,9 +15,9 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
-import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListener;
-import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -87,7 +87,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
         bind(AbstractTestableListener.class).to(TestableDataTreeChangeListener.class);
-        bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
+        bind(JobCoordinatorCountedEventsWaiter.class).to(TestableJobCoordinatorCountedEventsWaiter.class);
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
