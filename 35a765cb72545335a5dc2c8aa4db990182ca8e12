@@ -46,6 +46,54 @@
       "revId": "35a765cb72545335a5dc2c8aa4db990182ca8e12",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2cd23f65_7e4f3f6c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-15T10:19:12Z",
+      "side": 1,
+      "message": "Done. yes junits I will write for SRM.",
+      "parentUuid": "fa8d9e91_9817d50d",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 78
+      },
+      "revId": "35a765cb72545335a5dc2c8aa4db990182ca8e12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b62f6a7e_1e9c68ce",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-03-15T10:19:12Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be074696_8387c6c3",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 78
+      },
+      "revId": "35a765cb72545335a5dc2c8aa4db990182ca8e12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
