@@ -83,6 +83,18 @@ public final class InterfaceMetaUtils {
         return bridgeRefEntryInstanceIdentifierBuilder.build();
     }
 
+    public BridgeRefEntry getBridgeRefEntryFromOperationalDS(BigInteger dpId) {
+        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
+        InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
+                .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
+        BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
+                bridgeRefEntryIid, dataBroker).orNull();
+        if (bridgeRefEntry != null) {
+            addBridgeRefEntryToCache(dpId, bridgeRefEntry);
+        }
+        return bridgeRefEntry;
+    }
+
     public BridgeRefEntry getBridgeRefEntryFromOperDS(BigInteger dpId) {
         BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromCache(dpId);
         if (bridgeRefEntry != null) {
