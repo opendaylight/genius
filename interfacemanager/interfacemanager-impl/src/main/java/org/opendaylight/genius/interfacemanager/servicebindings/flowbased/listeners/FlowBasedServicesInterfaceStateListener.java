@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,17 +8,16 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -44,8 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class FlowBasedServicesInterfaceStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, FlowBasedServicesInterfaceStateListener>
+public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSyncDataTreeChangeListener<Interface>
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesInterfaceStateListener.class);
@@ -56,75 +54,67 @@ public class FlowBasedServicesInterfaceStateListener
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
-    public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
-                                                   final EntityOwnershipUtils entityOwnershipUtils,
-                                                   final JobCoordinator coordinator,
-                                                   final FlowBasedServicesStateRendererFactoryResolver
+    public FlowBasedServicesInterfaceStateListener(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
+                                                   JobCoordinator coordinator,
+                                                   FlowBasedServicesStateRendererFactoryResolver
                                                                flowBasedServicesStateRendererFactoryResolver,
-                                                   final InterfaceServiceRecoveryHandler
-                                                               interfaceServiceRecoveryHandler,
-                                                   final ServiceRecoveryRegistry serviceRecoveryRegistry) {
-        super(Interface.class, FlowBasedServicesInterfaceStateListener.class);
+                                                   InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
+                                                   ServiceRecoveryRegistry serviceRecoveryRegistry) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+              InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
-        registerListener();
-        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
-                this);
+        serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(), this);
     }
 
     @Override
     public void registerListener() {
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        super.register();
     }
 
     @Override
-    protected InstanceIdentifier<Interface> getWildCardPath() {
-        return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
+    public void deregisterListener() {
+        close();
     }
 
     @Override
-    protected void remove(final InstanceIdentifier<Interface> key, final Interface interfaceStateOld) {
-        if (Other.class.equals(interfaceStateOld.getType())
-                || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
-                        IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
+    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
+        if (Other.class.equals(removedInterface.getType()) || !entityOwnershipUtils
+                .isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                               IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 
-        LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
+        LOG.debug("Received interface state remove event for {}", removedInterface.getName());
         // Unbind Default Egress Dispatcher Service when interface-state is removed.
-        coordinator.enqueueJob(interfaceStateOld.getName(),
-                new RendererStateInterfaceUnbindWorker(coordinator, dataBroker, interfaceStateOld),
-                IfmConstants.JOB_MAX_RETRIES);
+        coordinator.enqueueJob(removedInterface.getName(),
+                               new RendererStateInterfaceUnbindWorker(coordinator, dataBroker, removedInterface),
+                               IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld,
-                          Interface interfaceStateNew) {
+    public void update(@Nonnull InstanceIdentifier<Interface> interfaceInstanceIdentifier,
+                       @Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
         // Do nothing
     }
 
     @Override
-    protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
-        if (interfaceStateNew.getType() == null
-            || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
-                    IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
+    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface interfaceStateNew) {
+        if (interfaceStateNew.getType() == null || !entityOwnershipUtils
+                .isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
+                               IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
         }
 
         LOG.debug("Received interface state add event for {}", interfaceStateNew.getName());
-        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator.enqueueJob(
-                interfaceStateNew.getName(),
-                new RendererStateInterfaceBindWorker(flowBasedServicesStateRendererFactoryResolver
-                        .getFlowBasedServicesStateRendererFactory(serviceMode).getFlowBasedServicesStateAddRenderer(),
-                        interfaceStateNew, serviceMode),
-                IfmConstants.JOB_MAX_RETRIES));
-    }
-
-    @Override
-    protected FlowBasedServicesInterfaceStateListener getDataTreeChangeListener() {
-        return FlowBasedServicesInterfaceStateListener.this;
+        FlowBasedServicesUtils.SERVICE_MODE_MAP.values().stream().forEach(serviceMode -> coordinator
+                .enqueueJob(interfaceStateNew.getName(), new RendererStateInterfaceBindWorker(
+                                    flowBasedServicesStateRendererFactoryResolver
+                                            .getFlowBasedServicesStateRendererFactory(serviceMode)
+                                            .getFlowBasedServicesStateAddRenderer(), interfaceStateNew, serviceMode),
+                            IfmConstants.JOB_MAX_RETRIES));
     }
 
     private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
@@ -132,8 +122,8 @@ public class FlowBasedServicesInterfaceStateListener
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
         Class<? extends ServiceModeBase> serviceMode;
 
-        RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable,
-                                         Interface iface, Class<? extends ServiceModeBase> serviceMode) {
+        RendererStateInterfaceBindWorker(FlowBasedServicesStateAddable flowBasedServicesStateAddable, Interface iface,
+                                         Class<? extends ServiceModeBase> serviceMode) {
             this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
             this.iface = iface;
             this.serviceMode = serviceMode;
@@ -141,8 +131,8 @@ public class FlowBasedServicesInterfaceStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
-                serviceMode, dataBroker);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils
+                    .getServicesInfoForInterface(iface.getName(), serviceMode, dataBroker);
             if (servicesInfo == null) {
                 LOG.trace("service info is null for interface {}", iface.getName());
                 return null;
@@ -155,8 +145,8 @@ public class FlowBasedServicesInterfaceStateListener
             }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
             // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(),
-                FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
+            FlowBasedServicesUtils.addBoundServicesState(futures, dataBroker, iface.getName(), FlowBasedServicesUtils
+                    .buildBoundServicesState(iface, serviceMode));
             flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
             return futures;
         }
@@ -178,8 +168,8 @@ public class FlowBasedServicesInterfaceStateListener
         @Override
         public List<ListenableFuture<Void>> call() {
             LOG.debug("unbinding services on interface {}", iface.getName());
-            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
-                    ServiceModeEgress.class, this.dataBroker);
+            ServicesInfo servicesInfo = FlowBasedServicesUtils
+                    .getServicesInfoForInterface(iface.getName(), ServiceModeEgress.class, this.dataBroker);
             if (servicesInfo == null) {
                 LOG.trace("service info is null for interface {}", iface.getName());
                 return Collections.emptyList();
@@ -194,7 +184,7 @@ public class FlowBasedServicesInterfaceStateListener
             if (L2vlan.class.equals(iface.getType())) {
                 // remove the default egress service bound on the interface
                 IfmUtil.unbindService(txRunner, coordinator, iface.getName(),
-                        FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
+                                      FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
             }
             return Collections.emptyList();
         }
