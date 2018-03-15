@@ -136,26 +136,7 @@ public class OvsdbSouthboundTestUtil {
         tx.submit().checkedGet();
     }
 
-    public boolean deleteBridge(final ConnectionInfo connectionInfo, final String bridgeName) {
-        return deleteBridge(connectionInfo, bridgeName, OVSDB_UPDATE_TIMEOUT);
-    }
-
-    public boolean deleteBridge(final ConnectionInfo connectionInfo, final String bridgeName, long timeout) {
-        boolean result = true;
-        // mdsalUtils.delete(LogicalDatastoreType.CONFIGURATION,
-        // createInstanceIdentifier(connectionInfo, new
-        // OvsdbBridgeName(bridgeName)));
-        if (timeout != 0) {
-            try {
-                Thread.sleep(timeout);
-            } catch (InterruptedException e) {
-                LOG.warn("Interrupted while waiting after deleting bridge {}", bridgeName, e);
-            }
-        }
-        return result;
-    }
-
-    public static void deleteBridge(DataBroker dataBroker) {
+    public static void deleteBridge(DataBroker dataBroker) throws TransactionCommitFailedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid = createInstanceIdentifier("192.168.56.101", 6640, ovsdbBridgeName);
         final InstanceIdentifier<OvsdbBridgeAugmentation> ovsdbBridgeIid = bridgeIid.builder()
@@ -163,8 +144,7 @@ public class OvsdbSouthboundTestUtil {
         LOG.debug("Built with the intent to delete bridge data {}", bridgeIid.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid);
-        tx.submit();
-
+        tx.submit().checkedGet();
     }
 
     public static InstanceIdentifier<Node> createInstanceIdentifier(NodeId nodeId) {
