@@ -48,7 +48,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         try {
-            this.alarmAgent = new JMXAlarmAgent();
+            alarmAgent = new JMXAlarmAgent();
+            alarmAgent.registerMbean();
         } catch (JMException e) {
             LOG.error("Can not initialize the Alarm agent", e);
         }
