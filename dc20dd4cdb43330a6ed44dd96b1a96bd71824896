@@ -22,6 +22,30 @@
       "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01350279_12f798fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T11:30:56Z",
+      "side": 1,
+      "message": "I think we don\u0027t want to clean-up whole ITM as part of this patch.. We will take it up as part of any clean-up activity.. Please review other things and put +1 if things look okay",
+      "parentUuid": "8ba228a3_ef74e5a9",
+      "range": {
+        "startLine": 343,
+        "startChar": 8,
+        "endLine": 345,
+        "endChar": 33
+      },
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
