@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -14,11 +15,15 @@ import com.mycila.guice.ext.closeable.CloseableModule;
 import com.mycila.guice.ext.jsr250.Jsr250Module;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
+
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
+import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -37,10 +42,12 @@ public class TestableJobCoordinatorEventsWaiterTest {
     private static class TestCallable implements Callable<List<ListenableFuture<Void>>> {
 
         boolean wasCalled = false;
+        AtomicInteger invocationCount = new AtomicInteger();
 
         @Override
         public List<ListenableFuture<Void>> call() {
             wasCalled = true;
+            invocationCount.incrementAndGet();
             return null;
         }
     }
@@ -57,6 +64,8 @@ public class TestableJobCoordinatorEventsWaiterTest {
 
     @Inject JobCoordinator jobCoordinator;
     @Inject TestableJobCoordinatorEventsWaiter jobCoordinatorEventsWaiter;
+    @Inject
+    TestableJobCoordinatorCountedEventsWaiter jobCoordinatorCountedEventsWaiter;
 
     @Test
     public void testInfrautilsJobCoordinatorUsingTestableJobCoordinatorEventsWaiter() {
@@ -64,5 +73,16 @@ public class TestableJobCoordinatorEventsWaiterTest {
         jobCoordinator.enqueueJob(getClass().getName().toString(), testCallable);
         jobCoordinatorEventsWaiter.awaitEventsConsumption();
         assertTrue(testCallable.wasCalled);
+    }
+
+    @Test
+    public void testInfrautilsJobCoordinatorUsingTestableJobCoordinatorCountedEventsWaiter() {
+        // Enqueue 3 jobs parallelly, and check if awaitEventsConsumption(jobCount) works as expected.
+        TestCallable testCallable = new TestCallable();
+        jobCoordinator.enqueueJob("key1", testCallable);
+        jobCoordinator.enqueueJob("key2", testCallable);
+        jobCoordinator.enqueueJob("key3", testCallable);
+        jobCoordinatorCountedEventsWaiter.awaitJobsConsumption(3);
+        Assert.assertEquals(3, testCallable.invocationCount.get());
     }
 }
