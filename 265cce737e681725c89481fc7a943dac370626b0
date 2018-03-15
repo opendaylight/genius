@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "984d3e3f_bd3e0b4b",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T17:51:40Z",
+      "side": 1,
+      "message": "have you tried running this test x100 times ;) over night to see if it\u0027s not flaky now?",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "32868eb8_aa24feb8",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T17:51:40Z",
+      "side": 1,
+      "message": "why do we actually even need this?  The data store is (should be...) fresh for each @Test, so to delete some thing @After each @Test should not be required.",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc536827_d894d370",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T17:51:40Z",
+      "side": 1,
+      "message": "I was about to say that this is the same as the TestIMdsalApiManager\u0027s assertFlowsInAnyOrder(), but then realized it\u0027s not quite... that is for FlowEntity which were installed into the IMdsalApiManager, whereas this is for Flow you read from the data store to compare?  Then how about make a separate small test utility class for that?  Create a new class named perhaps something like FlowExpecter (?) or just FlowAssert, put it right next to the TestIMdsalApiManager, and have an assertEqualFlows() method there?  (You could even alternatively also let it take a DataBroker in the constructor and let the actual be the IID of the Flow to check...)",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9301c252_f5e03484",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T17:51:40Z",
+      "side": 1,
+      "message": "as discussed on IRC, doing it like this has pros (the expected cleared job count is \"difference\" in the tests, so an additional job created somewhere means you have to change only 1 number) \u0026 cons (it\u0027s now \"stateful\" and if you do x2 awaitJobsConsumption(1) it\u0027s changes the state of this.  \n\nWhich ever way you end up deciding is the best, we should probably more clearly document on the JavaDoc of JobCoordinatorEventsWaiter what exactly that new clearedJobCount argument now means.\n\nYou were also thinking of another problem which I have not understood yet: \"when there are jobs being enqueued, then the curClearedTaskCount value will go wrong\".",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d5068f7_01f9af27",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T17:51:40Z",
+      "side": 1,
+      "message": "we really should cover this new awaitJobsConsumption variant (however we end up doing it) in the TestableJobCoordinatorEventsWaiterTest - do you want to add that to this change, or in a new one?",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
