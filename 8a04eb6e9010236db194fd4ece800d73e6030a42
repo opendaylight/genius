@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5e4b6187_597f5bd5",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/globals/InterfaceInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T10:59:31Z",
+      "side": 1,
+      "message": "there are even other values for Interface.Operstatus. Throwing exception might impact any usecases?? Not so sure.",
+      "revId": "8a04eb6e9010236db194fd4ece800d73e6030a42",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
