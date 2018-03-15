@@ -46,6 +46,91 @@
       "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d654db82_cedb8fda",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T11:34:56Z",
+      "side": 1,
+      "message": "log exception as well?",
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a44badbc_7d5bff07",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T11:34:56Z",
+      "side": 1,
+      "message": "meaningful log?",
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee85e799_c70cefb6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T11:34:56Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "efb03a37_8f324f92",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T11:34:56Z",
+      "side": 1,
+      "message": "can you make the log a more meaningful?",
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7c8aa6ec_9d993df7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T11:34:56Z",
+      "side": 1,
+      "message": "log exception",
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
