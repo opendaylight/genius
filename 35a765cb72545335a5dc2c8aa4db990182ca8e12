@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "be074696_8387c6c3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-15T07:39:23Z",
+      "side": 1,
+      "message": "replace with \nif (extractDPNTepsInfo(entityId) \u003d\u003d null) {\nreturn\n} else {\n    tepsToRecover.add(.....\n    ........\n}",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 78
+      },
+      "revId": "35a765cb72545335a5dc2c8aa4db990182ca8e12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
