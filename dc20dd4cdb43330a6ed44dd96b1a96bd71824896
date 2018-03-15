@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8ba228a3_ef74e5a9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-15T10:28:46Z",
+      "side": 1,
+      "message": "can be replaced by one line\nreturn Pattern.compile(PTRN).matcher(ip).matches();",
+      "range": {
+        "startLine": 343,
+        "startChar": 8,
+        "endLine": 345,
+        "endChar": 33
+      },
+      "revId": "dc20dd4cdb43330a6ed44dd96b1a96bd71824896",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
