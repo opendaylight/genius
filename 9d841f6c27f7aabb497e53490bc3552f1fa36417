@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "acaec664_7972b0a8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T06:00:15Z",
+      "side": 1,
+      "message": "Stephen, let me know if I can amend the current patch by adding this part : https://git.opendaylight.org/gerrit/#/c/66607/1/interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+      "revId": "9d841f6c27f7aabb497e53490bc3552f1fa36417",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
