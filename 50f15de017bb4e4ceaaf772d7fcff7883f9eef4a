@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "8e3858c5_3c3e33b6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T23:59:45Z",
+      "side": 1,
+      "message": "Done - I suspect you meant like this? Note if without ! and else.",
+      "parentUuid": "67076492_f3b571f5",
+      "range": {
+        "startLine": 93,
+        "startChar": 8,
+        "endLine": 94,
+        "endChar": 24
+      },
+      "revId": "50f15de017bb4e4ceaaf772d7fcff7883f9eef4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dbaad10d_a9c3a0d5",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 4
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "c7513c6a_eb075293",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T23:59:45Z",
+      "side": 1,
+      "message": "Done, but I actually tend to think about this quite differently: if the object is closed it\u0027s a clear lifecycle bug in the bug, which is what an unchecked exception is for; so to be throwing a ReadFailedException is actually really wrong here.  Having said that, I prefer this to get a +1 and go in with what to me doesn\u0027t seem quite right rather than insist and it not going in, so happy to adapt it anyway.",
+      "parentUuid": "dbaad10d_a9c3a0d5",
+      "revId": "50f15de017bb4e4ceaaf772d7fcff7883f9eef4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a635496_2bd88616",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 4
@@ -53,6 +95,24 @@
       "writtenOn": "2018-03-14T20:16:59Z",
       "side": 1,
       "message": "This method doesn\u0027t declare any exception thrown. Do we really need to be pedantic and throw an exception? If it\u0027s closed then it will just return no data. I understand that may have side effects but I think throwing an unchecked ex will have worse side effects.",
+      "revId": "50f15de017bb4e4ceaaf772d7fcff7883f9eef4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5b784b40_c8a0ef7f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-15T23:59:45Z",
+      "side": 1,
+      "message": "Done, but again similar to above doesn\u0027t seem quite right, to me.",
+      "parentUuid": "5a635496_2bd88616",
       "revId": "50f15de017bb4e4ceaaf772d7fcff7883f9eef4a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
