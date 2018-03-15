@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "10197f6a_58beccaa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-15T03:03:37Z",
+      "side": 1,
+      "message": "Glad to make you happy. Wanted to do this the correct way and this was perfect for the use case here.",
+      "parentUuid": "d6150f4a_b42b4d64",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "eb0ede46_862ab82f",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-14T09:45:36Z",
       "side": 1,
       "message": "FYI the statsEnabled(true) will theoretically have a very small performance overhead, according to Guice documentation.  But I suspect that in the overall scheme of things of everything we are doing in ODL it is absolutely irrelevant though, so I don\u0027t mind and will +1 not -1 because of this anyway.  Just so you know though, and as an FYI may be for future perhaps more performance critical code paths, my original idea wasn\u0027t that  one would enable stats via this in the code when setting up the Cache, but that one would do this via the CLI (via \"cache:policy ovsVersionCache statsEnabled true\") e.g. in lab tests, when needed.",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e65aa147_d5b2c9c3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-15T03:03:37Z",
+      "side": 1,
+      "message": "Perfect, I had enabled it for my testing, if CLI is there that works out better. Removed it now.",
+      "parentUuid": "eb0ede46_862ab82f",
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
