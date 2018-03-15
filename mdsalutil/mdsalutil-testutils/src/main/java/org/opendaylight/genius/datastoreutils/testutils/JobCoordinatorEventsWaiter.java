@@ -21,5 +21,4 @@ public interface JobCoordinatorEventsWaiter extends AsyncEventsWaiter {
      * @throws ConditionTimeoutException if timed out while waiting
      */
     boolean awaitJobsConsumption(long clearedJobCount) throws ConditionTimeoutException;
-
 }

@@ -11,6 +11,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.is;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,6 +28,8 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     private final JobCoordinatorMonitor jobCoordinatorMonitor;
 
+    private final AtomicLong currentClearedTaskCount = new AtomicLong(0L);
+
     @Inject
     public TestableJobCoordinatorEventsWaiter(JobCoordinatorMonitor jobCoordinatorMonitor) {
         this.jobCoordinatorMonitor = jobCoordinatorMonitor;
@@ -39,7 +42,8 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     @Override
     public boolean awaitJobsConsumption(long clearedJobCount) throws ConditionTimeoutException {
-        return awaitJobsConsumption(() -> jobCoordinatorMonitor.getClearedTaskCount(), clearedJobCount);
+        return awaitJobsConsumption(() -> jobCoordinatorMonitor.getClearedTaskCount(),
+                buildCumulativeJobCount(clearedJobCount));
     }
 
     private boolean awaitJobsConsumption(Supplier<Long> countSupplier, long expectedCount)
@@ -63,5 +67,10 @@ public class TestableJobCoordinatorEventsWaiter implements JobCoordinatorEventsW
 
     @Override
     public void close() throws Exception {
+    }
+
+
+    private long buildCumulativeJobCount(long expectedJobCount) {
+        return currentClearedTaskCount.addAndGet(expectedJobCount);
     }
 }
