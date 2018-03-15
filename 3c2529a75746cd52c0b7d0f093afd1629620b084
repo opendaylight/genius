@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "88f4192b_3d4f6cca",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/HwVTEPConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-03-15T06:00:45Z",
+      "side": 1,
+      "message": "You can delete this log as the next log statement logs this data too.",
+      "revId": "3c2529a75746cd52c0b7d0f093afd1629620b084",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
