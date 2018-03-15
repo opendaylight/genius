@@ -22,6 +22,30 @@
       "revId": "35a765cb72545335a5dc2c8aa4db990182ca8e12",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa8d9e91_9817d50d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-15T07:47:50Z",
+      "side": 1,
+      "message": "Edwin\u0027s comment makes sense here, as extractDPNTepsInfo can return null if the given ipaddress is not in the datastore. in that case the code will try to add null to the list. This reminds me, shouldn\u0027t we write some junits for this?",
+      "parentUuid": "be074696_8387c6c3",
+      "range": {
+        "startLine": 104,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 78
+      },
+      "revId": "35a765cb72545335a5dc2c8aa4db990182ca8e12",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
