@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "642e8452_d03d08ac",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T04:06:28Z",
+      "side": 1,
+      "message": "will do.",
+      "parentUuid": "12b24660_f687eee9",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "514de20a_67705ea4",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-16T03:16:14Z",
       "side": 1,
       "message": "What about using DataObjectCache? Otherwise entries don\u0027t get purged when an ovs node is removed.  hey might only be purged when MAX_CACHE_SIZE is reached. Perhaps this is OK.",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "925bec36_1ef0388b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T04:06:28Z",
+      "side": 1,
+      "message": "Yes, it is okay in this case. That is why am using cache with bound size. Also, this is not really storing a DS object with identifier as a key, so not sure if DataObjectCache is a good fit for this.",
+      "parentUuid": "514de20a_67705ea4",
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -117,6 +153,24 @@
       "writtenOn": "2018-03-16T03:16:14Z",
       "side": 1,
       "message": "You should log the exception. \n\nAlso ReadFailedException could mean that the read failed. In that case it throws ExpectedDataObjectNotFoundException. However I prefer syncReadOptional b/c throwing an exception is expensive and should really be for uncommon/unexpected failures. \n\nSo what should happen if the read actually fails? That means you don\u0027t know if the node exists and has a version so it seems returning and caching DEFAULT_OVS_VERSION doesn\u0027t seem right. I\u0027d think you\u0027d want to propagate the error to the caller. hat\u0027s the way DataObjectCache handles it (another plug for DataObjectCache :)).",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a36a0c7_a1eda3c7",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T04:06:28Z",
+      "side": 1,
+      "message": "Caller will be this code only and it will handle in a similar way even if I let it throw exception. This code will ONLY be called when device is connected, in which case it will either be already added to cache or present in datastore.\n\nDefault version is what we already assume today and document as minimum required to work with ODL/Netvirt. This just adds option to handle it, so exception means we go back to our assumptions already present in code.\n\nPrefer the idea of syncReadOptional as exception is not important, only if it exists or not.",
+      "parentUuid": "34eac902_06f71820",
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
