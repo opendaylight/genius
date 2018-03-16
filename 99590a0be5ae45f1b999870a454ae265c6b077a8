@@ -300,6 +300,42 @@
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "22013dad_332015a9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T13:15:09Z",
+      "side": 1,
+      "message": "\u003e I noticed syncReadOptional is also throwing an exception. So what\n \u003e would be value add there?\n\nIt only throws RFE if the read actually fails which is (should be) uncommon. It mirrors the DS read API.\n\n \u003e \n \u003e w.r.t DataObjectCache, I don\u0027t intend to cache the entire object,\n \u003e it can result in significant overhead as we will end up with copy\n \u003e of entire topology operational DS. \n\nI see.\n\nCan I used DOC to use a custom\n \u003e key and only cache part of the data, or some POJO derived from data\n \u003e in DS?\n\nnot currently. But I suppose we could make the cached object type configurable similar to the configurable key type. Not a big deal - could look into that later.",
+      "parentUuid": "57422908_71c2fe84",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e37b3fe7_d6d1b28e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T13:15:09Z",
+      "side": 1,
+      "message": "yes that\u0027s the main advantage of DataObjectCache.",
+      "parentUuid": "7fc38e35_abbfbd6c",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
