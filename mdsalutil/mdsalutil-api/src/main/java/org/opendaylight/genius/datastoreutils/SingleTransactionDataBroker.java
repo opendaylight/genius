@@ -250,6 +250,4 @@ public class SingleTransactionDataBroker {
                 runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(datastoreType, path)), SUBMIT_MAPPER);
     }
 
-    // TODO Move asyncWrite/asyncUpdate/asyncRemove from org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils to here
-
 }
