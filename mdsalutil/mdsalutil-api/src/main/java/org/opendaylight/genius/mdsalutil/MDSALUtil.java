@@ -622,10 +622,11 @@ public class MDSALUtil {
     }
 
     // "Consider returning a zero length array rather than null" - too late to change behavior plus it's deprecated.
+    @Deprecated
     @SuppressFBWarnings("PZLA_PREFER_ZERO_LENGTH_ARRAYS")
     public static byte[] getMacAddressForNodeConnector(DataBroker broker,
-            InstanceIdentifier<NodeConnector> nodeConnectorId)  {
-        Optional<NodeConnector> optNc = MDSALDataStoreUtils.read(broker,
+            InstanceIdentifier<NodeConnector> nodeConnectorId) throws ReadFailedException {
+        Optional<NodeConnector> optNc = SingleTransactionDataBroker.syncReadOptional(broker,
                 LogicalDatastoreType.OPERATIONAL, nodeConnectorId);
         if (optNc.isPresent()) {
             NodeConnector nc = optNc.get();
