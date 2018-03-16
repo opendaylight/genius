@@ -80,7 +80,7 @@ module srm-types {
         base entity-name-base;
     }
 
-    identity netvirt-elan-instance {
+    identity netvirt-elan-interface {
         description "SRM Entity name for ELAN instance";
         base entity-name-base;
     }
