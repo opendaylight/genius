@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "9d9ea47d_a9fc748d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T13:02:35Z",
+      "side": 1,
+      "message": "Cool, will look into it.",
+      "parentUuid": "e3a64410_c1190d33",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6150f4a_b42b4d64",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -243,6 +261,42 @@
       "side": 1,
       "message": "\u003e Caller will be this code only and it will handle in a similar way\n \u003e even if I let it throw exception. This code will ONLY be called\n \u003e when device is connected, in which case it will either be already\n \u003e added to cache or present in datastore.\n \u003e \n\nIf this code is only called when a device is connected, that normally occurs once, correct? If os, what\u0027s the point in caching?\n\n \u003e \n \u003e Prefer the idea of syncReadOptional as exception is not important,\n \u003e only if it exists or not.\n\nIt\u0027s for efficiency - throwing an exception is very costly and should not be used on an expected code path (non-existent data falls into this criteria which is why DS read returns Optional and doesn\u0027t throw an exception).  IMO, for these reasons, syncRead should not exist. Also ExpectedDataObjectNotFoundException should not derive from ReadFailedException as it is intended for an actual failure where it could not be determined if the object exists or not.",
       "parentUuid": "3a36a0c7_a1eda3c7",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7fc38e35_abbfbd6c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T13:02:35Z",
+      "side": 1,
+      "message": "This code is called whenever tunnel is created. We don\u0027t trigger tunnel creation unless device has already connected at least once, as we don\u0027t have requisite information [node Id] to create tunnel. And once device connects, we have the nodeId and will be caching this information. I just realized this code path is missing pre-population of cache on node connect, but switching to DataObjectCache may help with it.",
+      "parentUuid": "3cb59caf_c3c88808",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "57422908_71c2fe84",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T13:02:35Z",
+      "side": 1,
+      "message": "I noticed syncReadOptional is also throwing an exception. So what would be value add there?\n\nw.r.t DataObjectCache, I don\u0027t intend to cache the entire object, it can result in significant overhead as we will end up with copy of entire topology operational DS. Can I used DOC to use a custom key and only cache part of the data, or some POJO derived from data in DS?",
+      "parentUuid": "03512203_ef897eed",
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
