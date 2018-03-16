@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "98edc1f8_f9be6969",
+        "filename": "srm/api/src/main/yang/srm-types.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-16T09:19:59Z",
+      "side": 1,
+      "message": "ELAN interface",
+      "revId": "0e4ac59bd559e5aa6575e80dc7d34872e30d583c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
