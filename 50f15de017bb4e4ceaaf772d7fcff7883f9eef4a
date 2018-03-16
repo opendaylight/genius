@@ -84,6 +84,24 @@
     },
     {
       "key": {
+        "uuid": "b97caf23_47c65128",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T02:34:41Z",
+      "side": 1,
+      "message": "I understand your point but don\u0027t you see my point as well? I\u0027m not a fan of just throwing unchecked and especially undocumented ex\u0027s all over the place. Callers don\u0027t expect it. yangtools and mdsal is littered with this behavior (PreConditions all over the place). It\u0027s frustrating b/c they\u0027re not documented and you have to be paranoid and surround practically every call you make with catch RuntimeEx to be safe. Several times I have seen issues b/c something threw an ISE or IAE from deep within YT and  the caller didn\u0027t expect it. And sometimes it declares a checked ex yet still throws undocumented, unchecked which is really frustrating. Don\u0027t you prefer it when a method declares and documents what it throws and actually adheres to that? Otherwise, as I said, you have to catch RuntimeEx everywhere (and suppress checkstyle).\n\nIn this case, we already declare a checked ReadFailedException which callers already have to handle. So why not adhere to the API and throw it in all cases? Socket is an example of an API that plays well like that. The bind method declares IOException. So if the socket was closed and then one calls bind it throws an IOException \"Socket is closed\". I think that\u0027s friendlier and safer than throwing an ISE which users aren\u0027t forced to catch and thus may lead to latent bugs if not handled.",
+      "parentUuid": "c7513c6a_eb075293",
+      "revId": "50f15de017bb4e4ceaaf772d7fcff7883f9eef4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a635496_2bd88616",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 4
