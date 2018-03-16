@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "e3a64410_c1190d33",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T12:12:05Z",
+      "side": 1,
+      "message": "DataObjectCache has been extended to allow for custom key that can be extracted from the DS object. Plus it avoids a DS read, at least it should most of the time. So it seems like a good fit.",
+      "parentUuid": "925bec36_1ef0388b",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6150f4a_b42b4d64",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -188,6 +206,42 @@
       "writtenOn": "2018-03-16T04:21:05Z",
       "side": 1,
       "message": "Went with syncRead for now. I do like the idea of propogating exception to caller and handling it from there, but rest of DataObjectCache doesn\u0027t fit this use case. Maybe good to have exception thrown from cache\u0027s get method itself?",
+      "parentUuid": "3a36a0c7_a1eda3c7",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03512203_ef897eed",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T12:12:05Z",
+      "side": 1,
+      "message": "yes - that is what DataObjectCache does. As I mentioned, I think DataObjectCache is a good fit here. \n\nBTW - you should rarely, if ever, catch an exception and log a message but not log the exception. In fact I think the findbugs slf4j plugin might flag this.",
+      "parentUuid": "e61760cf_ad2470ca",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3cb59caf_c3c88808",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T12:12:05Z",
+      "side": 1,
+      "message": "\u003e Caller will be this code only and it will handle in a similar way\n \u003e even if I let it throw exception. This code will ONLY be called\n \u003e when device is connected, in which case it will either be already\n \u003e added to cache or present in datastore.\n \u003e \n\nIf this code is only called when a device is connected, that normally occurs once, correct? If os, what\u0027s the point in caching?\n\n \u003e \n \u003e Prefer the idea of syncReadOptional as exception is not important,\n \u003e only if it exists or not.\n\nIt\u0027s for efficiency - throwing an exception is very costly and should not be used on an expected code path (non-existent data falls into this criteria which is why DS read returns Optional and doesn\u0027t throw an exception).  IMO, for these reasons, syncRead should not exist. Also ExpectedDataObjectNotFoundException should not derive from ReadFailedException as it is intended for an actual failure where it could not be determined if the object exists or not.",
       "parentUuid": "3a36a0c7_a1eda3c7",
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
