@@ -27,10 +27,12 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -73,6 +75,7 @@ public class TepCommandHelper {
     private static final AtomicInteger CHECK = new AtomicInteger();
 
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final ItmConfig itmConfig;
 
     /*
@@ -80,7 +83,7 @@ public class TepCommandHelper {
      * command is Tep-add else set to false when Tep-delete is called
      * tepCommandHelper object is created only once in session initiated
      */
-    final Map<String, Map<SubnetObject, List<Vteps>>> transportZonesHashMap = new HashMap<>();
+    private final Map<String, Map<SubnetObject, List<Vteps>>> transportZonesHashMap = new HashMap<>();
     private List<Subnets> subnetList = new ArrayList<>();
     private List<TransportZone> transportZoneArrayList = new ArrayList<>();
     private final List<Vteps> vtepDelCommitList = new ArrayList<>();
@@ -91,11 +94,12 @@ public class TepCommandHelper {
     @Inject
     public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.itmConfig = itmConfig;
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         boolean defTzEnabled = itmConfig.isDefTzEnabled();
         if (defTzEnabled) {
             String tunnelType = itmConfig.getDefTzTunnelType();
@@ -689,8 +693,9 @@ public class TepCommandHelper {
                             tzPaths.add(tpath);
                             if (transportZones.getTransportZone() == null
                                     || transportZones.getTransportZone().size() == 0) {
-                                MDSALDataStoreUtils.asyncRemove(dataBroker, LogicalDatastoreType.CONFIGURATION,
-                                        path, ItmUtils.DEFAULT_CALLBACK);
+                                ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                                    tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, path)), LOG,
+                                    "Error deleting {}", path);
                                 return;
                             }
                         }

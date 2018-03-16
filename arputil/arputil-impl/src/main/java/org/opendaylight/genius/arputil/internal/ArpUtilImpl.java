@@ -34,6 +34,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.arputil.api.ArpConstants;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
@@ -257,7 +258,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 sendPacketOutWithActions(dpnId, payload, ref, actions);
 
                 LOG.trace("sent arp request for {}", arpReqInput.getIpaddress());
-            } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException e) {
+            } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException |
+                    ReadFailedException e) {
                 LOG.trace("failed to send arp req for {} on interface {}", arpReqInput.getIpaddress(), interfaceName);
 
                 failureBuilder.withError(ErrorType.APPLICATION,
