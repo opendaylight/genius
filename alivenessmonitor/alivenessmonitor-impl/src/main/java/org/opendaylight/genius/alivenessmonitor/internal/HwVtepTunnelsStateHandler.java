@@ -27,6 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -221,8 +222,9 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         TunnelsKey tunnelKey = null;
         String nodeId = null;
         String topologyId = null;
-        Optional<Tunnels> tunnelsOptional = alivenessMonitor.read(LogicalDatastoreType.CONFIGURATION,
-                getTunnelIdentifier(topologyId, nodeId, tunnelKey));
+        Optional<Tunnels> tunnelsOptional =
+                SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
+                        LogicalDatastoreType.CONFIGURATION, getTunnelIdentifier(topologyId, nodeId, tunnelKey));
         if (!tunnelsOptional.isPresent()) {
             LOG.warn("Tunnel {} is not present on the Node {}. So not disabling the BFD monitoring", tunnelKey, nodeId);
             return;

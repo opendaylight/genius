@@ -50,6 +50,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
@@ -107,8 +108,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.SendToController;
-import org.opendaylight.yangtools.yang.binding.DataObject;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -190,7 +189,8 @@ public class AlivenessMonitor
         monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
             @Override
             public String load(@Nonnull Long monitorId) {
-                return read(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId))
+                return SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+                        dataBroker, LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId))
                         .toJavaUtil().map(MonitoridKeyEntry::getMonitorKey).orElse(null);
             }
         });
@@ -456,8 +456,9 @@ public class AlivenessMonitor
                         "Unsupported Monitoring mode. Currently one-one mode is supported");
             }
 
-            Optional<MonitorProfile> optProfile = read(LogicalDatastoreType.OPERATIONAL,
-                    getMonitorProfileId(profileId));
+            Optional<MonitorProfile> optProfile =
+                    SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+                            dataBroker, LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
             final MonitorProfile profile;
             if (!optProfile.isPresent()) {
                 String errMsg = String.format("No monitoring profile associated with Id: %d", profileId);
@@ -493,7 +494,9 @@ public class AlivenessMonitor
             }
             String idKey = getUniqueKey(interfaceName, ethType.toString(), srcEndpointType, destEndpointType);
             final long monitorId = getUniqueId(idKey);
-            Optional<MonitoringInfo> optKey = read(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
+            Optional<MonitoringInfo> optKey =
+                    SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+                            dataBroker, LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
             final AlivenessProtocolHandler<?> handler;
             if (optKey.isPresent()) {
                 String message = String.format(
@@ -713,14 +716,17 @@ public class AlivenessMonitor
     }
 
     private boolean stopMonitoringTask(Long monitorId, boolean interruptTask) {
-        Optional<MonitoringInfo> optInfo = read(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
+        Optional<MonitoringInfo> optInfo =
+                SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
+                        LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
         if (!optInfo.isPresent()) {
             LOG.warn("There is no monitoring info present for monitor id {}", monitorId);
             return false;
         }
         MonitoringInfo monitoringInfo = optInfo.get();
-        Optional<MonitorProfile> optProfile = read(LogicalDatastoreType.OPERATIONAL,
-                getMonitorProfileId(monitoringInfo.getProfileId()));
+        Optional<MonitorProfile> optProfile =
+                SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
+                        LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(monitoringInfo.getProfileId()));
         EtherTypes protocolType = optProfile.get().getProtocolType();
         if (protocolType == EtherTypes.Bfd) {
             LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
@@ -737,7 +743,8 @@ public class AlivenessMonitor
     }
 
     Optional<MonitorProfile> getMonitorProfile(Long profileId) {
-        return read(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
+        return SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+                dataBroker, LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
     }
 
     void acquireLock(Semaphore lock) {
@@ -1054,7 +1061,9 @@ public class AlivenessMonitor
         SettableFuture<RpcResult<Void>> result = SettableFuture.create();
 
         final Long monitorId = input.getMonitorId();
-        Optional<MonitoringInfo> optInfo = read(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
+        Optional<MonitoringInfo> optInfo =
+                SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
+                        LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
         if (optInfo.isPresent()) {
             // Stop the monitoring task
             stopMonitoringTask(monitorId);
@@ -1125,8 +1134,9 @@ public class AlivenessMonitor
         EndpointType source = info.getSource().getEndpointType();
         String interfaceName = getInterfaceName(source);
         if (!Strings.isNullOrEmpty(interfaceName)) {
-            Optional<MonitorProfile> optProfile = read(LogicalDatastoreType.OPERATIONAL,
-                    getMonitorProfileId(info.getProfileId()));
+            Optional<MonitorProfile> optProfile =
+                    SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
+                            LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(info.getProfileId()));
             if (optProfile.isPresent()) {
                 EtherTypes ethType = optProfile.get().getProtocolType();
                 EndpointType destination = info.getDestination() != null ? info.getDestination().getEndpointType()
@@ -1245,17 +1255,6 @@ public class AlivenessMonitor
         }, MoreExecutors.directExecutor());
     }
 
-    // DATA STORE OPERATIONS
-    <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
-        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
-            return tx.read(datastoreType, path).get();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.warn("Error reading data from path {} in datastore {}", path, datastoreType, e);
-        }
-
-        return Optional.absent();
-    }
-
     @Override
     public void onInterfaceStateUp(String interfaceName) {
         List<Long> monitorIds = getMonitorIds(interfaceName);
@@ -1283,7 +1282,8 @@ public class AlivenessMonitor
     }
 
     private List<Long> getMonitorIds(String interfaceName) {
-        return read(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName))
+        return SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
+                dataBroker, LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName))
                 .toJavaUtil().map(InterfaceMonitorEntry::getMonitorIds).orElse(Collections.emptyList());
     }
 }
