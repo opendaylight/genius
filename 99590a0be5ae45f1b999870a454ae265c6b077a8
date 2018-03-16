@@ -174,6 +174,24 @@
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e61760cf_ad2470ca",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-16T04:21:05Z",
+      "side": 1,
+      "message": "Went with syncRead for now. I do like the idea of propogating exception to caller and handling it from there, but rest of DataObjectCache doesn\u0027t fit this use case. Maybe good to have exception thrown from cache\u0027s get method itself?",
+      "parentUuid": "3a36a0c7_a1eda3c7",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
