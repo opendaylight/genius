@@ -16,7 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -68,10 +69,10 @@ public final class DataStoreCache {
     }
 
     public static <T extends DataObject> Object get(String cacheName, InstanceIdentifier<T> identifier, String key,
-            DataBroker broker, boolean isConfig) {
+            DataBroker broker, boolean isConfig) throws ReadFailedException {
         Object dataObject = getCache(cacheName).get(key);
         if (dataObject == null) {
-            Optional<T> datastoreObject = MDSALDataStoreUtils.read(broker,
+            Optional<T> datastoreObject = SingleTransactionDataBroker.syncReadOptional(broker,
                     isConfig ? LogicalDatastoreType.CONFIGURATION : LogicalDatastoreType.OPERATIONAL, identifier);
             if (datastoreObject.isPresent()) {
                 dataObject = datastoreObject.get();
