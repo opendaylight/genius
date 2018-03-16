@@ -42,7 +42,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInstance;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQosPolicyInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpn;
@@ -81,7 +81,7 @@ public final class SrmRpcUtils {
             .put(GeniusItmTz.class, EntityTypeInstance.class)
             .put(GeniusIfmInterface.class, EntityTypeInstance.class)
             .put(NetvirtVpnInstance.class, EntityTypeInstance.class)
-            .put(NetvirtElanInstance.class, EntityTypeInstance.class)
+            .put(NetvirtElanInterface.class, EntityTypeInstance.class)
             .put(NetvirtQos.class, EntityTypeService.class)
             .put(NetvirtQosPolicyInstance.class, EntityTypeInstance.class)
             .put(NetvirtAclInterface.class, EntityTypeInstance.class)
@@ -99,7 +99,7 @@ public final class SrmRpcUtils {
             .put(NetvirtVpn.class, NetvirtVpn.class)
             .put(NetvirtVpnInstance.class, NetvirtVpn.class)
             .put(NetvirtElan.class, NetvirtElan.class)
-            .put(NetvirtElanInstance.class, NetvirtElan.class)
+            .put(NetvirtElanInterface.class, NetvirtElan.class)
             .put(NetvirtAcl.class, NetvirtAcl.class)
             .put(NetvirtAclInterface.class, NetvirtAcl.class)
             .put(NetvirtAclInstance.class, NetvirtAcl.class)
