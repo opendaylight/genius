@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "12b24660_f687eee9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T03:16:14Z",
+      "side": 1,
+      "message": "Don\u0027t need to store this.",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "514de20a_67705ea4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T03:16:14Z",
+      "side": 1,
+      "message": "What about using DataObjectCache? Otherwise entries don\u0027t get purged when an ovs node is removed.  hey might only be purged when MAX_CACHE_SIZE is reached. Perhaps this is OK.",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6150f4a_b42b4d64",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
         "patchSetId": 2
@@ -66,6 +100,23 @@
       "side": 1,
       "message": "Perfect, I had enabled it for my testing, if CLI is there that works out better. Removed it now.",
       "parentUuid": "eb0ede46_862ab82f",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "34eac902_06f71820",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-16T03:16:14Z",
+      "side": 1,
+      "message": "You should log the exception. \n\nAlso ReadFailedException could mean that the read failed. In that case it throws ExpectedDataObjectNotFoundException. However I prefer syncReadOptional b/c throwing an exception is expensive and should really be for uncommon/unexpected failures. \n\nSo what should happen if the read actually fails? That means you don\u0027t know if the node exists and has a version so it seems returning and caching DEFAULT_OVS_VERSION doesn\u0027t seem right. I\u0027d think you\u0027d want to propagate the error to the caller. hat\u0027s the way DataObjectCache handles it (another plug for DataObjectCache :)).",
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
