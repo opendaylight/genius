@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "17d21644_0a862b17",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-19T13:36:09Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "984d3e3f_bd3e0b4b",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "32868eb8_aa24feb8",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-03-15T17:51:40Z",
       "side": 1,
       "message": "why do we actually even need this?  The data store is (should be...) fresh for each @Test, so to delete some thing @After each @Test should not be required.",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d7fc15ad_88d0dbd2",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-19T13:36:09Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "32868eb8_aa24feb8",
       "revId": "265cce737e681725c89481fc7a943dac370626b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -81,6 +117,24 @@
       "writtenOn": "2018-03-15T17:51:40Z",
       "side": 1,
       "message": "we really should cover this new awaitJobsConsumption variant (however we end up doing it) in the TestableJobCoordinatorEventsWaiterTest - do you want to add that to this change, or in a new one?",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee19b5ad_c686e0ce",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorEventsWaiter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-19T13:36:09Z",
+      "side": 1,
+      "message": "I still think it would be really good to have TDD for the new JobCoordinatorCountedEventsWaiter in the TestableJobCoordinatorEventsWaiterTest ...",
+      "parentUuid": "2d5068f7_01f9af27",
       "revId": "265cce737e681725c89481fc7a943dac370626b0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
