@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c508f6fa_fa441374",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "change the title",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38b974a3_c4f9f78b",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "Suite",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "581d0a9a_f7327ded",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "odl-genius-rest",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b246332_0d8bd947",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "at the end of",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2c470e19_47d36ad4",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "If you delete the whole thing how will you recover? You need to delete some intermediate DS entries, like config/ietf-interfaces",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4dd3e1f_e88d89be",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "Above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5249332_c713061f",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "278e5047_778b1f35",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "Above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0cf06a43_52d94535",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "Same as above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f70b9e6_671fa81b",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "Above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "213a69b8_5d944a6d",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "you have to delete the tunnel on OVS..or something like that.. not delete the whole configuration",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e4d355c_7ccfe46c",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "Above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a59a15ce_1a1e032a",
+        "filename": "docs/testplans/service-recovery-manager.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-19T05:44:27Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c0f832c82de5b139eb86c8926e375cf7cee5520f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
