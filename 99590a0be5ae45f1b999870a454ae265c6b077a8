@@ -336,6 +336,24 @@
       "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "44042e83_e5708d09",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-19T09:57:41Z",
+      "side": 1,
+      "message": "\u003e not currently. But I suppose we could make the cached object type\n \u003e configurable similar to the configurable key type. Not a big deal -\n \u003e could look into that later.\nMade changes to work with what we currently have, will revisit once you add support for configurable cached object.",
+      "parentUuid": "22013dad_332015a9",
+      "revId": "99590a0be5ae45f1b999870a454ae265c6b077a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
