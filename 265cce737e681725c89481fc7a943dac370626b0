@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "f24ee54d_39943e3a",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T12:28:28Z",
+      "side": 1,
+      "message": "-1 following IRC chat re. this (Faseela is working on update with solution)",
+      "parentUuid": "17d21644_0a862b17",
+      "revId": "265cce737e681725c89481fc7a943dac370626b0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "32868eb8_aa24feb8",
         "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
         "patchSetId": 2
