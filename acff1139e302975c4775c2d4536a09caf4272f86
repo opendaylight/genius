@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "4ad87d33_0818380c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done (seems to now have been removed)",
+      "parentUuid": "bdf9e782_4ad9488c",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2c2b5e03_70bd1d10",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsStateCache.java",
         "patchSetId": 3
@@ -47,6 +65,24 @@
       "writtenOn": "2018-03-14T13:19:54Z",
       "side": 1,
       "message": "final x2",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "babbbe07_e28884d8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnsTepsStateCache.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done (all fields are final now)",
+      "parentUuid": "2c2b5e03_70bd1d10",
       "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -88,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "be0abb69_3e31be87",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done (public methods are not final anymore, only a few private one which do not use object field state, and that\u0027s just how it should be)",
+      "parentUuid": "50e0dc9e_91e48ab4",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6eb0bf88_82650c2a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
         "patchSetId": 3
@@ -99,6 +153,24 @@
       "writtenOn": "2018-03-14T13:19:54Z",
       "side": 1,
       "message": "there should be no empty TODO methods in changes proposed for merge.  If this is WIP, then what you should do is self -1 it to signal that you don\u0027t want us to review it, just yet.",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff557f43_60954ce3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done (no more empty methods with TODO)",
+      "parentUuid": "6eb0bf88_82650c2a",
       "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -157,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "82c73ca6_c1e8a292",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done (changed to LOG.error instead of LOG.trace)",
+      "parentUuid": "be2182c7_94ea904f",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7f61e9ab_38236024",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 3
@@ -174,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "e396a7d1_4ae7b6ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7f61e9ab_38236024",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fd68f884_a2920228",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 3
@@ -185,6 +293,24 @@
       "writtenOn": "2018-03-14T13:19:54Z",
       "side": 1,
       "message": "put this return into an else, would make it a tiny bit clearer to read?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c49b3e27_ac8a5b38",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "Done (removed, I think)",
+      "parentUuid": "fd68f884_a2920228",
       "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -225,6 +351,24 @@
       "writtenOn": "2018-03-14T13:19:54Z",
       "side": 1,
       "message": "should this throw an Exception instead of return null?",
+      "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "edde1fe4_1d6da614",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 266,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "not sure where this method ended up now, can\u0027t find it anymore",
+      "parentUuid": "96f7a2c6_546b94a8",
       "revId": "acff1139e302975c4775c2d4536a09caf4272f86",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
