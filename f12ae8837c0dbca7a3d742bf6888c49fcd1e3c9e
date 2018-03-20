@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8a5f00e3_207000e6",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-20T07:52:40Z",
+      "side": 1,
+      "message": "why do we need DEADBEEFMAC PREFIX and all? It is needed only for l2lan interfaces on vhu ports.",
+      "revId": "f12ae8837c0dbca7a3d742bf6888c49fcd1e3c9e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
