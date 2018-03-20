@@ -178,6 +178,14 @@ public final class ItmUtils {
         }
     };
 
+    /**
+     * Synchronous blocking read from data store.
+     *
+     * @deprecated Use
+     * {@link SingleTransactionDataBroker#syncReadOptional(DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     *             instead of this.
+     */
+    @Deprecated
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
@@ -751,6 +759,14 @@ public final class ItmUtils {
         return String.format("%s:%s", topoId, srcNodeid);
     }
 
+    /**
+     * Synchronous blocking write to data store.
+     *
+     * @deprecated Use
+     * {@link SingleTransactionDataBroker#syncWrite(DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
+     *             instead of this.
+     */
+    @Deprecated
     public static <T extends DataObject> void syncWrite(LogicalDatastoreType datastoreType,
                                                         InstanceIdentifier<T> path, T data, DataBroker broker) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
