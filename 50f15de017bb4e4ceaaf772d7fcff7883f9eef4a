@@ -120,6 +120,24 @@
     },
     {
       "key": {
+        "uuid": "d736ab7f_5e9a5238",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T13:04:44Z",
+      "side": 1,
+      "message": "\u003e But it IS DONE how you like it, so ... will you +1 this as-is now\n \u003e then, or can you clarify what it would take to get your +1 on this\n \u003e one?  --  \n\nOK dude - relax :) \n\nOn the larger general question, I actually do really\n \u003e fundamentally disagree with you here.  You are mixing up the whole\n \u003e point of checked VS unchecked.  \n\nI\u0027m just trying to adhere to an API and maintain usability. As i said I\u0027ve been burned too many times by APIs that throw unchecked, undocumented exceptions all over the place and it especially irks me when they declare a checked exception and don\u0027t use it. I guess you think classes like Socket are wrong for using the checked ex for a lifecycle violation. I think you tend to be a bit too theoretical or technical at times, eg that lifecycle state violations should always be unchecked and punish the caller, instead of thinking about it in terms of usability. I\u0027d say most of my viewpoints stem from practical experience and past mistakes.",
+      "parentUuid": "535e4c60_0b4a8015",
+      "revId": "50f15de017bb4e4ceaaf772d7fcff7883f9eef4a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a635496_2bd88616",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/cache/DataObjectCache.java",
         "patchSetId": 4
