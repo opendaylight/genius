@@ -20,10 +20,9 @@ import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 
 /**
- * Managed transactions utility to simplify handling of new transactions and ensure they are always closed
- * (see {@link ManagedNewTransactionRunnerImpl}). One of the implementations of this API can, optionally, do
- * retries (see {@link RetryingManagedNewTransactionRunnerImpl}).  When you want both together (which is typical),
- * it is recommended to use the {@link RetryingManagedNewTransactionRunner}.
+ * Managed transactions utility to simplify handling of new transactions and ensure they are always closed.
+ * Implementation in {@link ManagedNewTransactionRunnerImpl}, alternative implementation of this API with optional
+ * retries is {@link RetryingManagedNewTransactionRunner}.
  *
  * <p>This should typically be used (only) directly in code which really must be creating its own new transactions,
  * such as RPC entry points, or background jobs.  Other lower level code "behind" such entry points should
