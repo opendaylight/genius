@@ -35,6 +35,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
@@ -186,6 +187,13 @@ public final class ItmUtils {
         }
     }
 
+
+    /**
+     * Asynchronous non-blocking write to data store.
+     *
+     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
+     */
+    @Deprecated
     public static <T extends DataObject> void asyncWrite(LogicalDatastoreType datastoreType,
                                                          InstanceIdentifier<T> path, T data, DataBroker broker,
                                                          FutureCallback<Void> callback) {
@@ -194,6 +202,12 @@ public final class ItmUtils {
         Futures.addCallback(tx.submit(), callback);
     }
 
+    /**
+     * Asynchronous non-blocking update to data store.
+     *
+     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
+     */
+    @Deprecated
     public static <T extends DataObject> void asyncUpdate(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, T data, DataBroker broker,
                                                           FutureCallback<Void> callback) {
@@ -202,6 +216,12 @@ public final class ItmUtils {
         Futures.addCallback(tx.submit(), callback);
     }
 
+    /**
+     * Asynchronous non-blocking single delete to data store.
+     *
+     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
+     */
+    @Deprecated
     public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker,
                                                           FutureCallback<Void> callback) {
@@ -210,6 +230,12 @@ public final class ItmUtils {
         Futures.addCallback(tx.submit(), callback);
     }
 
+    /**
+     * Asynchronous non-blocking bulk delete to data store.
+     *
+     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
+     */
+    @Deprecated
     public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,
                                                               final LogicalDatastoreType datastoreType,
                                                               List<InstanceIdentifier<T>> pathList,
