@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "39b5c04a_0cceeaf3",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "What is this for?",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b79e096e_e656283b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 11
@@ -36,6 +53,75 @@
     },
     {
       "key": {
+        "uuid": "3d50a7af_789ae205",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "But why are you reading here on RFE above? If an RFE occurs that means it already tried to read on cache miss so this is redundant.",
+      "parentUuid": "4e346d15_d5260cb3",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7fc6c073_11583622",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "This method is redundant.",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74b4476f_adb23cf0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "Why are you exposing a remove operation? This cache is supposed to be self-managed via DTCL.",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ba08639_4979296e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "Same here",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f008ddf_8d7955e7",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 11
@@ -53,6 +139,46 @@
     },
     {
       "key": {
+        "uuid": "8072e67d_c5c87558",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "I\u0027m not seeing the purpose of this. getDpnTepInterfaceInfo will read from the DS on cache miss so why is this necessary?",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a6b09015_2efe221e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "private?",
+      "range": {
+        "startLine": 181,
+        "startChar": 4,
+        "endLine": 181,
+        "endChar": 10
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8254dea1_c8f75c7e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 11
@@ -64,6 +190,184 @@
       "writtenOn": "2018-03-20T13:42:00Z",
       "side": 1,
       "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99e71b60_05937c79",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "I don\u0027t see where this method gets from the Config DS.",
+      "range": {
+        "startLine": 221,
+        "startChar": 44,
+        "endLine": 221,
+        "endChar": 52
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b2a238b6_2edbd063",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "just return getDpnTepInterfaceInfo(...)",
+      "range": {
+        "startLine": 224,
+        "startChar": 12,
+        "endLine": 228,
+        "endChar": 13
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e3b366a_a332a129",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "get*FromConfigDS implies it reads/retrieves the Interface from the DS but I don\u0027t see that here. It returns the instance from       ItmUtils.buildTunnelInterface which builds it in memory.",
+      "range": {
+        "startLine": 248,
+        "startChar": 37,
+        "endLine": 248,
+        "endChar": 45
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6021c59_37c40eb5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "combine",
+      "range": {
+        "startLine": 254,
+        "startChar": 8,
+        "endLine": 256,
+        "endChar": 18
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7c96e05_384c8ec9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "You already created these BigIntegers above",
+      "range": {
+        "startLine": 256,
+        "startChar": 44,
+        "endLine": 257,
+        "endChar": 64
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d856b628_ced61cfe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "redundant - creates 2 lists",
+      "range": {
+        "startLine": 260,
+        "startChar": 44,
+        "endLine": 260,
+        "endChar": 73
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "32a9c2f5_78eebc5b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 262,
+        "startChar": 44,
+        "endLine": 262,
+        "endChar": 72
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "35a64ad9_f346f415",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "What if these lists are empty?",
       "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +408,70 @@
     },
     {
       "key": {
+        "uuid": "d06971eb_fe6787bd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "But why are you reading here - it looks redundant with super.get...",
+      "parentUuid": "45a2d1b4_629df005",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d368f38f_b14b03cb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "Why isn\u0027t this just \u0027get\u0027?",
+      "range": {
+        "startLine": 50,
+        "startChar": 43,
+        "endLine": 50,
+        "endChar": 73
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38680df5_62b73bed",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "private?",
+      "range": {
+        "startLine": 63,
+        "startChar": 4,
+        "endLine": 63,
+        "endChar": 10
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f61eb493_63d6fd07",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
         "patchSetId": 11
@@ -132,6 +500,24 @@
       "writtenOn": "2018-03-20T13:42:00Z",
       "side": 1,
       "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd24e7f8_8f208a70",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "Again looks like redundant read...",
+      "parentUuid": "964e21a5_94e2f5b8",
       "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -172,6 +558,24 @@
     },
     {
       "key": {
+        "uuid": "960c40d8_f8a80567",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/TunnelStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "Again why the redundant read...",
+      "parentUuid": "e6040876_82a7cf9f",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "52469c5d_00fc768d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/TunnelStateCache.java",
         "patchSetId": 11
@@ -183,6 +587,46 @@
       "writtenOn": "2018-03-20T13:42:00Z",
       "side": 1,
       "message": "FYI you would typically write this construct simply as return tnlStateOptional.orNull().  I would even save assigning it to a local variable, it\u0027s shorter and clear if you just:\n\n   return SingleTransactionDataBroker.read(..:).orNull();\n\nHaving said that, as Tom mentioned elsewhere, it\u0027s even better to just return the Optional instead of null, and let the caller do the right thing...",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4078fdf5_491fe461",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "This looks like this should be in its own class (and use the CacheProvider :)).  Or move it to DpnTepStateCache if that\u0027s the only place it\u0027s used. Either way I\u0027d prefer it not be housed in a Utils class (that doesn\u0027t actually use it) with a hodgepodge of other unrelated stuff.",
+      "range": {
+        "startLine": 69,
+        "startChar": 60,
+        "endLine": 69,
+        "endChar": 77
+      },
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b6bc4b4e_1d234314",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-20T14:48:18Z",
+      "side": 1,
+      "message": "The same with these other caches.",
       "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
