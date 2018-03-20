@@ -1,0 +1,242 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b79e096e_e656283b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "missing \", e\" to log cause of NumberFormatException",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4e346d15_d5260cb3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils.read, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f008ddf_8d7955e7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8254dea1_c8f75c7e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aa9c166d_800f0654",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "missing \", e\" to log cause of RedFailedException",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45a2d1b4_629df005",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f61eb493_63d6fd07",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "missing \", e\" to log cause of RedFailedException",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "964e21a5_94e2f5b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OvsBridgeRefEntryCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed5889ae_32a9f8c9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/TunnelStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "missing \", exception\" to log cause of RedFailedException",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6040876_82a7cf9f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/TunnelStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "52469c5d_00fc768d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/TunnelStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "FYI you would typically write this construct simply as return tnlStateOptional.orNull().  I would even save assigning it to a local variable, it\u0027s shorter and clear if you just:\n\n   return SingleTransactionDataBroker.read(..:).orNull();\n\nHaving said that, as Tom mentioned elsewhere, it\u0027s even better to just return the Optional instead of null, and let the caller do the right thing...",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74061897_3020069b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "missing \", ex\" to log cause of NumberFormatException",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a319db4_a0619708",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "47572dd7_a34f21d3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-20T13:42:00Z",
+      "side": 1,
+      "message": "use SingleTransactionDataBroker instead of ItmUtils, see https://git.opendaylight.org/gerrit/69673 (and just \"propagate\" its ReadFailedException)",
+      "revId": "17dd93e463245cd70115e2d24c0a0fabb4b6d907",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
