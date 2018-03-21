@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -141,9 +142,8 @@ public class InterfaceInventoryStateListener
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
                         FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
-        boolean isNodePresent = interfaceManagerCommonUtils.isNodePresent(nodeConnectorIdNew);
         InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName, isNodePresent,
+                nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName,
                 isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
         LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
@@ -253,7 +253,7 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    private class InterfaceStateUpdateWorker implements Callable {
+    private class InterfaceStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
@@ -270,7 +270,7 @@ public class InterfaceInventoryStateListener
         }
 
         @Override
-        public Object call() {
+        public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
@@ -289,34 +289,31 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    private class InterfaceStateRemoveWorker implements Callable {
+    private class InterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final NodeConnectorId nodeConnectorIdNew;
         private NodeConnectorId nodeConnectorIdOld;
         FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
         private final IdManagerService idManager;
-        private final boolean isNodePresent;
         private final boolean isNetworkEvent;
         private final boolean isParentInterface;
 
         InterfaceStateRemoveWorker(IdManagerService idManager, NodeConnectorId nodeConnectorIdNew,
                                    NodeConnectorId nodeConnectorIdOld,
                                    FlowCapableNodeConnector fcNodeConnectorOld, String interfaceName,
-                                   boolean isNodePresent, boolean isNetworkEvent,
+                                   boolean isNetworkEvent,
                                    boolean isParentInterface) {
             this.nodeConnectorIdNew = nodeConnectorIdNew;
             this.nodeConnectorIdOld = nodeConnectorIdOld;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.interfaceName = interfaceName;
             this.idManager = idManager;
-            this.isNodePresent = isNodePresent;
             this.isNetworkEvent = isNetworkEvent;
             this.isParentInterface = isParentInterface;
         }
 
         @Override
-        public Object call() {
-            List<ListenableFuture<Void>> futures = null;
+        public List<ListenableFuture<Void>> call() {
             // VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD
             // for same interface from Older DPN
             if (isParentInterface && isNetworkEvent) {
@@ -325,11 +322,11 @@ public class InterfaceInventoryStateListener
                 if (nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                     LOG.debug("Dropping the NodeConnector Remove Event for the interface: {}, {}, {}", interfaceName,
                             nodeConnectorIdNew, nodeConnectorIdOld);
-                    return futures;
+                    return Collections.emptyList();
                 }
             }
 
-            futures = removeInterfaceStateConfiguration();
+            List<ListenableFuture<Void>> futures = removeInterfaceStateConfiguration();
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
@@ -337,14 +334,13 @@ public class InterfaceInventoryStateListener
                 // for each of them
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                         nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld,
-                        interfaceChildEntry.getChildInterface(), isNodePresent, isNetworkEvent, false);
+                        interfaceChildEntry.getChildInterface(), isNetworkEvent, false);
                 coordinator.enqueueJob(interfaceName, interfaceStateRemoveWorker);
             }
             return futures;
         }
 
         private List<ListenableFuture<Void>> removeInterfaceStateConfiguration() {
-            LOG.debug("Removing interface state information for interface: {} {}", interfaceName, isNodePresent);
             List<ListenableFuture<Void>> futures = new ArrayList<>();
 
             //VM Migration: Use old nodeConnectorId to delete the interface entry
@@ -353,9 +349,11 @@ public class InterfaceInventoryStateListener
             // delete the port entry from interface operational DS
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                 //VM Migration: Update the interface state to unknown only if remove event received for same switch
-                if (!isNodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+                boolean nodePresent = interfaceManagerCommonUtils.isNodePresent(tx, nodeConnectorIdNew);
+                LOG.debug("Removing interface state information for interface: {} {}", interfaceName, nodePresent);
+                if (!nodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                     //Remove event is because of connection lost between controller and switch, or switch shutdown.
                     // Hence, don't remove the interface but set the status as "unknown"
                     ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
@@ -380,7 +378,7 @@ public class InterfaceInventoryStateListener
                     }
 
                     // Delete the Vpn Interface from DpnToInterface Op DS.
-                    interfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, tx);
+                    InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, tx);
                 }
             }));
 
