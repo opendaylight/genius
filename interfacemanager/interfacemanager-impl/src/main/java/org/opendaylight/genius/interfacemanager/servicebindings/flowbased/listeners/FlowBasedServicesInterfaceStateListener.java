@@ -97,7 +97,7 @@ public class FlowBasedServicesInterfaceStateListener
         LOG.debug("Received interface state remove event for {}", interfaceStateOld.getName());
         // Unbind Default Egress Dispatcher Service when interface-state is removed.
         coordinator.enqueueJob(interfaceStateOld.getName(),
-                new RendererStateInterfaceUnbindWorker(coordinator, dataBroker, interfaceStateOld),
+                new RendererStateInterfaceUnbindWorker(coordinator, txRunner, interfaceStateOld),
                 IfmConstants.JOB_MAX_RETRIES);
     }
 
@@ -143,61 +143,65 @@ public class FlowBasedServicesInterfaceStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
-                serviceMode, dataBroker);
-            if (servicesInfo == null) {
-                LOG.trace("service info is null for interface {}", iface.getName());
-                return null;
-            }
-
-            List<BoundServices> allServices = servicesInfo.getBoundServices();
-            if (allServices == null || allServices.isEmpty()) {
-                LOG.trace("bound services is empty for interface {}", iface.getName());
-                return null;
-            }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            // Build the service-binding state if there are services bound on this interface
-            FlowBasedServicesUtils.addBoundServicesState(futures, txRunner, iface.getName(),
-                FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
-            flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(tx, iface.getName(),
+                        serviceMode);
+                if (servicesInfo == null) {
+                    LOG.trace("service info is null for interface {}", iface.getName());
+                    return;
+                }
+
+                List<BoundServices> allServices = servicesInfo.getBoundServices();
+                if (allServices == null || allServices.isEmpty()) {
+                    LOG.trace("bound services is empty for interface {}", iface.getName());
+                    return;
+                }
+                // Build the service-binding state if there are services bound on this interface
+                FlowBasedServicesUtils.addBoundServicesState(tx, iface.getName(),
+                        FlowBasedServicesUtils.buildBoundServicesState(iface, serviceMode));
+                flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
+            }));
             return futures;
         }
     }
 
     private static class RendererStateInterfaceUnbindWorker implements Callable<List<ListenableFuture<Void>>> {
-        Interface iface;
-        JobCoordinator coordinator;
-        ManagedNewTransactionRunner txRunner;
-        DataBroker dataBroker;
+        private final Interface iface;
+        private final JobCoordinator coordinator;
+        private final ManagedNewTransactionRunner txRunner;
 
-        RendererStateInterfaceUnbindWorker(JobCoordinator coordinator, DataBroker dataBroker, Interface iface) {
+        RendererStateInterfaceUnbindWorker(JobCoordinator coordinator, ManagedNewTransactionRunner txRunner,
+                Interface iface) {
             this.iface = iface;
             this.coordinator = coordinator;
-            this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-            this.dataBroker = dataBroker;
+            this.txRunner = txRunner;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            LOG.debug("unbinding services on interface {}", iface.getName());
-            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(iface.getName(),
-                    ServiceModeEgress.class, this.dataBroker);
-            if (servicesInfo == null) {
-                LOG.trace("service info is null for interface {}", iface.getName());
-                return Collections.emptyList();
-            }
+            coordinator.enqueueJob(iface.getName(),
+                () -> Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                    LOG.debug("unbinding services on interface {}", iface.getName());
+                    ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(tx, iface.getName(),
+                            ServiceModeEgress.class);
+                    if (servicesInfo == null) {
+                        LOG.trace("service info is null for interface {}", iface.getName());
+                        return;
+                    }
 
-            List<BoundServices> allServices = servicesInfo.getBoundServices();
-            if (allServices == null || allServices.isEmpty()) {
-                LOG.trace("bound services is empty for interface {}", iface.getName());
-                return Collections.emptyList();
-            }
+                    List<BoundServices> allServices = servicesInfo.getBoundServices();
+                    if (allServices == null || allServices.isEmpty()) {
+                        LOG.trace("bound services is empty for interface {}", iface.getName());
+                        return;
+                    }
 
-            if (L2vlan.class.equals(iface.getType())) {
-                // remove the default egress service bound on the interface
-                IfmUtil.unbindService(txRunner, coordinator, iface.getName(),
-                        FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
-            }
+                    if (L2vlan.class.equals(iface.getType())) {
+                        // remove the default egress service bound on the interface
+                        IfmUtil.unbindService(tx, iface.getName(),
+                                FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
+                    }
+                })));
             return Collections.emptyList();
         }
     }

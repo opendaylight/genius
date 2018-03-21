@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
@@ -55,25 +56,26 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
     @Override
     public final void bindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
                                    List<BoundServices> allServices, Class<? extends ServiceModeBase> serviceMode) {
+        futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            LOG.debug("binding services on interface {}", ifaceState.getName());
+            ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(tx, ifaceState.getName(),
+                    serviceMode);
+            if (servicesInfo == null) {
+                LOG.trace("service info is null for interface {}", ifaceState.getName());
+                return;
+            }
+            if (allServices == null || allServices.isEmpty()) {
+                LOG.trace("bound services is empty for interface {}", ifaceState.getName());
+                return;
+            }
 
-        LOG.debug("binding services on interface {}", ifaceState.getName());
-        ServicesInfo servicesInfo = FlowBasedServicesUtils.getServicesInfoForInterface(ifaceState.getName(),
-            serviceMode, dataBroker);
-        if (servicesInfo == null) {
-            LOG.trace("service info is null for interface {}", ifaceState.getName());
-            return;
-        }
-        if (allServices == null || allServices.isEmpty()) {
-            LOG.trace("bound services is empty for interface {}", ifaceState.getName());
-            return;
-        }
-
-        if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
-            bindServicesOnInterface(futures, allServices, ifaceState);
-        }
+            if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
+                bindServicesOnInterface(tx, allServices, ifaceState);
+            }
+        }));
     }
 
-    protected abstract void bindServicesOnInterface(List<ListenableFuture<Void>> futures,
+    protected abstract void bindServicesOnInterface(WriteTransaction tx,
                                                     List<BoundServices> allServices, Interface ifState);
 
     @Override
