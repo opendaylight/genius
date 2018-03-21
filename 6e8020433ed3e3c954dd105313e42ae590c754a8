@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e35ffe31_05e5821f",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/itm/ItmRpcTestImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T14:25:47Z",
+      "side": 1,
+      "message": "Vishal, just remove this, instead of commenting out!  I will merge it anyway, perhaps you can do this in a follow-up patch.",
+      "revId": "6e8020433ed3e3c954dd105313e42ae590c754a8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
