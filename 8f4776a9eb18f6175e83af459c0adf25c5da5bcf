@@ -102,6 +102,24 @@
       "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73f7cc91_f8c59208",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-03-21T16:02:05Z",
+      "side": 1,
+      "message": "Yes, in subsequent patch these Maps will also be in their own classes and its likely that this util will be eliminated.",
+      "parentUuid": "b23e9fab_4465abbf",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
