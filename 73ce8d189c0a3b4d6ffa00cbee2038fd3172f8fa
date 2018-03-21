@@ -1,0 +1,208 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aad980b5_0632382c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "I\u0027m assuming this change will include the delegation of the existing utilities to the new ones?  I think we should do that together in one go (single change, this), not split and \"later\" - the risk of copy/pasting code is too great, IMHO.",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5de0108c_3eb0cba9",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "https://lists.opendaylight.org/pipermail/genius-dev/2018-March/002482.html :\n\nCould I suggest that we use the opportunity of a new bundle as the occassion to set a high bar for code quality? Beyond CS (that\u0027s old news), and FB (that\u0027s so 2017), we should mandate also that all code in this new bundle complies with findbugs-slf4j (which we\u0027re just about to enforce accross all of genius anyway), Google\u0027s Error-Prone, enforces no copy/paste, has a 100% clean classpath without duplicates? This is easy by using the infrautils:parent for this new bundle, see https://github.com/opendaylight/infrautils/blob/master/common/parent/pom.xml.",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e0c4a13_d42b6ef6",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "just use ${project.version} instead here",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8365df6e_247a6289",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "just use ${project.version} instead here",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81402e2a_98e5c62c",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "just use ${project.version} instead here",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8fc095df_66a9f378",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "surprised and wondering why we need this osgi.core dependency here (normally we should not)",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "962db48f_0a9a6fc7",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "remove this, it\u0027s only for ResourceBatchingManager, which we should NOT move to this new bundle IMHO",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "111c2172_5533855d",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "remove these x2 lines; this seems to be embed org.opendaylight.ovsdb:utils.config into the mdsalutil-api; not needed here.",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8706d166_2ab7bca7",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "remove this entire plugin section.  This is only needed if there are utilities in src/test which we want to use in other artifacts, which we should avoid now.  It is from before we had [mdsalutil-]testutils.",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "678c7877_07aebd44",
+        "filename": "mdsaltools/api/src/main/java/org/opendaylight/genius/tools/mdsal/datastoreutils/listeners/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "I would suggest that we loose the \"datastoreutils\" part of this package name here; to me, it\u0027s redundant with mdsal; so how about just genius.tools.mdsal.listener[s?] instead here?",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8bd15e51_87ffec4b",
+        "filename": "mdsaltools/api/src/main/java/org/opendaylight/genius/tools/mdsal/infra/FutureRpcResults.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "let\u0027s drop the overly generic \".infra\" here while we are at it - how about either just genius.tools.mdsal (without sub-package), or genius.tools.mdsal.rpc if there we want it to \"look nice\", and have space for possible future more RPC related utilities.",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c652656_9916582c",
+        "filename": "pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T13:28:10Z",
+      "side": 1,
+      "message": "is the folder name (\"mdsaltools/\") important to you?  Because I think I would have just named this tools/ ... we do have genius.tools.mdsal in the package name.  I don\u0027t feel very strongly about it, so if for some reason you think it\u0027s important to name this mdsaltools/, the keep it.",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
