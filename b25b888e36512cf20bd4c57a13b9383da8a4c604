@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "bdba9452_c84ee0fe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-21T12:45:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a42594b0_41edc2e7",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e36c6e8b_de20f8fa",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 1
@@ -144,6 +162,24 @@
     },
     {
       "key": {
+        "uuid": "7117def0_3adc32e3",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelDeleteTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-21T12:45:48Z",
+      "side": 1,
+      "message": "This seems to be a different failure not related to IpAddress changes. Will enable this in separate patch, need some help with this.",
+      "parentUuid": "486727ba_3e5054b0",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "041e9a4f_66e4f288",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/xtend/ExpectedExternalTunnelObjects.xtend",
         "patchSetId": 1
@@ -155,6 +191,24 @@
       "writtenOn": "2018-03-21T10:59:19Z",
       "side": 1,
       "message": "LGTM as IP_ADDRESS_3 \u003d IpAddressBuilder.getDefaultInstance(TEP_IP_3) and TEP_IP_3 \u003d \"192.168.56.101\"",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1c9cf687_36d7df84",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/xtend/ExpectedExternalTunnelObjects.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-21T12:45:48Z",
+      "side": 1,
+      "message": "Alongwith other changes, best is to use ItmConstants.TEP_IP_3 as we no longer use string version of object but raw IP string itself.",
+      "parentUuid": "041e9a4f_66e4f288",
       "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
