@@ -391,9 +391,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public void createVLANInterface(String interfaceName, String portName, Integer vlanId,
+    public ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
-        createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode, false);
+        return createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode, false);
     }
 
     @Override
@@ -404,8 +404,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public void createVLANInterface(String interfaceName, String portName, Integer vlanId,
-            String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal)
+    public ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+                                                      String description, IfL2vlan.L2vlanMode l2vlanMode,
+                                                      boolean isExternal)
             throws InterfaceAlreadyExistsException {
 
         LOG.info("Create VLAN interface : {}", interfaceName);
@@ -428,10 +429,10 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         InstanceIdentifier<Interface> interfaceIId = interfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        ListenableFutures.addErrorLogging(
-            txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                tx -> tx.put(CONFIGURATION, interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS)),
-            LOG, "Failed to (async) write {}", interfaceIId);
+        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            tx -> tx.put(CONFIGURATION, interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS));
+        ListenableFutures.addErrorLogging(future, LOG, "Failed to (async) write {}", interfaceIId);
+        return future;
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
