@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -276,7 +277,7 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    private class InterfaceStateUpdateWorker implements Callable {
+    private class InterfaceStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
@@ -293,7 +294,7 @@ public class InterfaceInventoryStateListener
         }
 
         @Override
-        public Object call() {
+        public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
@@ -312,7 +313,7 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    private class InterfaceStateRemoveWorker implements Callable {
+    private class InterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final NodeConnectorId nodeConnectorIdNew;
         private NodeConnectorId nodeConnectorIdOld;
         FlowCapableNodeConnector fcNodeConnectorOld;
@@ -335,8 +336,7 @@ public class InterfaceInventoryStateListener
         }
 
         @Override
-        public Object call() {
-            List<ListenableFuture<Void>> futures = null;
+        public List<ListenableFuture<Void>> call() {
             // VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD
             // for same interface from Older DPN
             if (isParentInterface && isNetworkEvent) {
@@ -345,10 +345,11 @@ public class InterfaceInventoryStateListener
                 if (nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                     LOG.debug("Dropping the NodeConnector Remove Event for the interface: {}, {}, {}", interfaceName,
                             nodeConnectorIdNew, nodeConnectorIdOld);
-                    return futures;
+                    return Collections.emptyList();
                 }
             }
-            futures = removeInterfaceStateConfiguration();
+
+            List<ListenableFuture<Void>> futures = removeInterfaceStateConfiguration();
 
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
@@ -366,7 +367,7 @@ public class InterfaceInventoryStateListener
             LOG.debug("Removing interface state information for interface: {} ", interfaceName);
 
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(operTx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(operTx -> {
                 //VM Migration: Use old nodeConnectorId to delete the interface entry
                 NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
                     && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ? nodeConnectorIdOld : nodeConnectorIdNew;
