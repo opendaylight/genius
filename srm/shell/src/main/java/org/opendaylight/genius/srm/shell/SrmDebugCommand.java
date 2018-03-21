@@ -12,8 +12,8 @@ import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.commands.Option;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.ServiceOps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -24,10 +24,10 @@ public class SrmDebugCommand extends OsgiCommandSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(SrmDebugCommand.class);
 
-    private final SingleTransactionDataBroker txDataBroker;
+    private final DataBroker txDataBroker;
 
     public SrmDebugCommand(DataBroker dataBroker) {
-        this.txDataBroker = new SingleTransactionDataBroker(dataBroker);
+        this.txDataBroker = dataBroker;
     }
 
     @Option(name = "-c", aliases = {"--clear-ops"}, description = "Clear operations DS",
@@ -44,7 +44,9 @@ public class SrmDebugCommand extends OsgiCommandSupport {
 
     private void clearOpsDs() throws Exception {
         InstanceIdentifier<ServiceOps> path = getInstanceIdentifier();
-        txDataBroker.syncDelete(LogicalDatastoreType.OPERATIONAL, path);
+        WriteTransaction tx = txDataBroker.newWriteOnlyTransaction();
+        tx.delete(LogicalDatastoreType.OPERATIONAL, path);
+        tx.submit();
     }
 
     private static InstanceIdentifier<ServiceOps> getInstanceIdentifier() {

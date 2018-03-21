@@ -46,7 +46,6 @@ import org.opendaylight.genius.idmanager.jobs.LocalPoolCreateJob;
 import org.opendaylight.genius.idmanager.jobs.LocalPoolDeleteJob;
 import org.opendaylight.genius.idmanager.jobs.UpdateIdEntryJob;
 import org.opendaylight.genius.infra.FutureRpcResults;
-import org.opendaylight.genius.infra.FutureRpcResults.LogLevel;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -273,7 +272,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
             // TODO return the Future from releaseIdFromLocalPool() instead.. check all callers @CheckReturnValue
             return Futures.immediateFuture((Void) null);
-        }).onFailureLogLevel(LogLevel.NONE).onFailure(e -> {
+        }).onFailureLogLevel(org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE).onFailure(e -> {
             if (e instanceof IdDoesNotExistException) {
                 // Do not log full stack trace in case ID does not exist
                 LOG.error("RPC releaseId() failed due to IdDoesNotExistException; input = {}", input);
