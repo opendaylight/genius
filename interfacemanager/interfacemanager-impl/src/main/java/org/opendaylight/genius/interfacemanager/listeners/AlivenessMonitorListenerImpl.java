@@ -14,11 +14,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
+import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
 import org.slf4j.Logger;
@@ -32,16 +34,11 @@ import org.slf4j.LoggerFactory;
 public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitorListenerImpl.class);
 
-    private final AlivenessMonitorUtils alivenessMonitorUtils;
-    private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
-    public AlivenessMonitorListenerImpl(final DataBroker dataBroker, final NotificationService notificationService,
-            final AlivenessMonitorService alivenessMonitorService,
-            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final AlivenessMonitorUtils alivenessMonitorUtils) {
-        this.alivenessMonitorUtils = alivenessMonitorUtils;
-        this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
+    public AlivenessMonitorListenerImpl(final DataBroker dataBroker, final NotificationService notificationService) {
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         notificationService.registerNotificationListener(this);
     }
 
@@ -57,15 +54,17 @@ public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
 
     @Override
     public void onMonitorEvent(MonitorEvent notification) {
-        Long monitorId = notification.getEventData().getMonitorId();
-        String tunnelInterface = alivenessMonitorUtils.getInterfaceFromMonitorId(monitorId);
-        if (tunnelInterface == null) {
-            LOG.debug("Either monitoring for interface not started by Interfacemgr or it is not LLDP monitoring");
-            return;
-        }
-        LivenessState livenessState = notification.getEventData().getMonitorState();
-        LOG.debug("received monitor event for {} with livenessstate {}", tunnelInterface, livenessState);
-        OperStatus opState = livenessState == LivenessState.Up ? OperStatus.Up : OperStatus.Down;
-        interfaceManagerCommonUtils.setOpStateForInterface(tunnelInterface, opState);
+        ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            Long monitorId = notification.getEventData().getMonitorId();
+            String tunnelInterface = AlivenessMonitorUtils.getInterfaceFromMonitorId(tx, monitorId);
+            if (tunnelInterface == null) {
+                LOG.debug("Either monitoring for interface not started by Interfacemgr or it is not LLDP monitoring");
+                return;
+            }
+            LivenessState livenessState = notification.getEventData().getMonitorState();
+            LOG.debug("received monitor event for {} with livenessstate {}", tunnelInterface, livenessState);
+            OperStatus opState = livenessState == LivenessState.Up ? OperStatus.Up : OperStatus.Down;
+            InterfaceManagerCommonUtils.setOpStateForInterface(tx, tunnelInterface, opState);
+        }), LOG, "Error processing monitor event {}", notification);
     }
 }

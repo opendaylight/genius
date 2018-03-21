@@ -16,9 +16,13 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -64,12 +68,12 @@ public final class AlivenessMonitorUtils {
     private static final long MONITORING_WINDOW = 4;
 
     private final AlivenessMonitorService alivenessMonitorService;
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public AlivenessMonitorUtils(AlivenessMonitorService alivenessMonitor, DataBroker dataBroker) {
         this.alivenessMonitorService = alivenessMonitor;
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     public void startLLDPMonitoring(IfTunnel ifTunnel, String trunkInterfaceName) {
@@ -89,12 +93,13 @@ public final class AlivenessMonitorUtils {
             try {
                 Future<RpcResult<MonitorStartOutput>> result = alivenessMonitorService.monitorStart(lldpMonitorInput);
                 RpcResult<MonitorStartOutput> rpcResult = result.get();
-                long monitorId;
                 if (rpcResult.isSuccessful()) {
-                    monitorId = rpcResult.getResult().getMonitorId();
-                    createOrUpdateInterfaceMonitorIdMap(trunkInterfaceName, monitorId);
-                    createOrUpdateMonitorIdInterfaceMap(trunkInterfaceName, monitorId);
-                    LOG.trace("Started LLDP monitoring with id {}", monitorId);
+                    long monitorId = rpcResult.getResult().getMonitorId();
+                    ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                        createOrUpdateInterfaceMonitorIdMap(tx, trunkInterfaceName, monitorId);
+                        createOrUpdateMonitorIdInterfaceMap(tx, trunkInterfaceName, monitorId);
+                        LOG.trace("Started LLDP monitoring with id {}", monitorId);
+                    }), LOG, "Error starting monitoring");
                 } else {
                     LOG.warn("RPC Call to start monitoring returned with Errors {}", rpcResult.getErrors());
                 }
@@ -109,49 +114,49 @@ public final class AlivenessMonitorUtils {
             return;
         }
         LOG.debug("stop LLDP monitoring for {}", trunkInterface);
-        List<Long> monitorIds = getMonitorIdForInterface(trunkInterface);
-        if (monitorIds == null) {
-            LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
-            return;
-        }
-        for (Long monitorId : monitorIds) {
-            String interfaceName = getInterfaceFromMonitorId(monitorId);
-            if (interfaceName != null) {
-                MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
-
-                Future<RpcResult<Void>> future = alivenessMonitorService.monitorStop(input);
-                ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
-                        LOG, "Stop LLDP monitoring for {}", trunkInterface);
-
-                removeMonitorIdInterfaceMap(monitorId);
-                removeMonitorIdFromInterfaceMonitorIdMap(interfaceName, monitorId);
+        ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            List<Long> monitorIds = getMonitorIdForInterface(tx, trunkInterface);
+            if (monitorIds == null) {
+                LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
                 return;
             }
-        }
+            for (Long monitorId : monitorIds) {
+                String interfaceName = getInterfaceFromMonitorId(tx, monitorId);
+                if (interfaceName != null) {
+                    MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
+
+                    Future<RpcResult<Void>> future = alivenessMonitorService.monitorStop(input);
+                    ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
+                            LOG, "Stop LLDP monitoring for {}", trunkInterface);
+
+                    removeMonitorIdInterfaceMap(tx, monitorId);
+                    removeMonitorIdFromInterfaceMonitorIdMap(tx, interfaceName, monitorId);
+                    return;
+                }
+            }
+        }), LOG, "Error stopping LLDP monitoring for {}", trunkInterface);
     }
 
-    public String getInterfaceFromMonitorId(Long monitorId) {
+    public static String getInterfaceFromMonitorId(ReadTransaction tx, Long monitorId) throws ReadFailedException {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker)
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet()
                 .toJavaUtil().map(MonitorIdInterface::getInterfaceName).orElse(null);
     }
 
-    private void removeMonitorIdInterfaceMap(long monitorId) {
+    private void removeMonitorIdInterfaceMap(ReadWriteTransaction tx, long monitorId) throws ReadFailedException {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-                id, dataBroker);
-        if (monitorIdInterfaceMap.isPresent()) {
-            MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.OPERATIONAL, id);
+        if (tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().isPresent()) {
+            tx.delete(LogicalDatastoreType.OPERATIONAL, id);
         }
     }
 
-    private void removeMonitorIdFromInterfaceMonitorIdMap(String infName, long monitorId) {
+    private void removeMonitorIdFromInterfaceMonitorIdMap(ReadWriteTransaction tx, String infName, long monitorId)
+            throws ReadFailedException {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-                id, dataBroker);
+        Optional<InterfaceMonitorId> interfaceMonitorIdMap = tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet();
         if (interfaceMonitorIdMap.isPresent()) {
             InterfaceMonitorId interfaceMonitorIdInstance = interfaceMonitorIdMap.get();
             List<Long> existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
@@ -160,7 +165,8 @@ public final class AlivenessMonitorUtils {
                 InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
-                MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
+                tx.merge(LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance,
+                        WriteTransaction.CREATE_MISSING_PARENTS);
             }
         }
     }
@@ -203,14 +209,15 @@ public final class AlivenessMonitorUtils {
         }
     }
 
-    public void createOrUpdateInterfaceMonitorIdMap(String infName, long monitorId) {
+    private static void createOrUpdateInterfaceMonitorIdMap(ReadWriteTransaction tx, String infName, long monitorId)
+            throws ReadFailedException {
         InterfaceMonitorId interfaceMonitorIdInstance;
         List<Long> existingMonitorIds;
         InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        Optional<InterfaceMonitorId> interfaceMonitorIdMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-                id, dataBroker);
+        Optional<InterfaceMonitorId> interfaceMonitorIdMap =
+                tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet();
         if (interfaceMonitorIdMap.isPresent()) {
             interfaceMonitorIdInstance = interfaceMonitorIdMap.get();
             existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
@@ -221,44 +228,49 @@ public final class AlivenessMonitorUtils {
                 existingMonitorIds.add(monitorId);
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
-                MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
+                tx.merge(LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance,
+                        WriteTransaction.CREATE_MISSING_PARENTS);
             }
         } else {
             existingMonitorIds = new ArrayList<>();
             existingMonitorIds.add(monitorId);
             interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setMonitorId(existingMonitorIds)
                     .setKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
-            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance);
+            tx.merge(LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance,
+                    WriteTransaction.CREATE_MISSING_PARENTS);
         }
     }
 
-    public void createOrUpdateMonitorIdInterfaceMap(String infName, long monitorId) {
+    private static void createOrUpdateMonitorIdInterfaceMap(ReadWriteTransaction tx, String infName, long monitorId)
+            throws ReadFailedException {
         MonitorIdInterface monitorIdInterfaceInstance;
         String existinginterfaceName;
         MonitorIdInterfaceBuilder monitorIdInterfaceBuilder = new MonitorIdInterfaceBuilder();
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        Optional<MonitorIdInterface> monitorIdInterfaceMap = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-                id, dataBroker);
+        Optional<MonitorIdInterface> monitorIdInterfaceMap =
+                tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet();
         if (monitorIdInterfaceMap.isPresent()) {
             monitorIdInterfaceInstance = monitorIdInterfaceMap.get();
             existinginterfaceName = monitorIdInterfaceInstance.getInterfaceName();
             if (!existinginterfaceName.equals(infName)) {
                 monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setKey(new MonitorIdInterfaceKey(monitorId))
                         .setInterfaceName(infName).build();
-                MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance);
+                tx.merge(LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance,
+                        WriteTransaction.CREATE_MISSING_PARENTS);
             }
         } else {
             monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setMonitorId(monitorId)
                     .setKey(new MonitorIdInterfaceKey(monitorId)).setInterfaceName(infName).build();
-            MDSALUtil.syncWrite(dataBroker, LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance);
+            tx.merge(LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance,
+                    WriteTransaction.CREATE_MISSING_PARENTS);
         }
     }
 
-    public List<Long> getMonitorIdForInterface(String infName) {
+    private static List<Long> getMonitorIdForInterface(ReadTransaction tx, String infName) throws ReadFailedException {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).toJavaUtil().map(
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().toJavaUtil().map(
                 InterfaceMonitorId::getMonitorId).orElse(null);
     }
 
