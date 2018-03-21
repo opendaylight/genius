@@ -7,63 +7,18 @@
  */
 package org.opendaylight.genius.utils.metrics;
 
-import org.opendaylight.infrautils.metrics.Meter;
-import org.opendaylight.infrautils.metrics.MetricDescriptor;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 
-public class DataStoreMetrics {
-
-    private final MetricProvider metricProvider;
-    private final Class<?> clazz;
-    private final Meter added;
-    private final Meter updated;
-    private final Meter deleted;
+/**
+ * Metrics for datastore operations.
+ * @Deprecated Please use {@link org.opendaylight.genius.tools.mdsal.metrics.DataStoreMetrics} instead of this.
+ */
+@Deprecated
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
+public class DataStoreMetrics extends org.opendaylight.genius.tools.mdsal.metrics.DataStoreMetrics {
 
     public DataStoreMetrics(MetricProvider metricProvider, Class<?> clazz) {
-        this.metricProvider = metricProvider;
-        this.clazz = clazz;
-        this.added = initCounter("_added");
-        this.updated = initCounter("_updated");
-        this.deleted = initCounter("_deleted");
-    }
-
-    public void incrementAdded() {
-        added.mark();
-    }
-
-    public void incrementUpdated() {
-        updated.mark();
-    }
-
-    public void incrementDeleted() {
-        deleted.mark();
-    }
-
-    private Meter initCounter(String type) {
-        String className = clazz.getSimpleName();
-        // expects the form org.opendaylight.project.module
-        String project = clazz.getName().split("\\.")[2];
-        String module = clazz.getName().split("\\.")[3];
-        return metricProvider.newMeter(new MetricDescriptor() {
-            @Override
-            public Object anchor() {
-                return this;
-            }
-
-            @Override
-            public String project() {
-                return project;
-            }
-
-            @Override
-            public String module() {
-                return module;
-            }
-
-            @Override
-            public String id() {
-                return className + type;
-            }
-        });
+        super(metricProvider, clazz);
     }
 }
