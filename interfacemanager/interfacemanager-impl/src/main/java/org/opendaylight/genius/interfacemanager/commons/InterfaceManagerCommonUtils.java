@@ -292,8 +292,9 @@ public final class InterfaceManagerCommonUtils {
         return String.valueOf(dpnId) + tableId + ifName;
     }
 
-    public void setOpStateForInterface(String interfaceName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus opStatus) {
+    public static void setOpStateForInterface(WriteTransaction tx, String interfaceName,
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+                    .Interface.OperStatus opStatus) {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
@@ -304,7 +305,7 @@ public final class InterfaceManagerCommonUtils {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface interfaceData = ifaceBuilder
                 .setOperStatus(opStatus).build();
-        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData);
+        tx.merge(LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData, WriteTransaction.CREATE_MISSING_PARENTS);
     }
 
     public void createInterfaceChildEntry(String parentInterface, String childInterface) {
