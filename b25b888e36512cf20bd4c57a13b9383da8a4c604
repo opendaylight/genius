@@ -197,6 +197,24 @@
     },
     {
       "key": {
+        "uuid": "1c045134_db27091b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-03-21T15:39:14Z",
+      "side": 1,
+      "message": ".build() will auto fill in key if not present from the respective key fields. Setting it explicitly is a practice I want to avoid as it is prone to errors. I spent hour and a half only to realize I needed to make IpAddress change twice, once for field and again for key. Also, if tomorrow some other field becomes key, as long as it is being populated, no need to change code.",
+      "parentUuid": "931b750f_acf008e3",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "041e9a4f_66e4f288",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/xtend/ExpectedExternalTunnelObjects.xtend",
         "patchSetId": 1
