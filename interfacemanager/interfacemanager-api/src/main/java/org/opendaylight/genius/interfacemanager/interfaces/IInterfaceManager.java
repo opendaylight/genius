@@ -94,8 +94,6 @@ public interface IInterfaceManager {
 
     List<Interface> getVxlanInterfaces();
 
-    List<Interface> getChildInterfaces(String parentInterface);
-
     boolean isExternalInterface(String interfaceName);
 
     String getPortNameForInterface(NodeConnectorId nodeConnectorId, String interfaceName);
