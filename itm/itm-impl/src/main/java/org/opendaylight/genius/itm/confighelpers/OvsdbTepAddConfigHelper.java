@@ -17,7 +17,6 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZone;
@@ -68,7 +67,7 @@ public final class OvsdbTepAddConfigHelper {
         }
 
         // Get tep IP
-        IpAddress tepIpAddress = IpAddressBuilder.getDefaultInstance(tepIp);
+        IpAddress tepIpAddress = new IpAddress(tepIp.toCharArray());
         TransportZone tzone = null;
 
         // Case: TZ name is not given with OVS TEP.
@@ -205,7 +204,7 @@ public final class OvsdbTepAddConfigHelper {
 
         // Create subnet object
         SubnetsKey subKey = new SubnetsKey(subnetMaskObj);
-        IpAddress gatewayIP = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP);
+        IpAddress gatewayIP = new IpAddress(ITMConstants.DUMMY_GATEWAY_IP.toCharArray());
         int vlanID = ITMConstants.DUMMY_VLANID;
 
         Subnets subnet =

@@ -29,7 +29,6 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
@@ -494,7 +493,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
         String[] arrIpAddresses = subnetInfo.getAllAddresses();
 
         for (String ipAddress : arrIpAddresses) {
-            lstAvailableIps.add(IpAddressBuilder.getDefaultInstance(ipAddress));
+            lstAvailableIps.add(new IpAddress(ipAddress.toCharArray()));
         }
         lstAvailableIps.remove(gatewayIp);
         lstAvailableIps.removeAll(ItmUtils.getExcludeIpAddresses(excludeIpFilter, subnetInfo));

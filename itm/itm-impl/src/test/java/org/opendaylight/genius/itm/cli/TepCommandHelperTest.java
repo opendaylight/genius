@@ -273,8 +273,8 @@ public class TepCommandHelperTest {
     @Test
     public void testCreateLocalCacheWithoutcheckExistingSubnet() {
 
-        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-        IpPrefix subnetMaskObj = ipPrefixTest;
+        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpPrefix subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
         SubnetObject subObCli = new SubnetObject(gatewayIpObj, subnetsKey, subnetMaskObj, vlanId);
         Map<SubnetObject, List<Vteps>> subVtepMapTemp = new HashMap<>();

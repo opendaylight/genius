@@ -27,7 +27,6 @@ import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
@@ -188,7 +187,7 @@ public final class ItmInternalTunnelAddWorker {
     private void createTunnelInterface(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
             Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName, String parentInterfaceName) {
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
-        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance(gateway);
+        IpAddress gatewayIpObj = new IpAddress(gateway.toCharArray());
         IpAddress gwyIpAddress =
                 srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
         LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, "

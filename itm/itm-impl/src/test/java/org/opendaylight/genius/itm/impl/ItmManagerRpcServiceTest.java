@@ -150,10 +150,10 @@ public class ItmManagerRpcServiceTest {
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ipAddress1.getValue()), dpId1.toString(),
+            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ipAddress1), dpId1.toString(),
                     TunnelTypeMplsOverGre.class));
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifierNew = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ipAddress1.getValue()), dpId1.toString(),
+            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ipAddress1), dpId1.toString(),
                     tunnelType1));
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier1 = InstanceIdentifier.create(ExternalTunnelList.class)
             .child(ExternalTunnel.class, new ExternalTunnelKey(destinationDevice, sourceDevice,
@@ -219,8 +219,8 @@ public class ItmManagerRpcServiceTest {
         stringList.add(sourceDevice);
         dpId1List.add(dpId1);
         stringList.add("def");
-        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(tunnelInterfaceName, String.valueOf(ipAddress1.getValue()),
-            String.valueOf(ipAddress1.getValue()), tunnelType1.getName());
+        trunkInterfaceName = ItmUtils.getTrunkInterfaceName(tunnelInterfaceName, ipAddress1
+                .getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(), tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
                 .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName)
@@ -303,7 +303,7 @@ public class ItmManagerRpcServiceTest {
     @Ignore
     @Test
     public void testAddExternalTunnelEndpoint() {
-        externalTunnelNew = ItmUtils.buildExternalTunnel(dpId1.toString(), String.valueOf(ipAddress1.getValue()),
+        externalTunnelNew = ItmUtils.buildExternalTunnel(dpId1.toString(), ipAddress1.toString(),
                 tunnelType1, trunkInterfaceName);
 
         itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
@@ -344,7 +344,7 @@ public class ItmManagerRpcServiceTest {
     @Ignore
     @Test
     public void testBuildExternalTunnelFromDpns() {
-        externalTunnelNew = ItmUtils.buildExternalTunnel(dpId1.toString(), String.valueOf(ipAddress1.getValue()),
+        externalTunnelNew = ItmUtils.buildExternalTunnel(dpId1.toString(), ipAddress1.toString(),
                 tunnelType1, trunkInterfaceName);
 
         itmManagerRpcService.buildExternalTunnelFromDpns(buildExternalTunnelFromDpnsInput);

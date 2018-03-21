@@ -10,7 +10,8 @@ package org.opendaylight.genius.itm.tests.xtend;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.tepsnothostedintransportzone.UnknownVtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZoneBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 
 import org.opendaylight.genius.itm.tests.ItmTestConstants;
 
@@ -24,7 +25,7 @@ class ExpectedTepNotHostedTransportZoneObjects {
             unknownVteps = #[
                   new UnknownVtepsBuilder >> [
                          dpnId = ItmTestConstants.NOT_HOSTED_INT_TZ_TEPDPN_ID
-                         ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP)
+                         ipAddress = new IpAddress(  new Ipv4Address(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP) )
                          ofTunnel = ItmTestConstants.OF_TUNNEL
                    ]
             ]
