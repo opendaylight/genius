@@ -30,6 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -145,11 +146,11 @@ public final class InterfaceManagerCommonUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker).orNull();
     }
 
-    public boolean isNodePresent(NodeConnectorId nodeConnectorId) {
+    public boolean isNodePresent(ReadTransaction tx, NodeConnectorId nodeConnectorId) throws ReadFailedException {
         NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(nodeID)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier, dataBroker).isPresent();
+        return tx.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).checkedGet().isPresent();
     }
 
     public static InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
@@ -728,12 +729,13 @@ public final class InterfaceManagerCommonUtils {
         return null;
     }
 
-    public void deleteDpnToInterface(BigInteger dpId, String infName, WriteTransaction transaction) {
+    public static void deleteDpnToInterface(BigInteger dpId, String infName, ReadWriteTransaction transaction)
+            throws ReadFailedException {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InstanceIdentifier<DpnToInterface> dpnToInterfaceId = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, dpnToInterfaceKey).build();
         Optional<DpnToInterface> dpnToInterfaceOptional =
-                IfmUtil.read(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId, dataBroker);
+                transaction.read(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId).checkedGet();
         if (!dpnToInterfaceOptional.isPresent()) {
             LOG.debug("DPN {} is already removed from the Operational DS", dpId);
             return;
