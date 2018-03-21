@@ -32,7 +32,9 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
@@ -128,11 +130,11 @@ public class TepCommandHelper {
         IpPrefix subnetMaskObj = null;
         final VtepsKey vtepkey = new VtepsKey(dpnId, portName);
         try {
-            ipAddressObj = new IpAddress(ipAddress.toCharArray());
-            gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+            ipAddressObj = IpAddressBuilder.getDefaultInstance(ipAddress);
+            gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
             if ((gatewayIp != null) && !gatewayIp.isEmpty()
                     && !("null".equals(gatewayIp)) || ("0.0.0.0".equals(gatewayIp))) {
-                gatewayIpObj = new IpAddress(gatewayIp.toCharArray());
+                gatewayIpObj = IpAddressBuilder.getDefaultInstance(gatewayIp);
             } else {
                 LOG.debug("gateway is null");
                 gatewayIp = null;
@@ -142,7 +144,7 @@ public class TepCommandHelper {
             return;
         }
         try {
-            subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
+            subnetMaskObj = IpPrefixBuilder.getDefaultInstance(subnetMask);
         } catch (Exception e) {
             handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
             return;
@@ -559,10 +561,10 @@ public class TepCommandHelper {
         IpPrefix subnetMaskObj = null;
         final VtepsKey vtepkey = new VtepsKey(dpnId, portName);
         try {
-            ipAddressObj = new IpAddress(ipAddress.toCharArray());
-            gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+            ipAddressObj = IpAddressBuilder.getDefaultInstance(ipAddress);
+            gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
             if (!("null".equals(gatewayIp)) || ("0.0.0.0".equals(gatewayIp)) && (gatewayIp != null)) {
-                gatewayIpObj = new IpAddress(gatewayIp.toCharArray());
+                gatewayIpObj = IpAddressBuilder.getDefaultInstance(gatewayIp);
             } else {
                 LOG.debug("gateway is null");
                 gatewayIp = null;
@@ -572,7 +574,7 @@ public class TepCommandHelper {
             return;
         }
         try {
-            subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
+            subnetMaskObj = IpPrefixBuilder.getDefaultInstance(subnetMask);
         } catch (Exception e) {
             handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
             return;
@@ -765,11 +767,11 @@ public class TepCommandHelper {
             String gatewayIp, String transportZone, CommandSession session) {
         boolean exists = false;
         final VtepsKey vtepkey = new VtepsKey(dpnId, portName);
-        IpAddress ipAddressObj = new IpAddress(ipAddress.toCharArray());
-        IpPrefix subnetMaskObj = new IpPrefix(subnetMask.toCharArray());
-        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpAddress ipAddressObj = IpAddressBuilder.getDefaultInstance(ipAddress);
+        IpPrefix subnetMaskObj = IpPrefixBuilder.getDefaultInstance(subnetMask);
+        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         if (gatewayIp != null) {
-            gatewayIpObj = new IpAddress(gatewayIp.toCharArray());
+            gatewayIpObj = IpAddressBuilder.getDefaultInstance(gatewayIp);
         } else {
             LOG.debug("gateway is null");
         }

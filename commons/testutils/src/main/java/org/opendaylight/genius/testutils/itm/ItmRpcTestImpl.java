@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceInput;
@@ -24,7 +24,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.D
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnEndpointIpsOutputBuilder;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnInfoInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnInfoOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelInput;
@@ -59,7 +58,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     private final Map<BigInteger, Map<String, String>> externalInterfaceNames = new ConcurrentHashMap<>();
 
     public synchronized void addDpn(BigInteger dpnId, String tepIp) {
-        tepIps.put(dpnId, new IpAddress(new Ipv4Address(tepIp)));
+        tepIps.put(dpnId, IpAddressBuilder.getDefaultInstance(tepIp));
     }
 
     public synchronized void addInterface(BigInteger dpnId, String dstTep, String interfaceName) {
@@ -73,7 +72,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     }
 
     public synchronized void addExternalInterface(BigInteger dpnId, String dstTep, String interfaceName) {
-        dstTep = new IpAddress(new Ipv4Address(dstTep)).toString();
+        //dstTep = IpAddressBuilder.getDefaultInstance(dstTep).toString();
         externalInterfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
         externalInterfaceNames.get(dpnId).put(dstTep, interfaceName);
     }

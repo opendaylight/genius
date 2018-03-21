@@ -659,10 +659,10 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzPath);
 
         // check TZ is Moved
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone().getUnknownVteps()
-                .get(0).getIpAddress().getIpv4Address().getValue(), dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, tzPath).checkedGet().get().getSubnets().get(0)
-                .getVteps().get(0).getIpAddress().getIpv4Address().getValue());
+        assertEqualBeans(String.valueOf(ExpectedTepNotHostedTransportZoneObjects
+                .newTepNotHostedTransportZone().getUnknownVteps().get(0).getIpAddress().getValue()),
+            String.valueOf(dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzPath)
+                .checkedGet().get().getSubnets().get(0).getVteps().get(0).getIpAddress().getValue()));
 
         assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone().getUnknownVteps()
                 .get(0).getDpnId(), dataBroker.newReadOnlyTransaction()

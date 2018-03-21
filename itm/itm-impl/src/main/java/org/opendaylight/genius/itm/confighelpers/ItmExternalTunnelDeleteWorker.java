@@ -69,7 +69,8 @@ public final class ItmExternalTunnelDeleteWorker {
 
                 InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class).child(
                         ExternalTunnel.class,
-                        ItmUtils.getExternalTunnelKey(extIp.toString(), teps.getDPNID().toString(), tunType));
+                        ItmUtils.getExternalTunnelKey(String.valueOf(extIp.getValue()), teps.getDPNID().toString(),
+                                tunType));
                 transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
                 LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
                 ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
@@ -102,7 +103,8 @@ public final class ItmExternalTunnelDeleteWorker {
 
             InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class).child(
                     ExternalTunnel.class,
-                    ItmUtils.getExternalTunnelKey(extIp.toString(), teps.getDPNID().toString(), tunType));
+                    ItmUtils.getExternalTunnelKey(String.valueOf(extIp.getValue()), teps.getDPNID().toString(),
+                            tunType));
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
             LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
             ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
