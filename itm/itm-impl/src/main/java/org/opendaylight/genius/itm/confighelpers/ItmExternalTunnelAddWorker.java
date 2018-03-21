@@ -23,6 +23,7 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -79,7 +80,7 @@ public class ItmExternalTunnelAddWorker {
                 String subnetMaskStr = String.valueOf(subnetMaskArray);
                 SubnetUtils utils = new SubnetUtils(subnetMaskStr);
                 String dcGwyIpStr = String.valueOf(extIp.getValue());
-                IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+                IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
                 IpAddress gwyIpAddress =
                         utils.getInfo().isInRange(dcGwyIpStr) ? gatewayIpObj : firstEndPt.getGwIpAddress();
                 LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {},"
@@ -97,10 +98,10 @@ public class ItmExternalTunnelAddWorker {
                 transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
                 // update external_tunnel_list ds
                 InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
-                        .child(ExternalTunnel.class, new ExternalTunnelKey(extIp.toString(),
+                        .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(extIp.getValue()),
                                 teps.getDPNID().toString(), tunType));
-                ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(), extIp.toString(),
-                        tunType, trunkInterfaceName);
+                ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(),
+                    String.valueOf(extIp.getValue()), tunType, trunkInterfaceName);
                 transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
             }
             return Collections.singletonList(transaction.submit());
@@ -273,7 +274,7 @@ public class ItmExternalTunnelAddWorker {
             IpPrefix srcSubnet, IpAddress gwIp, IpPrefix dstSubnet, Class<? extends TunnelTypeBase> tunType,
             Boolean monitorEnabled, Integer monitorInterval, Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
             WriteTransaction transaction) {
-        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gwIp;
         String parentIf =  ItmUtils.getHwParentIf(topoId, srcNodeid);
         String tunTypeStr = tunType.getName();
@@ -306,7 +307,7 @@ public class ItmExternalTunnelAddWorker {
             String dstNodeId, IpAddress dstIp, IpPrefix srcSubnet, IpAddress gwIp, IpPrefix dstSubnet,
             Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Integer monitorInterval,
             Class<? extends TunnelMonitoringTypeBase> monitorProtocol, WriteTransaction transaction) {
-        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gwIp;
         String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);
         String tunTypeStr = tunType.getName();
