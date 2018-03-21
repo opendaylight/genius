@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "9c15912e_81cd95cc",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T16:06:11Z",
+      "side": 1,
+      "message": "why not int?",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 11
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ae3390b_0c15c597",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 12
@@ -117,6 +140,24 @@
       "side": 1,
       "message": "Yes, in subsequent patch these Maps will also be in their own classes and its likely that this util will be eliminated.",
       "parentUuid": "b23e9fab_4465abbf",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "67d133d8_0a4fa6c7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T16:06:11Z",
+      "side": 1,
+      "message": "cool. In that case, since I don\u0027t see anything remaining use if this class in this patch so I think we should omit it. Let\u0027s add these Maps back with their own classes as needed.",
+      "parentUuid": "73f7cc91_f8c59208",
       "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
