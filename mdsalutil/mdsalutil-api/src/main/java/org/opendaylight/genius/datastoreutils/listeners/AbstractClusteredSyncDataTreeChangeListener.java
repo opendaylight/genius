@@ -7,31 +7,25 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners;
 
-import java.util.Collection;
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.inject.Inject;
-import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
- * Abstract class providing some common functionality to specific listeners. This is the clustered version of the
- * {@link AbstractSyncDataTreeChangeListener}.
- *
- * @param <T> type of the data object the listener is registered to.
- *
- * @see AbstractSyncDataTreeChangeListener
- *
- * @author David Suárez (david.suarez.fuentes@gmail.com)
+ * Abstract class providing some common functionality to specific listeners.
+ * @deprecated Please use {@link
+ * org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener} instead of this!
  */
+@SuppressFBWarnings("NM_SAME_SIMPLE_NAME_AS_SUPERCLASS")
+@Deprecated
 public abstract class AbstractClusteredSyncDataTreeChangeListener<T extends DataObject> extends
-        AbstractDataTreeChangeListener<T> implements DataTreeChangeListenerActions<T>,
-        ClusteredDataTreeChangeListener<T> {
+        org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener<T> {
 
     @Inject
     public AbstractClusteredSyncDataTreeChangeListener(DataBroker dataBroker,
@@ -51,10 +45,5 @@ public abstract class AbstractClusteredSyncDataTreeChangeListener<T extends Data
                                                        InstanceIdentifier<T> instanceIdentifier,
                                                        MetricProvider metricProvider) {
         super(dataBroker, datastoreType, instanceIdentifier, metricProvider);
-    }
-
-    @Override
-    public final void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> collection) {
-        DataTreeChangeListenerActions.super.onDataTreeChanged(collection, getDataStoreMetrics());
     }
 }

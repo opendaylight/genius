@@ -14,7 +14,7 @@ import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredSyncDataTreeChangeListener;
+import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.ServiceOps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.Services;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.ops.rev170711.service.ops.services.Operations;

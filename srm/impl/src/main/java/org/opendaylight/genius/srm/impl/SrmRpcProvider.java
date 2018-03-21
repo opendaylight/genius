@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.genius.infra.FutureRpcResults;
+import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.RecoverInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.RecoverOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.ReinstallInput;
