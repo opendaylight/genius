@@ -244,22 +244,24 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            BoundServicesState boundServicesState = FlowBasedServicesUtils
-                .getBoundServicesState(dataBroker, interfaceName, serviceMode);
-            // if service-binding state is not present, construct the same using ifstate
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            if (boundServicesState == null) {
-                Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
-                if (ifState == null) {
-                    LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
-                        interfaceName);
-                    return null;
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                BoundServicesState boundServicesState = FlowBasedServicesUtils
+                        .getBoundServicesState(tx, interfaceName, serviceMode);
+                // if service-binding state is not present, construct the same using ifstate
+                if (boundServicesState == null) {
+                    Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
+                    if (ifState == null) {
+                        LOG.debug("Interface not operational, will bind service whenever interface comes up: {}",
+                                interfaceName);
+                        return;
+                    }
+                    boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
+                    FlowBasedServicesUtils.addBoundServicesState(tx, interfaceName, boundServicesState);
                 }
-                boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
-                FlowBasedServicesUtils.addBoundServicesState(futures, txRunner, interfaceName,boundServicesState);
-            }
-            flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
-                    boundServicesState);
+                flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
+                        boundServicesState);
+            }));
             return futures;
         }
     }
@@ -283,21 +285,23 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            // if this is the last service getting unbound, remove service-state cache information
-            BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
-                dataBroker, interfaceName, serviceMode);
-            if (boundServiceState == null) {
-                LOG.warn("bound-service-state is not present for interface:{}, service-mode:{}, "
-                        + "service-name:{}, service-priority:{}", interfaceName, serviceMode,
-                    boundServicesNew.getServiceName(), boundServicesNew.getServicePriority());
-                return null;
-            }
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            if (boundServicesList.isEmpty()) {
-                FlowBasedServicesUtils.removeBoundServicesState(futures, txRunner, interfaceName, serviceMode);
-            }
-            flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew, boundServicesList,
-                    boundServiceState);
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                // if this is the last service getting unbound, remove service-state cache information
+                BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
+                        tx, interfaceName, serviceMode);
+                if (boundServiceState == null) {
+                    LOG.warn("bound-service-state is not present for interface:{}, service-mode:{}, "
+                                    + "service-name:{}, service-priority:{}", interfaceName, serviceMode,
+                            boundServicesNew.getServiceName(), boundServicesNew.getServicePriority());
+                    return;
+                }
+                if (boundServicesList.isEmpty()) {
+                    FlowBasedServicesUtils.removeBoundServicesState(tx, interfaceName, serviceMode);
+                }
+                flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
+                        boundServicesList, boundServiceState);
+            }));
             return futures;
         }
     }

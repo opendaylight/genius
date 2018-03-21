@@ -548,11 +548,15 @@ public final class IfmUtil {
 
     public static void unbindService(ManagedNewTransactionRunner txRunner, JobCoordinator coordinator,
             String interfaceName, InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
-        LOG.info("Unbinding Service from : {}", interfaceName);
         coordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier)
-                )));
+                    tx -> unbindService(tx, interfaceName, boundServicesInstanceIdentifier))));
+    }
+
+    public static void unbindService(WriteTransaction tx, String interfaceName,
+            InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
+        LOG.info("Unbinding Service from : {}", interfaceName);
+        tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
     }
 
     public static long getLogicalTunnelSelectGroupId(int lportTag) {

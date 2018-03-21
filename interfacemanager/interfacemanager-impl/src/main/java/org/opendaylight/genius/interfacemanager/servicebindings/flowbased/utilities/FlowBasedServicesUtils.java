@@ -19,9 +19,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -104,13 +105,12 @@ public final class FlowBasedServicesUtils {
                     org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_EXTERNAL,
                     org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_MPLS_OVER_GRE);
 
-    public static ServicesInfo getServicesInfoForInterface(String interfaceName,
-            Class<? extends ServiceModeBase> serviceMode, DataBroker dataBroker) {
+    public static ServicesInfo getServicesInfoForInterface(ReadTransaction tx, String interfaceName,
+            Class<? extends ServiceModeBase> serviceMode) throws ReadFailedException {
         ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName, serviceMode);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder = InstanceIdentifier
                 .builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
-        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, servicesInfoIdentifierBuilder.build(), dataBroker)
-                .orNull();
+        return tx.read(LogicalDatastoreType.CONFIGURATION, servicesInfoIdentifierBuilder.build()).checkedGet().orNull();
     }
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName,
@@ -682,36 +682,33 @@ public final class FlowBasedServicesUtils {
             .setServiceMode(serviceMode).setKey(boundServicesStateKey).build();
     }
 
-    public static BoundServicesState getBoundServicesState(DataBroker dataBroker,
+    public static BoundServicesState getBoundServicesState(ReadTransaction tx,
                                                            String interfaceName,
-                                                           Class<? extends ServiceModeBase> serviceMode) {
+                                                           Class<? extends ServiceModeBase> serviceMode)
+            throws ReadFailedException {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker).orNull();
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orNull();
     }
 
-    public static void addBoundServicesState(List<ListenableFuture<Void>> futures,
-                                             ManagedNewTransactionRunner txRunner, String interfaceName,
+    public static void addBoundServicesState(WriteTransaction tx, String interfaceName,
                                              BoundServicesState interfaceBoundServicesState) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
             interfaceBoundServicesState.getInterfaceName(), interfaceBoundServicesState.getServiceMode().getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState,
-                    WriteTransaction.CREATE_MISSING_PARENTS)));
+        tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState,
+                WriteTransaction.CREATE_MISSING_PARENTS);
     }
 
-    public static  void removeBoundServicesState(List<ListenableFuture<Void>> futures,
-                                                 ManagedNewTransactionRunner txRunner,
+    public static  void removeBoundServicesState(WriteTransaction tx,
                                                  String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
             serviceMode.getName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.delete(LogicalDatastoreType.OPERATIONAL, id)));
+        tx.delete(LogicalDatastoreType.OPERATIONAL, id);
     }
 
     public static boolean isInterfaceTypeBasedServiceBinding(String interfaceName) {
