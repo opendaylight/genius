@@ -1,0 +1,107 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0ae3390b_0c15c597",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T15:54:58Z",
+      "side": 1,
+      "message": "This is no longer needed now.",
+      "range": {
+        "startLine": 50,
+        "startChar": 36,
+        "endLine": 50,
+        "endChar": 53
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "101c9655_1e390741",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T15:54:58Z",
+      "side": 1,
+      "message": "This should update the tunnelEndpointMap as well.",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd18ac54_ebcd431c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T15:54:58Z",
+      "side": 1,
+      "message": "I think error here.",
+      "range": {
+        "startLine": 114,
+        "startChar": 20,
+        "endLine": 114,
+        "endChar": 25
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66bdf928_5867b9c5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T15:54:58Z",
+      "side": 1,
+      "message": "combine these lines",
+      "range": {
+        "startLine": 193,
+        "startChar": 28,
+        "endLine": 194,
+        "endChar": 18
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b23e9fab_4465abbf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T15:54:58Z",
+      "side": 1,
+      "message": "What about these Maps - I\u0027d prefer to see them separated. I\u0027d also like to see if this general Utils class can be eliminated afterwards.",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
