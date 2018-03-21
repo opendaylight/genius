@@ -30,6 +30,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
         <module>odl-genius-api</module>
         <module>odl-genius</module>
         <module>odl-genius-rest</module>
+        <module>odl-genius-srm</module>
+        <module>odl-genius-tools</module>
         <module>odl-genius-fcaps-framework</module>
         <module>odl-genius-fcaps-application</module>
     </modules>

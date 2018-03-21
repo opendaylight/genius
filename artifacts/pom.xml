@@ -71,6 +71,20 @@
         <classifier>features</classifier>
         <type>xml</type>
       </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>odl-genius-srm</artifactId>
+        <version>${project.version}</version>
+        <classifier>features</classifier>
+        <type>xml</type>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>odl-genius-tools</artifactId>
+        <version>${project.version}</version>
+        <classifier>features</classifier>
+        <type>xml</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
