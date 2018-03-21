@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fea81033_8b45e90f",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-21T17:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9c15912e_81cd95cc",
+      "range": {
+        "startLine": 73,
+        "startChar": 4,
+        "endLine": 73,
+        "endChar": 11
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ae3390b_0c15c597",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 12
@@ -36,6 +60,30 @@
       "writtenOn": "2018-03-21T15:54:58Z",
       "side": 1,
       "message": "This is no longer needed now.",
+      "range": {
+        "startLine": 50,
+        "startChar": 36,
+        "endLine": 50,
+        "endChar": 53
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8d62a12_f6328b48",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-21T17:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ae3390b_0c15c597",
       "range": {
         "startLine": 50,
         "startChar": 36,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "ba068e04_d70751de",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-21T17:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "101c9655_1e390741",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cd18ac54_ebcd431c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 12
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "0fa253df_699854d9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-21T17:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cd18ac54_ebcd431c",
+      "range": {
+        "startLine": 114,
+        "startChar": 20,
+        "endLine": 114,
+        "endChar": 25
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "66bdf928_5867b9c5",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 12
@@ -99,6 +189,30 @@
       "writtenOn": "2018-03-21T15:54:58Z",
       "side": 1,
       "message": "combine these lines",
+      "range": {
+        "startLine": 193,
+        "startChar": 28,
+        "endLine": 194,
+        "endChar": 18
+      },
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d5fe42e_83ab8671",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-21T17:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "66bdf928_5867b9c5",
       "range": {
         "startLine": 193,
         "startChar": 28,
@@ -176,6 +290,24 @@
       "side": 1,
       "message": "\u003e cool. In that case, since I don\u0027t see anything remaining use if\n \u003e this class in this patch so I think we should omit it.\n\nSorry for the bad grammar. I mean DpnTepStateCache doesn\u0027t need this class anymore and I don\u0027t see anything else using it in this patch so let\u0027s omit it.\n\n\u003e  Let\u0027s add\n \u003e these Maps back with their own classes as needed.",
       "parentUuid": "67d133d8_0a4fa6c7",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "570ddc7c_848ea57f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-21T17:34:05Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3de8626_ccb47b5b",
       "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
