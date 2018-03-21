@@ -17,7 +17,7 @@ class ExpectedExternalTunnelObjects {
 
     static def newExternalTunnelForRpcTest() {
         new ExternalTunnelBuilder >> [
-              destinationDevice = "IpAddress{_ipv4Address=Ipv4Address{_value=192.168.56.101}}"
+              destinationDevice = String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue())
               sourceDevice = ItmTestConstants.DPID_STR_ONE
               transportType = ItmTestConstants.TUNNEL_TYPE_VXLAN
               tunnelInterfaceName = ItmTestConstants.EXT_TUNNEL_INTERFACE_NAME

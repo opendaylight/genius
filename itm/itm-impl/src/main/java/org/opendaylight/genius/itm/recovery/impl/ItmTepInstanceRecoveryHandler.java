@@ -6,6 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.genius.itm.recovery.impl;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -26,7 +27,7 @@ import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
@@ -149,7 +150,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 LOG.error("Transport Zone {} subnet {} has no vteps", transportZone.getZoneName(), sub.getPrefix());
             }
             for (Vteps vtep : sub.getVteps()) {
-                if (ipAddress.equals(vtep.getIpAddress().getIpv4Address().getValue())) {
+                if (ipAddress.equals(String.valueOf(vtep.getIpAddress().getValue()))) {
 
                     List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);
                     LOG.trace("Transportzone {} found match for tep {} to be recovered", transportZone.getZoneName(),
@@ -157,7 +158,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
 
                     //OfTunnels is false byDefault
                     TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(vtep.getDpnId(),
-                            new IpAddress(ipAddress.toCharArray()), vtep.getPortname(), false, sub.getVlanId(),
+                        IpAddressBuilder.getDefaultInstance(ipAddress), vtep.getPortname(), false, sub.getVlanId(),
                             sub.getPrefix(), sub.getGatewayIp(), zones,transportZone.getTunnelType(),
                             itmConfig.getDefaultTunnelTos());
 
