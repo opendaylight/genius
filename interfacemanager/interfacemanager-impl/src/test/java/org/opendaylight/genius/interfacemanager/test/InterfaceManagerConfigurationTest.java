@@ -609,7 +609,7 @@ public class InterfaceManagerConfigurationTest {
 
         // check whether service-binding state cache is populated
         assertEqualBeans(ExpectedBoundServiceState.newBoundServiceState(), FlowBasedServicesUtils
-            .getBoundServicesState(dataBroker, INTERFACE_NAME, ServiceModeIngress.class));
+            .getBoundServicesState(dataBroker.newReadOnlyTransaction(), INTERFACE_NAME, ServiceModeIngress.class));
 
         //7. test check whether service is bound on ingress
         Assert.assertTrue(interfaceManager.isServiceBoundOnInterfaceForIngress(NwConstants.ELAN_SERVICE_INDEX,
