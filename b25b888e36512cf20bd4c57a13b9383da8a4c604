@@ -1,0 +1,163 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a42594b0_41edc2e7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "shouldn\u0027t this here be getDefaultInstance(gateway) instead of \"0.0.0.0\" ?  From what I understand about this, the way you currently have it, it would break IPv6?",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e36c6e8b_de20f8fa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "LGTM and most likely actually fixes a bug this had before re IPv6 !",
+      "range": {
+        "startLine": 276,
+        "startChar": 15,
+        "endLine": 276,
+        "endChar": 28
+      },
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc6e0398_f2e3c2bd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "LGTM and most likely actually fixes a bug this had before re IPv6 !",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8c71347b_a3e7aee4",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/cli/TepCommandHelperTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "LGTM, because ipPrefixTest \u003d IpPrefixBuilder.getDefaultInstance(subnetMask);",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "deda36ad_2fa369b3",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "LGTM and most likely actually fixes a bug this had before re IPv6 !",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "362bf99d_a6232732",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelDeleteTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "LGTM and most likely actually fixes a bug this had before re IPv6 !",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac036471_a3f82c9b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelDeleteTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "nit: doesn\u0027t Checkstyle complain about missing space after comma here? ;) Or just break tunnelType1.getName() to new line, as it was.",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "486727ba_3e5054b0",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelDeleteTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "just commenting out a line in a test like this is very scary - sholdn\u0027t this test be fixed here instead?!",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "041e9a4f_66e4f288",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/xtend/ExpectedExternalTunnelObjects.xtend",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-21T10:59:19Z",
+      "side": 1,
+      "message": "LGTM as IP_ADDRESS_3 \u003d IpAddressBuilder.getDefaultInstance(TEP_IP_3) and TEP_IP_3 \u003d \"192.168.56.101\"",
+      "revId": "b25b888e36512cf20bd4c57a13b9383da8a4c604",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
