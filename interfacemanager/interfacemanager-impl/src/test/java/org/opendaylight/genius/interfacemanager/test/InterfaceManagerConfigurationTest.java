@@ -657,10 +657,6 @@ public class InterfaceManagerConfigurationTest {
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
             egressDispatcherFlowId).get());
 
-        // 12. Test fetching child interfaces of an interface
-        // FIXME change the below assert once sorted augmentation fix lands
-        assertEqualBeans(INTERFACE_NAME, interfaceManager.getChildInterfaces(PARENT_INTERFACE).get(0).getName());
-
         // 13. Test fetching interface-info from operational DS
         assertEqualBeans(ExpectedInterfaceInfo.newInterfaceInfo(1, INTERFACE_NAME, PARENT_INTERFACE, null),
             interfaceManager.getInterfaceInfoFromOperationalDataStore(INTERFACE_NAME));

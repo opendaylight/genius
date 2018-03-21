@@ -60,8 +60,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -533,36 +531,6 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public List<Interface> getVxlanInterfaces() {
         return interfaceManagerCommonUtils.getAllTunnelInterfacesFromCache();
-    }
-
-    @Override
-    public List<Interface> getChildInterfaces(String parentInterface) {
-        InterfaceParentEntry parentEntry = interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(parentInterface);
-        if (parentEntry == null) {
-            LOG.debug("No parent entry found for {}", parentInterface);
-            return Collections.emptyList();
-        }
-
-        List<InterfaceChildEntry> childEntries = parentEntry.getInterfaceChildEntry();
-        if (childEntries == null || childEntries.isEmpty()) {
-            LOG.debug("No child entries found for parent {}", parentInterface);
-            return Collections.emptyList();
-        }
-
-        List<Interface> childInterfaces = new ArrayList<>();
-        for (InterfaceChildEntry childEntry : childEntries) {
-            String interfaceName = childEntry.getChildInterface();
-            Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
-            if (iface != null) {
-                childInterfaces.add(iface);
-            } else {
-                LOG.debug("Child interface {} not found in config DS for parent interface {}", interfaceName,
-                        parentInterface);
-            }
-        }
-
-        LOG.trace("Found child interfaces {} for parent {}", childInterfaces, parentInterface);
-        return childInterfaces;
     }
 
     @Override
