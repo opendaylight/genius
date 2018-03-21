@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2017 Ericsson S.A. and others.  All rights reserved.
+ * Copyright (c) 2018 Ericsson S.A. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.datastoreutils.listeners;
+package org.opendaylight.genius.tools.mdsal.listener;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -14,7 +14,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
+import org.opendaylight.genius.tools.mdsal.metrics.DataStoreMetrics;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 abstract class AbstractDataTreeChangeListener<T extends DataObject> implements DataTreeChangeListener<T>,
-        AutoCloseable {
+        DataTreeChangeListenerActions<T>, AutoCloseable {
 
     private final DataBroker dataBroker;
     private final DataTreeIdentifier<T> dataTreeIdentifier;
