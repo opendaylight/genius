@@ -161,6 +161,24 @@
       "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3de8626_ccb47b5b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-21T16:10:38Z",
+      "side": 1,
+      "message": "\u003e cool. In that case, since I don\u0027t see anything remaining use if\n \u003e this class in this patch so I think we should omit it.\n\nSorry for the bad grammar. I mean DpnTepStateCache doesn\u0027t need this class anymore and I don\u0027t see anything else using it in this patch so let\u0027s omit it.\n\n\u003e  Let\u0027s add\n \u003e these Maps back with their own classes as needed.",
+      "parentUuid": "67d133d8_0a4fa6c7",
+      "revId": "8f4776a9eb18f6175e83af459c0adf25c5da5bcf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
