@@ -8,9 +8,11 @@
 
 package org.opendaylight.genius.interfacemanager.interfaces;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -64,8 +66,9 @@ public interface IInterfaceManager {
     void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
-    void createVLANInterface(String interfaceName, String portName, Integer vlanId, String description,
-            IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
+    ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+                                               String description,
+                                               IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
     /**
      * Create a VLAN interface.
@@ -76,8 +79,9 @@ public interface IInterfaceManager {
     void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
-    void createVLANInterface(String interfaceName, String portName, Integer vlanId, String description,
-            IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
+    ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+                                               String description, IfL2vlan.L2vlanMode l2vlanMode,
+                                               boolean isExternal) throws InterfaceAlreadyExistsException;
 
     boolean isServiceBoundOnInterfaceForIngress(short servicePriority, String interfaceName);
 
