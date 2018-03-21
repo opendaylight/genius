@@ -36,6 +36,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <type>test-jar</type>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>tools-testutils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
       <!-- mdsalutil-api (test-jar) needs this, but cannot transitively inherit it (because it is and has to be <scope>test there) -->
       <artifactId>testutils</artifactId>
