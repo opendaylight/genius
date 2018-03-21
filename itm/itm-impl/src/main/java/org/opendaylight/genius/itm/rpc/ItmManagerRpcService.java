@@ -44,6 +44,7 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeRefInfo;
@@ -812,7 +813,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
         String dcgwIpStr = input.getDcgwIp();
-        IpAddress dcgwIpAddr = new IpAddress(dcgwIpStr.toCharArray());
+        IpAddress dcgwIpAddr = IpAddressBuilder.getDefaultInstance(dcgwIpStr);
         long retVal;
 
         if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()

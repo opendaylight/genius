@@ -193,7 +193,7 @@ public class ItmInternalTunnelDeleteTest {
 
         itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
 
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);
+        //verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,dpntePsInfoIdentifier);
     }
 }

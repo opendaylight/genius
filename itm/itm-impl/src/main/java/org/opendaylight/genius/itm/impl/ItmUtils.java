@@ -54,7 +54,9 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
@@ -146,7 +148,7 @@ public final class ItmUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
 
     private static final String TUNNEL = "tun";
-    private static final IpPrefix DUMMY_IP_PREFIX = new IpPrefix(ITMConstants.DUMMY_PREFIX.toCharArray());
+    private static final IpPrefix DUMMY_IP_PREFIX = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX);
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
     public static final ItmCache ITM_CACHE = new ItmCache();
 
@@ -271,7 +273,7 @@ public final class ItmUtils {
     }
 
     public static InetAddress getInetAddressFromIpAddress(IpAddress ip) {
-        return InetAddresses.forString(ip.getIpv4Address().getValue());
+        return InetAddresses.forString(String.valueOf(ip.getValue()));
     }
 
     public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(BigInteger dpIdKey) {
@@ -318,8 +320,8 @@ public final class ItmUtils {
         builder.addAugmentation(ParentRefs.class, parentRefs);
 
         IfTunnel tunnel = new IfTunnelBuilder()
-                .setTunnelDestination(new IpAddress(ITMConstants.DUMMY_IP_ADDRESS.toCharArray()))
-                .setTunnelSource(new IpAddress(ITMConstants.DUMMY_IP_ADDRESS.toCharArray())).setInternal(true)
+                .setTunnelDestination(IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_IP_ADDRESS))
+                .setTunnelSource(IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_IP_ADDRESS)).setInternal(true)
                 .setMonitorEnabled(false).setTunnelInterfaceType(TunnelTypeLogicalGroup.class)
                 .setTunnelRemoteIpFlow(false).build();
         builder.addAugmentation(IfTunnel.class, tunnel);
@@ -588,8 +590,8 @@ public final class ItmUtils {
                                                              String subnetMask, String gatewayIp, String transportZone,
                                                              String tunnelType, List<BigInteger> dpnIds,
                                                              String excludeIpFilter) {
-        IpAddress gatewayIpObj = StringUtils.isBlank(gatewayIp) ? null : new IpAddress(gatewayIp.toCharArray());
-        IpPrefix subnet = StringUtils.isBlank(subnetMask) ? null : new IpPrefix(subnetMask.toCharArray());
+        IpAddress gatewayIpObj = StringUtils.isBlank(gatewayIp) ? null : IpAddressBuilder.getDefaultInstance(gatewayIp);
+        IpPrefix subnet = StringUtils.isBlank(subnetMask) ? null : IpPrefixBuilder.getDefaultInstance(subnetMask);
         Class<? extends TunnelTypeBase> tunType ;
         if (tunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
             tunType = TunnelTypeVxlan.class ;
@@ -648,7 +650,7 @@ public final class ItmUtils {
         Preconditions.checkArgument(subnetInfo.isInRange(ip),
                 "Invalid exclude IP filter: IP address [" + ip + "] not in subnet range "
                         + subnetInfo.getCidrSignature());
-        lstIpAddress.add(new IpAddress(ip.toCharArray()));
+        lstIpAddress.add(IpAddressBuilder.getDefaultInstance(ip));
     }
 
     private static int[] toIpArray(int val) {

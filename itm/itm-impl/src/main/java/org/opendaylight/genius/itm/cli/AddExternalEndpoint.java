@@ -13,6 +13,7 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
@@ -57,7 +58,7 @@ public class AddExternalEndpoint extends OsgiCommandSupport {
                 return null;
             }
 
-            IpAddress dcgwIPAddr = new IpAddress(destinationIp.toCharArray());
+            IpAddress dcgwIPAddr = IpAddressBuilder.getDefaultInstance(destinationIp);
             itmProvider.addExternalEndpoint(tunType, dcgwIPAddr);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

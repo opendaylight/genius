@@ -245,8 +245,8 @@ public class ItmExternalTunnelDeleteTest {
                 .setTransportType(tunnelType1).setDestinationDevice("hwvtep:1").setSourceDevice(dpId2.toString())
                 .setKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNodeId() , tunnelType1)).build();
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(parentInterfaceName,
-                tunnelEndPointsVxlan.getIpAddress().getIpv4Address().getValue(), ipAddress1.getIpv4Address().getValue(),
-                tunnelType1.getName());
+            String.valueOf(tunnelEndPointsVxlan.getIpAddress().getValue()),
+            String.valueOf(ipAddress1.getValue()),tunnelType1.getName());
         trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         path = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(ipAddress1.toString(), dpId2.toString(),

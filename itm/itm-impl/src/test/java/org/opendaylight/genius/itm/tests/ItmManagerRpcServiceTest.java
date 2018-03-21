@@ -172,8 +172,8 @@ public class ItmManagerRpcServiceTest {
         stringList.add(ItmTestConstants.SOURCE_DEVICE_2);
 
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME,
-                ItmTestConstants.IP_ADDRESS_3.getIpv4Address().getValue(),
-                ItmTestConstants.IP_ADDRESS_3.getIpv4Address().getValue(),
+            String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()),
+            String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()),
                 ItmTestConstants.TUNNEL_TYPE_VXLAN.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(ItmTestConstants.VLAN_ID)
