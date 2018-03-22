@@ -28,8 +28,11 @@ import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -175,15 +178,25 @@ public final class InterfaceManagerCommonUtils {
      *            name of the interface to search for
      * @return the Interface object
      */
+    @Deprecated
     @Nullable
     public Interface getInterfaceFromConfigDS(String interfaceName) {
+        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+            return getInterfaceFromConfigDS(tx, interfaceName);
+        } catch (ReadFailedException e) {
+            LOG.error("Error retrieving interface {} from config", interfaceName, e);
+            throw new RuntimeException("Error retrieving interface " + interfaceName + " from config", e);
+        }
+    }
+
+    @Nullable
+    public Interface getInterfaceFromConfigDS(ReadTransaction tx, String interfaceName) throws ReadFailedException {
         Interface iface = interfaceConfigMap.get(interfaceName);
         if (iface != null) {
             return iface;
         }
         InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        Optional<Interface> interfaceOptional = IfmUtil.read(LogicalDatastoreType.CONFIGURATION, interfaceId,
-                dataBroker);
+        Optional<Interface> interfaceOptional = tx.read(LogicalDatastoreType.CONFIGURATION, interfaceId).checkedGet();
         if (interfaceOptional.isPresent()) {
             iface = interfaceOptional.get();
             interfaceConfigMap.put(iface.getName(), iface);

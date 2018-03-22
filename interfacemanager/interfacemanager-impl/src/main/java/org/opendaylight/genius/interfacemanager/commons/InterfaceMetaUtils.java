@@ -196,12 +196,21 @@ public final class InterfaceMetaUtils {
         return intfIdBuilder.build();
     }
 
+    @Deprecated
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(String interfaceName) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
         InterfaceParentEntry interfaceParentEntry = getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey);
         return interfaceParentEntry;
     }
 
+    public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx, String interfaceName)
+            throws ReadFailedException {
+        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
+        InterfaceParentEntry interfaceParentEntry = getInterfaceParentEntryFromConfigDS(tx, interfaceParentEntryKey);
+        return interfaceParentEntry;
+    }
+
+    @Deprecated
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(InterfaceParentEntryKey interfaceParentEntryKey) {
         InstanceIdentifier<InterfaceParentEntry> intfParentIid =
                 getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
@@ -209,8 +218,21 @@ public final class InterfaceMetaUtils {
         return getInterfaceParentEntryFromConfigDS(intfParentIid);
     }
 
+    public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
+            InterfaceParentEntryKey interfaceParentEntryKey) throws ReadFailedException {
+        InstanceIdentifier<InterfaceParentEntry> intfParentIid =
+                getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
+
+        return getInterfaceParentEntryFromConfigDS(tx, intfParentIid);
+    }
+
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(InstanceIdentifier<InterfaceParentEntry> intfId) {
         return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfId, dataBroker).orNull();
+    }
+
+    public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
+            InstanceIdentifier<InterfaceParentEntry> intfId) throws ReadFailedException {
+        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).checkedGet().orNull();
     }
 
     public InterfaceChildEntry getInterfaceChildEntryFromConfigDS(

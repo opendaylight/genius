@@ -11,7 +11,9 @@ package org.opendaylight.genius.interfacemanager.interfaces;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -94,7 +96,25 @@ public interface IInterfaceManager {
 
     List<Interface> getVxlanInterfaces();
 
+    /**
+     * Retrieve an interface's children.
+     *
+     * @param parentInterface The parent interface.
+     * @return The child interfaces.
+     * @deprecated Use {{@link #getChildInterfaces(ReadTransaction, String)}} instead.
+     */
+    @Deprecated
     List<Interface> getChildInterfaces(String parentInterface);
+
+    /**
+     * Retrieve an interface's children.
+     *
+     * @param tx The transaction to use.
+     * @param parentInterface The parent interface.
+     * @return The child interfaces.
+     * @throws ReadFailedException if an exception occurs while reading from the datastore.
+     */
+    List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws ReadFailedException;
 
     boolean isExternalInterface(String interfaceName);
 
