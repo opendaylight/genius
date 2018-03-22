@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.datastoreutils;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.datastoreutils.TransactionCommitFailedExceptionMapper.SUBMIT_MAPPER;
 
 import com.google.common.base.Optional;
@@ -39,7 +40,7 @@ public class SingleTransactionDataBroker {
 
     // do *NOT* use BP @Inject here, see comment above
     public SingleTransactionDataBroker(DataBroker broker) {
-        this.broker = broker;
+        this.broker = requireNonNull(broker, "dataBroker");
     }
 
     /**
