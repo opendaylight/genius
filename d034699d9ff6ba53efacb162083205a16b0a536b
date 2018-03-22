@@ -52,6 +52,24 @@
       "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aff56567_1b310a80",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-03-22T14:32:20Z",
+      "side": 1,
+      "message": "Well, I do find it useful as documentation — it’s externally visible, unlike requireNonNull calls. And IDEs can take advantage of the information, even if we don’t enforce its use in the builds...\n\nI’m not advocating for blanket @Nonnull annotations, but in cases like this it does feel appropriate to me.",
+      "parentUuid": "ff48da0e_ad399a3e",
+      "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
