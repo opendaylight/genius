@@ -16,6 +16,24 @@
       "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff48da0e_ad399a3e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-22T14:06:58Z",
+      "side": 1,
+      "message": "This is a more general issue beyond this patch... what I really would like to do, one fine day, is to pepper package-info.java with @NonNullByDefault EVERYWHERE.  It will only really make sense to do this IMHO if we integrate null analysis into the build - which *IS* on my TBD pile.  Until then, I think sporadically adding some of this just here and there, without any enforcement, just makes the code less readable - so I don\u0027t.",
+      "parentUuid": "a79ae7f5_fc312375",
+      "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
