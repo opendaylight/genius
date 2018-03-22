@@ -601,6 +601,30 @@
     },
     {
       "key": {
+        "uuid": "5496dda6_cc0d5ecd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-22T11:58:46Z",
+      "side": 1,
+      "message": "No it doesn\u0027t if you did it the way I outlined below",
+      "parentUuid": "9016595a_87619c0b",
+      "range": {
+        "startLine": 33,
+        "startChar": 63,
+        "endLine": 33,
+        "endChar": 67
+      },
+      "revId": "f418b3462af8b9e1e639d0beadca3cb52e33f1ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d6ea7549_c30eec1c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
         "patchSetId": 13
@@ -630,6 +654,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "d6ea7549_c30eec1c",
+      "revId": "f418b3462af8b9e1e639d0beadca3cb52e33f1ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3330245_8b54947d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-22T11:58:46Z",
+      "side": 1,
+      "message": "Not quite - you didn\u0027t do it in the thread-safe manner I outlined",
+      "parentUuid": "e409cb19_eeb60e1d",
       "revId": "f418b3462af8b9e1e639d0beadca3cb52e33f1ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -694,6 +736,30 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "8644485b_7b264502",
+      "range": {
+        "startLine": 38,
+        "startChar": 8,
+        "endLine": 43,
+        "endChar": 60
+      },
+      "revId": "f418b3462af8b9e1e639d0beadca3cb52e33f1ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a5d3356_7689841d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-22T11:58:46Z",
+      "side": 1,
+      "message": "Nope",
+      "parentUuid": "ab7e4276_69d22128",
       "range": {
         "startLine": 38,
         "startChar": 8,
