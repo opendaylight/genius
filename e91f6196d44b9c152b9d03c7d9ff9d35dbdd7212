@@ -73,6 +73,24 @@
       "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6fa3de99_7dd35ac3",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorCountedEventsWaiter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-22T16:31:05Z",
+      "side": 1,
+      "message": "Actually I wanted to show the way I have done this, to make sure we agree on the approach followed.. :( It was not completely clean.. I think I stopped in between.. In fact I wanted this to be merged after DDF, just in case any test randomly start failing again ;)",
+      "parentUuid": "8a1ffbbe_1bfd2143",
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
