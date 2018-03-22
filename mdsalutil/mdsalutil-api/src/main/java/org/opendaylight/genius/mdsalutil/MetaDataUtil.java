@@ -14,7 +14,6 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SERVICE =       new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SERVICE_INDEX = new BigInteger("F000000000000000", 16);
     public static final BigInteger METADATA_MASK_VRFID =         new BigInteger("0000000000FFFFFE", 16);
-    public static final BigInteger METADATA_MASK_REMOTE_ACL_ID = new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADATA_MASK_REMOTE_ACL_TAG = new BigInteger("0000000000FFFFF0", 16);
     public static final BigInteger METADATA_MASK_POLICY_CLASSIFER_ID = new BigInteger("0000000000FFFFFE", 16);
     public static final BigInteger METADA_MASK_VALID_TUNNEL_ID_BIT_AND_TUNNEL_ID
