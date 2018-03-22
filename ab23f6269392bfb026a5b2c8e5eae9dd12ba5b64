@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "614efe1b_85ab8bfb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77793308_c19a1711",
+      "range": {
+        "startLine": 27,
+        "startChar": 34,
+        "endLine": 27,
+        "endChar": 37
+      },
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bc847d86_169d4eca",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
         "patchSetId": 17
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "ad83c223_62f09d89",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc847d86_169d4eca",
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ab0b657_ac0ecaf9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
         "patchSetId": 17
@@ -53,6 +95,30 @@
       "writtenOn": "2018-03-22T11:58:46Z",
       "side": 1,
       "message": "As I outlined in my previous comment:\n\n  unProcessedNodeConnectorEndPtMap.computeIfAbsent(\n      dpnId, ConcurrentHashMap.newKeySet()).add(ncInfo);",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 9
+      },
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd031f9b_77f554f1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8ab0b657_ac0ecaf9",
       "range": {
         "startLine": 32,
         "startChar": 8,
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "76af46ce_09f14a54",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "de04b880_6082b206",
+      "range": {
+        "startLine": 55,
+        "startChar": 11,
+        "endLine": 55,
+        "endChar": 14
+      },
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8dcefb46_60ae5e73",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 17
@@ -99,6 +189,30 @@
       "writtenOn": "2018-03-22T11:58:46Z",
       "side": 1,
       "message": "long",
+      "range": {
+        "startLine": 184,
+        "startChar": 75,
+        "endLine": 184,
+        "endChar": 79
+      },
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f32b77d_b7438415",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8dcefb46_60ae5e73",
       "range": {
         "startLine": 184,
         "startChar": 75,
@@ -134,6 +248,30 @@
     },
     {
       "key": {
+        "uuid": "8fe938b8_b566bade",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5568d023_f1e7551c",
+      "range": {
+        "startLine": 185,
+        "startChar": 53,
+        "endLine": 185,
+        "endChar": 60
+      },
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6e3f46ef_974d4fca",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 17
@@ -157,6 +295,30 @@
     },
     {
       "key": {
+        "uuid": "86847223_62bf6c12",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 217,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e3f46ef_974d4fca",
+      "range": {
+        "startLine": 216,
+        "startChar": 88,
+        "endLine": 217,
+        "endChar": 79
+      },
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f8f493e6_84a17927",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 17
@@ -168,6 +330,24 @@
       "writtenOn": "2018-03-22T11:58:46Z",
       "side": 1,
       "message": "Avoid reassigning parameter - put into local or inline below:\n\n  BigInteger.valueOf(tunnelKey !\u003d null ? tunnelKey : 0L))",
+      "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "59e3fa7e_2411e60e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-03-22T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f8f493e6_84a17927",
       "revId": "ab23f6269392bfb026a5b2c8e5eae9dd12ba5b64",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
