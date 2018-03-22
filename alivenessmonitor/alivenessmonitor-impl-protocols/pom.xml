@@ -43,4 +43,17 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${genius.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <!-- TODO Remove this when we upgrade to odlparent with a fix for ODLPARENT-146 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
