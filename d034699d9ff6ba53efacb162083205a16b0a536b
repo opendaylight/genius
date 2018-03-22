@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a79ae7f5_fc312375",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-03-22T14:02:31Z",
+      "side": 1,
+      "message": "Maybe add a @Nonnull annotation (or @NonNullByDefault if it’s appropriate)?",
+      "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
