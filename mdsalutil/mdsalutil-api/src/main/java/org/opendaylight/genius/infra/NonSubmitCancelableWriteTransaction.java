@@ -8,12 +8,9 @@
 package org.opendaylight.genius.infra;
 
 import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 
 /**
  * WriteTransaction which cannot be {@link WriteTransaction#cancel()},
@@ -35,11 +32,6 @@ class NonSubmitCancelableWriteTransaction extends ForwardingWriteTransaction {
     @Override
     public boolean cancel() {
         throw new UnsupportedOperationException("cancel() cannot be used inside a Managed[New]TransactionRunner");
-    }
-
-    @Override
-    public ListenableFuture<RpcResult<TransactionStatus>> commit() {
-        throw new UnsupportedOperationException("commit() cannot be used inside a Managed[New]TransactionRunner");
     }
 
     @Override

@@ -135,11 +135,4 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCancel() throws Exception {
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(AsyncWriteTransaction::cancel).get();
     }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = ExecutionException.class)
-    public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCommit() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(AsyncWriteTransaction::commit).get();
-    }
-
 }

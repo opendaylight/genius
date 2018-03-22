@@ -9,7 +9,6 @@ package org.opendaylight.genius.datastoreutils.testutils;
 
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,9 +19,7 @@ import org.opendaylight.controller.md.sal.binding.api.ForwardingReadWriteTransac
 import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.TransactionStatus;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,11 +101,6 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                     return Futures.immediateFailedCheckedFuture(submitException);
                 }
             }
-
-            @Override
-            public ListenableFuture<RpcResult<TransactionStatus>> commit() {
-                throw new UnsupportedOperationException();
-            }
         };
     }
 
@@ -130,11 +122,6 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                     }
                     return Futures.immediateFailedCheckedFuture(submitException);
                 }
-            }
-
-            @Override
-            public ListenableFuture<RpcResult<TransactionStatus>> commit() {
-                throw new UnsupportedOperationException();
             }
         };
     }
