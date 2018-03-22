@@ -70,6 +70,24 @@
       "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a0b0b13e_0f2b0dd2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-22T14:36:22Z",
+      "side": 1,
+      "message": "\u003e Well, I do find it useful as documentation — it’s externally\n \u003e visible, unlike requireNonNull calls. \n\n+1",
+      "parentUuid": "aff56567_1b310a80",
+      "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
