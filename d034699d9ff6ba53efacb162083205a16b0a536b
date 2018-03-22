@@ -34,6 +34,24 @@
       "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "65580f0d_0438797c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-03-22T14:10:47Z",
+      "side": 1,
+      "message": "We do have enforcement- some anyway -  findbugs is enabled in all genius projects now.",
+      "parentUuid": "ff48da0e_ad399a3e",
+      "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
