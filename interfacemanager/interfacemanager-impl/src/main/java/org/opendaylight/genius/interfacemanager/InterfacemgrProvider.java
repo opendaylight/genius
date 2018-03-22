@@ -25,6 +25,8 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -361,6 +363,12 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
+    public Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName)
+            throws ReadFailedException {
+        return interfaceManagerCommonUtils.getInterfaceFromConfigDS(tx, new InterfaceKey(interfaceName));
+    }
+
+    @Override
     public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
         createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode);
@@ -514,7 +522,17 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public List<Interface> getChildInterfaces(String parentInterface) {
-        InterfaceParentEntry parentEntry = interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(parentInterface);
+        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+            return getChildInterfaces(tx, parentInterface);
+        } catch (ReadFailedException e) {
+            LOG.error("Error retrieving child interfaces of {} from config", parentInterface, e);
+            throw new RuntimeException("Error retrieving child interfaces of " + parentInterface + " from config", e);
+        }
+    }
+
+    @Override
+    public List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws ReadFailedException {
+        InterfaceParentEntry parentEntry = interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(tx, parentInterface);
         if (parentEntry == null) {
             LOG.debug("No parent entry found for {}", parentInterface);
             return Collections.emptyList();
@@ -529,7 +547,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         List<Interface> childInterfaces = new ArrayList<>();
         for (InterfaceChildEntry childEntry : childEntries) {
             String interfaceName = childEntry.getChildInterface();
-            Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
+            Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(tx, interfaceName);
             if (iface != null) {
                 childInterfaces.add(iface);
             } else {
@@ -545,6 +563,11 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public boolean isExternalInterface(String interfaceName) {
         return isExternalInterface(getInterfaceInfoFromConfigDataStore(interfaceName));
+    }
+
+    @Override
+    public boolean isExternalInterface(ReadTransaction tx, String interfaceName) throws ReadFailedException {
+        return isExternalInterface(getInterfaceInfoFromConfigDataStore(tx, interfaceName));
     }
 
     private boolean isExternalInterface(Interface iface) {
