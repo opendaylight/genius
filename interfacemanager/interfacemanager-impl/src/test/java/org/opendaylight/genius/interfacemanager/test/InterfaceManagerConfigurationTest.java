@@ -180,7 +180,6 @@ public class InterfaceManagerConfigurationTest {
         TestableDataTreeChangeListenerModule.class, JobCoordinatorTestModule.class);
 
     @Inject DataBroker dataBroker;
-    SingleTransactionDataBroker db = new SingleTransactionDataBroker(dataBroker);
     @Inject OdlInterfaceRpcService odlInterfaceRpcService;
     @Inject IInterfaceManager interfaceManager;
     @Inject JobCoordinatorCountedEventsWaiter coordinatorEventsWaiter;
@@ -189,8 +188,12 @@ public class InterfaceManagerConfigurationTest {
     @Inject BatchingUtils batchingUtils;
     @Inject FlowAssertTestUtils flowAssertTestUtils;
 
+    SingleTransactionDataBroker db;
+
     @Before
     public void start() throws InterruptedException, TransactionCommitFailedException {
+        db = new SingleTransactionDataBroker(dataBroker);
+
         // Create the bridge and make sure it is ready
         setupAndAssertBridgeCreation();
     }
