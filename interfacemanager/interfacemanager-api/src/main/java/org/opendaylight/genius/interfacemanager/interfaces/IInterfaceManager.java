@@ -11,7 +11,9 @@ package org.opendaylight.genius.interfacemanager.interfaces;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -53,7 +55,25 @@ public interface IInterfaceManager {
      */
     InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName);
 
+    /**
+     * Retrieve the interface information from the configuration datastore.
+     *
+     * @param interfaceName The interface name.
+     * @return The interface information.
+     * @deprecated Use {@link #getInterfaceInfoFromConfigDataStore(ReadTransaction, String)}.
+     */
+    @Deprecated
     Interface getInterfaceInfoFromConfigDataStore(String interfaceName);
+
+    /**
+     * Retrieve the interface information from the configuration datastore.
+     *
+     * @param tx The transaction to use.
+     * @param interfaceName The interface name.
+     * @return The interface information.
+     * @throws ReadFailedException if an exception occurs while reading from the datastore.
+     */
+    Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName) throws ReadFailedException;
 
     /**
      * Create a VLAN interface.
@@ -94,9 +114,45 @@ public interface IInterfaceManager {
 
     List<Interface> getVxlanInterfaces();
 
+    /**
+     * Retrieve an interface's children.
+     *
+     * @param parentInterface The parent interface.
+     * @return The child interfaces.
+     * @deprecated Use {@link #getChildInterfaces(ReadTransaction, String)} instead.
+     */
+    @Deprecated
     List<Interface> getChildInterfaces(String parentInterface);
 
+    /**
+     * Retrieve an interface's children.
+     *
+     * @param tx The transaction to use.
+     * @param parentInterface The parent interface.
+     * @return The child interfaces.
+     * @throws ReadFailedException if an exception occurs while reading from the datastore.
+     */
+    List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws ReadFailedException;
+
+    /**
+     * Determine whether an interface is external.
+     *
+     * @param interfaceName The interface name.
+     * @return {@code true} if the interface is external, {@code false} if it isn't.
+     * @deprecated Use {@link #isExternalInterface(ReadTransaction, String)} instead.
+     */
+    @Deprecated
     boolean isExternalInterface(String interfaceName);
+
+    /**
+     * Determine whether an interface is external.
+     *
+     * @param tx The transaction to use.
+     * @param interfaceName The interface name.
+     * @return {@code true} if the interface is external, {@code false} if it isn't.
+     * @throws ReadFailedException if an exception occurs while reading from the datastore.
+     */
+    boolean isExternalInterface(ReadTransaction tx, String interfaceName) throws ReadFailedException;
 
     String getPortNameForInterface(NodeConnectorId nodeConnectorId, String interfaceName);
 
