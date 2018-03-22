@@ -27,6 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -194,6 +195,14 @@ public final class IfmUtil {
         return 0;
     }
 
+    /**
+     * Synchronous blocking read from data store.
+     *
+     * @deprecated Use
+     * {@link SingleTransactionDataBroker#syncReadOptional(DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     *             instead of this.
+     */
+    @Deprecated
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
             InstanceIdentifier<T> path, DataBroker broker) {
         try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
