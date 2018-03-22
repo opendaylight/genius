@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0d5c61a_e1ae236a",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceMetaUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-22T14:01:58Z",
+      "side": 1,
+      "message": "\u003d\u003d\u003e https://git.opendaylight.org/gerrit/#/c/69817/ (but OK for me to change this, and all other existing usages, in a follow-up, and to finally get this in...)",
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be208471_7ca9bf1e",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-22T14:01:58Z",
+      "side": 1,
+      "message": "cool, I thought that this did not work (I wasn\u0027t sure if the @Inject happens before the field is set), so as this clearly passes OK, but https://git.opendaylight.org/gerrit/#/c/69818/ is safer for future.",
+      "range": {
+        "startLine": 183,
+        "startChar": 37,
+        "endLine": 183,
+        "endChar": 38
+      },
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00d9ea82_07ecbaeb",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/FlowAssertTestUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-22T14:01:58Z",
+      "side": 1,
+      "message": "it\u0027s not really a \"place holder\" (it\u0027s not empty) but a \"utility\", no? ;-) Not a reason to further delay this - fix it up in a follow-up change with more work on this test, fi you like...",
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8a1ffbbe_1bfd2143",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorCountedEventsWaiter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-03-22T14:01:58Z",
+      "side": 1,
+      "message": "to mainta... ?? ;-)",
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
