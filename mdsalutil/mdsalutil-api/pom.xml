@@ -176,8 +176,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <configuration>
           <instructions>
             <Bundle-Activator>org.opendaylight.genius.datastoreutils.Activator</Bundle-Activator>
-            <Embed-Dependency>utils.config;type=!pom;inline=false</Embed-Dependency>
-            <Embed-Transitive>true</Embed-Transitive>
           </instructions>
         </configuration>
       </plugin>
