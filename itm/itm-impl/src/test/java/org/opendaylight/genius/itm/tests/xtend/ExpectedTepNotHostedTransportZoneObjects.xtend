@@ -8,8 +8,8 @@
 
 package org.opendaylight.genius.itm.tests.xtend;
 
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.tepsnothostedintransportzone.UnknownVtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZoneBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 
 import org.opendaylight.genius.itm.tests.ItmTestConstants;
@@ -19,7 +19,7 @@ import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExt
 class ExpectedTepNotHostedTransportZoneObjects {
 
     static def newTepNotHostedTransportZone() {
-        new TepsNotHostedInTransportZoneBuilder >> [
+        new TepsInNotHostedTransportZoneBuilder >> [
             zoneName = ItmTestConstants.NOT_HOSTED_TZ_NAME
             unknownVteps = #[
                   new UnknownVtepsBuilder >> [

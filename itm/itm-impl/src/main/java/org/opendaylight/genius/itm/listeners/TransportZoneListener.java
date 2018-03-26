@@ -51,12 +51,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.tepsnothostedintransportzone.UnknownVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
@@ -273,11 +274,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
         Class<? extends TunnelTypeBase> tunnelType  = tzNew.getTunnelType();
 
-        TepsNotHostedInTransportZone tepNotHostedTransportZone = getNotHostedTransportZone(newZoneName).get();
-        if (tepNotHostedTransportZone == null) {
+        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = getNotHostedTransportZone(newZoneName).get();
+        if (tepsInNotHostedTransportZone == null) {
             return notHostedDpnTepInfo;
         }
-        List<UnknownVteps> unVtepsLst = tepNotHostedTransportZone.getUnknownVteps();
+        List<UnknownVteps> unVtepsLst = tepsInNotHostedTransportZone.getUnknownVteps();
         List<Vteps> vtepsList = new ArrayList<>();
         if (unVtepsLst != null && !unVtepsLst.isEmpty()) {
             for (UnknownVteps vteps : unVtepsLst) {
@@ -345,13 +346,13 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         return isPresent;
     }
 
-    public  Optional<TepsNotHostedInTransportZone> getNotHostedTransportZone(String transportZoneName) {
-        InstanceIdentifier<TepsNotHostedInTransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
-                .child(TepsNotHostedInTransportZone.class,
-                        new TepsNotHostedInTransportZoneKey(transportZoneName)).build();
-        Optional<TepsNotHostedInTransportZone> tzNotHostedOptional =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
-        return tzNotHostedOptional;
+    public  Optional<TepsInNotHostedTransportZone> getNotHostedTransportZone(String transportZoneName) {
+        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedTzPath = InstanceIdentifier
+                .builder(NotHostedTransportZones.class).child(TepsInNotHostedTransportZone.class,
+                        new TepsInNotHostedTransportZoneKey(transportZoneName)).build();
+        Optional<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneOptional =
+                ItmUtils.read(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
+        return tepsInNotHostedTransportZoneOptional;
     }
 
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone) {
