@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
+import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
@@ -23,7 +23,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Singleton
-public class TunnelStateCache extends InstanceIdDataObjectCache<StateTunnelList> {
+public class TunnelStateCache extends DataObjectCache<StateTunnelList> {
 
     @Inject
     public TunnelStateCache(DataBroker dataBroker, CacheProvider cacheProvider) {
