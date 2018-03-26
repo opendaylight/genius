@@ -17,9 +17,10 @@ import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
@@ -81,11 +82,11 @@ public final class ItmTepAutoConfigTestUtil {
         return vtepIid;
     }
 
-    public static InstanceIdentifier<TepsNotHostedInTransportZone> getTepNotHostedInTZIid(String tzName) {
-        InstanceIdentifier<TepsNotHostedInTransportZone> tzonePath =
-            InstanceIdentifier.builder(TransportZones.class)
-                .child(TepsNotHostedInTransportZone.class,
-                    new TepsNotHostedInTransportZoneKey(tzName)).build();
+    public static InstanceIdentifier<TepsInNotHostedTransportZone> getTepNotHostedInTZIid(String tzName) {
+        InstanceIdentifier<TepsInNotHostedTransportZone> tzonePath =
+            InstanceIdentifier.builder(NotHostedTransportZones.class)
+                .child(TepsInNotHostedTransportZone.class,
+                    new TepsInNotHostedTransportZoneKey(tzName)).build();
 
         return tzonePath;
     }
