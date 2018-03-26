@@ -18,13 +18,14 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.tepsnothostedintransportzone.UnknownVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.tepsnothostedintransportzone.UnknownVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
@@ -40,7 +41,7 @@ public final class OvsdbTepRemoveConfigHelper {
     private OvsdbTepRemoveConfigHelper() { }
 
     /**
-     * Removes the TEP from ITM configuration Datastore in one of the following cases.
+     * Removes the TEP from ITM configuration/operational Datastore in one of the following cases.
      * 1) default transport zone
      * 2) Configured transport zone
      * 3) Unhosted transport zone
@@ -49,7 +50,7 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param tepIp TEP-IP address in string
      * @param strDpnId bridge datapath ID in string
      * @param tzName transport zone name in string
-     * @param dataBroker data broker handle to perform operations on config datastore
+     * @param dataBroker data broker handle to perform operations on config/operational datastore
      * @param wrTx WriteTransaction object
      */
 
@@ -82,8 +83,8 @@ public final class OvsdbTepRemoveConfigHelper {
             transportZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
             if (transportZone == null) {
                 // Case: TZ is not configured from Northbound, then add TEP into
-                // "teps-not-hosted-in-transport-zone"
-                LOG.trace("Removing TEP from unknown TZ into teps-not-hosted-in-transport-zone.");
+                // "teps-in-not-hosted-transport-zone"
+                LOG.trace("Removing TEP from teps-in-not-hosted-transport-zone list.");
                 removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, wrTx);
                 return;
             } else {
@@ -161,19 +162,20 @@ public final class OvsdbTepRemoveConfigHelper {
             .child(TransportZone.class, new TransportZoneKey(tzName))
             .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
 
-        LOG.trace("Removing TEP (TZ: {} Subnet: {} DPN-ID: {}) in ITM Config DS.", tzName, subnetMaskObj, dpnId);
+        LOG.trace("Removing TEP from (TZ: {} Subnet: {} DPN-ID: {}) inside ITM Config DS.",
+                tzName, subnetMaskObj, dpnId);
         // remove vtep
         wrTx.delete(LogicalDatastoreType.CONFIGURATION, vtepPath);
     }
 
     /**
      * Removes the TEP from the not-hosted transport zone in the TepsNotHosted list
-     * from ITM configuration Datastore.
+     * from ITM Operational Datastore.
      *
      * @param tzName transport zone name in string
      * @param tepIpAddress TEP IP address in IpAddress object
      * @param dpnId bridge datapath ID in BigInteger
-     * @param dataBroker data broker handle to perform operations on config datastore
+     * @param dataBroker data broker handle to perform operations on operational datastore
      * @param wrTx WriteTransaction object
      */
     public static void removeUnknownTzTepFromTepsNotHosted(String tzName, IpAddress tepIpAddress,
@@ -181,18 +183,16 @@ public final class OvsdbTepRemoveConfigHelper {
                                                            WriteTransaction wrTx) {
         List<UnknownVteps> vtepList = null;
 
-        TepsNotHostedInTransportZone unknownTz =
-            ItmUtils.getUnknownTransportZoneFromITMConfigDS(tzName, dataBroker);
-        if (unknownTz == null) {
-            LOG.trace("Unhosted TransportZone does not exist. Nothing to do for TEP removal.");
+        TepsInNotHostedTransportZone tepsInNotHostedTransportZone =
+            ItmUtils.getUnknownTransportZoneFromITMOperDS(tzName, dataBroker);
+        if (tepsInNotHostedTransportZone == null) {
+            LOG.trace("Unhosted TransportZone ({}) does not exist in OperDS. Nothing to do for TEP removal.", tzName);
             return;
         } else {
-            vtepList = unknownTz.getUnknownVteps();
+            vtepList = tepsInNotHostedTransportZone.getUnknownVteps();
             if (vtepList == null || vtepList.isEmpty()) {
                 //  case: vtep list does not exist or it has no elements
-                LOG.trace(
-                    "Remove TEP in unhosted TZ ({}) when no vtep-list in the TZ. Nothing to do.",
-                    tzName);
+                LOG.trace("Remove TEP from unhosted TZ ({}) when no vtep-list in the TZ. Nothing to do.", tzName);
             } else {
                 //  case: vtep list has elements
                 boolean vtepFound = false;
@@ -208,7 +208,7 @@ public final class OvsdbTepRemoveConfigHelper {
                 if (vtepFound) {
                     // vtep is found, update it with tep-ip
                     LOG.trace(
-                        "Remove TEP with IP ({}) from unhosted TZ ({}) in TepsNotHosted list.",
+                        "Remove TEP with IP ({}) from unhosted TZ ({}) inside not-hosted-transport-zones list.",
                         tepIpAddress, tzName);
                     if (vtepList.size() == 1) {
                         removeTzFromTepsNotHosted(tzName, wrTx);
@@ -223,7 +223,7 @@ public final class OvsdbTepRemoveConfigHelper {
 
     /**
      * Removes the TEP from unknown vtep list under the transport zone in the TepsNotHosted list
-     * from ITM configuration Datastore by delete operation with write transaction.
+     * from ITM operational Datastore by delete operation with write transaction.
      *
      * @param tzName transport zone name in string
      * @param dpnId bridge datapath ID in BigInteger
@@ -233,31 +233,31 @@ public final class OvsdbTepRemoveConfigHelper {
                                                       WriteTransaction wrTx) {
 
         UnknownVtepsKey unknownVtepkey = new UnknownVtepsKey(dpnId);
-        InstanceIdentifier<UnknownVteps> vtepPath = InstanceIdentifier.builder(TransportZones.class)
-            .child(TepsNotHostedInTransportZone.class, new TepsNotHostedInTransportZoneKey(tzName))
+        InstanceIdentifier<UnknownVteps> vtepPath = InstanceIdentifier.builder(NotHostedTransportZones.class)
+            .child(TepsInNotHostedTransportZone.class, new TepsInNotHostedTransportZoneKey(tzName))
             .child(UnknownVteps.class, unknownVtepkey).build();
 
-        LOG.trace("Removing TEP from unhosted (TZ: {}, DPID: {}) from ITM Config DS.",
+        LOG.trace("Removing TEP from unhosted (TZ: {}, DPID: {}) inside ITM Oper DS.",
                 tzName, dpnId);
         // remove vtep
-        wrTx.delete(LogicalDatastoreType.CONFIGURATION, vtepPath);
+        wrTx.delete(LogicalDatastoreType.OPERATIONAL, vtepPath);
     }
 
     /**
      * Removes the transport zone in the TepsNotHosted list
-     * from ITM configuration Datastore by delete operation with write transaction.
+     * from ITM operational Datastore by delete operation with write transaction.
      *
      * @param tzName transport zone name in string
      * @param wrTx WriteTransaction object
      */
     private static void removeTzFromTepsNotHosted(String tzName, WriteTransaction wrTx) {
-        InstanceIdentifier<TepsNotHostedInTransportZone> tzTepsNotHostedTepPath =
-                InstanceIdentifier.builder(TransportZones.class)
-                .child(TepsNotHostedInTransportZone.class,
-                    new TepsNotHostedInTransportZoneKey(tzName)).build();
+        InstanceIdentifier<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneIid =
+                InstanceIdentifier.builder(NotHostedTransportZones.class)
+                .child(TepsInNotHostedTransportZone.class,
+                    new TepsInNotHostedTransportZoneKey(tzName)).build();
 
-        LOG.trace("Removing TZ ({})from TepsNotHosted list  from ITM Config DS.", tzName);
+        LOG.trace("Removing TZ ({})from not-hosted-transport-zones list inside ITM Oper DS.", tzName);
         // remove TZ from TepsNotHosted list
-        wrTx.delete(LogicalDatastoreType.CONFIGURATION, tzTepsNotHostedTepPath);
+        wrTx.delete(LogicalDatastoreType.OPERATIONAL, tepsInNotHostedTransportZoneIid);
     }
 }
