@@ -100,37 +100,40 @@ module itm {
 
             }
           }
-          list tepsNotHostedInTransportZone {
-             key zone-name;
-             leaf zone-name {
-                 type string;
-             }
-             list unknown-vteps{
-                 key "dpn-id";
-                 leaf dpn-id {
-                     type uint64;
-                 }
-                 leaf ip-address {
-                     type inet:ip-address;
-                 }
-                 leaf of-tunnel {
-                     description "Use flow based tunnels for remote-ip";
-                     type boolean;
-                     default false;
-                 }
-                 leaf option-tunnel-tos {
-                     description "Value of ToS bits to be set on the encapsulating
-                            packet.  The value of 'inherit' will copy the DSCP value
-                            from inner IPv4 or IPv6 packets.  When ToS is given as
-                            a numberic value, the least significant two bits will
-                            be ignored.";
-                     type string {
-                         length "1..8";
-                     }
-                 }
-             }
-          }
+    }
 
+    container not-hosted-transport-zones {
+        config false;
+        list tepsInNotHostedTransportZone {
+            key zone-name;
+            leaf zone-name {
+                type string;
+            }
+            list unknown-vteps{
+                key "dpn-id";
+                leaf dpn-id {
+                    type uint64;
+                }
+                leaf ip-address {
+                    type inet:ip-address;
+                }
+                leaf of-tunnel {
+                    description "Use flow based tunnels for remote-ip";
+                    type boolean;
+                    default false;
+                }
+                leaf option-tunnel-tos {
+                    description "Value of ToS bits to be set on the encapsulating
+                           packet.  The value of 'inherit' will copy the DSCP value
+                           from inner IPv4 or IPv6 packets.  When ToS is given as
+                           a numberic value, the least significant two bits will
+                           be ignored.";
+                    type string {
+                        length "1..8";
+                    }
+                }
+            }
+        }
     }
 
     container dc-gateway-ip-list{

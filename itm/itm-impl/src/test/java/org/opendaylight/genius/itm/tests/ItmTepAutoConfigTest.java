@@ -38,7 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TepsNotHostedInTransportZone;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
@@ -441,13 +441,13 @@ public class ItmTepAutoConfigTest {
         // wait for OvsdbNodeListener to perform config DS update through transaction
         Thread.sleep(1000);
 
-        InstanceIdentifier<TepsNotHostedInTransportZone> notHostedtzPath = ItmTepAutoConfigTestUtil
+        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedtzPath = ItmTepAutoConfigTestUtil
             .getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedtzPath);
 
         // check not hosted
         assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
-            dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION,
+            dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.OPERATIONAL,
                 notHostedtzPath).checkedGet().get());
 
         future = OvsdbTestUtil.updateNode(connInfo, ItmTestConstants.NOT_HOSTED_TZ_TEP_IP, null,
@@ -457,7 +457,7 @@ public class ItmTepAutoConfigTest {
         Thread.sleep(1000);
 
         Assert.assertEquals(Optional.absent(),dataBroker.newReadOnlyTransaction()
-            .read(LogicalDatastoreType.CONFIGURATION, notHostedtzPath).get());
+            .read(LogicalDatastoreType.OPERATIONAL, notHostedtzPath).get());
     }
 
     @Test
@@ -591,12 +591,12 @@ public class ItmTepAutoConfigTest {
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
                 ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker);
         future.get();
-        InstanceIdentifier<TepsNotHostedInTransportZone> notHostedPath =
+        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedPath);
 
         assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
-            dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, notHostedPath)
+            dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.OPERATIONAL, notHostedPath)
                 .checkedGet().get());
     }
 
@@ -607,13 +607,13 @@ public class ItmTepAutoConfigTest {
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
                 ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker);
         future.get();
-        InstanceIdentifier<TepsNotHostedInTransportZone> notHostedPath =
+        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedPath);
 
         assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
             dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, notHostedPath).checkedGet().get());
+                .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get());
 
         //delete from not hosted list
         future = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
@@ -622,7 +622,7 @@ public class ItmTepAutoConfigTest {
 
         Assert.assertEquals(Optional.absent(),
             dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, notHostedPath).get());
+                .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get());
     }
 
     @Test
@@ -633,13 +633,13 @@ public class ItmTepAutoConfigTest {
                 ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
                 dataBroker);
         future.get();
-        InstanceIdentifier<TepsNotHostedInTransportZone> notHostedPath =
+        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedPath);
 
         assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
             dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, notHostedPath).checkedGet().get());
+                .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get());
 
         // create the same TZ
         TransportZone transportZoneNorth = new TransportZoneBuilder().setZoneName(ItmTestConstants.NOT_HOSTED_TZ_NAME)
@@ -675,6 +675,6 @@ public class ItmTepAutoConfigTest {
 
         // check TZ is removed
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
-            .read(LogicalDatastoreType.CONFIGURATION, notHostedPath).get());
+            .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get());
     }
 }
