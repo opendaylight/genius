@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "04a01b04_a74a68ea",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-03-27T16:41:29Z",
+      "side": 1,
+      "message": "from where exactly this code is being added as part of your patch?",
+      "revId": "ab68267cbdd52dbd5ea10d3b0630205331801ebe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
