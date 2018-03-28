@@ -35,6 +35,8 @@ import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
@@ -60,6 +62,8 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setGpeExtensionEnabled(false)
                 .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);
+        IfmConfig interfaceConfig = new IfmConfigBuilder().setItmDirectTunnels(false).build();
+        bind(IfmConfig.class).toInstance(interfaceConfig);
         bind(TunnelMonitorIntervalListener.class);
         bind(TransportZoneListener.class);
         bind(OvsdbNodeListener.class);

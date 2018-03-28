@@ -24,5 +24,10 @@ module ifm-config {
            default 15;
            description "IFM statistics polling interval (in minutes)";
        }
+       leaf itm-direct-tunnels {
+          description "Enable the ITM to handle tunnels directly by-passing interface manager.";
+          type boolean;
+          default false;
+       }
     }
 }

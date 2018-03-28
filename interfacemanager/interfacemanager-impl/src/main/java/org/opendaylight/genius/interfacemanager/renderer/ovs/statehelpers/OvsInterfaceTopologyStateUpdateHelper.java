@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
@@ -42,26 +43,29 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final SouthboundUtils southboundUtils;
+    private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
     public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
             JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils) {
+            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils,
+            InterfacemgrProvider interfacemgrProvider) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
+        this.interfacemgrProvider = interfacemgrProvider;
     }
 
     /*
      * This code is used to handle only a dpnId change scenario for a particular
      * change, which is not expected to happen in usual cases.
      */
-    public List<ListenableFuture<Void>> updateBridgeRefEntry(
-            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid, OvsdbBridgeAugmentation bridgeNew,
-            OvsdbBridgeAugmentation bridgeOld) {
+    public List<ListenableFuture<Void>> updateBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+                                                             OvsdbBridgeAugmentation bridgeNew,
+                                                             OvsdbBridgeAugmentation bridgeOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
 
@@ -90,7 +94,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     }
 
     public List<ListenableFuture<Void>> updateTunnelState(OvsdbTerminationPointAugmentation terminationPointNew) {
-        final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew.getInterfaceBfdStatus());
+        final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew);
         final String interfaceName = terminationPointNew.getName();
         interfaceManagerCommonUtils.addBfdStateToCache(interfaceName, interfaceBfdStatus);
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -115,18 +119,16 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         return Collections.emptyList();
     }
 
-    private static Interface.OperStatus getTunnelOpState(List<InterfaceBfdStatus> tunnelBfdStatus) {
-        Interface.OperStatus livenessState = Interface.OperStatus.Down;
-        if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
-            for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
-                if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
-                    String bfdOpState = bfdState.getBfdStatusValue();
-                    livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ? Interface.OperStatus.Up
-                            : Interface.OperStatus.Down;
-                    break;
-                }
-            }
+    private static Interface.OperStatus getTunnelOpState(OvsdbTerminationPointAugmentation terminationPoint) {
+        if (!SouthboundUtils.bfdMonitoringEnabled(terminationPoint.getInterfaceBfd())) {
+            return Interface.OperStatus.Up;
         }
-        return livenessState;
+        InterfaceBfdStatus tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus().get(0);
+        if (tunnelBfdStatus != null) {
+            return SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(tunnelBfdStatus.getBfdStatusValue())
+                    && SouthboundUtils.BFD_OP_STATE.equalsIgnoreCase(tunnelBfdStatus.getBfdStatusKey())
+                    ? Interface.OperStatus.Up : Interface.OperStatus.Down;
+            }
+        return Interface.OperStatus.Down;
     }
 }
