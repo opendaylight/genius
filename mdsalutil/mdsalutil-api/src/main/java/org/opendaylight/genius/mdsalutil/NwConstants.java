@@ -63,9 +63,10 @@ public interface NwConstants {
     short DHCP_SERVICE_INDEX = 5;
     short QOS_SERVICE_INDEX = 6;
     short IPV6_SERVICE_INDEX = 7;
-    short L3VPN_SERVICE_INDEX = 8;
-    short ELAN_SERVICE_INDEX = 9;
-    short L3_VPNV6_SERVICE_INDEX = 10;
+    short L3_LB_SERVICE_INDEX = 8;
+    short L3VPN_SERVICE_INDEX = 9;
+    short ELAN_SERVICE_INDEX = 10;
+    short L3_VPNV6_SERVICE_INDEX = 11;
 
     String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     String ACL_SERVICE_NAME = "ACL_SERVICE";
@@ -129,6 +130,7 @@ public interface NwConstants {
     short PSNAT_TABLE = 26;
     short DNAT_TABLE = 27;
     short SNAT_TABLE = 28;
+    short L3_LB_TABLE = 30;
     short INTERNAL_TUNNEL_TABLE = 36;
     short EXTERNAL_TUNNEL_TABLE = 38;
     short ARP_CHECK_TABLE = 43;
