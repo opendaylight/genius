@@ -129,6 +129,7 @@ public interface NwConstants {
     short PSNAT_TABLE = 26;
     short DNAT_TABLE = 27;
     short SNAT_TABLE = 28;
+    short COE_KUBE_PROXY_TABLE = 30;
     short INTERNAL_TUNNEL_TABLE = 36;
     short EXTERNAL_TUNNEL_TABLE = 38;
     short ARP_CHECK_TABLE = 43;
