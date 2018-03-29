@@ -117,7 +117,7 @@ class ExpectedFlowEntries {
                     new InstructionBuilder >> [
                         instruction = new WriteMetadataCaseBuilder >> [
                             writeMetadata = new WriteMetadataBuilder >> [
-                                metadata = 11529216145596874752bi
+                                metadata = 12682137650203721728bi
                                 metadataMask = 18446744073709551614bi
                             ]
                         ]

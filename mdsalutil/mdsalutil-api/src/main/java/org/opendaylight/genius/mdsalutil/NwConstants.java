@@ -63,9 +63,10 @@ public interface NwConstants {
     short DHCP_SERVICE_INDEX = 5;
     short QOS_SERVICE_INDEX = 6;
     short IPV6_SERVICE_INDEX = 7;
-    short L3VPN_SERVICE_INDEX = 8;
-    short ELAN_SERVICE_INDEX = 9;
-    short L3_VPNV6_SERVICE_INDEX = 10;
+    short L3_LB_SERVICE_INDEX = 8;
+    short L3VPN_SERVICE_INDEX = 9;
+    short ELAN_SERVICE_INDEX = 10;
+    short L3_VPNV6_SERVICE_INDEX = 11;
 
     String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     String ACL_SERVICE_NAME = "ACL_SERVICE";
@@ -157,6 +158,7 @@ public interface NwConstants {
     short QOS_DSCP_TABLE = 90;
     short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
+    short L3_LB_TABLE = 180;
     short INGRESS_ACL_ANTI_SPOOFING_TABLE = 210;
     short INGRESS_ACL_CONNTRACK_CLASSIFIER_TABLE = 211;
     short INGRESS_ACL_CONNTRACK_SENDER_TABLE = 212;
