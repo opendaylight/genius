@@ -22,6 +22,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfoBuilder;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
@@ -29,7 +30,9 @@ import org.opendaylight.genius.itm.utils.TunnelEndPointInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
@@ -47,11 +50,14 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     private final DataBroker dataBroker;
     private final DPNTEPsInfoCache dpnTepsInfoCache;
+    private final ItmConfig itmConfig;
+    private final TunnelMonitoringConfig tunnelMonitoringConfig;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap();
 
     @Inject
-    public DpnTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider, DPNTEPsInfoCache dpnTepsInfoCache) {
+    public DpnTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider, DPNTEPsInfoCache dpnTepsInfoCache,
+                            ItmConfig itmConfig, TunnelMonitoringConfig tunnelMonitoringConfig) {
         super(DpnsTeps.class, dataBroker, LogicalDatastoreType.OPERATIONAL,
             InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class).build(), cacheProvider,
             (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId(),
@@ -59,6 +65,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     .child(DpnsTeps.class, new DpnsTepsKey(sourceDpnId)).build());
         this.dataBroker = dataBroker;
         this.dpnTepsInfoCache = dpnTepsInfoCache;
+        this.itmConfig = itmConfig;
+        this.tunnelMonitoringConfig = tunnelMonitoringConfig;
     }
 
     @Override
@@ -188,13 +196,23 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         BigInteger srcDpnId = new BigInteger(endPointInfo.getSrcEndPointInfo());
         BigInteger dstDpnId = new BigInteger(endPointInfo.getDstEndPointInfo());
         Interface iface = null ;
-        int monitoringInt = 1000;
+        // ToDo Replace with per tunnel BFD enable flag when its implemented
+        Boolean monitorEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
+        Integer monitorInterval = tunnelMonitoringConfig.getMonitorInterval();
+        Class<? extends TunnelMonitoringTypeBase> monitorProtocol =
+                tunnelMonitoringConfig.getMonitorProtocol();
+
         DpnTepInterfaceInfo dpnTepInfo = getDpnTepInterface(srcDpnId, dstDpnId);
         if (dpnTepInfo != null) {
             List<DPNTEPsInfo> srcDpnTEPsInfo = dpnTepsInfoCache
                     .getDPNTepListFromDPNId(Collections.singletonList(srcDpnId));
             List<DPNTEPsInfo> dstDpnTEPsInfo = dpnTepsInfoCache
                     .getDPNTepListFromDPNId(Collections.singletonList(dstDpnId));
+            boolean useOfTunnel = ItmUtils.falseIfNull(
+                    srcDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).isOptionOfTunnel());
+
+            List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(
+                    srcDpnTEPsInfo.get(0).getTunnelEndPoints().get(0), itmConfig);
             iface = ItmUtils.buildTunnelInterface(srcDpnId, tunnelName,
                     String.format("%s %s", ItmUtils.convertTunnelTypetoString(dpnTepInfo.getTunnelType()),
                             "Trunk Interface"), true, dpnTepInfo.getTunnelType(),
@@ -202,8 +220,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     dstDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).getIpAddress(),
                     srcDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).getGwIpAddress(),
                     srcDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).getVLANID(), true,
-                    dpnTepInfo.isMonitoringEnabled(), TunnelMonitoringTypeBfd.class,
-                    monitoringInt, true, null);
+                    monitorEnabled, monitorProtocol,
+                    monitorInterval, useOfTunnel,tunOptions);
         }
         return iface;
     }
