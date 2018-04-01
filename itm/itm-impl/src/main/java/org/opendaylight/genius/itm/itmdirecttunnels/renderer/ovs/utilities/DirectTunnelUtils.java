@@ -8,10 +8,16 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,6 +30,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -31,10 +38,22 @@ import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.OvsBridgeRefInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
@@ -47,8 +66,29 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbPortInterfaceAttributes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsKey;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +98,57 @@ public final class DirectTunnelUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectTunnelUtils.class);
     private static final String ENTITY = "ovsBridgeRefEntryOperation";
+
+    private static final String BFD_PARAM_ENABLE = "enable";
+    private static final String BFD_PARAM_MIN_TX = "min_tx";
+    private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
+
+    // BFD parameters
+    private static final String BFD_MIN_TX_VAL = "100";
+    private static final String BFD_FORWARDING_IF_RX_VAL = "true";
+
+    // Tunnel options
+    private static final String TUNNEL_OPTIONS_KEY = "key";
+    private static final String TUNNEL_OPTIONS_LOCAL_IP = "local_ip";
+    private static final String TUNNEL_OPTIONS_REMOTE_IP = "remote_ip";
+    private static final String TUNNEL_OPTIONS_DESTINATION_PORT = "dst_port";
+    public static final String TUNNEL_OPTIONS_TOS = "tos";
+
+    // Option values for VxLAN-GPE + NSH tunnels
+    private static final String TUNNEL_OPTIONS_EXTS = "exts";
+    private static final String TUNNEL_OPTIONS_NSI = "nsi";
+    private static final String TUNNEL_OPTIONS_NSP = "nsp";
+    private static final String TUNNEL_OPTIONS_NSHC1 = "nshc1";
+    private static final String TUNNEL_OPTIONS_NSHC2 = "nshc2";
+    private static final String TUNNEL_OPTIONS_NSHC3 = "nshc3";
+    private static final String TUNNEL_OPTIONS_NSHC4 = "nshc4";
+
+    // Option values for VxLAN-GPE + NSH tunnels
+    private static final String TUNNEL_OPTIONS_VALUE_FLOW = "flow";
+    private static final String TUNNEL_OPTIONS_VALUE_GPE = "gpe";
+    // UDP port for VxLAN-GPE Tunnels
+    private static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
+
+    //tos option value for tunnels
+    public static final String TUNNEL_OPTIONS_TOS_VALUE_INHERIT = "inherit";
+
+    public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
+
+    // To keep the mapping between Tunnel Types and Tunnel Interfaces
+    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
+            TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
+                {
+                    put(TunnelTypeGre.class, InterfaceTypeGre.class);
+                    put(TunnelTypeMplsOverGre.class, InterfaceTypeGre.class);
+                    put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
+                    put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
+                }
+                };
+
+    private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
+    private static final Pattern TUNNEL_PORT_PATTERN = Pattern.compile(TUNNEL_PORT_REGEX);
+    public  static final Predicate<String> TUNNEL_PORT_PREDICATE =
+        portName -> TUNNEL_PORT_PATTERN.matcher(portName).matches();
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
@@ -111,20 +202,6 @@ public final class DirectTunnelUtils {
         return new NodeId(ncId.getValue().substring(0,ncId.getValue().lastIndexOf(":")));
     }
 
-    public static String generateMacAddress(long portNo) {
-        String unformattedMAC = getDeadBeefBytesForMac().or(fillPortNumberToMac(portNo)).toString(16);
-        return unformattedMAC.replaceAll("(.{2})", "$1" + ITMConstants.MAC_SEPARATOR)
-                .substring(0, ITMConstants.MAC_STRING_LENGTH);
-    }
-
-    private static BigInteger getDeadBeefBytesForMac() {
-        return new BigInteger("FFFFFFFF", 16).and(new BigInteger(ITMConstants.DEAD_BEEF_MAC_PREFIX, 16)).shiftLeft(16);
-    }
-
-    private static BigInteger fillPortNumberToMac(long portNumber) {
-        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portNumber));
-    }
-
     // Convert Interface Oper State to Tunnel Oper state
     public static TunnelOperStatus convertInterfaceToTunnelOperState(Interface.OperStatus opState) {
 
@@ -157,10 +234,15 @@ public final class DirectTunnelUtils {
                 -> tx.delete(LogicalDatastoreType.OPERATIONAL, bridgeEntryId))));
     }
 
-    private static InstanceIdentifier<OvsBridgeRefEntry>
+    public static InstanceIdentifier<OvsBridgeRefEntry>
         getOvsBridgeRefEntryIdentifier(OvsBridgeRefEntryKey bridgeRefEntryKey) {
         return InstanceIdentifier.builder(OvsBridgeRefInfo.class)
                 .child(OvsBridgeRefEntry.class, bridgeRefEntryKey).build();
+    }
+
+    public static InstanceIdentifier<OvsBridgeEntry> getOvsBridgeEntryIdentifier(OvsBridgeEntryKey bridgeEntryKey) {
+        return InstanceIdentifier.builder(BridgeTunnelInfo.class)
+                .child(OvsBridgeEntry.class, bridgeEntryKey).build();
     }
 
     public boolean isNodeConnectorPresent(NodeConnectorId nodeConnectorId) throws ReadFailedException {
@@ -233,5 +315,135 @@ public final class DirectTunnelUtils {
                 break;
         }
         return result;
+    }
+
+    public void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid,
+                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+                                              .interfaces.rev140508.interfaces.Interface iface, String portName) {
+        LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
+
+        Class<? extends InterfaceTypeBase> type = TUNNEL_TYPE_MAP.get(ifTunnel.getTunnelInterfaceType());
+
+        if (type == null) {
+            LOG.warn("Unknown Tunnel Type obtained while creating interface: {}", iface);
+            return;
+        }
+
+        int vlanId = 0;
+        IfL2vlan ifL2vlan = iface.getAugmentation(IfL2vlan.class);
+        if (ifL2vlan != null && ifL2vlan.getVlanId() != null) {
+            vlanId = ifL2vlan.getVlanId().getValue();
+        }
+
+        Map<String, String> options = Maps.newHashMap();
+
+        // Options common to any kind of tunnel
+        IpAddress localIp = ifTunnel.getTunnelSource();
+        options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
+
+        IpAddress remoteIp = ifTunnel.getTunnelDestination();
+        options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+
+        options.put(TUNNEL_OPTIONS_TOS, TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
+
+        // Specific options for each type of tunnel
+        if (!ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
+            options.put(TUNNEL_OPTIONS_KEY, TUNNEL_OPTIONS_VALUE_FLOW);
+        }
+
+        if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlanGpe.class)) {
+            options.put(TUNNEL_OPTIONS_EXTS, TUNNEL_OPTIONS_VALUE_GPE);
+            options.put(TUNNEL_OPTIONS_NSI, TUNNEL_OPTIONS_VALUE_FLOW);
+            options.put(TUNNEL_OPTIONS_NSP, TUNNEL_OPTIONS_VALUE_FLOW);
+            options.put(TUNNEL_OPTIONS_NSHC1, TUNNEL_OPTIONS_VALUE_FLOW);
+            options.put(TUNNEL_OPTIONS_NSHC2, TUNNEL_OPTIONS_VALUE_FLOW);
+            options.put(TUNNEL_OPTIONS_NSHC3, TUNNEL_OPTIONS_VALUE_FLOW);
+            options.put(TUNNEL_OPTIONS_NSHC4, TUNNEL_OPTIONS_VALUE_FLOW);
+            // VxLAN-GPE interfaces will not use the default UDP port to avoid problems with other meshes
+            options.put(TUNNEL_OPTIONS_DESTINATION_PORT, TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT);
+        }
+        addTerminationPoint(bridgeIid, portName, vlanId, type, options, ifTunnel);
+    }
+
+    private void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
+                                     Class<? extends InterfaceTypeBase> type, Map<String, String> options,
+                                     IfTunnel ifTunnel) {
+        final InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
+                InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
+                        org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang
+                                .network.topology.rev131021.network.topology.topology.Node.class)), portName);
+        OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
+
+        tpAugmentationBuilder.setName(portName);
+
+        if (type != null) {
+            tpAugmentationBuilder.setInterfaceType(type);
+        }
+
+        if (options != null) {
+            List<Options> optionsList = new ArrayList<>();
+            for (Map.Entry<String, String> entry : options.entrySet()) {
+                OptionsBuilder optionsBuilder = new OptionsBuilder();
+                optionsBuilder.setKey(new OptionsKey(entry.getKey()));
+                optionsBuilder.setOption(entry.getKey());
+                optionsBuilder.setValue(entry.getValue());
+                optionsList.add(optionsBuilder.build());
+            }
+            tpAugmentationBuilder.setOptions(optionsList);
+        }
+
+        if (vlanId != 0) {
+            tpAugmentationBuilder.setVlanMode(OvsdbPortInterfaceAttributes.VlanMode.Access);
+            tpAugmentationBuilder.setVlanTag(new VlanId(vlanId));
+        }
+
+        if (bfdMonitoringEnabled(ifTunnel)) {
+            List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
+            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+        }
+
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+
+        ITMBatchingUtils.write(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
+    public InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(
+            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
+                    .network.topology.topology.NodeKey nodekey,
+            String portName) {
+        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier.create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(OVSDB_TOPOLOGY_ID))
+                .child(org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
+                        .network.topology.topology.Node.class, nodekey)
+                .child(TerminationPoint.class, new TerminationPointKey(new TpId(portName)));
+
+        LOG.debug("Termination point InstanceIdentifier generated : {}", terminationPointPath);
+        return terminationPointPath;
+    }
+
+    public boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
+        if (ifTunnel.isMonitorEnabled()
+                && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) {
+            return true;
+        }
+        return false;
+    }
+
+    private List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
+        List<InterfaceBfd> bfdParams = new ArrayList<>();
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,ifTunnel != null ? ifTunnel.isMonitorEnabled().toString()
+                : "false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
+                ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        return bfdParams;
+    }
+
+    private InterfaceBfd getIfBfdObj(String key, String value) {
+        InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
+        bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
+        return bfdBuilder.build();
     }
 }
