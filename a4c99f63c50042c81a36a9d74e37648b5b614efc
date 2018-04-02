@@ -22,6 +22,30 @@
       "revId": "a4c99f63c50042c81a36a9d74e37648b5b614efc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51621158_02ceaaaf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-02T18:26:30Z",
+      "side": 1,
+      "message": "This is an l3 load balancer service... but the table will be programmed by a service called Kube_Proxy.. should we name it as L3_LOAD_BALANCER_TABLE? But since it is specific to containers, somehow wanted to add the KUBE_PROXY name there",
+      "parentUuid": "346f5439_048f7ab3",
+      "range": {
+        "startLine": 132,
+        "startChar": 10,
+        "endLine": 132,
+        "endChar": 19
+      },
+      "revId": "a4c99f63c50042c81a36a9d74e37648b5b614efc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
