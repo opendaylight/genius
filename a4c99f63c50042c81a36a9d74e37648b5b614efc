@@ -46,6 +46,30 @@
       "revId": "a4c99f63c50042c81a36a9d74e37648b5b614efc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8d72291_10e54b53",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-04-02T18:38:48Z",
+      "side": 1,
+      "message": "hmm, is l3_lb_table also usable outside this service? Wondering if it is something that could possibly be used. But still seems like things should be named more like that so when readers browse the code, the table name indicates what is happening without having to know what kube_proxy is.",
+      "parentUuid": "51621158_02ceaaaf",
+      "range": {
+        "startLine": 132,
+        "startChar": 10,
+        "endLine": 132,
+        "endChar": 19
+      },
+      "revId": "a4c99f63c50042c81a36a9d74e37648b5b614efc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
