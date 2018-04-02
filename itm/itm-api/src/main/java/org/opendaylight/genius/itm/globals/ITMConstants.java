@@ -61,7 +61,7 @@ public interface ITMConstants {
     String ITM_ALARM = "ITM_ALARM";
     // Southbound side OVSDB ExternalIds list TEP parameters
     String OTH_CFG_TEP_PARAM_KEY_LOCAL_IP = "local_ip";
-    String EXT_ID_TEP_PARAM_KEY_TZNAME = "tzname";
+    String EXT_ID_TEP_PARAM_KEY_TZNAME = "transport-zone";
     String EXT_ID_TEP_PARAM_KEY_BR_NAME = "br-name";
     String EXT_ID_TEP_PARAM_KEY_OF_TUNNEL = "of-tunnel";
 
