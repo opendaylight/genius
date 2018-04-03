@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +29,6 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -40,6 +41,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.o
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -181,35 +184,31 @@ public final class DirectTunnelUtils {
                 .syncReadOptional(dataBroker, LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).isPresent();
     }
 
-    public List<Action> getEgressActionsForInterface(String interfaceName, long tunnelKey, Integer actionKey) {
-        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey,
-                actionKey == null ? 0 : actionKey);
-        return listActionInfo.stream().map(ActionInfo::buildAction).collect(Collectors.toList());
-    }
-
-    private List<ActionInfo> getEgressActionInfosForInterface(String interfaceName, long tunnelKey,
-                                                              int actionKeyStart) {
+    public ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
+                                                                                          long tunnelKey,
+                                                                                          Integer actionKey) {
+        int actionKeyStart = actionKey == null ? 0 : actionKey;
         DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
         if (interfaceInfo == null) {
-            LOG.error("Interface information not present in config DS for {}", interfaceName);
-            return Collections.singletonList(new ActionDrop());
+            throw new IllegalStateException(String.format("Interface information not present in config DS for %s",
+                    interfaceName));
         }
         Optional<StateTunnelList> ifState;
         try {
             ifState = tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
         } catch (ReadFailedException e) {
-            LOG.error("Interface information not present in oper DS for {} ", interfaceName, e);
-            return Collections.singletonList(new ActionDrop());
+            throw new IllegalStateException(String.format("Interface information not present in oper DS for %s "
+                    + "reason %s", interfaceName, e));
         }
         if (ifState.isPresent()) {
             String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
-            return getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(), tunnelKey,
-                    actionKeyStart);
+            List<Action> actions = getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(),
+                    tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
+            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
         }
-        LOG.error("Interface information not present in oper DS for {}", interfaceName);
-        return Collections.singletonList(new ActionDrop());
+        throw new IllegalStateException(String.format("Interface information not present in oper DS for %s",
+                interfaceName));
     }
-
 
     private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, String portNo, Long tunnelKey,
                                                                     int actionKeyStart) {
