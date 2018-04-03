@@ -7,6 +7,10 @@
  */
 package org.opendaylight.genius.itm.rpc;
 
+import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.DEBUG;
+import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
@@ -33,18 +37,28 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.FutureRpcResults;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeRefInfo;
@@ -61,6 +75,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -89,6 +104,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.G
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetDpnInfoOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetEgressActionsForTunnelOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutputBuilder;
@@ -100,6 +116,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.G
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelTypeInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelTypeOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelTypeOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentOutputBuilder;
@@ -132,16 +149,27 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
     private final ItmConfig itmConfig;
     private final SingleTransactionDataBroker singleTransactionDataBroker;
+    private final IInterfaceManager interfaceManager;
+    private final InterfaceManagerService interfaceManagerService;
+    private final DpnTepStateCache dpnTepStateCache;
+    private final TunnelStateCache tunnelStateCache;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
-            final ItmConfig itmConfig, final DPNTEPsInfoCache dpnTEPsInfoCache) {
+                                final ItmConfig itmConfig, final DPNTEPsInfoCache dpnTEPsInfoCache,
+                                final IInterfaceManager interfaceManager, final DpnTepStateCache dpnTepStateCache,
+                                final TunnelStateCache tunnelStateCache,
+                                final InterfaceManagerService interfaceManagerService) {
         this.dataBroker = dataBroker;
         this.mdsalManager = mdsalManager;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
         this.itmConfig = itmConfig;
         this.singleTransactionDataBroker = new SingleTransactionDataBroker(dataBroker);
+        this.interfaceManager = interfaceManager;
+        this.interfaceManagerService = interfaceManagerService;
+        this.dpnTepStateCache = dpnTepStateCache;
+        this.tunnelStateCache = tunnelStateCache;
     }
 
     @PostConstruct
@@ -178,26 +206,112 @@ public class ItmManagerRpcService implements ItmRpcService {
                 resultBld = RpcResultBuilder.success();
                 resultBld.withResult(output.build());
             } else {
-                resultBld = RpcResultBuilder.failed();
+                resultBld = failed();
             }
 
         } else {
-            resultBld = RpcResultBuilder.failed();
+            resultBld = failed();
         }
         return Futures.immediateFuture(resultBld.build());
     }
 
     @Override
-    public Future<RpcResult<GetEgressActionsForTunnelOutput>> getEgressActionsForTunnel(
-            GetEgressActionsForTunnelInput input) {
-        //TODO
-        return null;
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public Future<RpcResult<GetEgressActionsForTunnelOutput>>
+        getEgressActionsForTunnel(GetEgressActionsForTunnelInput input) {
+        String tunnelName = input.getIntfName();
+        if (tunnelName == null) {
+            return Futures.immediateFuture(RpcResultBuilder.<GetEgressActionsForTunnelOutput>failed()
+                    .withError(RpcError.ErrorType.APPLICATION,
+                    "tunnel name not set for GetEgressActionsForTunnel call").build());
+        }
+
+        if (!dpnTepStateCache.isInternal(tunnelName) && !interfaceManager.isItmDirectTunnelsEnabled()) {
+            // Re-direct the RPC to Interface Manager
+            // Form the rpc input and get the output and copy to output
+            org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406
+                    .GetEgressActionsForInterfaceInputBuilder inputIfmBuilder =
+                    new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406
+                            .GetEgressActionsForInterfaceInputBuilder().setIntfName(input.getIntfName())
+                            .setTunnelKey(input.getTunnelKey()).setActionKey(input.getActionKey());
+            SettableFuture<RpcResult<GetEgressActionsForTunnelOutput>> settableFuture = SettableFuture.create();
+            Futures.addCallback(interfaceManagerService.getEgressActionsForInterface(inputIfmBuilder.build()),
+                    new FutureCallback<org.opendaylight.yang.gen.v1.urn.opendaylight.genius
+                            .interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput>() {
+                        @Override
+                        public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius
+                            .interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput result) {
+                            LOG.warn("RPC Call to Get egress actions for interface {}", tunnelName);
+                            String errMsg = String.format("RPC get egress actions for interface {%s}", tunnelName);
+                            settableFuture.set(RpcResultBuilder.<GetEgressActionsForTunnelOutput>failed()
+                                    .withError(RpcError.ErrorType.APPLICATION, errMsg).build());
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            LOG.warn("RPC Call to Get egress actions for interface {}", tunnelName);
+                            String errMsg = String.format("RPC get egress actions for interface {%s}", tunnelName);
+                            settableFuture.set(RpcResultBuilder.<GetEgressActionsForTunnelOutput>failed()
+                                    .withError(RpcError.ErrorType.APPLICATION, errMsg).build());
+                        }
+                });
+            return  settableFuture;
+        } else {
+            return fromListenableFuture(LOG, input, () -> getEgressActionsForInterface(input.getIntfName(),
+                    input.getTunnelKey(), input.getActionKey())).onFailureLogLevel(DEBUG).build();
+        }
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public Future<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
-        //TODO
-        return null;
+        String tunnelName = input.getIntfName();
+        if (tunnelName == null) {
+            return Futures.immediateFuture(RpcResultBuilder.<GetTunnelTypeOutput>failed()
+                    .withError(RpcError.ErrorType.APPLICATION,
+                    "tunnel name not set for getTunnelType call").build());
+        }
+
+        if (!dpnTepStateCache.isInternal(tunnelName) || !interfaceManager.isItmDirectTunnelsEnabled()) {
+            org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406
+                    .GetTunnelTypeInputBuilder inputBuilder = new org.opendaylight.yang.gen.v1.urn.opendaylight
+                    .genius.interfacemanager.rpcs.rev160406.GetTunnelTypeInputBuilder()
+                    .setIntfName(input.getIntfName());
+            SettableFuture<RpcResult<GetTunnelTypeOutput>> settableFuture = SettableFuture.create();
+            Futures.addCallback(interfaceManagerService.getTunnelType(inputBuilder.build()),
+                    new FutureCallback<org.opendaylight.yang.gen.v1.urn.opendaylight.genius
+                            .interfacemanager.rpcs.rev160406.GetTunnelTypeOutput>() {
+                        public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius
+                                                      .interfacemanager.rpcs.rev160406.GetTunnelTypeOutput result) {
+                            if (result != null) {
+                                GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder()
+                                        .setTunnelType(result.getTunnelType());
+                                settableFuture.set(RpcResultBuilder.<GetTunnelTypeOutput>success()
+                                        .withResult(output.build()).build());
+                            } else {
+                                LOG.warn("RPC Call to Get tunnel type for interface {}", tunnelName);
+                                String errMsg = String.format("RPC to Get tunnel type for interface {%s}", tunnelName);
+                                settableFuture.set(RpcResultBuilder.<GetTunnelTypeOutput>failed()
+                                        .withError(RpcError.ErrorType.APPLICATION, errMsg).build());
+                            }
+                        }
+
+                        public void onFailure(Throwable throwable) {
+                            LOG.warn("RPC Call to Get tunnel type for interface {}", tunnelName);
+                            String errMsg = String.format("RPC to Get tunnel type for interface {%s}", tunnelName);
+                            settableFuture.set(RpcResultBuilder.<GetTunnelTypeOutput>failed()
+                                    .withError(RpcError.ErrorType.APPLICATION, errMsg).build());
+                        }
+                });
+            return settableFuture;
+        } else {
+            LOG.debug("get tunnel type from ITM for interface name {}", input.getIntfName());
+            DpnTepInterfaceInfo ifInfo = dpnTepStateCache.getTunnelFromCache(input.getIntfName());
+            GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder()
+                                                            .setTunnelType(ifInfo.getTunnelType());
+            return Futures.immediateFuture(RpcResultBuilder.<GetTunnelTypeOutput>success()
+                    .withResult(output.build()).build());
+        }
     }
 
     @Override
@@ -334,7 +448,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             resultBld = RpcResultBuilder.success();
             resultBld.withResult(output.build());
         } else {
-            resultBld = RpcResultBuilder.failed();
+            resultBld = failed();
         }
 
         return Futures.immediateFuture(resultBld.build());
@@ -426,7 +540,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public Future<RpcResult<GetInternalOrExternalInterfaceNameOutput>> getInternalOrExternalInterfaceName(
             GetInternalOrExternalInterfaceNameInput input) {
-        RpcResultBuilder<GetInternalOrExternalInterfaceNameOutput> resultBld = RpcResultBuilder.failed();
+        RpcResultBuilder<GetInternalOrExternalInterfaceNameOutput> resultBld = failed();
         BigInteger srcDpn = input.getSourceDpid() ;
         IpAddress dstIp = input.getDestinationIp() ;
         InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
@@ -835,7 +949,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public Future<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
         BigInteger srcDpn = input.getSourceDpid() ;
-        RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = RpcResultBuilder.failed();
+        RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = failed();
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
                         new DPNTEPsInfoKey(srcDpn)).build();
@@ -951,5 +1065,55 @@ public class ItmManagerRpcService implements ItmRpcService {
         return bridgeRefEntry.getBridgeReference().getValue()
                 .firstKeyOf(org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
                         .network.topology.topology.Node.class).getNodeId().getValue();
+    }
+
+    private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
+                                                                                           long tunnelKey,
+                                                                                           Integer actionKey) {
+        int actionKeyStart = actionKey == null ? 0 : actionKey;
+        DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+        if (interfaceInfo == null) {
+            throw new IllegalStateException(String.format("Interface information not present in config DS for %s",
+                    interfaceName));
+        }
+        Optional<StateTunnelList> ifState;
+        try {
+            ifState = tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
+        } catch (ReadFailedException e) {
+            throw new IllegalStateException(String.format("Read failed for Interface in oper DS for %s "
+                    + "reason %s", interfaceName, e));
+        }
+        if (ifState.isPresent()) {
+            String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
+            List<Action> actions = getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(),
+                    tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
+            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
+        }
+        throw new IllegalStateException(String.format("Interface information not present in oper DS for %s",
+                interfaceName));
+    }
+
+    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, String portNo, Long tunnelKey,
+                                                                     int actionKeyStart) {
+        List<ActionInfo> result = new ArrayList<>();
+        switch (tunnelType) {
+            case ITMConstants.TUNNEL_TYPE_GRE:
+            case ITMConstants.TUNNEL_TYPE_MPLSoGRE:
+                // Invoke IFM RPC and pass it on to the caller.
+                LOG.warn("Interface Type {} not handled by ITM", tunnelType);
+                break;
+            case ITMConstants.TUNNEL_TYPE_VXLAN:
+                //TODO tunnel_id to encode GRE key, once it is supported
+                // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
+                result.add(new ActionSetFieldTunnelId(actionKeyStart++,
+                        BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
+                result.add(new ActionOutput(actionKeyStart, new Uri(portNo)));
+                break;
+
+            default:
+                LOG.warn("Interface Type {} not handled yet", tunnelType);
+                break;
+        }
+        return result;
     }
 }
