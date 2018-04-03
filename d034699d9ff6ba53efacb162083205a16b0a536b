@@ -88,6 +88,24 @@
       "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d98a3766_c506189a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-03T06:54:06Z",
+      "side": 1,
+      "message": "I\u0027m still not a huge fan of this, but in the interest of getting +1 to get this this change wrapped up and merged, I\u0027ve added a @Nonnull to this field.",
+      "parentUuid": "a0b0b13e_0f2b0dd2",
+      "revId": "d034699d9ff6ba53efacb162083205a16b0a536b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
