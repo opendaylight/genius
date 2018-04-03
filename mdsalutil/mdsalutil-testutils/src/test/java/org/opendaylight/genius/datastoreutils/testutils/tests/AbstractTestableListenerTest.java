@@ -27,7 +27,7 @@ import org.opendaylight.infrautils.testutils.LogRule;
 @FixMethodOrder(MethodSorters.JVM)
 public class AbstractTestableListenerTest {
 
-    private static final Duration TIMEOUT_50MS = Duration.ofMillis(50);
+    private static final Duration TIMEOUT_500MS = Duration.ofMillis(500);
 
     public @Rule LogRule logRule = new LogRule();
 
@@ -40,30 +40,30 @@ public class AbstractTestableListenerTest {
 
     @Test
     public void passingAwaitEventsConsumption0() {
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
     public void passingAwaitEventsConsumption0_0() {
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
     public void passingAwaitEventsConsumption1() {
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
     public void passingAwaitEventsConsumption1_1() {
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
@@ -72,12 +72,12 @@ public class AbstractTestableListenerTest {
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
@@ -85,20 +85,20 @@ public class AbstractTestableListenerTest {
         abstractTestableListener.consumedEvents(2);
         abstractTestableListener.consumedEvents(-1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
     public void passingAwaitEventsConsumption2_2() {
         abstractTestableListener.consumedEvents(2);
         abstractTestableListener.consumedEvents(-2);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test(expected = ConditionTimeoutException.class)
     public void failingAwaitEventsConsumption2() {
         abstractTestableListener.consumedEvents(1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
     }
 
     @Test
@@ -110,7 +110,7 @@ public class AbstractTestableListenerTest {
     public void passingAwaitEventsConsumptionClose1() {
         abstractTestableListener.consumedEvents(1);
         abstractTestableListener.consumedEvents(-1);
-        abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+        abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
         abstractTestableListener.close();
     }
 
@@ -137,7 +137,7 @@ public class AbstractTestableListenerTest {
             // OK, expected
         }
         try {
-            abstractTestableListener.awaitEventsConsumption(TIMEOUT_50MS);
+            abstractTestableListener.awaitEventsConsumption(TIMEOUT_500MS);
             fail("Expected IllegalStateException");
         } catch (IllegalStateException e) {
             // OK, expected
