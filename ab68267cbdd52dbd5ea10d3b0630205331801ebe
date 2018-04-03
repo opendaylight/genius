@@ -34,6 +34,57 @@
       "revId": "ab68267cbdd52dbd5ea10d3b0630205331801ebe",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "845086df_ccdda0b2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-04-03T05:30:10Z",
+      "side": 1,
+      "message": "Earlier, tpOld \u003d null case was handled which is for add scenario. Please check the add method which inturn invokes update.",
+      "revId": "ab68267cbdd52dbd5ea10d3b0630205331801ebe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c4ae8ee1_031e40ae",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-04-03T05:30:10Z",
+      "side": 1,
+      "message": "Better to log only BFD information rather than the entire interface.",
+      "revId": "ab68267cbdd52dbd5ea10d3b0630205331801ebe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "137d682d_def6ab7e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceTopologyStateUpdateHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-04-03T05:30:10Z",
+      "side": 1,
+      "message": "Why do need this looping as its only for a particular interface. I understand this has been existing. As we are making the changes, we can refactor too :-)",
+      "revId": "ab68267cbdd52dbd5ea10d3b0630205331801ebe",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
