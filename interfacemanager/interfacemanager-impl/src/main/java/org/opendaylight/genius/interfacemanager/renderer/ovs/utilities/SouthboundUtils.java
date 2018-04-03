@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
@@ -24,14 +23,10 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
-import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
-import org.opendaylight.infrautils.caches.Cache;
-import org.opendaylight.infrautils.caches.CacheConfigBuilder;
-import org.opendaylight.infrautils.caches.CachePolicyBuilder;
+import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -120,6 +115,7 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_VALUE_LEGACY_L3 = "legacy_l3";
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
+    @SuppressWarnings("serial")
     private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
         TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
             {
@@ -133,18 +129,14 @@ public class SouthboundUtils {
     // OVS Detection statics
     private static final String DEFAULT_OVS_VERSION = "2.8.0";
     private static final String MIN_GRE_VERSION = "2.8.0";
-    private static final long MAX_CACHE_SIZE = 1024;
     private static final InstanceIdentifier<OvsdbNodeAugmentation> OVSDB_NODE_PATH =
         InstanceIdentifier.create(NetworkTopology.class)
             .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID))
             .child(Node.class).augmentation(OvsdbNodeAugmentation.class);
 
-    private final SingleTransactionDataBroker singleTxDB;
-
     private final BatchingUtils batchingUtils;
     private final InterfacemgrProvider interfacemgrProvider;
-    private final Cache<String, String> ovsVersionCache;
-    private final InstanceIdDataObjectCache<OvsdbNodeAugmentation> ovsdbNodeCache;
+    private final DataObjectCache<InstanceIdentifier<Node>, OvsdbNodeAugmentation> ovsdbNodeCache;
 
     @Inject
     public SouthboundUtils(final DataBroker dataBroker,
@@ -152,32 +144,32 @@ public class SouthboundUtils {
                            final CacheProvider cacheProvider) {
         this.batchingUtils = batchingUtils;
         this.interfacemgrProvider = interfacemgrProvider;
-        this.singleTxDB = new SingleTransactionDataBroker(dataBroker);
-        ovsVersionCache = cacheProvider.newCache(
-            new CacheConfigBuilder<String, String>()
-                .anchor(this)
-                .id("ovsVersionCache")
-                .cacheFunction(key -> getVersionForBridgeNodeId(key))
-                .description("BridgeNodeId to OVS Version cache")
-                .build(),
-            new CachePolicyBuilder().maxEntries(MAX_CACHE_SIZE).build());
-        ovsdbNodeCache = new InstanceIdDataObjectCache<>(OvsdbNodeAugmentation.class, dataBroker,
-            LogicalDatastoreType.OPERATIONAL, OVSDB_NODE_PATH, cacheProvider);
+
+        ovsdbNodeCache = new DataObjectCache<>(OvsdbNodeAugmentation.class, dataBroker,
+            LogicalDatastoreType.OPERATIONAL, OVSDB_NODE_PATH, cacheProvider,
+            (ovsdbNodeAugmentationIID, ovsdbNodeAugmentation) -> InstanceIdentifier.create(Node.class)...,
+            nodeIID -> InstanceIdentifier.create(NetworkTopology.class)
+                        .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID))
+                        .child(Node.class,
+                                new NodeKey(new NodeId(
+                                        nodeIID.firstKeyOf(Node.class).getNodeId().getValue().split("/bridge")[0])))
+                        .augmentation(OvsdbNodeAugmentation.class));
     }
 
-    public void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
+    public void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName)
+            throws ReadFailedException {
         IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null) {
             addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }
     }
 
-    /*
+    /**
      * Add all tunnels ports corresponding to the bridge to the topology config DS.
      */
     public void addAllPortsToBridge(BridgeEntry bridgeEntry, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                     InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                    OvsdbBridgeAugmentation bridgeNew) {
+                                    OvsdbBridgeAugmentation bridgeNew) throws ReadFailedException {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
         List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
@@ -205,7 +197,7 @@ public class SouthboundUtils {
     }
 
     private void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
-            String portName) {
+            String portName) throws ReadFailedException {
         LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
 
         Class<? extends InterfaceTypeBase> type = TUNNEL_TYPE_MAP.get(ifTunnel.getTunnelInterfaceType());
@@ -238,7 +230,9 @@ public class SouthboundUtils {
         }
         // Specific options for each type of tunnel
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
-            String switchVersion = getSwitchVersion((InstanceIdentifier<Node>) bridgeIid);
+            String switchVersion = ovsdbNodeCache.get((InstanceIdentifier<Node>) bridgeIid)
+                    .transform(ovsdbNodeAugmentation -> ovsdbNodeAugmentation.getOvsVersion().toLowerCase(Locale.ROOT))
+                    .or(DEFAULT_OVS_VERSION);
             LOG.debug("Switch OVS Version: {}", switchVersion);
             if (org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils.compareDbVersionToMinVersion(
                 switchVersion, MIN_GRE_VERSION)) {
@@ -354,28 +348,6 @@ public class SouthboundUtils {
         InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
         bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
         return bfdBuilder.build();
-    }
-
-    private String getSwitchVersion(InstanceIdentifier<Node> bridgeIid) {
-        String ovsNodeId = bridgeIid.firstKeyOf(Node.class).getNodeId().getValue().split("/bridge")[0];
-        return ovsVersionCache.get(ovsNodeId);
-    }
-
-    private String getVersionForBridgeNodeId(String ovsNodeId) {
-        InstanceIdentifier<OvsdbNodeAugmentation> ovsdbNodeIid = InstanceIdentifier.create(NetworkTopology.class)
-            .child(Topology.class, new TopologyKey(IfmConstants.OVSDB_TOPOLOGY_ID))
-            .child(Node.class, new NodeKey(new NodeId(ovsNodeId)))
-            .augmentation(OvsdbNodeAugmentation.class);
-        String ovsVersion = DEFAULT_OVS_VERSION;
-        try {
-            Optional<OvsdbNodeAugmentation> optOvsdbNode = ovsdbNodeCache.get(ovsdbNodeIid);
-            if (optOvsdbNode.isPresent()) {
-                ovsVersion = optOvsdbNode.get().getOvsVersion().toLowerCase(Locale.ROOT);
-            }
-        } catch (ReadFailedException e) {
-            LOG.error("OVS Node {} not present", ovsNodeId, e);
-        }
-        return ovsVersion;
     }
 
     public static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(NodeKey nodekey,
