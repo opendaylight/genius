@@ -70,6 +70,30 @@
       "revId": "a4c99f63c50042c81a36a9d74e37648b5b614efc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42af58d5_9d8754e1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-03T06:34:41Z",
+      "side": 1,
+      "message": "Yes, l3_lb_table looks good, but ofcourse the table needs to be programmed by some loadbalancing entity which is outside the scope of odl.",
+      "parentUuid": "b8d72291_10e54b53",
+      "range": {
+        "startLine": 132,
+        "startChar": 10,
+        "endLine": 132,
+        "endChar": 19
+      },
+      "revId": "a4c99f63c50042c81a36a9d74e37648b5b614efc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
