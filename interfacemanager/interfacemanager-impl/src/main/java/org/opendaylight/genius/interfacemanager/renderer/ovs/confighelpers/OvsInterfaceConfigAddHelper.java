@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -127,7 +128,7 @@ public final class OvsInterfaceConfigAddHelper {
 
     private void addTunnelConfiguration(ParentRefs parentRefs, Interface interfaceNew, IfTunnel ifTunnel,
             WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
-            List<ListenableFuture<Void>> futures) {
+            List<ListenableFuture<Void>> futures) throws ReadFailedException {
         if (parentRefs == null) {
             LOG.warn(
                     "ParentRefs for interface: {} Not Found. "
