@@ -1,0 +1,180 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0abb952_36a69906",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "This can be inlined where used.",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "640877d6_9d1e24b0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "Same here",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8af3a94d_69113ab9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "An exception actually didn\u0027t occur. How about just report \"The tunnel name must be set\"",
+      "range": {
+        "startLine": 226,
+        "startChar": 22,
+        "endLine": 226,
+        "endChar": 31
+      },
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "704cca14_363e9319",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "Is it necessary to log a warning here since you\u0027re returning failure to the caller?  ie let the caller log an error/warning as they see fit...",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eda122a4_6ad5e089",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "Why not handle this async? ie add a FutureCallback...",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "691f1f31_af744875",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "I don\u0027t see a path that returns the successful Future - this would fall thru to line 271 which returns failure. Or am I missing something?",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "529c7dfe_0dcce839",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 322,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "Similar comments as above...",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89a0d932_e58ad9d1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "You should return a failed Future instead of directly throwing ISE.",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a45188c3_82e4cd36",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1089,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "Since you\u0027re returning a Future it\u0027s implied this method is async so make it so, ie do the read async.",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8cb9a4a7_e42aeb35",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1092,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-03T18:22:13Z",
+      "side": 1,
+      "message": "Same here - propagate the ReadFailedException in a failed Future.",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
