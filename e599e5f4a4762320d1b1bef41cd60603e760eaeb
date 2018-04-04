@@ -16,6 +16,24 @@
       "revId": "e599e5f4a4762320d1b1bef41cd60603e760eaeb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db505851_b833d549",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-04T13:29:10Z",
+      "side": 1,
+      "message": "Done!  I\u0027m still not a huge fan of peppering @Nonnull all over the place; we should have the assumption of default non null for all parameters... otherwise we can start adding *A LOT* of @Nonnull everywhere - to me, adding it just here makes non sense - but I want to get this change wrapped up and in.\n\nPS: More importantly, the requireNonNull actually revealed a real bug in InterfaceManagerConfigurationTest .. fixed now.",
+      "parentUuid": "6426edec_8216328c",
+      "revId": "e599e5f4a4762320d1b1bef41cd60603e760eaeb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
