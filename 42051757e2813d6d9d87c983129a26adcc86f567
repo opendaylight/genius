@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f14d0213_5dc46b69",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-04-04T13:54:43Z",
+      "side": 1,
+      "message": "Shouldn\u0027t newLocalIp also be changed to jobKey here?\n\nAlso, just wondering, is there any case where either oldLocalIp or newLocalIp could be null at this point? Specifically, will this work if the local_ip is deleted?",
+      "revId": "42051757e2813d6d9d87c983129a26adcc86f567",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
