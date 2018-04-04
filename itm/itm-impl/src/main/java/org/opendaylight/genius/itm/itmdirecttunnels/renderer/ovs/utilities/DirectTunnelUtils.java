@@ -7,48 +7,46 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities;
 
-import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.itm.cache.DpnTepStateCache;
-import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
-import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
-import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
-import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.OvsBridgeRefInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdKey;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,23 +55,58 @@ import org.slf4j.LoggerFactory;
 public final class DirectTunnelUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectTunnelUtils.class);
-    private static final String ENTITY = "ovsBridgeRefEntryOperation";
 
-    private final DataBroker dataBroker;
-    private final JobCoordinator jobCoordinator;
-    private final ManagedNewTransactionRunner txRunner;
-    private final DpnTepStateCache dpnTepStateCache;
-    private final TunnelStateCache tunnelStateCache;
+    // BFD parameters
+    private static final String BFD_PARAM_ENABLE = "enable";
+    private static final String BFD_PARAM_MIN_TX = "min_tx";
+    private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
 
-    @Inject
-    public DirectTunnelUtils(DataBroker dataBroker, JobCoordinator jobCoordinator, DpnTepStateCache dpnTepStateCache,
-                             TunnelStateCache tunnelStateCache) {
-        this.dataBroker = dataBroker;
-        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-        this.jobCoordinator = jobCoordinator;
-        this.dpnTepStateCache = dpnTepStateCache;
-        this.tunnelStateCache = tunnelStateCache;
-    }
+    // BFD parameters
+    private static final String BFD_MIN_TX_VAL = "100";
+    private static final String BFD_FORWARDING_IF_RX_VAL = "true";
+
+    // Tunnel options
+    public static final String TUNNEL_OPTIONS_KEY = "key";
+    public static final String TUNNEL_OPTIONS_LOCAL_IP = "local_ip";
+    public static final String TUNNEL_OPTIONS_REMOTE_IP = "remote_ip";
+    public static final String TUNNEL_OPTIONS_DESTINATION_PORT = "dst_port";
+    public static final String TUNNEL_OPTIONS_TOS = "tos";
+
+    // Option values for VxLAN-GPE + NSH tunnels
+    public static final String TUNNEL_OPTIONS_EXTS = "exts";
+    public static final String TUNNEL_OPTIONS_NSI = "nsi";
+    public static final String TUNNEL_OPTIONS_NSP = "nsp";
+    public static final String TUNNEL_OPTIONS_NSHC1 = "nshc1";
+    public static final String TUNNEL_OPTIONS_NSHC2 = "nshc2";
+    public static final String TUNNEL_OPTIONS_NSHC3 = "nshc3";
+    public static final String TUNNEL_OPTIONS_NSHC4 = "nshc4";
+
+    // Option values for VxLAN-GPE + NSH tunnels
+    public static final String TUNNEL_OPTIONS_VALUE_FLOW = "flow";
+    public static final String TUNNEL_OPTIONS_VALUE_GPE = "gpe";
+    // UDP port for VxLAN-GPE Tunnels
+    public static final String TUNNEL_OPTIONS_VALUE_GPE_DESTINATION_PORT = "4880";
+
+    //tos option value for tunnels
+    public static final String TUNNEL_OPTIONS_TOS_VALUE_INHERIT = "inherit";
+
+    private static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
+
+    private static final long INVALID_ID = 0;
+    // To keep the mapping between Tunnel Types and Tunnel Interfaces
+
+    public static final ImmutableMap<Class<? extends TunnelTypeBase>,
+            Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP = new ImmutableMap
+            .Builder<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>()
+            .put(TunnelTypeGre.class, InterfaceTypeGre.class)
+            .put(TunnelTypeMplsOverGre.class, InterfaceTypeGre.class)
+            .put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class)
+            .put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class).build();
+
+    private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
+    private static final Pattern TUNNEL_PORT_PATTERN = Pattern.compile(TUNNEL_PORT_REGEX);
+    public  static final Predicate<String> TUNNEL_PORT_PREDICATE =
+        portName -> TUNNEL_PORT_PATTERN.matcher(portName).matches();
 
     public BigInteger getDpnId(DatapathId datapathId) {
         if (datapathId != null) {
@@ -107,24 +140,6 @@ public final class DirectTunnelUtils {
         return portId.getValue().split(ITMConstants.OF_URI_SEPARATOR)[2];
     }
 
-    public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
-        return new NodeId(ncId.getValue().substring(0,ncId.getValue().lastIndexOf(":")));
-    }
-
-    public static String generateMacAddress(long portNo) {
-        String unformattedMAC = getDeadBeefBytesForMac().or(fillPortNumberToMac(portNo)).toString(16);
-        return unformattedMAC.replaceAll("(.{2})", "$1" + ITMConstants.MAC_SEPARATOR)
-                .substring(0, ITMConstants.MAC_STRING_LENGTH);
-    }
-
-    private static BigInteger getDeadBeefBytesForMac() {
-        return new BigInteger("FFFFFFFF", 16).and(new BigInteger(ITMConstants.DEAD_BEEF_MAC_PREFIX, 16)).shiftLeft(16);
-    }
-
-    private static BigInteger fillPortNumberToMac(long portNumber) {
-        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portNumber));
-    }
-
     // Convert Interface Oper State to Tunnel Oper state
     public static TunnelOperStatus convertInterfaceToTunnelOperState(Interface.OperStatus opState) {
 
@@ -135,103 +150,50 @@ public final class DirectTunnelUtils {
         return TunnelOperStatus.Ignore;
     }
 
-    public void createOvsBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid) {
-        LOG.debug("Creating bridge ref entry for dpn: {} bridge: {}", dpnId, bridgeIid);
-        OvsBridgeRefEntryKey bridgeRefEntryKey = new OvsBridgeRefEntryKey(dpnId);
-        InstanceIdentifier<OvsBridgeRefEntry> bridgeEntryId = getOvsBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        OvsBridgeRefEntryBuilder tunnelDpnBridgeEntryBuilder = new OvsBridgeRefEntryBuilder().setKey(bridgeRefEntryKey)
-                .setDpid(dpnId).setOvsBridgeReference(new OvsdbBridgeRef(bridgeIid));
-        jobCoordinator.enqueueJob(ENTITY,
-            () -> Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx
-                -> tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(),
-                    true))));
+    public static InstanceIdentifier<OvsBridgeTunnelEntry> getBridgeTunnelEntryIdentifier(
+            OvsBridgeEntryKey bridgeEntryKey, OvsBridgeTunnelEntryKey bridgeInterfaceEntryKey) {
+        return InstanceIdentifier.builder(BridgeTunnelInfo.class)
+                .child(OvsBridgeEntry.class, bridgeEntryKey)
+                .child(OvsBridgeTunnelEntry.class, bridgeInterfaceEntryKey).build();
 
     }
 
-    public void deleteOvsBridgeRefEntry(BigInteger dpnId) {
-        LOG.debug("Deleting bridge ref entry for dpn: {}", dpnId);
-        OvsBridgeRefEntryKey bridgeRefEntryKey = new OvsBridgeRefEntryKey(dpnId);
-        InstanceIdentifier<OvsBridgeRefEntry> bridgeEntryId = getOvsBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        jobCoordinator.enqueueJob(ENTITY,
-            () -> Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx
-                -> tx.delete(LogicalDatastoreType.OPERATIONAL, bridgeEntryId))));
-    }
-
-    private static InstanceIdentifier<OvsBridgeRefEntry>
+    public static InstanceIdentifier<OvsBridgeRefEntry>
         getOvsBridgeRefEntryIdentifier(OvsBridgeRefEntryKey bridgeRefEntryKey) {
         return InstanceIdentifier.builder(OvsBridgeRefInfo.class)
                 .child(OvsBridgeRefEntry.class, bridgeRefEntryKey).build();
     }
 
-    public boolean isNodeConnectorPresent(NodeConnectorId nodeConnectorId) throws ReadFailedException {
-        NodeId nodeId = getNodeIdFromNodeConnectorId(nodeConnectorId);
-        InstanceIdentifier<NodeConnector> ncIdentifier = InstanceIdentifier.builder(Nodes.class)
-                .child(org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node.class,
-                        new NodeKey(nodeId))
-                .child(NodeConnector.class, new NodeConnectorKey(nodeConnectorId)).build();
-        return SingleTransactionDataBroker
-                .syncReadOptional(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).isPresent();
+    public static InstanceIdentifier<OvsBridgeEntry> getOvsBridgeEntryIdentifier(OvsBridgeEntryKey bridgeEntryKey) {
+        return InstanceIdentifier.builder(BridgeTunnelInfo.class).child(OvsBridgeEntry.class, bridgeEntryKey).build();
     }
 
-    public boolean isNodePresent(NodeConnectorId nodeConnectorId) throws ReadFailedException {
-        NodeId nodeID = getNodeIdFromNodeConnectorId(nodeConnectorId);
-        InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).child(Node.class,
-                new NodeKey(nodeID)).build();
-        return SingleTransactionDataBroker
-                .syncReadOptional(dataBroker, LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).isPresent();
+    public static InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(
+            org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
+                    .network.topology.topology.NodeKey nodekey, String portName) {
+        InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier.create(NetworkTopology.class)
+                .child(Topology.class, new TopologyKey(OVSDB_TOPOLOGY_ID))
+                .child(org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
+                        .network.topology.topology.Node.class, nodekey)
+                .child(TerminationPoint.class, new TerminationPointKey(new TpId(portName)));
+
+        LOG.debug("Termination point InstanceIdentifier generated : {}", terminationPointPath);
+        return terminationPointPath;
     }
 
-    public List<Action> getEgressActionsForInterface(String interfaceName, long tunnelKey, Integer actionKey) {
-        List<ActionInfo> listActionInfo = getEgressActionInfosForInterface(interfaceName, tunnelKey,
-                actionKey == null ? 0 : actionKey);
-        return listActionInfo.stream().map(ActionInfo::buildAction).collect(Collectors.toList());
+    public static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
+        List<InterfaceBfd> bfdParams = new ArrayList<>();
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE,ifTunnel != null ? ifTunnel.isMonitorEnabled().toString()
+                : "false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
+                ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        return bfdParams;
     }
 
-    private List<ActionInfo> getEgressActionInfosForInterface(String interfaceName, long tunnelKey,
-                                                              int actionKeyStart) {
-        DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
-        if (interfaceInfo == null) {
-            LOG.error("Interface information not present in config DS for {}", interfaceName);
-            return Collections.singletonList(new ActionDrop());
-        }
-        Optional<StateTunnelList> ifState;
-        try {
-            ifState = tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
-        } catch (ReadFailedException e) {
-            LOG.error("Interface information not present in oper DS for {} ", interfaceName, e);
-            return Collections.singletonList(new ActionDrop());
-        }
-        if (ifState.isPresent()) {
-            String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
-            return getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(), tunnelKey,
-                    actionKeyStart);
-        }
-        LOG.error("Interface information not present in oper DS for {}", interfaceName);
-        return Collections.singletonList(new ActionDrop());
-    }
-
-
-    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, String portNo, Long tunnelKey,
-                                                                    int actionKeyStart) {
-        List<ActionInfo> result = new ArrayList<>();
-        switch (tunnelType) {
-            case ITMConstants.TUNNEL_TYPE_GRE:
-            case ITMConstants.TUNNEL_TYPE_MPLSoGRE:
-                // Invoke IFM RPC and pass it on to the caller.
-                LOG.warn("Interface Type {} not handled by ITM", tunnelType);
-                break;
-            case ITMConstants.TUNNEL_TYPE_VXLAN:
-                //TODO tunnel_id to encode GRE key, once it is supported
-                // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
-                result.add(new ActionSetFieldTunnelId(actionKeyStart++,
-                        BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
-                result.add(new ActionOutput(actionKeyStart, new Uri(portNo)));
-                break;
-
-            default:
-                LOG.warn("Interface Type {} not handled yet", tunnelType);
-                break;
-        }
-        return result;
+    private static InterfaceBfd getIfBfdObj(String key, String value) {
+        InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
+        bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
+        return bfdBuilder.build();
     }
 }

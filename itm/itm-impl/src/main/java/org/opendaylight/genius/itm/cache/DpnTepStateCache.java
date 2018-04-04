@@ -48,7 +48,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private final DataBroker dataBroker;
     private final DPNTEPsInfoCache dpnTepsInfoCache;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap();
+    private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
 
     @Inject
     public DpnTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider, DPNTEPsInfoCache dpnTepsInfoCache) {
@@ -69,7 +69,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     .setTunnelName(remoteDpns.getTunnelName())
                     .setGroupId(dpnsTeps.getGroupId())
                     .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
-                    .setIsMonitoringEnabled(remoteDpns.isInternal())
+                    .setIsInternal(remoteDpns.isInternal())
                     .setTunnelType(dpnsTeps.getTunnelType()).build();
             dpnTepInterfaceMap.put(dpn, value);
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
@@ -101,7 +101,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                                 .setTunnelName(remoteDpns.getTunnelName())
                                 .setGroupId(teps.getGroupId())
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
-                                .setIsMonitoringEnabled(remoteDpns.isInternal())
+                                .setIsInternal(remoteDpns.isInternal())
                                 .setTunnelType(teps.getTunnelType()).build();
                         dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId()), value);
                         addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
