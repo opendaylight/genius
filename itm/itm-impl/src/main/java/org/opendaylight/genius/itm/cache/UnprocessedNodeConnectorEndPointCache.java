@@ -22,7 +22,7 @@ public class UnprocessedNodeConnectorEndPointCache {
     private static final Logger LOG = LoggerFactory.getLogger(UnprocessedNodeConnectorEndPointCache.class);
 
     private final ConcurrentMap<String, Set<NodeConnectorInfo>> unProcessedNodeConnectorEndPtMap =
-            new ConcurrentHashMap();
+            new ConcurrentHashMap<>();
 
     public void add(String dpnId, Collection<NodeConnectorInfo> ncList) {
         unProcessedNodeConnectorEndPtMap.computeIfAbsent(dpnId, key -> ConcurrentHashMap.newKeySet()).addAll(ncList);
