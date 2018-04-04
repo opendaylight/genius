@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6426edec_8216328c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-04-04T08:14:32Z",
+      "side": 1,
+      "message": "You misunderstood me — I was after a @Nonnull annotation on the constructor parameter, not the field. The documentation aspect is useful on the constructor...",
+      "revId": "e599e5f4a4762320d1b1bef41cd60603e760eaeb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
