@@ -17,6 +17,7 @@ import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -30,6 +31,7 @@ public class DirectTunnelListenerCreator implements AutoCloseable {
     private static final Logger LOG = LoggerFactory.getLogger(DirectTunnelListenerCreator.class);
 
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
+    private final TunnelInventoryStateListener tunnelInventoryStateListener;
 
     @Inject
     public DirectTunnelListenerCreator(final DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
@@ -41,7 +43,8 @@ public class DirectTunnelListenerCreator implements AutoCloseable {
                                        final OvsBridgeEntryCache ovsBridgeEntryCache,
                                        final TunnelMonitoringConfig tunnelMonitoringConfig,
                                        final DirectTunnelUtils directTunnelUtils,
-                                       final IInterfaceManager interfaceManager) {
+                                       final IInterfaceManager interfaceManager,
+                                       final UnprocessedNodeConnectorCache unprocessedNCCache) {
 
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             LOG.trace("ITM Direct Tunnels is enabled. Initializing the listeners");
@@ -49,9 +52,12 @@ public class DirectTunnelListenerCreator implements AutoCloseable {
                     coordinator, entityOwnershipUtils, directTunnelUtils, dpnTepStateCache, dpntePsInfoCache,
                     bfdStateCache, tunnelStateCache, ovsBridgeRefEntryCache, ovsBridgeEntryCache,
                     tunnelMonitoringConfig);
+            this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
+                    entityOwnershipUtils, directTunnelUtils, tunnelStateCache, dpnTepStateCache, unprocessedNCCache);
         } else {
             LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
+            this.tunnelInventoryStateListener = null;
         }
     }
 
@@ -59,6 +65,7 @@ public class DirectTunnelListenerCreator implements AutoCloseable {
     public void close() throws Exception {
         if (tunnelTopologyStateListener != null) {
             this.tunnelTopologyStateListener.close();
+            this.tunnelInventoryStateListener.close();
         }
     }
 }
