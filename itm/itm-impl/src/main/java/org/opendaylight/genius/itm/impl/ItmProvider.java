@@ -37,6 +37,7 @@ import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -76,6 +77,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final OvsdbNodeListener ovsdbChangeListener;
     static short flag = 0;
     private final TunnelMonitoringConfig tunnelMonitoringConfig;
+    private EntityOwnershipCandidateRegistration registryCandidate;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -122,8 +124,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     private void registerEntityForOwnership() {
         try {
-            Entity registryCandidate = new Entity(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
-            entityOwnershipService.registerCandidate(registryCandidate);
+            this.registryCandidate = entityOwnershipService
+                    .registerCandidate(new Entity(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY));
         } catch (CandidateAlreadyRegisteredException e) {
             LOG.error("failed to register entity {} for entity-ownership-service", e.getEntity());
         }
@@ -143,6 +145,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
         if (ovsdbChangeListener != null) {
             ovsdbChangeListener.close();
+        }
+        if (registryCandidate != null) {
+            registryCandidate.close();
         }
         LOG.info("ItmProvider Closed");
     }
