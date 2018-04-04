@@ -25,7 +25,12 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
@@ -37,6 +42,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.recovery.impl.ItmServiceRecoveryHandler;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.srm.RecoverableListener;
@@ -92,6 +98,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final ItmConfig itmConfig, final JobCoordinator jobCoordinator,
                                  final TunnelMonitoringConfig tunnelMonitoringConfig,
                                  final DPNTEPsInfoCache dpnTEPsInfoCache,
+                                 final TunnelStateCache tunnelStateCache,
+                                 final DirectTunnelUtils directTunnelUtils,
+                                 final DpnTepStateCache dpnTepStateCache, final OvsBridgeEntryCache ovsBridgeEntryCache,
+                                 final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                 final IInterfaceManager interfaceManager,
                                  final ItmServiceRecoveryHandler itmServiceRecoveryHandler,
                                  final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
@@ -103,9 +114,10 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.itmConfig = itmConfig;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig);
+                tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
+                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig, itmConfig);
+                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
         serviceRecoveryRegistry.addRecoverableListener(itmServiceRecoveryHandler.getServiceRegistryKey(), this);
     }
