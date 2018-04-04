@@ -42,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "f81349c9_dc316517",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerConfigurationTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-04T13:29:57Z",
+      "side": 1,
+      "message": "This change actually *IS* breaking the SingleTransactionDataBroker db (it just passed because the use of this is in an @Ignore test); I\u0027ve fixed this in c/69818.",
+      "parentUuid": "be208471_7ca9bf1e",
+      "range": {
+        "startLine": 183,
+        "startChar": 37,
+        "endLine": 183,
+        "endChar": 38
+      },
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00d9ea82_07ecbaeb",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/FlowAssertTestUtils.java",
         "patchSetId": 10
@@ -88,6 +112,24 @@
       "side": 1,
       "message": "Actually I wanted to show the way I have done this, to make sure we agree on the approach followed.. :( It was not completely clean.. I think I stopped in between.. In fact I wanted this to be merged after DDF, just in case any test randomly start failing again ;)",
       "parentUuid": "8a1ffbbe_1bfd2143",
+      "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "69f15602_c6c05761",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/datastoreutils/testutils/TestableJobCoordinatorCountedEventsWaiter.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-04T13:29:57Z",
+      "side": 1,
+      "message": "just self -1 anything that is actually still WIP in the future, and I\u0027ll ignore it... ;-)",
+      "parentUuid": "6fa3de99_7dd35ac3",
       "revId": "e91f6196d44b9c152b9d03c7d9ff9d35dbdd7212",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
