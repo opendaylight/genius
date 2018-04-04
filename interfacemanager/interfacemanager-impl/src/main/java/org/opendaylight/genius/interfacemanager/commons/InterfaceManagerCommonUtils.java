@@ -781,10 +781,13 @@ public final class InterfaceManagerCommonUtils {
     }
 
     public boolean isTunnelInternal(String interfaceName) {
-        IfTunnel ifTunnel = getInterfaceFromConfigDS(interfaceName).getAugmentation(IfTunnel.class);
-        if (ifTunnel != null) {
-            return ifTunnel.isInternal();
+        Interface iface = getInterfaceFromConfigDS(interfaceName);
+        if (iface != null) {
+            IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+            if (ifTunnel != null) {
+                return ifTunnel.isInternal();
+            }
         }
-        return false;
+        return true;
     }
 }
