@@ -781,9 +781,14 @@ public final class InterfaceManagerCommonUtils {
     }
 
     public boolean isTunnelInternal(String interfaceName) {
-        IfTunnel ifTunnel = getInterfaceFromConfigDS(interfaceName).getAugmentation(IfTunnel.class);
-        if (ifTunnel != null) {
-            return ifTunnel.isInternal();
+        try {
+            Interface inf = getInterfaceFromConfigDS(dataBroker.newReadOnlyTransaction(), interfaceName);
+            if (inf == null) {
+                LOG.error("Interface info not found in config DS and cache for {}", interfaceName);
+                return true;
+            }
+        } catch (ReadFailedException e) {
+            return true;
         }
         return false;
     }
