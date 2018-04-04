@@ -15,11 +15,15 @@ import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelInventoryStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelTopologyStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 
 public final class DirectTunnelListenerFactory {
 
@@ -38,5 +42,17 @@ public final class DirectTunnelListenerFactory {
         return new TunnelTopologyStateListener(dataBroker, interfaceManager, coordinator, entityOwnershipUtils,
                 directTunnelUtils, dpnTepStateCache, dpntePsInfoCache, bfdStateCache, tunnelStateCache,
                 ovsBridgeRefEntryCache, ovsBridgeEntryCache, tunnelMonitoringConfig) ;
+    }
+
+    public static TunnelInventoryStateListener
+        getTunnelInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
+                                    final IMdsalApiManager mdsalApiManager, final IInterfaceManager interfaceManager,
+                                    final JobCoordinator coordinator, final EntityOwnershipUtils entityOwnershipUtils,
+                                    final DirectTunnelUtils directTunnelUtils, final DPNTEPsInfoCache dpntePsInfoCache,
+                                    final TunnelStateCache tunnelStateCache, final DpnTepStateCache dpnTepStateCache,
+                                    final UnprocessedNodeConnectorCache unprocessedNCCache) {
+        return new TunnelInventoryStateListener(dataBroker, idManagerService, mdsalApiManager, interfaceManager,
+                coordinator, entityOwnershipUtils, directTunnelUtils, dpntePsInfoCache, tunnelStateCache,
+                dpnTepStateCache, unprocessedNCCache) ;
     }
 }

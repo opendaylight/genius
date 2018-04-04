@@ -19,10 +19,13 @@ import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelInventoryStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelTopologyStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +36,8 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
 
     private final DataBroker dataBroker;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final IdManagerService idManagerService;
+    private final IMdsalApiManager mdsalApiManager;
     private final JobCoordinator coordinator;
     private final BfdStateCache bfdStateCache;
     private final DpnTepStateCache dpnTepStateCache;
@@ -45,9 +50,11 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
     private final DirectTunnelUtils directTunnelUtils;
     private final IInterfaceManager interfaceManager;
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
+    private final TunnelInventoryStateListener tunnelInventoryStateListener;
 
     @Inject
     public DirectTunnelListenerResolver(final DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
+                                        final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager,
                                         final JobCoordinator coordinator, final BfdStateCache bfdStateCache,
                                         final DpnTepStateCache dpnTepStateCache,
                                         final DPNTEPsInfoCache dpntePsInfoCache,
@@ -60,6 +67,8 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
                                         final IInterfaceManager interfaceManager) {
         this.dataBroker = dataBroker;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.idManagerService = idManagerService;
+        this.mdsalApiManager = mdsalApiManager;
         this.coordinator = coordinator;
         this.bfdStateCache = bfdStateCache;
         this.dpnTepStateCache = dpnTepStateCache;
@@ -78,9 +87,13 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
                     interfaceManager, coordinator, entityOwnershipUtils, directTunnelUtils, dpnTepStateCache,
                     dpntePsInfoCache, bfdStateCache, tunnelStateCache, ovsBridgeRefEntryCache, ovsBridgeEntryCache,
                     tunnelMonitoringConfig);
+            this.tunnelInventoryStateListener = DirectTunnelListenerFactory.getTunnelInventoryStateListener(
+                    dataBroker, idManagerService, mdsalApiManager, interfaceManager, coordinator, entityOwnershipUtils,
+                    directTunnelUtils, dpntePsInfoCache, tunnelStateCache, dpnTepStateCache, unprocessedNCCache);
         } else {
             LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
+            this.tunnelInventoryStateListener = null;
         }
     }
 
@@ -88,6 +101,9 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
     public void close() throws Exception {
         if (tunnelTopologyStateListener != null) {
             this.tunnelTopologyStateListener.close();
+        }
+        if (tunnelInventoryStateListener != null) {
+            this.tunnelInventoryStateListener.close();
         }
     }
 }
