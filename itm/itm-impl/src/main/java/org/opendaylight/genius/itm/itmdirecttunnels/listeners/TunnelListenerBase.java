@@ -17,9 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractClusteredSyncDataTreeChangeListener;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
@@ -48,6 +51,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
@@ -115,8 +120,8 @@ public class TunnelListenerBase<T extends DataObject> extends AbstractClusteredS
     }
 
     public List<ListenableFuture<Void>> addState(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                                 String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew,
-                                                 String tunnelName)
+                                                  String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew,
+                                                  String tunnelName, boolean updateUprocessNodeConnectorCache)
             throws ExecutionException, InterruptedException, OperationFailedException {
         boolean unableToProcess = false;
         //Retrieve Port No from nodeConnectorId
@@ -141,8 +146,8 @@ public class TunnelListenerBase<T extends DataObject> extends AbstractClusteredS
                     new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
                     new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
             if (dpnTepConfigInfo != null) {
-                StateTunnelList stateTnl = addStateEntry(tunnelEndPointInfo, interfaceName,
-                        operStatus, adminStatus, nodeConnectorId);
+                StateTunnelList stateTnl = addStateEntry(tunnelEndPointInfo, interfaceName, operStatus, adminStatus,
+                        nodeConnectorId);
 
                 // SF419 This will be onl tunnel If so not required
                 // If this interface is a tunnel interface, create the tunnel ingress flow,
@@ -151,7 +156,9 @@ public class TunnelListenerBase<T extends DataObject> extends AbstractClusteredS
                     handleTunnelMonitoringAddition(nodeConnectorId, stateTnl.getIfIndex(), dpnTepConfigInfo,
                             interfaceName, portNo);
                     // Remove the NodeConnector Entry from Unprocessed Map
-                    unprocessedNCCache.remove(tunnelName);
+                    if (updateUprocessNodeConnectorCache) {
+                        unprocessedNCCache.remove(tunnelName);
+                    }
                 }
             } else {
                 LOG.error("DpnTepINfo is NULL while addState for interface {} ", interfaceName);
@@ -243,7 +250,7 @@ public class TunnelListenerBase<T extends DataObject> extends AbstractClusteredS
                 ifindex, NwConstants.ADD_FLOW);
     }
 
-    private void makeTunnelIngressFlow(DpnTepInterfaceInfo dpnTepConfigInfo, BigInteger dpnId, long portNo,
+    protected void makeTunnelIngressFlow(DpnTepInterfaceInfo dpnTepConfigInfo, BigInteger dpnId, long portNo,
                                        String interfaceName, int ifIndex, int addOrRemoveFlow) {
         LOG.debug("make tunnel ingress flow for {}", interfaceName);
         String flowRef =
@@ -395,5 +402,42 @@ public class TunnelListenerBase<T extends DataObject> extends AbstractClusteredS
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         ITMBatchingUtils.write(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
+    public void deleteTunnelStateEntry(String interfaceName, WriteTransaction transaction) {
+        LOG.debug(" deleteTunnelStateEntry tunnels state for {}", interfaceName);
+        InstanceIdentifier<StateTunnelList> stateTnlId =
+                ItmUtils.buildStateTunnelListId(new StateTunnelListKey(interfaceName));
+        transaction.delete(LogicalDatastoreType.OPERATIONAL, stateTnlId);
+    }
+
+    public void removeLportTagInterfaceMap(WriteTransaction tx, String infName)
+            throws ExecutionException, InterruptedException, OperationFailedException {
+        // workaround to get the id to remove from lport tag interface map
+        Integer ifIndex = allocateId(IfmConstants.IFM_IDPOOL_NAME, infName);
+        releaseId(IfmConstants.IFM_IDPOOL_NAME, infName);
+        LOG.debug("removing lport tag to interface map for {}", infName);
+        InstanceIdentifier<IfIndexTunnel> id = InstanceIdentifier.builder(IfIndexesTunnelMap.class)
+                .child(IfIndexTunnel.class, new IfIndexTunnelKey(ifIndex)).build();
+        tx.delete(LogicalDatastoreType.OPERATIONAL, id);
+    }
+
+    private void releaseId(String poolName, String idKey) throws InterruptedException, ExecutionException,
+            OperationFailedException {
+        ReleaseIdInput idInput = new ReleaseIdInputBuilder().setPoolName(poolName).setIdKey(idKey).build();
+        Future<RpcResult<Void>> result = idManager.releaseId(idInput);
+        RpcResult<Void> rpcResult = result.get();
+        if (!rpcResult.isSuccessful()) {
+            LOG.error("RPC Call to release Id with Key {} returned with Errors {}", idKey, rpcResult.getErrors());
+        } else {
+            Optional<RpcError> rpcError = rpcResult.getErrors().stream().findFirst();
+            String msg = String.format("RPC Call to release Id returned with Errors for the key %s", idKey);
+            if (rpcError.isPresent()) {
+                throw new OperationFailedException(msg, rpcError.get());
+            }
+            else {
+                throw new OperationFailedException(msg);
+            }
+        }
     }
 }
