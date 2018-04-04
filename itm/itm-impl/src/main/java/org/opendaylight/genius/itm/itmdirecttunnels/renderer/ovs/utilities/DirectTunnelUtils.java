@@ -23,8 +23,11 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -55,6 +58,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
@@ -155,6 +160,7 @@ public final class DirectTunnelUtils {
     private static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 
     private static final int INVALID_ID = 0;
+
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
     private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP
             = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {{
@@ -380,9 +386,7 @@ public final class DirectTunnelUtils {
     }
 
     public Integer allocateId(String poolName, String idKey) {
-        AllocateIdInput getIdInput = new AllocateIdInputBuilder()
-                .setPoolName(poolName)
-                .setIdKey(idKey).build();
+        AllocateIdInput getIdInput = new AllocateIdInputBuilder().setPoolName(poolName).setIdKey(idKey).build();
         try {
             Future<RpcResult<AllocateIdOutput>> result = idManager.allocateId(getIdInput);
             RpcResult<AllocateIdOutput> rpcResult = result.get();
@@ -395,6 +399,20 @@ public final class DirectTunnelUtils {
             LOG.warn("Exception when getting Unique Id",e);
         }
         return INVALID_ID;
+    }
+
+    private void releaseId(String poolName, String idKey) {
+        ReleaseIdInput idInput = new ReleaseIdInputBuilder().setPoolName(poolName).setIdKey(idKey).build();
+        try {
+            Future<RpcResult<Void>> result = idManager.releaseId(idInput);
+            RpcResult<Void> rpcResult = result.get();
+            if (!rpcResult.isSuccessful()) {
+                LOG.warn("RPC Call to release Id with Key {} returned with Errors {}",
+                        idKey, rpcResult.getErrors());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.warn("Exception when releasing Id for key {}", idKey, e);
+        }
     }
 
     public void makeTunnelIngressFlow(DpnTepInterfaceInfo dpnTepConfigInfo, BigInteger dpnId, long portNo,
@@ -559,11 +577,28 @@ public final class DirectTunnelUtils {
     }
 
     public void createLportTagInterfaceMap(String infName, Integer ifIndex) {
-        LOG.debug("creating lport tag to interface map for {}",infName);
+        LOG.debug("creating lport tag to interface map for {}", infName);
         InstanceIdentifier<IfIndexTunnel> id = InstanceIdentifier.builder(IfIndexesTunnelMap.class)
                 .child(IfIndexTunnel.class, new IfIndexTunnelKey(ifIndex)).build();
         IfIndexTunnel ifIndexInterface = new IfIndexTunnelBuilder().setIfIndex(ifIndex)
                 .setKey(new IfIndexTunnelKey(ifIndex)).setInterfaceName(infName).build();
         ITMBatchingUtils.write(id, ifIndexInterface, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+    }
+
+    public void deleteTunnelStateEntry(String interfaceName, WriteTransaction transaction) {
+        LOG.debug(" deleteTunnelStateEntry tunnels state for {}", interfaceName);
+        InstanceIdentifier<StateTunnelList> stateTnlId =
+                ItmUtils.buildStateTunnelListId(new StateTunnelListKey(interfaceName));
+        transaction.delete(LogicalDatastoreType.OPERATIONAL, stateTnlId);
+    }
+
+    public void removeLportTagInterfaceMap(WriteTransaction tx, String infName) {
+        // workaround to get the id to remove from lport tag interface map
+        Integer ifIndex = allocateId(IfmConstants.IFM_IDPOOL_NAME , infName);
+        releaseId(IfmConstants.IFM_IDPOOL_NAME, infName);
+        LOG.debug("removing lport tag to interface map for {}",infName);
+        InstanceIdentifier<IfIndexTunnel> id = InstanceIdentifier.builder(IfIndexesTunnelMap.class)
+                .child(IfIndexTunnel.class, new IfIndexTunnelKey(ifIndex)).build();
+        tx.delete(LogicalDatastoreType.OPERATIONAL, id);
     }
 }
