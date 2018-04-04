@@ -8,8 +8,12 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.factory;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelInventoryStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelTopologyStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -27,5 +31,18 @@ public final class DirectTunnelListenerFactory {
                                  final OvsBridgeEntryCache ovsBridgeEntryCache)  {
         return new TunnelTopologyStateListener(dataBroker, coordinator, entityOwnershipUtils, directTunnelUtils,
                 dpnTepStateCache,  ovsBridgeEntryCache) ;
+    }
+
+    public static TunnelInventoryStateListener
+        getTunnelInventoryStateListener(final DataBroker dataBroker,
+                                        final JobCoordinator coordinator,
+                                        final EntityOwnershipUtils entityOwnershipUtils,
+                                        final DirectTunnelUtils directTunnelUtils,
+                                        final DPNTEPsInfoCache dpntePsInfoCache,
+                                        final TunnelStateCache tunnelStateCache,
+                                        final DpnTepStateCache dpnTepStateCache,
+                                        final UnprocessedNodeConnectorCache unprocessedNCCache) {
+        return new TunnelInventoryStateListener(dataBroker, coordinator, entityOwnershipUtils, directTunnelUtils,
+                dpntePsInfoCache, tunnelStateCache, dpnTepStateCache, unprocessedNCCache) ;
     }
 }
