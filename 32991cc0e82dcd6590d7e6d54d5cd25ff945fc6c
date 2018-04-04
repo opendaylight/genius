@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "64ca12e5_d8307ec0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-04-04T11:39:07Z",
+      "side": 1,
+      "message": "capturing Vivek\u0027s comment, that maybe this table should be in a different block like around 180-220. I agree, putting this at 30 possibly blocks the xNAT services.",
+      "range": {
+        "startLine": 133,
+        "startChar": 24,
+        "endLine": 133,
+        "endChar": 26
+      },
+      "revId": "32991cc0e82dcd6590d7e6d54d5cd25ff945fc6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
