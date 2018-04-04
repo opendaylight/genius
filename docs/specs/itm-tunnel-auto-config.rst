@@ -45,6 +45,8 @@ This feature will support following use cases:
   during OpenDaylight controller restart.
 * Use case 13: Default value for configurable parameter ``def-tz-enabled`` is OFF and if it is
   not changed by user, then it will be OFF after OpenDaylight controller restart as well.
+* Use case 14: Allow dynamic change for ``local_ip`` tep configuration via change in Openvswitch table’s
+  other_config parameter ``local_ip``.
 
 Following use cases will not be supported:
 
@@ -52,8 +54,6 @@ Following use cases will not be supported:
   off from the ITM config datastore (DS) and operator must explicitly clean it up.
 * Operator is not supposed to delete ``default-transport-zone`` from REST, such
   scenario will be taken as incorrect configuration.
-* Dynamic change in the bridge for tunnel creation via change in Openvswitch table’s
-  external_ids parameter ``br-name`` is not supported.
 * Dynamic change for ``of-tunnel`` tep configuration via change in Openvswitch table’s
   external_ids parameter ``of-tunnel`` is not supported.
 * Dynamic change for configurable parameters ``def-tz-enabled`` and ``def-tz-tunnel-type``
@@ -91,15 +91,14 @@ Optional                  TEP IP-Address, Subnet prefix, Dpn-id, Gateway-ip,
                           Vlan-id, Portname
 ====================      =======================================================
 
-When a new transport zone is created, check for any TEPs if present in
-``tepsNotHostedInTransportZone`` for that transport zone. If present,
-remove from ``tepsNotHostedInTransportZone`` and add them under the
-transport zone and include the TEP in the tunnel mesh.
+When a new transport zone is created, check for any TEPs if present in ``tepsInNotHostedTransportZone`` container
+in Oper DS for that transport zone. If present, remove from ``tepsInNotHostedTransportZone`` and then add them
+under the transport zone and include the TEP in the tunnel mesh.
 
-ITM will register listeners to the Node of network topology Operational DS
-to receive Data Tree Change Notification (DTCN) for add/update/delete notification
-in the OVSDB node so that such DTCN can be parsed and changes in the ``external_ids``
-for TEP parameters can be determined to perform TEP add/update/delete operations.
+ITM will register listeners to the Node of network topology Operational DS to receive Data Tree Change Notification
+(DTCN) for add/update/delete notification in the OVSDB node so that such DTCN can be parsed and changes in the
+``other_config`` and ``external_ids`` columns of openvswitch table for TEP parameters can be determined to perform
+TEP add/update/delete operations.
 
 **URL:** restconf/operational/network-topology:network-topology/topology/ovsdb:1
 
@@ -123,7 +122,7 @@ for TEP parameters can be determined to perform TEP add/update/delete operations
               "external-id-value": "e93a266a-9399-4881-83ff-27094a648e2b"
             },
             {
-              "external-id-key": "tzname",
+              "external-id-key": "transport_zone",
               "external-id-value": "TZA"
             },
             {
@@ -178,7 +177,7 @@ DPN-ID                    ``ovsdb:datapath-id`` from bridge whose name is pre-co
 
 IP-Address                ``openvswitch:other_config:local_ip``:value
 
-Transport Zone Name       ``openvswitch:external_ids:tzname``:value
+Transport Zone Name       ``openvswitch:external_ids:transport_zone``:value
 
 of-tunnel                 ``openvswitch:external_ids:of-tunnel``:value
 ====================      ==================================================================
@@ -218,15 +217,14 @@ itm.yang changes
 ^^^^^^^^^^^^^^^^
 Following changes are done in ``itm.yang`` file.
 
-1. A new list ``tepsNotHostedInTransportZone`` will be added to container
-   ``transport-zones`` for storing details of TEP received from southbound
-   having transport zone which is not yet hosted from northbound.
-2. Existing list ``transport-zone`` would be modified for leaf ``zone-name``
-   and ``tunnel-type`` to make them mandatory parameters.
+1. A new container ``tepsInNotHostedTransportZone`` under Oper DS will be added for storing details of TEP
+   received from southbound having transport zone which is not yet hosted from northbound.
+2. Existing list ``transport-zone`` would be modified for leaf ``zone-name`` and ``tunnel-type`` to make them
+   mandatory parameters.
 
 .. code-block:: none
    :caption: itm.yang
-   :emphasize-lines: 6,12,16-35
+   :emphasize-lines: 6,12,16-38
 
     list transport-zone {
         ordered-by user;
@@ -243,23 +241,26 @@ Following changes are done in ``itm.yang`` file.
         }
     }
 
-    list tepsNotHostedInTransportZone {
-        key zone-name;
-        leaf zone-name {
-            type string;
-        }
-        list unknown-vteps {
-            key "dpn-id";
-            leaf dpn-id {
-                type uint64;
+    container not-hosted-transport-zones {
+        config false;
+        list tepsInNotHostedTransportZone {
+            key zone-name;
+            leaf zone-name {
+                type string;
             }
-            leaf ip-address {
-                type inet:ip-address;
-            }
-            leaf of-tunnel {
-                description "Use flow based tunnels for remote-ip";
-                type boolean;
-                default false;
+            list unknown-vteps {
+                key "dpn-id";
+                leaf dpn-id {
+                    type uint64;
+                }
+                leaf ip-address {
+                    type inet:ip-address;
+                }
+                leaf of-tunnel {
+                    description "Use flow based tunnels for remote-ip";
+                    type boolean;
+                    default false;
+                }
             }
         }
     }
@@ -297,12 +298,12 @@ Workflow
 
 TEP Addition
 ^^^^^^^^^^^^
-When TEP IP ``other_config:local_ip`` and ``external_ids:tzname`` are configured at OVS side
+When TEP IP ``other_config:local_ip`` and ``external_ids:transport_zone`` are configured at OVS side
 using ``ovs-vsctl`` commands to add TEP, then TEP parameters details are passed to the OVSDB
 plugin via OVSDB connection which in turn, is updated into Network Topology Operational DS.
 ITM listens for change in Network Topology Node.
 
-When TEP parameters (like ``local_ip``, ``tzname``, ``br-name``, ``of-tunnel``) are
+When TEP parameters (like ``local_ip``, ``transport_zone``, ``br-name``, ``of-tunnel``) are
 received in add notification of OVSDB Node, then TEP is added.
 
 For TEP addition, TEP-IP and DPN-ID are mandatory. TEP-IP is obtained from ``local_ip``
@@ -316,64 +317,69 @@ Once TEP is added in config datastore, transport-zone listener of ITM would
 internally take care of creating tunnels on the bridge whose DPN-ID is
 passed for TEP addition. It is noted that TEP parameter ``of-tunnel`` would be
 checked if it is true, then ``of-tunnel`` flag would be set for vtep to be added
-under transport-zone or ``tepsNotHostedInTransportZone``.
+under transport-zone or ``tepsInNotHostedTransportZone``.
 
 TEP would be added under transport zone with following conditions:
 
-* TEPs not configured with ``external_ids:tzname`` i.e. without transport zone will be
+* TEPs not configured with ``external_ids:transport_zone`` i.e. without transport zone will be
   placed under the ``default-transport-zone`` if ``def-tz-enabled`` parameter is configured
   to true in ``genius-itm-config.xml``. This will fire a DTCN to transport zone yang listener
   and ITM tunnels gets built.
-* TEPs configured with ``external_ids:tzname`` i.e. with transport zone and
+* TEPs configured with ``external_ids:transport_zone`` i.e. with transport zone and
   if the specified transport zone exists in the ITM Config DS, then TEP will
   be placed under the specified transport zone. This will fire a DTCN to
   transport zone yang listener and the ITM tunnels gets built.
-* TEPs configured with ``external_ids:tzname`` i.e. with transport zone and
+* TEPs configured with ``external_ids:transport_zone`` i.e. with transport zone and
   if the specified transport zone does not exist in the ITM Config DS, then
-  TEP will be placed under the ``tepsNotHostedInTransportZone`` under ITM
-  config DS.
+  TEP will be placed under the ``tepsInNotHostedTransportZone`` container under ITM
+  Oper DS.
 
 TEP Movement
 ^^^^^^^^^^^^
 When transport zone which was not configured earlier, is created through REST, then
-it is checked whether any “orphan” TEPs already exists in the ``tepsNotHostedInTransportZone``
-for the newly created transport zone, if present, then such TEPs are removed from
-``tepsNotHostedInTransportZone``, and then added under the newly created transport zone
-in ITM config DS and then TEPs are added to the tunnel mesh of that transport zone.
+it is checked whether any “orphan” TEPs already exists in the ``tepsInNotHostedTransportZone``
+for the newly created transport zone, if present, then such TEPs are removed from ``tepsInNotHostedTransportZone``
+container in Oper DS, and then added under the newly created transport zone in ITM config DS and then TEPs are added
+to the tunnel mesh of that transport zone.
 
 TEP Updation
 ^^^^^^^^^^^^
-* TEP updation for IP address is considered as TEP deletion followed by TEP addition.
-  Remove existing TEP-IP ``other_config:local_ip`` and then add new TEP-IP using ``ovs-vsctl``
-  commands. TEP with old TEP-IP is deleted and then TEP with new TEP-IP gets added.
-* TEP updation for transport zone can be done dynamically. When ``external_ids:tzname``
+* TEP updation for IP address can be done dynamically. When ``other_config:local_ip``
   is updated at OVS side, then such change will be notified to OVSDB plugin via OVSDB
   protocol, which in turn is reflected in Network topology Operational DS. ITM gets
-  DTCN for Node update. Parsing Node update notification for ``external_ids:tzname``
+  DTCN for Node update. Parsing Node update notification for ``other_config:local_ip``
+  parameter in old and new node can determine change in local_ip for TEP.
+  If it is updated, then TEP with old local_ip is deleted from transport zone and
+  TEP with new local_ip is added into transport zone. This will fire a DTCN to transport zone
+  yang listener and the ITM tunnels get updated.
+* TEP updation for transport zone can be done dynamically. When ``external_ids:transport_zone``
+  is updated at OVS side, then such change will be notified to OVSDB plugin via OVSDB
+  protocol, which in turn is reflected in Network topology Operational DS. ITM gets
+  DTCN for Node update. Parsing Node update notification for ``external_ids:transport_zone``
   parameter in old and new node can determine change in transport zone for TEP.
   If it is updated, then TEP is deleted from old transport zone and added into new
   transport zone. This will fire a DTCN to transport zone yang listener and
-  the ITM tunnels gets updated.
+  the ITM tunnels get updated.
 
 TEP Deletion
 ^^^^^^^^^^^^
 When an ``openvswitch:other_config:local_ip`` parameter gets deleted through *ovs-vsctl*
 command, then network topology Operational DS gets updated via OVSB update notification.
 ITM which has registered for the network-topology DTCNs, gets notified and this deletes
-the TEP from Transport zone or ``tepsNotHostedInTransportZone`` stored in ITM config DS
-based on ``external_ids:tzname`` parameter configured for TEP.
+the TEP from Transport zone or ``tepsInNotHostedTransportZone`` stored in ITM config/Oper DS
+based on ``external_ids:transport_zone`` parameter configured for TEP.
 
-* If ``external_ids:tzname`` is configured and corresponding transport zone exists
+* If ``external_ids:transport_zone`` is configured and corresponding transport zone exists
   in Configuration DS, then remove TEP from transport zone. This will fire a DTCN
-  to transport zone yang listener and the ITM tunnels of that TEP gets deleted.
-* If ``external_ids:tzname`` is configured and corresponding transport zone does not
-  exist in Configuration DS, then check if TEP exists in ``tepsNotHostedInTransportZone``,
-  if present, then remove TEP from ``tepsNotHostedInTransportZone``.
-* If ``external_ids:tzname`` is not configured, then check if TEP exists in the default
+  to transport zone yang listener and the ITM tunnels of that TEP get deleted.
+* If ``external_ids:transport_zone`` is configured and corresponding transport zone does not
+  exist in Configuration DS, then check if TEP exists in ``tepsInNotHostedTransportZone`` container
+  in Oper DS, if present, then remove TEP from ``tepsInNotHostedTransportZone``.
+* If ``external_ids:transport_zone`` is not configured, then check if TEP exists in the default
   transport zone in Configuration DS, if and only if ``def-tz-enabled`` parameter is configured
   to true in ``genius-itm-config.xml``. In case, TEP is present, then remove TEP from
   ``default-transport-zone``. This will fire a DTCN to transport zone yang listener and
-  ITM tunnels of that TEP gets deleted.
+  ITM tunnels of that TEP get deleted.
 
 Configuration impact
 ---------------------
@@ -531,7 +537,7 @@ the ``ovs-vsctl`` command:
   * To set TEP params on OVS table:
 
   ovs-vsctl    set O . other_config:local_ip=192.168.56.102
-  ovs-vsctl    set O . external_ids:tzname=TZA
+  ovs-vsctl    set O . external_ids:transport_zone=TZA
   ovs-vsctl    set O . external_ids:br-name=br0
   ovs-vsctl    set O . external_ids:of-tunnel=true
 
@@ -545,7 +551,7 @@ the ``ovs-vsctl`` command:
     in OVS table:
 
   ovs-vsctl remove O . other_config local_ip
-  ovs-vsctl remove O . external_ids tzname
+  ovs-vsctl remove O . external_ids transport_zone
 
   * To check TEP params are set or cleared on OVS table:
 
@@ -586,11 +592,11 @@ Work Items
 #. Add code to update configuation datastore for handling update in TEP-IP.
 #. Add code to update configuation datastore for handling update in TEP's transport-zone.
 #. Check tunnel mesh is updated correctly against TEP update.
-#. Add code to create ``tepsNotHostedInTransportZone`` list in configuation datastore to
-   store TEP received with not-configured transport-zone.
-#. Add code to move TEP from ``tepsNotHostedInTransportZone`` list to transport-zone
+#. Add code to create ``tepsInNotHostedTransportZone`` list in operational datastore to
+   store TEP received with transport-zone not-configured from northbound.
+#. Add code to move TEP from ``tepsInNotHostedTransportZone`` list to transport-zone
    configured from REST.
-#. Check tunnel mesh is formed for TEPs after their movement from ``tepsNotHostedInTransportZone``
+#. Check tunnel mesh is formed for TEPs after their movement from ``tepsInNotHostedTransportZone``
    list to transport-zone.
 #. Add UTs.
 #. Add ITs.
@@ -632,8 +638,9 @@ Following test cases will need to be added/expanded in Genius CSIT:
 #. Verify ITM tunnel deletion by deleting TEP from switch.
 #. Verify TEP transport zone change from OVS will move the TEP to corresponding
    transport-zone in OpenDaylight controller.
-#. Verify TEPs movement from ``tepsNotHostedInTransportZone`` to transport-zone when
+#. Verify TEPs movement from ``tepsInNotHostedTransportZone`` to transport-zone when
    transport-zone is configured from northbound.
+#. Verify ``local_ip`` dynamic update is possible and corresponding tunnels are also updated.
 #. Verify ITM tunnel details persist after OpenDaylight controller restart, switch restart.
 
 Documentation Impact
