@@ -127,80 +127,6 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
         }
     }
 
-    private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
-        private final InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid;
-        private final OvsdbBridgeAugmentation bridgeNew;
-
-        RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                               OvsdbBridgeAugmentation bridgeNew) {
-            this.bridgeIid = bridgeIid;
-            this.bridgeNew = bridgeNew;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
-            // to call the respective helpers.
-            if (bridgeNew.getDatapathId() == null) {
-                LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
-                return Collections.emptyList();
-            }
-
-            BigInteger dpnId = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
-            LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
-
-            // create bridge reference entry in interface meta operational DS
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                createOvsBridgeRefEntry(dpnId, bridgeIid, tx);
-                // handle pre-provisioning of tunnels for the newly connected dpn
-                Optional<OvsBridgeEntry> bridgeEntry = ovsBridgeEntryCache.get(dpnId);
-                if (!bridgeEntry.isPresent()) {
-                    LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
-                } else {
-                    addAllPortsToBridge(bridgeEntry.get(), bridgeIid, bridgeNew);
-                }
-            }));
-        }
-    }
-
-    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
-        private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
-        private final OvsdbBridgeAugmentation bridgeNew;
-
-        RendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                  OvsdbBridgeAugmentation bridgeNew) {
-            this.instanceIdentifier = instanceIdentifier;
-            this.bridgeNew = bridgeNew;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
-            // to call the respective helpers.
-            return removePortFromBridge(instanceIdentifier, bridgeNew);
-        }
-    }
-
-    private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
-        private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
-        private final OvsdbBridgeAugmentation bridgeNew;
-        private final OvsdbBridgeAugmentation bridgeOld;
-
-        RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                  OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
-            this.instanceIdentifier = instanceIdentifier;
-            this.bridgeNew = bridgeNew;
-            this.bridgeOld = bridgeOld;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
-            // to call the respective helpers.
-            return updateOvsBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld);
-        }
-    }
-
     /*
      *  This code is used to handle only a dpnId change scenario for a particular change,
      * which is not expected to happen in usual cases.
@@ -313,4 +239,77 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
         }
     }
 
+    private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
+        private final InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid;
+        private final OvsdbBridgeAugmentation bridgeNew;
+
+        RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+                               OvsdbBridgeAugmentation bridgeNew) {
+            this.bridgeIid = bridgeIid;
+            this.bridgeNew = bridgeNew;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // to call the respective helpers.
+            if (bridgeNew.getDatapathId() == null) {
+                LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
+                return Collections.emptyList();
+            }
+
+            BigInteger dpnId = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
+            LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+
+            // create bridge reference entry in interface meta operational DS
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                createOvsBridgeRefEntry(dpnId, bridgeIid, tx);
+                // handle pre-provisioning of tunnels for the newly connected dpn
+                Optional<OvsBridgeEntry> bridgeEntry = ovsBridgeEntryCache.get(dpnId);
+                if (!bridgeEntry.isPresent()) {
+                    LOG.debug("Bridge entry not found in config DS for dpn: {}", dpnId);
+                } else {
+                    addAllPortsToBridge(bridgeEntry.get(), bridgeIid, bridgeNew);
+                }
+            }));
+        }
+    }
+
+    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+        private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
+        private final OvsdbBridgeAugmentation bridgeNew;
+
+        RendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                                  OvsdbBridgeAugmentation bridgeNew) {
+            this.instanceIdentifier = instanceIdentifier;
+            this.bridgeNew = bridgeNew;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            // If another renderer needs to be supported, check can be performed here
+            // to call the respective helpers.
+            return removePortFromBridge(instanceIdentifier, bridgeNew);
+        }
+    }
+
+    private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+        private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
+        private final OvsdbBridgeAugmentation bridgeNew;
+        private final OvsdbBridgeAugmentation bridgeOld;
+
+        RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                                  OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
+            this.instanceIdentifier = instanceIdentifier;
+            this.bridgeNew = bridgeNew;
+            this.bridgeOld = bridgeOld;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            // If another renderer(for eg : CSS) needs to be supported, check can be performed here
+            // to call the respective helpers.
+            return updateOvsBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld);
+        }
+    }
 }
