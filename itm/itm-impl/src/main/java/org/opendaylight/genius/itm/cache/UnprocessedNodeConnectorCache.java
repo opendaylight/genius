@@ -15,7 +15,7 @@ import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 @Singleton
 public class UnprocessedNodeConnectorCache {
 
-    private final ConcurrentMap<String, NodeConnectorInfo> unprocessedNodeConnectorMap = new ConcurrentHashMap();
+    private final ConcurrentMap<String, NodeConnectorInfo> unprocessedNodeConnectorMap = new ConcurrentHashMap<>();
 
     public void add(String tunnelName, NodeConnectorInfo ncInfo) {
         unprocessedNodeConnectorMap.put(tunnelName, ncInfo);
@@ -25,7 +25,7 @@ public class UnprocessedNodeConnectorCache {
         return unprocessedNodeConnectorMap.get(tunnelName);
     }
 
-    public void remove(String tunnelName) {
-        unprocessedNodeConnectorMap.remove(tunnelName);
+    public NodeConnectorInfo remove(String tunnelName) {
+       return unprocessedNodeConnectorMap.remove(tunnelName);
     }
 }
