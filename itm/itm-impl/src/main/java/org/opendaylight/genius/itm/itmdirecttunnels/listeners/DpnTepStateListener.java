@@ -102,7 +102,7 @@ public class DpnTepStateListener extends TunnelListenerBase<DpnsTeps> {
         public List<ListenableFuture<Void>> call() throws Exception {
             // If another renderer(for eg : CSS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            return addState(key, interfaceName, fcNodeConnectorNew, tunneleName);
+            return addState(key, interfaceName, fcNodeConnectorNew, tunneleName, true);
         }
 
         @Override
