@@ -179,6 +179,24 @@
     },
     {
       "key": {
+        "uuid": "f3163079_5cd7e34a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1089,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-05T12:27:49Z",
+      "side": 1,
+      "message": "Right - sorry - misread the code - I thought it was reading from the DS.",
+      "parentUuid": "4e3e1184_61b0eaf2",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8cb9a4a7_e42aeb35",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 7
