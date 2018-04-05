@@ -11,11 +11,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.BfdStateCache;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelInventoryStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelTopologyStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
@@ -31,10 +33,12 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
 
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
     private final TunnelInventoryStateListener tunnelInventoryStateListener;
+    private final TerminationPointStateListener terminationPointStateListener;
 
     @Inject
     public DirectTunnelListenerResolver(final DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
                                         final JobCoordinator coordinator, final DPNTEPsInfoCache dpntePsInfoCache,
+                                        final BfdStateCache bfdStateCache,
                                         final DpnTepStateCache dpnTepStateCache,
                                         final TunnelStateCache tunnelStateCache,
                                         final OvsBridgeEntryCache ovsBridgeEntryCache,
@@ -49,10 +53,14 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
             this.tunnelInventoryStateListener = DirectTunnelListenerFactory.getTunnelInventoryStateListener(
                     dataBroker, coordinator, entityOwnershipUtils, directTunnelUtils,
                     dpntePsInfoCache, tunnelStateCache, dpnTepStateCache, unprocessedNodeConnectorCache);
+            this.terminationPointStateListener = DirectTunnelListenerFactory.getTerminationPointStateListener(
+                    dataBroker, entityOwnershipUtils, coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache,
+                    directTunnelUtils);
         } else {
             LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
             this.tunnelInventoryStateListener = null;
+            this.terminationPointStateListener = null;
         }
     }
 
@@ -63,6 +71,9 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
         }
         if (tunnelInventoryStateListener != null) {
             this.tunnelInventoryStateListener.close();
+        }
+        if (terminationPointStateListener != null) {
+            this.terminationPointStateListener.close();
         }
     }
 }
