@@ -56,12 +56,14 @@ public final class DirectTunnelUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectTunnelUtils.class);
 
-    // BFD parameters
     private static final String BFD_PARAM_ENABLE = "enable";
     private static final String BFD_PARAM_MIN_TX = "min_tx";
     private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
-
     // BFD parameters
+    private static final String BFD_ENABLE_KEY = "enable";
+    private static final String BFD_ENABLE_VALUE = "true";
+    public static final String BFD_OP_STATE = "state";
+    public static final String BFD_STATE_UP = "up";
     private static final String BFD_MIN_TX_VAL = "100";
     private static final String BFD_FORWARDING_IF_RX_VAL = "true";
 
@@ -195,5 +197,17 @@ public final class DirectTunnelUtils {
         InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
         bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
         return bfdBuilder.build();
+    }
+
+    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
+        if (interfaceBfds != null && !interfaceBfds.isEmpty()) {
+            for (InterfaceBfd interfaceBfd : interfaceBfds) {
+                if (interfaceBfd.getBfdKey().equalsIgnoreCase(BFD_ENABLE_KEY)) {
+                    String bfdEnable = interfaceBfd.getBfdValue();
+                    return BFD_ENABLE_VALUE.equalsIgnoreCase(bfdEnable);
+                }
+            }
+        }
+        return false;
     }
 }
