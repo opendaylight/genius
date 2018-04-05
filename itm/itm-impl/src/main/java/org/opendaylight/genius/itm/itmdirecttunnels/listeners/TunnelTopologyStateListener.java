@@ -71,8 +71,8 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
                                        final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache)  {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
-                        .augmentation(OvsdbBridgeAugmentation.class),
-                idManager, mdsalApiManager, dpnTepStateCache, dpntePsInfoCache,unprocessedNodeConnectorCache);
+                        .augmentation(OvsdbBridgeAugmentation.class), idManager, mdsalApiManager, dpnTepStateCache,
+                dpntePsInfoCache,unprocessedNodeConnectorCache, directTunnelUtils);
         super.register();
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -312,7 +312,7 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
+                        directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
                     }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
