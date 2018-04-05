@@ -17,6 +17,7 @@ import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelInventoryStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelTopologyStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
@@ -54,5 +55,15 @@ public final class DirectTunnelListenerFactory {
         return new TunnelInventoryStateListener(dataBroker, idManagerService, mdsalApiManager, interfaceManager,
                 coordinator, entityOwnershipUtils, directTunnelUtils, dpntePsInfoCache, tunnelStateCache,
                 dpnTepStateCache, unprocessedNCCache) ;
+    }
+
+    public static TerminationPointStateListener
+        getTerminationPointStateListener(final DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
+                                         final JobCoordinator coordinator, final BfdStateCache bfdStateCache,
+                                         final DpnTepStateCache dpnTepStateCache,
+                                         final TunnelStateCache tunnelStateCache,
+                                         final DirectTunnelUtils directTunnelUtils) {
+        return new TerminationPointStateListener(dataBroker, entityOwnershipUtils, coordinator, bfdStateCache,
+                dpnTepStateCache,tunnelStateCache, directTunnelUtils) ;
     }
 }
