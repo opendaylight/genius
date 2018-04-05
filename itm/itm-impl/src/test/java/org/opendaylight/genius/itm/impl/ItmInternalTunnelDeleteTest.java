@@ -26,7 +26,13 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
@@ -40,6 +46,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
@@ -107,6 +114,10 @@ public class ItmInternalTunnelDeleteTest {
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock JobCoordinator jobCoordinator;
+    @Mock IInterfaceManager interfaceManager;
+    @Mock DirectTunnelUtils directTunnelUtils;
+    @Mock ItmConfig itmConfig;
+    @Mock TunnelMonitoringConfig tunnelMonitoringConfig;
     ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
@@ -126,12 +137,18 @@ public class ItmInternalTunnelDeleteTest {
                         tunnelMonitorParamsInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
-                tunnelMonitorIntervalIdentifier);
+                        tunnelMonitorIntervalIdentifier);
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
-                .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier);
+                .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
         itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
-                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())));
+                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+                interfaceManager,
+                new DpnTepStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+                        new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()))),
+                new OvsBridgeEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+                new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+                directTunnelUtils);
     }
 
     @After
