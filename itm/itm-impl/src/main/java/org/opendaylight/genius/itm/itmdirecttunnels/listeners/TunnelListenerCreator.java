@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.BfdStateCache;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
@@ -31,6 +32,7 @@ public class TunnelListenerCreator implements AutoCloseable {
 
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
     private final TunnelInventoryStateListener tunnelInventoryStateListener;
+    private final TerminationPointStateListener terminationPointStateListener;
 
     @Inject
     public TunnelListenerCreator(final DataBroker dataBroker,
@@ -40,6 +42,7 @@ public class TunnelListenerCreator implements AutoCloseable {
                                  final IMdsalApiManager mdsalApiManager,
                                  final IInterfaceManager interfaceManager,
                                  final DirectTunnelUtils directTunnelUtils,
+                                 final BfdStateCache bfdStateCache,
                                  final DpnTepStateCache dpnTepStateCache,
                                  final DPNTEPsInfoCache dpntePsInfoCache,
                                  final OvsBridgeEntryCache ovsBridgeEntryCache,
@@ -53,10 +56,13 @@ public class TunnelListenerCreator implements AutoCloseable {
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
                     entityOwnershipUtils, idManager, mdsalApiManager, tunnelStateCache, dpnTepStateCache,
                     dpntePsInfoCache, unprocessedNodeConnectorCache);
+            this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
+                    coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
         } else {
             LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
             this.tunnelInventoryStateListener = null;
+            this.terminationPointStateListener = null;
         }
     }
 
@@ -67,6 +73,9 @@ public class TunnelListenerCreator implements AutoCloseable {
         }
         if (tunnelInventoryStateListener != null) {
             this.tunnelInventoryStateListener.close();
+        }
+        if (terminationPointStateListener != null) {
+            this.terminationPointStateListener.close();
         }
     }
 }
