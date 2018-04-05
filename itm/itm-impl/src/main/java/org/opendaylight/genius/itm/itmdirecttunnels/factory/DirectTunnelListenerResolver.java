@@ -19,6 +19,7 @@ import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TerminationPointStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelInventoryStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.listeners.TunnelTopologyStateListener;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
@@ -51,6 +52,7 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
     private final IInterfaceManager interfaceManager;
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
     private final TunnelInventoryStateListener tunnelInventoryStateListener;
+    private final TerminationPointStateListener terminationPointStateListener;
 
     @Inject
     public DirectTunnelListenerResolver(final DataBroker dataBroker, final EntityOwnershipUtils entityOwnershipUtils,
@@ -90,10 +92,14 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
             this.tunnelInventoryStateListener = DirectTunnelListenerFactory.getTunnelInventoryStateListener(
                     dataBroker, idManagerService, mdsalApiManager, interfaceManager, coordinator, entityOwnershipUtils,
                     directTunnelUtils, dpntePsInfoCache, tunnelStateCache, dpnTepStateCache, unprocessedNCCache);
+            this.terminationPointStateListener = DirectTunnelListenerFactory.getTerminationPointStateListener(
+                    dataBroker, entityOwnershipUtils, coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache,
+                    directTunnelUtils);
         } else {
             LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
             this.tunnelInventoryStateListener = null;
+            this.terminationPointStateListener = null;
         }
     }
 
@@ -104,6 +110,9 @@ public class DirectTunnelListenerResolver  implements AutoCloseable {
         }
         if (tunnelInventoryStateListener != null) {
             this.tunnelInventoryStateListener.close();
+        }
+        if (terminationPointStateListener != null) {
+            this.terminationPointStateListener.close();
         }
     }
 }
