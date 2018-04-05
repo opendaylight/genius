@@ -26,8 +26,11 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
@@ -147,7 +150,9 @@ public class ItmInternalTunnelAddTest {
     @Mock ITMBatchingUtils batchingUtils;
     @Mock ItmConfig itmConfig;
     @Mock JobCoordinator jobCoordinator;
+    @Mock IInterfaceManager interfaceManager;
     ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
+    DirectTunnelUtils directTunnelUtils;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional;
@@ -170,7 +175,8 @@ public class ItmInternalTunnelAddTest {
 
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
-                itmConfig);
+                itmConfig, directTunnelUtils, interfaceManager, new OvsBridgeRefEntryCache(dataBroker,
+                new GuavaCacheProvider(new CacheManagersRegistryImpl())));
     }
 
     @After
