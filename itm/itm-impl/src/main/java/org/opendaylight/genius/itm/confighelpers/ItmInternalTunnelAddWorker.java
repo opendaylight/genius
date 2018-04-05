@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
 
+import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -16,19 +17,27 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -36,13 +45,23 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,13 +78,22 @@ public final class ItmInternalTunnelAddWorker {
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
+    private final DirectTunnelUtils directTunnelUtils;
+    private final IInterfaceManager interfaceManager;
+    private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
-            TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg) {
+                                      TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
+                                      DirectTunnelUtils directTunnelUtil,
+                                      IInterfaceManager interfaceManager,
+                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
         this.itmCfg = itmCfg;
+        this.directTunnelUtils = directTunnelUtil;
+        this.interfaceManager = interfaceManager;
+        this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
 
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
@@ -179,9 +207,14 @@ public final class ItmInternalTunnelAddWorker {
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
             parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId);
         }
-        createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
-        // also update itm-state ds?
-        createInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName, transaction);
+        if (interfaceManager.isItmDirectTunnelsEnabled()) {
+            createInternalDirectTunnels(srcte, dstte, srcDpnId, dstDpnId, tunType, trunkInterfaceName,
+                    parentInterfaceName);
+        } else {
+            createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
+            // also update itm-state ds?
+            createInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName, transaction);
+        }
         return true;
     }
 
@@ -234,12 +267,11 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId) {
-        String logicTunnelGroupName = null;
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {
-            return logicTunnelGroupName;
+            return null;
         }
-        logicTunnelGroupName = ItmUtils.getLogicalTunnelGroupName(srcDpnId, dstDpnId);
+        String logicTunnelGroupName = ItmUtils.getLogicalTunnelGroupName(srcDpnId, dstDpnId);
         ItmTunnelAggregationWorker addWorker =
                 new ItmTunnelAggregationWorker(logicTunnelGroupName, srcDpnId, dstDpnId, dataBroker);
         jobCoordinator.enqueueJob(logicTunnelGroupName, addWorker);
@@ -275,6 +307,111 @@ public final class ItmInternalTunnelAddWorker {
                             dstDpnId);
                 }
             }));
+        }
+    }
+
+    private boolean createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte,
+                                                BigInteger srcDpnId, BigInteger dstDpnId,
+                                                Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
+                                                String parentInterfaceName) {
+        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask())
+                ? gatewayIpObj : srcte.getGwIpAddress() ;
+        LOG.debug("Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {},"
+                        + " destination IP - {} gateway IP - {}", trunkInterfaceName, parentInterfaceName,
+                srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress) ;
+
+        boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+
+        List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
+        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
+        Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
+                String.format("%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
+                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(),
+                true, isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
+        LOG.debug("Trunk Interface builder - {} ", iface);
+
+        final DpnTepsStateBuilder dpnTepsStateBuilder = new DpnTepsStateBuilder();
+        final DpnsTepsBuilder dpnsTepsBuilder = new DpnsTepsBuilder();
+        final List<DpnsTeps> dpnTeps = new ArrayList<>();
+        final List<RemoteDpns> remoteDpns = new ArrayList<>();
+        dpnsTepsBuilder.setKey(new DpnsTepsKey(srcDpnId));
+        dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
+        dpnsTepsBuilder.setSourceDpnId(srcDpnId);
+
+        //ITM TEP INTERFACE set the group Id here ..later
+        try {
+            Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
+            dpnsTepsBuilder.setGroupId(groupId.longValue());
+            RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
+            remoteDpn.setKey(new RemoteDpnsKey(dstDpnId));
+            remoteDpn.setDestinationDpnId(dstDpnId);
+            remoteDpn.setTunnelName(trunkInterfaceName);
+            remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
+            remoteDpn.setMonitoringInterval(monitorInterval);
+            remoteDpn.setInternal(true);
+            remoteDpns.add(remoteDpn.build());
+            dpnsTepsBuilder.setRemoteDpns(remoteDpns);
+            dpnTeps.add(dpnsTepsBuilder.build());
+            dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
+            updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
+            addTunnelConfiguration(iface);
+            return true;
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("allocate ID failed for {} ", srcDpnId.toString(), e);
+            return false;
+        }
+    }
+
+    private static void updateDpnTepInterfaceInfoToConfig(DpnTepsState dpnTeps) {
+        LOG.debug("Updating CONFIGURATION datastore with DPN-Teps {} ", dpnTeps);
+        InstanceIdentifier<DpnTepsState> dpnTepsII = InstanceIdentifier.builder(DpnTepsState.class).build() ;
+        ITMBatchingUtils.update(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+    }
+
+    private List<ListenableFuture<Void>> addTunnelConfiguration(Interface iface) {
+        // ITM Direct Tunnels This transaction is not being used -- CHECK
+        final WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
+        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        if (parentRefs == null) {
+            LOG.warn("ParentRefs for interface: {} Not Found. Creation of Tunnel OF-Port not supported"
+                    + " when dpid not provided.", iface.getName());
+            return Collections.emptyList();
+        }
+
+        BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+        if (dpId == null) {
+            LOG.warn("dpid for interface: {} Not Found. No DPID provided. Creation of OF-Port not supported.",
+                    iface.getName());
+            return Collections.emptyList();
+        }
+        LOG.info("adding tunnel configuration for {}", iface.getName());
+        LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
+        DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
+
+        // create bridge on switch, if switch is connected
+        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry;
+        try {
+            ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpId);
+        } catch (ReadFailedException e) {
+            LOG.error("OVS Bridge for the DPN Id {} is not present", dpId);
+            return Collections.emptyList();
+        }
+
+        if (ovsBridgeRefEntry.isPresent()) {
+            LOG.debug("creating bridge interface on dpn {}", dpId);
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
+                    (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
+                            .getOvsBridgeReference().getValue();
+            addPortToBridge(bridgeIid, iface, iface.getName());
+        }
+        return Collections.singletonList(transaction.submit());
+    }
+
+    private void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
+        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+        if (ifTunnel != null) {
+            directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }
     }
 }
