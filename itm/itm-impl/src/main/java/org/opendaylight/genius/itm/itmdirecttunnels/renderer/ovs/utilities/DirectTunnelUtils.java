@@ -76,6 +76,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._if.indexes.tunnel.map.IfIndexTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
@@ -267,6 +270,24 @@ public final class DirectTunnelUtils {
                 -> tx.delete(LogicalDatastoreType.OPERATIONAL, bridgeEntryId))));
     }
 
+    public static InstanceIdentifier<OvsBridgeTunnelEntry>
+        getBridgeTunnelEntryIdentifier(OvsBridgeEntryKey bridgeEntryKey,
+                                       OvsBridgeTunnelEntryKey bridgeInterfaceEntryKey) {
+        return InstanceIdentifier.builder(BridgeTunnelInfo.class).child(OvsBridgeEntry.class, bridgeEntryKey)
+                .child(OvsBridgeTunnelEntry.class, bridgeInterfaceEntryKey).build();
+
+    }
+
+    public static void createBridgeTunnelEntryInConfigDS(BigInteger dpId, String childInterface) {
+        OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
+        OvsBridgeTunnelEntryKey bridgeTunnelEntryKey = new OvsBridgeTunnelEntryKey(childInterface);
+        InstanceIdentifier<OvsBridgeTunnelEntry> bridgeTunnelEntryIid =
+                getBridgeTunnelEntryIdentifier(bridgeEntryKey, bridgeTunnelEntryKey);
+        OvsBridgeTunnelEntryBuilder entryBuilder = new OvsBridgeTunnelEntryBuilder().setKey(bridgeTunnelEntryKey)
+                .setTunnelName(childInterface);
+        ITMBatchingUtils.write(bridgeTunnelEntryIid, entryBuilder.build(), ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+    }
+
     public static InstanceIdentifier<OvsBridgeRefEntry>
         getOvsBridgeRefEntryIdentifier(OvsBridgeRefEntryKey bridgeRefEntryKey) {
         return InstanceIdentifier.builder(OvsBridgeRefInfo.class)
@@ -442,7 +463,7 @@ public final class DirectTunnelUtils {
         ITMBatchingUtils.write(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
-    private InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(
+    public InstanceIdentifier<TerminationPoint> createTerminationPointInstanceIdentifier(
             org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021
                     .network.topology.topology.NodeKey nodekey, String portName) {
         InstanceIdentifier<TerminationPoint> terminationPointPath = InstanceIdentifier.create(NetworkTopology.class)
