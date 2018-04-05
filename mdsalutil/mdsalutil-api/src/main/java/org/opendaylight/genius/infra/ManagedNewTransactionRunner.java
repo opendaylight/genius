@@ -38,7 +38,7 @@ public interface ManagedNewTransactionRunner {
      * been either submitted or cancelled, and will never "leak" and waste memory.
      *
      * <p>The consumer should not (cannot) itself use
-     * {@link WriteTransaction#cancel()}, {@link WriteTransaction#commit()} or
+     * {@link WriteTransaction#cancel()}, or
      * {@link WriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>This is an asynchronous API, like {@link DataBroker}'s own;
@@ -67,7 +67,7 @@ public interface ManagedNewTransactionRunner {
      * been either submitted or cancelled, and will never "leak" and waste memory.
      *
      * <p>The consumer should not (cannot) itself use
-     * {@link ReadWriteTransaction#cancel()}, {@link ReadWriteTransaction#commit()} or
+     * {@link ReadWriteTransaction#cancel()}, or
      * {@link ReadWriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>This is an asynchronous API, like {@link DataBroker}'s own;
