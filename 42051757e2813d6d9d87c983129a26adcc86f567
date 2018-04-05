@@ -16,6 +16,24 @@
       "revId": "42051757e2813d6d9d87c983129a26adcc86f567",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fb6e278_3bfd7163",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-04-05T10:32:33Z",
+      "side": 1,
+      "message": "No.\nIn case of localIPUpdated true case, \nold and new local_ip will be different and you see,\nat line 208, job is queued with oldLocalIp\nand here if job is queued with newLocalIp then\nboth jobs will not be serialized because keys are different and issues will occur.\nHence, jobKey is to synchronize jobs with same key,\nbut OvsdbTepAddWorker should be passed with newLocalIp only which is responsible to add TEP and trigger tunnel creation with new local_ip.\n\nNull checking for old and new local_ip are already taken care in the code. You see, isLocalIpRemoved, isLocalIpAdded, isLocalIpUpdated() methods.\nIn both local_ip add/delete cases, operation is taking place on non-null values.\n\nYes, these changes will work fine in case of local_ip delete case as well.",
+      "parentUuid": "f14d0213_5dc46b69",
+      "revId": "42051757e2813d6d9d87c983129a26adcc86f567",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
