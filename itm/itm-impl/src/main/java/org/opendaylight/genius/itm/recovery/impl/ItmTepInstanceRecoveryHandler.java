@@ -12,7 +12,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
@@ -21,12 +26,12 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.srm.ServiceRecoveryInterface;
 import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -52,7 +57,6 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     private final ItmConfig itmConfig;
     private final EntityOwnershipUtils entityOwnershipUtils;
-    private final EntityOwnershipService entityOwnershipService;
     private final IMdsalApiManager imdsalApiManager;
     private String tzName;
     private TransportZone transportZone;
@@ -63,23 +67,26 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                                          IMdsalApiManager imdsalApiMgr,
                                          JobCoordinator jobCoordinator,
                                          TunnelMonitoringConfig tunnelMonitoringConfig,
-                                         DPNTEPsInfoCache dpntePsInfoCache,
+                                         DPNTEPsInfoCache dpntePsInfoCache, TunnelStateCache tunnelStateCache,
+                                         DirectTunnelUtils directTunnelUtils, DpnTepStateCache dpnTepStateCache,
+                                         OvsBridgeEntryCache ovsBridgeEntryCache,
+                                         OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                         IInterfaceManager interfaceManager,
                                          ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                         EntityOwnershipUtils entityOwnershipUtils,
-                                         EntityOwnershipService entityOwnershipService) {
+                                         EntityOwnershipUtils entityOwnershipUtils) {
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
         this.imdsalApiManager = imdsalApiMgr;
         this.jobCoordinator = jobCoordinator;
         this.dpntePsInfoCache = dpntePsInfoCache;
         this.entityOwnershipUtils = entityOwnershipUtils;
-        this.entityOwnershipService = entityOwnershipService;
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig, itmConfig);
+                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
                 dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig);
+                tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache, tunnelStateCache,
+                directTunnelUtils);
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(getServiceRegistryKey(), this);
     }
 
