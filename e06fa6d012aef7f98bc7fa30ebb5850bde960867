@@ -161,6 +161,24 @@
     },
     {
       "key": {
+        "uuid": "4e3e1184_61b0eaf2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1089,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-05T12:25:20Z",
+      "side": 1,
+      "message": "Tom, the two caches used here (DataObjectCache) doesn\u0027t have an async get(), agreed?  We could add that, to both infrautils.caches (using an alternative to Guava impl; Caffeine has an async API!) and then expose that through DataObjectCache.. but it\u0027s a little bit of work - do you think that is critical, in the short term?",
+      "parentUuid": "a45188c3_82e4cd36",
+      "revId": "e06fa6d012aef7f98bc7fa30ebb5850bde960867",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8cb9a4a7_e42aeb35",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 7
