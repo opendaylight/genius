@@ -36,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdKey;
@@ -55,12 +56,14 @@ public final class DirectTunnelUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectTunnelUtils.class);
 
-    // BFD parameters
     private static final String BFD_PARAM_ENABLE = "enable";
     private static final String BFD_PARAM_MIN_TX = "min_tx";
     private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
-
     // BFD parameters
+    private static final String BFD_ENABLE_KEY = "enable";
+    private static final String BFD_ENABLE_VALUE = "true";
+    public static final String BFD_OP_STATE = "state";
+    public static final String BFD_STATE_UP = "up";
     private static final String BFD_MIN_TX_VAL = "100";
     private static final String BFD_FORWARDING_IF_RX_VAL = "true";
 
@@ -193,5 +196,28 @@ public final class DirectTunnelUtils {
         InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
         bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
         return bfdBuilder.build();
+    }
+
+    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
+        if (interfaceBfds != null && !interfaceBfds.isEmpty()) {
+            for (InterfaceBfd interfaceBfd : interfaceBfds) {
+                if (BFD_ENABLE_KEY.equalsIgnoreCase(interfaceBfd.getBfdKey())) {
+                    return BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean changeInBfdMonitoringDetected(OvsdbTerminationPointAugmentation tpOld,
+                                                        OvsdbTerminationPointAugmentation tpNew) {
+        return tpOld != null
+                && bfdMonitoringEnabled(tpNew.getInterfaceBfd()) != bfdMonitoringEnabled(tpOld.getInterfaceBfd());
+    }
+
+    public static boolean ifBfdStatusNotEqual(OvsdbTerminationPointAugmentation tpOld,
+                                              OvsdbTerminationPointAugmentation tpNew) {
+        return tpNew.getInterfaceBfdStatus() != null
+                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()));
     }
 }
