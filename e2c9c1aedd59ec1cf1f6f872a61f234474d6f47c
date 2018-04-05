@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71138a58_461ea3d7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-04-05T14:15:19Z",
+      "side": 1,
+      "message": "with this change, will many of the UT tests start failing if they have the service index being used?",
+      "revId": "e2c9c1aedd59ec1cf1f6f872a61f234474d6f47c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
