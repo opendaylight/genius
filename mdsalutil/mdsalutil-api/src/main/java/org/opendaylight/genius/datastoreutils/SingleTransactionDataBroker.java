@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -27,6 +28,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for single transaction DataBroker usage.
+ *
+ * <p>Please consider using a {@link ManagedNewTransactionRunner} instead.
  *
  * @author Michael Vorburger
  */
