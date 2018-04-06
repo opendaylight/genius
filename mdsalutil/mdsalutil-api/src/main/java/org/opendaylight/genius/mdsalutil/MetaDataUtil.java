@@ -26,6 +26,7 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_ELAN_SUBNET_ROUTE =    new BigInteger("000000FFFF000000", 16);
     public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("000000FFFFFFFFFE", 16);
     public static final BigInteger METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE = new BigInteger("0000000000000002", 16);
+    public static final BigInteger METADATA_ANTI_SPOOF_DROP_STAT = new BigInteger("0000000000000004", 16);
 
     private MetaDataUtil() { }
 
@@ -123,6 +124,10 @@ public final class MetaDataUtil {
      */
     public static BigInteger getAclConntrackClassifierTypeFromMetaData(BigInteger conntrackClassifierType) {
         return METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE.and(conntrackClassifierType.shiftLeft(1));
+    }
+
+    public static BigInteger getAntiSpoofDropStatFlowMetaData(BigInteger antiSpoofClassifierType) {
+        return METADATA_ANTI_SPOOF_DROP_STAT.and(antiSpoofClassifierType.shiftLeft(2));
     }
 
     public static BigInteger getVpnIdMetadata(long vrfId) {
