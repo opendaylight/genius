@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cc1ab381_e2c45d5c",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-04-06T12:20:16Z",
+      "side": 1,
+      "message": "General comment/question. Do you want to keep the text to under 80 chars like the rest of the spec so that all the text is consistent?",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8bc7d8d_f2bd96f4",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-04-06T12:20:16Z",
+      "side": 1,
+      "message": "Thanks for adding \u0027other config\u0027. I had missed that in my last update!",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77beeba0_c2abd01c",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-04-06T12:20:16Z",
+      "side": 1,
+      "message": "Maybe this should be transport-zone, to be consistent with other values in external-id table. \n\nlocal_ip is a little different, and is not consistent, but that is in other_config table, and had already been in place for some time.",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ced7ef87_71a81465",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-04-06T12:20:16Z",
+      "side": 1,
+      "message": "Change to transport-zone if you agree that this should be consistent format.",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff5d50b8_10c1da63",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 2029
+      },
+      "writtenOn": "2018-04-06T12:20:16Z",
+      "side": 1,
+      "message": "Shrink to 80 columns width for consistency.",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
