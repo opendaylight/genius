@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "143e77ca_fd691688",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/listener/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T19:38:49Z",
+      "side": 0,
+      "message": "http://errorprone.info/bugpattern/InjectOnConstructorOfAbstractClass",
+      "revId": "5e6852b174d8f93e07037c4fca2fcd271c6b7024",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

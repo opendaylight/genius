@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7041de2_0b6fcc74",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/listener/DataStoreMetrics.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T19:38:49Z",
+      "side": 1,
+      "message": "http://errorprone.info/bugpattern/StringSplitter",
+      "revId": "e4b508630a9d07d481827ced30bc4f99bb62ff5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c95f553b_97489505",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/listener/DataTreeChangeListenerActions.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T19:38:49Z",
+      "side": 1,
+      "message": "http://errorprone.info/bugpattern/InconsistentOverloads",
+      "revId": "e4b508630a9d07d481827ced30bc4f99bb62ff5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3dab6c3f_259e6128",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/rpc/FutureRpcResults.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T19:38:49Z",
+      "side": 1,
+      "message": "http://errorprone.info/bugpattern/InconsistentOverloads",
+      "revId": "e4b508630a9d07d481827ced30bc4f99bb62ff5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
