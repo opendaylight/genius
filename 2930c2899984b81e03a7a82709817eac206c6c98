@@ -16,6 +16,24 @@
       "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10b04bca_b272e61d",
+        "filename": "features/odl-genius-tools/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T16:25:50Z",
+      "side": 1,
+      "message": "Thanks.  I\u0027ll do this first thing on Monday, and then merge this one, given prior +1.",
+      "parentUuid": "f311a696_4721cecf",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
