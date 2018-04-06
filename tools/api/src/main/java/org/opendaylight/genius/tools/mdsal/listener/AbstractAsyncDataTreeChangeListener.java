@@ -10,8 +10,6 @@ package org.opendaylight.genius.tools.mdsal.listener;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
@@ -52,14 +50,12 @@ public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> 
 
     private final ExecutorService executorService;
 
-    @Inject
     public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier,
                                                ExecutorService executorService) {
         super(dataBroker, dataTreeIdentifier);
         this.executorService = executorService;
     }
 
-    @Inject
     public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                                InstanceIdentifier<T> instanceIdentifier,
                                                ExecutorService executorService) {
@@ -67,7 +63,6 @@ public abstract class AbstractAsyncDataTreeChangeListener<T extends DataObject> 
         this.executorService = executorService;
     }
 
-    @Inject
     public AbstractAsyncDataTreeChangeListener(DataBroker dataBroker,
                                                LogicalDatastoreType datastoreType,
                                                InstanceIdentifier<T> instanceIdentifier,

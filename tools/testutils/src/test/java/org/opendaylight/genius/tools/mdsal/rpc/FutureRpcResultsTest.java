@@ -80,7 +80,7 @@ public class FutureRpcResultsTest {
 
     @Test
     public void testFromListenableFutureExceptionAlsoLog() throws Exception {
-        final AtomicBoolean afterLogActionCalled = new AtomicBoolean(false);
+        AtomicBoolean afterLogActionCalled = new AtomicBoolean(false);
         logCaptureRule.expectError("RPC testFromListenableFutureException() failed; input = null");
         TestFutureRpcResults.assertRpcErrorCause(FutureRpcResults.fromListenableFuture(
             LOG, "testFromListenableFutureException", null, () -> {

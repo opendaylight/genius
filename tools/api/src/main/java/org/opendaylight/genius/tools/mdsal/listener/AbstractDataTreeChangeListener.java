@@ -10,7 +10,6 @@ package org.opendaylight.genius.tools.mdsal.listener;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
@@ -37,19 +36,16 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
     private ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
     private DataStoreMetrics dataStoreMetrics;
 
-    @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         this.dataBroker = dataBroker;
         this.dataTreeIdentifier = dataTreeIdentifier;
     }
 
-    @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                    InstanceIdentifier<T> instanceIdentifier) {
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
     }
 
-    @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker,
                                    LogicalDatastoreType datastoreType,
                                    InstanceIdentifier<T> instanceIdentifier,

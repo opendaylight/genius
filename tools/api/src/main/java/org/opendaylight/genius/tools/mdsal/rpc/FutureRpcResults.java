@@ -87,6 +87,7 @@ public final class FutureRpcResults {
      * @return a new FutureRpcResultBuilder
      */
     @CheckReturnValue
+    @java.lang.SuppressWarnings("InconsistentOverloads") // Error Prone is too strict here; we do want the Callable last
     public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
             @Nullable I input, Callable<ListenableFuture<O>> callable) {
         return new FutureRpcResultBuilder<>(logger, rpcMethodName, input, callable);
@@ -126,6 +127,7 @@ public final class FutureRpcResults {
     }
 
     @CheckReturnValue
+    @java.lang.SuppressWarnings("InconsistentOverloads") // Error Prone is too strict here; we do want the Callable last
     public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
             @Nullable I input, Callable<Builder<O>> builder) {
         Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
