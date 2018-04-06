@@ -65,7 +65,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void add(@Nonnull Interface iface) {
+    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
@@ -79,7 +79,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void remove(@Nonnull Interface iface) {
+    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
@@ -93,7 +93,8 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void update(@Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
+    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface originalInterface,
+                       @Nonnull Interface updatedInterface) {
         /*
          * update contains only delta, may not include iftype Note: This assumes
          * type can't be edited on the fly

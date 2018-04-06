@@ -54,20 +54,21 @@ public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeLis
     }
 
     @Override
-    public void add(@Nonnull Config newDataObject) {
-        isUpgradeInProgress.set(newDataObject.isUpgradeInProgress());
-        LOG.info("UpgradeStateListener.add: isUpgradeInProgress = {}", newDataObject.isUpgradeInProgress());
+    public void add(@Nonnull InstanceIdentifier<Config> instanceIdentifier, @Nonnull Config config) {
+        isUpgradeInProgress.set(config.isUpgradeInProgress());
+        LOG.info("UpgradeStateListener.add: isUpgradeInProgress = {}", config.isUpgradeInProgress());
     }
 
     @Override
-    public void remove(@Nonnull Config removedDataObject) {
+    public void remove(@Nonnull InstanceIdentifier<Config> instanceIdentifier, @Nonnull Config config) {
         isUpgradeInProgress.set(false);
         LOG.info("UpgradeStateListener.remove: isUpgradeInProgress = {}", false);
     }
 
     @Override
-    public void update(@Nonnull Config originalDataObject, @Nonnull Config updatedDataObject) {
-        isUpgradeInProgress.set(updatedDataObject.isUpgradeInProgress());
-        LOG.info("UpgradeStateListener.update: isUpgradeInProgress = {}", updatedDataObject.isUpgradeInProgress());
+    public void update(@Nonnull InstanceIdentifier<Config> instanceIdentifier,
+                       @Nonnull Config originalConfig, @Nonnull Config updatedConfig) {
+        isUpgradeInProgress.set(updatedConfig.isUpgradeInProgress());
+        LOG.info("UpgradeStateListener.update: isUpgradeInProgress = {}", updatedConfig.isUpgradeInProgress());
     }
 }

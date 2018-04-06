@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractSyncDataTreeChangeListener;
@@ -49,17 +47,18 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
     }
 
     @Override
-    public void remove(@Nonnull final Node node) {
+    public void remove(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node node) {
         // Do nothing
     }
 
     @Override
-    public void update(@Nonnull final Node originalNode, @Nonnull final Node updatedNode) {
+    public void update(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node originalNode,
+                       @Nonnull final Node updatedNode) {
         // Nothing to do
     }
 
     @Override
-    public void add(@Nonnull final Node node) {
+    public void add(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node node) {
         final BigInteger dpId = getDpnID(node);
         if (dpId == null) {
             return;
