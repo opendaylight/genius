@@ -34,14 +34,15 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * @param changes          collection of changes
      * @param dataStoreMetrics data store metrics
      */
+    @SuppressWarnings("checkstyle:MissingSwitchDefault") // http://errorprone.info/bugpattern/UnnecessaryDefaultInEnumSwitch
     default void onDataTreeChanged(@Nonnull Collection<DataTreeModification<T>> changes,
                                    DataStoreMetrics dataStoreMetrics) {
         // This code is also in DataTreeEventCallbackRegistrarImpl and any changes should be applied there as well
-        for (final DataTreeModification<T> dataTreeModification : changes) {
-            final InstanceIdentifier<T> instanceIdentifier = dataTreeModification.getRootPath().getRootIdentifier();
-            final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
-            final T dataBefore = dataObjectModification.getDataBefore();
-            final T dataAfter = dataObjectModification.getDataAfter();
+        for (DataTreeModification<T> dataTreeModification : changes) {
+            InstanceIdentifier<T> instanceIdentifier = dataTreeModification.getRootPath().getRootIdentifier();
+            DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
+            T dataBefore = dataObjectModification.getDataBefore();
+            T dataAfter = dataObjectModification.getDataAfter();
 
             switch (dataObjectModification.getModificationType()) {
                 case SUBTREE_MODIFIED:
@@ -69,8 +70,6 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
                         update(instanceIdentifier, dataBefore, dataAfter);
                     }
                     break;
-                default:
-                    break;
             }
         }
     }
@@ -81,6 +80,7 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * @param instanceIdentifier instance id for this data object
      * @param newDataObject      newly added object
      */
+    @SuppressWarnings("InconsistentOverloads") // TODO remove when @Deprecated add() is removed
     default void add(@Nonnull InstanceIdentifier<T> instanceIdentifier, @Nonnull T newDataObject) {
         add(newDataObject);
     }
@@ -99,6 +99,7 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * @param instanceIdentifier instance id for this data object
      * @param removedDataObject  existing object being removed
      */
+    @SuppressWarnings("InconsistentOverloads") // TODO remove when @Deprecated remove() is removed
     default void remove(@Nonnull InstanceIdentifier<T> instanceIdentifier, @Nonnull T removedDataObject) {
         remove(removedDataObject);
     }
@@ -118,6 +119,7 @@ interface DataTreeChangeListenerActions<T extends DataObject> {
      * @param originalDataObject existing object being modified
      * @param updatedDataObject  modified data object
      */
+    @SuppressWarnings("InconsistentOverloads") // TODO remove when @Deprecated update() is removed
     default void update(@Nonnull InstanceIdentifier<T> instanceIdentifier, @Nonnull T originalDataObject,
                         @Nonnull T updatedDataObject) {
         update(originalDataObject, updatedDataObject);
