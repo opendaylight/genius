@@ -54,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "872465aa_c3e6d511",
+        "filename": "mdsaltools/api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T19:40:42Z",
+      "side": 1,
+      "message": "\u003d\u003d\u003e https://git.opendaylight.org/gerrit/#/c/70457/",
+      "parentUuid": "677f844a_040cd435",
+      "revId": "73ce8d189c0a3b4d6ffa00cbee2038fd3172f8fa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0e0c4a13_d42b6ef6",
         "filename": "mdsaltools/api/pom.xml",
         "patchSetId": 1
