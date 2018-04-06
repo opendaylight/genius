@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "b70546c6_eb33137f",
+        "filename": "features/odl-genius-srm/pom.xml",
+        "patchSetId": 9
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T17:05:27Z",
+      "side": 1,
+      "message": "just FYI you can technically save at least this, because I\u0027m sure srm-impl depends on srm-api, so this (odl-genius-srm) transitively depends on srm-api by depending on srm-impl, but it\u0027s not a big deal either, just FYI:",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f311a696_4721cecf",
         "filename": "features/odl-genius-tools/pom.xml",
         "patchSetId": 9
@@ -31,6 +48,91 @@
       "side": 1,
       "message": "Thanks.  I\u0027ll do this first thing on Monday, and then merge this one, given prior +1.",
       "parentUuid": "f311a696_4721cecf",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d79b210_2be75509",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T17:05:27Z",
+      "side": 1,
+      "message": "will you replace this with the new non-deprecated one in a follow up change?",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3553aac3_7bf4c3e0",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T17:05:27Z",
+      "side": 1,
+      "message": "and then remove this FQN ?",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab991823_d7fa580a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T17:05:27Z",
+      "side": 1,
+      "message": "This obviously has to have a @Deprecated annotation and JavaDoc to the new genius.tools.mdsal.rpc.FutureRpcResults, just like we did for all the listeners!",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0bf9ea4b_ae219827",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/infra/testutils/TestFutureRpcResults.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T17:05:27Z",
+      "side": 1,
+      "message": "We have to have a @Deprecated annotation and JavaDoc here as well.",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a0de4c2e_22acbeed",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/metrics/DataStoreMetrics.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T17:05:27Z",
+      "side": 1,
+      "message": "I\u0027ll raise a follow-up change to propose making this a private package internal class instead of a public API...",
       "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
