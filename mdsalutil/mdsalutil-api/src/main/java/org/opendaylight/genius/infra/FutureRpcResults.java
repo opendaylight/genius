@@ -83,14 +83,14 @@ public final class FutureRpcResults {
     public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
             @Nullable I input, Callable<ListenableFuture<O>> callable) {
         return new FutureRpcResultBuilder<>(org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults
-                .fromListenableFuture(logger, rpcMethodName, input, callable));
+                .fromListenableFuture(logger, input, callable, rpcMethodName));
     }
 
     @CheckReturnValue
     public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
             @Nullable I input, Callable<Builder<O>> builder) {
         return new FutureRpcResultBuilder<>(org.opendaylight.genius.tools.mdsal.rpc
-                .FutureRpcResults.fromBuilder(logger, rpcMethodName, input, builder));
+                .FutureRpcResults.fromBuilder(logger, input, builder, rpcMethodName));
     }
 
     @CheckReturnValue

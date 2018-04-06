@@ -42,8 +42,8 @@ import org.opendaylight.infrautils.metrics.MetricProvider;
     private Meter initCounter(String type) {
         String className = clazz.getSimpleName();
         // expects the form org.opendaylight.project.module
-        String project = clazz.getName().split("\\.")[2];
-        String module = clazz.getName().split("\\.")[3];
+        String project = clazz.getName().split("\\.", -1)[2];
+        String module = clazz.getName().split("\\.", -1)[3];
         return metricProvider.newMeter(new MetricDescriptor() {
             @Override
             public Object anchor() {
