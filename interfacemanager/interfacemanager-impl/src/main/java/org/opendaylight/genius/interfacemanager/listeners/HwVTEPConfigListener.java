@@ -51,7 +51,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     }
 
     @Override
-    public void remove(@Nonnull Interface removedInterface) {
+    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
         // HwVTEPs support only VXLAN
         IfTunnel ifTunnel = removedInterface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
@@ -75,7 +75,8 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     }
 
     @Override
-    public void update(@Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
+    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface originalInterface,
+                       @Nonnull Interface updatedInterface) {
         // HwVTEPs support only VXLAN
         IfTunnel ifTunnel = originalInterface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
@@ -98,7 +99,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     }
 
     @Override
-    public void add(@Nonnull Interface newInterface) {
+    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface newInterface) {
         // HwVTEPs support only VXLAN
         IfTunnel ifTunnel = newInterface.getAugmentation(IfTunnel.class);
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {

@@ -56,7 +56,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     }
 
     @Override
-    public void add(@Nonnull Node ovsdbNodeNew) {
+    public void add(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node ovsdbNodeNew) {
         String bridgeName = null;
         String strDpnId = "";
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
@@ -73,12 +73,13 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     }
 
     @Override
-    public void remove(@Nonnull Node removedDataObject) {
+    public void remove(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node removedDataObject) {
         LOG.trace("OvsdbNodeListener called for Ovsdb Node Remove.");
     }
 
     @Override
-    public void update(@Nonnull Node originalOvsdbNode, Node updatedOvsdbNode) {
+    public void update(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node originalOvsdbNode,
+                       @Nonnull Node updatedOvsdbNode) {
         String newLocalIp = null;
         String oldLocalIp = null;
         String tzName = null;
@@ -414,5 +415,4 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
         }
     }
-    // End of class
 }

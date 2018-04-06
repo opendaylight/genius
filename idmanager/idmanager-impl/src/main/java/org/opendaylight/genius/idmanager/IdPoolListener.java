@@ -39,12 +39,12 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     }
 
     @Override
-    public void add(@Nonnull IdPool idPool) {
+    public void add(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool idPool) {
         LOG.info("Add pool name: {}", idPool.getPoolName());
     }
 
     @Override
-    public void remove(@Nonnull IdPool idPool) {
+    public void remove(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool idPool) {
         String parentPoolName = idPool.getParentPoolName();
         String poolName = idPool.getPoolName();
         if (parentPoolName != null && !parentPoolName.isEmpty()) {
@@ -53,7 +53,8 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     }
 
     @Override
-    public void update(@Nonnull IdPool originalIdPool, @Nonnull IdPool updatedIdPool) {
+    public void update(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool originalIdPool,
+                       @Nonnull IdPool updatedIdPool) {
         if (!updatedIdPool.getAvailableIdsHolder().equals(originalIdPool.getAvailableIdsHolder()) || !updatedIdPool
                 .getReleasedIdsHolder().equals(originalIdPool.getReleasedIdsHolder())) {
             String parentPoolName = updatedIdPool.getParentPoolName();

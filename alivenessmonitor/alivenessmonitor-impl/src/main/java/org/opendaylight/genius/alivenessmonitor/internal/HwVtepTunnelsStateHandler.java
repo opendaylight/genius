@@ -86,12 +86,13 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     @Override
-    public void remove(@Nonnull Tunnels removedDataObject) {
+    public void remove(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnelInfo) {
         // Do nothing
     }
 
     @Override
-    public void update(@Nonnull Tunnels oldTunnelInfo, @Nonnull Tunnels updatedTunnelInfo) {
+    public void update(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels oldTunnelInfo,
+                       @Nonnull Tunnels updatedTunnelInfo) {
         List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
         List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
@@ -195,7 +196,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     @Override
-    public void add(@Nonnull Tunnels newDataObject) {
+    public void add(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnelInfo) {
         // TODO: need to add the code to enable BFD if tunnels are created
         // dynamically by TOR switch
     }

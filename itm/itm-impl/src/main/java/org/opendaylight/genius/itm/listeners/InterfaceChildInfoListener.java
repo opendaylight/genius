@@ -37,29 +37,33 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     }
 
     @Override
-    public void add(@Nonnull InterfaceParentEntry newDataObject) {
+    public void add(@Nonnull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
+                    @Nonnull InterfaceParentEntry interfaceParentEntry) {
         if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener add for {}",
-                      newDataObject.getParentInterface());
-            tunnelAggregationHelper.updateLogicalTunnelSelectGroup(newDataObject, dataBroker);
+                      interfaceParentEntry.getParentInterface());
+            tunnelAggregationHelper.updateLogicalTunnelSelectGroup(interfaceParentEntry, dataBroker);
         }
     }
 
     @Override
-    public void remove(@Nonnull InterfaceParentEntry removedDataObject) {
+    public void remove(@Nonnull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
+                       @Nonnull InterfaceParentEntry interfaceParentEntry) {
         if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener remove for {}",
-                      removedDataObject.getParentInterface());
-            tunnelAggregationHelper.updateLogicalTunnelSelectGroup(removedDataObject, dataBroker);
+                      interfaceParentEntry.getParentInterface());
+            tunnelAggregationHelper.updateLogicalTunnelSelectGroup(interfaceParentEntry, dataBroker);
         }
     }
 
     @Override
-    public void update(@Nonnull InterfaceParentEntry originalDataObject, InterfaceParentEntry updatedDataObject) {
+    public void update(@Nonnull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
+                       @Nonnull InterfaceParentEntry originalParentEntry,
+                       @Nonnull InterfaceParentEntry updatedParentEntry) {
         if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener update for {}",
-                      updatedDataObject.getParentInterface());
-            tunnelAggregationHelper.updateLogicalTunnelSelectGroup(updatedDataObject, dataBroker);
+                      updatedParentEntry.getParentInterface());
+            tunnelAggregationHelper.updateLogicalTunnelSelectGroup(updatedParentEntry, dataBroker);
         }
     }
 }

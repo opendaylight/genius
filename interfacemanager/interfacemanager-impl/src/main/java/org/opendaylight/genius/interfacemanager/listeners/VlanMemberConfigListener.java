@@ -51,7 +51,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     @Override
-    public void remove(@Nonnull Interface removedInterface) {
+    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
         IfL2vlan ifL2vlan = removedInterface.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;
@@ -77,7 +77,8 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     @Override
-    public void update(@Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
+    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier,
+                       @Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
         IfL2vlan ifL2vlanNew = updatedInterface.getAugmentation(IfL2vlan.class);
         if (ifL2vlanNew == null) {
             return;
@@ -117,7 +118,8 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     @Override
-    public void add(@Nonnull Interface newInterface) {
+    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier,
+                    @Nonnull Interface newInterface) {
         IfL2vlan ifL2vlan = newInterface.getAugmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;

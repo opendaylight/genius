@@ -140,7 +140,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     @Override
-    public void remove(@Nonnull TransportZone transportZone) {
+    public void remove(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
+                       @Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
 
         boolean allowTunnelDeletion;
@@ -181,7 +182,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     @Override
-    public void update(@Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
+    public void update(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
+                       @Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                   updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);

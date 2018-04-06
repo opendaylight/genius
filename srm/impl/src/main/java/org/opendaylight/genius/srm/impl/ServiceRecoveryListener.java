@@ -37,19 +37,20 @@ public class ServiceRecoveryListener extends AbstractClusteredSyncDataTreeChange
     }
 
     @Override
-    public void add(@Nonnull Operations operations) {
+    public void add(@Nonnull InstanceIdentifier<Operations> instanceIdentifier, @Nonnull Operations operations) {
         LOG.info("Service Recovery operation triggered for service: {}", operations);
         serviceRecoveryManager.recoverService(operations.getEntityType(), operations.getEntityName(),
                 operations.getEntityId());
     }
 
     @Override
-    public void remove(@Nonnull Operations removedDataObject) {
-
+    public void remove(@Nonnull InstanceIdentifier<Operations> instanceIdentifier,
+                       @Nonnull Operations removedDataObject) {
     }
 
     @Override
-    public void update(@Nonnull Operations originalDataObject, @Nonnull Operations updatedDataObject) {
-        add(updatedDataObject);
+    public void update(@Nonnull InstanceIdentifier<Operations> instanceIdentifier,
+                       @Nonnull Operations originalDataObject, @Nonnull Operations updatedDataObject) {
+        add(instanceIdentifier, updatedDataObject);
     }
 }
