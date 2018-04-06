@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8aa15735_c74c9fd1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/SingleTransactionDataBroker.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T16:49:24Z",
+      "side": 0,
+      "message": "+1 to removing this now - the ManagedNewTransactionRunner meanwhile has become a better alternative for what I originally thought we may add here one day.. In fact, how about we actually start pointing anyone who RTFM (i.e. nobody) to it - see https://git.opendaylight.org/gerrit/70438.",
+      "revId": "66c6fb0cdddcf00afa79c6429f2fb347dbc07e70",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
