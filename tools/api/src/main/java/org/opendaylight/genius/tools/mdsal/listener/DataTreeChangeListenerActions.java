@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
-import org.opendaylight.genius.tools.mdsal.metrics.DataStoreMetrics;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
