@@ -136,6 +136,24 @@
       "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "204b8ea3_a8f6f2cc",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/metrics/DataStoreMetrics.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-06T19:40:42Z",
+      "side": 1,
+      "message": "\u003d\u003d\u003e https://git.opendaylight.org/gerrit/#/c/70441/",
+      "parentUuid": "a0de4c2e_22acbeed",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
