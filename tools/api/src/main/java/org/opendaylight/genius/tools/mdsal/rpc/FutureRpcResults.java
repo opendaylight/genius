@@ -77,18 +77,17 @@ public final class FutureRpcResults {
      * failure.
      *
      * @param logger the slf4j Logger of the caller
-     * @param rpcMethodName Java method name (without "()") of the RPC operation, used for logging
      * @param input the RPC input DataObject of the caller (may be null)
      * @param callable the Callable (typically lambda) creating a ListenableFuture.  Note that the
      *        functional interface Callable's call() method declares throws Exception, so your lambda
      *        does not have to do any exception handling (specifically it does NOT have to catch and
      *        wrap any exception into a failed Future); this utility does that for you.
-     *
+     * @param rpcMethodName Java method name (without "()") of the RPC operation, used for logging
      * @return a new FutureRpcResultBuilder
      */
     @CheckReturnValue
-    public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
-            @Nullable I input, Callable<ListenableFuture<O>> callable) {
+    public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, @Nullable I input,
+            Callable<ListenableFuture<O>> callable, String rpcMethodName) {
         return new FutureRpcResultBuilder<>(logger, rpcMethodName, input, callable);
     }
 
@@ -126,17 +125,17 @@ public final class FutureRpcResults {
     }
 
     @CheckReturnValue
-    public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
-            @Nullable I input, Callable<Builder<O>> builder) {
+    public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, @Nullable I input,
+            Callable<Builder<O>> builder, String rpcMethodName) {
         Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
-        return fromListenableFuture(logger, rpcMethodName, input, callable);
+        return fromListenableFuture(logger, input, callable, rpcMethodName);
     }
 
     @CheckReturnValue
     public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, @Nullable I input,
             Callable<Builder<O>> builder) {
         Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
-        return fromListenableFuture(logger, StackTraces.getCallersCallerMethodName(), input, callable);
+        return fromListenableFuture(logger, input, callable, StackTraces.getCallersCallerMethodName());
     }
 
     @NotThreadSafe
