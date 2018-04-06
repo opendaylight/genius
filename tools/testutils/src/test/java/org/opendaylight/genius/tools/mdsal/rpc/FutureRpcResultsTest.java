@@ -65,27 +65,30 @@ public class FutureRpcResultsTest {
     @Test
     public void testFromListenableFutureExceptionWarnInsteadError() throws Exception {
         TestFutureRpcResults.assertRpcErrorCause(FutureRpcResults.fromListenableFuture(
-            LOG, "testFromListenableFutureException", null, () -> {
+            LOG, null, () -> {
                 throw new IllegalArgumentException("bam");
-            }).onFailureLogLevel(LogLevel.WARN).build(), IllegalArgumentException.class, "bam");
+            }, "testFromListenableFutureException")
+                .onFailureLogLevel(LogLevel.WARN).build(), IllegalArgumentException.class, "bam");
     }
 
     @Test
     public void testFromListenableFutureExceptionNoLog() throws Exception {
         TestFutureRpcResults.assertRpcErrorCause(FutureRpcResults.fromListenableFuture(
-            LOG, "testFromListenableFutureException", null, () -> {
+            LOG, null, () -> {
                 throw new IllegalArgumentException("bam");
-            }).onFailureLogLevel(NONE).build(), IllegalArgumentException.class, "bam");
+            }, "testFromListenableFutureException")
+                .onFailureLogLevel(NONE).build(), IllegalArgumentException.class, "bam");
     }
 
     @Test
     public void testFromListenableFutureExceptionAlsoLog() throws Exception {
-        final AtomicBoolean afterLogActionCalled = new AtomicBoolean(false);
+        AtomicBoolean afterLogActionCalled = new AtomicBoolean(false);
         logCaptureRule.expectError("RPC testFromListenableFutureException() failed; input = null");
         TestFutureRpcResults.assertRpcErrorCause(FutureRpcResults.fromListenableFuture(
-            LOG, "testFromListenableFutureException", null, () -> {
+            LOG, null, () -> {
                 throw new IllegalArgumentException("bam");
-            }).onFailure(e -> afterLogActionCalled.set(true)).build(), IllegalArgumentException.class, "bam");
+            }, "testFromListenableFutureException")
+                .onFailure(e -> afterLogActionCalled.set(true)).build(), IllegalArgumentException.class, "bam");
         assertThat(afterLogActionCalled.get()).isTrue();
     }
 
