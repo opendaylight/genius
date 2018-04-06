@@ -20,7 +20,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.AbstractAsyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.SuperTypeUtil;
-import org.opendaylight.genius.utils.metrics.DataStoreMetrics;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;

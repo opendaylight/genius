@@ -5,13 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.tools.mdsal.metrics;
+package org.opendaylight.genius.tools.mdsal.listener;
 
 import org.opendaylight.infrautils.metrics.Meter;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 
-public class DataStoreMetrics {
+/* intentionally *NOT* public */ class DataStoreMetrics {
 
     private final MetricProvider metricProvider;
     private final Class<?> clazz;
@@ -19,7 +19,7 @@ public class DataStoreMetrics {
     private final Meter updated;
     private final Meter deleted;
 
-    public DataStoreMetrics(MetricProvider metricProvider, Class<?> clazz) {
+    DataStoreMetrics(MetricProvider metricProvider, Class<?> clazz) {
         this.metricProvider = metricProvider;
         this.clazz = clazz;
         this.added = initCounter("_added");
@@ -27,15 +27,15 @@ public class DataStoreMetrics {
         this.deleted = initCounter("_deleted");
     }
 
-    public void incrementAdded() {
+    void incrementAdded() {
         added.mark();
     }
 
-    public void incrementUpdated() {
+    void incrementUpdated() {
         updated.mark();
     }
 
-    public void incrementDeleted() {
+    void incrementDeleted() {
         deleted.mark();
     }
 
