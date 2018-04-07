@@ -71,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "6f3c13f6_c3fb7cd7",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-07T02:27:54Z",
+      "side": 1,
+      "message": "Yes..I thought of not doing everything as part of this patch, and get this in.. And then work on the migrations. Whatever was unavoidable due to test failures and all, only i have taken care here",
+      "parentUuid": "1d79b210_2be75509",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3553aac3_7bf4c3e0",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 9
@@ -82,6 +100,24 @@
       "writtenOn": "2018-04-06T17:05:27Z",
       "side": 1,
       "message": "and then remove this FQN ?",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ebb1c4d5_4f3adfbb",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-07T02:27:54Z",
+      "side": 1,
+      "message": "sure",
+      "parentUuid": "3553aac3_7bf4c3e0",
       "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
