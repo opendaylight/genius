@@ -159,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "305b01ea_68e019e0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/FutureRpcResults.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-07T02:35:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ab991823_d7fa580a",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0bf9ea4b_ae219827",
         "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/infra/testutils/TestFutureRpcResults.java",
         "patchSetId": 9
@@ -170,6 +188,24 @@
       "writtenOn": "2018-04-06T17:05:27Z",
       "side": 1,
       "message": "We have to have a @Deprecated annotation and JavaDoc here as well.",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5d64da9_3194e679",
+        "filename": "mdsalutil/mdsalutil-testutils/src/main/java/org/opendaylight/genius/infra/testutils/TestFutureRpcResults.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-07T02:35:28Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0bf9ea4b_ae219827",
       "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -205,6 +241,24 @@
       "side": 1,
       "message": "\u003d\u003d\u003e https://git.opendaylight.org/gerrit/#/c/70441/",
       "parentUuid": "a0de4c2e_22acbeed",
+      "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b0d167b_6281b89d",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/metrics/DataStoreMetrics.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-07T02:35:28Z",
+      "side": 1,
+      "message": "Thanks :)",
+      "parentUuid": "204b8ea3_a8f6f2cc",
       "revId": "2930c2899984b81e03a7a82709817eac206c6c98",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
