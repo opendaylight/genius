@@ -38,7 +38,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <module>arputil</module>
     <module>idmanager</module>
     <module>alivenessmonitor</module>
-    <module>karaf</module>
     <module>features</module>
     <module>artifacts</module>
     <module>fcapsmanager</module>
@@ -46,6 +45,19 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <module>resourcemanager</module>
     <module>srm</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>karaf</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <modules>
+        <module>karaf</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <!-- DO NOT install or deploy the repo root pom as it's only needed to initiate a build -->
   <build>
