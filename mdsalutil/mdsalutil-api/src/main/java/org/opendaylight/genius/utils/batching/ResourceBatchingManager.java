@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -89,7 +91,7 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     private final Map<String, Set<InstanceIdentifier>> pendingModificationByResourceType = new ConcurrentHashMap<>();
 
-    private static ResourceBatchingManager instance;
+    private static final ResourceBatchingManager instance;
 
     static {
         instance = new ResourceBatchingManager();
@@ -317,6 +319,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
+    @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
     private class MdsalDsTask<T extends DataObject> {
         String resourceType;
         List<ActionableResource> actResourceList;
