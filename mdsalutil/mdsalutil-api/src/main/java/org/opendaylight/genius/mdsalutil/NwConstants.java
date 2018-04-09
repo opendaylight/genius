@@ -113,6 +113,7 @@ public interface NwConstants {
     BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
     BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
     BigInteger COOKIE_ARP_RESPONDER = new BigInteger("8220000", 16);
+    BigInteger COOKIE_COE_KUBE_PROXY_TABLE = new BigInteger("8230000", 16);
 
     //Table IDs
     short VLAN_INTERFACE_INGRESS_TABLE = 0;
