@@ -34,6 +34,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
+      <artifactId>tools-api</artifactId>
+      <version>${genius.mdsalutil.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.genius</groupId>
       <artifactId>mdsalutil-api</artifactId>
       <version>${genius.mdsalutil.version}</version>
     </dependency>
