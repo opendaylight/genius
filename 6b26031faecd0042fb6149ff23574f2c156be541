@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "cad13020_fe1683dc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2018-04-09T08:56:46Z",
+      "side": 1,
+      "message": "Hi Tom, \nWe are using this via RPC since we can not directly call IFM\u0027s util methods.",
+      "parentUuid": "32b772d1_c278f546",
+      "revId": "6b26031faecd0042fb6149ff23574f2c156be541",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21dd534c_dc2acb50",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 9
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-05T13:23:25Z",
       "side": 1,
       "message": "You should return here and propagate the RPCErrors from \u0027result\u0027",
+      "revId": "6b26031faecd0042fb6149ff23574f2c156be541",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cad3382e_5a3ec89b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2018-04-09T08:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "21dd534c_dc2acb50",
       "revId": "6b26031faecd0042fb6149ff23574f2c156be541",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "f7eec69b_0741c951",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 293,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2018-04-09T08:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dd078a1d_07834c63",
+      "revId": "6b26031faecd0042fb6149ff23574f2c156be541",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a9e224db_aa2a2441",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 9
@@ -64,6 +118,30 @@
       "writtenOn": "2018-04-05T13:23:25Z",
       "side": 1,
       "message": "This isn\u0027t correct - it means the read failed.",
+      "range": {
+        "startLine": 1075,
+        "startChar": 81,
+        "endLine": 1075,
+        "endChar": 102
+      },
+      "revId": "6b26031faecd0042fb6149ff23574f2c156be541",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a1f7854_33305c77",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 1075,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2018-04-09T08:56:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a9e224db_aa2a2441",
       "range": {
         "startLine": 1075,
         "startChar": 81,
