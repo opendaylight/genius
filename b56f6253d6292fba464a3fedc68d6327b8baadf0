@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "308d21ce_920b0d81",
+        "filename": "features/odl-genius-srm/pom.xml",
+        "patchSetId": 11
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-09T08:01:43Z",
+      "side": 1,
+      "message": "I tried putting 3.1.0, for which some other packages started complaining in test-utils. I just moved it back. Michael could you please help me with this?",
+      "revId": "b56f6253d6292fba464a3fedc68d6327b8baadf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
