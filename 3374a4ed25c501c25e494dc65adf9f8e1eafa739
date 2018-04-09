@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2fef4a27_44a9d250",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-04-09T08:20:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cc1ab381_e2c45d5c",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e8bc7d8d_f2bd96f4",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-06T12:20:16Z",
       "side": 1,
       "message": "Thanks for adding \u0027other config\u0027. I had missed that in my last update!",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3f599ef_6fc507c7",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-04-09T08:20:56Z",
+      "side": 1,
+      "message": "No problem,\nit\u0027s my pleasure.",
+      "parentUuid": "e8bc7d8d_f2bd96f4",
       "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "086150ef_f692df66",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-04-09T08:20:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "77beeba0_c2abd01c",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ced7ef87_71a81465",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 1
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "530ed18b_7feaa533",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-04-09T08:20:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ced7ef87_71a81465",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ff5d50b8_10c1da63",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 1
@@ -81,6 +153,24 @@
       "writtenOn": "2018-04-06T12:20:16Z",
       "side": 1,
       "message": "Shrink to 80 columns width for consistency.",
+      "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45763e2f_e6594cf4",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-04-09T08:20:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ff5d50b8_10c1da63",
       "revId": "3374a4ed25c501c25e494dc65adf9f8e1eafa739",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
