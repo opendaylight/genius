@@ -15,12 +15,14 @@ import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
@@ -70,6 +72,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
         return ARP.class;
     }
 
+    @SuppressFBWarnings("NP_NULL_PARAM_DEREF")
     @Override
     public String handlePacketIn(ARP packet, PacketReceived packetReceived) {
         short tableId = packetReceived.getTableId().getValue();

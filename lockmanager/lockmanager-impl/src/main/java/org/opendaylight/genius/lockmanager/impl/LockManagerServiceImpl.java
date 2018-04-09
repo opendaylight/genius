@@ -10,6 +10,7 @@ package org.opendaylight.genius.lockmanager.impl;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -123,6 +125,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     /**
      * Try to acquire lock indefinitely until it is successful.
      */
+    @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
     private ListenableFuture<Void> getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
