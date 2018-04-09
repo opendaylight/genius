@@ -7,10 +7,6 @@
  */
 package org.opendaylight.genius.lockmanager.tests;
 
-import static org.opendaylight.genius.infra.testutils.TestFutureRpcResults.assertRpcErrorCause;
-import static org.opendaylight.genius.infra.testutils.TestFutureRpcResults.assertRpcErrorWithoutCausesOrMessages;
-import static org.opendaylight.genius.infra.testutils.TestFutureRpcResults.assertVoidRpcSuccess;
-
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +35,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInputBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorCause;
+import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorWithoutCausesOrMessages;
+import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertVoidRpcSuccess;
 
 /**
  * Test for {@link LockManagerServiceImpl}.
