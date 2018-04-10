@@ -18,7 +18,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.listeners.AbstractAsyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -30,7 +29,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Deprecated DS listener.
- * @deprecated Please use {@link AbstractAsyncDataTreeChangeListener} instead of this!
+ * @deprecated Please use
+ * {@link org.opendaylight.genius.tools.mdsal.listener.AbstractAsyncDataTreeChangeListener} instead of this!
  */
 @Deprecated
 public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener<T>>
