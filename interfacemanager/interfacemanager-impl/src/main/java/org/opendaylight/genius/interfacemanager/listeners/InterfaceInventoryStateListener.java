@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -171,7 +171,8 @@ public class InterfaceInventoryStateListener
             return;
         }
 
-        if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
+        if (fcNodeConnectorNew.getReason() == PortReason.Delete
+                || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
@@ -375,10 +376,12 @@ public class InterfaceInventoryStateListener
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
             futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                //VM Migration: Update the interface state to unknown only if remove event received for same switch
-                boolean nodePresent = interfaceManagerCommonUtils.isNodePresent(tx, nodeConnectorIdNew);
-                LOG.debug("Removing interface state information for interface: {} {}", interfaceName, nodePresent);
-                if (!nodePresent && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+                // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
+                // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
+                // scenario, and should be treated as port removal.
+                LOG.debug("Removing interface state information for interface: {}", interfaceName);
+                if (fcNodeConnectorOld.getReason() != PortReason.Delete
+                        && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
                     //Remove event is because of connection lost between controller and switch, or switch shutdown.
                     // Hence, don't remove the interface but set the status as "unknown"
                     ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
