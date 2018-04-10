@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "77387ada_d6888b5e",
+        "filename": "mdsalutil/mdsalutil-impl/src/test/java/org/opendaylight/genius/utils/hwvtep/internal/HwvtepNodeHACacheImplTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:18:05Z",
+      "side": 1,
+      "message": "[just fun] original in HwvtepHACacheTest was Red Hat, but even that was wrong, because this was written by Suneelu at Ericsson, so who cares... ;-)",
+      "revId": "bd5026ded8ecada9823c120f47b131679de6a69a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
