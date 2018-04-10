@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e493c9a_d283d00a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T13:53:51Z",
+      "side": 1,
+      "message": "I am really not a fan of this class (one reason is the static nature) and want to get rid of it (or rewrite it). Is there any way we can avoid perpetuating it\u0027s use here?",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4285b823_9a54af63",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T13:53:51Z",
+      "side": 1,
+      "message": "So this class just has a single static method to wrap creating a TunnelTopologyStateListener. There doesn\u0027t seem much point - why not just create a TunnelTopologyStateListener directly? Plus if the TunnelTopologyStateListener ctor changes then this method has to change as well.",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00738c08_663a7621",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T13:53:51Z",
+      "side": 1,
+      "message": "Is addState really reusable or is it just used here? If the latter then why not move the code here? I\u0027ve said this before - IMO Utils classes should be for general, reusable code, otherwise I\u0027d prefer to not arbitrarily dump code into Utils classes - they can quickly become large and unwieldy with a hodgepodge of unrelated code.",
+      "range": {
+        "startLine": 106,
+        "startChar": 69,
+        "endLine": 106,
+        "endChar": 77
+      },
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75a52ea6_12539572",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T13:53:51Z",
+      "side": 1,
+      "message": "A lot of new code has been added to this class and it\u0027s now over 560 lines. This illustrates my earlier comment. Please (re-)consider whether some or all of this code is really general and reusable or makes sense to move to the (lone) caller.",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
