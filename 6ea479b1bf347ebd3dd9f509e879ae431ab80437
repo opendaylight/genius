@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fef09d8f_80438123",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-10T17:57:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "54a4fc47_8890bf9c",
+      "revId": "6ea479b1bf347ebd3dd9f509e879ae431ab80437",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4528cdcf_41bd9c25",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 16
@@ -30,6 +48,30 @@
       "writtenOn": "2018-04-10T17:13:09Z",
       "side": 1,
       "message": "make this debug - let the caller choose whether or not to log warn/error",
+      "range": {
+        "startLine": 260,
+        "startChar": 32,
+        "endLine": 260,
+        "endChar": 36
+      },
+      "revId": "6ea479b1bf347ebd3dd9f509e879ae431ab80437",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ee77237_0f0137b3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-10T17:57:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4528cdcf_41bd9c25",
       "range": {
         "startLine": 260,
         "startChar": 32,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "e944273f_1fb59ffd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-10T17:57:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea6a08a4_b42df950",
+      "range": {
+        "startLine": 261,
+        "startChar": 75,
+        "endLine": 261,
+        "endChar": 78
+      },
+      "revId": "6ea479b1bf347ebd3dd9f509e879ae431ab80437",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51e52bb4_b6cd3b25",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 16
@@ -76,6 +142,24 @@
       "writtenOn": "2018-04-10T17:13:09Z",
       "side": 1,
       "message": "Propagate the Throwable cause.",
+      "revId": "6ea479b1bf347ebd3dd9f509e879ae431ab80437",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d6028480_289e7644",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-10T17:57:36Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51e52bb4_b6cd3b25",
       "revId": "6ea479b1bf347ebd3dd9f509e879ae431ab80437",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
