@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b01885a9_a7d590ce",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T07:51:09Z",
+      "side": 1,
+      "message": "I\u0027m surprised that this works without adding an explicit dependecy on tools-testutils, but it clearly does (builds fine), so no objection.",
+      "revId": "a9bfbb6c042df84863b726d228c458c98cecce88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
