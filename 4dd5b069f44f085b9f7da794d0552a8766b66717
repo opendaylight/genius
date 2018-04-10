@@ -16,6 +16,24 @@
       "revId": "4dd5b069f44f085b9f7da794d0552a8766b66717",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8227b14_aabd6b71",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-04-10T18:30:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e46e645a_16d413f0",
+      "revId": "4dd5b069f44f085b9f7da794d0552a8766b66717",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
