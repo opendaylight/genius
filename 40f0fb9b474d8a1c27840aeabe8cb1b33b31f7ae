@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3c05881_43ef1cc1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "same comment as in https://git.opendaylight.org/gerrit/#/c/70232/6/itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java - this seems a bit pointless - instead use this opportunity and just remove the above existing one as well in this change and get completely rid of this class.",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d2d69d8_3d2fc5ff",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf842893_9f9f9fb2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "error instead of debug probably beter, and change name; a ReadFailedException here does not (should not..) indicate that what you are reading is not present, but that it failed to read from the data store, for some technical reason.",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b7443260_6d7d2715",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "just return directTunnelUtils.addState() instead",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "791bc92a_cddac62d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "just return updateState() instead",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a8b0d51_4622406f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "missing private final here as well",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac18517b_5e4df8fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "just return removeInterfaceStateConfiguration instead of declaring it in the line above and returning it in the line below",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b99f287_a03bf5d7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "error instead of warn perhaps better?",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b263e2b7_10d301b1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 414,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T15:54:05Z",
+      "side": 1,
+      "message": "error instead of warn perhaps better?",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
