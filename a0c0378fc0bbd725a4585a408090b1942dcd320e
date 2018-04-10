@@ -16,6 +16,24 @@
       "revId": "a0c0378fc0bbd725a4585a408090b1942dcd320e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef6ddfe9_04bbe193",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-10T15:41:17Z",
+      "side": 1,
+      "message": "Apologies, my bad.\nI made those changes in the end, \nas I run findBugs before pushing changes.\nwill take care of it henceforth.",
+      "parentUuid": "c027f4f0_ef3770fb",
+      "revId": "a0c0378fc0bbd725a4585a408090b1942dcd320e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
