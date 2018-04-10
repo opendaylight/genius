@@ -156,6 +156,24 @@
     },
     {
       "key": {
+        "uuid": "1fd8f812_0b379ba8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T16:24:19Z",
+      "side": 1,
+      "message": "good catch - I missed that. Synchronizing on a String is a no-no...",
+      "parentUuid": "031f464d_65412d2e",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00738c08_663a7621",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -275,6 +293,24 @@
       "writtenOn": "2018-04-10T15:53:53Z",
       "side": 1,
       "message": "error instead of warn?  Or why not just let it propagate to the caller to handle?",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "97da744f_c516a9a2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T16:24:19Z",
+      "side": 1,
+      "message": "I think the errors/exceptions should be propagated.",
+      "parentUuid": "d6f151a3_e440f4d3",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
