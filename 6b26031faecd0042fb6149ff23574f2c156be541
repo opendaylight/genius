@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "586aaf0e_d53f9119",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-10T14:35:52Z",
+      "side": 1,
+      "message": "taken care of in the latest patch, please review.",
+      "parentUuid": "4630e823_d27bd2ea",
+      "revId": "6b26031faecd0042fb6149ff23574f2c156be541",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "21dd534c_dc2acb50",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 9
