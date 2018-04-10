@@ -234,6 +234,7 @@ public class InterfaceManagerConfigurationTest {
     }
 
     @Test
+    @Ignore // TODO re-enable when stable, see https://jira.opendaylight.org/browse/GENIUS-120
     public void newl2vlanInterfaceTests() throws Exception {
         // 1. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
