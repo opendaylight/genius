@@ -16,6 +16,24 @@
       "revId": "bd5026ded8ecada9823c120f47b131679de6a69a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3375dcb7_9f87f869",
+        "filename": "mdsalutil/mdsalutil-impl/src/test/java/org/opendaylight/genius/utils/hwvtep/internal/HwvtepNodeHACacheImplTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T15:33:02Z",
+      "side": 1,
+      "message": "I really wasn\u0027t trying to steal credit :) Eclipse puts this stuff in automatically so I wasn\u0027t aware of it. I really don\u0027t care either way either... :)",
+      "parentUuid": "77387ada_d6888b5e",
+      "revId": "bd5026ded8ecada9823c120f47b131679de6a69a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
