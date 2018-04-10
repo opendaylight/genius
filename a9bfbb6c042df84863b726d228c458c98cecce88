@@ -34,6 +34,24 @@
       "revId": "a9bfbb6c042df84863b726d228c458c98cecce88",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7cad7172_93b56f96",
+        "filename": "lockmanager/lockmanager-impl/src/test/java/org/opendaylight/genius/lockmanager/tests/LockManagerTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T09:42:07Z",
+      "side": 1,
+      "message": "No, I\u0027ve had a closer look locally myself now, and it\u0027s because lockmanager-impl depends on the (old) mdsalutils-testutils which in turn depends on the (new) genius.tools-testutils, all with \u003cscope\u003etest, so it\u0027s all good and correct as-is!  (My fear was just that we somewhere pull in a testutils without a scope test, which would have been bad because it would pollute the runtime, but we are not; so it\u0027s all good; please ignore.)",
+      "parentUuid": "df9ba18b_36899cfa",
+      "revId": "a9bfbb6c042df84863b726d228c458c98cecce88",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
