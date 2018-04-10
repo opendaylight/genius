@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c027f4f0_ef3770fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-10T14:54:31Z",
+      "side": 1,
+      "message": "You\u0027re blindly setting failure w/o checking isSuccessful. In fact there is no success path - c\u0027mon - please try to be more disciplined and review your own code prior to submitting. A least test it...",
+      "revId": "a0c0378fc0bbd725a4585a408090b1942dcd320e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
