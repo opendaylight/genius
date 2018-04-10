@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2049145f_9817d9eb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TunnelMonitorChangeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-04-10T18:21:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "53e3098d_023330a3",
+      "revId": "d60657849cdadb2b014e27a3bd91f43e2c6c83d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ae627ff2_c9df5cb4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TunnelMonitorIntervalListener.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-10T15:25:10Z",
       "side": 1,
       "message": "use org.opendaylight.genius.tools.mdsal.listener.AbstractSyncDataTreeChangeListener instead now",
+      "revId": "d60657849cdadb2b014e27a3bd91f43e2c6c83d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "303f6cc4_bea81c42",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TunnelMonitorIntervalListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-04-10T18:21:57Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae627ff2_c9df5cb4",
       "revId": "d60657849cdadb2b014e27a3bd91f43e2c6c83d4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
