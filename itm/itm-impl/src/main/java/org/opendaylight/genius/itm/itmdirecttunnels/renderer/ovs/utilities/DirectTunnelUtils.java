@@ -83,6 +83,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.o
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -476,6 +477,18 @@ public final class DirectTunnelUtils {
         return terminationPointPath;
     }
 
+    public boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
+        if (ifTunnel.isMonitorEnabled()
+                && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean bfdMonitoringEnabled(RemoteDpns remoteDpn) {
+        return (remoteDpn.isMonitoringEnabled()) ? true : false;
+    }
+
     public boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
         if (interfaceBfds != null && !interfaceBfds.isEmpty()) {
             for (InterfaceBfd interfaceBfd : interfaceBfds) {
@@ -494,6 +507,16 @@ public final class DirectTunnelUtils {
                 : "false"));
         bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
                 ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        return bfdParams;
+    }
+
+    public List<InterfaceBfd> getBfdParams(RemoteDpns remoteDpn) {
+        List<InterfaceBfd> bfdParams = new ArrayList<>();
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE, remoteDpn != null ? remoteDpn.isMonitoringEnabled().toString()
+                : "false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, remoteDpn != null && remoteDpn.getMonitoringInterval() != null
+                ? remoteDpn.getMonitoringInterval().toString() : BFD_MIN_TX_VAL));
         bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
         return bfdParams;
     }
@@ -583,4 +606,25 @@ public final class DirectTunnelUtils {
                 .child(IfIndexTunnel.class, new IfIndexTunnelKey(ifIndex)).build();
         tx.delete(LogicalDatastoreType.OPERATIONAL, id);
     }
+
+    public void updateBfdParamtersForTerminationPoint(InstanceIdentifier<?> bridgeIid,
+                                                       RemoteDpns remoteDpn) {
+        final InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
+            InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
+                org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang
+                    .network.topology.rev131021.network.topology.topology.Node.class)), remoteDpn.getTunnelName());
+        OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
+
+        if (bfdMonitoringEnabled(remoteDpn)) {
+            List<InterfaceBfd> bfdParams = getBfdParams(remoteDpn);
+            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+        }
+
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+
+        ITMBatchingUtils.update(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
 }
