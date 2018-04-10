@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Ericsson S.A. and others. All rights reserved.
+ * Copyright (c) 2017, 2018 Ericsson S.A. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -8,7 +8,6 @@
 package org.opendaylight.genius.datastoreutils.listeners;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import javax.inject.Inject;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
@@ -27,18 +26,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> extends
         org.opendaylight.genius.tools.mdsal.listener.AbstractSyncDataTreeChangeListener<T> {
 
-    @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         super(dataBroker, dataTreeIdentifier);
     }
 
-    @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                               InstanceIdentifier<T> instanceIdentifier) {
         super(dataBroker, datastoreType, instanceIdentifier);
     }
 
-    @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                               InstanceIdentifier<T> instanceIdentifier,
                                               MetricProvider metricProvider) {
