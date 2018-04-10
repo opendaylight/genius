@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e7e8964_38142188",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T16:00:58Z",
+      "side": 1,
+      "message": "error isntead of debug, or much better let this propagate instead of catching it.  It does NOT mean that it\u0027s not present, but that there is a technical problem reading it.",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f0a0e998_fedde50b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T16:00:58Z",
+      "side": 1,
+      "message": "remove all these x4 commented out lines?",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3f94b2b9_ac492a57",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T16:00:58Z",
+      "side": 1,
+      "message": "just let this propagate instead and let the JobCoordinator deal with it",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41bf1a20_5c8eaec1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T16:00:58Z",
+      "side": 1,
+      "message": "as elsewhere, but just to let it propagate",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f02164ed_6c332be9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-10T16:00:58Z",
+      "side": 1,
+      "message": "no",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
