@@ -63,9 +63,10 @@ public interface NwConstants {
     short DHCP_SERVICE_INDEX = 5;
     short QOS_SERVICE_INDEX = 6;
     short IPV6_SERVICE_INDEX = 7;
-    short L3VPN_SERVICE_INDEX = 8;
-    short ELAN_SERVICE_INDEX = 9;
+    short COE_KUBE_PROXY_SERVICE_INDEX = 8;
+    short L3VPN_SERVICE_INDEX = 9;
     short L3_VPNV6_SERVICE_INDEX = 10;
+    short ELAN_SERVICE_INDEX = 11;
 
     String DHCP_SERVICE_NAME = "DHCP_SERVICE";
     String ACL_SERVICE_NAME = "ACL_SERVICE";
