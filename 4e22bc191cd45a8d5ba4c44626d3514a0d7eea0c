@@ -34,6 +34,24 @@
       "revId": "4e22bc191cd45a8d5ba4c44626d3514a0d7eea0c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a2994743_adb21b87",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7194
+      },
+      "writtenOn": "2018-04-11T08:30:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4cb3623a_27f81b5a",
+      "revId": "4e22bc191cd45a8d5ba4c44626d3514a0d7eea0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
