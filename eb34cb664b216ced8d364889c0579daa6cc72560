@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9577ba5c_fb974092",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "could we create a trello card and track this exclusive to this patch? \nlet me know otherwise :)",
+      "parentUuid": "2e493c9a_d283d00a",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4285b823_9a54af63",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java",
         "patchSetId": 6
@@ -54,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "071073d5_8008120c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "removed as per your suggestion",
+      "parentUuid": "4956f109_93825720",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa99f01d_3b673096",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerResolver.java",
         "patchSetId": 6
@@ -65,6 +101,24 @@
       "writtenOn": "2018-04-10T15:53:53Z",
       "side": 1,
       "message": "nit pick: double space before implements in line below (sorry)",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9fa8c49e_6e749171",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerResolver.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fa99f01d_3b673096",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -88,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "144b3a4a_15783dde",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerResolver.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "moved to ../listeners/\nwith the name change",
+      "parentUuid": "9b67a9fe_31204664",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfe16c54_64853d0c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -99,6 +171,24 @@
       "writtenOn": "2018-04-10T15:53:53Z",
       "side": 1,
       "message": "please use org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener instead now",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55717fbe_e85a9b9e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "can this be done in an after patch ?\nas this could affect the cherrypick to oxygen?",
+      "parentUuid": "cfe16c54_64853d0c",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -122,6 +212,24 @@
     },
     {
       "key": {
+        "uuid": "16ff145a_ed03c0bf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "425701a1_4294c7f9",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "41027ab0_578770dd",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -133,6 +241,24 @@
       "writtenOn": "2018-04-10T15:53:53Z",
       "side": 1,
       "message": "nit pick: no double empty line here (sorry)",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5dc5bd6_51edba66",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "nit picks are always welcome :)",
+      "parentUuid": "41027ab0_578770dd",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -174,6 +300,24 @@
     },
     {
       "key": {
+        "uuid": "17cfeb86_ffbccf4d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "done, now synchronizing over the cache get instead.",
+      "parentUuid": "1fd8f812_0b379ba8",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00738c08_663a7621",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -197,6 +341,30 @@
     },
     {
       "key": {
+        "uuid": "26bfdb7b_286a50df",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "addState will be used by another listener in subsequent patches, which is why it is being used so.",
+      "parentUuid": "00738c08_663a7621",
+      "range": {
+        "startLine": 106,
+        "startChar": 69,
+        "endLine": 106,
+        "endChar": 77
+      },
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3e330dd_35fe9f1d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -208,6 +376,24 @@
       "writtenOn": "2018-04-10T15:53:53Z",
       "side": 1,
       "message": "just return directTunnelUtils.addState() instead",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62987e23_f4d8e844",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3e330dd_35fe9f1d",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -248,6 +434,24 @@
     },
     {
       "key": {
+        "uuid": "d26fe17b_697adcda",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a20c3c00_9fe05652",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7e0541f7_ad7cc153",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 6
@@ -265,6 +469,24 @@
     },
     {
       "key": {
+        "uuid": "95c5fa79_e50bf05c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7e0541f7_ad7cc153",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4a9f050d_5cd18c95",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 6
@@ -276,6 +498,24 @@
       "writtenOn": "2018-04-10T15:53:53Z",
       "side": 1,
       "message": "error instead of warn?",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "52044045_4545e103",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4a9f050d_5cd18c95",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -311,6 +551,24 @@
       "side": 1,
       "message": "I think the errors/exceptions should be propagated.",
       "parentUuid": "d6f151a3_e440f4d3",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a773b7be_587b6b16",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T09:20:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "97da744f_c516a9a2",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
