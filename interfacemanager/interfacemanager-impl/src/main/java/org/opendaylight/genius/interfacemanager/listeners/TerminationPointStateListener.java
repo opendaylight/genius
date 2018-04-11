@@ -125,12 +125,13 @@ public class TerminationPointStateListener extends
         }
 
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
-        if (tpNew.getInterfaceBfdStatus() != null) {
-            if ((tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus())
-                    || (org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+        if (tpOld != null) {
+            if ((org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
                     .bfdMonitoringEnabled(tpNew.getInterfaceBfd())
                     != org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
-                    .bfdMonitoringEnabled(tpOld.getInterfaceBfd())))) {
+                    .bfdMonitoringEnabled(tpOld.getInterfaceBfd()))
+                    || (tpNew.getInterfaceBfdStatus() != null
+                    && !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
                 LOG.info("Bfd Status changed for ovsdb termination point: {}", identifier);
                 RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
                 coordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
