@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6605dd32_bdeb3078",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TunnelMonitorChangeListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-11T17:50:39Z",
+      "side": 1,
+      "message": "This makes the formerly async listener sync - OK for everyone?",
+      "revId": "f75f2d824cd68745a1dc47fd9a06f1787efe79eb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "669d87d7_b2972ab5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TunnelMonitorIntervalListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-11T17:50:39Z",
+      "side": 1,
+      "message": "also async to sync - OK?",
+      "revId": "f75f2d824cd68745a1dc47fd9a06f1787efe79eb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
