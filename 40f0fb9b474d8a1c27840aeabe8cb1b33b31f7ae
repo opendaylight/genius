@@ -282,6 +282,24 @@
     },
     {
       "key": {
+        "uuid": "48a3b5f0_ad1465ea",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-11T12:40:59Z",
+      "side": 1,
+      "message": "A couple of criteria to think about with error vs warn from my experience:\n\n1) End users tend to scan logs for ERROR and get a little nervous when they see any. They tend to call support. So any error log you add, be prepared to potentially have to explain it to an end user as to why it occurred and how to fix it. At a previous company, we even had one customer who wanted a list of every possible logged ERROR message with an explanation and remediation for each.\n\n2) There\u0027s been talk about getting to the point where any logged ERROR fails CSIT. So when adding a logged ERROR, consider whether or not it\u0027s really severe enough to warrant failing CSIT.",
+      "parentUuid": "e83f4a02_dfc1a588",
+      "revId": "40f0fb9b474d8a1c27840aeabe8cb1b33b31f7ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b263e2b7_10d301b1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 6
