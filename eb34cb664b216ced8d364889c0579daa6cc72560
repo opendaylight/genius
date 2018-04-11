@@ -365,6 +365,30 @@
     },
     {
       "key": {
+        "uuid": "4ce773b3_4e2e118d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-11T12:19:16Z",
+      "side": 1,
+      "message": "OK but why not create a base class instead to share code between the listeners instead of dumping it in a Utils class with a bunch of other unrelated stuff?",
+      "parentUuid": "26bfdb7b_286a50df",
+      "range": {
+        "startLine": 106,
+        "startChar": 69,
+        "endLine": 106,
+        "endChar": 77
+      },
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3e330dd_35fe9f1d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
