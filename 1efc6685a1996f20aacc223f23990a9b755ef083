@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c15e3bde_8333fc22",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T12:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0e7e8964_38142188",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f0a0e998_fedde50b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-10T16:00:58Z",
       "side": 1,
       "message": "remove all these x4 commented out lines?",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4cb08d5e_c75c9c73",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T12:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0a0e998_fedde50b",
       "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "cb4dd4df_72288b80",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T12:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3f94b2b9_ac492a57",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "41bf1a20_5c8eaec1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 4
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "0f49ef03_734ce431",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 473,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T12:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "41bf1a20_5c8eaec1",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f02164ed_6c332be9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 4
@@ -81,6 +153,24 @@
       "writtenOn": "2018-04-10T16:00:58Z",
       "side": 1,
       "message": "no",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81b38a2a_9f26bbae",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 488,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-11T12:17:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f02164ed_6c332be9",
       "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
