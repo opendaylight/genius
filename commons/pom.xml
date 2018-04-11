@@ -28,7 +28,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
   <modules>
     <module>binding-parent</module>
-    <module>it-parent</module>
     <module>testutils</module>
   </modules>
 
