@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e64ac41b_e47cc322",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-11T06:54:07Z",
+      "side": 1,
+      "message": "why same service index for both?",
+      "revId": "4e22bc191cd45a8d5ba4c44626d3514a0d7eea0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
