@@ -16,6 +16,24 @@
       "revId": "4e22bc191cd45a8d5ba4c44626d3514a0d7eea0c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4cb3623a_27f81b5a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2018-04-11T07:01:58Z",
+      "side": 1,
+      "message": "Didn\u0027t realise the new COE Index:).\nValentina will upload a new PS",
+      "parentUuid": "e64ac41b_e47cc322",
+      "revId": "4e22bc191cd45a8d5ba4c44626d3514a0d7eea0c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
