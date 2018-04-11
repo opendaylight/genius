@@ -325,6 +325,12 @@ public class SouthboundUtils {
         batchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
+    public static boolean ifBfdStatusNotEqual(OvsdbTerminationPointAugmentation tpOld,
+                                              OvsdbTerminationPointAugmentation tpNew) {
+        return (tpNew.getInterfaceBfdStatus() != null
+                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus())));
+    }
+
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
         return ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
@@ -338,6 +344,17 @@ public class SouthboundUtils {
             if (interfaceBfd.getBfdKey().equalsIgnoreCase(SouthboundUtils.BFD_ENABLE_KEY)) {
                 return SouthboundUtils.BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());//checkBfdEnabled
             }
+        }
+        return false;
+    }
+
+    public static boolean changeInBfdMonitoringDetected(OvsdbTerminationPointAugmentation tpOld,
+                                                        OvsdbTerminationPointAugmentation tpNew) {
+        if (tpOld != null) {
+            return org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                    .bfdMonitoringEnabled(tpNew.getInterfaceBfd())
+                    != org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                    .bfdMonitoringEnabled(tpOld.getInterfaceBfd());
         }
         return false;
     }
