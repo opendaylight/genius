@@ -16,6 +16,24 @@
       "revId": "703802923e01bde8986cd4cf8dc6804d50dad386",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e502500c_2de1bd63",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-04-11T10:35:24Z",
+      "side": 1,
+      "message": "ovsdbNodeAugmentationIID.firstIdentifierOf(Node.class) should do it.",
+      "parentUuid": "2c0f3785_4d0a6aa9",
+      "revId": "703802923e01bde8986cd4cf8dc6804d50dad386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
