@@ -22,8 +22,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAcl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtDhcp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtL2gw;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtL2gwConnection;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtL2gwNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQosPolicyInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpn;
@@ -53,6 +57,8 @@ public final class SrmCliUtils {
             .put("IFM", GeniusIfm.class)
             .put("VPN", NetvirtVpn.class)
             .put("ELAN", NetvirtElan.class)
+            .put("DHCP", NetvirtDhcp.class)
+            .put("L2GW", NetvirtL2gw.class)
             .put("ACL", NetvirtAcl.class)
             .put("OFPLUGIN", Ofplugin.class)
             .put("QOS", NetvirtQos.class)
@@ -65,6 +71,8 @@ public final class SrmCliUtils {
             .put("IFM-IFACE", GeniusIfmInterface.class)
             .put("VPN-INSTANCE", NetvirtVpnInstance.class)
             .put("ELAN-INTERFACE", NetvirtElanInterface.class)
+            .put("L2GW-NODE", NetvirtL2gwNode.class)
+            .put("L2GW-CONNECTION", NetvirtL2gwConnection.class)
             .put("QOS-POLICY-INSTANCE", NetvirtQosPolicyInstance.class)
             .put("ACL-INTERFACE", NetvirtAclInterface.class)
             .put("ACL-INSTANCE", NetvirtAclInstance.class)
