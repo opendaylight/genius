@@ -123,12 +123,18 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         if (!SouthboundUtils.bfdMonitoringEnabled(terminationPoint.getInterfaceBfd())) {
             return Interface.OperStatus.Up;
         }
-        InterfaceBfdStatus tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus().get(0);
-        if (tunnelBfdStatus != null) {
-            return SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(tunnelBfdStatus.getBfdStatusValue())
-                    && SouthboundUtils.BFD_OP_STATE.equalsIgnoreCase(tunnelBfdStatus.getBfdStatusKey())
-                    ? Interface.OperStatus.Up : Interface.OperStatus.Down;
+        Interface.OperStatus livenessState = Interface.OperStatus.Down;
+        List<InterfaceBfdStatus> tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus();
+        if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
+            for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
+                if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
+                    String bfdOpState = bfdState.getBfdStatusValue();
+                    livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ? Interface.OperStatus.Up
+                            : Interface.OperStatus.Down;
+                    break;
+                }
+            }
         }
-        return Interface.OperStatus.Down;
+        return livenessState;
     }
 }
