@@ -41,8 +41,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAcl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtAclInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtDhcp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtElanInterface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtL2gw;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtL2gwConnection;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtL2gwNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQos;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtQosPolicyInstance;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.NetvirtVpn;
@@ -75,6 +79,8 @@ public final class SrmRpcUtils {
             .put(GeniusIfm.class, EntityTypeService.class)
             .put(NetvirtVpn.class, EntityTypeService.class)
             .put(NetvirtElan.class, EntityTypeService.class)
+            .put(NetvirtL2gw.class, EntityTypeService.class)
+            .put(NetvirtDhcp.class, EntityTypeService.class)
             .put(NetvirtAcl.class, EntityTypeService.class)
             .put(Ofplugin.class, EntityTypeService.class)
             .put(GeniusItmTep.class, EntityTypeInstance.class)
@@ -82,6 +88,8 @@ public final class SrmRpcUtils {
             .put(GeniusIfmInterface.class, EntityTypeInstance.class)
             .put(NetvirtVpnInstance.class, EntityTypeInstance.class)
             .put(NetvirtElanInterface.class, EntityTypeInstance.class)
+            .put(NetvirtL2gwConnection.class, EntityTypeInstance.class)
+            .put(NetvirtL2gwNode.class, EntityTypeInstance.class)
             .put(NetvirtQos.class, EntityTypeService.class)
             .put(NetvirtQosPolicyInstance.class, EntityTypeInstance.class)
             .put(NetvirtAclInterface.class, EntityTypeInstance.class)
@@ -103,6 +111,10 @@ public final class SrmRpcUtils {
             .put(NetvirtAcl.class, NetvirtAcl.class)
             .put(NetvirtAclInterface.class, NetvirtAcl.class)
             .put(NetvirtAclInstance.class, NetvirtAcl.class)
+            .put(NetvirtL2gwConnection.class, NetvirtL2gw.class)
+            .put(NetvirtL2gwNode.class, NetvirtL2gw.class)
+            .put(NetvirtL2gw.class, NetvirtL2gw.class)
+            .put(NetvirtDhcp.class, NetvirtDhcp.class)
             .put(Ofplugin.class, Ofplugin.class)
             .put(NetvirtQos.class, NetvirtQos.class)
             .put(NetvirtQosPolicyInstance.class, NetvirtQos.class)
