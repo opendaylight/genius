@@ -43,6 +43,14 @@ module srm-types {
         description "SRM Entity name for elan service";
         base entity-name-base;
     }
+    identity netvirt-l2gw {
+        description "SRM Entity name for l2gw service";
+        base entity-name-base;
+    }
+    identity netvirt-dhcp {
+        description "SRM Entity name for dhcp service";
+        base entity-name-base;
+    }
     identity netvirt-acl {
         description "SRM Entity name for ACL service";
         base entity-name-base;
@@ -82,6 +90,16 @@ module srm-types {
 
     identity netvirt-elan-interface {
         description "SRM Entity name for ELAN interface";
+        base entity-name-base;
+    }
+
+    identity netvirt-l2gw-connection {
+        description "SRM Entity name for l2gw connection";
+        base entity-name-base;
+    }
+
+    identity netvirt-l2gw-node {
+        description "SRM Entity name for l2gw device name";
         base entity-name-base;
     }
 
