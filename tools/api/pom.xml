@@ -53,10 +53,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>value</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.ops4j.pax.cdi</groupId>
       <artifactId>pax-cdi-api</artifactId>
       <optional>true</optional>
