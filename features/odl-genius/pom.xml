@@ -52,6 +52,12 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>odl-genius-srm</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>odl-infrautils-diagstatus</artifactId>
       <version>${infrautils.version}</version>
@@ -203,16 +209,6 @@
       <version>${project.version}</version>
       <type>xml</type>
       <classifier>config</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.genius</groupId>
-      <artifactId>srm-impl</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.genius</groupId>
-      <artifactId>srm-shell</artifactId>
-      <version>${project.version}</version>
     </dependency>
   </dependencies>
 </project>
