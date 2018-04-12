@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "f8e9a05f_c8e100eb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "Nope, you didn\u0027t, you only remove the 2 lines here, I meant all 4, above in 398-399 as well.",
+      "parentUuid": "4cb08d5e_c75c9c73",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3f94b2b9_ac492a57",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 4
