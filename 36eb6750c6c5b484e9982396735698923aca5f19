@@ -33,6 +33,24 @@
       "revId": "36eb6750c6c5b484e9982396735698923aca5f19",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33964e11_3fd935c9",
+        "filename": "tools/testutils/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T16:38:41Z",
+      "side": 1,
+      "message": "Done in Patch Set 4",
+      "parentUuid": "7c9174b4_99030e5e",
+      "revId": "36eb6750c6c5b484e9982396735698923aca5f19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
