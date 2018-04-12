@@ -25,6 +25,34 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
   <dependencies>
     <dependency>
+      <groupId>org.opendaylight.controller</groupId>
+      <artifactId>odl-mdsal-broker</artifactId>
+      <version>1.8.0-SNAPSHOT</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>odl-mdsal-models</artifactId>
+      <version>0.13.0-SNAPSHOT</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>odl-infrautils-inject</artifactId>
+      <version>1.4.0-SNAPSHOT</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.infrautils</groupId>
+      <artifactId>odl-infrautils-metrics</artifactId>
+      <version>1.4.0-SNAPSHOT</version>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>tools-api</artifactId>
       <version>${project.version}</version>
