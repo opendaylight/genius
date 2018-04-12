@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "5fbf6a0b_70483538",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:11:34Z",
+      "side": 1,
+      "message": "nope; as in previous changes",
+      "revId": "a0526e9b9210786f4bc98d2d387afff2bda86263",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4d9f8871_6de3c1a0",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TerminationPointStateListener.java",
         "patchSetId": 6
@@ -13,6 +30,24 @@
       "writtenOn": "2018-04-10T15:54:12Z",
       "side": 1,
       "message": "org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener",
+      "revId": "a0526e9b9210786f4bc98d2d387afff2bda86263",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42af3411_cb63f22f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TerminationPointStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:11:34Z",
+      "side": 1,
+      "message": "still there, so -1 again",
+      "parentUuid": "4d9f8871_6de3c1a0",
       "revId": "a0526e9b9210786f4bc98d2d387afff2bda86263",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
