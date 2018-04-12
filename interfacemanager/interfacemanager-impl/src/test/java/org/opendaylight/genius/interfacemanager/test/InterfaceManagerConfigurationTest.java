@@ -38,6 +38,7 @@ import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -83,6 +84,8 @@ import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
+import org.opendaylight.infrautils.testutils.RunUntilFailureClassRule;
+import org.opendaylight.infrautils.testutils.RunUntilFailureRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
@@ -170,8 +173,8 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 public class InterfaceManagerConfigurationTest {
 
     // Uncomment this, temporarily (never commit!), to see concurrency issues:
-    // public static @ClassRule RunUntilFailureClassRule classRepeater = new RunUntilFailureClassRule();
-    // public @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(classRepeater);
+    public static @ClassRule RunUntilFailureClassRule classRepeater = new RunUntilFailureClassRule(500);
+    public @Rule RunUntilFailureRule repeater = new RunUntilFailureRule(classRepeater);
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
@@ -233,8 +236,7 @@ public class InterfaceManagerConfigurationTest {
 
     }
 
-    @Test
-    @Ignore // TODO re-enable when stable, see https://jira.opendaylight.org/browse/GENIUS-120
+    @Test // TODO re-enable when stable, see https://jira.opendaylight.org/browse/GENIUS-120
     public void newl2vlanInterfaceTests() throws Exception {
         // 1. When
         // i) parent-interface specified in above vlan configuration comes in operational/ietf-interfaces-state
