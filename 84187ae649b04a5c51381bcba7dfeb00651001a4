@@ -16,6 +16,24 @@
       "revId": "84187ae649b04a5c51381bcba7dfeb00651001a4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75fda682_c255a8f1",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T16:23:34Z",
+      "side": 1,
+      "message": "as discussed on IRC, in the short term we cannot because of the depenency tree;  I actually suggested to Faseela to exceptionally directly use the DataBroker in this specific case.",
+      "parentUuid": "01850492_bca43ff9",
+      "revId": "84187ae649b04a5c51381bcba7dfeb00651001a4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
