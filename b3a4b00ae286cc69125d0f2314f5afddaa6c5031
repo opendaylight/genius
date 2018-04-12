@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0c6b8c04_abdad097",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "hang on, you seem to have just moved the catch up one frame in the call stack.. that\u0027s not really what I meant - can you not also let this propagate further?  Ultimately this entire class is a *Worker that gets submitted to JobCoordinator, right?  Callable.call() throws Exception, so why not just let everything bubble right up to there?",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6f4f61c8_65f13a7a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 375,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "again, IMHO this instead should just propagate to the Worker Callable call() throws Exception...",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aca66fec_1dcba71f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 390,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "here also",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e3a72852_a62fe089",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 407,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "Just thinking out aloud: I think I should write a new utility - we need also \"the opposite of\" FutureRpcResults - something that wraps calling RPCs...",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db042ca1_5e6a2aa1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 574,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "better LOG.error not debug here?",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "286fc802_c8c98bbd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 609,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T10:10:20Z",
+      "side": 1,
+      "message": "are you sure this is correct?  Why a LOG.error or at least LOG.warn?",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
