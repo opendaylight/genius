@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d3eefcd_a0b29467",
+        "filename": "features/odl-genius-tools/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T16:13:14Z",
+      "side": 1,
+      "message": "ideally we should use dependencyManagement and infrautils-artifacts instead of repeating this version twice here, but that\u0027s not blocking, you can leave it like this for now",
+      "revId": "0ec157809f236592fa42b2a3cc06f0a6b1815c0a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f50a91e_f63dd197",
+        "filename": "features/odl-genius-tools/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T16:13:14Z",
+      "side": 1,
+      "message": "remove this, it\u0027s never needed in Karaf, just for tests",
+      "revId": "0ec157809f236592fa42b2a3cc06f0a6b1815c0a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
