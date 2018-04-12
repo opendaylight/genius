@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "353ab2e7_405b8244",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:23:55Z",
+      "side": 1,
+      "message": "from or form?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "054fa180_d0cffa59",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:23:55Z",
+      "side": 1,
+      "message": "failed",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "39671fd5_f72edb23",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:23:55Z",
+      "side": 1,
+      "message": "%s is needed? failed missing",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75100888_dbabc421",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:23:55Z",
+      "side": 1,
+      "message": "RPC Call to Get tunnel type for interface {} \"failed\"?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dcb30cd1_0ac12882",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:23:55Z",
+      "side": 1,
+      "message": "failed is missing in the log?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3ae7c149_7a935bbf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:23:55Z",
+      "side": 1,
+      "message": "\"failed\"",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
