@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4612bc97_877293fe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "353ab2e7_405b8244",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "054fa180_d0cffa59",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 20
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-12T08:23:55Z",
       "side": 1,
       "message": "failed",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a79d7cc_923f6ddf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "054fa180_d0cffa59",
       "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "dc5592a7_e568fcf7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "it\u0027s needed in String.format",
+      "parentUuid": "39671fd5_f72edb23",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "75100888_dbabc421",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 20
@@ -64,6 +118,24 @@
       "writtenOn": "2018-04-12T08:23:55Z",
       "side": 1,
       "message": "RPC Call to Get tunnel type for interface {} \"failed\"?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ec8701c0_ec692ff4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75100888_dbabc421",
       "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "f7aae862_c3c0e753",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dcb30cd1_0ac12882",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3ae7c149_7a935bbf",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 20
@@ -98,6 +188,24 @@
       "writtenOn": "2018-04-12T08:23:55Z",
       "side": 1,
       "message": "\"failed\"",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "719718ec_e771e82f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 303,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "it\u0027s a success case :)",
+      "parentUuid": "3ae7c149_7a935bbf",
       "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "cc2b83af_c7d50047",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 1097,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": ":238 using futures.addCallback",
+      "parentUuid": "21e93726_d95558b6",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "27895298_077c7ed5",
         "filename": "itm/itm-impl/src/main/resources/org/opendaylight/blueprint/itm.xml",
         "patchSetId": 20
@@ -132,6 +258,24 @@
       "writtenOn": "2018-04-12T08:27:28Z",
       "side": 1,
       "message": "remove?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e1681f63_abd26820",
+        "filename": "itm/itm-impl/src/main/resources/org/opendaylight/blueprint/itm.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-12T09:17:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "27895298_077c7ed5",
       "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
