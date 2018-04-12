@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76e6dafb_32c20b2c",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T16:17:57Z",
+      "side": 1,
+      "message": "replace \"WIP\" with \"fix feature dependencies in recently added odl-genius-tools feature\" ?",
+      "revId": "36eb6750c6c5b484e9982396735698923aca5f19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7c9174b4_99030e5e",
+        "filename": "tools/testutils/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-12T16:17:57Z",
+      "side": 1,
+      "message": "this is actually wrong - please remove this again, or even better please put \u003cscope\u003ecompile instead here.  The reason is that we want artifacts that depend on tools.testutils to inehrit this infrautils-testutils dependency, as it is now; if you make this \u003cscope\u003etest then it\u0027s not and you are saying that this is only for tests in testutils ITSELF",
+      "revId": "36eb6750c6c5b484e9982396735698923aca5f19",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
