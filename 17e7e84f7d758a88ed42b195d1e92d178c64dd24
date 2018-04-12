@@ -101,6 +101,40 @@
       "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "21e93726_d95558b6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 1097,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:27:28Z",
+      "side": 1,
+      "message": "where is the ifm rpc invoked?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27895298_077c7ed5",
+        "filename": "itm/itm-impl/src/main/resources/org/opendaylight/blueprint/itm.xml",
+        "patchSetId": 20
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-12T08:27:28Z",
+      "side": 1,
+      "message": "remove?",
+      "revId": "17e7e84f7d758a88ed42b195d1e92d178c64dd24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
