@@ -83,10 +83,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <dependencies>
+          <!-- TODO Remove this when we upgrade to odlparent with a complete fix for ODLPARENT-146 -->
           <dependency>
-            <groupId>org.opendaylight.infrautils</groupId>
+            <groupId>org.opendaylight.odlparent</groupId>
             <artifactId>findbugs</artifactId>
-            <version>${genius.infrautils.version}</version>
+            <version>3.1.1</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -97,7 +98,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
               <version>1.4.0</version>
             </plugin>
           </plugins>
-          <excludeFilterFile>infrautils-findbugs-exclude.xml</excludeFilterFile>
           <failOnError>true</failOnError>
         </configuration>
       </plugin>
