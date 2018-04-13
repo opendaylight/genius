@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0d6427c8_d8811c4b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-13T05:01:02Z",
+      "side": 1,
+      "message": "this was a part of a fix downstream, during scale testing.\nwill take care of this if a similar issue comes up while scale testing on master.",
+      "parentUuid": "bfdd0a2d_4d481f07",
+      "revId": "acfed55db185554d046f92d602531aa1400b5362",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b686610_7436a082",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 8
@@ -65,6 +83,30 @@
     },
     {
       "key": {
+        "uuid": "7c370e0e_0756330a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-13T05:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b6cdfb23_1c2a5a47",
+      "range": {
+        "startLine": 369,
+        "startChar": 11,
+        "endLine": 369,
+        "endChar": 18
+      },
+      "revId": "acfed55db185554d046f92d602531aa1400b5362",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1bfa8b4a_2e3baa46",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 8
@@ -82,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "7a1ce0b0_0a73f147",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-13T05:01:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1bfa8b4a_2e3baa46",
+      "revId": "acfed55db185554d046f92d602531aa1400b5362",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "acf330ae_4cbef110",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 8
@@ -93,6 +153,24 @@
       "writtenOn": "2018-04-11T12:19:16Z",
       "side": 1,
       "message": "So if we can\u0027t allocate a valid Id, we\u0027re going to proceed with INVALID_ID as if it had succeeded. This doesn\u0027t seem right to me.",
+      "revId": "acfed55db185554d046f92d602531aa1400b5362",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3bbd283_14402590",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 534,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-13T05:01:02Z",
+      "side": 1,
+      "message": "have removed this condition, \nwill be throwing an exception instead.",
+      "parentUuid": "acf330ae_4cbef110",
       "revId": "acfed55db185554d046f92d602531aa1400b5362",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
