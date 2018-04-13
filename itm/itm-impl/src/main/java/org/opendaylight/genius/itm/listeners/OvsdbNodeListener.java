@@ -68,13 +68,14 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 .getAugmentation(OvsdbBridgeAugmentation.class);
 
         if (ovsdbNewBridgeAugmentation != null) {
-            processBridgeUpdate(ovsdbNewBridgeAugmentation);
+            processBridgeUpdate(ovsdbNewBridgeAugmentation, true);
         }
     }
 
     @Override
     public void remove(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node removedDataObject) {
-        LOG.trace("OvsdbNodeListener called for Ovsdb Node Remove.");
+        LOG.trace("OvsdbNodeListener called for Ovsdb Node {} Remove.", removedDataObject);
+        processBridgeUpdate(removedDataObject, false);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         // If this is a bridge update, see if dpid was added. If so, need to
         // addTep, as TEP would not be added in node add case above
         if (isBridgeDpIdAdded(originalOvsdbNode, updatedOvsdbNode)) {
-            processBridgeUpdate(updatedOvsdbNode);
+            processBridgeUpdate(updatedOvsdbNode, true);
             return;
         }
 
@@ -121,8 +122,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
         if (oldTepInfoObj != null && newTepInfoObj == null) {
             isTepInfoDeleted = true;
-            LOG.trace("Tep Info is deleted from Ovsdb node: {}",
-                    originalOvsdbNode.getNodeId().getValue());
+            LOG.trace("Tep Info is deleted from Ovsdb node: {}", originalOvsdbNode.getNodeId().getValue());
         }
 
         // store TEP info required parameters
@@ -180,63 +180,63 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 isTepInfoUpdated, isTepInfoDeleted, isLocalIpRemoved, isLocalIpAdded, isLocalIpUpdated,
                 isTzChanged, isDpnBrChanged);
 
-        String strOldDpnId;
-        String strNewDpnId;
         // handle TEP-remove in remove case, TZ change case, Bridge change case
         if (isTepInfoDeleted || isLocalIpRemoved || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
-            // check if defTzEnabled flag is false in config file,
-            // if flag is OFF, then no need to add TEP into ITM config DS.
-            if (oldTzName == null || oldTzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
-                boolean defTzEnabled = itmConfig.isDefTzEnabled();
-                if (!defTzEnabled) {
-                    LOG.info("TEP ({}) cannot be removed from {} when def-tz-enabled flag is false.", oldLocalIp,
-                             ITMConstants.DEFAULT_TRANSPORT_ZONE);
-                    return;
-                }
-                oldTzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
-            }
             // TBD: Move this time taking operations into DataStoreJobCoordinator
-            strOldDpnId = ItmUtils.getBridgeDpid(updatedOvsdbNode, oldDpnBridgeName, dataBroker);
+            String strOldDpnId = ItmUtils.getBridgeDpid(originalOvsdbNode, oldDpnBridgeName, dataBroker);
             if (strOldDpnId == null || strOldDpnId.isEmpty()) {
                 LOG.error("TEP {} cannot be deleted. DPID for bridge {} is NULL.", oldLocalIp, oldDpnBridgeName);
                 return;
             }
-            // remove TEP
-            LOG.trace("Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}", oldLocalIp,
-                      oldTzName, oldDpnBridgeName, strOldDpnId);
-
-            // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
-            jobCoordinator.enqueueJob(oldLocalIp, new OvsdbTepRemoveWorker(oldLocalIp, strOldDpnId, oldTzName,
-                    dataBroker));
+            addOrRemoveTep(oldTzName, strOldDpnId, oldLocalIp, oldDpnBridgeName, false, false);
         }
         // handle TEP-add in add case, TZ change case, Bridge change case
         if (isLocalIpAdded || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
-            // check if defTzEnabled flag is false in config file,
-            // if flag is OFF, then no need to add TEP into ITM config DS.
-            if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
-                boolean defTzEnabled = itmConfig.isDefTzEnabled();
-                if (!defTzEnabled) {
-                    LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.", newLocalIp,
-                             ITMConstants.DEFAULT_TRANSPORT_ZONE);
-                    return;
-                }
-                tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
-            }
             // TBD: Move this time taking operations into DataStoreJobCoordinator
-            // get Datapath ID for bridge
-            strNewDpnId = ItmUtils.getBridgeDpid(updatedOvsdbNode, newDpnBridgeName, dataBroker);
+            String strNewDpnId = ItmUtils.getBridgeDpid(updatedOvsdbNode, newDpnBridgeName, dataBroker);
             if (strNewDpnId == null || strNewDpnId.isEmpty()) {
                 LOG.error("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
                 return;
             }
-            LOG.trace(
-                    "Update case: Adding TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}," + "of-tunnel: {}",
-                    newLocalIp, tzName, newDpnBridgeName, strNewDpnId, newOfTunnel);
+            String localIp = isLocalIpUpdated ? oldLocalIp : newLocalIp;
+            addOrRemoveTep(tzName, strNewDpnId, localIp, newDpnBridgeName,  newOfTunnel, true);
+        }
+    }
 
-            String jobKey = isLocalIpUpdated ? oldLocalIp : newLocalIp;
+    private void addOrRemoveTep(String tzName, String strDpnId, String localIp, String  bridgeName,
+                                boolean newOfTunnel, boolean isTepAdd) {
+        // check if defTzEnabled flag is false in config file,
+        // if flag is OFF, then no need to add TEP into ITM config DS.
+        if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+            boolean defTzEnabled = itmConfig.isDefTzEnabled();
+            if (!defTzEnabled) {
+                if (isTepAdd) {
+                    LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.", localIp,
+                            ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                } else {
+                    LOG.info("TEP ({}) cannot be removed from {} when def-tz-enabled flag is false.", localIp,
+                            ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                }
+                return;
+            }
+            tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
+        }
+
+        if (isTepAdd) {
+            // add TEP
+            LOG.trace("Update case: Adding TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}, of-tunnel: {}",
+                    localIp, tzName, bridgeName, strDpnId, newOfTunnel);
+
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
-            jobCoordinator.enqueueJob(jobKey,
-                                   new OvsdbTepAddWorker(newLocalIp, strNewDpnId, tzName, newOfTunnel, dataBroker));
+            jobCoordinator.enqueueJob(localIp,
+                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker));
+        } else {
+            // remove TEP
+            LOG.trace("Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}", localIp,
+                    tzName, bridgeName, strDpnId);
+
+            // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
+            jobCoordinator.enqueueJob(localIp, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker));
         }
     }
 
@@ -334,15 +334,15 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         return ovsdbTepInfoObj;
     }
 
-    private void processBridgeUpdate(Node ovsdbNodeNew) {
+    private void processBridgeUpdate(Node ovsdbNodeNew, boolean isBridgeAdd) {
         OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation =
                 ovsdbNodeNew.getAugmentation(OvsdbBridgeAugmentation.class);
         if (ovsdbNewBridgeAugmentation != null) {
-            processBridgeUpdate(ovsdbNewBridgeAugmentation);
+            processBridgeUpdate(ovsdbNewBridgeAugmentation, isBridgeAdd);
         }
     }
 
-    private void processBridgeUpdate(OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation) {
+    private void processBridgeUpdate(OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation, boolean isBridgeAdd) {
         String bridgeName = null;
         String strDpnId = null;
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
@@ -353,7 +353,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             // Read DPID from OVSDBBridgeAugmentation
             strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
             if (strDpnId == null || strDpnId.isEmpty()) {
-                LOG.info("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
+                LOG.warn("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
                 return;
             }
 
@@ -387,31 +387,14 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 // if bridge received is the one configured for TEPs from OVS side or
                 // if it is br-int, then add TEP into Config DS
                 if (newBridgeName.equals(bridgeName)) {
-                    LOG.trace("Ovs Node with bridge {} is configured with Local IP.", bridgeName);
-
-                    // check if defTzEnabled flag is false in config file,
-                    // if flag is OFF, then no need to add TEP into ITM config DS.
-                    if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
-                        boolean defTzEnabled = itmConfig.isDefTzEnabled();
-                        if (!defTzEnabled) {
-                            LOG.info("TEP ({}) cannot be added into {} when def-tz-enabled flag is false.", newLocalIp,
-                                    ITMConstants.DEFAULT_TRANSPORT_ZONE);
-                            return;
-                        }
-                    }
-
-                    LOG.trace("Local-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}," + "of-tunnel flag: {}",
-                            newLocalIp, tzName, newBridgeName, strDpnId, ofTunnel);
-
-                    // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
-                    jobCoordinator.enqueueJob(newLocalIp,
-                            new OvsdbTepAddWorker(newLocalIp, strDpnId, tzName, ofTunnel, dataBroker));
+                    LOG.trace("processBridgeUpdate for bridge {} that is configured with Local IP.", bridgeName);
+                    // add or remove tep based on bridge (br-int) is added or removed
+                    addOrRemoveTep(tzName, strDpnId, newLocalIp, newBridgeName,  ofTunnel, isBridgeAdd);
                 } else {
-                    LOG.trace("TEP ({}) would be added later when bridge {} gets added into Ovs Node.",
-                               newLocalIp, newBridgeName);
+                    LOG.trace("processBridgeUpdate invoked for bridge {}, nothing to do.", bridgeName);
                 }
             } else {
-                LOG.trace("Ovs Node with bridge {} is not configured with Local IP. Nothing to do.",
+                LOG.trace("processBridgeUpdate for bridge {} without Local IP set for ovs node. Nothing to do.",
                           bridgeName);
             }
         }
