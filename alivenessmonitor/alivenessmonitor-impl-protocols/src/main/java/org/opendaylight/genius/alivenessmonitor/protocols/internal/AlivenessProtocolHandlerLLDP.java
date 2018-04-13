@@ -73,7 +73,8 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
     }
 
     @Override
-    @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE") // TODO remove when 1st  below lldpTlvTypeCur below is removed
+    // TODO remove DLS_DEAD_LOCAL_STORE when 1st  below lldpTlvTypeCur below is removed
+    @SuppressFBWarnings({"DLS_DEAD_LOCAL_STORE", "NP_NULL_PARAM_DEREF"})
     public String handlePacketIn(LLDP lldpPacket, PacketReceived packetReceived) {
         String tempString = null;
         byte lldpTlvTypeCur;
