@@ -16,6 +16,24 @@
       "revId": "d681effe60971438323c1283a431b6a7a8a3b495",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "86de90c6_d2fe8ca8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-13T05:22:37Z",
+      "side": 1,
+      "message": "If tpOld is null, this is an add scenario. Do we get Bfd parameters in termination-point add? I have never seen that. It comes in update events right?",
+      "parentUuid": "e35d856d_3b9ffc2a",
+      "revId": "d681effe60971438323c1283a431b6a7a8a3b495",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
