@@ -19,6 +19,7 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -49,10 +50,11 @@ public class DpnTepStateListener extends TunnelListenerBase<DpnsTeps> {
                                final IMdsalApiManager mdsalApiManager,
                                final DpnTepStateCache dpnTepStateCache,
                                final DPNTEPsInfoCache dpntePsInfoCache,
-                               final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache) {
+                               final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
+                               final DirectTunnelUtils directTunnelUtils) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(DpnTepsState.class).child(DpnsTeps.class), idManager, mdsalApiManager,
-                dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache);
+                dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache, directTunnelUtils);
         this.unprocessedNCCache = unprocessedNodeConnectorCache;
         this.coordinator = coordinator;
         this.entityOwnershipUtils = entityOwnershipUtils;
