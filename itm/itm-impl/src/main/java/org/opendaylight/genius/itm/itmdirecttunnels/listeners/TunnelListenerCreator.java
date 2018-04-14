@@ -55,7 +55,7 @@ public class TunnelListenerCreator implements AutoCloseable {
                     dpntePsInfoCache, ovsBridgeEntryCache, unprocessedNodeConnectorCache);
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
                     entityOwnershipUtils, idManager, mdsalApiManager, tunnelStateCache, dpnTepStateCache,
-                    dpntePsInfoCache, unprocessedNodeConnectorCache);
+                    dpntePsInfoCache, unprocessedNodeConnectorCache, directTunnelUtils);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
                     coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
         } else {

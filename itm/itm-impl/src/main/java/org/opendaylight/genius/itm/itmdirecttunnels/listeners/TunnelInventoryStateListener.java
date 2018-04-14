@@ -64,6 +64,7 @@ public class TunnelInventoryStateListener extends TunnelListenerBase<FlowCapable
     private final TunnelStateCache tunnelStateCache;
     private final DpnTepStateCache dpnTepStateCache;
     private final UnprocessedNodeConnectorCache unprocessedNCCache;
+    private final DirectTunnelUtils directTunnelUtils;
 
     public TunnelInventoryStateListener(final DataBroker dataBroker,
                                         final JobCoordinator coordinator,
@@ -73,10 +74,11 @@ public class TunnelInventoryStateListener extends TunnelListenerBase<FlowCapable
                                         final TunnelStateCache tunnelStateCache,
                                         final DpnTepStateCache dpnTepStateCache,
                                         final DPNTEPsInfoCache dpntePsInfoCache,
-                                        final UnprocessedNodeConnectorCache unprocessedNCCache) {
+                                        final UnprocessedNodeConnectorCache unprocessedNCCache,
+                                        final DirectTunnelUtils directTunnelUtils) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(Nodes.class).child(Node.class)
                 .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class), idManager, mdsalApiManager,
-                dpnTepStateCache, dpntePsInfoCache, unprocessedNCCache);
+                dpnTepStateCache, dpntePsInfoCache, unprocessedNCCache, directTunnelUtils);
         super.register();
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -84,6 +86,7 @@ public class TunnelInventoryStateListener extends TunnelListenerBase<FlowCapable
         this.tunnelStateCache = tunnelStateCache;
         this.dpnTepStateCache = dpnTepStateCache;
         this.unprocessedNCCache = unprocessedNCCache;
+        this.directTunnelUtils = directTunnelUtils;
     }
 
     @Override
@@ -391,13 +394,13 @@ public class TunnelInventoryStateListener extends TunnelListenerBase<FlowCapable
                 updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, tx);
             } else {
                 LOG.debug("removing interface state for interface: {}", interfaceName);
-                deleteTunnelStateEntry(interfaceName, tx);
+                directTunnelUtils.deleteTunnelStateEntry(interfaceName, tx);
                 DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
                 if (dpnTepInfo != null) {
                     //SF 419 This will only be tunnel interface
-                    removeLportTagInterfaceMap(tx, interfaceName);
+                    directTunnelUtils.removeLportTagInterfaceMap(tx, interfaceName);
                     long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
-                    makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
+                    directTunnelUtils.makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
                             NwConstants.DEL_FLOW);
                 } else {
                     LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
