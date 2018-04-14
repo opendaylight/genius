@@ -52,13 +52,14 @@ public class TunnelListenerCreator implements AutoCloseable {
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             LOG.trace("ITM Direct Tunnels is enabled. Initializing the listeners");
             this.dpnTepStateListener = new DpnTepStateListener(dataBroker, coordinator, entityOwnershipUtils,
-                    idManager, mdsalApiManager, dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache);
+                    idManager, mdsalApiManager, dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
+                    directTunnelUtils);
             this.tunnelTopologyStateListener = new TunnelTopologyStateListener(dataBroker, coordinator,
                     entityOwnershipUtils, idManager, mdsalApiManager, directTunnelUtils, dpnTepStateCache,
                     dpntePsInfoCache, ovsBridgeEntryCache, unprocessedNodeConnectorCache);
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
                     entityOwnershipUtils, idManager, mdsalApiManager, tunnelStateCache, dpnTepStateCache,
-                    dpntePsInfoCache, unprocessedNodeConnectorCache);
+                    dpntePsInfoCache, unprocessedNodeConnectorCache, directTunnelUtils);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
                     coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
         } else {
