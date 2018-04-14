@@ -78,6 +78,30 @@
     },
     {
       "key": {
+        "uuid": "da3eb4c9_ead5a113",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-14T05:10:47Z",
+      "side": 1,
+      "message": "it is executed afterwards as we want to perform processing on the cache entry, which is why we check for null and then process.",
+      "parentUuid": "8b686610_7436a082",
+      "range": {
+        "startLine": 64,
+        "startChar": 77,
+        "endLine": 64,
+        "endChar": 80
+      },
+      "revId": "acfed55db185554d046f92d602531aa1400b5362",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b6cdfb23_1c2a5a47",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 8
