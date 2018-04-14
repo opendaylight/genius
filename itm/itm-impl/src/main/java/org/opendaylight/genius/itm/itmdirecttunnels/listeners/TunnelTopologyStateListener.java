@@ -26,10 +26,8 @@ import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryBuilder;
@@ -61,8 +59,6 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
     public TunnelTopologyStateListener(final DataBroker dataBroker,
                                        final JobCoordinator coordinator,
                                        final EntityOwnershipUtils entityOwnershipUtils,
-                                       final IdManagerService idManager,
-                                       final IMdsalApiManager mdsalApiManager,
                                        final DirectTunnelUtils directTunnelUtils,
                                        final DpnTepStateCache dpnTepStateCache,
                                        final DPNTEPsInfoCache dpntePsInfoCache,
@@ -70,8 +66,8 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
                                        final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache)  {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
-                        .augmentation(OvsdbBridgeAugmentation.class),
-                idManager, mdsalApiManager, dpnTepStateCache, dpntePsInfoCache,unprocessedNodeConnectorCache);
+                        .augmentation(OvsdbBridgeAugmentation.class), dpnTepStateCache, dpntePsInfoCache,
+                unprocessedNodeConnectorCache, directTunnelUtils);
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
@@ -310,7 +306,7 @@ public class TunnelTopologyStateListener extends TunnelListenerBase<OvsdbBridgeA
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
+                        directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
                     }
                 } else {
                     LOG.debug("Interface {} not found in config DS", portName);
