@@ -31,14 +31,12 @@ import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfoBuilder;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
@@ -65,15 +63,14 @@ public class TunnelInventoryStateListener extends TunnelListenerBase<FlowCapable
     public TunnelInventoryStateListener(final DataBroker dataBroker,
                                         final JobCoordinator coordinator,
                                         final EntityOwnershipUtils entityOwnershipUtils,
-                                        final IdManagerService idManager,
-                                        final IMdsalApiManager mdsalApiManager,
                                         final TunnelStateCache tunnelStateCache,
                                         final DpnTepStateCache dpnTepStateCache,
                                         final DPNTEPsInfoCache dpntePsInfoCache,
-                                        final UnprocessedNodeConnectorCache unprocessedNCCache) {
-        super(dataBroker, LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(Nodes.class).child(Node.class)
-                .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class), idManager, mdsalApiManager,
-                dpnTepStateCache, dpntePsInfoCache, unprocessedNCCache, entityOwnershipUtils);
+                                        final UnprocessedNodeConnectorCache unprocessedNCCache,
+                                        final DirectTunnelUtils directTunnelUtils) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class)
+                .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class), dpnTepStateCache,
+                dpntePsInfoCache, unprocessedNCCache, entityOwnershipUtils, directTunnelUtils);
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.tunnelStateCache = tunnelStateCache;
@@ -296,13 +293,13 @@ public class TunnelInventoryStateListener extends TunnelListenerBase<FlowCapable
                 updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, tx);
             } else {
                 LOG.debug("removing interface state for interface: {}", interfaceName);
-                deleteTunnelStateEntry(interfaceName);
+                directTunnelUtils.deleteTunnelStateEntry(interfaceName);
                 DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
                 if (dpnTepInfo != null) {
-                    //This will only be tunnel interface
-                    removeLportTagInterfaceMap(interfaceName);
+                    //SF 419 This will only be tunnel interface
+                    directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
-                    makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
+                    directTunnelUtils.makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
                             NwConstants.DEL_FLOW);
                 } else {
                     LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);

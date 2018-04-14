@@ -17,12 +17,11 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
@@ -39,14 +38,14 @@ public class DpnTepStateListener extends TunnelListenerBase<DpnsTeps> {
     public DpnTepStateListener(final DataBroker dataBroker,
                                final JobCoordinator coordinator,
                                final EntityOwnershipUtils entityOwnershipUtils,
-                               final IdManagerService idManager,
-                               final IMdsalApiManager mdsalApiManager,
                                final DpnTepStateCache dpnTepStateCache,
                                final DPNTEPsInfoCache dpntePsInfoCache,
-                               final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache) {
+                               final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
+                               final DirectTunnelUtils directTunnelUtils) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.create(DpnTepsState.class).child(DpnsTeps.class), idManager, mdsalApiManager,
-                dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache, entityOwnershipUtils);
+                InstanceIdentifier.create(DpnTepsState.class).child(DpnsTeps.class),
+                dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache, entityOwnershipUtils,
+                directTunnelUtils);
         this.coordinator = coordinator;
         super.register();
     }
