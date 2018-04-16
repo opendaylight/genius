@@ -16,6 +16,24 @@
       "revId": "52f24cab8206dc532b260b8a1a25298db9ba047f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e4c357e_16f0b5ed",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-16T14:19:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dfbc0a22_9ad4e544",
+      "revId": "52f24cab8206dc532b260b8a1a25298db9ba047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
