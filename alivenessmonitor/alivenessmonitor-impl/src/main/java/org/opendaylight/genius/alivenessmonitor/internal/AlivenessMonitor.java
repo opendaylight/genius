@@ -54,6 +54,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -108,6 +109,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.SendToController;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -115,8 +117,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class AlivenessMonitor
-        implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener, AutoCloseable {
+public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListener<MonitoringState>
+        implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitor.class);
 
@@ -174,6 +176,8 @@ public class AlivenessMonitor
     public AlivenessMonitor(final DataBroker dataBroker, final IdManagerService idManager,
             final NotificationPublishService notificationPublishService,
             AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+                InstanceIdentifier.create(MonitoringState.class));
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManager;
@@ -1285,5 +1289,43 @@ public class AlivenessMonitor
         return SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
                 dataBroker, LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName))
                 .toJavaUtil().map(InterfaceMonitorEntry::getMonitorIds).orElse(Collections.emptyList());
+    }
+
+    //handle monitor stop
+    @Override
+    public void remove(@Nonnull InstanceIdentifier<MonitoringState> instanceIdentifier,
+                       @Nonnull MonitoringState removedDataObject) {
+        final Long monitorId = removedDataObject.getMonitorId();
+        LOG.debug("Monitor State remove listener invoked for monitor id: {}", monitorId);
+
+        if (removedDataObject.getStatus() != MonitorStatus.Paused) {
+            ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);
+            if (scheduledFutureResult != null) {
+                LOG.debug("Stopping the task for Monitor id: {}", monitorId);
+                stopMonitoringTask(monitorId);
+            }
+        }
+
+        return;
+    }
+
+    //handle monitor pause
+    @Override
+    public void update(@Nonnull InstanceIdentifier<MonitoringState> instanceIdentifier,
+                       @Nonnull MonitoringState originalDataObject,
+                       @Nonnull MonitoringState updatedDataObject) {
+        final Long monitorId = updatedDataObject.getMonitorId();
+        LOG.debug("Monitor State update listener invoked for monitor id: {}", monitorId);
+
+        if (updatedDataObject.getStatus() == MonitorStatus.Paused
+                && originalDataObject.getStatus() != MonitorStatus.Paused) {
+            ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);
+            if (scheduledFutureResult != null) {
+                LOG.debug("Stopping the task for Monitor id: {}", monitorId);
+                stopMonitoringTask(monitorId);
+            }
+        }
+
+        return;
     }
 }
