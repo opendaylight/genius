@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dfbc0a22_9ad4e544",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-16T14:14:05Z",
+      "side": 1,
+      "message": "I think 1 is probably sufficient.  I assume timeouts shouldn\u0027t be common and callbacks shouldn\u0027t be expensive. But if you do want more than one thread, remember that ScheduledExecutorService uses core threads which don\u0027t automatically cleanup when idle so you should enable allowCoreThreadTimeout.  Otherwise, you may end up with 16 mostly idle threads for the life of the process.",
+      "revId": "52f24cab8206dc532b260b8a1a25298db9ba047f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
