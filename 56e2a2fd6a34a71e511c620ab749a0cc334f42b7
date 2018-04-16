@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8129a45b_7a01fd96",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-16T12:12:27Z",
+      "side": 1,
+      "message": "The base class also has an UnprocessedNodeConnectorCache. Why are you not sharing the same cache instance?",
+      "revId": "56e2a2fd6a34a71e511c620ab749a0cc334f42b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c4d4b2e_5e2ba6cc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-16T12:12:27Z",
+      "side": 1,
+      "message": "Do you not see that remove returns the existing value, if any, that was removed? As I\u0027ve mentioned before, you do not need to do get then remove - just simply remove.",
+      "revId": "56e2a2fd6a34a71e511c620ab749a0cc334f42b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
