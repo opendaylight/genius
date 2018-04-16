@@ -14,6 +14,8 @@ import java.net.UnknownHostException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
+import org.opendaylight.genius.datastoreutils.listeners.internal.DataTreeEventCallbackRegistrarImpl;
 import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListener;
@@ -112,5 +114,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(HwvtepNodeHACache.class).toInstance(mock(HwvtepNodeHACache.class));
         bind(IfmConfig.class).toInstance(mock(IfmConfig.class));
         bind(CacheProvider.class).toInstance(mock(CacheProvider.class));
+        bind(DataTreeEventCallbackRegistrar.class).annotatedWith(
+                OsgiService.class).to(DataTreeEventCallbackRegistrarImpl.class);
     }
 }
