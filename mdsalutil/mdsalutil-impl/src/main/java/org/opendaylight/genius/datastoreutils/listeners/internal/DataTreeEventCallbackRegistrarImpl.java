@@ -7,10 +7,18 @@
  */
 package org.opendaylight.genius.datastoreutils.listeners.internal;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.annotations.Beta;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
+import java.time.Duration;
 import java.util.Collection;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
@@ -23,11 +31,14 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of DataTreeEventCallbackRegistrar.
@@ -46,35 +57,88 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
     // change this implementation to register 1 single listener to the DataBroker, and instead do the
     // dispatching etc. ourselves within this implementation.
 
+    private static final Logger LOG = LoggerFactory.getLogger(DataTreeEventCallbackRegistrarImpl.class);
+
     private final DataBroker dataBroker;
+
+    private final ScheduledExecutorService scheduledExecutorService;
 
     @Inject
     public DataTreeEventCallbackRegistrarImpl(@OsgiService DataBroker dataBroker) {
+        this(dataBroker, Executors.newSingleThreadScheduledExecutor("DataTreeEventCallbackRegistrar-Timeouter", LOG));
+    }
+
+    @VisibleForTesting
+    public DataTreeEventCallbackRegistrarImpl(DataBroker dataBroker,
+            ScheduledExecutorService scheduledExecutorService) {
         this.dataBroker = dataBroker;
+        this.scheduledExecutorService = scheduledExecutorService;
     }
 
     @Override
     public <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
             BiFunction<T, T, NextAction> callback) {
-        on(Operation.UPDATE, store, path, callback);
+        on(Operation.UPDATE, store, path, callback, Duration.ZERO, null);
+    }
+
+    @Override
+    public <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+            BiFunction<T, T, NextAction> callback, Duration timeoutDuration,
+            Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        validateTimeout(timeoutDuration);
+        on(Operation.UPDATE, store, path, callback, timeoutDuration,
+                requireNonNull(timedOutCallback, "timedOutCallback"));
     }
 
     @Override
     public <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
             Function<T, NextAction> callback) {
-        on(Operation.ADD, store, path, biify(callback));
+        on(Operation.ADD, store, path, biify(callback), Duration.ZERO, null);
+    }
+
+    @Override
+    public <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
+            Function<T, NextAction> callback, Duration timeoutDuration,
+            Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        validateTimeout(timeoutDuration);
+        on(Operation.ADD, store, path, biify(callback), timeoutDuration,
+                requireNonNull(timedOutCallback, "timedOutCallback"));
     }
 
     @Override
     public <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
                                              BiFunction<T, T, NextAction> callback) {
-        on(Operation.ADD_OR_UPDATE, store, path, callback);
+        on(Operation.ADD_OR_UPDATE, store, path, callback, Duration.ZERO, null);
+    }
+
+    @Override
+    public <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+            BiFunction<@org.eclipse.jdt.annotation.Nullable T, T, NextAction> callback, Duration timeoutDuration,
+            Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        validateTimeout(timeoutDuration);
+        on(Operation.ADD_OR_UPDATE, store, path, callback, Duration.ZERO,
+                requireNonNull(timedOutCallback, "timedOutCallback"));
     }
 
     @Override
     public <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
             Function<T, NextAction> callback) {
-        on(Operation.REMOVE, store, path, biify(callback));
+        on(Operation.REMOVE, store, path, biify(callback), Duration.ZERO, null);
+    }
+
+    @Override
+    public <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
+            Function<T, NextAction> callback, Duration timeoutDuration,
+            Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        validateTimeout(timeoutDuration);
+        on(Operation.REMOVE, store, path, biify(callback), timeoutDuration,
+                requireNonNull(timedOutCallback, "timedOutCallback"));
+    }
+
+    private static void validateTimeout(Duration timeoutDuration) {
+        if (timeoutDuration.isZero() || timeoutDuration.isNegative()) {
+            throw new IllegalArgumentException("timeoutDuration <= 0");
+        }
     }
 
     private <T, U, R> BiFunction<T, T, R> biify(Function<T, R> function) {
@@ -93,19 +157,33 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
 
     @SuppressWarnings("resource") // thanks but we're good
     private <T extends DataObject> void on(Operation op, LogicalDatastoreType store, InstanceIdentifier<T> path,
-            BiFunction<T, T, NextAction> cb) {
+            BiFunction<T, T, NextAction> cb, Duration timeoutDuration,
+            @Nullable Consumer<DataTreeIdentifier<T>> timedOutCallback) {
         DataTreeIdentifier<T> dtid = new DataTreeIdentifier<>(store, path);
-        DataTreeEventCallbackChangeListener<T> listener = new DataTreeEventCallbackChangeListener<>(op, cb);
+        DataTreeEventCallbackChangeListener<T> listener = new DataTreeEventCallbackChangeListener<>(op, cb, () -> {
+            if (timedOutCallback != null) {
+                timedOutCallback.accept(dtid);
+            }
+        });
+
+        if (timedOutCallback != null) {
+            listener.setTimeOutScheduledFuture(
+                    scheduledExecutorService.schedule(listener, timeoutDuration.toMillis(), TimeUnit.MILLISECONDS));
+        }
+
         ListenerRegistration<DataTreeEventCallbackChangeListener<T>> reg
             = dataBroker.registerDataTreeChangeListener(dtid, listener);
         listener.setRegistration(reg);
     }
 
     private static final class DataTreeEventCallbackChangeListener<T extends DataObject>
-            implements DataTreeChangeListener<T> {
+            implements DataTreeChangeListener<T>, Runnable {
 
         private final Operation operation;
         private final BiFunction<T, T, NextAction> callback;
+        private final Runnable timedOutCallback;
+
+        private volatile @Nullable ScheduledFuture<?> timeOutScheduledFuture;
 
         private final Object closeSync = new Object();
 
@@ -116,9 +194,11 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         @GuardedBy("closeSync")
         private ListenerRegistration<DataTreeEventCallbackChangeListener<T>> listenerRegistration;
 
-        DataTreeEventCallbackChangeListener(Operation operation, BiFunction<T, T, NextAction> callback) {
+        DataTreeEventCallbackChangeListener(Operation operation, BiFunction<T, T, NextAction> callback,
+                Runnable timedOutCallback) {
             this.operation = operation;
             this.callback = callback;
+            this.timedOutCallback = timedOutCallback;
         }
 
         void setRegistration(ListenerRegistration<DataTreeEventCallbackChangeListener<T>> reg) {
@@ -160,17 +240,40 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
                 }
 
                 if (unregisterOrCallAgain.equals(NextAction.UNREGISTER)) {
-                    synchronized (closeSync) {
-                        if (listenerRegistration != null) {
-                            listenerRegistration.close();
-                            listenerRegistration = null;
+                    closeRegistration();
+                    if (timeOutScheduledFuture != null) {
+                        if (!timeOutScheduledFuture.cancel(false)) {
+                            LOG.warn("Timeout scheduled task could not be cancelled; possibly concurrency issue! :(");
                         } else {
-                            gotNotification = true;
+                            LOG.debug("Successfully cancelled a scheduled timeout task");
                         }
                     }
                     break; // for loop
                 }
             }
+        }
+
+        void closeRegistration() {
+            synchronized (closeSync) {
+                if (listenerRegistration != null) {
+                    listenerRegistration.close();
+                    listenerRegistration = null;
+                } else {
+                    gotNotification = true;
+                }
+            }
+        }
+
+        void setTimeOutScheduledFuture(ScheduledFuture<?> scheduledFuture) {
+            this.timeOutScheduledFuture = scheduledFuture;
+        }
+
+        @Override
+        // This gets invoked on timeout (if any)
+        public void run() {
+            closeRegistration();
+            timedOutCallback.run();
+            LOG.debug("Closed datastore listener and ran the time-out task now");
         }
 
         NextAction add(T newDataObject) {
