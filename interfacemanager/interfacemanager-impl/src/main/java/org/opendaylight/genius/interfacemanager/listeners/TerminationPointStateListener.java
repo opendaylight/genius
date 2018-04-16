@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -125,19 +126,17 @@ public class TerminationPointStateListener extends
         }
 
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
-        if (tpOld != null) {
-            if ((org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
-                    .bfdMonitoringEnabled(tpNew.getInterfaceBfd())
-                    != org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
-                    .bfdMonitoringEnabled(tpOld.getInterfaceBfd()))
-                    || (tpNew.getInterfaceBfdStatus() != null
-                    && !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()))) {
-                LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}.",
-                        identifier, tpOld, tpNew);
-                RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
-                coordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
-            }
+
+        if (org.opendaylight.genius.interfacemanager.renderer.ovs.utilities
+                .SouthboundUtils.changeInBfdMonitoringDetected(tpOld, tpNew)
+                || org.opendaylight.genius.interfacemanager.renderer.ovs.utilities
+                .SouthboundUtils.ifBfdStatusNotEqual(tpOld, tpNew)) {
+            LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
+                    identifier, tpOld, tpNew);
+            RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
+            coordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
         }
+
         InstanceIdentifier<Node> nodeIid = identifier.firstIdentifierOf(Node.class);
         String newInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpNew);
         if (newInterfaceName == null && InterfaceManagerCommonUtils.isTunnelPort(tpNew.getName())) {

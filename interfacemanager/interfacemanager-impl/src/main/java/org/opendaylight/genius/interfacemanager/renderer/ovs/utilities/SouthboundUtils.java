@@ -10,11 +10,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
@@ -325,9 +321,26 @@ public class SouthboundUtils {
         batchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
+    public static boolean ifBfdStatusNotEqual(OvsdbTerminationPointAugmentation tpOld,
+                                           OvsdbTerminationPointAugmentation tpNew){
+        return (tpNew.getInterfaceBfdStatus() != null
+                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus())));
+    }
+
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
         return ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
+    }
+
+    public static boolean changeInBfdMonitoringDetected(OvsdbTerminationPointAugmentation tpOld,
+                                                        OvsdbTerminationPointAugmentation tpNew) {
+        if (tpOld != null) {
+            return org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                    .bfdMonitoringEnabled(tpNew.getInterfaceBfd())
+                    != org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                    .bfdMonitoringEnabled(tpOld.getInterfaceBfd());
+        }
+        return false;
     }
 
     public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
