@@ -53,6 +53,7 @@ import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandl
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -77,6 +78,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorUnpauseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringMode;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringStates;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryKey;
@@ -117,7 +119,8 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class AlivenessMonitor
-        implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener, AutoCloseable {
+        extends AbstractClusteredAsyncDataTreeChangeListener<MonitoringState>
+        implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitor.class);
 
@@ -175,6 +178,10 @@ public class AlivenessMonitor
     public AlivenessMonitor(final DataBroker dataBroker, final IdManagerService idManager,
             final NotificationPublishService notificationPublishService,
             AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+                InstanceIdentifier.create(MonitoringStates.class).child(MonitoringState.class),
+                org.opendaylight.infrautils.utils.concurrent.Executors
+                        .newSingleThreadExecutor("AlivenessMonitor", LOG));
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManager;
@@ -727,7 +734,7 @@ public class AlivenessMonitor
                     .resetMonitoringTask(false);
             return true;
         }
-        ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);
+        ScheduledFuture<?> scheduledFutureResult = monitoringTasks.remove(monitorId);
         if (scheduledFutureResult != null) {
             scheduledFutureResult.cancel(interruptTask);
             return true;
@@ -1284,5 +1291,39 @@ public class AlivenessMonitor
     private List<Long> getMonitorIds(String interfaceName) {
         return read(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName))
                 .toJavaUtil().map(InterfaceMonitorEntry::getMonitorIds).orElse(Collections.emptyList());
+    }
+
+    @Override
+    public void add(@Nonnull MonitoringState newDataObject) {
+
+    }
+
+    @Override
+    public void remove(@Nonnull MonitoringState removedDataObject) {
+        final Long monitorId = removedDataObject.getMonitorId();
+        LOG.debug("Monitor State remove listener invoked for monitor id: {}", monitorId);
+
+        if (removedDataObject.getStatus() != MonitorStatus.Paused) {
+            ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);
+            if (scheduledFutureResult != null) {
+                LOG.debug("Stopping the task for Monitor id: {}", monitorId);
+                stopMonitoringTask(monitorId);
+            }
+        }
+    }
+
+    @Override
+    public void update(@Nonnull MonitoringState originalDataObject, @Nonnull MonitoringState updatedDataObject) {
+        final Long monitorId = updatedDataObject.getMonitorId();
+        LOG.debug("Monitor State update listener invoked for monitor id: {}", monitorId);
+
+        if (updatedDataObject.getStatus() == MonitorStatus.Paused
+                && originalDataObject.getStatus() != MonitorStatus.Paused) {
+            ScheduledFuture<?> scheduledFutureResult = monitoringTasks.get(monitorId);
+            if (scheduledFutureResult != null) {
+                LOG.debug("Stopping the task for Monitor id: {}", monitorId);
+                stopMonitoringTask(monitorId);
+            }
+        }
     }
 }
