@@ -69,6 +69,24 @@
       "revId": "56e2a2fd6a34a71e511c620ab749a0cc334f42b7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ebeb448_ea4a4277",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-16T15:15:30Z",
+      "side": 1,
+      "message": "Sorry I forgot it\u0027s not using a straight Map.",
+      "parentUuid": "1ec8bbe0_67a2aec2",
+      "revId": "56e2a2fd6a34a71e511c620ab749a0cc334f42b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
