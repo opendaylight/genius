@@ -10,11 +10,13 @@ package org.opendaylight.genius.datastoreutils.listeners;
 import static org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
 
 import com.google.common.annotations.Beta;
+import java.time.Duration;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -24,7 +26,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * <p>The current implementation assumes that the expected instance will eventually be added, updated or deleted; if
  * that never happens in the first place, then an internal data structure could fill up and theoretically lead to OOM
- * problems (i.e. there is currently no timeout). Likewise, if {@link NextAction#CALL_AGAIN} is used but no next event
+ * problems if you do not specify a timeout.  Likewise, if {@link NextAction#CALL_AGAIN} is used but no next event
  * matching path ever occurs.  In the "Full Sync Upgrade" scenario, for which this utility was originally created, this
  * is not a problem, as we are sure the subsequent changes are about to happen (just out of originally expected order).
  *
@@ -49,6 +51,12 @@ public interface DataTreeEventCallbackRegistrar {
         CALL_AGAIN
     }
 
+    // TODO add timing out variants for onUpdate(), onAddOrUpdate() and onRemove()
+
+    <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
+            Function<T, NextAction> callback,
+            Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback);
+
     <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
             Function<T, NextAction> callback);
 
@@ -59,6 +67,17 @@ public interface DataTreeEventCallbackRegistrar {
             return UNREGISTER;
         });
     }
+
+    default <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
+            Consumer<T> callback, Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        onAdd(store, path, t -> {
+            callback.accept(t);
+            return UNREGISTER;
+        }, timeoutDuration, timedOutCallback);
+    }
+
+    // NB: There is, for the moment, intentionally no variant with a timeout and a NextAction.
+
 
     <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
             BiFunction<T, T, NextAction> callback);

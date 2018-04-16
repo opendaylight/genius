@@ -16,11 +16,13 @@ import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUti
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import org.junit.Rule;
 import org.junit.Test;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
@@ -131,6 +133,21 @@ public class DataTreeEventCallbackRegistrarTest {
             // TODO see above; this actually isn't really reliable.. it could test "too soon"
             await().untilFalse(added);
         }
+    }
+
+    @Test
+    public void testAddTimeoutWhichExpires() throws InterruptedException {
+        AtomicBoolean timedOut = new AtomicBoolean(false);
+        DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar = new DataTreeEventCallbackRegistrarImpl(db);
+        dataTreeEventCallbackRegistrar.onAdd(OPERATIONAL, FOO_PATH, topLevelList -> { /* NOOP */ },
+                Duration.ofMillis(50), iid -> {
+                if (iid.equals(new DataTreeIdentifier<>(OPERATIONAL, FOO_PATH))) {
+                    timedOut.set(true);
+                }
+            }
+        );
+        Thread.sleep(75);
+        await().untilTrue(timedOut);
     }
 
     @Test
