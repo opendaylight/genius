@@ -325,9 +325,26 @@ public class SouthboundUtils {
         batchingUtils.delete(tpIid, BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 
+    public static boolean ifBfdStatusNotEqual(OvsdbTerminationPointAugmentation tpOld,
+                                           OvsdbTerminationPointAugmentation tpNew){
+        return (tpNew.getInterfaceBfdStatus() != null
+                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus())));
+    }
+
     public static boolean bfdMonitoringEnabled(IfTunnel ifTunnel) {
         return ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
+    }
+
+    public static boolean changeInBfdMonitoringDetected(OvsdbTerminationPointAugmentation tpOld,
+                                                        OvsdbTerminationPointAugmentation tpNew) {
+        if (tpOld != null) {
+            return org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                    .bfdMonitoringEnabled(tpNew.getInterfaceBfd())
+                    != org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils
+                    .bfdMonitoringEnabled(tpOld.getInterfaceBfd());
+        }
+        return false;
     }
 
     public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
