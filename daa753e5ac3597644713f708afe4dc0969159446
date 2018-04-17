@@ -70,6 +70,24 @@
       "revId": "daa753e5ac3597644713f708afe4dc0969159446",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1c026c69_5aa60c66",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T19:03:22Z",
+      "side": 1,
+      "message": "that\u0027s the key part - as I mentioned, it removes an edge case.",
+      "parentUuid": "78130f49_20cd5c68",
+      "revId": "daa753e5ac3597644713f708afe4dc0969159446",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
