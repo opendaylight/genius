@@ -52,6 +52,24 @@
       "revId": "daa753e5ac3597644713f708afe4dc0969159446",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "78130f49_20cd5c68",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-17T18:45:41Z",
+      "side": 1,
+      "message": "an init() method is kind of what the setRegistration() as is already does, no?  We still could not make timeOutScheduledFuture final (your initial point).\n\nI have now moved the timer registration before the DTCL registration, if you think that is better.  Ok?",
+      "parentUuid": "2026db66_0df14c46",
+      "revId": "daa753e5ac3597644713f708afe4dc0969159446",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
