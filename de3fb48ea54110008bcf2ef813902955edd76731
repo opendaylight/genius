@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "20ad0566_fc476d59",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TerminationPointStateListener.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:23:02Z",
+      "side": 1,
+      "message": "Please put inner classes at the bottom after methods. That said these classes can be converted to in-line lambdas.",
+      "revId": "de3fb48ea54110008bcf2ef813902955edd76731",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "59f07eb4_b1c9ab1c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:23:02Z",
+      "side": 1,
+      "message": "I don\u0027t know if getBfdKey() could be null but it would be safer to reverse the operands, ie BFD_ENABLE_KEY.equalsIgnoreCase.",
+      "range": {
+        "startLine": 205,
+        "startChar": 62,
+        "endLine": 205,
+        "endChar": 76
+      },
+      "revId": "de3fb48ea54110008bcf2ef813902955edd76731",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
