@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "21577ab6_a182712c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 784,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T11:09:52Z",
+      "side": 1,
+      "message": "there are tap-interfaces which will not be present in interface config DS..this will not work",
+      "revId": "c3122f89c549bc2bc2b5dc89e40b6052fac7bfe2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
