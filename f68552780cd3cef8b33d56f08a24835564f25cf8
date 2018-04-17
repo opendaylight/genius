@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "27f8530b_47370654",
+        "filename": "alivenessmonitor/alivenessmonitor-impl-protocols/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-17T10:14:24Z",
+      "side": 0,
+      "message": "OK: I\u0027ve verified that this removes the x3 \u003cfailOnError\u003efalse added as part of c/69895.",
+      "revId": "f68552780cd3cef8b33d56f08a24835564f25cf8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
