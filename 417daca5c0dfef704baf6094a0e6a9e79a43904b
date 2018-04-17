@@ -1,0 +1,242 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "129d7175_3d78a062",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "The changes in this file looks scary.. wondering whether the changes were not even getting tested :(",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48914fdf_d8a83f10",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "remove SF419???",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46575acd_81e3adf1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "can we remove this line if not needed?",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0207f506_a41bb927",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "is this not required for internal tunnels? If required, can we remove this comment?",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9857c98_e7d2806c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 334,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "why is TunnelTypeMplsOverGre code here?",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "23e11104_1ebec772",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "are vxlan-gpe tunnels internal tunnels?",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0db09649_3d8ee4fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "same as 107",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "586696e0_4e83f08d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 104,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "move the log inside the entity owner check",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "09b5603e_dbc472f4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "can we remove this runOnlyInLeaderNode() and do isEntityOwner() check. We had hit issues where the events were processed out order when we used runOnlyInLeaderNode in some rapid add, delete cases",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c184b4a3_4fac3a01",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "move the log inside the entity owner check",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0bab6dc_c5308070",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "same as 107",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83e0b291_70e10a4b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "do we need this?",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "db7baaf0_e2196f95",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "do we need this?",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06300f34_38e1cd26",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 20
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-17T14:11:48Z",
+      "side": 1,
+      "message": "remove unnecessary types",
+      "revId": "417daca5c0dfef704baf6094a0e6a9e79a43904b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
