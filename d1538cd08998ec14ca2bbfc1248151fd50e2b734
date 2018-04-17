@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "8d841b1f_46c10f79",
+        "filename": "alivenessmonitor/alivenessmonitor-impl-protocols/src/main/java/org/opendaylight/genius/alivenessmonitor/protocols/internal/AlivenessProtocolHandlerARP.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-04-17T12:12:03Z",
+      "side": 1,
+      "message": "This is a temporary measure, the real fix will be to upgrade to ODL Parent 3.1.2 when that’s released. Of course that means that this aspect of the patch is counter-productive, but it allows us to re-enable FindBugs which IMO is more important.",
+      "parentUuid": "7226a529_72782b66",
+      "revId": "d1538cd08998ec14ca2bbfc1248151fd50e2b734",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "78d42c14_2223a9af",
         "filename": "alivenessmonitor/alivenessmonitor-impl-protocols/src/main/java/org/opendaylight/genius/alivenessmonitor/protocols/internal/AlivenessProtocolHandlerLLDP.java",
         "patchSetId": 4
@@ -47,6 +65,24 @@
       "writtenOn": "2018-04-17T10:14:24Z",
       "side": 1,
       "message": "FTR: Given that the rest of ODL right now is still on odlparent 3.1.0, the use of a 3.1.1 here means that with this it is no longer possible to build ODL from sources without using nexus.opendaylight.org without locally building and installing two different branches of odlparent.  I find this weird, but if skitt can confirm that this is not a problem for a red downstream build (I\u0027m assuming he will, otherwise he would not have done this), and Faseela can ask around and confirm this is not a problem for the downstream in-house build at Ericsson either, then I\u0027m OK with using a more recent version of an odlparent artifact here than elsewhere for genius.  Otherwise, I think it would be better to use the infrautils:findbugs artifact, which can be built in a simpler all-from-master single branch downstream build.\n\nPS: I\u0027ve verified that odlparent:findbugs v3.1.0+ has the SLF4J_LOGGER_SHOULD_BE_NON_STATIC exclusion which I had added in infrautils:findbugs when it was not yet available from odlparent, so this causes no regression re. that.",
+      "revId": "d1538cd08998ec14ca2bbfc1248151fd50e2b734",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b59c3e85_552544a1",
+        "filename": "commons/binding-parent/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-04-17T12:12:03Z",
+      "side": 1,
+      "message": "The use of odlparent 3.1.1 is temporary; we will have a single version before Fluorine is released.",
+      "parentUuid": "bec52a10_d54257bd",
       "revId": "d1538cd08998ec14ca2bbfc1248151fd50e2b734",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
