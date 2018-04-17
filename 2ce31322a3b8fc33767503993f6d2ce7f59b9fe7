@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dddaa11e_fa9ab8d4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:16:00Z",
+      "side": 1,
+      "message": "minor thing but I prefer not to have inner classes interspersed with methods - please put them at the bottom.",
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48859b38_a1f7676a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:16:00Z",
+      "side": 1,
+      "message": "\"updation\" is not a word - \"update\"",
+      "range": {
+        "startLine": 299,
+        "startChar": 41,
+        "endLine": 299,
+        "endChar": 49
+      },
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "85001a3a_066661d2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:16:00Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this throw OperationFailedException?",
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "629e4137_7aaabb46",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-17T11:16:00Z",
+      "side": 1,
+      "message": "If the RPC was successful there shouldn\u0027t be any errors.",
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
