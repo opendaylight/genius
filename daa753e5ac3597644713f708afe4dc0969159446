@@ -16,6 +16,24 @@
       "revId": "daa753e5ac3597644713f708afe4dc0969159446",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66e6b7a0_2b63bcb5",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-17T07:32:14Z",
+      "side": 1,
+      "message": "I thought about that, but then you hit http://errorprone.info/bugpattern/ConstructorLeaksThis, becaues the \"listener\" (line 140) would be \"this\", because the Runnable is this DataTreeEventCallbackChangeListener... how would you cleanly address that? Or just @SuppressWarnings(\"ConstructorLeaksThis\") ?",
+      "parentUuid": "830282af_c30e6da1",
+      "revId": "daa753e5ac3597644713f708afe4dc0969159446",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
