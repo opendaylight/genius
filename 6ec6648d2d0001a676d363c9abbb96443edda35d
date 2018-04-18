@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "b960ae9b_e6169c57",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1305,
+      "author": {
+        "id": 8004
+      },
+      "writtenOn": "2018-04-18T06:31:44Z",
+      "side": 1,
+      "message": "Tom,\n\nthis starts from monitorPause \u0026 monitorStop RPCs, the problem is RPC call can land in any one of the cluster nodes, when we do REST call, but monitor tasks is present in the node where it actually started. monitoringTasks is local only.\n\nMDSAL Global RPC and YANG notifications are still local?",
+      "parentUuid": "4b1402db_416ad896",
+      "revId": "6ec6648d2d0001a676d363c9abbb96443edda35d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dfd4a6e2_d1151eb1",
         "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
         "patchSetId": 1
