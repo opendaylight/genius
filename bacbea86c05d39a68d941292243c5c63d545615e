@@ -42,6 +42,24 @@
     },
     {
       "key": {
+        "uuid": "2f1b86d7_e07fb4db",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T12:59:49Z",
+      "side": 1,
+      "message": "the checks in :154 - :165 check for that.",
+      "parentUuid": "0b2643a5_9b6fefb3",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "202dd3f3_ea4a5404",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
         "patchSetId": 18
@@ -82,6 +100,24 @@
     },
     {
       "key": {
+        "uuid": "e235d339_68a67ee6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T12:59:49Z",
+      "side": 1,
+      "message": "taken care of in latest patchset, please review.",
+      "parentUuid": "846e61c8_604dec5d",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e4bb660a_28b43fbf",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 18
@@ -93,6 +129,24 @@
       "writtenOn": "2018-04-18T07:10:43Z",
       "side": 1,
       "message": "is this OperationFailedException caught by the caller?",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26b8eefc_17b26118",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T12:59:49Z",
+      "side": 1,
+      "message": "this exception would be sent up to the callable worker, \nwhich is in turn called by DJC. \nDJC would handle the exception ?",
+      "parentUuid": "e4bb660a_28b43fbf",
       "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -139,6 +193,24 @@
     },
     {
       "key": {
+        "uuid": "aa7c4c62_1dbd15b6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T12:59:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "be6c2d5e_ee73ea7b",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6144ebb2_968be4af",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
         "patchSetId": 18
@@ -150,6 +222,24 @@
       "writtenOn": "2018-04-18T07:10:43Z",
       "side": 1,
       "message": "OVS",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fb9c523_1ee00d9e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T12:59:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6144ebb2_968be4af",
       "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
