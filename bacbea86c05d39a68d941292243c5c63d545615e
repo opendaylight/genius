@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "939f39a8_42db7afb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T07:03:13Z",
+      "side": 1,
+      "message": "@faseela\ninline with changes in the review\nhttps://git.opendaylight.org/gerrit/#/c/69527/8/interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+      "range": {
+        "startLine": 131,
+        "startChar": 0,
+        "endLine": 133,
+        "endChar": 9
+      },
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "202dd3f3_ea4a5404",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T07:03:13Z",
+      "side": 1,
+      "message": "@faseela\ninline with changes in the review\nhttps://git.opendaylight.org/gerrit/#/c/69527/8/interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+      "range": {
+        "startLine": 293,
+        "startChar": 12,
+        "endLine": 296,
+        "endChar": 88
+      },
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "233e404a_7f2e7e17",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 18
