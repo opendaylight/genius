@@ -11,3 +11,4 @@ Contents:
 
    Interface Manager <interface-manager>
    ITM Scalability <itm-scalability>
+   Service Recovery <service-recovery>
