@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "055ec8de_b79af7df",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T16:21:46Z",
+      "side": 1,
+      "message": "Hi Michael, \ncurrently this falls in the scope of existing code.\nif I were to throw the exception, then there would be a lot of collateral changes. which could jeopardize existing functionality too.\nwhich is why we chose to leave this try catch block for now.",
+      "parentUuid": "37c8e09b_90f4547f",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6f4f61c8_65f13a7a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 7
