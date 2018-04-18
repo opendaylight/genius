@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "233e404a_7f2e7e17",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 435,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T06:48:08Z",
+      "side": 1,
+      "message": "@Tom\nrpc failure case handled as per comment.",
+      "range": {
+        "startLine": 426,
+        "startChar": 8,
+        "endLine": 435,
+        "endChar": 13
+      },
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
