@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f22f03b_b4217c99",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1303,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T10:45:12Z",
+      "side": 1,
+      "message": "Let us address Tom\u0027s comment about removing the entry from monitoringTask",
+      "revId": "291ffb578357dd9dc94f2194a53ef17a46da91b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
