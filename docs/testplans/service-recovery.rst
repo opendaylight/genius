@@ -2,11 +2,11 @@
 .. contents:: Table of Contents
       :depth: 3
 
-========================
-Service Recovery Manager
-========================
+==========================
+Service Recovery Test Plan
+==========================
 
-Test suit for testing service recovery manager suits.
+Test plan for testing service recovery manager functionalities.
 
 Test Setup
 ==========
