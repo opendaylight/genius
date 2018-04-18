@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "40d7b869_9f926069",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T06:48:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dddaa11e_fa9ab8d4",
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "48859b38_a1f7676a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
         "patchSetId": 16
@@ -30,6 +48,30 @@
       "writtenOn": "2018-04-17T11:16:00Z",
       "side": 1,
       "message": "\"updation\" is not a word - \"update\"",
+      "range": {
+        "startLine": 299,
+        "startChar": 41,
+        "endLine": 299,
+        "endChar": 49
+      },
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d29b887f_6ee5d5e5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 299,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T06:48:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "48859b38_a1f7676a",
       "range": {
         "startLine": 299,
         "startChar": 41,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "cdacfa82_8a0a04f6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T06:48:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "85001a3a_066661d2",
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "629e4137_7aaabb46",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 16
@@ -70,6 +130,24 @@
       "writtenOn": "2018-04-17T11:16:00Z",
       "side": 1,
       "message": "If the RPC was successful there shouldn\u0027t be any errors.",
+      "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d2726ee_824f074c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 431,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-18T06:48:08Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "629e4137_7aaabb46",
       "revId": "2ce31322a3b8fc33767503993f6d2ce7f59b9fe7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
