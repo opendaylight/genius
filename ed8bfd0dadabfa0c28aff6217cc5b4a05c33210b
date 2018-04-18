@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42a0c9ac_1a023493",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T05:50:48Z",
+      "side": 1,
+      "message": "remove CSS.. keep it OVS",
+      "revId": "ed8bfd0dadabfa0c28aff6217cc5b4a05c33210b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aeb4d159_369c7456",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T05:50:48Z",
+      "side": 1,
+      "message": "OVS",
+      "revId": "ed8bfd0dadabfa0c28aff6217cc5b4a05c33210b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4257375_a2e8caad",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 21
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T05:50:48Z",
+      "side": 1,
+      "message": "OVS",
+      "revId": "ed8bfd0dadabfa0c28aff6217cc5b4a05c33210b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
