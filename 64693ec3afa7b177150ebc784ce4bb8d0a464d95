@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba2aa501_1a9dae2b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TerminationPointStateListener.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T13:37:02Z",
+      "side": 1,
+      "message": "is there a possibility that this cache can get cleaned up even before this listener gets invoked?",
+      "revId": "64693ec3afa7b177150ebc784ce4bb8d0a464d95",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24cd7616_df82a284",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TerminationPointStateListener.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T13:37:02Z",
+      "side": 1,
+      "message": "OVS",
+      "revId": "64693ec3afa7b177150ebc784ce4bb8d0a464d95",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
