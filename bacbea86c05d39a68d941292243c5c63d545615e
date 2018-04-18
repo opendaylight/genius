@@ -25,6 +25,23 @@
     },
     {
       "key": {
+        "uuid": "0b2643a5_9b6fefb3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T07:08:16Z",
+      "side": 1,
+      "message": "how can you make sure that this is not an internal tunnel, just by checking tunnel port predicate? it can be an external tunnel also right?",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "202dd3f3_ea4a5404",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
         "patchSetId": 18
