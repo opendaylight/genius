@@ -88,6 +88,24 @@
     },
     {
       "key": {
+        "uuid": "abdcef17_ad654195",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1305,
+      "author": {
+        "id": 8004
+      },
+      "writtenOn": "2018-04-18T10:06:23Z",
+      "side": 1,
+      "message": "or removal from map is what you are asking?\n\nIn that case, yes we should add that also.",
+      "parentUuid": "4b1402db_416ad896",
+      "revId": "6ec6648d2d0001a676d363c9abbb96443edda35d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dfd4a6e2_d1151eb1",
         "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
         "patchSetId": 1
