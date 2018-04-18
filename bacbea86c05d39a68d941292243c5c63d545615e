@@ -65,6 +65,40 @@
     },
     {
       "key": {
+        "uuid": "846e61c8_604dec5d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 418,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T07:10:43Z",
+      "side": 1,
+      "message": "why creation is using BatchingUtils, but deletion not?",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4bb660a_28b43fbf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T07:10:43Z",
+      "side": 1,
+      "message": "is this OperationFailedException caught by the caller?",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "233e404a_7f2e7e17",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 18
@@ -82,6 +116,40 @@
         "endLine": 435,
         "endChar": 13
       },
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be6c2d5e_ee73ea7b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T07:10:43Z",
+      "side": 1,
+      "message": "OVS",
+      "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6144ebb2_968be4af",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-04-18T07:10:43Z",
+      "side": 1,
+      "message": "OVS",
       "revId": "bacbea86c05d39a68d941292243c5c63d545615e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
