@@ -498,6 +498,24 @@
     },
     {
       "key": {
+        "uuid": "4279bf19_9af0b3e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-19T13:39:05Z",
+      "side": 1,
+      "message": "ok but you never answered what this issue was and how/why synchronization here supposedly fixed the issue. The synchronization looked suspicious and wrong to me.",
+      "parentUuid": "1343110b_dd7c1909",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00738c08_663a7621",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
