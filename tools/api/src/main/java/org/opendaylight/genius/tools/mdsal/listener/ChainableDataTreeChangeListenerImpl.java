@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.datastoreutils;
+package org.opendaylight.genius.tools.mdsal.listener;
 
 import java.util.Collection;
 import java.util.List;
