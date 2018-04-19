@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "31cb9ba1_5c7b085c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerFactory.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "071073d5_8008120c",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fa99f01d_3b673096",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerResolver.java",
         "patchSetId": 6
@@ -160,6 +178,24 @@
     },
     {
       "key": {
+        "uuid": "7b5a68bd_4f55d588",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerResolver.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "If I understand correctly, this is meanwhile completely removed anyway.",
+      "parentUuid": "144b3a4a_15783dde",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfe16c54_64853d0c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -189,6 +225,24 @@
       "side": 1,
       "message": "can this be done in an after patch ?\nas this could affect the cherrypick to oxygen?",
       "parentUuid": "cfe16c54_64853d0c",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "144dd865_43c173e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "NOK, but it now extends TunnelListenerBase anyway, so we\u0027ll deal with this in that other patch.",
+      "parentUuid": "55717fbe_e85a9b9e",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -230,6 +284,24 @@
     },
     {
       "key": {
+        "uuid": "03db4e40_faa741b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "16ff145a_ed03c0bf",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "41027ab0_578770dd",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -259,6 +331,24 @@
       "side": 1,
       "message": "nit picks are always welcome :)",
       "parentUuid": "41027ab0_578770dd",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89513576_921f1fce",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "d5dc5bd6_51edba66",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -312,6 +402,24 @@
       "side": 1,
       "message": "done, now synchronizing over the cache get instead.",
       "parentUuid": "1fd8f812_0b379ba8",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "245fc1fc_7f87142b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "Tom?",
+      "parentUuid": "17cfeb86_ffbccf4d",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -470,6 +578,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "a20c3c00_9fe05652",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "866f2fa2_cf4c0a85",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T12:27:11Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "d26fe17b_697adcda",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
