@@ -1,0 +1,129 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "449cc1b8_46c2b255",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "shouldn\u0027t be needed, I don\u0027t see a \"catch\" in this method?  And that\u0027s a Good Thing... the FutureRpcResults should be doing all the catching, not the application code.  (The existing catch in this class should be removed, ideally.)",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81c2322d_eb172a79",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "why only onFailureLogLevel(DEBUG), here?  This could hide exceptions thrown in getEgressActionsForInterface() ... Check the JavaDoc of onFailureLogLevel() - are you sure you don\u0027t want to just remove this and keep the default error level?  Unless you expect those IllegalStateException you throw in getEgressActionsForInterface() to be very frequent and \"normal\"... but if they are, then this should be done differently instead.",
+      "range": {
+        "startLine": 262,
+        "startChar": 67,
+        "endLine": 262,
+        "endChar": 68
+      },
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f49f1b6a_7195b7b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "as above, should not be required here",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41e774c7_98cb7f1c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "the idea was that one would use FutureRpcResults.fromBuilder(LOG, \"getTunnelType\", input, () -\u003e output) in places like this.",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b55bae10_96ee3a6b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 1071,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "String.format is overkill here, just like this is perfectly fine, and clearer:\n\n    throw new IllegalStateException(\"Interface information not present in config DS for \" +  interfaceName);",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80ff81ed_ecd7ad3f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 1079,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "nope, this is actually wrong, what you meant here is:\n\n    throw new IllegalStateException(\"Read failed for Interface in oper DS for \" + interfaceName, e);\n\nBUT that is also wrong... the point of FutureRpcResults is that it correctly handles exceptions for you, so in cases like here, what you can should do is simply let the getEgressActionsForInterface() throws ReadFailedException.",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "58810d9c_e909214b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 1088,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T15:35:53Z",
+      "side": 1,
+      "message": "as above, just use simple String concatenation is actually fine",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
