@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6e20d881_b29430e2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "-2 nope; as discussed on https://git.opendaylight.org/gerrit/#/c/70237/6/itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java, we\u0027re about to remove this @Deprecated class, see https://git.opendaylight.org/gerrit/#/c/70723/.  Please do not introduce new usages of @Deprecated classes in new code. (BTW: I wish there was some automated way to detect and fail changes for this; but I don\u0027t know how.)",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e7e1e5a_33b6a491",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "could / should this class be abstract?  Ask yourself: Is there every any case where you would do new TunnelListenerBase() and register this listener itself, instead of a subclass?  If not, then make it abstract. And perhaps named AbstractTunnelListener instead of TunnelListenerBase?",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d3dde28_a81ca467",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "minor: I would order these fields - private first, then empty line, then protected.",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5b6f1907_a60a48c1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "nit pick: double empty line here",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b3430c3_9c8ff9dd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "nit pick: insert space after //",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c06b0c7_9c15d95c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "nit pick: insert space after //",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c78eb8b_28ba770c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "nit pick: insert space after //",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed63e9f4_435dd4ca",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "nit pick: insert space after //",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4e171d6a_2a8e6479",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-19T11:34:55Z",
+      "side": 1,
+      "message": "LOG.error, not debug; and fix message - a ReadFailedException does not mean that something is not present, but that the datastore is broken (e.g. clustering issue or something)\n\ndidn\u0027t I already say this somewhere else before??",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
