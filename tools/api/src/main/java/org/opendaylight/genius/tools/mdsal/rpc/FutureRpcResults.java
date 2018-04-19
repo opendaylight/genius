@@ -15,7 +15,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
@@ -87,7 +87,7 @@ public final class FutureRpcResults {
      * @return a new FutureRpcResultBuilder
      */
     @CheckReturnValue
-    @java.lang.SuppressWarnings("InconsistentOverloads") // Error Prone is too strict here; we do want the Callable last
+    @SuppressWarnings("InconsistentOverloads") // Error Prone is too strict here; we do want the Callable last
     public static <I, O> FutureRpcResultBuilder<I, O> fromListenableFuture(Logger logger, String rpcMethodName,
             @Nullable I input, Callable<ListenableFuture<O>> callable) {
         return new FutureRpcResultBuilder<>(logger, rpcMethodName, input, callable);
@@ -102,7 +102,7 @@ public final class FutureRpcResults {
          * otherwise you will lose error messages.
          */
         NONE;
-        @SuppressWarnings({"SLF4J_UNKNOWN_ARRAY","SLF4J_FORMAT_SHOULD_BE_CONST"})
+        @SuppressFBWarnings({"SLF4J_UNKNOWN_ARRAY","SLF4J_FORMAT_SHOULD_BE_CONST"})
         public void log(Logger logger, String format, Object... arguments) {
             switch (this) {
                 case NONE:
@@ -127,7 +127,7 @@ public final class FutureRpcResults {
     }
 
     @CheckReturnValue
-    @java.lang.SuppressWarnings("InconsistentOverloads") // Error Prone is too strict here; we do want the Callable last
+    @SuppressWarnings("InconsistentOverloads") // Error Prone is too strict here; we do want the Callable last
     public static <I, O> FutureRpcResultBuilder<I, O> fromBuilder(Logger logger, String rpcMethodName,
             @Nullable I input, Callable<Builder<O>> builder) {
         Callable<ListenableFuture<O>> callable = () -> Futures.immediateFuture(builder.call().build());
