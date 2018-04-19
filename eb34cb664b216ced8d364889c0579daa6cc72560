@@ -196,6 +196,24 @@
     },
     {
       "key": {
+        "uuid": "1c1e7021_c53ed90b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/factory/DirectTunnelListenerResolver.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:22:55Z",
+      "side": 1,
+      "message": "it\u0027s now under the name\ntunnelListnerCreator\nAlthough the factory class has been ditched.",
+      "parentUuid": "7b5a68bd_4f55d588",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cfe16c54_64853d0c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
@@ -243,6 +261,24 @@
       "side": 1,
       "message": "NOK, but it now extends TunnelListenerBase anyway, so we\u0027ll deal with this in that other patch.",
       "parentUuid": "55717fbe_e85a9b9e",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f31cf44f_3b058f7c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:22:55Z",
+      "side": 1,
+      "message": "renamed the base class and replaced the reference, \nas per your suggestion :)",
+      "parentUuid": "144dd865_43c173e1",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -438,6 +474,24 @@
       "side": 1,
       "message": "The synchronization has been removed finally although I never got an answer as to why it was there in the first place.",
       "parentUuid": "245fc1fc_7f87142b",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1343110b_dd7c1909",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:22:55Z",
+      "side": 1,
+      "message": "@Tom\n@Michael, \n\nwe had seen sporadic issues in scale testing, \nif it pops up again we\u0027ll probably address with \nan agreeable solution.",
+      "parentUuid": "3069de49_3769c29a",
       "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
