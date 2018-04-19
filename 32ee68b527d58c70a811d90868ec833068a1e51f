@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "edd6001d_de4194e6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "have moved it to tools.mdsal.listener\nin the primary patch too :)",
+      "parentUuid": "6e20d881_b29430e2",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e7e1e5a_33b6a491",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 24
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-19T11:34:55Z",
       "side": 1,
       "message": "could / should this class be abstract?  Ask yourself: Is there every any case where you would do new TunnelListenerBase() and register this listener itself, instead of a subclass?  If not, then make it abstract. And perhaps named AbstractTunnelListener instead of TunnelListenerBase?",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f89d81f_fdf48f72",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e7e1e5a_33b6a491",
       "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "084b86d6_0a0b8904",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2d3dde28_a81ca467",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5b6f1907_a60a48c1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 24
@@ -64,6 +118,24 @@
       "writtenOn": "2018-04-19T11:34:55Z",
       "side": 1,
       "message": "nit pick: double empty line here",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5a8f82d_e85d7eae",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5b6f1907_a60a48c1",
       "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "d12f5a40_c5ebfd32",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2b3430c3_9c8ff9dd",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5c06b0c7_9c15d95c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 24
@@ -98,6 +188,24 @@
       "writtenOn": "2018-04-19T11:34:55Z",
       "side": 1,
       "message": "nit pick: insert space after //",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9bff86bd_08362a65",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c06b0c7_9c15d95c",
       "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "d40316e1_285c0b87",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c78eb8b_28ba770c",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ed63e9f4_435dd4ca",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 24
@@ -132,6 +258,24 @@
       "writtenOn": "2018-04-19T11:34:55Z",
       "side": 1,
       "message": "nit pick: insert space after //",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "315ef570_7c1d2b8a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T13:50:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed63e9f4_435dd4ca",
       "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
