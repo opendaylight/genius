@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0fc5d4c6_022c7b9d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T09:43:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "db627f1a_5fa86434",
+      "revId": "71ad49ba89b88dde1549b9c250f8a1b33b616ebd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "416e7105_5eba6faf",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 25
@@ -30,6 +48,24 @@
       "writtenOn": "2018-04-18T13:31:41Z",
       "side": 1,
       "message": "InterfaceStateAddWorkerForUnprocessedNC",
+      "revId": "71ad49ba89b88dde1549b9c250f8a1b33b616ebd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0fffc6f1_cb5a1b9c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T09:43:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "416e7105_5eba6faf",
       "revId": "71ad49ba89b88dde1549b9c250f8a1b33b616ebd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "786df40f_a7c9aaa5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T09:43:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "04b7a422_91039692",
+      "revId": "71ad49ba89b88dde1549b9c250f8a1b33b616ebd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d0c477f4_98cbeb9e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
         "patchSetId": 25
@@ -64,6 +118,24 @@
       "writtenOn": "2018-04-18T13:31:41Z",
       "side": 1,
       "message": "why do we need check for MplsOverGre",
+      "revId": "71ad49ba89b88dde1549b9c250f8a1b33b616ebd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b83b1880_1661dc38",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelListenerBase.java",
+        "patchSetId": 25
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-19T09:43:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0c477f4_98cbeb9e",
       "revId": "71ad49ba89b88dde1549b9c250f8a1b33b616ebd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
