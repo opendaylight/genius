@@ -131,7 +131,8 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private void buildTunnelFrom(DPNTEPsInfo srcDpn, Collection<DPNTEPsInfo> meshedDpnList,
-                                 IMdsalApiManager mdsalManager, WriteTransaction transaction) {
+            IMdsalApiManager mdsalManager, WriteTransaction transaction)
+            throws ReadFailedException, InterruptedException, ExecutionException {
         LOG.trace("Building tunnels from DPN {} " , srcDpn);
         if (null == meshedDpnList || meshedDpnList.isEmpty()) {
             LOG.debug("No DPN in the mesh ");
@@ -145,8 +146,8 @@ public final class ItmInternalTunnelAddWorker {
 
     }
 
-    private void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn,
-                                           IMdsalApiManager mdsalManager, WriteTransaction transaction) {
+    private void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn, IMdsalApiManager mdsalManager,
+            WriteTransaction transaction) throws ReadFailedException, InterruptedException, ExecutionException {
         LOG.trace("Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn);
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
         List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
@@ -170,8 +171,8 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private void wireUpBidirectionalTunnel(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
-                                           BigInteger dstDpnId, IMdsalApiManager mdsalManager,
-                                           WriteTransaction transaction) {
+            BigInteger dstDpnId, IMdsalApiManager mdsalManager, WriteTransaction transaction)
+            throws ReadFailedException, InterruptedException, ExecutionException {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
 
         if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
@@ -191,7 +192,7 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
-                           WriteTransaction transaction) {
+            WriteTransaction transaction) throws ReadFailedException, InterruptedException, ExecutionException {
         // Wire Up logic
         LOG.trace("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
         String interfaceName = srcte.getInterfaceName();
@@ -310,10 +311,9 @@ public final class ItmInternalTunnelAddWorker {
         }
     }
 
-    private boolean createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte,
-                                                BigInteger srcDpnId, BigInteger dstDpnId,
-                                                Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
-                                                String parentInterfaceName) {
+    private void createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
+            BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
+            String parentInterfaceName) throws ReadFailedException, InterruptedException, ExecutionException {
         IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
         IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask())
                 ? gatewayIpObj : srcte.getGwIpAddress() ;
@@ -340,27 +340,21 @@ public final class ItmInternalTunnelAddWorker {
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
 
         //ITM TEP INTERFACE set the group Id here ..later
-        try {
-            Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
-            dpnsTepsBuilder.setGroupId(groupId.longValue());
-            RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
-            remoteDpn.setKey(new RemoteDpnsKey(dstDpnId));
-            remoteDpn.setDestinationDpnId(dstDpnId);
-            remoteDpn.setTunnelName(trunkInterfaceName);
-            remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
-            remoteDpn.setMonitoringInterval(monitorInterval);
-            remoteDpn.setInternal(true);
-            remoteDpns.add(remoteDpn.build());
-            dpnsTepsBuilder.setRemoteDpns(remoteDpns);
-            dpnTeps.add(dpnsTepsBuilder.build());
-            dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
-            updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
-            addTunnelConfiguration(iface);
-            return true;
-        } catch (InterruptedException | ExecutionException | ReadFailedException e) {
-            LOG.error("allocate ID failed for {} ", srcDpnId.toString(), e);
-            return false;
-        }
+        Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
+        dpnsTepsBuilder.setGroupId(groupId.longValue());
+        RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
+        remoteDpn.setKey(new RemoteDpnsKey(dstDpnId));
+        remoteDpn.setDestinationDpnId(dstDpnId);
+        remoteDpn.setTunnelName(trunkInterfaceName);
+        remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
+        remoteDpn.setMonitoringInterval(monitorInterval);
+        remoteDpn.setInternal(true);
+        remoteDpns.add(remoteDpn.build());
+        dpnsTepsBuilder.setRemoteDpns(remoteDpns);
+        dpnTeps.add(dpnsTepsBuilder.build());
+        dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
+        updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
+        addTunnelConfiguration(iface);
     }
 
     private static void updateDpnTepInterfaceInfoToConfig(DpnTepsState dpnTeps) {
