@@ -161,4 +161,8 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
         return externalInterfaces.containsKey(interfaceName);
     }
 
+    @Override
+    public boolean isItmDirectTunnelsEnabled() {
+        return false;
+    }
 }
