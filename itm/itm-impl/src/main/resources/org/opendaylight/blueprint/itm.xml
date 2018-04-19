@@ -25,6 +25,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="iInterfaceManager"
                interface="org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager" />
 
+    <reference id="interfaceManagerService"
+               interface="org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService" />
+
     <reference id="diagStatusService"
                interface="org.opendaylight.infrautils.diagstatus.DiagStatusService" />
 
