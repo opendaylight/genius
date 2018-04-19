@@ -516,6 +516,24 @@
     },
     {
       "key": {
+        "uuid": "dd3d4918_8aa90244",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-04-19T17:27:51Z",
+      "side": 1,
+      "message": "When ITM builds the tunnel mesh, it stores the Tunnel config information in its config DS and also creates tunnel ports on the OVS. These tunnel port creation results in node connector \"add\" events. To process the node connector, ITM needs some config information. Its possible that when the node connector comes from the OVS, ITM\u0027s config DS is not populated and so its unable to process the node connector and hence caches it in Unprocessed cache. Caching the event and processing the event from the cache are done by different DTCNs and hence will not be synchronized. Its possible that between the time ITM looks for the config data and decides to cache, the config was written and so the node connector could remain in unprocessed cache forever. The common entity was the tunnel name and hence synchronized on that. But I understand that reason to avoid synchronizing on Strings in general. Tunnel name is the entity that we can have in both scenario. Synchronizing on node connector may not be possible.When we do scale testing and if we hit this issue, we will work on it.",
+      "parentUuid": "4279bf19_9af0b3e1",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00738c08_663a7621",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
