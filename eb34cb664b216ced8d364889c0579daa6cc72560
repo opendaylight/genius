@@ -426,6 +426,24 @@
     },
     {
       "key": {
+        "uuid": "3069de49_3769c29a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-19T12:59:09Z",
+      "side": 1,
+      "message": "The synchronization has been removed finally although I never got an answer as to why it was there in the first place.",
+      "parentUuid": "245fc1fc_7f87142b",
+      "revId": "eb34cb664b216ced8d364889c0579daa6cc72560",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00738c08_663a7621",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/DpnTepStateListener.java",
         "patchSetId": 6
