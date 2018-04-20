@@ -16,6 +16,24 @@
       "revId": "e061c8114597acab15b3ef537192bb849112919a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad8b3c9f_0193f299",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T11:14:06Z",
+      "side": 1,
+      "message": "many thanks, Michael :)",
+      "parentUuid": "9740fe24_25c07da5",
+      "revId": "e061c8114597acab15b3ef537192bb849112919a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
