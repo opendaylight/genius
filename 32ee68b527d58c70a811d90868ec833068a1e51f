@@ -296,6 +296,24 @@
       "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "af6333c8_c00ecf4f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-20T08:53:14Z",
+      "side": 1,
+      "message": "you have ignored this in your Patch Set 25 \"comments incorporated\", but I have now realized that this was introduced in the previous and not in this patch, so I\u0027ll raise a follow-up patch to that one to fix this...",
+      "parentUuid": "4e171d6a_2a8e6479",
+      "revId": "32ee68b527d58c70a811d90868ec833068a1e51f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
