@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -202,7 +201,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
     }
 
     /*
-     *  This code is used to handle only a dpnId change scenario for a particular change,
+     * This code is used to handle only a dpnId change scenario for a particular change,
      * which is not expected to happen in usual cases.
      */
     private List<ListenableFuture<Void>> updateOvsBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
@@ -223,13 +222,9 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
 
             // handle pre-provisioning of tunnels for the newly connected dpn
             Optional<OvsBridgeEntry> bridgeEntry = null;
-            try {
-                bridgeEntry = ovsBridgeEntryCache.get(dpnIdNew);
-                if (bridgeEntry.isPresent()) {
-                    addAllPortsToBridge(bridgeEntry.get(), bridgeIid, bridgeNew);
-                }
-            } catch (ReadFailedException e) {
-                LOG.debug("OVSDB Bridge is not present for DPN {}", dpnIdNew);
+            bridgeEntry = ovsBridgeEntryCache.get(dpnIdNew);
+            if (bridgeEntry.isPresent()) {
+                addAllPortsToBridge(bridgeEntry.get(), bridgeIid, bridgeNew);
             }
         }));
     }
