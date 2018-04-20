@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "cf994a6b_346aea75",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 360,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-20T09:01:19Z",
+      "side": 1,
+      "message": "c/71106 has been incorporated here in Patch Set 20.",
+      "parentUuid": "feeeee96_0b241d3b",
+      "revId": "b3a4b00ae286cc69125d0f2314f5afddaa6c5031",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6f4f61c8_65f13a7a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 7
