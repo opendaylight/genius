@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9740fe24_25c07da5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-20T08:49:47Z",
+      "side": 1,
+      "message": "This is very wrong; a ReadFailedException does not mean that something is not present, but that the datastore is broken (e.g. clustering issue or something).  A LOG.debug() instead of a clear LOG.error() is wrong here too.  I\u0027ve just fixed this for you because I am so nice in https://git.opendaylight.org/gerrit/#/c/71153/ instead of -1 this; please +1 c/71153.",
+      "revId": "e061c8114597acab15b3ef537192bb849112919a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
