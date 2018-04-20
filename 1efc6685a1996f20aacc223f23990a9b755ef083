@@ -144,6 +144,24 @@
     },
     {
       "key": {
+        "uuid": "4d3b05a1_91c3727c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-20T09:01:19Z",
+      "side": 1,
+      "message": "still there in patch set 22, why?",
+      "parentUuid": "7d847899_5853219f",
+      "revId": "1efc6685a1996f20aacc223f23990a9b755ef083",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3f94b2b9_ac492a57",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
         "patchSetId": 4
