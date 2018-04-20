@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "db9e7e04_3b63a32f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "true, I forgot to remove this after moving to futureRpc.\nremoved.",
+      "parentUuid": "449cc1b8_46c2b255",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "81c2322d_eb172a79",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 26
@@ -30,6 +48,30 @@
       "writtenOn": "2018-04-19T15:35:53Z",
       "side": 1,
       "message": "why only onFailureLogLevel(DEBUG), here?  This could hide exceptions thrown in getEgressActionsForInterface() ... Check the JavaDoc of onFailureLogLevel() - are you sure you don\u0027t want to just remove this and keep the default error level?  Unless you expect those IllegalStateException you throw in getEgressActionsForInterface() to be very frequent and \"normal\"... but if they are, then this should be done differently instead.",
+      "range": {
+        "startLine": 262,
+        "startChar": 67,
+        "endLine": 262,
+        "endChar": 68
+      },
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed7f671a_a8ed6caf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "yes agreed, \nI guess I was trying to play it safe by putting DEBUG,\nbut that could supress if something was actually broke.\nDone.",
+      "parentUuid": "81c2322d_eb172a79",
       "range": {
         "startLine": 262,
         "startChar": 67,
@@ -59,6 +101,24 @@
     },
     {
       "key": {
+        "uuid": "5ef2226b_e97f8426",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "true, I forgot to remove this after moving to futureRpc.\nremoved.",
+      "parentUuid": "f49f1b6a_7195b7b4",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "41e774c7_98cb7f1c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 26
@@ -70,6 +130,24 @@
       "writtenOn": "2018-04-19T15:35:53Z",
       "side": 1,
       "message": "the idea was that one would use FutureRpcResults.fromBuilder(LOG, \"getTunnelType\", input, () -\u003e output) in places like this.",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30506bb2_2671197f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "cool, didn\u0027t explore the wrapper before.\nwill keep a look out.\ndone.",
+      "parentUuid": "41e774c7_98cb7f1c",
       "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "0d9194f3_675faaf7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 1071,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b55bae10_96ee3a6b",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "80ff81ed_ecd7ad3f",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 26
@@ -110,6 +206,24 @@
     },
     {
       "key": {
+        "uuid": "048614a9_295e74a1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 1079,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "80ff81ed_ecd7ad3f",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "58810d9c_e909214b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 26
@@ -121,6 +235,24 @@
       "writtenOn": "2018-04-19T15:35:53Z",
       "side": 1,
       "message": "as above, just use simple String concatenation is actually fine",
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d2fab25f_6a9c84e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 1088,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-20T13:55:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "58810d9c_e909214b",
       "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
