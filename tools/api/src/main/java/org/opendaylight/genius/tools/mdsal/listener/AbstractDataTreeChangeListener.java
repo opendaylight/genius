@@ -10,7 +10,6 @@ package org.opendaylight.genius.tools.mdsal.listener;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
@@ -30,32 +29,40 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 abstract class AbstractDataTreeChangeListener<T extends DataObject> implements DataTreeChangeListener<T>,
-        DataTreeChangeListenerActions<T>, AutoCloseable {
+        DataTreeChangeListenerActions<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
     private final DataBroker dataBroker;
     private final DataTreeIdentifier<T> dataTreeIdentifier;
     private ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
+    private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
     private DataStoreMetrics dataStoreMetrics;
 
-    @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         this.dataBroker = dataBroker;
         this.dataTreeIdentifier = dataTreeIdentifier;
     }
 
-    @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                    InstanceIdentifier<T> instanceIdentifier) {
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
     }
 
-    @Inject
     AbstractDataTreeChangeListener(DataBroker dataBroker,
                                    LogicalDatastoreType datastoreType,
                                    InstanceIdentifier<T> instanceIdentifier,
                                    MetricProvider metricProvider) {
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
         this.dataStoreMetrics = new DataStoreMetrics(metricProvider, getClass());
+    }
+
+    @Override
+    public void addBeforeListener(DataTreeChangeListener<T> listener) {
+        chainingDelegate.addBeforeListener(listener);
+    }
+
+    @Override
+    public void addAfterListener(DataTreeChangeListener<T> listener) {
+        chainingDelegate.addAfterListener(listener);
     }
 
     @PostConstruct
