@@ -29,11 +29,12 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author David Suárez (david.suarez.fuentes@gmail.com)
  */
 abstract class AbstractDataTreeChangeListener<T extends DataObject> implements DataTreeChangeListener<T>,
-        DataTreeChangeListenerActions<T>, AutoCloseable {
+        DataTreeChangeListenerActions<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
 
     private final DataBroker dataBroker;
     private final DataTreeIdentifier<T> dataTreeIdentifier;
     private ListenerRegistration<AbstractDataTreeChangeListener<T>> dataChangeListenerRegistration;
+    private final ChainableDataTreeChangeListenerImpl<T> chainingDelegate = new ChainableDataTreeChangeListenerImpl<>();
     private DataStoreMetrics dataStoreMetrics;
 
     AbstractDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
@@ -52,6 +53,16 @@ abstract class AbstractDataTreeChangeListener<T extends DataObject> implements D
                                    MetricProvider metricProvider) {
         this(dataBroker, new DataTreeIdentifier<>(datastoreType, instanceIdentifier));
         this.dataStoreMetrics = new DataStoreMetrics(metricProvider, getClass());
+    }
+
+    @Override
+    public void addBeforeListener(DataTreeChangeListener<T> listener) {
+        chainingDelegate.addBeforeListener(listener);
+    }
+
+    @Override
+    public void addAfterListener(DataTreeChangeListener<T> listener) {
+        chainingDelegate.addAfterListener(listener);
     }
 
     @PostConstruct
