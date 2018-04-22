@@ -1,0 +1,3 @@
+<config xmlns="urn:opendaylight:params:xml:ns:yang:mdsalutil">
+    <upgradeInProgress>false</upgradeInProgress>
+</config>
