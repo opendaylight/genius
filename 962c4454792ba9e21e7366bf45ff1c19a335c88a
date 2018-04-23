@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d18ce29_d229db5a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-04-23T06:32:22Z",
+      "side": 1,
+      "message": "Please provide support for external tunnels",
+      "revId": "962c4454792ba9e21e7366bf45ff1c19a335c88a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bbeb5174_ca011069",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-04-23T06:32:22Z",
+      "side": 1,
+      "message": "updateOperationalDS is done in both scenarios, so can it be made common outside the if-else block.",
+      "revId": "962c4454792ba9e21e7366bf45ff1c19a335c88a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b1146351_9e0fd9d5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-04-23T06:32:22Z",
+      "side": 1,
+      "message": "Is this a redundant check ?",
+      "revId": "962c4454792ba9e21e7366bf45ff1c19a335c88a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "602909b5_8349c79b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-04-23T06:32:22Z",
+      "side": 1,
+      "message": "Please provide support for external tunnels",
+      "revId": "962c4454792ba9e21e7366bf45ff1c19a335c88a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "efaffcb2_4ae39fd5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-04-23T06:32:22Z",
+      "side": 1,
+      "message": "This method is duplicated in this class and in ItmMonitorIntervalWorker. Can it be moved to Utils? If so, then the method name must be more specific.\nI find another method updateConfugration in directTunnelUtils - how is that different?",
+      "revId": "962c4454792ba9e21e7366bf45ff1c19a335c88a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
