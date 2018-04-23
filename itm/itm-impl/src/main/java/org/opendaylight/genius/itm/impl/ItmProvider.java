@@ -24,6 +24,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -41,6 +42,7 @@ import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -77,6 +79,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final OvsdbNodeListener ovsdbChangeListener;
     static short flag = 0;
     private final TunnelMonitoringConfig tunnelMonitoringConfig;
+    private final DpnTepStateCache dpnTepStateCache;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -91,7 +94,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        VtepConfigSchemaListener vtepConfigSchemaListener,
                        OvsdbNodeListener ovsdbNodeListener,
                        TunnelMonitoringConfig tunnelMonitoringConfig,
-                       EntityOwnershipService entityOwnershipService) {
+                       EntityOwnershipService entityOwnershipService,
+                       DpnTepStateCache dpnTepStateCache) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -106,6 +110,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.ovsdbChangeListener = ovsdbNodeListener;
         this.tunnelMonitoringConfig = tunnelMonitoringConfig;
         this.entityOwnershipService = entityOwnershipService;
+        this.dpnTepStateCache = dpnTepStateCache;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
@@ -343,5 +348,10 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         Pattern pattern = Pattern.compile(PTRN);
         Matcher matcher = pattern.matcher(ip);
         return matcher.matches();
+    }
+
+    @Override
+    public Interface getInterface(String tunnelName) {
+        return dpnTepStateCache.getInterfaceFromCache(tunnelName);
     }
 }
