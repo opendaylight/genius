@@ -84,6 +84,30 @@
     },
     {
       "key": {
+        "uuid": "d8e7c681_95282e3c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 26
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-23T06:51:58Z",
+      "side": 1,
+      "message": ".onFailureLogLevel(ERROR) is actually the default and not really needed, as explained in the javaDoc, but nevermind.",
+      "parentUuid": "ed7f671a_a8ed6caf",
+      "range": {
+        "startLine": 262,
+        "startChar": 67,
+        "endLine": 262,
+        "endChar": 68
+      },
+      "revId": "0b1842d897be60b051bf872815d9966ce146eec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f49f1b6a_7195b7b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 26
