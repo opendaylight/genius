@@ -18,10 +18,8 @@ import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +37,6 @@ public class TunnelListenerCreator implements AutoCloseable {
     public TunnelListenerCreator(final DataBroker dataBroker,
                                  final JobCoordinator coordinator,
                                  final EntityOwnershipUtils entityOwnershipUtils,
-                                 final IdManagerService idManager,
-                                 final IMdsalApiManager mdsalApiManager,
                                  final IInterfaceManager interfaceManager,
                                  final DirectTunnelUtils directTunnelUtils,
                                  final BfdStateCache bfdStateCache,
@@ -52,13 +48,13 @@ public class TunnelListenerCreator implements AutoCloseable {
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             LOG.trace("ITM Direct Tunnels is enabled. Initializing the listeners");
             this.dpnTepStateListener = new DpnTepStateListener(dataBroker, coordinator, entityOwnershipUtils,
-                    idManager, mdsalApiManager, dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache);
+                    dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache, directTunnelUtils);
             this.tunnelTopologyStateListener = new TunnelTopologyStateListener(dataBroker, coordinator,
-                    entityOwnershipUtils, idManager, mdsalApiManager, directTunnelUtils, dpnTepStateCache,
-                    dpntePsInfoCache, ovsBridgeEntryCache, unprocessedNodeConnectorCache);
+                    entityOwnershipUtils, directTunnelUtils, dpnTepStateCache, dpntePsInfoCache, ovsBridgeEntryCache,
+                    unprocessedNodeConnectorCache);
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
-                    entityOwnershipUtils, idManager, mdsalApiManager, tunnelStateCache, dpnTepStateCache,
-                    dpntePsInfoCache, unprocessedNodeConnectorCache);
+                    entityOwnershipUtils, tunnelStateCache, dpnTepStateCache, dpntePsInfoCache,
+                    unprocessedNodeConnectorCache, directTunnelUtils);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
                     coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
         } else {
