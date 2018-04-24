@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e290088_7300c3e3",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 1319,
+      "author": {
+        "id": 6328
+      },
+      "writtenOn": "2018-04-24T09:05:18Z",
+      "side": 1,
+      "message": "Wouldnt it be better to explain why unpause isnt handled here as update includes both pause and unpause.",
+      "range": {
+        "startLine": 1319,
+        "startChar": 11,
+        "endLine": 1319,
+        "endChar": 12
+      },
+      "revId": "2a958d40709264d48bba6222a7136c8c2319a94f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
