@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "2bded839_1101e55e",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-24T12:42:27Z",
+      "side": 1,
+      "message": "It seems it should cancel  prior to this loop.",
+      "parentUuid": "f9b202f9_36b13087",
+      "revId": "1620b06668886da8832240887fca982d8f0f0af1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a218da7_3b78f635",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
         "patchSetId": 5
@@ -47,6 +65,24 @@
       "writtenOn": "2018-04-24T11:47:38Z",
       "side": 1,
       "message": "I\u0027m missing something, how come the scheduled future doesn\u0027t need to be canceled here?",
+      "revId": "1620b06668886da8832240887fca982d8f0f0af1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3bedb847_9a8ae8ef",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-04-24T12:42:27Z",
+      "side": 1,
+      "message": "This is also called when the timer triggers.",
+      "parentUuid": "7a218da7_3b78f635",
       "revId": "1620b06668886da8832240887fca982d8f0f0af1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
