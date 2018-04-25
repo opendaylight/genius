@@ -9,14 +9,12 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.datastoreutils.DataStoreJobCoordinator;
@@ -128,8 +126,8 @@ public class OvsInterfaceConfigAddHelper {
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
 
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            futures.add(addLogicalTunnelGroup(interfaceNew, idManager, mdsalApiManager, txRunner,
-                                              defaultOperShardTransaction));
+            addLogicalTunnelGroup(interfaceNew, idManager, mdsalApiManager, txRunner,
+                                  defaultOperShardTransaction, futures);
             return;
         }
         boolean createTunnelPort = true;
@@ -179,14 +177,11 @@ public class OvsInterfaceConfigAddHelper {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
                     InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager, ifTunnel, dpId, portNo,
                             interfaceNew.getName(), ifState.getIfIndex(), NwConstants.ADD_FLOW);
-                    ListenableFuture<Void> future =
-                            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceNew,
-                                    Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
+                    FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceNew,
+                            Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
                     // start LLDP monitoring for the tunnel interface
-                    future.addListener(
-                        () -> AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
-                                ifTunnel, interfaceNew.getName()), MoreExecutors.directExecutor());
-                    futures.add(future);
+                    AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker, ifTunnel,
+                            interfaceNew.getName());
                 }
             }
         }
@@ -248,10 +243,9 @@ public class OvsInterfaceConfigAddHelper {
         return groupId;
     }
 
-    @CheckReturnValue
-    private static ListenableFuture<Void> addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager,
-            IMdsalApiManager mdsalApiManager, ManagedNewTransactionRunner txRunner,
-            WriteTransaction tx) {
+    private static void addLogicalTunnelGroup(Interface itfNew, IdManagerService idManager,
+                                              IMdsalApiManager mdsalApiManager, ManagedNewTransactionRunner txRunner,
+                                              WriteTransaction tx, List<ListenableFuture<Void>> futures) {
         String ifaceName = itfNew.getName();
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
@@ -264,8 +258,8 @@ public class OvsInterfaceConfigAddHelper {
                     null /*nodeConnectorId*/);
         long groupId = createLogicalTunnelSelectGroup(IfmUtil.getDpnFromInterface(ifState),
                                                       itfNew.getName(), ifState.getIfIndex(), mdsalApiManager);
-        return FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, itfNew, ifaceName,
-                                                                         ifState.getIfIndex(), groupId);
+        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, itfNew,
+                                                                  ifaceName, ifState.getIfIndex(), groupId);
     }
 
 }

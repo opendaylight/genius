@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +92,8 @@ public class OvsInterfaceStateAddHelper {
                 BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, txRunner,
                         ifState.getIfIndex());
-                futures.add(FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, iface,
-                        Long.toString(portNo), interfaceName, ifState.getIfIndex()));
+                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, iface,
+                        Long.toString(portNo), interfaceName, ifState.getIfIndex());
             }
         }));
 
@@ -112,12 +111,10 @@ public class OvsInterfaceStateAddHelper {
         InterfaceManagerCommonUtils.makeTunnelIngressFlow(futures, mdsalApiManager,
                 interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex,
                 NwConstants.ADD_FLOW);
-        ListenableFuture<Void> future =
-                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceInfo,
-                        Long.toString(portNo), interfaceName, ifIndex);
-        future.addListener(() -> AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
-                interfaceInfo.getAugmentation(IfTunnel.class), interfaceName), MoreExecutors.directExecutor());
-        futures.add(future);
+        FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, futures, interfaceInfo,
+                Long.toString(portNo), interfaceName, ifIndex);
+        AlivenessMonitorUtils.startLLDPMonitoring(alivenessMonitorService, dataBroker,
+                interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
     }
 
     private static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,

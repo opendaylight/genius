@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.CheckReturnValue;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -426,28 +425,26 @@ public class FlowBasedServicesUtils {
                         NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), ServiceModeEgress.class));
     }
 
-    @CheckReturnValue
-    public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
-            Interface interfaceInfo, String portNo, String interfaceName,
+    public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            List<ListenableFuture<Void>> futures, Interface interfaceInfo, String portNo, String interfaceName,
             int ifIndex) {
         List<Instruction> instructions =
                 IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex, 0);
-        return bindDefaultEgressDispatcherService(txRunner, interfaceName, instructions);
+        bindDefaultEgressDispatcherService(txRunner, futures, interfaceName, instructions);
     }
 
-    @CheckReturnValue
-    public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
-            Interface interfaceInfo, String interfaceName, int ifIndex,
+    public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            List<ListenableFuture<Void>> futures, Interface interfaceInfo, String interfaceName, int ifIndex,
             long groupId) {
         List<Instruction> instructions =
              IfmUtil.getEgressInstructionsForInterface(interfaceInfo, StringUtils.EMPTY, null, true, ifIndex, groupId);
-        return bindDefaultEgressDispatcherService(txRunner, interfaceName, instructions);
+        bindDefaultEgressDispatcherService(txRunner, futures, interfaceName, instructions);
     }
 
-    @CheckReturnValue
-    public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+    public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+            List<ListenableFuture<Void>> futures,
             String interfaceName, List<Instruction> instructions) {
-        return txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
             BoundServices
@@ -457,7 +454,7 @@ public class FlowBasedServicesUtils {
                                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
                             priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
             IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
-        });
+        }));
     }
 
     public static void removeIngressFlow(String interfaceName, BigInteger dpId, ManagedNewTransactionRunner txRunner,
