@@ -26,7 +26,19 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Karaf 3 -->
+      <!-- Artifacts for downstream use -->
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>mdsalutil-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>tools-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- Karaf Features -->
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>genius-features</artifactId>
