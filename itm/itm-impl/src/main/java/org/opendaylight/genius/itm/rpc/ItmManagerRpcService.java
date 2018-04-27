@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.rpc;
 
+import static java.util.Objects.requireNonNull;
+import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.ERROR;
 import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
@@ -34,15 +36,19 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -64,11 +70,18 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
@@ -124,7 +137,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.I
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdEnableOnTunnelInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.Computes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.ComputesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -150,13 +163,18 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final InterfaceManagerService interfaceManagerService;
     private final DpnTepStateCache dpnTepStateCache;
     private final TunnelStateCache tunnelStateCache;
+    private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+    private final DirectTunnelUtils directTunnelUtils;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
                                 final ItmConfig itmConfig, final DPNTEPsInfoCache dpnTEPsInfoCache,
                                 final IInterfaceManager interfaceManager, final DpnTepStateCache dpnTepStateCache,
                                 final TunnelStateCache tunnelStateCache,
-                                final InterfaceManagerService interfaceManagerService) {
+                                final InterfaceManagerService interfaceManagerService,
+                                final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                final DirectTunnelUtils directTunnelUtils) {
         this.dataBroker = dataBroker;
         this.mdsalManager = mdsalManager;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
@@ -166,6 +184,9 @@ public class ItmManagerRpcService implements ItmRpcService {
         this.interfaceManagerService = interfaceManagerService;
         this.dpnTepStateCache = dpnTepStateCache;
         this.tunnelStateCache = tunnelStateCache;
+        this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
+        this.directTunnelUtils = directTunnelUtils;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @PostConstruct
@@ -303,11 +324,35 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<Void>> setBfdEnableOnTunnel(SetBfdEnableOnTunnelInput input) {
-        //TODO
-        return null;
+    public Future<RpcResult<Void>> setBfdParamOnTunnel(
+            SetBfdParamOnTunnelInput input) {
+        BigInteger srcDpnId = new BigInteger(input.getSourceNode());
+        BigInteger destDpnId = new BigInteger(input.getDestinationNode());
+        DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
+        return fromListenableFuture(LOG, input,
+            () -> txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                requireNonNull(dpnTepInterfaceInfo, "dpnTepInterfaceInfo");
+                RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
+                remoteDpnsBuilder.setKey(new RemoteDpnsKey(destDpnId));
+                remoteDpnsBuilder.setDestinationDpnId(destDpnId);
+                remoteDpnsBuilder.setTunnelName(dpnTepInterfaceInfo.getTunnelName());
+                remoteDpnsBuilder.setInternal(dpnTepInterfaceInfo.isInternal());
+                if (input.isMonitoringEnabled() && input.getMonitoringInterval() != null) {
+                    remoteDpnsBuilder.setMonitoringInterval(input.getMonitoringInterval());
+                }
+                remoteDpnsBuilder.setMonitoringEnabled(input.isMonitoringEnabled());
+                RemoteDpns remoteDpn = remoteDpnsBuilder.build();
+                Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(srcDpnId);
+                directTunnelUtils.updateBfdConfiguration(srcDpnId, remoteDpn, ovsBridgeRefEntry);
+                InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class)
+                    .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
+                    .child(RemoteDpns.class,
+                        new RemoteDpnsKey(destDpnId)).build();
+                tx.merge(LogicalDatastoreType.CONFIGURATION, iid, remoteDpn);
+            })).withRpcErrorMessage(e -> String.format(
+                "Failed to update BFD configuration for the DPN Id {%d} due to %s",
+                srcDpnId, e.getMessage())).onFailureLogLevel(ERROR).build();
     }
-
 
     @Override
     public Future<RpcResult<Void>> removeExternalTunnelEndpoint(
