@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
@@ -63,7 +64,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.b
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
@@ -72,6 +77,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbPortInterfaceAttributes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
@@ -228,6 +234,11 @@ public final class DirectTunnelUtils {
                 .child(OvsBridgeRefEntry.class, bridgeRefEntryKey).build();
     }
 
+    public static InstanceIdentifier<DpnsTeps> createDpnTepsInstanceIdentifier(BigInteger sourceDpnId) {
+        return InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class,
+            new DpnsTepsKey(sourceDpnId)).build();
+    }
+
     public static InstanceIdentifier<OvsBridgeEntry> getOvsBridgeEntryIdentifier(OvsBridgeEntryKey bridgeEntryKey) {
         return InstanceIdentifier.builder(BridgeTunnelInfo.class).child(OvsBridgeEntry.class, bridgeEntryKey).build();
     }
@@ -252,6 +263,17 @@ public final class DirectTunnelUtils {
         bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
                 ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
         bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        return bfdParams;
+    }
+
+    public List<InterfaceBfd> getBfdParams(RemoteDpns remoteDpn) {
+        List<InterfaceBfd> bfdParams = new ArrayList<>();
+        bfdParams.add(getIfBfdObj(BFD_PARAM_ENABLE, remoteDpn != null ? remoteDpn.isMonitoringEnabled().toString()
+            : "false"));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, remoteDpn != null && remoteDpn.getMonitoringInterval() != null
+            ? remoteDpn.getMonitoringInterval().toString() : BFD_MIN_TX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        LOG.debug("getBfdParams {}", bfdParams);
         return bfdParams;
     }
 
@@ -467,5 +489,31 @@ public final class DirectTunnelUtils {
         InstanceIdentifier<StateTunnelList> stateTnlId =
                 ItmUtils.buildStateTunnelListId(new StateTunnelListKey(interfaceName));
         ITMBatchingUtils.delete(stateTnlId, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+    }
+
+    public void updateBfdConfiguration(BigInteger srcDpnId, RemoteDpns remoteDpn,
+                                       @Nonnull com.google.common.base.Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
+        if (ovsBridgeRefEntry.isPresent()) {
+            LOG.debug("creating bridge interface on dpn {}", srcDpnId);
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
+                (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
+                    .getOvsBridgeReference().getValue();
+            updateBfdParamtersForTerminationPoint(bridgeIid, remoteDpn);
+        }
+    }
+
+    public void updateBfdParamtersForTerminationPoint(InstanceIdentifier<?> bridgeIid, RemoteDpns remoteDpn) {
+        final InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
+            InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
+                org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang
+                    .network.topology.rev131021.network.topology.topology.Node.class)), remoteDpn.getTunnelName());
+        OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
+        List<InterfaceBfd> bfdParams = getBfdParams(remoteDpn);
+        tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+        LOG.debug("OvsdbTerminationPointAugmentation: {}", tpAugmentationBuilder);
+        TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
+        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        ITMBatchingUtils.update(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 }
