@@ -8,6 +8,7 @@
 package org.opendaylight.genius.datastoreutils.testutils;
 
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
@@ -20,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +103,23 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                     return Futures.immediateFailedCheckedFuture(submitException);
                 }
             }
+
+            @Override
+            public FluentFuture<? extends CommitInfo> commit() {
+                update();
+                if (submitException == null) {
+                    return super.commit();
+                } else {
+                    if (submitAndThrowException) {
+                        try {
+                            super.commit().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            LOG.warn("Exception while waiting for submitted transaction", e);
+                        }
+                    }
+                    return FluentFuture.from(Futures.immediateFailedFuture(submitException));
+                }
+            }
         };
     }
 
@@ -121,6 +140,23 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
                         }
                     }
                     return Futures.immediateFailedCheckedFuture(submitException);
+                }
+            }
+
+            @Override
+            public FluentFuture<? extends CommitInfo> commit() {
+                update();
+                if (submitException == null) {
+                    return super.commit();
+                } else {
+                    if (submitAndThrowException) {
+                        try {
+                            super.commit().get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            LOG.warn("Exception while waiting for submitted transaction", e);
+                        }
+                    }
+                    return FluentFuture.from(Futures.immediateFailedFuture(submitException));
                 }
             }
         };
