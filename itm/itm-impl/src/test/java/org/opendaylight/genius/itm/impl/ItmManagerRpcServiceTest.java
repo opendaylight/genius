@@ -31,6 +31,7 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
@@ -217,9 +218,12 @@ public class ItmManagerRpcServiceTest {
                         dpntePsInfoCache);
         TunnelStateCache tunnelStateCache =
                 new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
+        OvsBridgeRefEntryCache ovsBridgeRefEntryCache =
+            new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
 
         itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
-                dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService);
+            dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService,
+            ovsBridgeRefEntryCache, null);
     }
 
     @After
