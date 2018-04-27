@@ -13,9 +13,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.confighelpers.ItmMonitorToggleWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -34,12 +38,25 @@ public class TunnelMonitorChangeListener
 
     private final DataBroker broker;
     private final JobCoordinator jobCoordinator;
+    private final DirectTunnelUtils directTunnelUtils;
+    private final IInterfaceManager interfaceManager;
+    private final DpnTepStateCache dpnTepStateCache;
+    private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+
 
     @Inject
-    public TunnelMonitorChangeListener(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+    public TunnelMonitorChangeListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
+                                       final DirectTunnelUtils directTunnelUtils,
+                                       final DpnTepStateCache dpnTepStateCache,
+                                       final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                       final IInterfaceManager interfaceManager) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(TunnelMonitorParams.class));
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
+        this.directTunnelUtils = directTunnelUtils;
+        this.dpnTepStateCache = dpnTepStateCache;
+        this.interfaceManager = interfaceManager;
+        this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
     }
 
     @Override
@@ -58,7 +75,8 @@ public class TunnelMonitorChangeListener
                 LOG.debug("Remove - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
-                        false,monitorProtocol, broker);
+                    false,monitorProtocol, broker, directTunnelUtils, dpnTepStateCache,
+                    interfaceManager, ovsBridgeRefEntryCache);
                 jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -94,7 +112,8 @@ public class TunnelMonitorChangeListener
                 LOG.debug("Update - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModificationAfter.isEnabled(), monitorProtocol);
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
-                        dataObjectModificationAfter.isEnabled(), monitorProtocol, broker);
+                    false,monitorProtocol, broker, directTunnelUtils, dpnTepStateCache,
+                    interfaceManager, ovsBridgeRefEntryCache);
                 jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -119,7 +138,8 @@ public class TunnelMonitorChangeListener
                         + "monitoringProtocol {}",tzone.getZoneName(),dataObjectModification.isEnabled(),
                         dataObjectModification.getMonitorProtocol());
                 ItmMonitorToggleWorker toggleWorker = new ItmMonitorToggleWorker(tzone.getZoneName(),
-                        dataObjectModification.isEnabled(), monitorProtocol, broker);
+                    false,monitorProtocol, broker, directTunnelUtils, dpnTepStateCache,
+                    interfaceManager, ovsBridgeRefEntryCache);
                 jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
