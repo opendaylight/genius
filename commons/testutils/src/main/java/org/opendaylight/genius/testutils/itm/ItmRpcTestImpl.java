@@ -60,8 +60,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdEnableOnTunnelInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdEnableOnTunnelOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
@@ -209,8 +209,8 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     }
 
     @Override
-    public synchronized ListenableFuture<RpcResult<SetBfdEnableOnTunnelOutput>> setBfdEnableOnTunnel(
-            SetBfdEnableOnTunnelInput input) {
+    public synchronized ListenableFuture<RpcResult<SetBfdParamOnTunnelOutput>> setBfdParamOnTunnel(
+            SetBfdParamOnTunnelInput input) {
         throw new UnsupportedOperationException("TODO");
     }
 
