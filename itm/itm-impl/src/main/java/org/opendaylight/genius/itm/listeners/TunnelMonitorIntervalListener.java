@@ -13,8 +13,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.confighelpers.ItmMonitorIntervalWorker;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
@@ -31,12 +35,24 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
 
     private final DataBroker broker;
     private final JobCoordinator jobCoordinator;
+    private final DirectTunnelUtils directTunnelUtils;
+    private final IInterfaceManager interfaceManager;
+    private final DpnTepStateCache dpnTepStateCache;
+    private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
 
     @Inject
-    public TunnelMonitorIntervalListener(DataBroker dataBroker, JobCoordinator jobCoordinator) {
+    public TunnelMonitorIntervalListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
+                                         final DirectTunnelUtils directTunnelUtils,
+                                         final DpnTepStateCache dpnTepStateCache,
+                                         final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                         final IInterfaceManager interfaceManager) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(TunnelMonitorInterval.class));
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
+        this.directTunnelUtils = directTunnelUtils;
+        this.dpnTepStateCache = dpnTepStateCache;
+        this.interfaceManager = interfaceManager;
+        this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
     }
 
     @Override
@@ -53,8 +69,8 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                 LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
-                                                                                     dataObjectModification
-                                                                                             .getInterval(), broker);
+                    dataObjectModification.getInterval(), broker, directTunnelUtils,
+                    dpnTepStateCache, interfaceManager, ovsBridgeRefEntryCache);
                 jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
             }
         }
@@ -74,8 +90,8 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModificationAfter.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
-                                                                                       dataObjectModificationAfter
-                                                                                               .getInterval(), broker);
+                    dataObjectModificationAfter.getInterval(), broker, directTunnelUtils,
+                    dpnTepStateCache, interfaceManager, ovsBridgeRefEntryCache);
                 jobCoordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
         }
@@ -94,8 +110,8 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                 LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModification.getInterval());
                 ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
-                                                                                       dataObjectModification
-                                                                                               .getInterval(), broker);
+                    dataObjectModification.getInterval(), broker, directTunnelUtils,
+                    dpnTepStateCache, interfaceManager, ovsBridgeRefEntryCache);
                 //conversion to milliseconds done while writing to i/f-mgr config DS
                 jobCoordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
             }
