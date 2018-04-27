@@ -8,9 +8,11 @@
 package org.opendaylight.genius.infra;
 
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.controller.md.sal.binding.api.ForwardingReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 
 /**
  * ReadWriteTransaction which cannot be {@link ReadWriteTransaction#cancel()},
@@ -32,5 +34,10 @@ class NonSubmitCancelableReadWriteTransaction extends ForwardingReadWriteTransac
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> submit() {
         throw new UnsupportedOperationException("submit() cannot be used inside a Managed[New]TransactionRunner");
+    }
+
+    @Override
+    public FluentFuture<? extends CommitInfo> commit() {
+        throw new UnsupportedOperationException("commit() cannot be used inside a Managed[New]TransactionRunner");
     }
 }
