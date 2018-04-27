@@ -15,6 +15,7 @@ Contents:
    itm-tunnel-auto-config
    multiple-vxlan-tunnels
    of-tunnels
+   ovsdb-reconciliation
    qos-shaping
    service-binding-on-tunnels
    service-recovery
