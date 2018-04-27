@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9b07f8d2_b6a03449",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 30
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-04-27T07:14:36Z",
+      "side": 1,
+      "message": "Can you change this to ListenableFuture to prepare for TSC-99?",
+      "range": {
+        "startLine": 219,
+        "startChar": 11,
+        "endLine": 219,
+        "endChar": 17
+      },
+      "revId": "cfabe574e46db965ee6e26c58cb0e22ab38e2100",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
