@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e8c70f0_c2929632",
+        "filename": "features/odl-genius-srm/pom.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-27T12:52:41Z",
+      "side": 1,
+      "message": "? Seems misleading\nCan come after srm related dependencies ?",
+      "range": {
+        "startLine": 27,
+        "startChar": 4,
+        "endLine": 27,
+        "endChar": 8
+      },
+      "revId": "a5648452d472d58f63e4cf0e41d2653f93d19a4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8fb9b50_149ce601",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-27T12:52:41Z",
+      "side": 1,
+      "message": "This can be imported as static",
+      "range": {
+        "startLine": 275,
+        "startChar": 33,
+        "endLine": 275,
+        "endChar": 45
+      },
+      "revId": "a5648452d472d58f63e4cf0e41d2653f93d19a4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ea723ed_c05a6c73",
+        "filename": "srm/shell/src/main/java/org/opendaylight/genius/srm/shell/SrmDebugCommand.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-27T12:52:41Z",
+      "side": 1,
+      "message": "Can be written in the previous line\ntx.delete().submit();",
+      "range": {
+        "startLine": 49,
+        "startChar": 11,
+        "endLine": 49,
+        "endChar": 17
+      },
+      "revId": "a5648452d472d58f63e4cf0e41d2653f93d19a4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2df2c114_6d46498f",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/listener/AbstractAsyncDataTreeChangeListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-27T12:52:41Z",
+      "side": 1,
+      "message": "Not followed by new line",
+      "range": {
+        "startLine": 13,
+        "startChar": 19,
+        "endLine": 13,
+        "endChar": 20
+      },
+      "revId": "a5648452d472d58f63e4cf0e41d2653f93d19a4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c50ea80_5c4621ff",
+        "filename": "tools/api/src/main/java/org/opendaylight/genius/tools/mdsal/listener/AbstractClusteredSyncDataTreeChangeListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-27T12:52:41Z",
+      "side": 1,
+      "message": "Not followed by newline",
+      "range": {
+        "startLine": 12,
+        "startChar": 7,
+        "endLine": 12,
+        "endChar": 12
+      },
+      "revId": "a5648452d472d58f63e4cf0e41d2653f93d19a4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
