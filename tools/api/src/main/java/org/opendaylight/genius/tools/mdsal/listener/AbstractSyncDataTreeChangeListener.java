@@ -9,7 +9,6 @@ package org.opendaylight.genius.tools.mdsal.listener;
 
 import java.util.Collection;
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
@@ -32,18 +31,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public abstract class AbstractSyncDataTreeChangeListener<T extends DataObject> extends
         AbstractDataTreeChangeListener<T> {
 
-    @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, DataTreeIdentifier<T> dataTreeIdentifier) {
         super(dataBroker, dataTreeIdentifier);
     }
 
-    @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                               InstanceIdentifier<T> instanceIdentifier) {
         super(dataBroker, datastoreType, instanceIdentifier);
     }
 
-    @Inject
     public AbstractSyncDataTreeChangeListener(DataBroker dataBroker, LogicalDatastoreType datastoreType,
                                               InstanceIdentifier<T> instanceIdentifier,
                                               MetricProvider metricProvider) {
