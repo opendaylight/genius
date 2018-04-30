@@ -61,14 +61,17 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorUnpauseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorUnpauseInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorUnpauseOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringMode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryBuilder;
@@ -90,8 +93,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.Od
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -166,7 +171,7 @@ public class AlivenessMonitorTest {
         MockitoAnnotations.initMocks(this);
         when(idManager.createIdPool(any(CreateIdPoolInput.class)))
                 .thenReturn(Futures.immediateFuture(
-                        RpcResultBuilder.<Void>success().build()));
+                        RpcResultBuilder.<CreateIdPoolOutput>success().build()));
 
         AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistryImpl();
         alivenessMonitor = new AlivenessMonitor(dataBroker, idManager,
@@ -183,7 +188,7 @@ public class AlivenessMonitorTest {
                                         .setIdValue(mockId++).build())
                                 .build()));
         when(idManager.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures
-                .immediateFuture(RpcResultBuilder.<Void>success().build()));
+                .immediateFuture(RpcResultBuilder.<ReleaseIdOutput>success().build()));
         doReturn(readTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(writeTx).when(dataBroker).newWriteOnlyTransaction();
         doReturn(readWriteTx).when(dataBroker).newReadWriteTransaction();
@@ -338,7 +343,7 @@ public class AlivenessMonitorTest {
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
                         .thenReturn(Futures.immediateCheckedFuture(optMap));
-        RpcResult<Void> result = alivenessMonitor.monitorUnpause(input).get();
+        RpcResult<MonitorUnpauseOutput> result = alivenessMonitor.monitorUnpause(input).get();
         verify(readWriteTx).merge(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringState.class)), stateCaptor.capture());
         assertEquals(MonitorStatus.Started, stateCaptor.getValue().getStatus());
@@ -375,7 +380,7 @@ public class AlivenessMonitorTest {
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(InterfaceMonitorEntry.class))))
                         .thenReturn(Futures.immediateCheckedFuture(optEntry));
-        RpcResult<Void> result = alivenessMonitor.monitorStop(input).get();
+        RpcResult<MonitorStopOutput> result = alivenessMonitor.monitorStop(input).get();
         verify(idManager).releaseId(any(ReleaseIdInput.class));
         verify(writeTx, times(2)).delete(eq(LogicalDatastoreType.OPERATIONAL),
                 any(InstanceIdentifier.class));
@@ -392,7 +397,7 @@ public class AlivenessMonitorTest {
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitorProfile.class))))
                         .thenReturn(Futures.immediateCheckedFuture(optProfile));
-        RpcResult<Void> result = alivenessMonitor.monitorProfileDelete(input)
+        RpcResult<MonitorProfileDeleteOutput> result = alivenessMonitor.monitorProfileDelete(input)
                 .get();
         verify(idManager).releaseId(any(ReleaseIdInput.class));
         verify(readWriteTx).delete(eq(LogicalDatastoreType.OPERATIONAL),
