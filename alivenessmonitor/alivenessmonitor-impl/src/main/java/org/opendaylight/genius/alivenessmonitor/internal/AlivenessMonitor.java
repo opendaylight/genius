@@ -59,27 +59,7 @@ import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEventBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStatus;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorUnpauseInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringMode;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringStates;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryKey;
@@ -98,14 +78,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitorid.key.map.MonitoridKeyEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringStateBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketInReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
@@ -221,8 +194,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 .setPoolName(AlivenessMonitorConstants.MONITOR_IDPOOL_NAME)
                 .setLow(AlivenessMonitorConstants.MONITOR_IDPOOL_START)
                 .setHigh(AlivenessMonitorConstants.MONITOR_IDPOOL_SIZE).build();
-        Future<RpcResult<Void>> resultFuture = idManager.createIdPool(createPool);
-        Futures.addCallback(JdkFutureAdapters.listenInPoolThread(resultFuture), new FutureCallback<RpcResult<Void>>() {
+        ListenableFuture<RpcResult<CreateIdPoolOutput>> resultFuture = idManager.createIdPool(createPool);
+        Futures.addCallback(JdkFutureAdapters.listenInPoolThread(resultFuture),
+                new FutureCallback<RpcResult<CreateIdPoolOutput>>() {
 
             @Override
             public void onFailure(Throwable error) {
@@ -230,7 +204,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             }
 
             @Override
-            public void onSuccess(@Nonnull RpcResult<Void> result) {
+            public void onSuccess(@Nonnull RpcResult<CreateIdPoolOutput> result) {
                 if (result.isSuccessful()) {
                     LOG.debug("Created IdPool for Aliveness Monitor Service");
                 } else {
@@ -263,8 +237,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         ReleaseIdInput idInput = new ReleaseIdInputBuilder().setPoolName(AlivenessMonitorConstants.MONITOR_IDPOOL_NAME)
                 .setIdKey(idKey).build();
         try {
-            Future<RpcResult<Void>> result = idManager.releaseId(idInput);
-            RpcResult<Void> rpcResult = result.get();
+            ListenableFuture<RpcResult<ReleaseIdOutput>> result = idManager.releaseId(idInput);
+            RpcResult<ReleaseIdOutput> rpcResult = result.get();
             if (!rpcResult.isSuccessful()) {
                 LOG.warn("RPC Call to release Id {} returned with Errors {}", idKey, rpcResult.getErrors());
             }
@@ -449,7 +423,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<MonitorStartOutput>> monitorStart(MonitorStartInput input) {
+    public ListenableFuture<RpcResult<MonitorStartOutput>> monitorStart(MonitorStartInput input) {
         RpcResultBuilder<MonitorStartOutput> rpcResultBuilder;
         final Config in = input.getConfig();
         Long profileId = in.getProfileId();
@@ -619,30 +593,31 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorPause(MonitorPauseInput input) {
+    public ListenableFuture<RpcResult<MonitorPauseOutput>> monitorPause(MonitorPauseInput input) {
         LOG.debug("Monitor Pause operation invoked for monitor id: {}", input.getMonitorId());
-        SettableFuture<RpcResult<Void>> result = SettableFuture.create();
+        SettableFuture<RpcResult<MonitorPauseOutput>> result = SettableFuture.create();
         final Long monitorId = input.getMonitorId();
 
         // Set the monitoring status to Paused
         updateMonitorStatusTo(monitorId, MonitorStatus.Paused, currentStatus -> currentStatus == MonitorStatus.Started);
 
         if (stopMonitoringTask(monitorId)) {
-            result.set(RpcResultBuilder.<Void>success().build());
+            result.set(RpcResultBuilder.<MonitorPauseOutput>success().build());
         } else {
             String errorMsg = String.format("No Monitoring Task availble to pause for the given monitor id : %d",
                     monitorId);
             LOG.error("Monitor Pause operation failed- {}", errorMsg);
-            result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, errorMsg).build());
+            result.set(RpcResultBuilder.<MonitorPauseOutput>failed()
+                    .withError(ErrorType.APPLICATION, errorMsg).build());
         }
 
         return result;
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorUnpause(MonitorUnpauseInput input) {
+    public ListenableFuture<RpcResult<MonitorUnpauseOutput>> monitorUnpause(MonitorUnpauseInput input) {
         LOG.debug("Monitor Unpause operation invoked for monitor id: {}", input.getMonitorId());
-        final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
+        final SettableFuture<RpcResult<MonitorUnpauseOutput>> result = SettableFuture.create();
 
         final Long monitorId = input.getMonitorId();
         final ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
@@ -656,7 +631,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 tx.close();
                 String msg = String.format("Unable to read monitoring info associated with monitor id %d", monitorId);
                 LOG.error("Monitor unpause Failed. {}", msg, error);
-                result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error).build());
+                result.set(RpcResultBuilder.<MonitorUnpauseOutput>failed()
+                        .withError(ErrorType.APPLICATION, msg, error).build());
             }
 
             @Override
@@ -673,7 +649,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                             String msg = String.format("Unable to read Monitoring profile associated with id %d",
                                     info.getProfileId());
                             LOG.warn("Monitor unpause Failed. {}", msg, error);
-                            result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error)
+                            result.set(RpcResultBuilder.<MonitorUnpauseOutput>failed().withError(ErrorType.APPLICATION, msg, error)
                                     .build());
                         }
 
@@ -694,13 +670,14 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                                 } else {
                                     scheduleMonitoringTask(info, profile.getMonitorInterval());
                                 }
-                                result.set(RpcResultBuilder.<Void>success().build());
+                                result.set(RpcResultBuilder.<MonitorUnpauseOutput>success().build());
                             } else {
                                 String msg = String.format("Monitoring profile associated with id %d is not present",
                                         info.getProfileId());
                                 LOG.warn("Monitor unpause Failed. {}", msg);
                                 result.set(
-                                        RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg).build());
+                                        RpcResultBuilder.<MonitorUnpauseOutput>failed()
+                                                .withError(ErrorType.APPLICATION, msg).build());
                             }
                         }
                     }, callbackExecutorService);
@@ -708,7 +685,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     tx.close();
                     String msg = String.format("Monitoring info associated with id %d is not present", monitorId);
                     LOG.warn("Monitor unpause Failed. {}", msg);
-                    result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg).build());
+                    result.set(RpcResultBuilder.<MonitorUnpauseOutput>failed()
+                            .withError(ErrorType.APPLICATION, msg).build());
                 }
             }
         }, callbackExecutorService);
@@ -901,7 +879,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<MonitorProfileCreateOutput>> monitorProfileCreate(final MonitorProfileCreateInput input) {
+    public ListenableFuture<RpcResult<MonitorProfileCreateOutput>> monitorProfileCreate(
+            final MonitorProfileCreateInput input) {
         LOG.debug("Monitor Profile Create operation - {}", input.getProfile());
         final SettableFuture<RpcResult<MonitorProfileCreateOutput>> returnFuture = SettableFuture.create();
         Profile profile = input.getProfile();
@@ -971,7 +950,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<MonitorProfileGetOutput>> monitorProfileGet(MonitorProfileGetInput input) {
+    public ListenableFuture<RpcResult<MonitorProfileGetOutput>> monitorProfileGet(MonitorProfileGetInput input) {
         LOG.debug("Monitor Profile Get operation for input profile- {}", input.getProfile());
         RpcResultBuilder<MonitorProfileGetOutput> rpcResultBuilder;
         final Long profileId = getExistingProfileId(input);
@@ -1004,14 +983,16 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorProfileDelete(final MonitorProfileDeleteInput input) {
+    public ListenableFuture<RpcResult<MonitorProfileDeleteOutput>> monitorProfileDelete(
+            final MonitorProfileDeleteInput input) {
         LOG.debug("Monitor Profile delete for Id: {}", input.getProfileId());
-        final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
+        final SettableFuture<RpcResult<MonitorProfileDeleteOutput>> result = SettableFuture.create();
         final Long profileId = input.getProfileId();
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         ListenableFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(profileId));
-        ListenableFuture<RpcResult<Void>> writeFuture = Futures.transformAsync(readFuture, optProfile -> {
+        ListenableFuture<RpcResult<MonitorProfileDeleteOutput>> writeFuture = Futures.transformAsync(readFuture,
+                optProfile -> {
             if (optProfile.isPresent()) {
                 tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId));
                 Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
@@ -1020,7 +1001,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                             String msg = String.format("Error when removing monitor profile %d from datastore",
                                     profileId);
                             LOG.error("Error when removing monitor profile {} from datastore", profileId, error);
-                            result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error)
+                            result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>failed()
+                                    .withError(ErrorType.APPLICATION, msg, error)
                                     .build());
                         }
 
@@ -1031,29 +1013,29 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                                     profile.getMonitorInterval(), profile.getMonitorWindow(),
                                     profile.getProtocolType());
                             releaseId(id);
-                            result.set(RpcResultBuilder.<Void>success().build());
+                            result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>success().build());
                         }
                     }, callbackExecutorService);
             } else {
                 String msg = String.format("Monitor profile with Id: %d does not exist", profileId);
                 LOG.info(msg);
-                result.set(RpcResultBuilder.<Void>success()
+                result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>success()
                             .withWarning(ErrorType.PROTOCOL, "invalid-value", msg).build());
             }
             return result;
         }, callbackExecutorService);
 
-        Futures.addCallback(writeFuture, new FutureCallback<RpcResult<Void>>() {
+        Futures.addCallback(writeFuture, new FutureCallback<RpcResult<MonitorProfileDeleteOutput>>() {
 
             @Override
             public void onFailure(Throwable error) {
                 String msg = String.format("Error when removing monitor profile %d from datastore", profileId);
                 LOG.error("Error when removing monitor profile {} from datastore", profileId, error);
-                result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, msg, error).build());
+                result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>failed().withError(ErrorType.APPLICATION, msg, error).build());
             }
 
             @Override
-            public void onSuccess(RpcResult<Void> noarg) {
+            public void onSuccess(RpcResult<MonitorProfileDeleteOutput> noarg) {
                 LOG.debug("Successfully removed Monitor Profile {}", profileId);
             }
         }, callbackExecutorService);
@@ -1061,9 +1043,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorStop(MonitorStopInput input) {
+    public ListenableFuture<RpcResult<MonitorStopOutput>> monitorStop(MonitorStopInput input) {
         LOG.debug("Monitor Stop operation for monitor id - {}", input.getMonitorId());
-        SettableFuture<RpcResult<Void>> result = SettableFuture.create();
+        SettableFuture<RpcResult<MonitorStopOutput>> result = SettableFuture.create();
 
         final Long monitorId = input.getMonitorId();
         Optional<MonitoringInfo> optInfo =
@@ -1097,11 +1079,11 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 lockMap.remove(monitorKey);
             }
 
-            result.set(RpcResultBuilder.<Void>success().build());
+            result.set(RpcResultBuilder.<MonitorStopOutput>success().build());
         } else {
             String errorMsg = String.format("Do not have monitoring information associated with key %d", monitorId);
             LOG.error("Delete monitoring operation Failed - {}", errorMsg);
-            result.set(RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, errorMsg).build());
+            result.set(RpcResultBuilder.<MonitorStopOutput>failed().withError(ErrorType.APPLICATION, errorMsg).build());
         }
 
         return result;
