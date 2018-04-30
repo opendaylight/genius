@@ -60,6 +60,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
@@ -176,7 +177,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         CreateIdPoolInput createPool = new CreateIdPoolInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
                 .setLow(IfmConstants.IFM_ID_POOL_START).setHigh(IfmConstants.IFM_ID_POOL_END).build();
         // TODO: Error handling
-        Future<RpcResult<Void>> result = idManager.createIdPool(createPool);
+        ListenableFuture<RpcResult<CreateIdPoolOutput>> result = idManager.createIdPool(createPool);
         try {
             if (result != null && result.get().isSuccessful()) {
                 LOG.debug("Created IdPool for InterfaceMgr");
