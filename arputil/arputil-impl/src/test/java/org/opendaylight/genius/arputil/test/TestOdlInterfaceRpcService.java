@@ -17,6 +17,8 @@ import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+
+import com.google.common.util.concurrent.ListenableFuture;
 import org.mockito.Mockito;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
@@ -42,7 +44,7 @@ public abstract class TestOdlInterfaceRpcService implements OdlInterfaceRpcServi
     }
 
     @Override
-    public Future<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
+    public ListenableFuture<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
         RpcResultBuilder<GetPortFromInterfaceOutput> rpcResultBuilder;
         GetPortFromInterfaceOutputBuilder output = new GetPortFromInterfaceOutputBuilder().setDpid(DPN_ID)
                 .setPortname(INTERFACE_NAME).setPortno(PORT_NUMBER).setPhyAddress("1F:1F:1F:1F:1F:1F");
@@ -52,7 +54,7 @@ public abstract class TestOdlInterfaceRpcService implements OdlInterfaceRpcServi
     }
 
     @Override
-    public Future<RpcResult<GetEgressActionsForInterfaceOutput>>
+    public ListenableFuture<RpcResult<GetEgressActionsForInterfaceOutput>>
         getEgressActionsForInterface(GetEgressActionsForInterfaceInput input) {
 
         RpcResultBuilder<GetEgressActionsForInterfaceOutput> rpcResultBuilder;
@@ -70,7 +72,7 @@ public abstract class TestOdlInterfaceRpcService implements OdlInterfaceRpcServi
     }
 
     @Override
-    public Future<RpcResult<GetInterfaceFromIfIndexOutput>>
+    public ListenableFuture<RpcResult<GetInterfaceFromIfIndexOutput>>
         getInterfaceFromIfIndex(GetInterfaceFromIfIndexInput input) {
         RpcResultBuilder<GetInterfaceFromIfIndexOutput> rpcResultBuilder;
         GetInterfaceFromIfIndexOutputBuilder output = new GetInterfaceFromIfIndexOutputBuilder()

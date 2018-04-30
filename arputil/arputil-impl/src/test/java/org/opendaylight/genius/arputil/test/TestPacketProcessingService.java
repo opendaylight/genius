@@ -11,6 +11,8 @@ import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrExc
 
 import com.google.common.util.concurrent.Futures;
 import java.util.concurrent.Future;
+
+import com.google.common.util.concurrent.ListenableFuture;
 import org.mockito.Mockito;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
@@ -24,7 +26,7 @@ public class TestPacketProcessingService implements PacketProcessingService {
     }
 
     @Override
-    public Future<RpcResult<Void>> transmitPacket(TransmitPacketInput input) {
+    public ListenableFuture<RpcResult<Void>> transmitPacket(TransmitPacketInput input) {
         RpcResultBuilder<Void> rpcResultBuilder = RpcResultBuilder.success();
         return Futures.immediateFuture(rpcResultBuilder.build());
     }

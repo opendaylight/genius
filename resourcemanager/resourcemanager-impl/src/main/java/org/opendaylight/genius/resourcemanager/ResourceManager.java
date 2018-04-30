@@ -20,6 +20,8 @@ import java.util.concurrent.Future;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import com.google.common.util.concurrent.ListenableFuture;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -117,7 +119,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<AllocateResourceOutput>> allocateResource(AllocateResourceInput input) {
+    public ListenableFuture<RpcResult<AllocateResourceOutput>> allocateResource(AllocateResourceInput input) {
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
         Objects.requireNonNull(input.getIdKey(), RESOURCE_ID_CANNOT_BE_NULL);
         Objects.requireNonNull(input.getSize(), RESOURCE_SIZE_CANNOT_BE_NULL);
@@ -152,7 +154,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<GetResourcePoolOutput>> getResourcePool(GetResourcePoolInput input) {
+    public ListenableFuture<RpcResult<GetResourcePoolOutput>> getResourcePool(GetResourcePoolInput input) {
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
         Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_CANNOT_BE_NULL);
 
@@ -213,7 +215,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<GetAvailableResourcesOutput>> getAvailableResources(GetAvailableResourcesInput input) {
+    public ListenableFuture<RpcResult<GetAvailableResourcesOutput>> getAvailableResources(GetAvailableResourcesInput input) {
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
         Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_NOT_FOUND);
 
@@ -272,7 +274,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<Void>> releaseResource(ReleaseResourceInput input) {
+    public ListenableFuture<RpcResult<Void>> releaseResource(ReleaseResourceInput input) {
         Objects.requireNonNull(input.getIdKey(), RESOURCE_ID_CANNOT_BE_NULL);
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
 
