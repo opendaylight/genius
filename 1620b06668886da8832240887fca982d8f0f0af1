@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c3c161f9_49950aa9",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/datastoreutils/listeners/DataTreeEventCallbackRegistrar.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-30T10:25:36Z",
+      "side": 1,
+      "message": "Done in Patch Set 6 (currently a Draft, as more is coming anyway).",
+      "parentUuid": "aa4615d3_6efb824e",
+      "revId": "1620b06668886da8832240887fca982d8f0f0af1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f9b202f9_36b13087",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
         "patchSetId": 5
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "765ae9aa_c6ee44d7",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-30T10:25:36Z",
+      "side": 1,
+      "message": "I\u0027ll do this in the next Change Set, but in order to be able to do this TDD and cover this possible issue in a new testTimeoutCallbackNotInvokedWhileHandlingChangeNotification(), first need to have a TestableDataBroker and TestableScheduledExecutorService - which I thought Tom wanted to do in a separate follow-up change; but I\u0027ll make a start with this in this change already, to take this into account.  \n\nI agree with needing some sort of locking and will propose something in that direction.  I disagree that we should cancel the ScheduledFuture on every onDataTreeChanged (if that is what you both meant here?), because: (a) that would require a new scheduledExecutorService.schedule() in case of NextAction.CALL_AGAIN, which means that the timeout restarts on every onDataTreeChanged() instead of from DataTreeEventCallbackRegistrar\u0027s onAdd|[Or]Update|Remove()  onwards, unless we \"compensate\" for it (which would be somewhat imprecise?); and (b) not sure how performant doing a lot of burst schedule() are.",
+      "parentUuid": "aab2f667_4889ba28",
+      "revId": "1620b06668886da8832240887fca982d8f0f0af1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a218da7_3b78f635",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
         "patchSetId": 5
@@ -101,6 +137,24 @@
       "side": 1,
       "message": "This is also called when the timer triggers.",
       "parentUuid": "7a218da7_3b78f635",
+      "revId": "1620b06668886da8832240887fca982d8f0f0af1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d138e17_3b21916a",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-04-30T10:25:36Z",
+      "side": 1,
+      "message": "Josh I believe you are missing that in line 214 above (in this change set; it will move in the next) there is a timeOutScheduledFuture.cancel().",
+      "parentUuid": "3bedb847_9a8ae8ef",
       "revId": "1620b06668886da8832240887fca982d8f0f0af1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
