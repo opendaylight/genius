@@ -7,7 +7,10 @@
  */
 package org.opendaylight.genius.itm.rpc;
 
+import org.opendaylight.genius.mdsalutil.*;
+import org.opendaylight.genius.mdsalutil.actions.*;
 import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.*;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Optional;
@@ -44,12 +47,6 @@ import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
-import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
-import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
-import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
@@ -185,6 +182,15 @@ public class ItmManagerRpcService implements ItmRpcService {
         BigInteger destinationDpn = input.getDestinationDpid();
         Optional<InternalTunnel> optTunnel = Optional.absent();
 
+        if (interfaceManager.isItmDirectTunnelsEnabled()) {
+            DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getDpnTepInterface(sourceDpn, destinationDpn);
+            if (interfaceInfo != null) {
+                resultBld = RpcResultBuilder.success();
+                resultBld.withResult(new GetTunnelInterfaceNameOutputBuilder()
+                        .setInterfaceName(interfaceInfo.getTunnelName())).build();
+                return Futures.immediateFuture(resultBld.build());
+            }
+        }
         if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
             optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn,
                                                          TunnelTypeLogicalGroup.class, dataBroker);
@@ -202,10 +208,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                 resultBld = RpcResultBuilder.success();
                 resultBld.withResult(output.build());
             } else {
+                LOG.trace("###TunnelIf not found 1");
                 resultBld = RpcResultBuilder.failed();
             }
 
         } else {
+            LOG.trace("###TunnelIF not found 2");
             resultBld = RpcResultBuilder.failed();
         }
         return Futures.immediateFuture(resultBld.build());
@@ -220,8 +228,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                     .withError(RpcError.ErrorType.APPLICATION,
                     "tunnel name not set for GetEgressActionsForTunnel call").build());
         }
-
-        if (!dpnTepStateCache.isInternal(tunnelName) && !interfaceManager.isItmDirectTunnelsEnabled()) {
+        LOG.trace("###Tunnel egress actions for {}", tunnelName);
+        if (!dpnTepStateCache.isInternal(tunnelName) || !interfaceManager.isItmDirectTunnelsEnabled()) {
             // Re-direct the RPC to Interface Manager
             // From the rpc input and get the output and copy to output
             org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406
@@ -573,6 +581,17 @@ public class ItmManagerRpcService implements ItmRpcService {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
                     Optional<InternalTunnel> optTunnel = Optional.absent();
+                    if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                        DpnTepInterfaceInfo interfaceInfo =
+                                dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID());
+                        if (interfaceInfo != null) {
+                            resultBld = RpcResultBuilder.success();
+                            resultBld.withResult(new GetInternalOrExternalInterfaceNameOutputBuilder()
+                                    .setInterfaceName(interfaceInfo.getTunnelName())).build();
+                            return Futures.immediateFuture(resultBld.build());
+                        }
+                    }
+
                     if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
                         optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
                                                                      TunnelTypeLogicalGroup.class, dataBroker);
@@ -1087,14 +1106,17 @@ public class ItmManagerRpcService implements ItmRpcService {
         if (interfaceInfo == null) {
             throw new IllegalStateException("Interface information not present in config DS for" + interfaceName);
         }
+        LOG.trace("###InterfaceInfo found for {}", interfaceName);
         Optional<StateTunnelList> ifState = tunnelStateCache
                 .get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
         if (ifState.isPresent()) {
+            LOG.trace("###InterfaceState present for {}", interfaceName);
             String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
             List<Action> actions = getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(),
                     tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
             return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
         }
+        LOG.trace("###Interface information not present in oper DS for" + interfaceName);
         throw new IllegalStateException("Interface information not present in oper DS for" + interfaceName);
     }
 
