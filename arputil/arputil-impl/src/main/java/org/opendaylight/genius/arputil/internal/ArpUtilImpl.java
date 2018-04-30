@@ -60,7 +60,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.Ma
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpResponseInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpResponseOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput;
@@ -85,6 +87,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.SendToController;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketOutput;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
@@ -159,7 +162,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public Future<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
+    public ListenableFuture<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
         try {
             final String dstIpAddress = getIpAddressInString(input.getIpaddress());
             LOG.trace("getMac rpc invoked for ip {}", dstIpAddress);
@@ -171,11 +174,11 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             }
             SendArpRequestInputBuilder builder = new SendArpRequestInputBuilder()
                     .setInterfaceAddress(input.getInterfaceAddress()).setIpaddress(input.getIpaddress());
-            Future<RpcResult<Void>> arpReqFt = sendArpRequest(builder.build());
+            ListenableFuture<RpcResult<SendArpRequestOutput>> arpReqFt = sendArpRequest(builder.build());
             final SettableFuture<RpcResult<GetMacOutput>> ft = SettableFuture.create();
 
             Futures.addCallback(JdkFutureAdapters.listenInPoolThread(arpReqFt, threadPool),
-                    new FutureCallback<RpcResult<Void>>() {
+                    new FutureCallback<RpcResult<SendArpRequestOutput>>() {
                         @Override
                         public void onFailure(Throwable ex) {
                             RpcResultBuilder<GetMacOutput> resultBuilder = RpcResultBuilder.<GetMacOutput>failed()
@@ -184,7 +187,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                         }
 
                         @Override
-                        public void onSuccess(RpcResult<Void> result) {
+                        public void onSuccess(RpcResult<SendArpRequestOutput> result) {
                             LOG.trace("Successfully sent the arp pkt out for ip {}", dstIpAddress);
                         }
                     }, MoreExecutors.directExecutor());
@@ -204,7 +207,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public Future<RpcResult<Void>> sendArpRequest(SendArpRequestInput arpReqInput) {
+    public ListenableFuture<RpcResult<SendArpRequestOutput>> sendArpRequest(SendArpRequestInput arpReqInput) {
         LOG.trace("rpc sendArpRequest invoked for ip {}", arpReqInput.getIpaddress());
         BigInteger dpnId;
         byte[] payload;
@@ -213,8 +216,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         byte[] dstIpBytes;
         byte[] srcMac;
 
-        RpcResultBuilder<Void> failureBuilder = RpcResultBuilder.failed();
-        RpcResultBuilder<Void> successBuilder = RpcResultBuilder.success();
+        RpcResultBuilder<SendArpRequestOutput> failureBuilder = RpcResultBuilder.failed();
+        RpcResultBuilder<SendArpRequestOutput> successBuilder = RpcResultBuilder.success();
 
         try {
             dstIpBytes = getIpAddressBytes(arpReqInput.getIpaddress());
@@ -276,7 +279,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         return Futures.immediateFuture(successBuilder.build());
     }
 
-    public Future<RpcResult<Void>> sendPacketOut(BigInteger dpnId, byte[] payload, NodeConnectorRef ref) {
+    public ListenableFuture<RpcResult<TransmitPacketOutput>> sendPacketOut(
+            BigInteger dpnId, byte[] payload, NodeConnectorRef ref) {
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         return packetProcessingService.transmitPacket(new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
@@ -284,8 +288,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 .setIngress(nodeConnectorRef).setEgress(ref).build());
     }
 
-    private Future<RpcResult<Void>> sendPacketOutWithActions(BigInteger dpnId, byte[] payload, NodeConnectorRef ref,
-                                                             List<Action> actions) {
+    private Future<RpcResult<TransmitPacketOutput>> sendPacketOutWithActions(
+            BigInteger dpnId, byte[] payload, NodeConnectorRef ref, List<Action> actions) {
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         TransmitPacketInput transmitPacketInput = new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
@@ -322,7 +326,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public Future<RpcResult<Void>> sendArpResponse(SendArpResponseInput input) {
+    public ListenableFuture<RpcResult<SendArpResponseOutput>> sendArpResponse(SendArpResponseInput input) {
         LOG.trace("sendArpResponse rpc invoked");
         BigInteger dpnId;
         byte[] payload;
@@ -362,9 +366,10 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         } catch (UnknownHostException | PacketException | InterruptedException | UnsupportedEncodingException
                 | ExecutionException e) {
             LOG.error("failed to send arp response for {}: ", input.getSrcIpaddress(), e);
-            return RpcResultBuilder.<Void>failed().withError(ErrorType.APPLICATION, e.getMessage(), e).buildFuture();
+            return RpcResultBuilder.<SendArpResponseOutput>failed()
+                    .withError(ErrorType.APPLICATION, e.getMessage(), e).buildFuture();
         }
-        RpcResultBuilder<Void> rpcResultBuilder = RpcResultBuilder.success();
+        RpcResultBuilder<SendArpResponseOutput> rpcResultBuilder = RpcResultBuilder.success();
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 

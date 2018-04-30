@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -68,6 +67,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketOutput;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -362,8 +362,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     public void sendPacketOutWithActionsInternal(BigInteger dpnId, byte[] payload, List<ActionInfo> actionInfos) {
-        Future<RpcResult<Void>> future = packetProcessingService.transmitPacket(
-                MDSALUtil.getPacketOut(actionInfos, payload, dpnId, getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
+        ListenableFuture<RpcResult<TransmitPacketOutput>> future = packetProcessingService.transmitPacket(
+                MDSALUtil.getPacketOut(actionInfos, payload, dpnId,
+                        getNodeConnRef("openflow:" + dpnId, "0xfffffffd")));
         JdkFutures.addErrorLogging(future, LOG, "Transmit packet");
     }
 

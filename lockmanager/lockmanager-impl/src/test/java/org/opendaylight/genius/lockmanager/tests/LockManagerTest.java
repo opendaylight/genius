@@ -9,7 +9,7 @@ package org.opendaylight.genius.lockmanager.tests;
 
 import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorCause;
 import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorWithoutCausesOrMessages;
-import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertVoidRpcSuccess;
+import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcSuccess;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -60,16 +60,16 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void testLockAndUnLock() throws InterruptedException, ExecutionException, TimeoutException {
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
-        assertVoidRpcSuccess(lockManager.lock(lockInput));
+        assertRpcSuccess(lockManager.lock(lockInput));
 
         UnlockInput unlockInput = new UnlockInputBuilder().setLockName("testLock").build();
-        assertVoidRpcSuccess(lockManager.unlock(unlockInput));
+        assertRpcSuccess(lockManager.unlock(unlockInput));
     }
 
     @Test
     public void testUnLockOfUnknownShouldNotFail() throws InterruptedException, ExecutionException, TimeoutException {
         UnlockInput unlockInput = new UnlockInputBuilder().setLockName("unknownLock").build();
-        assertVoidRpcSuccess(lockManager.unlock(unlockInput));
+        assertRpcSuccess(lockManager.unlock(unlockInput));
     }
 
     @Test
@@ -77,12 +77,12 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     // lock() RPC will infinitely retry, and it will only come out when the key is unlocked
     public void testLockAndReLockSameAgain() throws InterruptedException, ExecutionException, TimeoutException {
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
-        assertVoidRpcSuccess(lockManager.lock(lockInput));
+        assertRpcSuccess(lockManager.lock(lockInput));
         runUnlockTimerTask("testLock", 3000);
 
         // This will retry infinitely since the other lock is not released!
         // After 5 seconds, the parallel thread will unlock the key, and the below TC will pass
-        assertVoidRpcSuccess(lockManager.lock(lockInput));
+        assertRpcSuccess(lockManager.lock(lockInput));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
 
         TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3L)
                 .setTimeUnit(TimeUnits.Seconds).build();
-        assertVoidRpcSuccess(lockManager.tryLock(lockInput));
+        assertRpcSuccess(lockManager.tryLock(lockInput));
 
         // The second acquireLock request will retry for 3 seconds
         // and since the first lock is not unlocked, the request will fail.
@@ -108,7 +108,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
 
         lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(4000000L)
                 .setTimeUnit(TimeUnits.Microseconds).build();
-        assertVoidRpcSuccess(lockManager.tryLock(lockInput));
+        assertRpcSuccess(lockManager.tryLock(lockInput));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         dbFailureSimulator.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
         runUnfailSubmitsTimerTask(3000); // see other tests above
-        assertVoidRpcSuccess(lockManager.lock(lockInput));
+        assertRpcSuccess(lockManager.lock(lockInput));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
             public void run() {
                 UnlockInput unlockInput = new UnlockInputBuilder().setLockName(lockKey).build();
                 try {
-                    assertVoidRpcSuccess(lockManager.unlock(unlockInput));
+                    assertRpcSuccess(lockManager.unlock(unlockInput));
                 } catch (InterruptedException | ExecutionException | TimeoutException e) {
                     LOG.error("runUnlockTimerTask() failed", e);
                     // throw new RuntimeException(e) is useless here, as this in a BG Thread, and it would go nowhere
