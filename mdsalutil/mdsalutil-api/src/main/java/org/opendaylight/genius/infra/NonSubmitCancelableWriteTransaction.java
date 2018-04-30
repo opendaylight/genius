@@ -7,11 +7,9 @@
  */
 package org.opendaylight.genius.infra;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 
 /**
@@ -34,11 +32,6 @@ class NonSubmitCancelableWriteTransaction extends ForwardingWriteTransaction {
     @Override
     public boolean cancel() {
         throw new UnsupportedOperationException("cancel() cannot be used inside a Managed[New]TransactionRunner");
-    }
-
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-        throw new UnsupportedOperationException("submit() cannot be used inside a Managed[New]TransactionRunner");
     }
 
     @Override

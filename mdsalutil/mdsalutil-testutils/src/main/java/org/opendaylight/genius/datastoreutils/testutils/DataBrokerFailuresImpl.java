@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.Objects;
@@ -88,23 +87,6 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     public ReadWriteTransaction newReadWriteTransaction() {
         return new ForwardingReadWriteTransaction(delegate.newReadWriteTransaction()) {
             @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-                update();
-                if (submitException == null) {
-                    return super.submit();
-                } else {
-                    if (submitAndThrowException) {
-                        try {
-                            super.submit().get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            LOG.warn("Exception while waiting for submitted transaction", e);
-                        }
-                    }
-                    return Futures.immediateFailedCheckedFuture(submitException);
-                }
-            }
-
-            @Override
             public FluentFuture<? extends CommitInfo> commit() {
                 update();
                 if (submitException == null) {
@@ -126,23 +108,6 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     @Override
     public WriteTransaction newWriteOnlyTransaction() {
         return new ForwardingWriteTransaction(delegate.newWriteOnlyTransaction()) {
-            @Override
-            public CheckedFuture<Void, TransactionCommitFailedException> submit() {
-                update();
-                if (submitException == null) {
-                    return super.submit();
-                } else {
-                    if (submitAndThrowException) {
-                        try {
-                            super.submit().get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            LOG.warn("Exception while waiting for submitted transaction", e);
-                        }
-                    }
-                    return Futures.immediateFailedCheckedFuture(submitException);
-                }
-            }
-
             @Override
             public FluentFuture<? extends CommitInfo> commit() {
                 update();
