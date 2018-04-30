@@ -159,7 +159,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public Future<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
+    public ListenableFuture<RpcResult<GetMacOutput>> getMac(GetMacInput input) {
         try {
             final String dstIpAddress = getIpAddressInString(input.getIpaddress());
             LOG.trace("getMac rpc invoked for ip {}", dstIpAddress);
@@ -204,7 +204,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public Future<RpcResult<Void>> sendArpRequest(SendArpRequestInput arpReqInput) {
+    public ListenableFuture<RpcResult<Void>> sendArpRequest(SendArpRequestInput arpReqInput) {
         LOG.trace("rpc sendArpRequest invoked for ip {}", arpReqInput.getIpaddress());
         BigInteger dpnId;
         byte[] payload;
@@ -322,7 +322,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     @Override
-    public Future<RpcResult<Void>> sendArpResponse(SendArpResponseInput input) {
+    public ListenableFuture<RpcResult<Void>> sendArpResponse(SendArpResponseInput input) {
         LOG.trace("sendArpResponse rpc invoked");
         BigInteger dpnId;
         byte[] payload;

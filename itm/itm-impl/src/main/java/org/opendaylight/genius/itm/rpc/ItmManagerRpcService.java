@@ -183,7 +183,8 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(GetTunnelInterfaceNameInput input) {
+    public ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
+            GetTunnelInterfaceNameInput input) {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
         BigInteger sourceDpn = input.getSourceDpid();
         BigInteger destinationDpn = input.getDestinationDpid();
@@ -307,14 +308,14 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<Void>> setBfdEnableOnTunnel(SetBfdEnableOnTunnelInput input) {
+    public ListenableFuture<RpcResult<Void>> setBfdEnableOnTunnel(SetBfdEnableOnTunnelInput input) {
         //TODO
         return null;
     }
 
 
     @Override
-    public Future<RpcResult<Void>> removeExternalTunnelEndpoint(
+    public ListenableFuture<RpcResult<Void>> removeExternalTunnelEndpoint(
             RemoveExternalTunnelEndpointInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
@@ -357,7 +358,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<Void>> buildExternalTunnelFromDpns(
+    public ListenableFuture<RpcResult<Void>> buildExternalTunnelFromDpns(
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
@@ -748,7 +749,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public Future<RpcResult<java.lang.Void>> addL2GwMlagDevice(AddL2GwMlagDeviceInput input) {
+    public ListenableFuture<RpcResult<java.lang.Void>> addL2GwMlagDevice(AddL2GwMlagDeviceInput input) {
 
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         try {
@@ -825,7 +826,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
-    public Future<RpcResult<Void>> deleteL2GwMlagDevice(DeleteL2GwMlagDeviceInput input) {
+    public ListenableFuture<RpcResult<Void>> deleteL2GwMlagDevice(DeleteL2GwMlagDeviceInput input) {
 
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         try {
@@ -895,7 +896,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
+    public ListenableFuture<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
             IsTunnelInternalOrExternalInput input) {
         RpcResultBuilder<IsTunnelInternalOrExternalOutput> resultBld;
         String tunIfName = input.getTunnelInterfaceName();
@@ -915,7 +916,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
+    public ListenableFuture<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
         RpcResultBuilder<IsDcgwPresentOutput> resultBld = RpcResultBuilder.success();
 
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
@@ -939,7 +940,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
+    public ListenableFuture<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
         BigInteger srcDpn = input.getSourceDpid() ;
         RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = failed();
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
@@ -967,7 +968,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public Future<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
+    public ListenableFuture<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "getDpnInfo", input,
             () -> Futures.immediateFuture(getDpnInfoInternal(input))).build();
     }
