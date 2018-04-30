@@ -129,8 +129,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     private void registerEntityForOwnership() {
         try {
-            Entity registryCandidate = new Entity(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
-            entityOwnershipService.registerCandidate(registryCandidate);
+            this.registryCandidate = entityOwnershipService
+                    .registerCandidate(new Entity(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY));
         } catch (CandidateAlreadyRegisteredException e) {
             LOG.error("failed to register entity {} for entity-ownership-service", e.getEntity());
         }
