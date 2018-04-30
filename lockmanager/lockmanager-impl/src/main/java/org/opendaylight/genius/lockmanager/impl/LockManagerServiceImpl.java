@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
@@ -60,7 +59,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     }
 
     @Override
-    public Future<RpcResult<Void>> lock(LockInput input) {
+    public ListenableFuture<RpcResult<Void>> lock(LockInput input) {
         String lockName = input.getLockName();
         String owner = lockManagerUtils.getUniqueID();
         return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
@@ -71,7 +70,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     }
 
     @Override
-    public Future<RpcResult<Void>> tryLock(TryLockInput input) {
+    public ListenableFuture<RpcResult<Void>> tryLock(TryLockInput input) {
         String lockName = input.getLockName();
         String owner = lockManagerUtils.getUniqueID();
         LOG.debug("Locking {}, owner {}" , lockName, owner);
@@ -100,7 +99,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     }
 
     @Override
-    public Future<RpcResult<Void>> unlock(UnlockInput input) {
+    public ListenableFuture<RpcResult<Void>> unlock(UnlockInput input) {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);

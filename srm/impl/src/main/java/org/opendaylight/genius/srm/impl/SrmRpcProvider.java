@@ -9,9 +9,10 @@
 package org.opendaylight.genius.srm.impl;
 
 import com.google.common.util.concurrent.Futures;
-import java.util.concurrent.Future;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.rpcs.rev170711.RecoverInput;
@@ -36,13 +37,13 @@ public class SrmRpcProvider implements SrmRpcsService {
     }
 
     @Override
-    public Future<RpcResult<RecoverOutput>> recover(RecoverInput input) {
+    public ListenableFuture<RpcResult<RecoverOutput>> recover(RecoverInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "recover", input,
             () -> Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input))).build();
     }
 
     @Override
-    public Future<RpcResult<ReinstallOutput>> reinstall(ReinstallInput input) {
+    public ListenableFuture<RpcResult<ReinstallOutput>> reinstall(ReinstallInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "reinstall", input,
             () -> Futures.immediateFuture(SrmRpcUtils.callSrmOp(dataBroker, input))).build();
     }
