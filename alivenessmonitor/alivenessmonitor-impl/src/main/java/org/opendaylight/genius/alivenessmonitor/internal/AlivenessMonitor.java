@@ -54,7 +54,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
-import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
+import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -118,7 +118,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListener<MonitoringState>
+public class AlivenessMonitor extends AbstractClusteredAsyncDataTreeChangeListener<MonitoringState>
         implements AlivenessMonitorService, PacketProcessingListener, InterfaceStateListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessMonitor.class);
@@ -178,7 +178,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             final NotificationPublishService notificationPublishService,
             AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
-                InstanceIdentifier.create(MonitoringStates.class).child(MonitoringState.class));
+                InstanceIdentifier.create(MonitoringStates.class).child(MonitoringState.class),
+                org.opendaylight.infrautils.utils.concurrent.Executors
+                        .newSingleThreadExecutor("AlivenessMonitor", LOG));
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManager;
