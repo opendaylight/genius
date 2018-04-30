@@ -9,12 +9,14 @@ package org.opendaylight.genius.interfacemanager.commons;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.JdkFutureAdapters;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -32,6 +34,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetOutput;
@@ -40,6 +43,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStopOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitoringMode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.params.SourceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.profile.create.input.Profile;
@@ -125,7 +129,7 @@ public final class AlivenessMonitorUtils {
                 if (interfaceName != null) {
                     MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
 
-                    Future<RpcResult<Void>> future = alivenessMonitorService.monitorStop(input);
+                    ListenableFuture<RpcResult<MonitorStopOutput>> future = alivenessMonitorService.monitorStop(input);
                     ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
                             LOG, "Stop LLDP monitoring for {}", trunkInterface);
 
@@ -202,7 +206,8 @@ public final class AlivenessMonitorUtils {
                 MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder()
                         .setProfileId(profileId).build();
 
-                Future<RpcResult<Void>> future = alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
+                ListenableFuture<RpcResult<MonitorProfileDeleteOutput>> future =
+                        alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
                 ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
                         LOG, "Delete monitor profile {}", interfaceName);
             }
