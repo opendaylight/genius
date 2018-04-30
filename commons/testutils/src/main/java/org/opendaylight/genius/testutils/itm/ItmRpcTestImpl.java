@@ -8,10 +8,11 @@
 package org.opendaylight.genius.testutils.itm;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
+
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
@@ -78,48 +79,51 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> buildExternalTunnelFromDpns(BuildExternalTunnelFromDpnsInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> buildExternalTunnelFromDpns(
+            BuildExternalTunnelFromDpnsInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> removeExternalTunnelEndpoint(RemoveExternalTunnelEndpointInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> removeExternalTunnelEndpoint(
+            RemoveExternalTunnelEndpointInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public Future<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
+    public ListenableFuture<RpcResult<GetDpnInfoOutput>> getDpnInfo(GetDpnInfoInput input) {
         throw new UnsupportedOperationException("getDpnInfo");
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> addL2GwMlagDevice(AddL2GwMlagDeviceInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> addL2GwMlagDevice(AddL2GwMlagDeviceInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> removeExternalTunnelFromDpns(RemoveExternalTunnelFromDpnsInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> removeExternalTunnelFromDpns(
+            RemoveExternalTunnelFromDpnsInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> deleteL2GwDevice(DeleteL2GwDeviceInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> deleteL2GwDevice(DeleteL2GwDeviceInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> addL2GwDevice(AddL2GwDeviceInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> addL2GwDevice(AddL2GwDeviceInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
+    public synchronized ListenableFuture<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
             IsTunnelInternalOrExternalInput input) {
         throw new UnsupportedOperationException("TODO");
     }
 
     @Override
-    public synchronized Future<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
+    public synchronized ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
             GetTunnelInterfaceNameInput input) {
         String interfaceName = interfaceNames.get(input.getSourceDpid())
                 .get(new String(tepIps.get(input.getDestinationDpid()).getValue()));
@@ -129,14 +133,14 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     }
 
     @Override
-    public synchronized Future<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
+    public synchronized ListenableFuture<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
         IsDcgwPresentOutput output = new IsDcgwPresentOutputBuilder().setRetVal(0L).build();
         return RpcResultBuilder.success(output).buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<GetExternalTunnelInterfaceNameOutput>> getExternalTunnelInterfaceName(
-            GetExternalTunnelInterfaceNameInput input) {
+    public synchronized ListenableFuture<RpcResult<GetExternalTunnelInterfaceNameOutput>>
+            getExternalTunnelInterfaceName(GetExternalTunnelInterfaceNameInput input) {
         String interfaceName = externalInterfaceNames.get(new BigInteger(input.getSourceNode(), 10))
                 .get(input.getDestinationNode());
         GetExternalTunnelInterfaceNameOutput output = new GetExternalTunnelInterfaceNameOutputBuilder()
@@ -146,53 +150,55 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> createTerminatingServiceActions(
+    public synchronized ListenableFuture<RpcResult<Void>> createTerminatingServiceActions(
             CreateTerminatingServiceActionsInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
+    public synchronized ListenableFuture<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(
+            GetDpnEndpointIpsInput input) {
         GetDpnEndpointIpsOutput output = new GetDpnEndpointIpsOutputBuilder()
                 .setNexthopipList(Lists.newArrayList(tepIps.get(input.getSourceDpid()))).build();
         return RpcResultBuilder.success(output).buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> deleteL2GwMlagDevice(DeleteL2GwMlagDeviceInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> deleteL2GwMlagDevice(DeleteL2GwMlagDeviceInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<GetInternalOrExternalInterfaceNameOutput>> getInternalOrExternalInterfaceName(
-            GetInternalOrExternalInterfaceNameInput input) {
+    public synchronized ListenableFuture<RpcResult<GetInternalOrExternalInterfaceNameOutput>>
+            getInternalOrExternalInterfaceName(GetInternalOrExternalInterfaceNameInput input) {
         throw new UnsupportedOperationException("TODO");
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> removeTerminatingServiceActions(
+    public synchronized ListenableFuture<RpcResult<Void>> removeTerminatingServiceActions(
             RemoveTerminatingServiceActionsInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> addExternalTunnelEndpoint(AddExternalTunnelEndpointInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> addExternalTunnelEndpoint(
+            AddExternalTunnelEndpointInput input) {
         return RpcResultBuilder.<Void>success().buildFuture();
     }
 
     @Override
-    public synchronized Future<RpcResult<Void>> setBfdEnableOnTunnel(SetBfdEnableOnTunnelInput input) {
+    public synchronized ListenableFuture<RpcResult<Void>> setBfdEnableOnTunnel(SetBfdEnableOnTunnelInput input) {
         throw new UnsupportedOperationException("TODO");
     }
 
     @Override
-    public synchronized Future<RpcResult<GetEgressActionsForTunnelOutput>>
+    public synchronized ListenableFuture<RpcResult<GetEgressActionsForTunnelOutput>>
         getEgressActionsForTunnel(GetEgressActionsForTunnelInput input) {
         throw new UnsupportedOperationException("TODO");
     }
 
     @Override
-    public synchronized Future<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
+    public synchronized ListenableFuture<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
         throw new UnsupportedOperationException("TODO");
     }
 }
