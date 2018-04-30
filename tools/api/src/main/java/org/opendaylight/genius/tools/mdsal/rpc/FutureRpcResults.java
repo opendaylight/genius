@@ -182,7 +182,7 @@ public final class FutureRpcResults {
         @Override
         @CheckReturnValue
         @SuppressWarnings("checkstyle:IllegalCatch")
-        public Future<RpcResult<O>> build() {
+        public ListenableFuture<RpcResult<O>> build() {
             SettableFuture<RpcResult<O>> futureRpcResult = SettableFuture.create();
             FutureCallback<O> callback = new FutureCallback<O>() {
                 @Override
