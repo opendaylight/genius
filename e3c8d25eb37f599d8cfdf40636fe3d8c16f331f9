@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5dd5059_42a6ba1b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-30T07:57:02Z",
+      "side": 1,
+      "message": "please omit this, could cause merge conflict with:\nIb5bef52ca85f7589057fadc2614e97de14e0109a",
+      "range": {
+        "startLine": 41,
+        "startChar": 0,
+        "endLine": 41,
+        "endChar": 83
+      },
+      "revId": "e3c8d25eb37f599d8cfdf40636fe3d8c16f331f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92fe4924_ef72e816",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-30T07:57:02Z",
+      "side": 1,
+      "message": "same as above",
+      "range": {
+        "startLine": 82,
+        "startChar": 4,
+        "endLine": 82,
+        "endChar": 67
+      },
+      "revId": "e3c8d25eb37f599d8cfdf40636fe3d8c16f331f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3ad17ac_5d6b4e13",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-04-30T07:57:02Z",
+      "side": 1,
+      "message": "registryCandidate.close() is missing,\nIb5bef52ca85f7589057fadc2614e97de14e0109a\nbest to avoid mixing functionalities :)",
+      "revId": "e3c8d25eb37f599d8cfdf40636fe3d8c16f331f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
