@@ -7,11 +7,16 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils.tests;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.runners.MethodSorters.NAME_ASCENDING;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,8 +46,13 @@ public class DataBrokerFailuresTest {
     @Inject DataBrokerFailures dbFailures;
     @Inject DataBroker dataBroker;
 
+    @Before
+    public void setup() {
+
+    }
+
     @Test
-    public void testFailReadWriteTransactionSubmit() throws TransactionCommitFailedException {
+    public void testFailReadWriteTransactionSubmit() throws TimeoutException, InterruptedException {
         dbFailures.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
         checkSubmitFails();
         // Now make sure that it still fails, and not just once:
@@ -51,52 +61,63 @@ public class DataBrokerFailuresTest {
         checkSubmitFails();
     }
 
-    private void checkSubmitFails() {
+    private void checkSubmitFails() throws TimeoutException, InterruptedException {
         try {
-            dataBroker.newReadWriteTransaction().submit().checkedGet();
+            dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
             fail("This should have lead to a TransactionCommitFailedException!");
-        } catch (TransactionCommitFailedException e) {
-            // as expected!
+        } catch (ExecutionException e) {
+            assertTrue("Expected TransactionCommitFailedException",
+                    e.getCause() instanceof TransactionCommitFailedException);
         }
     }
 
     @Test
-    public void testFailReadWriteTransactionSubmitNext() throws TransactionCommitFailedException {
+    public void testFailReadWriteTransactionSubmitNext()
+            throws TimeoutException, InterruptedException, ExecutionException {
         // This must pass (the failSubmits from previous test cannot affect this)
         // (It's a completely new instance of DataBroker & DataBrokerFailures anyways, but just to be to sure.)
-        dataBroker.newReadWriteTransaction().submit().checkedGet();
+        dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
     }
 
     @Test
-    public void testFailTwoReadWriteTransactionSubmit() throws TransactionCommitFailedException {
+    public void testFailTwoReadWriteTransactionSubmit()
+            throws TimeoutException, InterruptedException, ExecutionException {
         dbFailures.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
         checkSubmitFails();
         // Now make sure that it still fails again a 2nd time, and not just once:
         checkSubmitFails();
         // But now it should pass.. because we specified howManyTimes = 2 above
-        dataBroker.newReadWriteTransaction().submit().checkedGet();
-        dataBroker.newWriteOnlyTransaction().submit().checkedGet();
-        dataBroker.newReadWriteTransaction().submit().checkedGet();
+        dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
+        dataBroker.newWriteOnlyTransaction().commit().get(5, TimeUnit.SECONDS);
+        dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
     }
 
     @Test(expected = OptimisticLockFailedException.class)
-    public void testFailWriteTransactionSubmit() throws TransactionCommitFailedException {
+    @SuppressWarnings("checkstyle:AvoidHidingCauseException")
+    public void testFailWriteTransactionSubmit()
+            throws TimeoutException, InterruptedException, TransactionCommitFailedException {
         dbFailures.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
-        dataBroker.newWriteOnlyTransaction().submit().checkedGet();
+        try {
+            dataBroker.newWriteOnlyTransaction().commit().get(5, TimeUnit.SECONDS);
+        } catch (ExecutionException e) {
+            assertTrue("Expected TransactionCommitFailedException",
+                    e.getCause() instanceof TransactionCommitFailedException);
+            throw (TransactionCommitFailedException)e.getCause();
+        }
     }
 
     @Test
-    public void testUnfailSubmits() throws TransactionCommitFailedException {
+    public void testUnfailSubmits() throws TimeoutException, InterruptedException, ExecutionException {
         dbFailures.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
         checkSubmitFails();
         dbFailures.unfailSubmits();
-        dataBroker.newReadWriteTransaction().submit().checkedGet();
-        dataBroker.newWriteOnlyTransaction().submit().checkedGet();
-        dataBroker.newReadWriteTransaction().submit().checkedGet();
+        dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
+        dataBroker.newWriteOnlyTransaction().commit().get(5, TimeUnit.SECONDS);
+        dataBroker.newReadWriteTransaction().commit().get(5, TimeUnit.SECONDS);
     }
 
     @Test
-    public void testFailButSubmitsAnywaysReadWriteTransaction() {
+    public void testFailButSubmitsAnywaysReadWriteTransaction() throws TimeoutException, InterruptedException {
         dbFailures.failButSubmitsAnyways();
         checkSubmitFails();
     }
