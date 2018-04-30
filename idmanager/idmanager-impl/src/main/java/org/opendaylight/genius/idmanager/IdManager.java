@@ -13,6 +13,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,12 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -185,7 +186,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
+    public ListenableFuture<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
         LOG.info("createIdPool called with input {}", input);
         long low = input.getLow();
         long high = input.getHigh();
@@ -210,7 +211,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
+    public ListenableFuture<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         return FutureRpcResults.fromBuilder(LOG, "allocateId", input, () -> {
@@ -230,7 +231,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
+    public ListenableFuture<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         long size = input.getSize();
@@ -245,7 +246,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<Void>> deleteIdPool(DeleteIdPoolInput input) {
+    public ListenableFuture<RpcResult<Void>> deleteIdPool(DeleteIdPoolInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "deleteIdPool", input, () -> {
             String poolName = input.getPoolName().intern();
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
@@ -263,7 +264,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<Void>> releaseId(ReleaseIdInput input) {
+    public ListenableFuture<RpcResult<Void>> releaseId(ReleaseIdInput input) {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);

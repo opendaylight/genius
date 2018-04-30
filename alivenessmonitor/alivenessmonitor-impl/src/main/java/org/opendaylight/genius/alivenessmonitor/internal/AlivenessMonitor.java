@@ -449,7 +449,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<MonitorStartOutput>> monitorStart(MonitorStartInput input) {
+    public ListenableFuture<RpcResult<MonitorStartOutput>> monitorStart(MonitorStartInput input) {
         RpcResultBuilder<MonitorStartOutput> rpcResultBuilder;
         final Config in = input.getConfig();
         Long profileId = in.getProfileId();
@@ -619,7 +619,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorPause(MonitorPauseInput input) {
+    public ListenableFuture<RpcResult<Void>> monitorPause(MonitorPauseInput input) {
         LOG.debug("Monitor Pause operation invoked for monitor id: {}", input.getMonitorId());
         SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         final Long monitorId = input.getMonitorId();
@@ -640,7 +640,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorUnpause(MonitorUnpauseInput input) {
+    public ListenableFuture<RpcResult<Void>> monitorUnpause(MonitorUnpauseInput input) {
         LOG.debug("Monitor Unpause operation invoked for monitor id: {}", input.getMonitorId());
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
 
@@ -901,7 +901,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<MonitorProfileCreateOutput>> monitorProfileCreate(final MonitorProfileCreateInput input) {
+    public ListenableFuture<RpcResult<MonitorProfileCreateOutput>> monitorProfileCreate(final MonitorProfileCreateInput input) {
         LOG.debug("Monitor Profile Create operation - {}", input.getProfile());
         final SettableFuture<RpcResult<MonitorProfileCreateOutput>> returnFuture = SettableFuture.create();
         Profile profile = input.getProfile();
@@ -971,7 +971,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<MonitorProfileGetOutput>> monitorProfileGet(MonitorProfileGetInput input) {
+    public ListenableFuture<RpcResult<MonitorProfileGetOutput>> monitorProfileGet(MonitorProfileGetInput input) {
         LOG.debug("Monitor Profile Get operation for input profile- {}", input.getProfile());
         RpcResultBuilder<MonitorProfileGetOutput> rpcResultBuilder;
         final Long profileId = getExistingProfileId(input);
@@ -1004,7 +1004,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorProfileDelete(final MonitorProfileDeleteInput input) {
+    public ListenableFuture<RpcResult<Void>> monitorProfileDelete(final MonitorProfileDeleteInput input) {
         LOG.debug("Monitor Profile delete for Id: {}", input.getProfileId());
         final SettableFuture<RpcResult<Void>> result = SettableFuture.create();
         final Long profileId = input.getProfileId();
@@ -1061,7 +1061,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     @Override
-    public Future<RpcResult<Void>> monitorStop(MonitorStopInput input) {
+    public ListenableFuture<RpcResult<Void>> monitorStop(MonitorStopInput input) {
         LOG.debug("Monitor Stop operation for monitor id - {}", input.getMonitorId());
         SettableFuture<RpcResult<Void>> result = SettableFuture.create();
 

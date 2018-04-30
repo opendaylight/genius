@@ -11,9 +11,10 @@ import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.
 import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE;
 import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
 
-import java.util.concurrent.Future;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutput;
@@ -53,59 +54,61 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     }
 
     @Override
-    public Future<RpcResult<GetEndpointIpForDpnOutput>> getEndpointIpForDpn(GetEndpointIpForDpnInput input) {
+    public ListenableFuture<RpcResult<GetEndpointIpForDpnOutput>> getEndpointIpForDpn(GetEndpointIpForDpnInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getEndpointIpForDpn(input)).build();
     }
 
     @Override
-    public Future<RpcResult<GetInterfaceTypeOutput>> getInterfaceType(GetInterfaceTypeInput input) {
+    public ListenableFuture<RpcResult<GetInterfaceTypeOutput>> getInterfaceType(GetInterfaceTypeInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getInterfaceType(input)).build();
     }
 
     @Override
-    public Future<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
+    public ListenableFuture<RpcResult<GetTunnelTypeOutput>> getTunnelType(GetTunnelTypeInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getTunnelType(input)).build();
     }
 
     @Override
-    public Future<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(GetPortFromInterfaceInput input) {
+    public ListenableFuture<RpcResult<GetPortFromInterfaceOutput>> getPortFromInterface(
+            GetPortFromInterfaceInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getPortFromInterface(input)).build();
     }
 
     @Override
-    public Future<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> getNodeconnectorIdFromInterface(
+    public ListenableFuture<RpcResult<GetNodeconnectorIdFromInterfaceOutput>> getNodeconnectorIdFromInterface(
             GetNodeconnectorIdFromInterfaceInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getNodeconnectorIdFromInterface(input))
                 .build();
     }
 
     @Override
-    public Future<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(
+    public ListenableFuture<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(
             GetInterfaceFromIfIndexInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getInterfaceFromIfIndex(input)).build();
     }
 
     @Override
-    public Future<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
+    public ListenableFuture<RpcResult<GetDpnInterfaceListOutput>> getDpnInterfaceList(GetDpnInterfaceListInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getDpnInterfaceList(input)).build();
     }
 
     @Override
-    public Future<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(
+    public ListenableFuture<RpcResult<GetEgressInstructionsForInterfaceOutput>> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getEgressInstructionsForInterface(input))
                 .onFailureLogLevel(DEBUG).build();
     }
 
     @Override
-    public Future<RpcResult<GetEgressActionsForInterfaceOutput>> getEgressActionsForInterface(
+    public ListenableFuture<RpcResult<GetEgressActionsForInterfaceOutput>> getEgressActionsForInterface(
             GetEgressActionsForInterfaceInput input) {
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getEgressActionsForInterface(input))
                 .onFailureLogLevel(DEBUG).build();
     }
 
     @Override
-    public Future<RpcResult<GetDpidFromInterfaceOutput>> getDpidFromInterface(GetDpidFromInterfaceInput input) {
+    public ListenableFuture<RpcResult<GetDpidFromInterfaceOutput>> getDpidFromInterface(
+            GetDpidFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         return fromListenableFuture(LOG, input, () -> interfaceManagerService.getDpidFromInterface(input))
                 .withRpcErrorMessage(e -> getDpidFromInterfaceErrorMessage(interfaceName, e.getMessage()))
