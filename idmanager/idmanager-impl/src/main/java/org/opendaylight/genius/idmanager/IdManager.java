@@ -13,6 +13,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,12 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -49,17 +50,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdRangeOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.DeleteIdPoolInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
@@ -185,7 +176,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<Void>> createIdPool(CreateIdPoolInput input) {
+    public ListenableFuture<RpcResult<CreateIdPoolOutput>> createIdPool(CreateIdPoolInput input) {
         LOG.info("createIdPool called with input {}", input);
         long low = input.getLow();
         long high = input.getHigh();
@@ -210,7 +201,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
+    public ListenableFuture<RpcResult<AllocateIdOutput>> allocateId(AllocateIdInput input) {
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         return FutureRpcResults.fromBuilder(LOG, "allocateId", input, () -> {
@@ -230,7 +221,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
+    public ListenableFuture<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
         long size = input.getSize();
@@ -245,7 +236,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     @Override
-    public Future<RpcResult<Void>> deleteIdPool(DeleteIdPoolInput input) {
+    public ListenableFuture<RpcResult<DeleteIdPoolOutput>> deleteIdPool(DeleteIdPoolInput input) {
         return FutureRpcResults.fromListenableFuture(LOG, "deleteIdPool", input, () -> {
             String poolName = input.getPoolName().intern();
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
@@ -258,12 +249,12 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 singleTxDB.syncDelete(CONFIGURATION, idPoolToBeDeleted);
             }
             // TODO return the Future from a TBD asyncDelete instead.. BUT check that all callers @CheckReturnValue
-            return Futures.immediateFuture((Void) null);
+            return Futures.immediateFuture((DeleteIdPoolOutput) null);
         }).build();
     }
 
     @Override
-    public Future<RpcResult<Void>> releaseId(ReleaseIdInput input) {
+    public ListenableFuture<RpcResult<ReleaseIdOutput>> releaseId(ReleaseIdInput input) {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
@@ -271,7 +262,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             idUtils.lock(lockManager, uniqueKey);
             releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
             // TODO return the Future from releaseIdFromLocalPool() instead.. check all callers @CheckReturnValue
-            return Futures.immediateFuture((Void) null);
+            return Futures.immediateFuture((ReleaseIdOutput) null);
         }).onFailureLogLevel(org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE).onFailure(e -> {
             if (e instanceof IdDoesNotExistException) {
                 // Do not log full stack trace in case ID does not exist
