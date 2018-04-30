@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
@@ -26,8 +25,11 @@ import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -60,7 +62,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     }
 
     @Override
-    public Future<RpcResult<Void>> lock(LockInput input) {
+    public ListenableFuture<RpcResult<LockOutput>> lock(LockInput input) {
         String lockName = input.getLockName();
         String owner = lockManagerUtils.getUniqueID();
         return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
@@ -71,7 +73,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     }
 
     @Override
-    public Future<RpcResult<Void>> tryLock(TryLockInput input) {
+    public ListenableFuture<RpcResult<TryLockOutput>> tryLock(TryLockInput input) {
         String lockName = input.getLockName();
         String owner = lockManagerUtils.getUniqueID();
         LOG.debug("Locking {}, owner {}" , lockName, owner);
@@ -83,7 +85,7 @@ public class LockManagerServiceImpl implements LockManagerService {
         InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
         Lock lockData = lockManagerUtils.buildLock(lockName, owner);
 
-        RpcResultBuilder<Void> lockRpcBuilder;
+        RpcResultBuilder<TryLockOutput> lockRpcBuilder;
         try {
             if (getLock(lockInstanceIdentifier, lockData, retryCount)) {
                 lockRpcBuilder = RpcResultBuilder.success();
@@ -100,7 +102,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     }
 
     @Override
-    public Future<RpcResult<Void>> unlock(UnlockInput input) {
+    public ListenableFuture<RpcResult<UnlockOutput>> unlock(UnlockInput input) {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
         InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
@@ -122,7 +124,8 @@ public class LockManagerServiceImpl implements LockManagerService {
     /**
      * Try to acquire lock indefinitely until it is successful.
      */
-    private ListenableFuture<Void> getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
+    private ListenableFuture<LockOutput> getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier,
+                                                 final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
         String lockName = lockData.getLockName();
