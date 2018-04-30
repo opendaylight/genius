@@ -37,7 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Test for {@link DataTreeEventCallbackRegistrarImpl}.
+ * Tests for {@link DataTreeEventCallbackRegistrarImpl}.
+ *
+ * @see DataTreeEventCallbackRegistrarConcurrencyTest
  *
  * @author Michael Vorburger.ch
  */
@@ -177,7 +179,6 @@ public class DataTreeEventCallbackRegistrarTest {
                 throw new IllegalStateException("TEST");
             }
 
-
             @Override
             public String toString() {
                 return "TestConsumer";
@@ -193,5 +194,4 @@ public class DataTreeEventCallbackRegistrarTest {
         // would require more work inside DataBroker to be able to await listener event processing.
         Thread.sleep(100);
     }
-
 }
