@@ -15,6 +15,7 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -67,6 +68,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -420,8 +422,8 @@ public final class IfmUtil {
     public static void releaseId(IdManagerService idManager, String poolName, String idKey) {
         ReleaseIdInput idInput = new ReleaseIdInputBuilder().setPoolName(poolName).setIdKey(idKey).build();
         try {
-            Future<RpcResult<Void>> result = idManager.releaseId(idInput);
-            RpcResult<Void> rpcResult = result.get();
+            ListenableFuture<RpcResult<ReleaseIdOutput>> result = idManager.releaseId(idInput);
+            RpcResult<ReleaseIdOutput> rpcResult = result.get();
             if (!rpcResult.isSuccessful()) {
                 LOG.warn("RPC Call to release Id with Key {} returned with Errors {}", idKey, rpcResult.getErrors());
             }

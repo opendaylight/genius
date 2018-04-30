@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -45,6 +46,13 @@ public final class TestFutureRpcResults {
     public static void assertVoidRpcSuccess(Future<RpcResult<Void>> futureRpcResult)
             throws InterruptedException, ExecutionException, TimeoutException {
         RpcResult<Void> rpcResult = futureRpcResult.get(1, MINUTES);
+        assertThat(rpcResult.isSuccessful()).isTrue();
+        assertThat(rpcResult.getErrors()).isEmpty();
+    }
+
+    public static <O extends DataObject> void assertRpcSuccess(Future<RpcResult<O>> futureRpcResult)
+            throws InterruptedException, ExecutionException, TimeoutException {
+        RpcResult<O> rpcResult = futureRpcResult.get(1, MINUTES);
         assertThat(rpcResult.isSuccessful()).isTrue();
         assertThat(rpcResult.getErrors()).isEmpty();
     }

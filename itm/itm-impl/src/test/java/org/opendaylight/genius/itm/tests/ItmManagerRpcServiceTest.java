@@ -12,12 +12,14 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -64,16 +66,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwMlagDeviceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.BuildExternalTunnelFromDpnsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.BuildExternalTunnelFromDpnsInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.BuildExternalTunnelFromDpnsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwDeviceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.DeleteL2GwMlagDeviceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetExternalTunnelInterfaceNameOutput;
@@ -86,8 +94,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.G
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsOutput;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
@@ -302,7 +312,8 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testAddExternalTunnelEndpoint() throws Exception {
-        Future<RpcResult<Void>> rpcRes = itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
+        ListenableFuture<RpcResult<AddExternalTunnelEndpointOutput>> rpcRes =
+                itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
@@ -315,7 +326,8 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testAddL2GwDevice() throws Exception {
-        Future<RpcResult<java.lang.Void>> rpcRes = itmManagerRpcService.addL2GwDevice(addL2GwDeviceInput);
+        ListenableFuture<RpcResult<AddL2GwDeviceOutput>> rpcRes =
+                itmManagerRpcService.addL2GwDevice(addL2GwDeviceInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
@@ -327,7 +339,8 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testAddL2GwMlagDevice() throws Exception {
-        Future<RpcResult<java.lang.Void>> rpcRes = itmManagerRpcService.addL2GwMlagDevice(addL2GwMlagDeviceInput);
+        ListenableFuture<RpcResult<AddL2GwMlagDeviceOutput>> rpcRes =
+                itmManagerRpcService.addL2GwMlagDevice(addL2GwMlagDeviceInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
@@ -341,7 +354,8 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testDeleteL2GwDevice() throws Exception {
-        Future<RpcResult<java.lang.Void>> rpcRes = itmManagerRpcService.deleteL2GwDevice(deleteL2GwDeviceInput);
+        ListenableFuture<RpcResult<DeleteL2GwDeviceOutput>> rpcRes =
+                itmManagerRpcService.deleteL2GwDevice(deleteL2GwDeviceInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
@@ -353,7 +367,7 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testDeleteL2GwMlagDevice() throws Exception {
-        Future<RpcResult<java.lang.Void>> rpcRes =
+        ListenableFuture<RpcResult<DeleteL2GwMlagDeviceOutput>> rpcRes =
                 itmManagerRpcService.deleteL2GwMlagDevice(deleteL2GwMlagDeviceInput);
 
         // check RPC response is SUCCESS
@@ -368,7 +382,7 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testBuildExternalTunnelFromDpns() throws Exception {
-        Future<RpcResult<Void>> rpcRes =
+        ListenableFuture<RpcResult<BuildExternalTunnelFromDpnsOutput>> rpcRes =
                 itmManagerRpcService.buildExternalTunnelFromDpns(buildExternalTunnelFromDpnsInput);
 
         // check RPC response is SUCCESS
@@ -382,7 +396,7 @@ public class ItmManagerRpcServiceTest {
 
     @Test
     public void testRemoveExternalTunnelFromDpns() throws Exception {
-        Future<RpcResult<Void>> rpcRes =
+        ListenableFuture<RpcResult<RemoveExternalTunnelFromDpnsOutput>> rpcRes =
                 itmManagerRpcService.removeExternalTunnelFromDpns(removeExternalTunnelFromDpnsInput);
 
         // check RPC response is SUCCESS
@@ -399,16 +413,17 @@ public class ItmManagerRpcServiceTest {
     @Test
     public void testRemoveExternalTunnelEndpoint() throws Exception {
         // call RPC to add ExternalTunnelEndpoint as pre-requisite
-        Future<RpcResult<Void>> rpcRes =
+        ListenableFuture<RpcResult<AddExternalTunnelEndpointOutput>> rpcRes =
                 itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
 
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
-        rpcRes = itmManagerRpcService.removeExternalTunnelEndpoint(removeExternalTunnelEndpointInput);
+        ListenableFuture<RpcResult<RemoveExternalTunnelEndpointOutput>> removeExternalTunnelEndpoint =
+                itmManagerRpcService.removeExternalTunnelEndpoint(removeExternalTunnelEndpointInput);
 
         // check RPC response is SUCCESS
-        assertThat(rpcRes.get().isSuccessful()).isTrue();
+        assertThat(removeExternalTunnelEndpoint.get().isSuccessful()).isTrue();
 
         // check ExternalTunnelEndpoint is deleted from config DS
         assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()

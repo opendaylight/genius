@@ -10,6 +10,7 @@ package org.opendaylight.genius.resourcemanager.tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -35,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.GetResourcePoolOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ReleaseResourceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ReleaseResourceInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ReleaseResourceOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeGroupIds;
@@ -141,7 +143,7 @@ public class ResourceManagerTest extends AbstractConcurrentDataBrokerTest {
             allocateResource(resourceType.getName(), resourceType, NUMBER_OF_RESOURCES);
 
             // Release resources
-            RpcResult<Void> result = releaseResource(resourceType.getName(), resourceType).get();
+            RpcResult<ReleaseResourceOutput> result = releaseResource(resourceType.getName(), resourceType).get();
             assertSuccessfulFutureRpcResult(result);
         }
     }
@@ -151,7 +153,7 @@ public class ResourceManagerTest extends AbstractConcurrentDataBrokerTest {
         releaseResource(null, ResourceTypeTableIds.class).get();
     }
 
-    private Future<RpcResult<Void>> releaseResource(String resourceKey,
+    private ListenableFuture<RpcResult<ReleaseResourceOutput>> releaseResource(String resourceKey,
             Class<? extends ResourceTypeBase> resourceType) throws Exception {
         final ReleaseResourceInput input = new ReleaseResourceInputBuilder().setResourceType(resourceType)
                 .setIdKey(resourceKey).build();

@@ -10,6 +10,8 @@ package org.opendaylight.genius.resourcemanager;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AvailableIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
@@ -43,6 +46,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev1
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.GetResourcePoolOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.GetResourcePoolOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ReleaseResourceInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ReleaseResourceOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ReleaseResourceOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.resourcemanager.rev160622.ResourceTypeGroupIds;
@@ -117,7 +122,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<AllocateResourceOutput>> allocateResource(AllocateResourceInput input) {
+    public ListenableFuture<RpcResult<AllocateResourceOutput>> allocateResource(AllocateResourceInput input) {
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
         Objects.requireNonNull(input.getIdKey(), RESOURCE_ID_CANNOT_BE_NULL);
         Objects.requireNonNull(input.getSize(), RESOURCE_SIZE_CANNOT_BE_NULL);
@@ -152,7 +157,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<GetResourcePoolOutput>> getResourcePool(GetResourcePoolInput input) {
+    public ListenableFuture<RpcResult<GetResourcePoolOutput>> getResourcePool(GetResourcePoolInput input) {
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
         Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_CANNOT_BE_NULL);
 
@@ -213,7 +218,8 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<GetAvailableResourcesOutput>> getAvailableResources(GetAvailableResourcesInput input) {
+    public ListenableFuture<RpcResult<GetAvailableResourcesOutput>> getAvailableResources(
+            GetAvailableResourcesInput input) {
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
         Objects.requireNonNull(resourcesCache.get(input.getResourceType()), RESOURCE_TYPE_NOT_FOUND);
 
@@ -272,7 +278,7 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
     }
 
     @Override
-    public Future<RpcResult<Void>> releaseResource(ReleaseResourceInput input) {
+    public ListenableFuture<RpcResult<ReleaseResourceOutput>> releaseResource(ReleaseResourceInput input) {
         Objects.requireNonNull(input.getIdKey(), RESOURCE_ID_CANNOT_BE_NULL);
         Objects.requireNonNull(input.getResourceType(), RESOURCE_TYPE_CANNOT_BE_NULL);
 
@@ -281,7 +287,23 @@ public class ResourceManager implements ResourceManagerService, AutoCloseable {
         ReleaseIdInputBuilder releaseIdInputBuilder = new ReleaseIdInputBuilder();
         releaseIdInputBuilder.setIdKey(input.getIdKey()).setPoolName(resourcesCache.get(input.getResourceType()));
 
-        return idManager.releaseId(releaseIdInputBuilder.build());
+        return transform(idManager.releaseId(releaseIdInputBuilder.build()));
+    }
+
+    private ListenableFuture<RpcResult<ReleaseResourceOutput>> transform(
+            final ListenableFuture<RpcResult<ReleaseIdOutput>> rpcResultListenableFuture) {
+        return Futures.transform(rpcResultListenableFuture, input -> {
+            final RpcResult<ReleaseResourceOutput> rpcOutput;
+            if (input.isSuccessful()) {
+                final ReleaseResourceOutput sendEchoOutput = new ReleaseResourceOutputBuilder().build();
+                rpcOutput = RpcResultBuilder.success(sendEchoOutput).build();
+            } else {
+                rpcOutput = RpcResultBuilder.<ReleaseResourceOutput>failed()
+                        .withRpcErrors(input.getErrors())
+                        .build();
+            }
+            return rpcOutput;
+        }, MoreExecutors.directExecutor());
     }
 
     private void createIdPool(String poolNameProperty, String lowIdProperty, String highIdProperty,

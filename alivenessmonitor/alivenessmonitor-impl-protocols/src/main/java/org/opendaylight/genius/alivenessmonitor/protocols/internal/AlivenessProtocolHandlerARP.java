@@ -15,6 +15,7 @@ import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
+import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.interfaces.InterfaceAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
@@ -149,24 +151,25 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             List<InterfaceAddress> addresses = Collections.singletonList(interfaceAddressBuilder.build());
             SendArpRequestInput input = new SendArpRequestInputBuilder().setInterfaceAddress(addresses)
                     .setIpaddress(IpAddressBuilder.getDefaultInstance(targetIp)).build();
-            Future<RpcResult<Void>> future = arpService.sendArpRequest(input);
+            ListenableFuture<RpcResult<SendArpRequestOutput>> future = arpService.sendArpRequest(input);
             final String msgFormat = String.format("Send ARP Request on interface %s to destination %s",
                     sourceInterface, targetIp);
-            Futures.addCallback(JdkFutureAdapters.listenInPoolThread(future), new FutureCallback<RpcResult<Void>>() {
-                @Override
-                public void onFailure(Throwable error) {
-                    LOG.error("Error - {}", msgFormat, error);
-                }
+            Futures.addCallback(JdkFutureAdapters.listenInPoolThread(future),
+                    new FutureCallback<RpcResult<SendArpRequestOutput>>() {
+                        @Override
+                        public void onFailure(Throwable error) {
+                            LOG.error("Error - {}", msgFormat, error);
+                        }
 
-                @Override
-                public void onSuccess(RpcResult<Void> result) {
-                    if (result != null && !result.isSuccessful()) {
-                        LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
-                    } else {
-                        LOG.debug("Successful RPC Result - {}", msgFormat);
-                    }
-                }
-            });
+                        @Override
+                        public void onSuccess(RpcResult<SendArpRequestOutput> result) {
+                            if (result != null && !result.isSuccessful()) {
+                                LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
+                            } else {
+                                LOG.debug("Successful RPC Result - {}", msgFormat);
+                            }
+                        }
+                    });
         }
     }
 
