@@ -156,7 +156,6 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         };
     }
 
-    @SuppressWarnings("resource") // thanks but we're good
     private <T extends DataObject> void on(Operation op, LogicalDatastoreType store, InstanceIdentifier<T> path,
                                            BiFunction<T, T, NextAction> cb, Duration timeoutDuration,
                                            @Nullable Consumer<DataTreeIdentifier<T>> timedOutCallback) {
@@ -187,6 +186,7 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         private volatile @Nullable ScheduledFuture<?> timeOutScheduledFuture;
 
         private final Object closeSync = new Object();
+        private final Object notificationSync = new Object();
 
         @GuardedBy("closeSync")
         private boolean gotNotification;
@@ -215,41 +215,48 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         @Override
         public void onDataTreeChanged(Collection<DataTreeModification<T>> changes) {
             // Code almost identical to org.opendaylight.genius.datastoreutils.listeners.DataTreeChangeListenerActions
-            for (final DataTreeModification<T> dataTreeModification : changes) {
-                final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
-                final T dataBefore = dataObjectModification.getDataBefore();
-                final T dataAfter = dataObjectModification.getDataAfter();
-
-                NextAction unregisterOrCallAgain;
-                switch (dataObjectModification.getModificationType()) {
-                    case SUBTREE_MODIFIED:
-                        unregisterOrCallAgain = update(dataBefore, dataAfter);
-                        break; // switch
-                    case DELETE:
-                        unregisterOrCallAgain = remove(dataBefore);
-                        break; // switch
-                    case WRITE:
-                        if (dataBefore == null) {
-                            unregisterOrCallAgain = add(dataAfter);
-                        } else {
-                            unregisterOrCallAgain = update(dataBefore, dataAfter);
-                        }
-                        break; // switch
-                    default:
-                        unregisterOrCallAgain = NextAction.UNREGISTER;
-                        break; // switch
+            synchronized (notificationSync) {
+                if (timeOutScheduledFuture != null && timeOutScheduledFuture.isDone()) {
+                    LOG.debug("Timeout task already ran");
+                    return;
                 }
 
-                if (unregisterOrCallAgain.equals(NextAction.UNREGISTER)) {
-                    closeRegistration();
-                    if (timeOutScheduledFuture != null) {
-                        if (!timeOutScheduledFuture.cancel(false)) {
-                            LOG.warn("Timeout scheduled task could not be cancelled; possibly concurrency issue! :(");
-                        } else {
-                            LOG.debug("Successfully cancelled a scheduled timeout task");
-                        }
+                NextAction unregisterOrCallAgain;
+                for (final DataTreeModification<T> dataTreeModification : changes) {
+                    final DataObjectModification<T> dataObjectModification = dataTreeModification.getRootNode();
+                    final T dataBefore = dataObjectModification.getDataBefore();
+                    final T dataAfter = dataObjectModification.getDataAfter();
+
+                    switch (dataObjectModification.getModificationType()) {
+                        case SUBTREE_MODIFIED:
+                            unregisterOrCallAgain = update(dataBefore, dataAfter);
+                            break; // switch
+                        case DELETE:
+                            unregisterOrCallAgain = remove(dataBefore);
+                            break; // switch
+                        case WRITE:
+                            if (dataBefore == null) {
+                                unregisterOrCallAgain = add(dataAfter);
+                            } else {
+                                unregisterOrCallAgain = update(dataBefore, dataAfter);
+                            }
+                            break; // switch
+                        default:
+                            unregisterOrCallAgain = NextAction.UNREGISTER;
+                            break; // switch
                     }
-                    break; // for loop
+
+                    if (unregisterOrCallAgain.equals(NextAction.UNREGISTER)) {
+                        closeRegistration();
+                        if (timeOutScheduledFuture != null) {
+                            if (!timeOutScheduledFuture.cancel(false)) {
+                                LOG.warn("Timeout scheduled task could not be cancelled; possibly concurrency issue!");
+                            } else {
+                                LOG.debug("Successfully cancelled the scheduled timeout task");
+                            }
+                        }
+                        break; // for loop
+                    }
                 }
             }
         }
@@ -272,9 +279,13 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         @Override
         // This gets invoked on timeout (if any)
         public void run() {
-            closeRegistration();
-            timedOutCallback.run();
-            LOG.debug("Closed datastore listener and ran the time-out task now");
+            synchronized (notificationSync) {
+                if (!timeOutScheduledFuture.isDone()) {
+                    closeRegistration();
+                    timedOutCallback.run();
+                    LOG.debug("Closed datastore listener and ran the time-out task now");
+                }
+            }
         }
 
         NextAction add(T newDataObject) {
