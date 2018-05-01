@@ -18,7 +18,7 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-fcaps-application</artifactId>
-  <version>0.3.3-SNAPSHOT</version>
+  <version>0.3.3</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: fcapsapp</name>
 
@@ -27,14 +27,14 @@
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-flow-services</artifactId>
-      <version>0.5.3-SNAPSHOT</version>
+      <version>0.5.3</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>odl-infrautils-inject</artifactId>
-      <version>1.2.3-SNAPSHOT</version>
+      <version>1.2.3</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
