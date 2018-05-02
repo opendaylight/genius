@@ -15,6 +15,7 @@ Contents:
    itm-tunnel-auto-config
    multiple-vxlan-tunnels
    of-tunnels
+   of-tunnels-support-for-itm-direct-tunnels
    qos-shaping
    service-binding-on-tunnels
    service-recovery
