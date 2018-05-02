@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d15bfffb_d80f1c2b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6e30c523_a8447ae5",
+      "range": {
+        "startLine": 110,
+        "startChar": 8,
+        "endLine": 117,
+        "endChar": 9
+      },
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d40b2aa3_e05d2011",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2018-04-30T09:26:26Z",
       "side": 1,
       "message": "maybe put this in the utils ?\nlooks like an ideal candidate for a static getter :)",
+      "range": {
+        "startLine": 141,
+        "startChar": 8,
+        "endLine": 142,
+        "endChar": 63
+      },
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab0603bb_5febbf82",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "d40b2aa3_e05d2011",
       "range": {
         "startLine": 141,
         "startChar": 8,
@@ -65,6 +113,24 @@
     },
     {
       "key": {
+        "uuid": "acc45787_51ba300f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "a89101bb_ac50dd69",
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "64c04e39_bca37a47",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
         "patchSetId": 2
@@ -76,6 +142,30 @@
       "writtenOn": "2018-04-30T09:26:26Z",
       "side": 1,
       "message": "please us\nif (empty) {\nlog;\nreturn;\n}\nfor () {}",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 119,
+        "endChar": 9
+      },
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26ae2010_585eb979",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "64c04e39_bca37a47",
       "range": {
         "startLine": 112,
         "startChar": 8,
@@ -111,6 +201,30 @@
     },
     {
       "key": {
+        "uuid": "f6ba1db8_bf9645ac",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "48fec95a_33937a16",
+      "range": {
+        "startLine": 147,
+        "startChar": 8,
+        "endLine": 148,
+        "endChar": 63
+      },
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0c44fab9_b83c4384",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 2
@@ -128,6 +242,24 @@
     },
     {
       "key": {
+        "uuid": "8701db06_95ffef6a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "0c44fab9_b83c4384",
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4188afd7_2b5dd2fc",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 2
@@ -139,6 +271,30 @@
       "writtenOn": "2018-04-30T09:26:26Z",
       "side": 1,
       "message": "should be inside the nonNull if block",
+      "range": {
+        "startLine": 333,
+        "startChar": 7,
+        "endLine": 333,
+        "endChar": 39
+      },
+      "revId": "2042aca23783ae29c6d4ee7a1c959e4e624b6be0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8e152050_889f1273",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-02T06:43:18Z",
+      "side": 1,
+      "message": "Done.",
+      "parentUuid": "4188afd7_2b5dd2fc",
       "range": {
         "startLine": 333,
         "startChar": 7,
