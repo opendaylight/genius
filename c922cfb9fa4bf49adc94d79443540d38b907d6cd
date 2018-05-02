@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a16fe6a_1023c5cf",
+        "filename": "docs/conf.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-05-02T06:43:45Z",
+      "side": 1,
+      "message": "COE?",
+      "range": {
+        "startLine": 2,
+        "startChar": 9,
+        "endLine": 2,
+        "endChar": 16
+      },
+      "revId": "c922cfb9fa4bf49adc94d79443540d38b907d6cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
