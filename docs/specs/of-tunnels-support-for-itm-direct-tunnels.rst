@@ -2,9 +2,9 @@
 .. contents:: Table of Contents
       :depth: 3
 
-==========
-OF Tunnels
-==========
+=========================================
+OF Tunnels Support For ITM Direct Tunnels
+=========================================
 
 https://git.opendaylight.org/gerrit/#/q/topic:of-tunnels
 
@@ -107,116 +107,38 @@ When services call ``getEgressActions(), they will get one additional action,
 
 YANG changes
 ------------
-Changes will be needed in ``itm.yang`` and ``odl-interface.yang`` to allow
-configuring a tunnel as flow based or not.
+Yang changes needed in ``itm.yang`` and ``itm-state.yang`` to allow
+configuring a tunnel as flow based or not, is already convered by the previous
+OF-Tunnels implementation. To support the same through itm-direct-tunnels, some
+more yang changes will be needed in ITM as specified below :
 
 ITM YANG changes
 ^^^^^^^^^^^^^^^^
-A new parameter ``option-of-tunnel`` will be added to ``list-vteps``
+A new parameter ``option-of-tunnel`` is already added to ``list-vteps`` in itm.yang and
+``tunnel-end-points`` in ``itm-state.yang``.
+
+A new container will be added in odl-item-meta.yang to maintain a mapping of parent-child interfaces.
+
 
 .. code-block:: none
-   :caption: itm.yang
+   :caption: odl-item-meta.yang
    :emphasize-lines: 12-15
 
-    list vteps {
-        key "dpn-id portname";
-        leaf dpn-id {
-            type uint64;
-        }
-        leaf portname {
-            type string;
-        }
-        leaf ip-address {
-            type inet:ip-address;
-        }
-        leaf option-of-tunnel {
-            type boolean;
-            default false;
-        }
-    }
-
-Same parameter will also be added to ``tunnel-end-points`` in ``itm-state.yang``.
-This will help eliminate need to retrieve information from TransportZones when configuring
-tunnel interfaces.
-
-.. code-block:: none
-   :caption: itm-state.yang
-   :emphasize-lines: 11-14
-
-    list tunnel-end-points {
-        ordered-by user;
-        key "portname VLAN-ID ip-address tunnel-type";
-        /* Multiple tunnels on the same physical port but on different VLAN can be supported */
-
-        leaf portname {
-            type string;
-        }
-        ...
-        ...
-        leaf option-of-tunnel {
-            type boolean;
-            default false;
-        }
-    }
-
-
-This will allow to set OF Tunnels on per VTEP basis. So in a transport-zone
-we can have some VTEPs (devices) that use OF Tunnels and others that don't.
-Default of false means it will not impact existing behavior and will need to
-be explicitly configured. Going forward we can choose to set default true.
-
-IFM YANG changes
-^^^^^^^^^^^^^^^^
-We'll add a new ``tunnel-optional-params`` and add them to ``iftunnel``
-
-.. code-block:: none
-   :caption: odl-interface.yang
-   :emphasize-lines: 1-23
-
-    grouping tunnel-optional-params {
-        leaf tunnel-source-ip-flow {
-            type boolean;
-            default false;
-        }
-
-        leaf tunnel-remote-ip-flow {
-            type boolean;
-            default false;
-        }
-
-        list tunnel-options {
-            key "tunnel-option";
-            leaf tunnel-option {
-                description "Tunnel Option name";
+    container interface-child-info {
+    description "The container of all child-interfaces for an interface.";
+        list interface-parent-entry {
+            key parent-interface;
+            leaf parent-interface {
                 type string;
             }
-            leaf value {
-                description "Option value";
-                type string;
+
+            list interface-child-entry {
+                key child-interface;
+                leaf child-interface {
+                    type string;
+                }
             }
         }
-    }
-
-The ``list tunnel-options`` is a list of key-value pairs of strings, similar to
-options in OVSDB Plugin. These are not needed for OF Tunnels but is being added
-to allow user to configure any other Interface options that OVS supports. Aim is to
-enable developers and users try out newer options supported by OVS without needing to
-add explicit support for it. Note that there is no counterpart for this option in
-``itm.yang``. Any options that we want to explicitly support will be added as a separate
-option. This will allow us to do better validations for options that are needed for
-our specific use cases.
-
-
-.. code-block:: none
-   :emphasize-lines: 6
-
-    augment "/if:interfaces/if:interface" {
-        ext:augment-identifier "if-tunnel";
-        when "if:type = 'ianaift:tunnel'";
-        ...
-        ...
-        uses tunnel-optional-params;
-        uses monitor-params;
     }
 
 Workflow
@@ -225,14 +147,18 @@ Workflow
 Adding tep
 ^^^^^^^^^^
 
+#. User: Enables itm-scalability by setting itm-direct-tunnels flag to true.
 #. User: While adding tep user gives ``option-of-tunnel:true`` for tep being
    added.
 #. ITM: When creating tunnel interfaces for this tep, if
    ``option-of-tunnel:true``, set ``tunnel-remote-ip:true`` for the tunnel
    interface.
-#. IFM: If ``option-of-tunnel:true`` and this is first tunne on this device,
+#. ITM: If ``option-of-tunnel:true`` and this is first tunnle on this device,
    set ``option:remote_ip=flow`` when creating tunnel interface in OVSDB. Else,
    set ``option:remote_ip=<destination-ip>``.
+#. ITM: Receives notification when the of-port is added on the switch.
+#. ITM: Checks for the northbound configured tunnel interfaces on top of this flow based tunnel,
+   and creates tunnels-state for all of them.
 
 Deleting tep
 ^^^^^^^^^^^^
@@ -266,8 +192,7 @@ created on devices as well as no. of interfaces and ports present in
 
 Targeted Release(s)
 -------------------
-Carbon.
-Boron-SR3.
+Fluorine.
 
 Known Limitations
 -----------------
@@ -283,11 +208,6 @@ LLDP/ARP based monitoring was considered for OF tunnels to overcome lack of BFD
 monitoring but was rejected because LLDP/ARP based monitoring doesn't scale
 well. Since driving requirement for this feature is scale setups, it didn't
 make sense to use an unscalable solution for monitoring.
-
-XML/CFG file based global knob to enable OF tunnels for all tunnel interfaces
-was rejected due to inflexible nature of such a solution. Current solution
-allows a more fine grained and device based configuration at runtime. Also,
-wanted to avoid adding yet another global configuration knob.
 
 Usage
 =====
@@ -337,44 +257,6 @@ with one small addition.
     ]
    }
 
-
-Creating tunnel-interface directly in IFM
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This use case is mainly for those who want to write applications using Genius and/or
-want to create individual tunnel interfaces. Note that this is a simpler easy way to
-create tunnels without needing to delve into how OVSDB Plugin creates tunnels.
-
-Refer `Genius User Guide <http://docs.opendaylight.org/en/latest/user-guide/genius-user-guide.html#creating-overlay-tunnel-interfaces>`__
-for more details on this.
-
-**URL:** restconf/config/ietf-interfaces:interfaces
-
-**Sample JSON data**
-
-.. code-block:: json
-   :emphasize-lines: 10
-
-   {
-    "interfaces": {
-    "interface": [
-        {
-            "name": "vxlan_tunnel",
-            "type": "iana-if-type:tunnel",
-            "odl-interface:tunnel-interface-type": "odl-interface:tunnel-type-vxlan",
-            "odl-interface:datapath-node-identifier": "1",
-            "odl-interface:tunnel-source": "192.168.56.101",
-            "odl-interface:tunnel-destination": "192.168.56.102",
-            "odl-interface:tunnel-remote-ip-flow": "true",
-            "odl-interface:monitor-enabled": false,
-            "odl-interface:monitor-interval": 10000,
-            "enabled": true
-        }
-     ]
-    }
-   }
-
-
 CLI
 ---
 
@@ -416,18 +298,20 @@ Implementation
 Assignee(s)
 -----------
 Primary assignee:
-  <Vishal Thapar>
+  <Faseela K>
 
 Other contributors:
-  <Vacancies available>
+  <Dimple Jain>
+  <Nidhi Adhvaryu>
+  <N Edwin Anthony>
+  <B Sathwik>
 
 
 Work Items
 ----------
 #. YANG changes
-#. Add relevant match and actions to MDSALUtil
 #. Add ``set_tunnel_dest_ip`` action to actions returned in
-   ``getEgressActions()`` for OF Tunnels.
+   ``getEgressActionsForTunnel()`` for OF Tunnels.
 #. Add match on ``tun_src_ip`` in **Table0** for OF Tunnels.
 #. Add CLI.
 #. Add UTs.
@@ -458,22 +342,18 @@ Appropriate UTs will be added for the new code coming in once framework is in pl
 
 Integration Tests
 -----------------
-Integration tests will be added once IT framework for ITM and IFM is ready.
+N/A
 
 CSIT
 ----
-CSIT already has test cases for tunnels which test with non OF Tunnels. Similar test
-cases will be added for OF Tunnels. Alternatively, some of the existing test cases
-that use multiple teps can be tweaked to use OF Tunnels for one of them.
 
 Following test cases will need to be added/expanded in Genius CSIT:
 
-#. Create a TZ with more than one TEPs set to use OF Tunnels and test datapath.
+#. Enhance Genius CSIT to support 3 switches
+#. Create a TZ with more than one TEPs set to use OF Tunnels.
 #. Create a TZ with mix of OF and non OF Tunnels and test datapath.
-#. Delete a TEP using OF Tunnels and add it again with non OF tunnels and test
-   the datapath.
-#. Delete a TEP using non OF Tunnels and add it again with OF Tunnels and test
-   datapath.
+#. Delete a TEP using OF Tunnels and add it again with non OF tunnels.
+#. Delete a TEP using non OF Tunnels and add it again with OF Tunnels.
 
 Documentation Impact
 ====================
@@ -482,10 +362,10 @@ This will require changes to User Guide and Developer Guide.
 User Guide will need to add information on how to add TEPs with flow based
 tunnels.
 
-Developer Guide will need to capture how to use changes in IFM to create
+Developer Guide will need to capture how to use changes in ITM to create
 individual tunnel interfaces.
 
 References
 ==========
 
-* https://wiki.opendaylight.org/view/Genius:Carbon_Release_Plan
+* https://jira.opendaylight.org/browse/TSC-78
