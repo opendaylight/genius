@@ -7,13 +7,17 @@
  */
 package org.opendaylight.genius.lockmanager.impl;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredAsyncDataTreeChangeListener;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.Locks;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -22,28 +26,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock, LockListener> {
+public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<Lock> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LockListener.class);
+
+    private static long TIMEOUT_FOR_SHUTDOWN = 30;
+
     private final LockManagerServiceImpl lockManager;
 
+
     @Inject
-    public LockListener(@OsgiService DataBroker broker, LockManagerServiceImpl lockManager) {
-        super(Lock.class, LockListener.class);
+    public LockListener(@OsgiService DataBroker dataBroker, LockManagerServiceImpl lockManager) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Locks.class).child(Lock.class),
+              Executors.newSingleThreadExecutor("LockListener", LOG));
         this.lockManager = lockManager;
-        registerListener(LogicalDatastoreType.OPERATIONAL, broker);
     }
 
     @Override
-    protected InstanceIdentifier<Lock> getWildCardPath() {
-        return InstanceIdentifier.create(Locks.class).child(Lock.class);
-    }
-
-    @Override
-    @SuppressFBWarnings("NP_NONNULL_PARAM_VIOLATION")
-    protected void remove(InstanceIdentifier<Lock> key, Lock remove) {
-        String lockName = remove.getLockName();
-        LOG.debug("Received remove for lock {} : {}", lockName, remove);
+    public void remove(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock removedLock) {
+        String lockName = removedLock.getLockName();
+        LOG.debug("Received remove for lock {} : {}", lockName, removedLock);
         CompletableFuture<Void> lock = lockManager.getSynchronizerForLock(lockName);
         if (lock != null) {
             // FindBugs flags a false violation here - "passes a null value as the parameter of a method which must be
@@ -55,17 +57,20 @@ public class LockListener extends AsyncClusteredDataTreeChangeListenerBase<Lock,
     }
 
     @Override
-    protected void update(InstanceIdentifier<Lock> key, Lock dataObjectModificationBefore,
-            Lock dataObjectModificationAfter) {
+    public void update(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock originalLock,
+                       @Nonnull Lock updatedLock) {
+        // NOOP
     }
 
     @Override
-    protected void add(InstanceIdentifier<Lock> key, Lock add) {
-        LOG.debug("Received add for lock {} : {}", add.getLockName(), add);
+    public void add(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock lock) {
+        LOG.debug("Received add for lock {} : {}", lock.getLockName(), lock);
     }
 
     @Override
-    protected LockListener getDataTreeChangeListener() {
-        return this;
+    @PreDestroy
+    public void close() {
+        super.close();
+        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), TIMEOUT_FOR_SHUTDOWN, TimeUnit.SECONDS);
     }
 }
