@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3128ca69_f98d49e1",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-03T14:29:42Z",
+      "side": 1,
+      "message": "With ITM direct tunnels, ITM directly creates tunnel ports in OVSDB by passing IFM. I believe the same exists for OF Tunnels too.",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
