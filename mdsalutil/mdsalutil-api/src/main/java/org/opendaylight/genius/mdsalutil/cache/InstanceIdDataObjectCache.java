@@ -20,9 +20,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class InstanceIdDataObjectCache<V extends DataObject> extends DataObjectCache<InstanceIdentifier<V>, V> {
     public InstanceIdDataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker,
-            LogicalDatastoreType datastoreType, InstanceIdentifier<V> listetenerRegistrationPath,
+            LogicalDatastoreType datastoreType, InstanceIdentifier<V> listenerRegistrationPath,
             CacheProvider cacheProvider) {
-        super(dataObjectClass, dataBroker, datastoreType, listetenerRegistrationPath, cacheProvider,
+        super(dataObjectClass, dataBroker, datastoreType, listenerRegistrationPath, cacheProvider,
             (iid, value) -> iid, iid -> iid);
     }
 }
