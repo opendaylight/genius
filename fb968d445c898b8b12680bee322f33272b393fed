@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "81a7ddfe_fa6fc2f8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-03T13:52:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5ae59ce_ef7e2015",
+      "range": {
+        "startLine": 329,
+        "startChar": 28,
+        "endLine": 329,
+        "endChar": 38
+      },
+      "revId": "fb968d445c898b8b12680bee322f33272b393fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0897c8ac_6408a673",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 10
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "424f68c3_70048bb3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 351,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-03T13:52:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0897c8ac_6408a673",
+      "revId": "fb968d445c898b8b12680bee322f33272b393fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "075a6d42_ecea8a0e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 10
@@ -53,6 +95,30 @@
       "writtenOn": "2018-05-03T12:10:29Z",
       "side": 1,
       "message": "This is incorrect. ReadFailedException means just that so we don\u0027t know if the object is present or not. I\u0027d suggest something like \"Could not update BFD configuration due to failure to read OVS Bridge for the DPN Id %s\".",
+      "range": {
+        "startLine": 352,
+        "startChar": 73,
+        "endLine": 352,
+        "endChar": 87
+      },
+      "revId": "fb968d445c898b8b12680bee322f33272b393fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b892751f_8bb19e51",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 352,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-03T13:52:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "075a6d42_ecea8a0e",
       "range": {
         "startLine": 352,
         "startChar": 73,
@@ -88,6 +154,30 @@
     },
     {
       "key": {
+        "uuid": "f8fc62b1_7e06cba7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-03T13:52:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "79c448a1_f1c2ffe6",
+      "range": {
+        "startLine": 364,
+        "startChar": 15,
+        "endLine": 364,
+        "endChar": 24
+      },
+      "revId": "fb968d445c898b8b12680bee322f33272b393fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f434211d_71ab617e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 10
@@ -99,6 +189,24 @@
       "writtenOn": "2018-05-03T12:10:29Z",
       "side": 1,
       "message": "See above",
+      "revId": "fb968d445c898b8b12680bee322f33272b393fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e0e97a10_f1954dcf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 366,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-03T13:52:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f434211d_71ab617e",
       "revId": "fb968d445c898b8b12680bee322f33272b393fed",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
