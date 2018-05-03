@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "79c448a1_f1c2ffe6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 364,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-05-03T10:49:50Z",
+      "side": 1,
+      "message": "please have a look at Ieb425d8365e7abe6589971f057722b9cef50db00 \nto put error message",
+      "range": {
+        "startLine": 364,
+        "startChar": 15,
+        "endLine": 364,
+        "endChar": 24
+      },
+      "revId": "fb968d445c898b8b12680bee322f33272b393fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
