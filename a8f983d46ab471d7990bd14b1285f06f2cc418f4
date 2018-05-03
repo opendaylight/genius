@@ -16,6 +16,24 @@
       "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f50d655a_6e0e90b4",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-03T16:36:02Z",
+      "side": 1,
+      "message": "Right Dimple. Will update the spec!",
+      "parentUuid": "3128ca69_f98d49e1",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
