@@ -8,14 +8,17 @@
 
 package org.opendaylight.genius.itm.listeners.cache;
 
-import javax.annotation.PostConstruct;
+import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredAsyncDataTreeChangeListener;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -23,53 +26,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ExternalTunnelListener extends
-        AsyncClusteredDataTreeChangeListenerBase<ExternalTunnel,ExternalTunnelListener> {
+public class ExternalTunnelListener extends AbstractClusteredAsyncDataTreeChangeListener<ExternalTunnel> {
+
+    private static final long TIMEOUT_FOR_SHUTDOWN = 30;
+
     private static final Logger LOG = LoggerFactory.getLogger(ExternalTunnelListener.class);
-    private final DataBroker broker;
 
     @Inject
     public ExternalTunnelListener(final DataBroker dataBroker) {
-        super(ExternalTunnel.class, ExternalTunnelListener.class);
-        this.broker = dataBroker;
-        registerListener(LogicalDatastoreType.CONFIGURATION, this.broker);
+        super(dataBroker, LogicalDatastoreType.CONFIGURATION,
+              InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class),
+              Executors.newSingleThreadExecutor("ExternalTunnelListener", LOG));
     }
 
-    @PostConstruct
-    public void start() {
-        LOG.info("Tunnel Interface State Listener Started");
+    @Override
+    public void remove(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
+                       @Nonnull ExternalTunnel externalTunnel) {
+        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(externalTunnel.getKey());
+    }
+
+    @Override
+    public void update(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
+                       @Nonnull ExternalTunnel originalExternalTunnel, @Nonnull ExternalTunnel updatedExternalTunnel) {
+        ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(updatedExternalTunnel);
+    }
+
+    @Override
+    public void add(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
+                    @Nonnull ExternalTunnel externalTunnel) {
+        ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(externalTunnel);
     }
 
     @Override
     @PreDestroy
     public void close() {
-        LOG.info("Tunnel Interface State Listener Closed");
+        super.close();
+        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), TIMEOUT_FOR_SHUTDOWN, TimeUnit.SECONDS);
     }
-
-    @Override
-    protected void remove(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel del) {
-        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(del.getKey());
-    }
-
-    @Override
-    protected void update(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel original,
-                          ExternalTunnel update) {
-        ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(update);
-    }
-
-    @Override
-    protected void add(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel add) {
-        ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(add);
-    }
-
-    @Override
-    protected ExternalTunnelListener getDataTreeChangeListener() {
-        return this;
-    }
-
-    @Override
-    protected InstanceIdentifier<ExternalTunnel> getWildCardPath() {
-        return InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class);
-    }
-
 }
