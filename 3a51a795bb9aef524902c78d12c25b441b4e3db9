@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a198ee9_7304eef1",
+        "filename": "docs/specs/index.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-03T10:32:29Z",
+      "side": 1,
+      "message": "sort in alphabetical order",
+      "revId": "3a51a795bb9aef524902c78d12c25b441b4e3db9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a3d5be3_48c40039",
         "filename": "docs/specs/ovsdb-reconciliation.rst",
         "patchSetId": 4
@@ -13,6 +30,74 @@
       "writtenOn": "2018-05-03T10:24:10Z",
       "side": 1,
       "message": "is this feature in genius or ovsdb?? I am getting confused reading this.",
+      "revId": "3a51a795bb9aef524902c78d12c25b441b4e3db9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bfd98cdf_654b186e",
+        "filename": "docs/specs/ovsdb-reconciliation.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-03T10:32:29Z",
+      "side": 1,
+      "message": "how do we make sure that back to back connects and disconnects cause no issues? Should we mention that there should be time sync between cluster nodes?",
+      "revId": "3a51a795bb9aef524902c78d12c25b441b4e3db9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92312d96_29dbdbe2",
+        "filename": "docs/specs/ovsdb-reconciliation.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-03T10:32:29Z",
+      "side": 1,
+      "message": "can we mention what is the existing feature to be installed? ;)",
+      "revId": "3a51a795bb9aef524902c78d12c25b441b4e3db9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c259558_2d050e59",
+        "filename": "docs/specs/ovsdb-reconciliation.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-03T10:32:29Z",
+      "side": 1,
+      "message": "CSIT changes?",
+      "revId": "3a51a795bb9aef524902c78d12c25b441b4e3db9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e9dad6a_01d148ca",
+        "filename": "docs/specs/ovsdb-reconciliation.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-03T10:32:29Z",
+      "side": 1,
+      "message": "why no CSIT addition?",
       "revId": "3a51a795bb9aef524902c78d12c25b441b4e3db9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
