@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "831687df_7298afa7",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 622,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-04T08:21:51Z",
+      "side": 1,
+      "message": "Thanks for the inputs. :) Will fix it. I have one more question. I am trying to run a multipatch job by pulling in mdsal and controller patches corresponding to this. However it fails for some error in OFPlugin.\nhttps://jenkins.opendaylight.org/releng/job/integration-multipatch-test-fluorine/29/\n\nDo i have to pull any other patches other than mdsal and controller? or does this mean that ofplugin has not migrated yet to use TSC-99",
+      "parentUuid": "91d4c138_7825c65f",
+      "range": {
+        "startLine": 622,
+        "startChar": 38,
+        "endLine": 622,
+        "endChar": 42
+      },
+      "revId": "5c9fae243ba18a72ab100196b5c575ff7eb1851f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "487e0a88_45e9621e",
         "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
         "patchSetId": 8
