@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "91d4c138_7825c65f",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 622,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-04T08:07:33Z",
+      "side": 1,
+      "message": "This should be MonitorPauseOutput",
+      "range": {
+        "startLine": 622,
+        "startChar": 38,
+        "endLine": 622,
+        "endChar": 42
+      },
+      "revId": "5c9fae243ba18a72ab100196b5c575ff7eb1851f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "487e0a88_45e9621e",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 624,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-04T08:07:33Z",
+      "side": 1,
+      "message": "MonitorPauseOutput",
+      "range": {
+        "startLine": 624,
+        "startChar": 33,
+        "endLine": 624,
+        "endChar": 37
+      },
+      "revId": "5c9fae243ba18a72ab100196b5c575ff7eb1851f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1c344149_4c1d012d",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-04T08:07:33Z",
+      "side": 1,
+      "message": "success(new MonitorPauseOutputBuilder().build())",
+      "range": {
+        "startLine": 631,
+        "startChar": 40,
+        "endLine": 631,
+        "endChar": 55
+      },
+      "revId": "5c9fae243ba18a72ab100196b5c575ff7eb1851f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00f1fc25_b10d5fae",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-05-04T08:07:33Z",
+      "side": 1,
+      "message": "MonitorPauseOutput",
+      "range": {
+        "startLine": 636,
+        "startChar": 41,
+        "endLine": 636,
+        "endChar": 45
+      },
+      "revId": "5c9fae243ba18a72ab100196b5c575ff7eb1851f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
