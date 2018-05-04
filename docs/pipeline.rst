@@ -63,3 +63,22 @@ Owner Project: Netvirt
 
 TBD.
 
+Ingress TaaS Pipeline
+^^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: images/pipeline-taas-ingress.txt
+
+
+Owner Project: Netvirt
+
+TBD.
+
+Egress TaaS Pipeline
+^^^^^^^^^^^^^^^^^^^^
+
+.. literalinclude:: images/pipeline-taas-egress.txt
+
+
+Owner Project: Netvirt
+
+TBD.
