@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "49a2a408_c36d6bfc",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-04T07:06:08Z",
+      "side": 1,
+      "message": "Please specify if the configuration on per tep based or overall transport zone based configuration.",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3128ca69_f98d49e1",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 2
@@ -31,6 +48,40 @@
       "side": 1,
       "message": "Right Dimple. Will update the spec!",
       "parentUuid": "3128ca69_f98d49e1",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8121a924_fa7a91fc",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-04T07:06:08Z",
+      "side": 1,
+      "message": "typo - odl-itm-meta.yang",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c52ef47_7171b661",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-04T07:06:08Z",
+      "side": 1,
+      "message": "same typo as above",
       "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
