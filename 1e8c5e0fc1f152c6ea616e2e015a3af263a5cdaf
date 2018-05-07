@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3132e0b_a83e0392",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "same as below, this also seems to just have been copy/pasted from the other Worker - perhaps that could be avoided?",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b39b872_9d9e9550",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "this method looks VERY similar to the one in ItmMonitorIntervalWorker - with some minor difference re. setMonitoringEnabled vs. setMonitoringInterval... instead of copy/paste, could this code not be shared?  In a utility class or Worker parent class which both extend.",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ce1192f_c96df39f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "why do your own error handling here?  That\u0027s exactly what org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults is for - which you use below.  If you just move this line instead the fromListenableFuture() you have just below, then you can get rid of all this and just put this just before directTunnelUtils..., and code becomes much simpler:\n\n    Optional\u003cOvsBridgeRefEntry\u003e ovsBridgeRefEntry \u003d \u003d ovsBridgeRefEntryCache.get(srcDpnId);",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9136ac14_2dd64dcc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "huh - the comment and the instruction here contradict each other... ;-)",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6288c3ef_bb7d1d7c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "hang on - what failed here?  There is no \"RPC setBfdParamOnTunnelErrorMessage()\" ... do you mean \"RPC setBfdParamOnTunnel\" here?  This is a bit strange - what IllegalArgumentException are we trying to NOT LOG.error here? Best to document this special case an inline comment in code.",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "72c9db45_5736c2ab",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "else { LOG.debug ... } could perhaps be useful in the futue, ot see if there were any IllegalArgumentException that got \"swallowed\" (hidden) ?",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8131f678_c6c50d5a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "I would use FutureRpcResults here, and put the fromListenableFuture() \"higher\" up, right at the start of this method, and replace this if else etc. with a simple \nObjects.requireNonNull(dpnTepInterfaceInfo, \"dpnTepInterfaceInfo\") - that will lead to a NullPointerException which the FutureRpcResults would catch and log including the full RPC input which has srcDpnId and destDpnId anyway.",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "74cc3de9_58ebd22d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T12:01:35Z",
+      "side": 1,
+      "message": "this is only used in line 364 so why have a separate method for it instead of just inlining it there?  Makes the code easier to read.",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
