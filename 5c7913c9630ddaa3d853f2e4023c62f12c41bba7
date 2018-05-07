@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3ae72d06_d46d3d4d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-07T10:57:14Z",
+      "side": 0,
+      "message": "I got confused while reviewing this, and would suggest https://git.opendaylight.org/gerrit/71827 as a follow-up...",
+      "revId": "5c7913c9630ddaa3d853f2e4023c62f12c41bba7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
