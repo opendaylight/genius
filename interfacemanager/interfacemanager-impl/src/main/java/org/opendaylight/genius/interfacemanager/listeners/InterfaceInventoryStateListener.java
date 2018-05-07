@@ -19,7 +19,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -66,6 +65,7 @@ import org.slf4j.LoggerFactory;
 public class InterfaceInventoryStateListener
         extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener>
         implements RecoverableListener {
+
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
@@ -318,7 +318,7 @@ public class InterfaceInventoryStateListener
     private class InterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final NodeConnectorId nodeConnectorIdNew;
         private NodeConnectorId nodeConnectorIdOld;
-        FlowCapableNodeConnector fcNodeConnectorOld;
+        private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
         private final IdManagerService idManager;
         private final boolean isNetworkEvent;
@@ -395,8 +395,7 @@ public class InterfaceInventoryStateListener
                         // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
                         // monitoring
                         interfaceMetaUtils.removeLportTagInterfaceMap(tx, interfaceName);
-                        handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.getAugmentation(IfTunnel.class),
-                                tx, futures);
+                        handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.getAugmentation(IfTunnel.class));
                         return;
                     }
                     // remove ingress flow only for northbound configured interfaces
@@ -413,9 +412,7 @@ public class InterfaceInventoryStateListener
             return futures;
         }
 
-        private void handleTunnelMonitoringRemoval(BigInteger dpId, String removedInterfaceName,
-                                                   IfTunnel ifTunnel, WriteTransaction transaction,
-                                                   List<ListenableFuture<Void>> futures) {
+        private void handleTunnelMonitoringRemoval(BigInteger dpId, String removedInterfaceName, IfTunnel ifTunnel) {
             interfaceManagerCommonUtils.removeTunnelIngressFlow(ifTunnel, dpId, removedInterfaceName);
 
             IfmUtil.unbindService(dataBroker, coordinator, removedInterfaceName,
