@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "ce38e283_4355f9bb",
+        "filename": "docs/images/pipeline-taas-egress.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-07T09:53:52Z",
+      "side": 1,
+      "message": "Packets to any VM is delivered from Table 220. So the copied packet will go to the Tap Service Port and the original packet will be delivered to the Tap Flow Port. This use case is to mirror packets coming into a VM.",
+      "parentUuid": "70ff4162_cfde72ef",
+      "revId": "4f91bd173856035fef2e5656702ca45ac59294f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "363a94d7_43916720",
         "filename": "docs/images/pipeline-taas-ingress.txt",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-05-07T05:33:11Z",
       "side": 1,
       "message": "a copied packet is sent to 220. From 220 the copied packet will be punted to controller?  what happens to the copied packet from Table 220?",
+      "revId": "4f91bd173856035fef2e5656702ca45ac59294f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "34c9ced9_4ae6972c",
+        "filename": "docs/images/pipeline-taas-ingress.txt",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-07T09:53:52Z",
+      "side": 1,
+      "message": "The copied packet is delivered from Table 220 to the VM with the Tap Service Port. The mirrored packets are collected in the VM and what is done to the collected packets is not in scope of this Spec. These packets are not punted to the controller.",
+      "parentUuid": "363a94d7_43916720",
       "revId": "4f91bd173856035fef2e5656702ca45ac59294f4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
