@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d7cada00_4cdfc768",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 15
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-07T07:20:40Z",
+      "side": 1,
+      "message": "This is a new RPC introduced with ITM direct tunnels. No one has started using this as there was no implementation so far.",
+      "parentUuid": "54d3e211_45dc30ed",
+      "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c3a39649_143fcf6a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
         "patchSetId": 15
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "ef5faa63_7d5f2661",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-07T07:20:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c3a39649_143fcf6a",
+      "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6a529751_df3bf094",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 15
@@ -47,6 +83,24 @@
       "writtenOn": "2018-05-07T01:56:04Z",
       "side": 1,
       "message": "why can\u0027t we have all these params in single log statement?",
+      "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0e1f83b3_eda5a5f6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-07T07:20:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6a529751_df3bf094",
       "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
