@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "54d3e211_45dc30ed",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 15
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-07T01:56:04Z",
+      "side": 1,
+      "message": "Dimple this is an existing RPC change, hope this does not break anything. Ideally, we should create a WEATHER item to call this out, and inform all apps which are based on genius., anyways can be ignored if you are 100% sure that nobody uses this RPC",
+      "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3a39649_143fcf6a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-07T01:56:04Z",
+      "side": 1,
+      "message": "RemoteDpnNew {}",
+      "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6a529751_df3bf094",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 503,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-07T01:56:04Z",
+      "side": 1,
+      "message": "why can\u0027t we have all these params in single log statement?",
+      "revId": "018db7554deada6509e2ca9600a45f882a6dacb5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
