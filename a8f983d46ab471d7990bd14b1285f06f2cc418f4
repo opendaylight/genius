@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a58ecae0_18e3dc9a",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "49a2a408_c36d6bfc",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3128ca69_f98d49e1",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 2
@@ -71,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1f3c6f97_4d96531e",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8121a924_fa7a91fc",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5c52ef47_7171b661",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 2
@@ -82,6 +118,24 @@
       "writtenOn": "2018-05-04T07:06:08Z",
       "side": 1,
       "message": "same typo as above",
+      "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48b350ac_165be3d9",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 124,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5c52ef47_7171b661",
       "revId": "a8f983d46ab471d7990bd14b1285f06f2cc418f4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
