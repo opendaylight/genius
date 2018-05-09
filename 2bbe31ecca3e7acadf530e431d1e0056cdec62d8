@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "56f9f286_5fe73a65",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "should we re-name it? as the watch port is the tunnel port for the dpns right ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7c8df61_87a853c6",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -30,6 +47,176 @@
       "writtenOn": "2018-05-09T07:13:59Z",
       "side": 1,
       "message": "I think we need to add a UC for modifying the tep:add CLI command too.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02e011b5_6dc8c512",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "This is covered in the previous UCs too right ? Why two different UCs ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "de491891_21f63327",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "We need to have separate use case for northbound and southbound delete events.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f17f3d01_5e62c43f",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "When the tep is deleted through northbound and even if it is not the last tunnel, we still need to delete it from the DSs.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24388eee_a4c6270b",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "This would be the only point to point tunnel created right ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42f5debc_c781ef78",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "Which RPC will provide this state information ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5a37472_ce0845f3",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "BFD monitoring will not work on OF Tunnels but it can still work through point to point tunnels along with OF Tunnels as specified in your spec earlier",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "443d05a8_6fd31152",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "The field \"option-of-tunnel\" is not an addition with this feature. It is already existing right?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8a2a2854_4eceab40",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "Wouldnt it be better to have a boolean parameter \"ofTunnel\" based on which we set the remote Ip. This is to be inline with the yang model of the transport zone.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "35f830a6_def844c8",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 432,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "We can add TCs to cover\n1. Deletion through northbound and southbound.\n2. RPC which provide state information of the BFD point to point tunnel\n3. Disabling BFD on the point to point.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca32ca3a_d5fd5d4d",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T08:58:31Z",
+      "side": 1,
+      "message": "This TC is not valid right ?",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
