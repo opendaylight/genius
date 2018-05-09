@@ -22,6 +22,23 @@
       "revId": "d0c1b430381e0b33c00a26d26436a23c88764b3f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02c96773_6f08be1e",
+        "filename": ".gitattributes",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-09T12:27:57Z",
+      "side": 1,
+      "message": "I think this will solvle both the PNG problem AND Windows users Checkstyle issues:\n\n    * text\u003dauto\n    *.java text\u003dauto eol\u003dlf\n\nSomeone with Windows should check, and may have to add a few more other sources file extensions - I cannot remember exactly what we run the CS line ending test on.\n\nThe order does seem to have to be this and not the other way first; so the wildcard (*) has to come BEFORE the specifics; based on examples found here:\n\nhttps://help.github.com/articles/dealing-with-line-endings/\n\nhttps://github.com/alexkaratarakis/gitattributes/blob/master/.gitattributes",
+      "revId": "d0c1b430381e0b33c00a26d26436a23c88764b3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
