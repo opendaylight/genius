@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5a4afad_72c2ad25",
+        "filename": ".gitattributes",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1723
+      },
+      "writtenOn": "2018-05-09T12:23:13Z",
+      "side": 1,
+      "message": "This is saying \"match on all file\". It should be possible to make this match all files except *.png\n\nhttps://coderwall.com/p/buf0rq/use-gitattributes-to-normalize-line-endings",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 1
+      },
+      "revId": "d0c1b430381e0b33c00a26d26436a23c88764b3f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
