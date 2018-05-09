@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "667d50d3_25bc98a4",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "ideally, yes..",
+      "parentUuid": "60b34eaf_c8ec568c",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6fdc0de5_ed6de5ee",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2018-05-09T06:53:23Z",
       "side": 1,
       "message": "This key will be a problem if we disable the point to point tunnel created between the same source and destination. I feel better to add a leaf specifying of-enabled or not.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4fdf3f3e_55c946ca",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fdc0de5_ed6de5ee",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "0c6bb436_892062c4",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Leaving the name as is.",
+      "parentUuid": "56f9f286_5fe73a65",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7c8df61_87a853c6",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -64,6 +118,24 @@
       "writtenOn": "2018-05-09T07:13:59Z",
       "side": 1,
       "message": "I think we need to add a UC for modifying the tep:add CLI command too.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73a0f200_47243949",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c7c8df61_87a853c6",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +193,24 @@
     },
     {
       "key": {
+        "uuid": "469e7c8f_50852222",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f17f3d01_5e62c43f",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "24388eee_a4c6270b",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -132,6 +222,24 @@
       "writtenOn": "2018-05-09T08:58:31Z",
       "side": 1,
       "message": "This would be the only point to point tunnel created right ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7c933b55_5dc69d88",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 243,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "24388eee_a4c6270b",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +263,24 @@
     },
     {
       "key": {
+        "uuid": "8993c9a8_be327d96",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Added the RPC name",
+      "parentUuid": "42f5debc_c781ef78",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b5a37472_ce0845f3",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -166,6 +292,24 @@
       "writtenOn": "2018-05-09T08:58:31Z",
       "side": 1,
       "message": "BFD monitoring will not work on OF Tunnels but it can still work through point to point tunnels along with OF Tunnels as specified in your spec earlier",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be2b78a6_367bdc6a",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "it is mentioned in the second para below",
+      "parentUuid": "b5a37472_ce0845f3",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -189,6 +333,24 @@
     },
     {
       "key": {
+        "uuid": "f745f9fa_a799d54f",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 309,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Corrected!",
+      "parentUuid": "443d05a8_6fd31152",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8a2a2854_4eceab40",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -200,6 +362,24 @@
       "writtenOn": "2018-05-09T08:58:31Z",
       "side": 1,
       "message": "Wouldnt it be better to have a boolean parameter \"ofTunnel\" based on which we set the remote Ip. This is to be inline with the yang model of the transport zone.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6d010946_42bcedee",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 373,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "This clearly indicates that we are having only remote-ip as \"flow\", if we mention just of-tunnels it becomes unclear whether it is source or destination which is flow based",
+      "parentUuid": "8a2a2854_4eceab40",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -234,6 +414,24 @@
       "writtenOn": "2018-05-09T08:58:31Z",
       "side": 1,
       "message": "This TC is not valid right ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8434c9e7_2e7954dd",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 436,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T20:13:24Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "ca32ca3a_d5fd5d4d",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
