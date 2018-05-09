@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e927761_e1a7f7b2",
+        "filename": ".gitattributes",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-09T05:14:25Z",
+      "side": 0,
+      "message": "this is needed for us windows users :( Else, when we build on windows we are getting a lot of checkstyle errors due to change in line endings :( Is there no other way to fix the logo.png problem??",
+      "revId": "caa3aaf22d539523ee81af41c238d416f21b1eee",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
