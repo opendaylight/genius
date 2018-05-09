@@ -16,6 +16,23 @@
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7c8df61_87a853c6",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T07:13:59Z",
+      "side": 1,
+      "message": "I think we need to add a UC for modifying the tep:add CLI command too.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
