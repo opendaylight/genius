@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "60b34eaf_c8ec568c",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T09:07:31Z",
+      "side": 1,
+      "message": "This feature would work along with autoConfig right ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6fdc0de5_ed6de5ee",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 4
@@ -217,6 +234,23 @@
       "writtenOn": "2018-05-09T08:58:31Z",
       "side": 1,
       "message": "This TC is not valid right ?",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b25159c_f3e05fd3",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T09:07:31Z",
+      "side": 1,
+      "message": "Testing this feature with autoConfig true.",
       "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
