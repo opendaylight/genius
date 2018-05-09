@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6fdc0de5_ed6de5ee",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-09T06:53:23Z",
+      "side": 1,
+      "message": "This key will be a problem if we disable the point to point tunnel created between the same source and destination. I feel better to add a leaf specifying of-enabled or not.",
+      "revId": "2bbe31ecca3e7acadf530e431d1e0056cdec62d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
