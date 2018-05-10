@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0f7a6ecf_bda1692e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "As this is just reading dpnTep from the cache and also the utility file (DirectTunnelUtils) does have reference to the caches, I felt this is better placed here. Can you please suggest a better way.",
+      "parentUuid": "d3132e0b_a83e0392",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b39b872_9d9e9550",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
         "patchSetId": 17
@@ -30,6 +48,24 @@
       "writtenOn": "2018-05-07T12:01:35Z",
       "side": 1,
       "message": "this method looks VERY similar to the one in ItmMonitorIntervalWorker - with some minor difference re. setMonitoringEnabled vs. setMonitoringInterval... instead of copy/paste, could this code not be shared?  In a utility class or Worker parent class which both extend.",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "efc498d8_ebffe724",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8b39b872_9d9e9550",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7b31e3a1_a63309fd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0ce1192f_c96df39f",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9136ac14_2dd64dcc",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 17
@@ -64,6 +118,24 @@
       "writtenOn": "2018-05-07T12:01:35Z",
       "side": 1,
       "message": "huh - the comment and the instruction here contradict each other... ;-)",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d40b7976_21c5621b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "9136ac14_2dd64dcc",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "8a60bb17_7b543340",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Removed handling of this exception as you rightly suggested there is no illegal or inappropriate argument in this case.",
+      "parentUuid": "6288c3ef_bb7d1d7c",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "72c9db45_5736c2ab",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 17
@@ -98,6 +188,24 @@
       "writtenOn": "2018-05-07T12:01:35Z",
       "side": 1,
       "message": "else { LOG.debug ... } could perhaps be useful in the futue, ot see if there were any IllegalArgumentException that got \"swallowed\" (hidden) ?",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae7b5198_e029e779",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "72c9db45_5736c2ab",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "4c11c01f_85ef1d4d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8131f678_c6c50d5a",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "74cc3de9_58ebd22d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 17
@@ -132,6 +258,24 @@
       "writtenOn": "2018-05-07T12:01:35Z",
       "side": 1,
       "message": "this is only used in line 364 so why have a separate method for it instead of just inlining it there?  Makes the code easier to read.",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13398813_b083801b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-10T06:25:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "74cc3de9_58ebd22d",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
