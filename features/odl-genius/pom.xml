@@ -18,21 +18,21 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius</artifactId>
-  <version>0.3.3-SNAPSHOT</version>
+  <version>0.3.4-SNAPSHOT</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: Impls</name>
 
   <!-- TODO Replace all <properties> by dependencyManagement <scope>import of respective upstream project -->
   <properties>
-    <openflowplugin.version>0.5.3-SNAPSHOT</openflowplugin.version>
-    <ovsdb.version>1.5.3-SNAPSHOT</ovsdb.version>
-    <mdsal.model.version>0.11.3-SNAPSHOT</mdsal.model.version>
-    <mdsal.version>1.6.3-SNAPSHOT</mdsal.version>
-    <restconf.version>1.6.3-SNAPSHOT</restconf.version>
-    <yangtools.version>1.2.3-SNAPSHOT</yangtools.version>
-    <dluxapps.version>0.6.3-SNAPSHOT</dluxapps.version>
-    <liblldp.version>0.13.3-SNAPSHOT</liblldp.version>
-    <infrautils.version>1.2.3-SNAPSHOT</infrautils.version>
+    <openflowplugin.version>0.5.4-SNAPSHOT</openflowplugin.version>
+    <ovsdb.version>1.5.4-SNAPSHOT</ovsdb.version>
+    <mdsal.model.version>0.11.4-SNAPSHOT</mdsal.model.version>
+    <mdsal.version>1.6.4-SNAPSHOT</mdsal.version>
+    <restconf.version>1.6.4-SNAPSHOT</restconf.version>
+    <yangtools.version>1.2.4-SNAPSHOT</yangtools.version>
+    <dluxapps.version>0.6.4-SNAPSHOT</dluxapps.version>
+    <liblldp.version>0.13.4-SNAPSHOT</liblldp.version>
+    <infrautils.version>1.2.4-SNAPSHOT</infrautils.version>
   </properties>
 
   <dependencyManagement>
