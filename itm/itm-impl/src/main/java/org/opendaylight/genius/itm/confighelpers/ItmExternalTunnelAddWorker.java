@@ -123,8 +123,8 @@ public class ItmExternalTunnelAddWorker {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
         if (null != cfgdDpnList && !cfgdDpnList.isEmpty()) {
-            LOG.trace("calling tunnels from css {}",cfgdDpnList);
-            tunnelsFromCSS(cfgdDpnList, writeTransaction, monitorInterval, monitorProtocol);
+            LOG.trace("calling tunnels from OVS {}",cfgdDpnList);
+            tunnelsFromOVS(cfgdDpnList, writeTransaction, monitorInterval, monitorProtocol);
         }
         if (null != cfgdHwVteps && !cfgdHwVteps.isEmpty()) {
             LOG.trace("calling tunnels from hwTep {}",cfgdHwVteps);
@@ -137,8 +137,8 @@ public class ItmExternalTunnelAddWorker {
         return futures;
     }
 
-    private void tunnelsFromCSS(List<DPNTEPsInfo> cfgdDpnList, WriteTransaction transaction, Integer monitorInterval,
-            Class<? extends TunnelMonitoringTypeBase> monitorProtocol) {
+    private void tunnelsFromOVS(List<DPNTEPsInfo> cfgdDpnList, WriteTransaction transaction, Integer monitorInterval,
+                                Class<? extends TunnelMonitoringTypeBase> monitorProtocol) {
         for (DPNTEPsInfo dpn : cfgdDpnList) {
             LOG.trace("processing dpn {}" , dpn);
             if (dpn.getTunnelEndPoints() != null && !dpn.getTunnelEndPoints().isEmpty()) {
