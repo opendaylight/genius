@@ -135,8 +135,7 @@ public class InterfaceConfigListener
         boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(interfaceOld);
         RendererConfigRemoveWorker configWorker = new RendererConfigRemoveWorker(key, interfaceOld,
                 interfaceOld.getName(), parentRefs);
-        String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
-                : parentRefs.getParentInterface();
+        String synchronizationKey = isTunnelInterface ? interfaceOld.getName() : parentRefs.getParentInterface();
         coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
