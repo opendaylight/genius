@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2464cdaf_050e3bf3",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 2532
+      },
+      "writtenOn": "2018-05-10T11:42:05Z",
+      "side": 1,
+      "message": "The proposal restricts that the consumer application of this monitoring service always has to program a group on the DPNs, where a group bucket watches this watch-port. That is, watch port is the only way the consumer is intimated of tunnel status. An additional event in the controller originated by ITM about tunnel status can help those consumers who do not intend to program a group.",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 189,
+        "endChar": 0
+      },
+      "revId": "efb642e15a178590f2d546456508647022a5283e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "45e9403d_e8820ef6",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 2532
+      },
+      "writtenOn": "2018-05-10T11:42:05Z",
+      "side": 1,
+      "message": "Please explain the workflow between a consumer application (e.g. ECMP) and ITM when monitoring is enabled at run time by the application. \nThere are two use cases as described in the previous comment - a consumer is interested in watchport or interested only in a event.\n\nWhen the consumer application is interested in the watchport, ITM has to ensure the watch port is created on the DPN before it returns the watchport to the consumer to avoid race conditions.",
+      "range": {
+        "startLine": 250,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 0
+      },
+      "revId": "efb642e15a178590f2d546456508647022a5283e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4e4b22cc_07021fb7",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 2532
+      },
+      "writtenOn": "2018-05-10T11:42:05Z",
+      "side": 1,
+      "message": "This explanation may not be entirely correct. Even BFD monitoring with point to point tunnel may not scale if all O(n**2). Hence this whole proposal is about need based monitoring to reduce the monitored set of tunnels to reduce it to a small subset of O(n**2) tunnels. LLDP \u0026 ARP might scale enough for the subset.",
+      "range": {
+        "startLine": 301,
+        "startChar": 0,
+        "endLine": 301,
+        "endChar": 0
+      },
+      "revId": "efb642e15a178590f2d546456508647022a5283e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
