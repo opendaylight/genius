@@ -327,7 +327,8 @@ public final class ItmInternalTunnelAddWorker {
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
 
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
-        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
+        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false
+                : isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(),
