@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b444b3da_e06523b7",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-05-14T05:35:47Z",
+      "side": 1,
+      "message": "Correct me if I\u0027m wrong but if an exception is thrown from one of the callbacks above, this will be skipped and then the timeout will be called. Perhaps there should be a finally here?",
+      "revId": "627bcf0218b4211f3f5ac9cd30e13497a81a9d87",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
