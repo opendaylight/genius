@@ -16,6 +16,24 @@
       "revId": "627bcf0218b4211f3f5ac9cd30e13497a81a9d87",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "84309a5d_edaeff58",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/datastoreutils/listeners/internal/DataTreeEventCallbackRegistrarImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 251,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-05-14T11:01:31Z",
+      "side": 1,
+      "message": "If an exception is called from a callback then we don\u0027t know what the next action is. I think the behavior in that case is undefined.",
+      "parentUuid": "b444b3da_e06523b7",
+      "revId": "627bcf0218b4211f3f5ac9cd30e13497a81a9d87",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
