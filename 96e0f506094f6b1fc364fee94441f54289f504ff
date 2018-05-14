@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c8ccf854_2ae1690b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ExternalTunnelListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-14T15:56:41Z",
+      "side": 1,
+      "message": "may be do an awaitTermination() here as well, as in https://git.opendaylight.org/gerrit/#/c/71780/3/lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockListener.java ?",
+      "revId": "96e0f506094f6b1fc364fee94441f54289f504ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
