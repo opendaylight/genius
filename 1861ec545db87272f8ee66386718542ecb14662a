@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db649c1b_6206d04b",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-14T15:53:56Z",
+      "side": 1,
+      "message": "wondering if doing a getExecutorService().awaitTermination(23, TimeUnit.SECONDS) *AFTER* (not before) shutdown() could be a good idea here?",
+      "revId": "1861ec545db87272f8ee66386718542ecb14662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
