@@ -135,6 +135,8 @@ public interface NwConstants {
     short INTERNAL_TUNNEL_TABLE = 36;
     short EXTERNAL_TUNNEL_TABLE = 38;
     short ARP_CHECK_TABLE = 43;
+    short ARP_LEARN_TABLE_1 = 195;
+    short ARP_LEARN_TABLE_2 = 196;
     short INBOUND_NAPT_TABLE = 44;
     short IPV6_TABLE = 45;
     short OUTBOUND_NAPT_TABLE = 46;
@@ -204,10 +206,11 @@ public interface NwConstants {
         NXM_OF_ICMP_TYPE(0x0000, 13, 1, 8),
         NXM_OF_ICMP_CODE(0x0000, 14, 1, 8),
         NXM_OF_ARP_OP(0x0000, 15, 2, 16),
-        NXM_OF_ARP_SPA(0x0000, 16, 4, 16),
-        NXM_OF_ARP_TPA(0x0000, 17, 4, 16),
+        NXM_OF_ARP_SPA(0x0000, 16, 4, 32),
+        NXM_OF_ARP_TPA(0x0000, 17, 4, 32),
         NXM_NX_IPV6_SRC(0x0001, 19, 16, 128),
         NXM_NX_IPV6_DST(0x0001, 20, 16, 128),
+        OXM_OF_METADATA(0x8000L, 2, 8, -1),
         NXM_NX_REG0(0x0001, 0, 4, -1),
         NXM_NX_REG1(0x0001, 1, 4, -1),
         NXM_NX_REG2(0x0001, 2, 4, -1),
