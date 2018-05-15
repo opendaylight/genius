@@ -197,13 +197,21 @@ public class ActionLearn extends ActionInfo {
 
     public static class MatchFromField implements FlowMod {
         private final long sourceField;
+        private final int srcOffset;
         private final long destField;
+        private final int dstOffset;
         private final int bits;
 
-        public MatchFromField(long sourceField, long destField, int bits) {
+        public MatchFromField(long sourceField, int srcOffset, long destField, int dstOffset, int bits) {
             this.sourceField = sourceField;
+            this.srcOffset = srcOffset;
             this.destField = destField;
+            this.dstOffset = dstOffset;
             this.bits = bits;
+        }
+
+        public MatchFromField(long sourceField, long destField, int bits) {
+            this(sourceField, 0, destField, 0, bits);
         }
 
         public long getSourceField() {
@@ -218,13 +226,21 @@ public class ActionLearn extends ActionInfo {
             return bits;
         }
 
+        public int getSrcOffset() {
+            return srcOffset;
+        }
+
+        public int getDstOffset() {
+            return dstOffset;
+        }
+
         @Override
         public FlowMods buildFlowMod() {
             FlowModAddMatchFromFieldBuilder builder = new FlowModAddMatchFromFieldBuilder();
             builder.setSrcField(sourceField);
-            builder.setSrcOfs(0);
+            builder.setSrcOfs(srcOffset);
             builder.setDstField(destField);
-            builder.setDstOfs(0);
+            builder.setDstOfs(dstOffset);
             builder.setFlowModNumBits(bits);
 
             FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
@@ -251,6 +267,12 @@ public class ActionLearn extends ActionInfo {
             if (destField != that.destField) {
                 return false;
             }
+            if (srcOffset != that.srcOffset) {
+                return false;
+            }
+            if (dstOffset != that.dstOffset) {
+                return false;
+            }
             return bits == that.bits;
         }
 
@@ -258,25 +280,34 @@ public class ActionLearn extends ActionInfo {
         public int hashCode() {
             int result = (int) (sourceField ^ sourceField >>> 32);
             result = 31 * result + (int) (destField ^ destField >>> 32);
+            result = 31 * result + srcOffset;
+            result = 31 * result + dstOffset;
             result = 31 * result + bits;
             return result;
         }
 
         @Override
         public String toString() {
-            return "MatchFromField [sourceField=" + sourceField + ", destField=" + destField + ", bits=" + bits + "]";
+            return "MatchFromField [sourceField=" + sourceField + ", srcOffset=" + srcOffset + ", destField="
+                    + destField + ", dstOffset=" + dstOffset + ", bits=" + bits + "]";
         }
     }
 
     public static class MatchFromValue implements FlowMod {
         private final int value;
         private final long sourceField;
+        private final int srcOffset;
         private final int bits;
 
-        public MatchFromValue(int value, long sourceField, int bits) {
+        public MatchFromValue(int value, long sourceField, int srcOffset, int bits) {
             this.value = value;
             this.sourceField = sourceField;
+            this.srcOffset = srcOffset;
             this.bits = bits;
+        }
+
+        public MatchFromValue(int value, long sourceField, int bits) {
+            this(value, sourceField, 0, bits);
         }
 
         public int getValue() {
@@ -291,12 +322,16 @@ public class ActionLearn extends ActionInfo {
             return bits;
         }
 
+        public int getSrcOffset() {
+            return srcOffset;
+        }
+
         @Override
         public FlowMods buildFlowMod() {
             FlowModAddMatchFromValueBuilder builder = new FlowModAddMatchFromValueBuilder();
             builder.setValue(value);
             builder.setSrcField(sourceField);
-            builder.setSrcOfs(0);
+            builder.setSrcOfs(srcOffset);
             builder.setFlowModNumBits(bits);
 
             FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
@@ -323,6 +358,9 @@ public class ActionLearn extends ActionInfo {
             if (sourceField != that.sourceField) {
                 return false;
             }
+            if (srcOffset != that.srcOffset) {
+                return false;
+            }
             return bits == that.bits;
         }
 
@@ -330,25 +368,35 @@ public class ActionLearn extends ActionInfo {
         public int hashCode() {
             int result = value;
             result = 31 * result + (int) (sourceField ^ sourceField >>> 32);
+            result = 31 * result + srcOffset;
             result = 31 * result + bits;
             return result;
         }
 
         @Override
         public String toString() {
-            return "MatchFromValue [value=" + value + ", sourceField=" + sourceField + ", bits=" + bits + "]";
+            return "MatchFromValue [value=" + value + ", sourceField=" + sourceField + ", srcOffset="
+                    + srcOffset + ", bits=" + bits + "]";
         }
     }
 
     public static class CopyFromField implements FlowMod {
         private final long sourceField;
+        private final int srcOffset;
         private final long destField;
+        private final int dstOffset;
         private final int bits;
 
-        public CopyFromField(long sourceField, long destField, int bits) {
+        public CopyFromField(long sourceField, int srcOffset, long destField, int dstOffset, int bits) {
             this.sourceField = sourceField;
+            this.srcOffset = srcOffset;
             this.destField = destField;
+            this.dstOffset = dstOffset;
             this.bits = bits;
+        }
+
+        public CopyFromField(long sourceField, long destField, int bits) {
+            this(sourceField, 0, destField, 0, bits);
         }
 
         public long getSourceField() {
@@ -363,13 +411,21 @@ public class ActionLearn extends ActionInfo {
             return bits;
         }
 
+        public int getSrcOffset() {
+            return srcOffset;
+        }
+
+        public int getDstOffset() {
+            return dstOffset;
+        }
+
         @Override
         public FlowMods buildFlowMod() {
             FlowModCopyFieldIntoFieldBuilder builder = new FlowModCopyFieldIntoFieldBuilder();
             builder.setSrcField(sourceField);
-            builder.setSrcOfs(0);
+            builder.setSrcOfs(srcOffset);
             builder.setDstField(destField);
-            builder.setDstOfs(0);
+            builder.setDstOfs(dstOffset);
             builder.setFlowModNumBits(bits);
 
             FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
@@ -396,6 +452,12 @@ public class ActionLearn extends ActionInfo {
             if (destField != that.destField) {
                 return false;
             }
+            if (srcOffset != that.srcOffset) {
+                return false;
+            }
+            if (dstOffset != that.dstOffset) {
+                return false;
+            }
             return bits == that.bits;
         }
 
@@ -403,24 +465,33 @@ public class ActionLearn extends ActionInfo {
         public int hashCode() {
             int result = (int) (sourceField ^ sourceField >>> 32);
             result = 31 * result + (int) (destField ^ destField >>> 32);
+            result = 31 * result + srcOffset;
+            result = 31 * result + dstOffset;
             result = 31 * result + bits;
             return result;
         }
 
         @Override
         public String toString() {
-            return "CopyFromField [sourceField=" + sourceField + ", destField=" + destField + ", bits=" + bits + "]";
+            return "CopyFromField [sourceField=" + sourceField + ", srcOffset=" + srcOffset + ", destField="
+                    + destField + ", dstOffset=" + dstOffset + ", bits=" + bits + "]";
         }
     }
 
     public static class CopyFromValue implements FlowMod {
         private final int value;
         private final long destField;
+        private final int dstOffset;
         private final int bits;
 
         public CopyFromValue(int value, long destField, int bits) {
+            this(value, destField, 0, bits);
+        }
+
+        public CopyFromValue(int value, long destField, int dstOffset, int bits) {
             this.value = value;
             this.destField = destField;
+            this.dstOffset = dstOffset;
             this.bits = bits;
         }
 
@@ -436,12 +507,16 @@ public class ActionLearn extends ActionInfo {
             return bits;
         }
 
+        public int getDstOffset() {
+            return dstOffset;
+        }
+
         @Override
         public FlowMods buildFlowMod() {
             FlowModCopyValueIntoFieldBuilder builder = new FlowModCopyValueIntoFieldBuilder();
             builder.setValue(value);
             builder.setDstField(destField);
-            builder.setDstOfs(0);
+            builder.setDstOfs(dstOffset);
             builder.setFlowModNumBits(bits);
 
             FlowModsBuilder flowModsBuilder = new FlowModsBuilder();
@@ -468,6 +543,9 @@ public class ActionLearn extends ActionInfo {
             if (destField != that.destField) {
                 return false;
             }
+            if (dstOffset != that.dstOffset) {
+                return false;
+            }
             return bits == that.bits;
         }
 
@@ -475,13 +553,15 @@ public class ActionLearn extends ActionInfo {
         public int hashCode() {
             int result = value;
             result = 31 * result + (int) (destField ^ destField >>> 32);
+            result = 31 * result +  dstOffset;
             result = 31 * result + bits;
             return result;
         }
 
         @Override
         public String toString() {
-            return "CopyFromValue [value=" + value + ", destField=" + destField + ", bits=" + bits + "]";
+            return "CopyFromValue [value=" + value + ", destField=" + destField + ", dstOffset=" + dstOffset
+                    + ", bits=" + bits + "]";
         }
     }
 
