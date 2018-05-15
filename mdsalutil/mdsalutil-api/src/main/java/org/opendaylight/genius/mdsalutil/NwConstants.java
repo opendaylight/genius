@@ -161,6 +161,8 @@ public interface NwConstants {
     short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
     short COE_KUBE_PROXY_TABLE = 180;
+    short ARP_LEARN_TABLE_1 = 195;
+    short ARP_LEARN_TABLE_2 = 196;
     short INGRESS_ACL_ANTI_SPOOFING_TABLE = 210;
     short INGRESS_ACL_CONNTRACK_CLASSIFIER_TABLE = 211;
     short INGRESS_ACL_CONNTRACK_SENDER_TABLE = 212;
@@ -204,8 +206,9 @@ public interface NwConstants {
         NXM_OF_ICMP_TYPE(0x0000, 13, 1, 8),
         NXM_OF_ICMP_CODE(0x0000, 14, 1, 8),
         NXM_OF_ARP_OP(0x0000, 15, 2, 16),
-        NXM_OF_ARP_SPA(0x0000, 16, 4, 16),
-        NXM_OF_ARP_TPA(0x0000, 17, 4, 16),
+        NXM_OF_ARP_SPA(0x0000, 16, 4, 32),
+        NXM_OF_ARP_TPA(0x0000, 17, 4, 32),
+        OXM_OF_METADATA(0x8000L, 2, 8, -1),
         NXM_NX_REG0(0x0001, 0, 4, -1),
         NXM_NX_REG1(0x0001, 1, 4, -1),
         NXM_NX_REG2(0x0001, 2, 4, -1),
