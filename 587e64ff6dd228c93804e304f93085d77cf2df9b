@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca7156de_1468fad3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepRemoveConfigHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-15T07:15:09Z",
+      "side": 1,
+      "message": "If the switch connects//disconnects quickly, there is a possibility of timing issue, where the addition has not completed its transaction and so the tep is not in Oper DS when the deletion looks for it. Why not queue(delete without even confirming if its in the oper DS -- at the most the delete will fail with \"Instance not found\") the add/deletes in DJC with the same key.",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08a5a17a_5839f15d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-15T07:15:09Z",
+      "side": 1,
+      "message": "Can we co-locate this method with its caller if there is just one uasge",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d2745bc1_0ebd6c47",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1087,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-15T07:15:09Z",
+      "side": 1,
+      "message": "Can you implement a cache for this DS. Every operation reads the datastore. This can be expensive in a scale scenario\n\nPlease use cache wherever possible",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
