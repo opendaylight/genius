@@ -37,7 +37,6 @@ import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -625,9 +624,7 @@ public class TepCommandHelper {
     public <T extends DataObject> void deleteOnCommit() {
         List<InstanceIdentifier<T>> vtepPaths = new ArrayList<>();
         List<InstanceIdentifier<T>> subnetPaths = new ArrayList<>();
-        List<InstanceIdentifier<T>> tzPaths = new ArrayList<>();
         List<Subnets> subDelList = new ArrayList<>();
-        List<TransportZone> tzDelList = new ArrayList<>();
         List<Vteps> vtepDelList = new ArrayList<>();
         List<InstanceIdentifier<T>> allPaths = new ArrayList<>();
         try {
@@ -673,36 +670,17 @@ public class TepCommandHelper {
                                                 .child(TransportZone.class, tz.key())
                                                 .child(Subnets.class, sub.key()).build();
                                 subnetPaths.add(spath);
-                                if (tz.getSubnets() == null || tz.getSubnets().size() == 0) {
-                                    tzDelList.add(tz);
-                                }
                             }
                         }
                     }
 
-                    for (TransportZone tz : tzDelList) {
-                        if (transportZones.remove(tz)) {
-                            InstanceIdentifier<T> tpath =
-                                    (InstanceIdentifier<T>) InstanceIdentifier.builder(TransportZones.class)
-                                            .child(TransportZone.class, tz.key()).build();
-                            tzPaths.add(tpath);
-                            if (transportZones.isEmpty()) {
-                                ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                                    tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, path)), LOG,
-                                    "Error deleting {}", path);
-                                return;
-                            }
-                        }
-                    }
                     allPaths.addAll(vtepPaths);
                     allPaths.addAll(subnetPaths);
-                    allPaths.addAll(tzPaths);
                     ItmUtils.asyncBulkRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, allPaths,
                             ItmUtils.DEFAULT_CALLBACK);
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
-                tzPaths.clear();
                 allPaths.clear();
                 vtepDelCommitList.clear();
             }
