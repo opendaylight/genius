@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e67f4b89_190ed647",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-16T11:38:05Z",
+      "side": 1,
+      "message": "If there are multiple applications who have enabled BFD, and then what will happen if only one person asks to disable BFD? Do we maintain a reference count?",
+      "revId": "3328fe418dbb9932ab94baaaf4c0ff2879318ef9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
