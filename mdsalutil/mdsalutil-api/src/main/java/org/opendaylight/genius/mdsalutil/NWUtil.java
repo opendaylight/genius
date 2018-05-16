@@ -18,9 +18,13 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import org.apache.commons.net.util.SubnetUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -32,6 +36,9 @@ import org.slf4j.LoggerFactory;
 public final class NWUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(NWUtil.class);
+
+    private static byte[] HIGH_128_BITS = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    private static BigInteger HIGH_128_INT = new BigInteger(HIGH_128_BITS);
 
     private NWUtil() { }
 
@@ -195,7 +202,7 @@ public final class NWUtil {
      * @param ipAddress The Ip Address to check
      * @param subnetCidr Subnet represented as string with CIDR
      * @return true if the ipAddress belongs to the Subnet, or false if it
-     *     doesnt belong or the IpAddress string cannot be converted to an
+     *     doesn't belong or the IpAddress string cannot be converted to an
      *     InetAddress
      */
     public static boolean isIpInSubnet(int ipAddress, String subnetCidr) {
@@ -216,6 +223,55 @@ public final class NWUtil {
             LOG.error("Subnet string {} not convertible to InetAdddress ", subnetStr, ex);
             return false;
         }
+    }
+
+    /**
+     * Checks if IP address is within CIDR range.
+     *
+     * @param ipAddress the ip address
+     * @param cidr the cidr
+     * @return true, if ip address is in range
+     */
+    public static boolean isIpAddressInRange(IpAddress ipAddress, IpPrefix cidr) {
+        if (ipAddress.getIpv4Address() != null && cidr.getIpv4Prefix() != null) {
+            SubnetUtils subnetUtils = new SubnetUtils(String.valueOf(cidr.getValue()));
+            return subnetUtils.getInfo().isInRange(String.valueOf(ipAddress.getValue()));
+        } else if (ipAddress.getIpv6Address() != null && cidr.getIpv6Prefix() != null) {
+            return isIpAddressInRange(ipAddress.getIpv6Address(), cidr.getIpv6Prefix());
+        }
+        return false;
+    }
+
+    /**
+     * Checks if IPv6 address is within CIDR range.
+     *
+     * @param ipv6Address the IPv6 address
+     * @param cidr the cidr
+     * @return true, if IPv6 address is in range
+     */
+    public static boolean isIpAddressInRange(Ipv6Address ipv6Address, Ipv6Prefix cidr) {
+        String strCidr = String.valueOf(cidr.getValue());
+        String[] arrayCidr = strCidr.split("/");
+        String networkAddress = arrayCidr[0];
+        int bits = Integer.parseInt(arrayCidr[1]);
+
+        // Get valid format inetaddress for both prefix and subnet CIDR
+        InetAddress cidrValidStringLiteral = InetAddresses.forString(networkAddress);
+        InetAddress ipv6AddressValidStringLiteral = InetAddresses.forString(ipv6Address.getValue());
+
+        // now turn that byte array into an integer
+        BigInteger range = new BigInteger(cidrValidStringLiteral.getAddress());
+
+        // define our mask as a bit integer by shifting our 111..11 bits to the left
+        BigInteger mask = HIGH_128_INT.shiftLeft(128 - bits);
+        BigInteger lowIp = range.and(mask);
+        BigInteger highIp = lowIp.add(mask.not());
+
+        BigInteger ip = new BigInteger(ipv6AddressValidStringLiteral.getAddress());
+        if (lowIp.compareTo(ip) <= 0 && highIp.compareTo(ip) >= 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

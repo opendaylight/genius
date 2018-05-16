@@ -126,6 +126,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>pax-cdi-api</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+    </dependency>
 
     <!-- Dependencies with <scope>test -->
     <dependency>
