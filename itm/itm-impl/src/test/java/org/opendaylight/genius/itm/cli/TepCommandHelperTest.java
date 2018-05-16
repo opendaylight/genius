@@ -585,12 +585,10 @@ public class TepCommandHelperTest {
         }
         tepCommandHelper.deleteOnCommit();
 
-        verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier);
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,vtepsIdentifier);
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,subnetsIdentifier);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,vtepsIdentifierNew);
         verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,subnetsIdentifier);
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
 
     }
 
