@@ -687,9 +687,9 @@ public class TepCommandHelper {
                                                 .child(TransportZone.class, tz.key())
                                                 .child(Subnets.class, sub.key()).build();
                                 subnetPaths.add(spath);
-                                if (tz.getSubnets() == null || tz.getSubnets().size() == 0) {
+                                /*if (tz.getSubnets() == null || tz.getSubnets().size() == 0) {
                                     tzDelList.add(tz);
-                                }
+                                }*/
                             }
                         }
                     }
