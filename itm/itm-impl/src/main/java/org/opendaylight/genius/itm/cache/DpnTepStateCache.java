@@ -148,7 +148,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     private InstanceIdentifier<RemoteDpns> buildRemoteDpnsInstanceIdentifier(BigInteger srcDpnId, BigInteger dstDpnId) {
         DpnsTepsKey dpnsTepsKey = new DpnsTepsKey(srcDpnId);
-        RemoteDpnsKey remoteDpnsKey = new RemoteDpnsKey(dstDpnId);
+        RemoteDpnsKey remoteDpnsKey = new RemoteDpnsKey(dstDpnId, false);
         return InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class, dpnsTepsKey)
                 .child(RemoteDpns.class, remoteDpnsKey).build();
     }
