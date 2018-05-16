@@ -287,7 +287,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
         // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
         // scenario, and should be treated as port removal.
-            if (fcNodeConnectorOld.getReason() != PortReason.Delete && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
+            if (fcNodeConnectorOld.getReason() != PortReason.Delete) {
                 //Remove event is because of connection lost between controller and switch, or switch shutdown.
                 // Hence, dont remove the interface but set the status as "unknown"
                 updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, tx);
