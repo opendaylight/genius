@@ -38,6 +38,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedMoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
@@ -187,6 +188,22 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 jobCoordinator.enqueueJob(transportZone.getZoneName(),
                         new ItmTepRemoveWorker(opDpnList, hwVtepList, transportZone, dataBroker, mdsalManager,
                                 itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
+
+                //When tz delete event arrives for a particular Transport zone,
+                // that will be moved to tepsInNotHostedTransportZone Oper DS.
+                // So that if the same name tz gets re-added from NBI, then these tep's will go back to re-added tz.
+                for (Subnets sub : transportZone.getSubnets()) {
+                    if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
+                        for (Vteps vteps : sub.getVteps()) {
+                            LOG.trace("Delete: Moving Transport Zone {} to tepsInNotHostedTransportZone Oper Ds.",
+                                    transportZone.getZoneName());
+                            jobCoordinator.enqueueJob(transportZone.getZoneName(),
+                                    new OvsdbTepAddWorker(String.copyValueOf(vteps.getIpAddress().getValue()),
+                                            vteps.getDpnId().toString(), transportZone.getZoneName(),
+                                            vteps.isOptionOfTunnel(), dataBroker));
+                        }
+                    }
+                }
             }
         }
     }
