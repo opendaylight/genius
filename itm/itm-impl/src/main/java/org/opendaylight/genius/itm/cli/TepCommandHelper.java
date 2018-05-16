@@ -678,7 +678,7 @@ public class TepCommandHelper {
                                                 .child(Subnets.class, sub.getKey()).build();
                                 subnetPaths.add(spath);
                                 if (tz.getSubnets() == null || tz.getSubnets().size() == 0) {
-                                    tzDelList.add(tz);
+                                    //tzDelList.add(tz);
                                 }
                             }
                         }

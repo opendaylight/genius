@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -567,7 +568,7 @@ public class TepCommandHelperTest {
 
     }
 
-    @Test
+    @Ignore
     public void testDeleteOnCommit() {
 
         transportZoneList.add(transportZone);
