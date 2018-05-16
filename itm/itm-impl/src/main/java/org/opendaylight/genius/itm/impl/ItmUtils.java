@@ -939,10 +939,11 @@ public final class ItmUtils {
         return null;
     }
 
-    private static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
+    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
         List<InternalTunnel> result = null;
         InstanceIdentifier<TunnelList> iid = InstanceIdentifier.builder(TunnelList.class).build();
         Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
+
         if (tunnelList.isPresent()) {
             result = tunnelList.get().getInternalTunnel();
         }

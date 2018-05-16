@@ -6,11 +6,16 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.genius.itm.recovery.impl;
+
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
@@ -36,10 +41,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTep;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +66,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
     private final ItmConfig itmConfig;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final IMdsalApiManager imdsalApiManager;
-    private String tzName;
-    private TransportZone transportZone;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     @Inject
     public ItmTepInstanceRecoveryHandler(DataBroker dataBroker,
@@ -72,13 +80,15 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                                          OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                          IInterfaceManager interfaceManager,
                                          ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                         EntityOwnershipUtils entityOwnershipUtils) {
+                                         EntityOwnershipUtils entityOwnershipUtils,
+                                         DataTreeEventCallbackRegistrar eventCallbacks) {
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
         this.imdsalApiManager = imdsalApiMgr;
         this.jobCoordinator = jobCoordinator;
         this.dpntePsInfoCache = dpntePsInfoCache;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.eventCallbacks = eventCallbacks;
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
@@ -99,7 +109,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         if (!entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY)) {
             return;
         }
-        LOG.info("Trigerred recovery of ITM Instance - Tep {}", entityId);
+        LOG.trace("Trigerred recovery of ITM Instance - Tep {}", entityId);
         try {
             recoverTep(entityId);
         } catch (InterruptedException e) {
@@ -109,44 +119,79 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
 
     private void recoverTep(String entityId) throws InterruptedException {
         List<DPNTEPsInfo> tepsToRecover = new ArrayList<>();
-        DPNTEPsInfo dpnTepsToRecover = extractDPNTepsInfo(entityId);
+        String[] params = entityId.split(":");
+        if (params.length < 2) {
+            LOG.error("Not enough arguments..Exiting...");
+        } else if (params.length > 2) {
+            LOG.info("Ignoring extra parameter and proceeding...");
+        }
+        String tzName = params[0];
+        String ipAddress = params[1];
+        TransportZone oldTz = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+        DPNTEPsInfo dpnTepsToRecover = extractDPNTepsInfo(tzName, ipAddress, oldTz);
         if (dpnTepsToRecover == null) {
             LOG.error("Please Enter appropriate arguments for Tep Recovery.");
             return;
         } else {
             tepsToRecover.add(dpnTepsToRecover);
-            // Delete the transportZone and re create it
-            // Get the transport zone from the transport zone name
-            TransportZone oldTz = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+            //List of Internel tunnels
+            List<InternalTunnel> tunnelList = ItmUtils.getAllInternalTunnels(dataBroker);
+            List<String> interfaceListToRecover = new ArrayList<>();
+            LOG.debug("List of tunnel interfaces: {}" , tunnelList);
+
             if (oldTz != null) {
+                LOG.trace("Deleting transportzone {}", tzName);
                 ItmTepRemoveWorker tepRemoveWorker = new ItmTepRemoveWorker(tepsToRecover, null, oldTz,
                         dataBroker, imdsalApiManager, itmInternalTunnelDeleteWorker, dpntePsInfoCache);
-                LOG.trace("Deleting transportzone {}", tzName);
                 jobCoordinator.enqueueJob(tzName, tepRemoveWorker);
-                ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepsToRecover, null, dataBroker,
-                        imdsalApiManager, itmConfig, itmInternalTunnelAddWorker, itmExternalTunnelAddWorker,
-                        dpntePsInfoCache);
-                LOG.trace("Re-creating transportzone {}", tzName);
-                jobCoordinator.enqueueJob(tzName, tepAddWorker);
+                AtomicInteger eventCallbackCount = new AtomicInteger(0);
+                AtomicInteger eventRegistrationCount = new AtomicInteger(0);
+                tunnelList.stream().filter(internalTunnel -> internalTunnel
+                        .getDestinationDPN().equals(dpnTepsToRecover.getDPNID()) || internalTunnel.getSourceDPN()
+                        .equals(dpnTepsToRecover.getDPNID())).forEach(internalTunnel -> {
+                            eventRegistrationCount.incrementAndGet();
+                            interfaceListToRecover.add(String.valueOf(internalTunnel.getTunnelInterfaceNames())); });
+
+                if (!interfaceListToRecover.isEmpty()) {
+                    interfaceListToRecover.forEach(interfaceName -> {
+                        StateTunnelListKey tlKey = new StateTunnelListKey(interfaceName);
+                        LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, interfaceName);
+                        InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
+                        eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL, stListId, (unused) -> {
+                            LOG.trace("callback event for a delete {} interface instance....", stListId);
+                            // recreating the transportZone
+                            recreateTEP(tzName, tepsToRecover, eventCallbackCount, interfaceListToRecover.size());
+                            return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+                        }, Duration.ofMillis(5000), (id) -> {
+                                LOG.trace("event callback timed out for {} tunnel interface ", interfaceName);
+                                recreateTEP(tzName, tepsToRecover, eventCallbackCount, interfaceListToRecover.size());
+                            });
+                    });
+                } else {
+                    recreateTEP(tzName, tepsToRecover, eventCallbackCount, interfaceListToRecover.size());
+                    eventCallbackCount.decrementAndGet();
+                }
             }
         }
     }
 
-    private DPNTEPsInfo extractDPNTepsInfo(String entityId) {
 
-        String[] params = entityId.split(":");
-        if (params.length < 2) {
-            LOG.error("Not enough arguments..Exiting...");
-            return null;
-        } else if (params.length > 2) {
-            LOG.info("Ignoring extra parameter and proceeding...");
+    private void recreateTEP(String tzName, List tepts, AtomicInteger eventCallbackCount, int registeredEventSize) {
+        eventCallbackCount.incrementAndGet();
+        if (eventCallbackCount.intValue() == registeredEventSize) {
+            LOG.trace("Re-creating TEP {}", tzName);
+            ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepts, null, dataBroker,
+                    imdsalApiManager, itmConfig, itmInternalTunnelAddWorker, itmExternalTunnelAddWorker,
+                    dpntePsInfoCache);
+            jobCoordinator.enqueueJob(tzName, tepAddWorker);
+        } else {
+            LOG.trace("{} call back events registered for {} tunnel interfaces",
+                    registeredEventSize, eventCallbackCount);
         }
+    }
 
-        // ToDo:- Need to add more validations
-        this.tzName = params[0];
-        String ipAddress = params[1];
+    private DPNTEPsInfo extractDPNTepsInfo(String tzName, String ipAddress, TransportZone transportZone) {
 
-        transportZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
         if (transportZone == null) {
             LOG.error("Transportzone name {} is not valid.", tzName);
             return null;
