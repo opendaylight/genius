@@ -347,7 +347,7 @@ public final class ItmInternalTunnelAddWorker {
         Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
         dpnsTepsBuilder.setGroupId(groupId.longValue());
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
-        remoteDpn.setKey(new RemoteDpnsKey(dstDpnId));
+        remoteDpn.setKey(new RemoteDpnsKey(dstDpnId, false));
         remoteDpn.setDestinationDpnId(dstDpnId);
         remoteDpn.setTunnelName(trunkInterfaceName);
         remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
