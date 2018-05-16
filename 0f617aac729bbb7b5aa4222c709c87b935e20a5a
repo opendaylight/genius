@@ -1,0 +1,169 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b0688caa_b7c26b75",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "better do this on tep add itself. it will help decouple creation/deletion from presence of other teps or track which other teps it is connected to. will simplify the design a lot.",
+      "range": {
+        "startLine": 35,
+        "startChar": 13,
+        "endLine": 35,
+        "endChar": 61
+      },
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "430aa799_36aa6bc2",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "same as above. will avoid need to track which other teps device is connected to",
+      "range": {
+        "startLine": 42,
+        "startChar": 2,
+        "endLine": 43,
+        "endChar": 74
+      },
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1451bd34_ff48e2f4",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "Isn\u0027t this already covered by existing OFTunnels? Focus of this is making oftunnels work with direct tunnels, no need to repeat information, linking to other one should be enough.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "230c673d_a8ceebe4",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "same as above, this should also be already covered.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d51cc86_57730848",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "will this be two actions, or a group with two action buckets?",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ab42ebc_ad71e051",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "Doesn\u0027t this mean applications need to be aware of tunnels being monitored or not? why not go with simple option of state being populated as always up for non monitored tunnels?",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cee8e69a_141b46ae",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "Do mention that ITM will still be maintaining n^2 interfaces and that can be a future optimization.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f61c168d_1dab0096",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 370,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "why not have applications use groups instead of ports? don\u0027t applications today get egress actions from ITM/IFM?",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0dafc583_b1318967",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-16T20:01:04Z",
+      "side": 1,
+      "message": "also add reference to exisitng OFTunels spec",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
