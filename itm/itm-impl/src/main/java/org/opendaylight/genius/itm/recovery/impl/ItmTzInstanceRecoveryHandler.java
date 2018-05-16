@@ -123,7 +123,7 @@ public class ItmTzInstanceRecoveryHandler extends
             LOG.trace("recreating transportzone instance {}", entityId);
             jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.put(LogicalDatastoreType.CONFIGURATION, tzII, tz))),
+                    tx -> tx.merge(LogicalDatastoreType.CONFIGURATION, tzII, tz))),
                 ITMConstants.JOB_MAX_RETRIES);
         } else {
             LOG.trace("{} call back events registered for {} tunnel interfaces",
