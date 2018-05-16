@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "34aab528_21d55790",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepRemoveConfigHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-16T12:45:43Z",
+      "side": 1,
+      "message": "OvsdbTepAddConfigHelper and OvsdbTepRemoveConfigHelper are the ones which have methods to add/remove teps from tepsNotHosted container.\nBoth OvsdbTepAddConfigHelper and OvsdbTepRemoveConfigHelper are invoked via DJC only.",
+      "parentUuid": "ca7156de_1468fad3",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "08a5a17a_5839f15d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "cc07447e_b7f39be4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-16T12:45:43Z",
+      "side": 1,
+      "message": "In future, more calls may be present.\nIt is better to have functions which can be helpful in later point of time too.",
+      "parentUuid": "08a5a17a_5839f15d",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d2745bc1_0ebd6c47",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2018-05-15T07:15:09Z",
       "side": 1,
       "message": "Can you implement a cache for this DS. Every operation reads the datastore. This can be expensive in a scale scenario\n\nPlease use cache wherever possible",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c8cdfbe5_971381ea",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1087,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-16T12:45:43Z",
+      "side": 1,
+      "message": "Yes, it can be done.\nCan we do it in separate patch?",
+      "parentUuid": "d2745bc1_0ebd6c47",
       "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
