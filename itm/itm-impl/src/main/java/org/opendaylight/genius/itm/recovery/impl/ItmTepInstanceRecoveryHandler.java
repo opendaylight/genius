@@ -7,11 +7,15 @@
  */
 package org.opendaylight.genius.itm.recovery.impl;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
@@ -37,10 +41,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusItmTep;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +65,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
     private final ItmConfig itmConfig;
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final IMdsalApiManager imdsalApiManager;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
     private String tzName;
     private TransportZone transportZone;
 
@@ -73,13 +81,15 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                                          OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                          IInterfaceManager interfaceManager,
                                          ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                         EntityOwnershipUtils entityOwnershipUtils) {
+                                         EntityOwnershipUtils entityOwnershipUtils,
+                                         DataTreeEventCallbackRegistrar eventCallbacks) {
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
         this.imdsalApiManager = imdsalApiMgr;
         this.jobCoordinator = jobCoordinator;
         this.dpntePsInfoCache = dpntePsInfoCache;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.eventCallbacks = eventCallbacks;
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
@@ -119,17 +129,40 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             // Delete the transportZone and re create it
             // Get the transport zone from the transport zone name
             TransportZone oldTz = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+            //List of Internel tunnels
+            List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+            LOG.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
+
             if (oldTz != null) {
                 ItmTepRemoveWorker tepRemoveWorker = new ItmTepRemoveWorker(tepsToRecover, null, oldTz,
                         dataBroker, imdsalApiManager, itmInternalTunnelDeleteWorker, dpntePsInfoCache);
                 LOG.trace("Deleting transportzone {}", tzName);
                 jobCoordinator.enqueueJob(tzName, tepRemoveWorker);
-                ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepsToRecover, null, dataBroker,
-                        imdsalApiManager, itmConfig, itmInternalTunnelAddWorker, itmExternalTunnelAddWorker,
-                        dpntePsInfoCache);
-                LOG.trace("Re-creating transportzone {}", tzName);
-                jobCoordinator.enqueueJob(tzName, tepAddWorker);
+                AtomicInteger count = new AtomicInteger(0);
+                for (String tunnelInterface : tunnelList) {
+                    StateTunnelListKey tlKey = new StateTunnelListKey(tunnelInterface);
+                    LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, tunnelInterface);
+                    InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
+                    eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL, stListId, (unused) -> {
+                        LOG.trace("callback event for a delete....");
+                        // recreating the transportZone
+                        recreateTEP(tepsToRecover, count, tunnelList.size());
+                        return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+                    }, Duration.ofMillis(5000), (id) -> {
+                            recreateTEP(tepsToRecover, count, tunnelList.size()); });
+                }
             }
+        }
+    }
+
+    private void recreateTEP(List tepts,AtomicInteger count,int size) {
+        count.incrementAndGet();
+        if (count.intValue() == size) {
+            ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepts, null, dataBroker,
+                    imdsalApiManager, itmConfig, itmInternalTunnelAddWorker, itmExternalTunnelAddWorker,
+                    dpntePsInfoCache);
+            LOG.trace("Re-creating transportzone {}", tzName);
+            jobCoordinator.enqueueJob(tzName, tepAddWorker);
         }
     }
 
