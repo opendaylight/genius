@@ -359,12 +359,13 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
             // TBD: Move this time taking operations into DataStoreJobCoordinator
             Node ovsdbNodeFromBridge = ItmUtils.getOvsdbNode(ovsdbNewBridgeAugmentation, dataBroker);
-            // check for OVSDB node
+            // check for OVSDB node. NOTE: it can be null during bridge removal notification
+            // when switch is disconnected
             if (ovsdbNodeFromBridge != null) {
                 ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.augmentation(OvsdbNodeAugmentation.class);
             } else {
-                LOG.error("processBridgeUpdate: Ovsdb Node could not be fetched from Oper DS for bridge {}.",
-                        bridgeName);
+                LOG.warn("processBridgeUpdate: bridge {} removal case when Switch is disconnected."
+                         + "Hence, Ovsdb Node could not be fetched from Oper DS.", bridgeName);
                 return;
             }
         }
