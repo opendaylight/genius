@@ -200,43 +200,45 @@ module itm-state {
         }
 
       container tunnels_state {
+        config false;
         list state-tunnel-list {
             key  "tunnel-interface-name";
 
-                  leaf tunnel-interface-name {
-                      type string;
-                  }
+            leaf tunnel-interface-name {
+                type string;
+            }
+
             leaf tunnel-state {
-                                  type boolean;
-                                  config false;
-                                  status deprecated;
-                              }
+                type boolean;
+                config false;
+                status deprecated;
+            }
+
             leaf oper-state { type tunnel-oper-status; }
+
             container src-info {
                 uses tep-info-attributes;
             }
 
-                  container dst-info {
-                      uses tep-info-attributes;
-                  }
+            container dst-info {
+                uses tep-info-attributes;
+            }
 
-                  leaf transport-type {
-                      type identityref {
-                          base odlif:tunnel-type-base;
-                      }
-                  }
-                  leaf port-number {
+            leaf transport-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+            }
+
+            leaf port-number {
                       type string;
-                  }
-                  leaf if-index {
+            }
+
+            leaf if-index {
                       type uint16;
-                  }
-
-              }
             }
-
-            notification itm-tunnel-build-complete{
-            }
+         }
+      }
 
         container dpn-teps-state {
             list dpns-teps {
