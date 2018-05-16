@@ -789,13 +789,26 @@ public final class ItmUtils {
     public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
         List<String> tunnelList = new ArrayList<>();
         Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
-        if (internalInterfaces == null) {
+        if (internalInterfaces.isEmpty()) {
             updateTunnelsCache(dataBroker);
             internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
         }
         LOG.debug("ItmUtils.getTunnelList Cache Internal Interfaces size: {} ", internalInterfaces.size());
         tunnelList.addAll(internalInterfaces);
         LOG.trace("ItmUtils.getTunnelList Internal: {}", tunnelList);
+        return tunnelList;
+    }
+
+    public static List<InternalTunnel> getInternalTunnelsFromCache(DataBroker dataBroker) {
+        List<InternalTunnel> tunnelList = new ArrayList<>();
+        Collection<InternalTunnel> internalInterfaces = ITM_CACHE.getAllInternalTunnel();
+        if (internalInterfaces.isEmpty()) {
+            updateTunnelsCache(dataBroker);
+            internalInterfaces = ITM_CACHE.getAllInternalTunnel();
+        }
+        LOG.debug("Number of Internal Tunnel Interfaces in cache: {} ", internalInterfaces.size());
+        tunnelList.addAll(internalInterfaces);
+        LOG.trace("List of Internal Tunnels: {}", tunnelList);
         return tunnelList;
     }
 
@@ -939,10 +952,11 @@ public final class ItmUtils {
         return null;
     }
 
-    private static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
+    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
         List<InternalTunnel> result = null;
         InstanceIdentifier<TunnelList> iid = InstanceIdentifier.builder(TunnelList.class).build();
         Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
+
         if (tunnelList.isPresent()) {
             result = tunnelList.get().getInternalTunnel();
         }
