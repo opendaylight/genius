@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "b6c3e08f_370de4f2",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0688caa_b7c26b75",
+      "range": {
+        "startLine": 35,
+        "startChar": 13,
+        "endLine": 35,
+        "endChar": 61
+      },
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "430aa799_36aa6bc2",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "af48a380_a4c4659c",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "430aa799_36aa6bc2",
+      "range": {
+        "startLine": 42,
+        "startChar": 2,
+        "endLine": 43,
+        "endChar": 74
+      },
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1451bd34_ff48e2f4",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -59,6 +107,24 @@
       "writtenOn": "2018-05-16T20:01:04Z",
       "side": 1,
       "message": "Isn\u0027t this already covered by existing OFTunnels? Focus of this is making oftunnels work with direct tunnels, no need to repeat information, linking to other one should be enough.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc5aa8a8_5ba40d74",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1451bd34_ff48e2f4",
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -99,6 +165,24 @@
     },
     {
       "key": {
+        "uuid": "32262562_63a90087",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Adding the group-id is within the scope of itm-direct-tunnels and will be done as part of that.",
+      "parentUuid": "2d51cc86_57730848",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4ab42ebc_ad71e051",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -110,6 +194,24 @@
       "writtenOn": "2018-05-16T20:01:04Z",
       "side": 1,
       "message": "Doesn\u0027t this mean applications need to be aware of tunnels being monitored or not? why not go with simple option of state being populated as always up for non monitored tunnels?",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "022fc5c8_0c5e287f",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "You are right, currently with itm-direct-tunnels selective BFD monitoring has been enabled between two end-points, which is through a separate RPC, which applications are going to invoke. So applications anyways have to be aware of tunnels being monitored or not.",
+      "parentUuid": "4ab42ebc_ad71e051",
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -133,6 +235,24 @@
     },
     {
       "key": {
+        "uuid": "32cc0f34_dad4c5e8",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "01c7dc84_2bffa8ef",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e56f334e_05931ca2",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -144,6 +264,24 @@
       "writtenOn": "2018-05-17T04:58:33Z",
       "side": 1,
       "message": "Typo \"first tunnel\"",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0795a70a_3f4000e1",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e56f334e_05931ca2",
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -167,6 +305,24 @@
     },
     {
       "key": {
+        "uuid": "66f7709d_8f1502d3",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cee8e69a_141b46ae",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ea09fefb_df4529bc",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -178,6 +334,24 @@
       "writtenOn": "2018-05-17T04:58:33Z",
       "side": 1,
       "message": "Typo \"tnnel\"",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5136f247_34e765cd",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ea09fefb_df4529bc",
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -218,6 +392,24 @@
     },
     {
       "key": {
+        "uuid": "7c13da07_ed72308c",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8318f8c0_e84b6e6c",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ab4dd701_dd533b63",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -229,6 +421,24 @@
       "writtenOn": "2018-05-17T04:58:33Z",
       "side": 1,
       "message": "Please add how to configure through ITM Auto tunnel as well.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38366a1c_0da76870",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:45:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ab4dd701_dd533b63",
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
