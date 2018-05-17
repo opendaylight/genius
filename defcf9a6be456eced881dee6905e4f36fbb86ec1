@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8d792fa_ea39abc2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-05-17T04:13:46Z",
+      "side": 1,
+      "message": "may want to change this to whatever the supported default for Oxygen is. I think it is 2.8.0, but good to confirm this.",
+      "revId": "defcf9a6be456eced881dee6905e4f36fbb86ec1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
