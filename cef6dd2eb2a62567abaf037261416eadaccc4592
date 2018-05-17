@@ -22,6 +22,30 @@
       "revId": "cef6dd2eb2a62567abaf037261416eadaccc4592",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eae227e7_100c4f81",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-17T04:49:42Z",
+      "side": 1,
+      "message": "Yes. Its allowed.",
+      "parentUuid": "a5824e31_d58f6a12",
+      "range": {
+        "startLine": 300,
+        "startChar": 43,
+        "endLine": 300,
+        "endChar": 44
+      },
+      "revId": "cef6dd2eb2a62567abaf037261416eadaccc4592",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
