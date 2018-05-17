@@ -16,6 +16,24 @@
       "revId": "3328fe418dbb9932ab94baaaf4c0ff2879318ef9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc1e423f_fcf08e1a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 24
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-05-17T03:24:43Z",
+      "side": 1,
+      "message": "This was never part of ITM Direct Tunnels feature requirement.\nThis has come up during OF Tunnel feature. Let us handle this requirement while implementing OF Tunnel Feature. Better not to mix both :-)",
+      "parentUuid": "e67f4b89_190ed647",
+      "revId": "3328fe418dbb9932ab94baaaf4c0ff2879318ef9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
