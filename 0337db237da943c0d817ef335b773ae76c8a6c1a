@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "25ef4e68_4a4c528a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T18:11:24Z",
+      "side": 1,
+      "message": "Didn\u0027t we decide that we should do getInternalTunnelInterfacesForTz() ??",
+      "revId": "0337db237da943c0d817ef335b773ae76c8a6c1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6986ffc5_6e22114c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
         "patchSetId": 4
