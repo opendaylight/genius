@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a5824e31_d58f6a12",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-05-17T04:24:51Z",
+      "side": 1,
+      "message": "is space allowed here ?",
+      "range": {
+        "startLine": 300,
+        "startChar": 43,
+        "endLine": 300,
+        "endChar": 44
+      },
+      "revId": "cef6dd2eb2a62567abaf037261416eadaccc4592",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
