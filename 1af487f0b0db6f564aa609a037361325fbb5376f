@@ -22,6 +22,30 @@
       "revId": "1af487f0b0db6f564aa609a037361325fbb5376f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1157201_9913aa86",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-05-17T07:22:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "016c95d3_1a6c6606",
+      "range": {
+        "startLine": 57,
+        "startChar": 75,
+        "endLine": 57,
+        "endChar": 107
+      },
+      "revId": "1af487f0b0db6f564aa609a037361325fbb5376f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
