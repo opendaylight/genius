@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "016c95d3_1a6c6606",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2018-05-17T06:16:00Z",
+      "side": 1,
+      "message": "Please add some test-cases to cover different forms of IPv6 addresses (just an example: 2001:db8::1234, 2001:0:db8::12 etc)",
+      "range": {
+        "startLine": 57,
+        "startChar": 75,
+        "endLine": 57,
+        "endChar": 107
+      },
+      "revId": "1af487f0b0db6f564aa609a037361325fbb5376f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
