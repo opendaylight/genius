@@ -459,6 +459,24 @@
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c0ffee9_0eb6116f",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-17T17:53:55Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0dafc583_b1318967",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
