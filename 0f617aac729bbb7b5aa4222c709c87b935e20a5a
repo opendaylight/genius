@@ -116,6 +116,40 @@
     },
     {
       "key": {
+        "uuid": "01c7dc84_2bffa8ef",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-17T04:58:33Z",
+      "side": 1,
+      "message": "Better to mention that its a global flag in the genius-ifm-config.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e56f334e_05931ca2",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-17T04:58:33Z",
+      "side": 1,
+      "message": "Typo \"first tunnel\"",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cee8e69a_141b46ae",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -133,6 +167,23 @@
     },
     {
       "key": {
+        "uuid": "ea09fefb_df4529bc",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 369,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-17T04:58:33Z",
+      "side": 1,
+      "message": "Typo \"tnnel\"",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f61c168d_1dab0096",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 9
@@ -144,6 +195,40 @@
       "writtenOn": "2018-05-16T20:01:04Z",
       "side": 1,
       "message": "why not have applications use groups instead of ports? don\u0027t applications today get egress actions from ITM/IFM?",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8318f8c0_e84b6e6c",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 381,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-17T04:58:33Z",
+      "side": 1,
+      "message": "Please mention that user can choose one of the three ways REST/CLI/AUTO-tunnel to configure this.",
+      "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab4dd701_dd533b63",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 9
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-17T04:58:33Z",
+      "side": 1,
+      "message": "Please add how to configure through ITM Auto tunnel as well.",
       "revId": "0f617aac729bbb7b5aa4222c709c87b935e20a5a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
