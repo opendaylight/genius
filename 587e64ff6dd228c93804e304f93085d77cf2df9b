@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "155b38b8_e35c0274",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1085,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-17T07:23:11Z",
+      "side": 1,
+      "message": "This method is called from 2 places:\nOvsdbTepAddConfigHelper file and line 246\nOvsdbTepRemoveConfigHelper file and line 190",
+      "parentUuid": "08a5a17a_5839f15d",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d2745bc1_0ebd6c47",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 3
@@ -119,6 +137,24 @@
       "side": 1,
       "message": "Yes, we can take that in subsequent patch.",
       "parentUuid": "c8cdfbe5_971381ea",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5343404f_5692a888",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1087,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-17T07:23:11Z",
+      "side": 1,
+      "message": "Ok, I will do it.",
+      "parentUuid": "612321ca_f54fad80",
       "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
