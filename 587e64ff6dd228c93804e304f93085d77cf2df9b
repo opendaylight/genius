@@ -104,6 +104,24 @@
       "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "612321ca_f54fad80",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1087,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-17T05:19:13Z",
+      "side": 1,
+      "message": "Yes, we can take that in subsequent patch.",
+      "parentUuid": "c8cdfbe5_971381ea",
+      "revId": "587e64ff6dd228c93804e304f93085d77cf2df9b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
