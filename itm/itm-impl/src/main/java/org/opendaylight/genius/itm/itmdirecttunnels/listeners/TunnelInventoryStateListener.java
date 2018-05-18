@@ -264,7 +264,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
     }
 
     private boolean modifyOpState(DpnTepInterfaceInfo dpnTepInterfaceInfo, boolean opStateModified) {
-        return opStateModified && (dpnTepInterfaceInfo == null || dpnTepInterfaceInfo.isMonitoringEnabled());
+        return opStateModified && (dpnTepInterfaceInfo != null);
     }
 
     private boolean modifyTunnelOpState(DpnTepInterfaceInfo dpnTepInterfaceInfo, boolean opStateModified) {
