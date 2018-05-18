@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "25662c6e_13cce7ea",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 1002,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-18T19:03:04Z",
+      "side": 1,
+      "message": "remove all these logs?",
+      "revId": "4bdb0fbbc266824629f218fa4480f1149550806e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a1fd63ad_b0bb2045",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-18T19:03:04Z",
+      "side": 1,
+      "message": "this log does not make sense here",
+      "revId": "4bdb0fbbc266824629f218fa4480f1149550806e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c34a636d_14eabd0c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 192,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-18T19:03:04Z",
+      "side": 1,
+      "message": "TRACE log.. and give a better log statement",
+      "revId": "4bdb0fbbc266824629f218fa4480f1149550806e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7cc68bdc_a967534c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-18T19:03:04Z",
+      "side": 1,
+      "message": "this is callbackCount",
+      "revId": "4bdb0fbbc266824629f218fa4480f1149550806e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8e94557c_483ab456",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-18T19:03:04Z",
+      "side": 1,
+      "message": "this log should contain \"event callback timed out for {tunnelinterfacename}",
+      "revId": "4bdb0fbbc266824629f218fa4480f1149550806e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "835d8ade_834389a1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTzInstanceRecoveryHandler.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-18T19:03:04Z",
+      "side": 1,
+      "message": "not error, and put a meaningful log",
+      "revId": "4bdb0fbbc266824629f218fa4480f1149550806e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
