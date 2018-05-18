@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67173e88_d83346a3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 7969
+      },
+      "writtenOn": "2018-05-18T09:24:22Z",
+      "side": 1,
+      "message": "Table numbers are in order. Move these tables after COE_KUBE_PROXY_TABLE",
+      "range": {
+        "startLine": 138,
+        "startChar": 10,
+        "endLine": 138,
+        "endChar": 27
+      },
+      "revId": "2cbe6fc192090db38fa650912f705f99a024c26a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
