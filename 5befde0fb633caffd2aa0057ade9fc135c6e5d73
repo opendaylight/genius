@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "f82c4507_e4789283",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "This is Bug headline, so i think we should use the same.\n\nYour written line has been added as problem.",
+      "parentUuid": "e1f23f65_9ef2b431",
+      "range": {
+        "startLine": 7,
+        "startChar": 14,
+        "endLine": 7,
+        "endChar": 35
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a3f3df61_73d8b858",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -71,6 +95,54 @@
     },
     {
       "key": {
+        "uuid": "2b01a587_f12bec21",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a3f3df61_73d8b858",
+      "range": {
+        "startLine": 11,
+        "startChar": 57,
+        "endLine": 11,
+        "endChar": 58
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ad2d089_44e07228",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "87796cb6_bc439b4c",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 4
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b8ade307_623b5f97",
         "filename": "/COMMIT_MSG",
         "patchSetId": 3
@@ -82,6 +154,30 @@
       "writtenOn": "2018-05-21T07:22:05Z",
       "side": 1,
       "message": "Add heading like below before giving brief of solution.\nProblem solution\n----------------",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 13,
+        "endChar": 27
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ca238c3_ffbd4704",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b8ade307_623b5f97",
       "range": {
         "startLine": 10,
         "startChar": 0,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "5a11efc1_03a24411",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "724cbf05_9df2e9c2",
+      "range": {
+        "startLine": 193,
+        "startChar": 19,
+        "endLine": 193,
+        "endChar": 23
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f0f02881_4704269e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 3
@@ -140,6 +260,30 @@
     },
     {
       "key": {
+        "uuid": "731288e4_25f759df",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "Changed Delete to moving.\nNot it is out of loop so using TZ.",
+      "parentUuid": "f0f02881_4704269e",
+      "range": {
+        "startLine": 198,
+        "startChar": 39,
+        "endLine": 198,
+        "endChar": 68
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51dce4bd_62fbafe3",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 3
@@ -151,6 +295,30 @@
       "writtenOn": "2018-05-21T07:22:05Z",
       "side": 1,
       "message": "Looks like, for each vtep, separate job is enqueued, which is performance issue. Assume large teps are moving and each job for each tep can be performance hit.\nIs it possible if we can write another worker class which allows us to take list of teps and add them under not-hosted TZ with single job.\nI hope it can be done, and better way to handle this case in scale environment.",
+      "range": {
+        "startLine": 200,
+        "startChar": 27,
+        "endLine": 203,
+        "endChar": 83
+      },
+      "revId": "5befde0fb633caffd2aa0057ade9fc135c6e5d73",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa3637cc_cab9973c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-21T15:48:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "51dce4bd_62fbafe3",
       "range": {
         "startLine": 200,
         "startChar": 27,
