@@ -29,6 +29,7 @@ public interface NwConstants {
 
     //Protocol Type
     int IP_PROT_ICMP = 1;
+    int IP_PROT_IGMP = 2;
     int IP_PROT_TCP = 6;
     int IP_PROT_UDP = 17;
     int IP_PROT_GRE = 47;
@@ -148,6 +149,7 @@ public interface NwConstants {
     short ELAN_UNKNOWN_DMAC_TABLE = 52;
     short ELAN_FILTER_EQUALS_TABLE = 55;
     short DHCP_TABLE = 60;
+    short IPV4_MULTICAST_TABLE = 61;
     short SCF_UP_SUB_FILTER_TCP_BASED_TABLE = 70;
     short SCF_DOWN_SUB_FILTER_TCP_BASED_TABLE = 72;
     short SCF_CHAIN_FWD_TABLE = 75;
