@@ -10,10 +10,16 @@ package org.opendaylight.genius.datastoreutils.listeners;
 import static org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
 
 import com.google.common.annotations.Beta;
+
+import java.time.Duration;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -32,6 +38,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Tom Pantelis review and feedback on concurrency issue in implementation
  */
 @Beta // we may still change this API
+@NonNullByDefault
 public interface DataTreeEventCallbackRegistrar {
 
     enum NextAction {
@@ -49,48 +56,113 @@ public interface DataTreeEventCallbackRegistrar {
     }
 
     <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
-            Function<T, NextAction> callback);
+                                      Function<T, NextAction> callback,
+                                      Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback);
+
+    <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                      Function<T, NextAction> callback);
 
     default <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
-            Consumer<T> callback) {
-        onAdd(store, path, (Function<T, NextAction>) t -> {
+                                              Consumer<T> callback) {
+        onAdd(store, path, t -> {
             callback.accept(t);
             return UNREGISTER;
         });
     }
 
+    default <T extends DataObject> void onAdd(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                              Consumer<T> callback, Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        onAdd(store, path, t -> {
+            callback.accept(t);
+            return UNREGISTER;
+        }, timeoutDuration, timedOutCallback);
+    }
+
+
     <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
-            BiFunction<T, T, NextAction> callback);
+                                         BiFunction<T, T, NextAction> callback,
+                                         Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback);
+
+    <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                         BiFunction<T, T, NextAction> callback);
 
     default <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
-            BiConsumer<T, T> callback) {
-        onUpdate(store, path, (BiFunction<T, T, NextAction>) (t1, t2) -> {
+                                                 BiConsumer<T, T> callback) {
+        onUpdate(store, path, (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
         });
     }
 
-    <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
-                                              BiFunction<T, T, NextAction> callback);
+    default <T extends DataObject> void onUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                                 BiConsumer<T, T> callback,
+                                                 Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        onUpdate(store, path, (t1, t2) -> {
+            callback.accept(t1, t2);
+            return UNREGISTER;
+        }, timeoutDuration, timedOutCallback);
+    }
 
+
+    <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                              BiFunction<@Nullable T, T, NextAction> callback,
+                                              Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback);
+
+    /**
+     * Call back when expected instance was added or updated, with NextAction support.
+     * @param store the expected data store
+     * @param path the path to watch for changes on
+     * @param callback the callback as {@link BiFunction}, where the first argument is the data before the update
+     *             or null in case of an add, the second argument is the data after the update (or add; never null),
+     *             and the returned value determines whether to keep listening for changes or not anymore.
+     */
+    <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                              BiFunction<@Nullable T, T, NextAction> callback);
+
+    /**
+     * Call back when expected instance was added or updated, with implicit {@link NextAction#UNREGISTER}.
+     * See {@link #onAddOrUpdate(LogicalDatastoreType, InstanceIdentifier, BiFunction)} for more details.
+     */
     default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
-                                                 BiConsumer<T, T> callback) {
-        onUpdate(store, path, (BiFunction<T, T, NextAction>) (t1, t2) -> {
+                                                      BiConsumer<@Nullable T, T> callback) {
+        onUpdate(store, path, (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
         });
+    }
+
+    default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                                      BiConsumer<@Nullable T, T> callback,
+                                                      Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        onUpdate(store, path, (t1, t2) -> {
+            callback.accept(t1, t2);
+            return UNREGISTER;
+        }, timeoutDuration, timedOutCallback);
     }
 
 
     <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
-            Function<T, NextAction> callback);
+                                         Function<T, NextAction> callback,
+                                         Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback);
+
+    <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                         Function<T, NextAction> callback);
 
     default <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
-            Consumer<T> callback) {
-        onRemove(store, path, (Function<T, NextAction>) t -> {
+                                                 Consumer<T> callback) {
+        onRemove(store, path, t -> {
             callback.accept(t);
             return UNREGISTER;
         });
+    }
+
+    default <T extends DataObject> void onRemove(LogicalDatastoreType store, InstanceIdentifier<T> path,
+                                                 Consumer<T> callback,
+                                                 Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback) {
+        onRemove(store, path, t -> {
+            callback.accept(t);
+            return UNREGISTER;
+        }, timeoutDuration, timedOutCallback);
     }
 
 }
