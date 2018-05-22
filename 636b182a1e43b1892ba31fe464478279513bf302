@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ce5e5dba_9ae097e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedAddWorker.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-22T09:13:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fadd8957_f7d3c82d",
+      "range": {
+        "startLine": 40,
+        "startChar": 23,
+        "endLine": 40,
+        "endChar": 31
+      },
+      "revId": "636b182a1e43b1892ba31fe464478279513bf302",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "68f9e4ac_9d2209ae",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
         "patchSetId": 5
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "422e606c_e604e320",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-22T09:13:46Z",
+      "side": 1,
+      "message": "Done\nGood catch, missed it.",
+      "parentUuid": "68f9e4ac_9d2209ae",
+      "range": {
+        "startLine": 273,
+        "startChar": 20,
+        "endLine": 273,
+        "endChar": 86
+      },
+      "revId": "636b182a1e43b1892ba31fe464478279513bf302",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "df94862c_f0cf07a4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
         "patchSetId": 5
@@ -59,6 +107,30 @@
       "writtenOn": "2018-05-22T08:38:28Z",
       "side": 1,
       "message": "Why this log message moved here? It was more suitable at old place, just before wrTx.merge() line of addVtepIntoTepsNotHosted().",
+      "range": {
+        "startLine": 322,
+        "startChar": 8,
+        "endLine": 323,
+        "endChar": 71
+      },
+      "revId": "636b182a1e43b1892ba31fe464478279513bf302",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc229715_ebdb2ad6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-05-22T09:13:46Z",
+      "side": 1,
+      "message": "Value which are getting printed in the log are now moved to this method.\nThese values are not available in old place.",
+      "parentUuid": "df94862c_f0cf07a4",
       "range": {
         "startLine": 322,
         "startChar": 8,
