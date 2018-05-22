@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "78048ee2_b01de450",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "This code be shared, in a utility class or Worker parent class which both extend.",
+      "parentUuid": "0f7a6ecf_bda1692e",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b39b872_9d9e9550",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
         "patchSetId": 17
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "8b39b872_9d9e9550",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5fa224c7_4b8620b3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "How? In Patch Set 25, this is still there exactly as it was...",
+      "parentUuid": "efc498d8_ebffe724",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -107,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "89421196_840ec57c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "7b31e3a1_a63309fd",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9136ac14_2dd64dcc",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 17
@@ -142,6 +196,24 @@
     },
     {
       "key": {
+        "uuid": "57feff84_98070eab",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "d40b7976_21c5621b",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6288c3ef_bb7d1d7c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 17
@@ -171,6 +243,24 @@
       "side": 1,
       "message": "Removed handling of this exception as you rightly suggested there is no illegal or inappropriate argument in this case.",
       "parentUuid": "6288c3ef_bb7d1d7c",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "171a4fea_26d64c2f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "8a60bb17_7b543340",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -247,6 +337,24 @@
     },
     {
       "key": {
+        "uuid": "5ca4385f_a2679cb6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 376,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "4c11c01f_85ef1d4d",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "74cc3de9_58ebd22d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
         "patchSetId": 17
@@ -276,6 +384,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "74cc3de9_58ebd22d",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c994cebd_85d8a511",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-22T12:39:01Z",
+      "side": 1,
+      "message": "OK",
+      "parentUuid": "13398813_b083801b",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
