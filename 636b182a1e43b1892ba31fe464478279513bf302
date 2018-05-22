@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fadd8957_f7d3c82d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedAddWorker.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-22T08:38:28Z",
+      "side": 1,
+      "message": "Should be \"TEPs into\".",
+      "range": {
+        "startLine": 40,
+        "startChar": 23,
+        "endLine": 40,
+        "endChar": 31
+      },
+      "revId": "636b182a1e43b1892ba31fe464478279513bf302",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68f9e4ac_9d2209ae",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-22T08:38:28Z",
+      "side": 1,
+      "message": "Above 2 calls of this method are done inside addVtepIntoTepsNotHosted(),\nbut here and just below else condition, this method is called separately and list is not taken which is returned by this method.",
+      "range": {
+        "startLine": 273,
+        "startChar": 20,
+        "endLine": 273,
+        "endChar": 86
+      },
+      "revId": "636b182a1e43b1892ba31fe464478279513bf302",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df94862c_f0cf07a4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 323,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-05-22T08:38:28Z",
+      "side": 1,
+      "message": "Why this log message moved here? It was more suitable at old place, just before wrTx.merge() line of addVtepIntoTepsNotHosted().",
+      "range": {
+        "startLine": 322,
+        "startChar": 8,
+        "endLine": 323,
+        "endChar": 71
+      },
+      "revId": "636b182a1e43b1892ba31fe464478279513bf302",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
