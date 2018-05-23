@@ -29,7 +29,7 @@ public interface IITMProvider {
 
     void showTeps(CommandSession session);
 
-    void showState(Collection<StateTunnelList> tunnels, CommandSession session);
+    void showState(Collection<StateTunnelList> tunnels);
 
     void showCache(String cacheName);
 

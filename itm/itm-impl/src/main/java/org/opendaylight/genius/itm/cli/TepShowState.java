@@ -8,31 +8,29 @@
 package org.opendaylight.genius.itm.cli;
 
 import java.util.Collection;
-import org.apache.karaf.shell.commands.Command;
-import org.apache.karaf.shell.console.OsgiCommandSupport;
+import org.apache.karaf.shell.api.action.Action;
+import org.apache.karaf.shell.api.action.Command;
+import org.apache.karaf.shell.api.action.lifecycle.Reference;
+import org.apache.karaf.shell.api.action.lifecycle.Service;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 
+@Service
 @Command(scope = "tep", name = "show-state", description = "Monitors tunnel state")
+public class TepShowState implements Action {
 
-public class TepShowState extends OsgiCommandSupport {
-
-    private final IITMProvider itmProvider;
-    private final TunnelStateCache tunnelStateCache;
-
-    public TepShowState(IITMProvider itmProvider, TunnelStateCache tunnelStateCache) {
-        this.itmProvider = itmProvider;
-        this.tunnelStateCache = tunnelStateCache;
-    }
+    private @Reference IITMProvider itmProvider;
+    private @Reference TunnelStateCache tunnelStateCache;
 
     @Override
-    protected Object doExecute() {
+    @SuppressWarnings("checkstyle:RegexpSingleLineJava")
+    public Object execute() throws Exception {
         Collection<StateTunnelList> tunnels = tunnelStateCache.getAllPresent();
         if (!tunnels.isEmpty()) {
-            itmProvider.showState(tunnels, session);
+            itmProvider.showState(tunnels);
         } else {
-            session.getConsole().println("No Internal Tunnels configured on the switch");
+            System.out.println("No Internal Tunnels configured on the switch");
         }
         return null;
     }
