@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e02c38a9_4200b04f",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-23T12:12:13Z",
+      "side": 1,
+      "message": "minor: normally no empty line here now",
+      "revId": "68c338a0afec8047f7d08d861b932bbd3dac7d8e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "70ea9f8d_3fbe458a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-23T12:12:13Z",
+      "side": 1,
+      "message": "Signed-off-by: Michael Vorburger \u003cvorburger@redhat.com\u003e\n\nbecause this is a back-port?",
+      "revId": "68c338a0afec8047f7d08d861b932bbd3dac7d8e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
