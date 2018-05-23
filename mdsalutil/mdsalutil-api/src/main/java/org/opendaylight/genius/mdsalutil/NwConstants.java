@@ -206,6 +206,8 @@ public interface NwConstants {
         NXM_OF_ARP_OP(0x0000, 15, 2, 16),
         NXM_OF_ARP_SPA(0x0000, 16, 4, 16),
         NXM_OF_ARP_TPA(0x0000, 17, 4, 16),
+        NXM_NX_IPV6_SRC(0x0001, 19, 16, 128),
+        NXM_NX_IPV6_DST(0x0001, 20, 16, 128),
         NXM_NX_REG0(0x0001, 0, 4, -1),
         NXM_NX_REG1(0x0001, 1, 4, -1),
         NXM_NX_REG2(0x0001, 2, 4, -1),
