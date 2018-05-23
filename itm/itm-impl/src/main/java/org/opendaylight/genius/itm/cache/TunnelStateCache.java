@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 
 /**
  * Caches StateTunnelList objects.
@@ -28,6 +29,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @author Thomas Pantelis
  */
 @Singleton
+@OsgiServiceProvider(classes = TunnelStateCache.class) // only because TepShowState needs a @Reference to this
 public class TunnelStateCache extends InstanceIdDataObjectCache<StateTunnelList> {
 
     @Inject

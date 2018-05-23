@@ -59,10 +59,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
+@OsgiServiceProvider
 public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
@@ -231,10 +233,10 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @Override
-    public void showState(Collection<StateTunnelList> tunnels,CommandSession session) {
+    public void showState(Collection<StateTunnelList> tunnels) {
         if (tunnels != null) {
             try {
-                tepCommandHelper.showState(tunnels, tunnelMonitoringConfig.isTunnelMonitoringEnabled(), session);
+                tepCommandHelper.showState(tunnels, tunnelMonitoringConfig.isTunnelMonitoringEnabled());
             } catch (TepException e) {
                 LOG.error("show state failed", e);
             }
@@ -347,7 +349,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Override
     public boolean validateIP(final String ip) {
-        if ((ip == null) || ip.isEmpty() || "null".equals(ip) || "0.0.0.0".equals(ip)) {
+        if (ip == null || ip.isEmpty() || "null".equals(ip) || "0.0.0.0".equals(ip)) {
             return false;
         }
         final String PTRN =

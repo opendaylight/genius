@@ -42,9 +42,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <odl:rpc-implementation ref="itmManagerRpcService" />
 
-    <service ref="itmProvider"
-             interface="org.opendaylight.genius.itm.api.IITMProvider" />
-
     <odl:clustered-app-config id="itmConfig"
                               binding-class="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig"
                               default-config-file-name="genius-itm-config.xml"
@@ -75,12 +72,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <command>
             <action class="org.opendaylight.genius.itm.cli.TepCommit">
                 <property name="itmProvider" ref="itmProvider" />
-            </action>
-        </command>
-        <command>
-            <action class="org.opendaylight.genius.itm.cli.TepShowState">
-                <argument ref="itmProvider" />
-                <argument ref="tunnelStateCache" />
             </action>
         </command>
         <command>
