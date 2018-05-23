@@ -70,6 +70,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
+@SuppressWarnings("checkstyle:RegexpSingleLineJava")
 public class TepCommandHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
@@ -136,26 +137,26 @@ public class TepCommandHelper {
         try {
             ipAddressObj = IpAddressBuilder.getDefaultInstance(ipAddress);
             gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-            if ((gatewayIp != null) && !gatewayIp.isEmpty()
-                    && !("null".equals(gatewayIp)) || ("0.0.0.0".equals(gatewayIp))) {
+            if (gatewayIp != null && !gatewayIp.isEmpty()
+                    && !"null".equals(gatewayIp) || "0.0.0.0".equals(gatewayIp)) {
                 gatewayIpObj = IpAddressBuilder.getDefaultInstance(gatewayIp);
             } else {
                 LOG.debug("gateway is null");
                 gatewayIp = null;
             }
         } catch (RuntimeException e) {
-            handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
+            handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255");
             return;
         }
         try {
             subnetMaskObj = IpPrefixBuilder.getDefaultInstance(subnetMask);
         } catch (Exception e) {
-            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
+            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32");
             return;
         }
 
         if (!validateIPs(ipAddress, subnetMask, gatewayIp)) {
-            handleError("IpAddress and gateWayIp should belong to the subnet provided", session);
+            handleError("IpAddress and gateWayIp should belong to the subnet provided");
             return;
         }
 
@@ -455,7 +456,7 @@ public class TepCommandHelper {
         if (transportZonesOptional.isPresent()) {
             TransportZones transportZones = transportZonesOptional.get();
             if (transportZones.getTransportZone() == null || transportZones.getTransportZone().isEmpty()) {
-                handleError("No teps configured", session);
+                handleError("No teps configured");
                 return;
             }
             List<String> result = new ArrayList<>();
@@ -567,25 +568,25 @@ public class TepCommandHelper {
         try {
             ipAddressObj = IpAddressBuilder.getDefaultInstance(ipAddress);
             gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-            if (!("null".equals(gatewayIp)) || ("0.0.0.0".equals(gatewayIp)) && (gatewayIp != null)) {
+            if (!"null".equals(gatewayIp) || "0.0.0.0".equals(gatewayIp) && gatewayIp != null) {
                 gatewayIpObj = IpAddressBuilder.getDefaultInstance(gatewayIp);
             } else {
                 LOG.debug("gateway is null");
                 gatewayIp = null;
             }
         } catch (RuntimeException e) {
-            handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255", session);
+            handleError("Invalid IpAddress. Expected: 1.0.0.0 to 254.255.255.255");
             return;
         }
         try {
             subnetMaskObj = IpPrefixBuilder.getDefaultInstance(subnetMask);
         } catch (Exception e) {
-            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32", session);
+            handleError("Invalid Subnet Mask. Expected: 0.0.0.0/0 to 255.255.255.255/32");
             return;
         }
 
         if (!validateIPs(ipAddress, subnetMask, gatewayIp)) {
-            handleError("IpAddress and gateWayIp should belong to the subnet provided", session);
+            handleError("IpAddress and gateWayIp should belong to the subnet provided");
             return;
         }
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
@@ -720,16 +721,13 @@ public class TepCommandHelper {
     }
 
     @SuppressWarnings("checkstyle:RegexpSinglelineJava")
-    public void showState(Collection<StateTunnelList> tunnelLists, boolean tunnelMonitorEnabled,
-                          CommandSession session) throws TepException {
+    public void showState(Collection<StateTunnelList> tunnelLists, boolean tunnelMonitorEnabled) throws TepException {
         if (tunnelLists == null || tunnelLists.isEmpty()) {
-            handleError("No Internal Tunnels Exist", session);
+            handleError("No Internal Tunnels Exist");
             return;
         }
         if (!tunnelMonitorEnabled) {
-            if (session != null) {
-                session.getConsole().println("Tunnel Monitoring is Off");
-            }
+            System.out.println("Tunnel Monitoring is Off");
         }
         String displayFormat = "%-16s  %-16s  %-16s  %-16s  %-16s  %-10s  %-10s";
         System.out.println(String.format(displayFormat, "Tunnel Name", "Source-DPN",
@@ -939,12 +937,7 @@ public class TepCommandHelper {
         }
     }
 
-    public void handleError(String errorMessage, CommandSession session) throws TepException {
-        if (session != null) {
-            session.getConsole().println(errorMessage);
-        } else {
-            throw new TepException(errorMessage);
-        }
-
+    public void handleError(String errorMessage) throws TepException {
+        throw new TepException(errorMessage);
     }
 }
