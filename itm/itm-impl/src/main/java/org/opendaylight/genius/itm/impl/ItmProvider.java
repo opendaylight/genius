@@ -229,10 +229,10 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @Override
-    public void showState(Collection<StateTunnelList> tunnels,CommandSession session) {
+    public void showState(Collection<StateTunnelList> tunnels) {
         if (tunnels != null) {
             try {
-                tepCommandHelper.showState(tunnels, tunnelMonitoringConfig.isTunnelMonitoringEnabled(), session);
+                tepCommandHelper.showState(tunnels, tunnelMonitoringConfig.isTunnelMonitoringEnabled());
             } catch (TepException e) {
                 LOG.error("show state failed", e);
             }
