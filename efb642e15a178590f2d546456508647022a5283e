@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c8a8c0b7_3a36428f",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 189,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-24T23:21:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2464cdaf_050e3bf3",
+      "range": {
+        "startLine": 189,
+        "startChar": 0,
+        "endLine": 189,
+        "endChar": 0
+      },
+      "revId": "efb642e15a178590f2d546456508647022a5283e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "45e9403d_e8820ef6",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 6
@@ -48,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "e97bf6e3_d6251bef",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 250,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-24T23:21:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "45e9403d_e8820ef6",
+      "range": {
+        "startLine": 250,
+        "startChar": 0,
+        "endLine": 250,
+        "endChar": 0
+      },
+      "revId": "efb642e15a178590f2d546456508647022a5283e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4e4b22cc_07021fb7",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 6
@@ -59,6 +107,30 @@
       "writtenOn": "2018-05-10T11:42:05Z",
       "side": 1,
       "message": "This explanation may not be entirely correct. Even BFD monitoring with point to point tunnel may not scale if all O(n**2). Hence this whole proposal is about need based monitoring to reduce the monitored set of tunnels to reduce it to a small subset of O(n**2) tunnels. LLDP \u0026 ARP might scale enough for the subset.",
+      "range": {
+        "startLine": 301,
+        "startChar": 0,
+        "endLine": 301,
+        "endChar": 0
+      },
+      "revId": "efb642e15a178590f2d546456508647022a5283e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fb6362e_30a5881c",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-24T23:21:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4e4b22cc_07021fb7",
       "range": {
         "startLine": 301,
         "startChar": 0,
