@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "72f69c73_82ca1302",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 730,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-05-24T07:49:43Z",
+      "side": 1,
+      "message": "Actually no, that’s wrong, System.out is the appropriate implementation.",
+      "parentUuid": "72bbbe65_93b7eb81",
+      "revId": "f10daaf6c23ddaa216d6df8a7f51f32ddf61b4d5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "87ee8f8d_699136b1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowState.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2018-05-24T07:21:29Z",
       "side": 1,
       "message": "Same again.",
+      "revId": "f10daaf6c23ddaa216d6df8a7f51f32ddf61b4d5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cdc642ec_3eb92eef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowState.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-05-24T07:49:43Z",
+      "side": 1,
+      "message": "And wrong again.",
+      "parentUuid": "87ee8f8d_699136b1",
       "revId": "f10daaf6c23ddaa216d6df8a7f51f32ddf61b4d5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
