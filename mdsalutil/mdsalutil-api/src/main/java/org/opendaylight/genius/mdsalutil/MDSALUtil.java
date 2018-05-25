@@ -204,7 +204,7 @@ public class MDSALUtil {
                 .setPayload(payload)
                 .setNode(
                         new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).build()))
                 .setIngress(getDefaultNodeConnRef(dpnId)).setEgress(getDefaultNodeConnRef(dpnId)).build();
     }
 
@@ -215,7 +215,7 @@ public class MDSALUtil {
                 .setPayload(payload)
                 .setNode(
                         new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).build()))
                 .setEgress(egress).build();
     }
 
@@ -226,7 +226,7 @@ public class MDSALUtil {
                 .setPayload(payload)
                 .setNode(
                         new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).build()))
                 .setIngress(ingress).setEgress(ingress).build();
     }
 
@@ -243,7 +243,7 @@ public class MDSALUtil {
                 .setPayload(payload)
                 .setNode(
                         new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                                .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).build()))
                 .setIngress(ncRef).setEgress(ncRef).build();
     }
 
@@ -370,7 +370,7 @@ public class MDSALUtil {
         InstanceIdentifierBuilder<NodeConnector> nodeConnectorInstanceIdentifierBuilder
             = nodeInstanceIdentifierBuilder.child(NodeConnector.class, nodeConnectorKey);
         InstanceIdentifier<NodeConnector> nodeConnectorInstanceIdentifier
-            = nodeConnectorInstanceIdentifierBuilder.toInstance();
+            = nodeConnectorInstanceIdentifierBuilder.build();
         NodeConnectorRef nodeConnectorRef = new NodeConnectorRef(nodeConnectorInstanceIdentifier);
         return nodeConnectorRef;
     }

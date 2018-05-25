@@ -373,7 +373,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     protected InstanceIdentifier<Node> nodeToInstanceId(Node node) {
-        return InstanceIdentifier.builder(Nodes.class).child(Node.class, node.getKey()).toInstance();
+        return InstanceIdentifier.builder(Nodes.class).child(Node.class, node.getKey()).build();
     }
 
     protected static NodeConnectorRef getNodeConnRef(final String nodeId, final String port) {
@@ -389,7 +389,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         NodeKey nodeKey = new NodeKey(new NodeId(nodeId));
         InstanceIdentifierBuilder<Node> child = builder.child(Node.class, nodeKey);
         InstanceIdentifierBuilder<NodeConnector> anotherChild = child.child(NodeConnector.class, connectorKey);
-        InstanceIdentifier<NodeConnector> path = anotherChild.toInstance();
+        InstanceIdentifier<NodeConnector> path = anotherChild.build();
         NodeConnectorRef nodeConnectorRef = new NodeConnectorRef(path);
         return nodeConnectorRef;
     }

@@ -284,7 +284,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         return packetProcessingService.transmitPacket(new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                        .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                        .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).build()))
                 .setIngress(nodeConnectorRef).setEgress(ref).build());
     }
 
@@ -293,7 +293,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         TransmitPacketInput transmitPacketInput = new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                        .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                        .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).build()))
                 .setIngress(nodeConnectorRef).setEgress(ref).setAction(actions).build();
         LOG.trace("PacketOut message framed for transmitting {}", transmitPacketInput);
         return packetProcessingService.transmitPacket(transmitPacketInput);
