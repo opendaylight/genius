@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "044b3635_0f1709c3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-25T11:27:41Z",
+      "side": 1,
+      "message": "I don\u0027t know if the UnknownHostException is (a) \"normal\" and \u0027will just return fals\u0027 or (b) should never happen under regular expected circumstances?   If it\u0027s (b) then this is probably OK.  But if it\u0027s (a) this is expected to happen a lot during normal runtime, then this pattern will be bad for performance to have and catch the exception a lot of times.  If that is the case, you should perhaps find a way to somehow do what you need to here without using InetAddress.getByName() at all.\n\nAlso, and perhaps even more importantly than the catch thing: InetAddress.getByName() also has a well known problem - it causes DNS services to be accessed.  That is often not what you really expected and wanted.  Are you aware of this backstory?  Google it.  See also e.g. https://github.com/google/guava/blob/master/guava/src/com/google/common/net/InetAddresses.java",
+      "parentUuid": "0409233c_26401b91",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "077d70ec_10096928",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
         "patchSetId": 6
@@ -136,6 +154,24 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "077d70ec_10096928",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6337a3ba_702f870f",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-25T11:27:41Z",
+      "side": 1,
+      "message": "only inlined, not static import or using Truth - but fine ;)",
+      "parentUuid": "2d1ebdbd_a194f165",
       "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
