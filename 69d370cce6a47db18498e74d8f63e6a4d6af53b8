@@ -16,6 +16,24 @@
       "revId": "69d370cce6a47db18498e74d8f63e6a4d6af53b8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9e1636c2_1906fcc2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/actions/ActionLearn.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 6648
+      },
+      "writtenOn": "2018-05-25T05:21:01Z",
+      "side": 1,
+      "message": "I had already replied that it won\u0027t break the build.\nThe old constructor is also retained.",
+      "parentUuid": "2079fa1d_f089d32a",
+      "revId": "69d370cce6a47db18498e74d8f63e6a4d6af53b8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
