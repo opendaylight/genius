@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d4b2decc_b9f155cd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-05-25T07:35:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d93aa629_df5f479c",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ef96f5b7_5b65bc04",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
         "patchSetId": 6
@@ -30,6 +48,24 @@
       "writtenOn": "2018-05-24T14:34:19Z",
       "side": 1,
       "message": "it\u0027s a little bit untypical, in general, to have an isXYZ() function to validate data which does a LOG.error - if you expect its \"normal\" that it could be false, then it\u0027s not an error?  If it shold never happen, then perhaps it should not return false but propagate the Exception to the caller?  But if it is normal and expected, then it\u0027s bad for performance to have and catch the exception a lot of times - better if value is valid without causing an exception.",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "20c78261_d3d3768f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-05-25T07:35:14Z",
+      "side": 1,
+      "message": "Thanks for your comment.\nI agree with your point. Have modified the logic and return either TRUE or FALSE based on the successful match or not.\n\nThanks,\nKarthikeyan.",
+      "parentUuid": "ef96f5b7_5b65bc04",
       "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "0409233c_26401b91",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-05-25T07:35:14Z",
+      "side": 1,
+      "message": "InetAddress.getByName() method is checked exception. So, It is mandatory to have try-catch block here. But i have changed ERROR to WARN and return FALSE to the caller. Since Caller is expecting the result on either TRUE or FALSE only.",
+      "parentUuid": "94a624aa_e4d13160",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "077d70ec_10096928",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
         "patchSetId": 6
@@ -64,6 +118,24 @@
       "writtenOn": "2018-05-24T14:34:19Z",
       "side": 1,
       "message": "entire test probably easier to read if you (a) simply inline the check into of assigning it to a temproary variable you don\u0027t really need in this case and (b) import static org.opendaylight.genius.mdsalutil.NWUtil.isIpAddressInRange.  With both of those ideas combined, this then just becomes:\n\n    assertTrue(isIpAddressInRange(buildIpAddress(\"1.1.1.1\"), buildIpPrefix(\"1.1.1.0/24\")));\n\nif you use Google Truth, then you can instead write it like this, which is even a little nicer:\n\n    assertThat(isIpAddressInRange(buildIpAddress(\"1.1.1.1\"), buildIpPrefix(\"1.1.1.0/24\"))).isTrue();",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d1ebdbd_a194f165",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-05-25T07:35:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "077d70ec_10096928",
       "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
