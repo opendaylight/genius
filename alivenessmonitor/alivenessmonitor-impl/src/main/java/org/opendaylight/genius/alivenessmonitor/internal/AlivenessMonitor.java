@@ -314,8 +314,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, objPayload.getClass());
             }
 
-            AlivenessProtocolHandler<Packet> livenessProtocolHandler = alivenessProtocolHandlerRegistry
-                    .getOpt(Packet.class);
+            @SuppressWarnings("unchecked")
+            AlivenessProtocolHandler<Packet> livenessProtocolHandler =
+                (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.getOpt(objPayload.getClass());
             if (livenessProtocolHandler == null) {
                 return;
             }
