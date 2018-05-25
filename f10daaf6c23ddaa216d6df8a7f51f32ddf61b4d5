@@ -37,6 +37,23 @@
     },
     {
       "key": {
+        "uuid": "8115e27d_235732c4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowState.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-25T07:53:31Z",
+      "side": 1,
+      "message": "don\u0027t we want to add a new cli bundle and migrate these over there?",
+      "revId": "f10daaf6c23ddaa216d6df8a7f51f32ddf61b4d5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "87ee8f8d_699136b1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowState.java",
         "patchSetId": 4
