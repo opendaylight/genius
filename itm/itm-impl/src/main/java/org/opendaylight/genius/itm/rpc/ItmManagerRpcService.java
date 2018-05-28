@@ -222,6 +222,15 @@ public class ItmManagerRpcService implements ItmRpcService {
         BigInteger destinationDpn = input.getDestinationDpid();
         Optional<InternalTunnel> optTunnel = Optional.absent();
 
+        if (interfaceManager.isItmDirectTunnelsEnabled()) {
+            DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getDpnTepInterface(sourceDpn, destinationDpn);
+            if (interfaceInfo != null) {
+                resultBld = RpcResultBuilder.success();
+                resultBld.withResult(new GetTunnelInterfaceNameOutputBuilder()
+                        .setInterfaceName(interfaceInfo.getTunnelName())).build();
+                return Futures.immediateFuture(resultBld.build());
+            }
+        }
         if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
             optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn,
                                                          TunnelTypeLogicalGroup.class, dataBroker);
@@ -244,7 +253,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         } else {
             resultBld = failed();
-        }
+       }
         return Futures.immediateFuture(resultBld.build());
     }
 
@@ -257,8 +266,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     .withError(RpcError.ErrorType.APPLICATION,
                     "tunnel name not set for GetEgressActionsForTunnel call").build());
         }
-
-        if (!dpnTepStateCache.isInternal(tunnelName) && !interfaceManager.isItmDirectTunnelsEnabled()) {
+        if (!dpnTepStateCache.isInternal(tunnelName) || !interfaceManager.isItmDirectTunnelsEnabled()) {
             // Re-direct the RPC to Interface Manager
             // From the rpc input and get the output and copy to output
             org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406
@@ -614,6 +622,17 @@ public class ItmManagerRpcService implements ItmRpcService {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
                     Optional<InternalTunnel> optTunnel = Optional.absent();
+                    if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                        DpnTepInterfaceInfo interfaceInfo =
+                                dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID());
+                        if (interfaceInfo != null) {
+                            resultBld = RpcResultBuilder.success();
+                            resultBld.withResult(new GetInternalOrExternalInterfaceNameOutputBuilder()
+                                    .setInterfaceName(interfaceInfo.getTunnelName())).build();
+                            return Futures.immediateFuture(resultBld.build());
+                        }
+                    }
+
                     if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
                         optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
                                                                      TunnelTypeLogicalGroup.class, dataBroker);
