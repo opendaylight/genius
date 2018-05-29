@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4e9679a0_5e55a163",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-05-29T14:26:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "27c2ff58_6b6088a0",
+      "revId": "b8eb2a5817e9e6754444de0061c72f1ebb876486",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3add3454_80ad6215",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 14
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "70bf4026_49769b8c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-05-29T14:26:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3add3454_80ad6215",
+      "revId": "b8eb2a5817e9e6754444de0061c72f1ebb876486",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "196b2b1e_166888b9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
         "patchSetId": 14
@@ -47,6 +83,24 @@
       "writtenOn": "2018-05-29T06:03:21Z",
       "side": 1,
       "message": "include the condition to also check registeredEventSize to be Zero in the above mentioned scenario",
+      "revId": "b8eb2a5817e9e6754444de0061c72f1ebb876486",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80114982_b59c8b28",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-05-29T14:26:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "196b2b1e_166888b9",
       "revId": "b8eb2a5817e9e6754444de0061c72f1ebb876486",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
