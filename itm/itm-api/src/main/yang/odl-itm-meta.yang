@@ -22,7 +22,6 @@ module odl-itm-meta {
             leaf dpid {
                 type uint64;
             }
-
             leaf ovs-bridge-reference {
                 type southbound:ovsdb-bridge-ref;
                 description "This is the reference to an ovs bridge";
@@ -45,7 +44,6 @@ module odl-itm-meta {
             leaf dpid {
                 type uint64;
             }
-
             leaf ovs-bridge-reference {
                 type southbound:ovsdb-bridge-ref;
                 description "This is the reference to an ovs bridge";
