@@ -24,9 +24,10 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -176,7 +177,7 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
     }
 
     private static final class DataTreeEventCallbackChangeListener<T extends DataObject>
-            implements DataTreeChangeListener<T>, Runnable {
+            implements ClusteredDataTreeChangeListener<T>, Runnable {
 
         private final Operation operation;
         private final BiFunction<T, T, NextAction> callback;
