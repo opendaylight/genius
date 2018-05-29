@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e328b858_d87f34cf",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-29T00:41:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a8a28001_7f551887",
+      "revId": "2fa10ddda3b1d717993a015daa753218bc46f00b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "425bf25a_2baa1401",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 13
@@ -30,6 +48,24 @@
       "writtenOn": "2018-05-28T16:45:00Z",
       "side": 1,
       "message": "can the tunnel interface life cycle be transparently maintained by ITM,and should be visible to user only as BFD configuration. so, if vtep gets deleted, and corresponding tunnel i/f has to be deleted, canit be auto-created when the vtep comes back.",
+      "revId": "2fa10ddda3b1d717993a015daa753218bc46f00b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "027af1a6_ed66dc72",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-29T00:41:21Z",
+      "side": 1,
+      "message": "I had not accounted for this particular usecase , you were mentioning. i think this needs to be transparent to the user. Will add that in the subsequent patchset.",
+      "parentUuid": "425bf25a_2baa1401",
       "revId": "2fa10ddda3b1d717993a015daa753218bc46f00b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "36011c39_539ce2fd",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-29T00:41:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dee7bbf3_069e1fcc",
+      "revId": "2fa10ddda3b1d717993a015daa753218bc46f00b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4d7e0e39_6a2f3a08",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 13
@@ -64,6 +118,24 @@
       "writtenOn": "2018-05-28T16:45:00Z",
       "side": 1,
       "message": "default should continue to be pt-pt tunnels across upgrade. user has to explicitly switch to of tunnels to enable.",
+      "revId": "2fa10ddda3b1d717993a015daa753218bc46f00b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83e829f8_bad3e9b9",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-29T00:41:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4d7e0e39_6a2f3a08",
       "revId": "2fa10ddda3b1d717993a015daa753218bc46f00b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
