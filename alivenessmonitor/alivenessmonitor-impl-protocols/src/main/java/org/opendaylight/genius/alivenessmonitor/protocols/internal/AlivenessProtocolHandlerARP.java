@@ -16,7 +16,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,7 +73,6 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     }
 
     @Override
-    @SuppressFBWarnings(value = "NP_NULL_PARAM_DEREF", justification = "Unrecognised NullableDecl")
     public String handlePacketIn(ARP packet, PacketReceived packetReceived) {
         short tableId = packetReceived.getTableId().getValue();
         int arpType = packet.getOpCode();
