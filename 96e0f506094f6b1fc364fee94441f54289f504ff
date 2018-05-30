@@ -16,6 +16,24 @@
       "revId": "96e0f506094f6b1fc364fee94441f54289f504ff",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "91bbb683_f400bc68",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/cache/ExternalTunnelListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-05-30T21:26:31Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c8ccf854_2ae1690b",
+      "revId": "96e0f506094f6b1fc364fee94441f54289f504ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
