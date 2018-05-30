@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97246df3_896550a5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 852,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-30T11:02:29Z",
+      "side": 1,
+      "message": "I don\u0027t see any difference between this method and the above one.. why do we need two?",
+      "revId": "7a3959dfcebc84bf723f2d461f1a7eecbc039e79",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
