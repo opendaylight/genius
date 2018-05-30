@@ -16,6 +16,24 @@
       "revId": "1861ec545db87272f8ee66386718542ecb14662a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5f6d5e7_daa8af3b",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-05-30T21:22:16Z",
+      "side": 1,
+      "message": "Good idea, if fact I was thinking in contributing something like the method suggested in [1] to infrautils, but finally I realized that Guava already have it implemented [2].\n\n[1] https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ExecutorService.html\n\n[2] https://google.github.io/guava/releases/17.0/api/docs/src-html/com/google/common/util/concurrent/MoreExecutors.html#line.873",
+      "parentUuid": "db649c1b_6206d04b",
+      "revId": "1861ec545db87272f8ee66386718542ecb14662a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
