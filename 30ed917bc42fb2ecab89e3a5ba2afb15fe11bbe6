@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e3d2ffb4_6ca52409",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-30T09:35:27Z",
+      "side": 1,
+      "message": "nit: I now normally put \"JIRA: GENIUS-141\" at the bottom:\n\n\n  DataTreeEventCallbackRegistrar using ClusteredListener\n\n  If DataTreeEventCallbackRegistrar \n  (...)\n  does not seem to be a problem, as the callback will be \n  available only on one node.\n\n  JIRA: GENIUS-141\n  Change-Id: Idcb4b6a3ee709aea14c5fe09bc416100ddaa5519\n  Signed-off-by: Faseela K \u003cfaseela.k@ericsson.com\u003e",
+      "revId": "30ed917bc42fb2ecab89e3a5ba2afb15fe11bbe6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
