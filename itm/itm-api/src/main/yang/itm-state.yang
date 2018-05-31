@@ -245,6 +245,10 @@ module itm-state {
                 mandatory true;
             }
 
+            leaf ip-address {
+                type inet:ip-address;
+            }
+
             leaf tunnel-type {
                 type identityref {
                     base odlif:tunnel-type-base;
@@ -263,6 +267,12 @@ module itm-state {
                 leaf destination-dpn-id {
                     type uint64;
                     mandatory true;
+                }
+
+                leaf option-of-tunnel {
+                    description "Use flow based tunnels for remote-ip";
+                    type boolean;
+                    default false;
                 }
 
                 leaf tunnel-name {
@@ -289,6 +299,24 @@ module itm-state {
                     mandatory true;
                     description "represents whether this is an internal or external tunnel.";
                 }
+            }
+        }
+    }
+
+    container monitoring-ref-count {
+        description "The container for maintaing the reference count for monitoring requests
+                      between a src and dst DPN pair";
+        config "false"
+        list monitored-tunnels {
+            key source-dpn destination-dpn;
+            leaf source-dpn {
+                type uint64;
+            }
+            leaf destination-dpn {
+                type uint64;
+            }
+            leaf reference-count {
+                type uint16;
             }
         }
     }

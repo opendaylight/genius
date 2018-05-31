@@ -86,4 +86,23 @@ module odl-itm-meta {
             }
         }
    }
+
+   container interface-child-info {
+      description "The container of all child-interfaces for an interface.";
+
+      list interface-parent-entry {
+
+          key parent-interface;
+          leaf parent-interface {
+              type string;
+          }
+
+          list interface-child-entry {
+              key child-interface;
+              leaf child-interface {
+                  type string;
+              }
+          }
+      }
+   }
 }
