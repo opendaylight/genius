@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c949b09f_d8cbd71c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-31T07:57:07Z",
+      "side": 1,
+      "message": "Tarun, you need to distinguish a bridge removal from a DPN disconnect here and then call the tep removal only in case of bridge removal.\n   This can be done by checking if the parent node is present.",
+      "revId": "f06b0b94a80c8ec0fc50696a65f43306e54f1695",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
