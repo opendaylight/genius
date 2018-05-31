@@ -50,7 +50,7 @@ public final class InterfaceStateHelper {
                 .setOperStatus(OperStatus.Up)
                 .setLowerLayerIf(Lists.newArrayList(nodeConnectorId.getValue()))
                 .setPhysAddress(new PhysAddress(interfaceInfo.getMacAddress()))
-                .setKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
+                .withKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
                 .setStatistics(new StatisticsBuilder()
                         .setDiscontinuityTime(new DateAndTime(
                                 DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(ZonedDateTime.now())))

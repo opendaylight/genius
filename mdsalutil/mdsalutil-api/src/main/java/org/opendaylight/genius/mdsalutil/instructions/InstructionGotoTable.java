@@ -34,7 +34,7 @@ public class InstructionGotoTable extends AbstractInstructionInfoImpl {
                         )
                         .build()
                 )
-                .setKey(new InstructionKey(instructionKey))
+                .withKey(new InstructionKey(instructionKey))
                 .build();
     }
 

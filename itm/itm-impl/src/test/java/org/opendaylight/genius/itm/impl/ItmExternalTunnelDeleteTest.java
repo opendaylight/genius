@@ -164,11 +164,11 @@ public class ItmExternalTunnelDeleteTest {
         gtwyIp1 = IpAddressBuilder.getDefaultInstance(gwyIp1);
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
         deviceVteps1 = new DeviceVtepsBuilder().setIpAddress(ipAddress1)
-                .setKey(new DeviceVtepsKey(ipAddress1, "hwvtep:1"))
+                .withKey(new DeviceVtepsKey(ipAddress1, "hwvtep:1"))
                 .setNodeId("hwvtep://192.168.101.30:6640/physicalswitch/s3")
                 .setTopologyId("hwvtep:1").build();
         deviceVteps2 = new DeviceVtepsBuilder().setIpAddress(ipAddress2)
-                .setKey(new DeviceVtepsKey(ipAddress2, "hwvtep:1"))
+                .withKey(new DeviceVtepsKey(ipAddress2, "hwvtep:1"))
                 .setNodeId("hwvtep://192.168.101.30:6640/physicalswitch/s3")
                 .setTopologyId("hwvtep:1").build();
         deviceVtepsList.add(deviceVteps1);
@@ -182,7 +182,7 @@ public class ItmExternalTunnelDeleteTest {
         hwVtep1.setTopoId("hwvtep:1");
         hwVtep1.setNodeId("hwvtep://192.168.101.30:6640/physicalswitch/s3");
         hwVtep1.setIpPrefix(ipPrefixTest);
-        vteps = new VtepsBuilder().setDpnId(dpId2).setIpAddress(ipAddress1).setPortname(portName1).setKey(new
+        vteps = new VtepsBuilder().setDpnId(dpId2).setIpAddress(ipAddress1).setPortname(portName1).withKey(new
                 VtepsKey(dpId2,portName1)).build();
         vtepsList.add(vteps);
         idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
@@ -233,18 +233,18 @@ public class ItmExternalTunnelDeleteTest {
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
                 .setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId2).setUp(true).setKey(new DPNTEPsInfoKey(dpId2))
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId2).setUp(true).withKey(new DPNTEPsInfoKey(dpId2))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         dpnTepsList.add(dpntePsInfoVxlan);
         cfgdHwVtepsList.add(hwVtep1);
-        subnets = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
+        subnets = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).withKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).setVteps(vtepsList).build();
         subnetsList.add(subnets);
-        transportZone = new TransportZoneBuilder().setTunnelType(tunnelType1).setZoneName(transportZone1).setKey(new
+        transportZone = new TransportZoneBuilder().setTunnelType(tunnelType1).setZoneName(transportZone1).withKey(new
                 TransportZoneKey(transportZone1)).setSubnets(subnetsList).build();
         externalTunnel = new ExternalTunnelBuilder().setTunnelInterfaceName(parentInterfaceName)
                 .setTransportType(tunnelType1).setDestinationDevice("hwvtep:1").setSourceDevice(dpId2.toString())
-                .setKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNodeId() , tunnelType1)).build();
+                .withKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNodeId() , tunnelType1)).build();
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(parentInterfaceName,
             String.valueOf(tunnelEndPointsVxlan.getIpAddress().getValue()),
             String.valueOf(ipAddress1.getValue()), tunnelType1.getName());

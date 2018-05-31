@@ -137,7 +137,7 @@ public final class OvsInterfaceStateAddHelper {
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         interfaceManagerCommonUtils.addTunnelIngressFlow(
-                interfaceInfo.getAugmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
+                interfaceInfo.augmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
         ListenableFuture<Void> future =
                 FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceInfo,
                         Long.toString(portNo), interfaceName, ifIndex);
@@ -145,7 +145,7 @@ public final class OvsInterfaceStateAddHelper {
         Futures.addCallback(future, new FutureCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void result) {
-                alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.getAugmentation(IfTunnel.class), interfaceName);
+                alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.augmentation(IfTunnel.class), interfaceName);
             }
 
             @Override
@@ -160,7 +160,7 @@ public final class OvsInterfaceStateAddHelper {
                 .ietf.interfaces.rev140508.interfaces.Interface iface) {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
-            ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+            ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
             if (!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier())) {
                 LOG.warn(
                         "Received tunnel state add notification for tunnel {} from dpn {} where as "

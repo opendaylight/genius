@@ -46,7 +46,7 @@ public class ActionSetUdpDestinationPort extends ActionInfo {
                         .setUdpDestinationPort(new PortNumber(port)).build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

@@ -339,7 +339,7 @@ public final class ItmInternalTunnelAddWorker {
         final DpnsTepsBuilder dpnsTepsBuilder = new DpnsTepsBuilder();
         final List<DpnsTeps> dpnTeps = new ArrayList<>();
         final List<RemoteDpns> remoteDpns = new ArrayList<>();
-        dpnsTepsBuilder.setKey(new DpnsTepsKey(srcDpnId));
+        dpnsTepsBuilder.withKey(new DpnsTepsKey(srcDpnId));
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
 
@@ -347,7 +347,7 @@ public final class ItmInternalTunnelAddWorker {
         Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
         dpnsTepsBuilder.setGroupId(groupId.longValue());
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
-        remoteDpn.setKey(new RemoteDpnsKey(dstDpnId));
+        remoteDpn.withKey(new RemoteDpnsKey(dstDpnId));
         remoteDpn.setDestinationDpnId(dstDpnId);
         remoteDpn.setTunnelName(trunkInterfaceName);
         remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
@@ -370,7 +370,7 @@ public final class ItmInternalTunnelAddWorker {
     private List<ListenableFuture<Void>> addTunnelConfiguration(Interface iface) throws ReadFailedException {
         // ITM Direct Tunnels This transaction is not being used -- CHECK
         final WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
         if (parentRefs == null) {
             LOG.warn("ParentRefs for interface: {} Not Found. Creation of Tunnel OF-Port not supported"
                     + " when dpid not provided.", iface.getName());
@@ -402,7 +402,7 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
-        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }

@@ -61,7 +61,7 @@ public class OvsVlanMemberConfigUpdateHelper {
         LOG.info("updating interface configuration for vlan memeber {} with parent-interface {}", interfaceNew
             .getName(), parentRefsNew.getParentInterface());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        ParentRefs parentRefsOld = interfaceOld.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefsOld = interfaceOld.augmentation(ParentRefs.class);
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(
                 parentRefsOld.getParentInterface());
@@ -70,12 +70,12 @@ public class OvsVlanMemberConfigUpdateHelper {
                 .getInterfaceChildEntryFromConfigDS(interfaceParentEntryKey, interfaceChildEntryKey);
 
         if (interfaceChildEntry == null) {
-            futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
+            futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(interfaceNew.augmentation(ParentRefs.class),
                     interfaceNew));
             return futures;
         }
 
-        IfL2vlan ifL2vlanOld = interfaceOld.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlanOld = interfaceOld.augmentation(IfL2vlan.class);
         if (ifL2vlanOld == null || ifL2vlanNew.getL2vlanMode() != ifL2vlanOld.getL2vlanMode()) {
             LOG.error("Configuration Error. Vlan Mode Change of Vlan Trunk Member {} as new trunk member: {} is "
                     + "not allowed.", interfaceOld, interfaceNew);
@@ -106,7 +106,7 @@ public class OvsVlanMemberConfigUpdateHelper {
                         ifStateId = IfmUtil.buildStateInterfaceId(interfaceNew.getName());
                 InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
                 ifaceBuilder.setOperStatus(operStatus);
-                ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
+                ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
 
                 tx.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
             }));

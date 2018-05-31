@@ -54,7 +54,7 @@ public class ActionSetFieldPbbIsid extends ActionInfo {
                                     .build())
                             .build())
                     .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

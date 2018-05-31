@@ -53,7 +53,7 @@ public final class HwVTEPInterfaceConfigAddHelper {
             InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId,
                     tx, ifTunnel);
             if (globalNodeId != null) {
-                SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.getAugmentation(IfTunnel.class), tx);
+                SouthboundUtils.addStateEntry(interfaceNew, interfaceNew.augmentation(IfTunnel.class), tx);
             }
         }));
         return futures;
@@ -94,7 +94,7 @@ public final class HwVTEPInterfaceConfigAddHelper {
             IpAddress destIPAddress) {
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         HwvtepPhysicalLocatorAugmentationBuilder tpAugmentationBuilder = new HwvtepPhysicalLocatorAugmentationBuilder();
-        tpBuilder.setKey(terminationPointKey);
+        tpBuilder.withKey(terminationPointKey);
         tpBuilder.setTpId(terminationPointKey.getTpId());
         tpAugmentationBuilder.setEncapsulationType(EncapsulationTypeVxlanOverIpv4.class);
         SouthboundUtils.setDstIp(tpAugmentationBuilder, destIPAddress);

@@ -79,12 +79,12 @@ public final class OvsInterfaceConfigRemoveHelper {
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
+            IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
             if (ifTunnel != null) {
                 removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, tx);
             } else {
                 removeVlanConfiguration(parentRefs, interfaceOld.getName(),
-                        interfaceOld.getAugmentation(IfL2vlan.class), tx, futures);
+                        interfaceOld.augmentation(IfL2vlan.class), tx, futures);
             }
         }));
         return futures;

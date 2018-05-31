@@ -151,7 +151,7 @@ public final class FlowBasedServicesUtils {
         List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInPort(dpId, portNo));
         int vlanId = 0;
-        IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
+        IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         if (l2vlan != null) {
             vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
         }
@@ -184,12 +184,12 @@ public final class FlowBasedServicesUtils {
 
     public static void installInterfaceIngressFlow(BigInteger dpId, Interface iface, BoundServices boundServiceNew,
             WriteTransaction writeTransaction, List<MatchInfo> matches, int lportTag, short tableId) {
-        List<Instruction> instructions = boundServiceNew.getAugmentation(StypeOpenflow.class).getInstruction();
+        List<Instruction> instructions = boundServiceNew.augmentation(StypeOpenflow.class).getInstruction();
 
         int serviceInstructionsSize = instructions != null ? instructions.size() : 0;
         List<Instruction> instructionSet = new ArrayList<>();
         int vlanId = 0;
-        IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
+        IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         if (l2vlan != null && l2vlan.getVlanId() != null) {
             vlanId = l2vlan.getVlanId().getValue();
         }
@@ -231,7 +231,7 @@ public final class FlowBasedServicesUtils {
         String serviceRef = boundServiceNew.getServiceName();
         String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(),
                 boundServiceNew.getServicePriority());
-        StypeOpenflow stypeOpenflow = boundServiceNew.getAugmentation(StypeOpenflow.class);
+        StypeOpenflow stypeOpenflow = boundServiceNew.augmentation(StypeOpenflow.class);
         Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionSet);
         installFlow(dpId, ingressFlow, writeTransaction);
@@ -241,7 +241,7 @@ public final class FlowBasedServicesUtils {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
 
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
@@ -249,7 +249,7 @@ public final class FlowBasedServicesUtils {
 
     private static Node buildInventoryDpnNode(BigInteger dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
-        return new NodeBuilder().setId(nodeId).setKey(new NodeKey(nodeId)).build();
+        return new NodeBuilder().setId(nodeId).withKey(new NodeKey(nodeId)).build();
     }
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
@@ -260,7 +260,7 @@ public final class FlowBasedServicesUtils {
 
         // Get the metadata and mask from the service's write metadata
         // instruction
-        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
+        StypeOpenflow stypeOpenFlow = boundService.augmentation(StypeOpenflow.class);
         List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
         int instructionSize = serviceInstructions != null ? serviceInstructions.size() : 0;
         BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
@@ -320,7 +320,7 @@ public final class FlowBasedServicesUtils {
             WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
 
         // Get the metadata and mask from the service's write metadata instruction
-        StypeOpenflow stypeOpenflow = boundService.getAugmentation(StypeOpenflow.class);
+        StypeOpenflow stypeOpenflow = boundService.augmentation(StypeOpenflow.class);
         if (stypeOpenflow == null) {
             LOG.warn("Could not install egress dispatcher flow, missing service openflow configuration");
             return;
@@ -403,7 +403,7 @@ public final class FlowBasedServicesUtils {
         String serviceRef = boundService.getServiceName();
         // This must be higher priority than the egress flow
         int splitHorizonFlowPriority = boundService.getServicePriority() + 1;
-        StypeOpenflow stypeOpenFlow = boundService.getAugmentation(StypeOpenflow.class);
+        StypeOpenflow stypeOpenFlow = boundService.augmentation(StypeOpenflow.class);
         Flow egressSplitHorizonFlow = MDSALUtil.buildFlow(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 splitHorizonFlowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), shMatches, shInstructions);
 
@@ -414,7 +414,7 @@ public final class FlowBasedServicesUtils {
             BigInteger cookie, List<Instruction> instructions) {
         StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority)
                 .setInstruction(instructions);
-        return new BoundServicesBuilder().setKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
+        return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
                 .setServicePriority(servicePriority).setServiceType(ServiceTypeFlowBased.class)
                 .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
     }
@@ -477,7 +477,7 @@ public final class FlowBasedServicesUtils {
             FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
             Node nodeDpn = buildInventoryDpnNode(dpId);
             InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                    .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                    .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                     .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class,
                             flowKey)
                     .build();
@@ -494,7 +494,7 @@ public final class FlowBasedServicesUtils {
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, flowKey)
                 .build();
 
@@ -505,14 +505,14 @@ public final class FlowBasedServicesUtils {
             WriteTransaction writeTransaction, short currentServiceIndex) {
         LOG.debug("Removing LPort Dispatcher Flows {}, {}", dpId, iface);
 
-        boundServicesOld.getAugmentation(StypeOpenflow.class);
+        boundServicesOld.augmentation(StypeOpenflow.class);
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, iface,
                 currentServiceIndex);
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
@@ -534,7 +534,7 @@ public final class FlowBasedServicesUtils {
         FlowKey flowKey = new FlowKey(new FlowId(flowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
@@ -550,7 +550,7 @@ public final class FlowBasedServicesUtils {
         FlowKey shFlowKey = new FlowKey(new FlowId(shFlowRef));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> shFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE))
                 .child(Flow.class, shFlowKey).build();
 
@@ -627,7 +627,7 @@ public final class FlowBasedServicesUtils {
         int vlanId = 0;
         boolean isVlanTransparent = false;
 
-        IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
+        IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         if (l2vlan != null) {
             vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
             isVlanTransparent = l2vlan.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
@@ -636,7 +636,7 @@ public final class FlowBasedServicesUtils {
 
         List<Instruction> instructions = new ArrayList<>();
 
-        final SplitHorizon splitHorizon = iface.getAugmentation(SplitHorizon.class);
+        final SplitHorizon splitHorizon = iface.augmentation(SplitHorizon.class);
         boolean overrideSplitHorizonProtection = splitHorizon != null
                 && splitHorizon.isOverrideSplitHorizonProtection();
         int actionKey = -1;
@@ -676,7 +676,7 @@ public final class FlowBasedServicesUtils {
         BoundServicesStateKey boundServicesStateKey = new BoundServicesStateKey(interfaceState.getName(), serviceMode);
         return new BoundServicesStateBuilder().setDpid(dpId).setIfIndex(interfaceState.getIfIndex())
             .setInterfaceName(interfaceState.getName()).setInterfaceType(interfaceState.getType()).setPortNo(portNo)
-            .setServiceMode(serviceMode).setKey(boundServicesStateKey).build();
+            .setServiceMode(serviceMode).withKey(boundServicesStateKey).build();
     }
 
     public static BoundServicesState getBoundServicesState(ReadTransaction tx,
@@ -716,7 +716,7 @@ public final class FlowBasedServicesUtils {
         if (iface == null) {
             return false;
         }
-        IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
+        IfExternal ifExternal = iface.augmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
     }
 }

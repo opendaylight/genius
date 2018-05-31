@@ -59,7 +59,7 @@ public final class ActionConverterUtil {
     private static final Logger LOG = LoggerFactory.getLogger(ActionConverterUtil.class);
     private static final Map<Class<? extends Action>, Class<?>> SERVICE_ACTION_TO_OF_ACTION_MAP = new HashMap<>();
     private static final String BUILD_METHOD = "build";
-    private static final String AUGMENTATION_METHOD = "getAugmentation";
+    private static final String AUGMENTATION_METHOD = "augmentation";
     private static final String GET_IMPL_METHOD = "getImplementedInterface";
 
     static {
@@ -132,7 +132,7 @@ public final class ActionConverterUtil {
                         new org.opendaylight.yang.gen.v1.urn.opendaylight
                                 .action.types.rev131112.action.list.ActionBuilder()
                                 .setAction(convertServiceActionToFlowAction(inAction.getAction()))
-                                .setKey(new ActionKey(inAction.getKey().getOrder() + keyOffset))
+                                .withKey(new ActionKey(inAction.key().getOrder() + keyOffset))
                                 .build());
             }
         }

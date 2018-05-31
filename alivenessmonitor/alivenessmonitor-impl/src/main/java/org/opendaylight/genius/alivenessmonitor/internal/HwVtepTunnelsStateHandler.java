@@ -246,7 +246,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
             }
         }
         setBfdParamForEnable(tunnelBfdParams, isEnable);
-        Tunnels tunnelWithBfdReset = new TunnelsBuilder().setKey(tunnelKey).setBfdParams(tunnelBfdParams).build();
+        Tunnels tunnelWithBfdReset = new TunnelsBuilder().withKey(tunnelKey).setBfdParams(tunnelBfdParams).build();
         MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
                 getTunnelIdentifier(topologyId, nodeId, tunnelKey), tunnelWithBfdReset);
     }
@@ -283,10 +283,10 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         fillBfdLocalConfigs(bfdLocalConfigs, tunnelLocalMacAddress, tunnelLocalIpAddress);
         List<BfdRemoteConfigs> bfdRemoteConfigs = new ArrayList<>();
         fillBfdRemoteConfigs(bfdRemoteConfigs, tunnelRemoteMacAddress);
-        // tunnelKey is initialized to null and passed to setKey which FindBugs flags as a
+        // tunnelKey is initialized to null and passed to withKey which FindBugs flags as a
         // "Load of known null value" violation. Not sure sure what the intent is...
         //TunnelsKey tunnelKey = null;
-        Tunnels tunnelWithBfd = new TunnelsBuilder().setKey(/*tunnelKey*/ null).setBfdParams(bfdParams)
+        Tunnels tunnelWithBfd = new TunnelsBuilder().withKey(/*tunnelKey*/ null).setBfdParams(bfdParams)
                 .setBfdLocalConfigs(bfdLocalConfigs).setBfdRemoteConfigs(bfdRemoteConfigs).build();
         // TODO: get the following parameters from the interface and use it to
         // update hwvtep datastore
@@ -309,7 +309,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
 
     private BfdRemoteConfigs getBfdRemoteConfig(String key, String value) {
         return new BfdRemoteConfigsBuilder().setBfdRemoteConfigKey(key).setBfdRemoteConfigValue(value)
-                .setKey(new BfdRemoteConfigsKey(key)).build();
+                .withKey(new BfdRemoteConfigsKey(key)).build();
     }
 
     private void fillBfdLocalConfigs(List<BfdLocalConfigs> bfdLocalConfigs, String tunnelLocalMacAddress,
@@ -319,7 +319,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     private BfdLocalConfigs getBfdLocalConfig(String key, String value) {
-        return new BfdLocalConfigsBuilder().setBfdLocalConfigKey(key).setKey(new BfdLocalConfigsKey(key))
+        return new BfdLocalConfigsBuilder().setBfdLocalConfigKey(key).withKey(new BfdLocalConfigsKey(key))
                 .setBfdLocalConfigValue(value).build();
     }
 
@@ -339,7 +339,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     private BfdParams getBfdParams(String key, String value) {
-        return new BfdParamsBuilder().setBfdParamKey(key).setKey(new BfdParamsKey(key)).setBfdParamValue(value).build();
+        return new BfdParamsBuilder().setBfdParamKey(key).withKey(new BfdParamsKey(key)).setBfdParamValue(value).build();
     }
 
     @Override

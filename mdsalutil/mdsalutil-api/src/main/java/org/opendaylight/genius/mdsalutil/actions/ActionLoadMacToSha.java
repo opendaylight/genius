@@ -58,7 +58,7 @@ public class ActionLoadMacToSha extends ActionInfo {
                     .setValue(BigInteger.valueOf(NWUtil.macToLong(address)))
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

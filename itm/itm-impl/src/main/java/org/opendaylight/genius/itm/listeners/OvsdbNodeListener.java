@@ -65,7 +65,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
         // check for OVS bridge node
         OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation = ovsdbNodeNew
-                .getAugmentation(OvsdbBridgeAugmentation.class);
+                .augmentation(OvsdbBridgeAugmentation.class);
 
         if (ovsdbNewBridgeAugmentation != null) {
             processBridgeUpdate(ovsdbNewBridgeAugmentation, true);
@@ -109,11 +109,11 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
         // get OVSDB TEP info from old ovsdb node
         OvsdbTepInfo newTepInfoObj = getOvsdbTepInfo(
-                updatedOvsdbNode.getAugmentation(OvsdbNodeAugmentation.class));
+                updatedOvsdbNode.augmentation(OvsdbNodeAugmentation.class));
 
         // get OVSDB TEP info from new ovsdb node
         OvsdbTepInfo oldTepInfoObj = getOvsdbTepInfo(
-                originalOvsdbNode.getAugmentation(OvsdbNodeAugmentation.class));
+                originalOvsdbNode.augmentation(OvsdbNodeAugmentation.class));
 
         if (oldTepInfoObj == null && newTepInfoObj == null) {
             LOG.trace("Tep Info is not received in old and new Ovsdb Nodes.");
@@ -268,14 +268,14 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         String newDpId = null;
 
         OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation =
-                ovsdbNodeNew.getAugmentation(OvsdbBridgeAugmentation.class);
+                ovsdbNodeNew.augmentation(OvsdbBridgeAugmentation.class);
         if (ovsdbNewBridgeAugmentation != null) {
             // Read DPID from OVSDBBridgeAugmentation
             newDpId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
         }
 
         OvsdbBridgeAugmentation ovsdbOldBridgeAugmentation =
-                ovsdbNodeOld.getAugmentation(OvsdbBridgeAugmentation.class);
+                ovsdbNodeOld.augmentation(OvsdbBridgeAugmentation.class);
         if (ovsdbOldBridgeAugmentation != null) {
             oldBridgeName = ovsdbNewBridgeAugmentation.getBridgeName().getValue();
             // Read DPID from OVSDBBridgeAugmentation
@@ -336,7 +336,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
     private void processBridgeUpdate(Node ovsdbNodeNew, boolean isBridgeAdd) {
         OvsdbBridgeAugmentation ovsdbNewBridgeAugmentation =
-                ovsdbNodeNew.getAugmentation(OvsdbBridgeAugmentation.class);
+                ovsdbNodeNew.augmentation(OvsdbBridgeAugmentation.class);
         if (ovsdbNewBridgeAugmentation != null) {
             processBridgeUpdate(ovsdbNewBridgeAugmentation, isBridgeAdd);
         }
@@ -361,7 +361,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             Node ovsdbNodeFromBridge = ItmUtils.getOvsdbNode(ovsdbNewBridgeAugmentation, dataBroker);
             // check for OVSDB node
             if (ovsdbNodeFromBridge != null) {
-                ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.getAugmentation(OvsdbNodeAugmentation.class);
+                ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.augmentation(OvsdbNodeAugmentation.class);
             } else {
                 LOG.error("processBridgeUpdate: Ovsdb Node could not be fetched from Oper DS for bridge {}.",
                         bridgeName);

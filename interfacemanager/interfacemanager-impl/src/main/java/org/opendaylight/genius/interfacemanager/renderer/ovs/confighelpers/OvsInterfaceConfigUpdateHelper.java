@@ -71,8 +71,8 @@ public class OvsInterfaceConfigUpdateHelper {
             LOG.info("port attributes modified, requires a delete and recreate of {} configuration", interfaceNew
                     .getName());
             futures.addAll(ovsInterfaceConfigRemoveHelper.removeConfiguration(interfaceOld,
-                    interfaceOld.getAugmentation(ParentRefs.class)));
-            futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
+                    interfaceOld.augmentation(ParentRefs.class)));
+            futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.augmentation(ParentRefs.class),
                     interfaceNew));
             return futures;
         }
@@ -83,7 +83,7 @@ public class OvsInterfaceConfigUpdateHelper {
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceNew.getName());
         if (ifState == null) {
-            futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.getAugmentation(ParentRefs.class),
+            futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.augmentation(ParentRefs.class),
                     interfaceNew));
             return futures;
         }
@@ -100,20 +100,20 @@ public class OvsInterfaceConfigUpdateHelper {
     }
 
     private static boolean portAttributesModified(Interface interfaceOld, Interface interfaceNew) {
-        ParentRefs parentRefsOld = interfaceOld.getAugmentation(ParentRefs.class);
-        ParentRefs parentRefsNew = interfaceNew.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefsOld = interfaceOld.augmentation(ParentRefs.class);
+        ParentRefs parentRefsNew = interfaceNew.augmentation(ParentRefs.class);
         if (checkAugmentations(parentRefsOld, parentRefsNew)) {
             return true;
         }
 
-        IfL2vlan ifL2vlanOld = interfaceOld.getAugmentation(IfL2vlan.class);
-        IfL2vlan ifL2vlanNew = interfaceNew.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlanOld = interfaceOld.augmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlanNew = interfaceNew.augmentation(IfL2vlan.class);
         if (checkAugmentations(ifL2vlanOld, ifL2vlanNew)) {
             return true;
         }
 
-        IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
-        IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnelOld = interfaceOld.augmentation(IfTunnel.class);
+        IfTunnel ifTunnelNew = interfaceNew.augmentation(IfTunnel.class);
         if (checkAugmentations(ifTunnelOld, ifTunnelNew)) {
             if (!ifTunnelNew.getTunnelDestination().equals(ifTunnelOld.getTunnelDestination())
                     || !ifTunnelNew.getTunnelSource().equals(ifTunnelOld.getTunnelSource())
@@ -127,8 +127,8 @@ public class OvsInterfaceConfigUpdateHelper {
     }
 
     private static boolean tunnelMonitoringAttributesModified(Interface interfaceOld, Interface interfaceNew) {
-        IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
-        IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnelOld = interfaceOld.augmentation(IfTunnel.class);
+        IfTunnel ifTunnelNew = interfaceNew.augmentation(IfTunnel.class);
         return checkAugmentations(ifTunnelOld, ifTunnelNew);
     }
 
@@ -142,11 +142,11 @@ public class OvsInterfaceConfigUpdateHelper {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
         // update termination point on switch, if switch is connected
         BridgeRefEntry bridgeRefEntry = interfaceMetaUtils.getBridgeReferenceForInterface(interfaceNew);
-        IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnel = interfaceNew.augmentation(IfTunnel.class);
         if (SouthboundUtils.isMonitorProtocolBfd(ifTunnel)
                 && interfaceMetaUtils.bridgeExists(bridgeRefEntry)) {
             SouthboundUtils.updateBfdParamtersForTerminationPoint(bridgeRefEntry.getBridgeReference().getValue(),
-                    interfaceNew.getAugmentation(IfTunnel.class), interfaceNew.getName(), transaction);
+                    interfaceNew.augmentation(IfTunnel.class), interfaceNew.getName(), transaction);
         } else {
             // update lldp tunnel monitoring attributes for an internal vxlan
             // tunnel interface
@@ -157,7 +157,7 @@ public class OvsInterfaceConfigUpdateHelper {
     private void handleInterfaceAdminStateUpdates(WriteTransaction transaction, Interface interfaceNew,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlan = interfaceNew.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;

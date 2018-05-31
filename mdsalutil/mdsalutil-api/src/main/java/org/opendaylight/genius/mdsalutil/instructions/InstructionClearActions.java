@@ -21,7 +21,7 @@ public class InstructionClearActions extends AbstractInstructionInfoImpl {
     public Instruction buildInstruction(int instructionKey) {
         return new InstructionBuilder()
                 .setInstruction(new ClearActionsCaseBuilder().build())
-                .setKey(new InstructionKey(instructionKey))
+                .withKey(new InstructionKey(instructionKey))
                 .build();
     }
 

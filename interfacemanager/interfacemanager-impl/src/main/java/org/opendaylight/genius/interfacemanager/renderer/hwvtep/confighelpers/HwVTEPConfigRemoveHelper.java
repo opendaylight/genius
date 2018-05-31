@@ -38,7 +38,7 @@ public final class HwVTEPConfigRemoveHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         LOG.info("removing hwvtep configuration for {}", interfaceOld.getName());
         if (globalNodeId != null) {
-            IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
+            IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
             //removeTunnelTableEntry(defaultOperShardTransaction, ifTunnel, physicalSwitchNodeId);
             // Topology configuration shard
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(

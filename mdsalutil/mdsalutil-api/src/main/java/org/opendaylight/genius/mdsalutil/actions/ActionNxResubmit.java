@@ -49,7 +49,7 @@ public class ActionNxResubmit extends ActionInfo {
         nxarsb.setTable(table);
         ActionBuilder ab = new ActionBuilder();
         ab.setAction(new NxActionResubmitRpcAddGroupCaseBuilder().setNxResubmit(nxarsb.build()).build());
-        ab.setKey(new ActionKey(newActionKey));
+        ab.withKey(new ActionKey(newActionKey));
         return ab.build();
     }
 

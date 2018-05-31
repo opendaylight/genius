@@ -75,7 +75,7 @@ public class ActionNxConntrack extends ActionInfo {
         ActionBuilder ab = new ActionBuilder();
         ab.setAction(new NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxConntrack(ctb.build()).build());
-        ab.setKey(new ActionKey(newActionKey));
+        ab.withKey(new ActionKey(newActionKey));
         return ab.build();
     }
 

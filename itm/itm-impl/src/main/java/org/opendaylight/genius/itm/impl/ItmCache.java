@@ -103,7 +103,7 @@ public class ItmCache {
     }
 
     public void addExternalTunnelKeyToExternalTunnelCache(ExternalTunnel externalTunnel) {
-        this.externalTunnelKeyToExternalTunnels.put(externalTunnel.getKey(), externalTunnel);
+        this.externalTunnelKeyToExternalTunnels.put(externalTunnel.key(), externalTunnel);
     }
 
     public void removeExternalTunnelfromExternalTunnelKeyCache(ExternalTunnelKey key) {

@@ -36,6 +36,6 @@ public class ActionPopVlan extends ActionInfo {
     public Action buildAction(int newActionKey) {
         return new ActionBuilder().setAction(
                 new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

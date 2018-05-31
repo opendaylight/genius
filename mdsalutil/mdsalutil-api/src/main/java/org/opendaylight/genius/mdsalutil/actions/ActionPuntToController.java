@@ -42,7 +42,7 @@ public class ActionPuntToController extends ActionInfo {
         Uri value = new Uri(OutputPortValues.CONTROLLER.toString());
         output.setOutputNodeConnector(value);
         ab.setAction(new OutputActionCaseBuilder().setOutputAction(output.build()).build());
-        ab.setKey(new ActionKey(newActionKey));
+        ab.withKey(new ActionKey(newActionKey));
         return ab.build();
     }
 }

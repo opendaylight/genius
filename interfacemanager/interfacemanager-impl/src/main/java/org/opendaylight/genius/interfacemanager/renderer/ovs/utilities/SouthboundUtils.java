@@ -157,7 +157,7 @@ public class SouthboundUtils {
     }
 
     public void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
-        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }
@@ -178,7 +178,7 @@ public class SouthboundUtils {
                 InterfaceKey interfaceKey = new InterfaceKey(portName);
                 Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
                 if (iface != null) {
-                    IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+                    IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
                     if (ifTunnel != null) {
                         if (!(interfacemgrProvider.isItmDirectTunnelsEnabled() && ifTunnel.isInternal())) {
                             addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
@@ -207,7 +207,7 @@ public class SouthboundUtils {
         }
 
         int vlanId = 0;
-        IfL2vlan ifL2vlan = iface.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlan = iface.augmentation(IfL2vlan.class);
         if (ifL2vlan != null && ifL2vlan.getVlanId() != null) {
             vlanId = ifL2vlan.getVlanId().getValue();
         }
@@ -280,7 +280,7 @@ public class SouthboundUtils {
         tpAugmentationBuilder.setInterfaceBfd(bfdParams);
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
-        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         transaction.merge(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
@@ -300,7 +300,7 @@ public class SouthboundUtils {
             List<Options> optionsList = new ArrayList<>();
             for (Map.Entry<String, String> entry : options.entrySet()) {
                 OptionsBuilder optionsBuilder = new OptionsBuilder();
-                optionsBuilder.setKey(new OptionsKey(entry.getKey()));
+                optionsBuilder.withKey(new OptionsKey(entry.getKey()));
                 optionsBuilder.setOption(entry.getKey());
                 optionsBuilder.setValue(entry.getValue());
                 optionsList.add(optionsBuilder.build());
@@ -324,7 +324,7 @@ public class SouthboundUtils {
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
-        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         batchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
@@ -343,7 +343,7 @@ public class SouthboundUtils {
 
     private static InterfaceBfd getIfBfdObj(String key, String value) {
         InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
-        bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
+        bfdBuilder.setBfdKey(key).withKey(new InterfaceBfdKey(key)).setBfdValue(value);
         return bfdBuilder.build();
     }
 
@@ -359,7 +359,7 @@ public class SouthboundUtils {
         String ovsVersion = DEFAULT_OVS_VERSION;
         try {
             Node ovsNode = singleTxDB.syncRead(LogicalDatastoreType.OPERATIONAL, ovsNodeIid);
-            ovsVersion = ovsNode.getAugmentation(OvsdbNodeAugmentation.class).getOvsVersion()
+            ovsVersion = ovsNode.augmentation(OvsdbNodeAugmentation.class).getOvsVersion()
                     .toLowerCase(Locale.ROOT);
         } catch (ReadFailedException e) {
             LOG.error("OVS Node {} not present", ovsNodeId);

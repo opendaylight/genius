@@ -187,8 +187,8 @@ public class ItmInternalTunnelDeleteWorker {
                                         TunnelEndPoints modifiedTep = modifiedTepBld.build() ;
                                         InstanceIdentifier<TunnelEndPoints> tepPath = InstanceIdentifier
                                                 .builder(DpnEndpoints.class)
-                                                .child(DPNTEPsInfo.class, dstDpn.getKey())
-                                                .child(TunnelEndPoints.class, dstTep.getKey()).build();
+                                                .child(DPNTEPsInfo.class, dstDpn.key())
+                                                .child(TunnelEndPoints.class, dstTep.key()).build();
 
                                         LOG.debug(" Store the modified Tep in DS {} ", modifiedTep);
                                         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, tepPath, modifiedTep);
@@ -200,18 +200,18 @@ public class ItmInternalTunnelDeleteWorker {
                     if (tepDeleteFlag) {
                         // Third, removing vtep / dpn from Tunnels OpDs.
                         InstanceIdentifier<TunnelEndPoints> tepPath =
-                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
-                                        .child(TunnelEndPoints.class, srcTep.getKey()).build();
+                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.key())
+                                        .child(TunnelEndPoints.class, srcTep.key()).build();
 
                         LOG.trace("Tep Removal of TEP {} from DPNTEPSINFO CONFIG DS with Key {} ", srcTep,
-                                srcTep.getKey());
+                                srcTep.key());
                         writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, tepPath);
                         // remove the tep from the cache
                         meshedEndPtCache.remove(srcTep);
                         Class<? extends TunnelMonitoringTypeBase> monitorProtocol =
                                 tunnelMonitoringConfig.getMonitorProtocol();
                         InstanceIdentifier<DPNTEPsInfo> dpnPath =
-                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.getKey())
+                                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, srcDpn.key())
                                         .build();
 
                         if (meshedEndPtCache.isEmpty()) {
@@ -412,7 +412,7 @@ public class ItmInternalTunnelDeleteWorker {
 
     private void removeConfiguration(Interface interfaceOld, ParentRefs parentRefs, WriteTransaction
             writeTransaction) throws ExecutionException, InterruptedException, OperationFailedException {
-        IfTunnel ifTunnel = interfaceOld.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             // Check if the same transaction can be used across Config and operational shards
             removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, writeTransaction);

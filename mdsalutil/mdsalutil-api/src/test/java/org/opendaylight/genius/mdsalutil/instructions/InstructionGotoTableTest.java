@@ -30,7 +30,7 @@ public class InstructionGotoTableTest {
 
     private void verifyInstructionInfo(InstructionInfo instructionInfo) {
         Instruction instruction = instructionInfo.buildInstruction(2);
-        assertEquals(2, instruction.getKey().getOrder().intValue());
+        assertEquals(2, instruction.key().getOrder().intValue());
         assertTrue(instruction.getInstruction() instanceof GoToTableCase);
         GoToTableCase goToTableCase = (GoToTableCase) instruction.getInstruction();
         assertEquals((short) 1, goToTableCase.getGoToTable().getTableId().shortValue());

@@ -51,7 +51,7 @@ public class ActionNxLoadInPort extends ActionInfo {
                     .setValue(value)
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

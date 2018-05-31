@@ -46,7 +46,7 @@ public class ActionSetFieldDscp extends ActionInfo {
                         new SetFieldBuilder().setIpMatch(
                                 new IpMatchBuilder().setIpDscp(
                                         new Dscp(dscp)).build())
-                                .build()).build()).setKey(new ActionKey(newActionKey)).build();
+                                .build()).build()).withKey(new ActionKey(newActionKey)).build();
     }
 
     @Override

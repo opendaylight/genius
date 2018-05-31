@@ -101,7 +101,7 @@ public class IdUtils {
     }
 
     public IdEntries createIdEntries(String idKey, List<Long> newIdVals) {
-        return new IdEntriesBuilder().setKey(new IdEntriesKey(idKey))
+        return new IdEntriesBuilder().withKey(new IdEntriesKey(idKey))
                 .setIdKey(idKey).setIdValue(newIdVals).build();
     }
 
@@ -115,7 +115,7 @@ public class IdUtils {
         AvailableIdsHolder availableIdsHolder = createAvailableIdsHolder(low, high, low - 1);
         ReleasedIdsHolder releasedIdsHolder = createReleasedIdsHolder(DEFAULT_AVAILABLE_ID_COUNT, 0);
         int size = (int) blockSize;
-        return new IdPoolBuilder().setKey(new IdPoolKey(poolName))
+        return new IdPoolBuilder().withKey(new IdPoolKey(poolName))
                 .setBlockSize(size).setPoolName(poolName)
                 .setAvailableIdsHolder(availableIdsHolder)
                 .setReleasedIdsHolder(releasedIdsHolder).build();
@@ -159,7 +159,7 @@ public class IdUtils {
     }
 
     protected ChildPools createChildPool(String childPoolName) {
-        return new ChildPoolsBuilder().setKey(new ChildPoolsKey(childPoolName)).setChildPoolName(childPoolName)
+        return new ChildPoolsBuilder().withKey(new ChildPoolsKey(childPoolName)).setChildPoolName(childPoolName)
                 .setLastAccessTime(System.currentTimeMillis() / 1000).build();
     }
 

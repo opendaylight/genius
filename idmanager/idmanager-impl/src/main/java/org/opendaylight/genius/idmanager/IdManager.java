@@ -461,7 +461,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 long count = releasedIdsBuilderParent.getAvailableIdCount() + totalAvailableIdCount;
                 releasedIdsBuilderParent.setDelayedIdEntries(delayedIdEntriesParent).setAvailableIdCount(count);
                 singleTxDB.syncUpdate(CONFIGURATION, idPoolInstanceIdentifier,
-                        new IdPoolBuilder().setKey(new IdPoolKey(otherChildPool.getPoolName()))
+                        new IdPoolBuilder().withKey(new IdPoolKey(otherChildPool.getPoolName()))
                                 .setAvailableIdsHolder(availableIds.build()).setReleasedIdsHolder(releasedIds.build())
                                 .build());
                 return totalAvailableIdCount;

@@ -51,7 +51,7 @@ public class ActionSetFieldMplsLabel extends ActionInfo {
                                 new ProtocolMatchFieldsBuilder().setMplsLabel(label).build())
                             .build())
                     .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

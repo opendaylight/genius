@@ -37,6 +37,6 @@ public class ActionNxCtClear extends ActionInfo {
         return new ActionBuilder().setAction(
                 new NxActionCtClearNodesNodeTableFlowApplyActionsCaseBuilder().setNxCtClear(
                         new NxCtClearBuilder().build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

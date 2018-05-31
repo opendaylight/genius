@@ -183,7 +183,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         boolean tunnelState = operStatus.equals(Interface.OperStatus.Up);
 
         StateTunnelListKey tlKey = new StateTunnelListKey(interfaceName);
-        stlBuilder.setKey(tlKey)
+        stlBuilder.withKey(tlKey)
                 .setOperState(tunnelOperStatus).setTunnelState(tunnelState)
                 .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build()).setTransportType(tunnelType)
                 .setPortNumber(String.valueOf(portNo));
@@ -210,7 +210,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         InstanceIdentifier<IfIndexTunnel> id = InstanceIdentifier.builder(IfIndexesTunnelMap.class)
                 .child(IfIndexTunnel.class, new IfIndexTunnelKey(ifIndex)).build();
         IfIndexTunnel ifIndexInterface = new IfIndexTunnelBuilder().setIfIndex(ifIndex)
-                .setKey(new IfIndexTunnelKey(ifIndex)).setInterfaceName(infName).build();
+                .withKey(new IfIndexTunnelKey(ifIndex)).setInterfaceName(infName).build();
         ITMBatchingUtils.write(id, ifIndexInterface, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 }

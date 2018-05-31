@@ -95,7 +95,7 @@ public class OvsInterfaceStateUpdateHelper {
 
                 // start/stop monitoring based on opState
                 if (isTunnelInterface(iface)) {
-                    handleTunnelMonitoringUpdates(iface.getAugmentation(IfTunnel.class), iface.getName(),
+                    handleTunnelMonitoringUpdates(iface.augmentation(IfTunnel.class), iface.getName(),
                             operStatusNew);
                 }
             }));
@@ -119,7 +119,7 @@ public class OvsInterfaceStateUpdateHelper {
         handleInterfaceStateUpdates(iface, transaction, ifaceBuilder, true, interfaceName,
                 flowCapableNodeConnector.getName(), Interface.OperStatus.Unknown);
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-            handleTunnelMonitoringUpdates(iface.getAugmentation(IfTunnel.class), interfaceName,
+            handleTunnelMonitoringUpdates(iface.augmentation(IfTunnel.class), interfaceName,
                     Interface.OperStatus.Unknown);
         }
     }
@@ -145,7 +145,7 @@ public class OvsInterfaceStateUpdateHelper {
 
         LOG.debug("updating interface state entry for {}", interfaceName);
         InstanceIdentifier<Interface> ifStateId = IfmUtil.buildStateInterfaceId(interfaceName);
-        ifaceBuilder.setKey(new InterfaceKey(interfaceName));
+        ifaceBuilder.withKey(new InterfaceKey(interfaceName));
         if (modifyOpState(iface, opStateModified)) {
             LOG.debug("updating interface oper status as {} for {}", opState.name(), interfaceName);
             ifaceBuilder.setOperStatus(opState);
@@ -173,14 +173,14 @@ public class OvsInterfaceStateUpdateHelper {
     public static boolean isTunnelInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface) {
-        return iface != null && iface.getAugmentation(IfTunnel.class) != null;
+        return iface != null && iface.augmentation(IfTunnel.class) != null;
     }
 
     public static boolean modifyTunnelOpState(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface,
             boolean opStateModified) {
-        if (!iface.getAugmentation(IfTunnel.class).isMonitorEnabled()) {
+        if (!iface.augmentation(IfTunnel.class).isMonitorEnabled()) {
             return modifyOpState(iface, opStateModified);
         }
         return false;

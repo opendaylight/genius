@@ -109,7 +109,7 @@ public class ItmTunnelAggregationHelper {
         if (ifaceConfig == null || !ifaceConfig.getType().isAssignableFrom(Tunnel.class)) {
             return;
         }
-        IfTunnel ifTunnel = ifaceConfig.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnel = ifaceConfig.augmentation(IfTunnel.class);
         if (!ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
             return;
         }
@@ -133,7 +133,7 @@ public class ItmTunnelAggregationHelper {
         String ifName = ifStateUpdated.getName();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 ItmUtils.getInterface(ifName, interfaceManager);
-        IfTunnel ifTunnel = iface != null ? iface.getAugmentation(IfTunnel.class) : null;
+        IfTunnel ifTunnel = iface != null ? iface.augmentation(IfTunnel.class) : null;
         if (iface == null || ifTunnel == null) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: updateLogicalTunnelState - not tunnel interface {}", ifName);
             return;
@@ -142,7 +142,7 @@ public class ItmTunnelAggregationHelper {
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
             logicTunnelName = ifStateUpdated.getName();
         } else {
-            ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+            ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
             if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class) && parentRefs != null) {
                 logicTunnelName = parentRefs.getParentInterface();
             }
@@ -161,7 +161,7 @@ public class ItmTunnelAggregationHelper {
         List<TunnelAggregation> tunnelsConfig = itmConfig != null ? itmConfig.getTunnelAggregation() : null;
         if (tunnelsConfig != null) {
             for (TunnelAggregation tnlCfg : tunnelsConfig) {
-                Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(tnlCfg.getKey().getTunnelType());
+                Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(tnlCfg.key().getTunnelType());
                 if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
                     tunnelAggregationConfigEnabled = tnlCfg.isEnabled();
                     LOG.info("MULTIPLE_VxLAN_TUNNELS: tunnelAggregationEnabled {}", tunnelAggregationConfigEnabled);
@@ -209,13 +209,13 @@ public class ItmTunnelAggregationHelper {
             String curChildName = interfaceChildEntry.getChildInterface();
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
                         childIface = ItmUtils.getInterface(curChildName, interfaceManager);
-            IfTunnel ifTunnel = childIface != null ? childIface.getAugmentation(IfTunnel.class) : null;
+            IfTunnel ifTunnel = childIface != null ? childIface.augmentation(IfTunnel.class) : null;
             if (ifTunnel == null || !ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not tunnel interface {} found in group {}",
                         curChildName, logicTunnelName);
                 continue;
             }
-            ParentRefs parentRefs = childIface.getAugmentation(ParentRefs.class);
+            ParentRefs parentRefs = childIface.augmentation(ParentRefs.class);
             if (parentRefs == null) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: parent refs not specified for interface {} in group {}",
                         curChildName, logicTunnelName);
@@ -250,7 +250,7 @@ public class ItmTunnelAggregationHelper {
         }
         String ifaceName = ifaceState.getName();
         InterfaceChildEntry childEntry = new InterfaceChildEntryBuilder().setChildInterface(ifaceName)
-                .setKey(new InterfaceChildEntryKey(ifaceName)).build();
+                .withKey(new InterfaceChildEntryKey(ifaceName)).build();
         int bucketId = interfaceChildEntries.indexOf(childEntry);
         if (bucketId == -1) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: wrong child id for {} in group {}", ifaceName,
@@ -377,7 +377,7 @@ public class ItmTunnelAggregationHelper {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: update AdminStatus to be {} for {}", st.toString(), ifaceName);
         InstanceIdentifier<Interface> id = ItmUtils.buildStateInterfaceId(ifaceName);
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder();
-        ifaceBuilderChild.setKey(new InterfaceKey(ifaceName));
+        ifaceBuilderChild.withKey(new InterfaceKey(ifaceName));
         ifaceBuilderChild.setAdminStatus(st);
         tx.merge(LogicalDatastoreType.OPERATIONAL, id, ifaceBuilderChild.build(), true);
     }
@@ -409,7 +409,7 @@ public class ItmTunnelAggregationHelper {
                 updateTunnelAggregationGroup(parentEntry);
                 return Collections.emptyList();
             }
-            IfTunnel ifTunnel = ifaceConfig != null ? ifaceConfig.getAugmentation(IfTunnel.class) : null;
+            IfTunnel ifTunnel = ifaceConfig != null ? ifaceConfig.augmentation(IfTunnel.class) : null;
             if (ifTunnel == null) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not tunnel interface {}", ifaceConfig.getName());
                 return Collections.emptyList();
@@ -427,7 +427,7 @@ public class ItmTunnelAggregationHelper {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: wrong tunnel type {}", ifTunnel.getTunnelInterfaceType());
                 return Collections.emptyList();
             }
-            ParentRefs parentRefs = ifaceConfig.getAugmentation(ParentRefs.class);
+            ParentRefs parentRefs = ifaceConfig.augmentation(ParentRefs.class);
             if (parentRefs == null) {
                 LOG.debug("MULTIPLE_VxLAN_TUNNELS: not updated parent ref for {}", ifaceConfig.getName());
                 return Collections.emptyList();
