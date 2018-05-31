@@ -85,7 +85,7 @@ public class ActionLearn extends ActionInfo {
         learnBuilder.setFlowMods(this.flowMods.stream().map(FlowMod::buildFlowMod).collect(Collectors.toList()));
 
         return new ActionBuilder()
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .setAction(new NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxLearn(learnBuilder.build()).build())
             .build();

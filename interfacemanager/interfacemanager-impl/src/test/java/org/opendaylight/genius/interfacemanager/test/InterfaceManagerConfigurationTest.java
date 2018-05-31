@@ -287,7 +287,7 @@ public class InterfaceManagerConfigurationTest {
         FlowKey ingressFlowKey = new FlowKey(new FlowId(ingressFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> ingressFlowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, ingressFlowKey)
                 .build();
 
@@ -546,18 +546,18 @@ public class InterfaceManagerConfigurationTest {
         // augmentation might be unmodifiable).
         TerminationPointBuilder newTpBuilder = new TerminationPointBuilder(tp);
         OvsdbTerminationPointAugmentation ovsdbTpAugmentation =
-                tp.getAugmentation(OvsdbTerminationPointAugmentation.class);
+                tp.augmentation(OvsdbTerminationPointAugmentation.class);
         if (ovsdbTpAugmentation != null) {
             OvsdbTerminationPointAugmentationBuilder newOvsdbTpAugmentationBuilder =
                     new OvsdbTerminationPointAugmentationBuilder(ovsdbTpAugmentation);
             if (ovsdbTpAugmentation.getOptions() != null) {
                 List<Options> options = new ArrayList<>(ovsdbTpAugmentation.getOptions());
-                options.sort(Comparator.comparing(o -> o.getKey().toString()));
+                options.sort(Comparator.comparing(o -> o.key().toString()));
                 newOvsdbTpAugmentationBuilder.setOptions(options);
             }
             if (ovsdbTpAugmentation.getInterfaceBfd() != null) {
                 List<InterfaceBfd> interfaceBfd = new ArrayList<>(ovsdbTpAugmentation.getInterfaceBfd());
-                interfaceBfd.sort(Comparator.comparing(o -> o.getKey().toString()));
+                interfaceBfd.sort(Comparator.comparing(o -> o.key().toString()));
                 newOvsdbTpAugmentationBuilder.setInterfaceBfd(interfaceBfd);
             }
             newTpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class,
@@ -576,7 +576,7 @@ public class InterfaceManagerConfigurationTest {
             interfaceInfo = interfaceManager.getInterfaceInfoFromConfigDataStore(INTERFACE_NAME);
         // FIXME change this once augmentation sorting fix lands
         assertEqualBeans(INTERFACE_NAME, interfaceInfo.getName());
-        assertEqualBeans(PARENT_INTERFACE, interfaceInfo.getAugmentation(ParentRefs.class).getParentInterface());
+        assertEqualBeans(PARENT_INTERFACE, interfaceInfo.augmentation(ParentRefs.class).getParentInterface());
 
         // 3. fetch dpn-id corresponding to an interface
         BigInteger dpnId = interfaceManager.getDpnForInterface(INTERFACE_NAME);
@@ -605,7 +605,7 @@ public class InterfaceManagerConfigurationTest {
         FlowKey lportDispatcherFlowKey = new FlowKey(new FlowId(lportDispatcherFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
         InstanceIdentifier<Flow> lportDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
-            .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+            .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
             .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class,
                 lportDispatcherFlowKey).build();
         flowAssertTestUtils.assertFlowsInAnyOrder(ExpectedFlowEntries.newLportDispatcherFlow(),
@@ -642,7 +642,7 @@ public class InterfaceManagerConfigurationTest {
 
         FlowKey egressDispatcherFlowKey = new FlowKey(new FlowId(egressDispatcherFlowRef));
         InstanceIdentifier<Flow> egressDispatcherFlowId = InstanceIdentifier.builder(Nodes.class)
-            .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+            .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
             .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class,
                 egressDispatcherFlowKey).build();
 
@@ -711,7 +711,7 @@ public class InterfaceManagerConfigurationTest {
         // to do proper assertion
         //Assert.assertNotNull(dataBroker
         //    .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
-        //    .buildId(INTERFACE_NAME_2)).checkedGet().get().getAugmentation(IfExternal.class));
+        //    .buildId(INTERFACE_NAME_2)).checkedGet().get().augmentation(IfExternal.class));
 
         // 19. update parent-refs
         //interfaceManager.updateInterfaceParentRef(INTERFACE_NAME_2, PARENT_INTERFACE_2, true);
@@ -719,7 +719,7 @@ public class InterfaceManagerConfigurationTest {
                 coordinatorEventsWaiter, 4, asyncEventsWaiter);
         Assert.assertEquals(PARENT_INTERFACE_2, dataBroker
             .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
-                .buildId(INTERFACE_NAME_2)).checkedGet().get().getAugmentation(ParentRefs.class).getParentInterface());
+                .buildId(INTERFACE_NAME_2)).checkedGet().get().augmentation(ParentRefs.class).getParentInterface());
 
         // 20. get list of vlan interfaces
         // FIXME need to wait for https://git.opendaylight.org/gerrit/#/c/54811/ this to land
@@ -937,7 +937,7 @@ public class InterfaceManagerConfigurationTest {
                 .child(InterfaceNameEntry.class, interfaceNameEntryKey)
                 .build();
         InterfaceNameEntryBuilder entryBuilder =
-                new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
+                new InterfaceNameEntryBuilder().withKey(interfaceNameEntryKey).setInterfaceName(infName);
         if (interfaceType != null) {
             entryBuilder.setInterfaceType(interfaceType);
         }

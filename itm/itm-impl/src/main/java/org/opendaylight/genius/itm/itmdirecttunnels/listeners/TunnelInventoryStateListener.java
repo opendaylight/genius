@@ -253,7 +253,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         InstanceIdentifier<StateTunnelList> tnlStateId = ItmUtils.buildStateTunnelListId(
                 new StateTunnelListKey(interfaceName));
         StateTunnelListBuilder stateTnlBuilder = new StateTunnelListBuilder();
-        stateTnlBuilder.setKey(new StateTunnelListKey(interfaceName));
+        stateTnlBuilder.withKey(new StateTunnelListKey(interfaceName));
         if (modifyOpState(dpnTepInfo, opStateModified)) {
             LOG.debug("updating interface oper status as {} for {}", opState.name(), interfaceName);
             boolean tunnelState = opState.equals(Interface.OperStatus.Up);

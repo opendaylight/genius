@@ -39,6 +39,6 @@ public class ActionPopMpls extends ActionInfo {
                 new PopMplsActionCaseBuilder().setPopMplsAction(
                         new PopMplsActionBuilder().setEthernetType(
                                 NwConstants.ETHTYPE_IPV4).build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

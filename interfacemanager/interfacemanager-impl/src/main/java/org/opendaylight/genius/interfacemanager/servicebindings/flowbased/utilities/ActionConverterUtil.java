@@ -132,7 +132,7 @@ public final class ActionConverterUtil {
                         new org.opendaylight.yang.gen.v1.urn.opendaylight
                                 .action.types.rev131112.action.list.ActionBuilder()
                                 .setAction(convertServiceActionToFlowAction(inAction.getAction()))
-                                .setKey(new ActionKey(inAction.getKey().getOrder() + keyOffset))
+                                .withKey(new ActionKey(inAction.key().getOrder() + keyOffset))
                                 .build());
             }
         }

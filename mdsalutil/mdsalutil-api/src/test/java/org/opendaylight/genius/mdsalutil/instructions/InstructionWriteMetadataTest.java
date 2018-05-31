@@ -33,7 +33,7 @@ public class InstructionWriteMetadataTest {
 
     private void verifyInstructionInfo(InstructionInfo instructionInfo) {
         Instruction instruction = instructionInfo.buildInstruction(2);
-        assertEquals(2, instruction.getKey().getOrder().intValue());
+        assertEquals(2, instruction.key().getOrder().intValue());
         assertTrue(instruction.getInstruction() instanceof WriteMetadataCase);
         WriteMetadataCase writeMetadataCase = (WriteMetadataCase) instruction.getInstruction();
         WriteMetadata writeMetadata = writeMetadataCase.getWriteMetadata();

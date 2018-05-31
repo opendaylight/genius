@@ -42,7 +42,7 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
 
     @Override
     public List<ListenableFuture<Void>> call() {
-        IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName));
+        IdPoolBuilder idPool = new IdPoolBuilder().withKey(new IdPoolKey(localPoolName));
         idHolder.refreshDataStore(idPool);
         InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {

@@ -250,7 +250,7 @@ public final class DirectTunnelUtils {
 
     private static InterfaceBfd getIfBfdObj(String key, String value) {
         InterfaceBfdBuilder bfdBuilder = new InterfaceBfdBuilder();
-        bfdBuilder.setBfdKey(key).setKey(new InterfaceBfdKey(key)).setBfdValue(value);
+        bfdBuilder.setBfdKey(key).withKey(new InterfaceBfdKey(key)).setBfdValue(value);
         return bfdBuilder.build();
     }
 
@@ -300,7 +300,7 @@ public final class DirectTunnelUtils {
         OvsBridgeTunnelEntryKey bridgeTunnelEntryKey = new OvsBridgeTunnelEntryKey(childInterface);
         InstanceIdentifier<OvsBridgeTunnelEntry> bridgeTunnelEntryIid =
                 getBridgeTunnelEntryIdentifier(bridgeEntryKey, bridgeTunnelEntryKey);
-        OvsBridgeTunnelEntryBuilder entryBuilder = new OvsBridgeTunnelEntryBuilder().setKey(bridgeTunnelEntryKey)
+        OvsBridgeTunnelEntryBuilder entryBuilder = new OvsBridgeTunnelEntryBuilder().withKey(bridgeTunnelEntryKey)
                 .setTunnelName(childInterface);
         ITMBatchingUtils.write(bridgeTunnelEntryIid, entryBuilder.build(), ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
@@ -348,7 +348,7 @@ public final class DirectTunnelUtils {
         }
 
         int vlanId = 0;
-        IfL2vlan ifL2vlan = iface.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlan = iface.augmentation(IfL2vlan.class);
         if (ifL2vlan != null && ifL2vlan.getVlanId() != null) {
             vlanId = ifL2vlan.getVlanId().getValue();
         }
@@ -399,7 +399,7 @@ public final class DirectTunnelUtils {
             List<Options> optionsList = new ArrayList<>();
             for (Map.Entry<String, String> entry : options.entrySet()) {
                 OptionsBuilder optionsBuilder = new OptionsBuilder();
-                optionsBuilder.setKey(new OptionsKey(entry.getKey()));
+                optionsBuilder.withKey(new OptionsKey(entry.getKey()));
                 optionsBuilder.setOption(entry.getKey());
                 optionsBuilder.setValue(entry.getValue());
                 optionsList.add(optionsBuilder.build());
@@ -419,7 +419,7 @@ public final class DirectTunnelUtils {
         }
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
-        tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
+        tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         ITMBatchingUtils.write(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);

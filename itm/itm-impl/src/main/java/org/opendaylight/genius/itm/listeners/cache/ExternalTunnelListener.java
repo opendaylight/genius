@@ -48,7 +48,7 @@ public class ExternalTunnelListener extends
 
     @Override
     protected void remove(InstanceIdentifier<ExternalTunnel> identifier, ExternalTunnel del) {
-        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(del.getKey());
+        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(del.key());
     }
 
     @Override

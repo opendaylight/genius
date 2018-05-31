@@ -49,7 +49,7 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
             LOG.debug("Started localPoolCreateJob for {}", localPoolName);
         }
         InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
-        IdPoolBuilder idPool = new IdPoolBuilder().setKey(new IdPoolKey(localPoolName)).setBlockSize(blockSize)
+        IdPoolBuilder idPool = new IdPoolBuilder().withKey(new IdPoolKey(localPoolName)).setBlockSize(blockSize)
                 .setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);
         idLocalPool.getReleasedIds().refreshDataStore(idPool);

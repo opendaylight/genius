@@ -206,7 +206,7 @@ public class OvsdbSouthboundTestUtil {
         InstanceIdentifier<TerminationPoint> tpId = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
-        tpBuilder.setKey(InstanceIdentifier.keyOf(tpId));
+        tpBuilder.withKey(InstanceIdentifier.keyOf(tpId));
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
 
         tpAugmentationBuilder.setName(interfaceName);
@@ -235,7 +235,7 @@ public class OvsdbSouthboundTestUtil {
         InstanceIdentifier<TerminationPoint> tpId = createTerminationPointInstanceIdentifier(
             InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), interfaceName);
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
-        tpBuilder.setKey(InstanceIdentifier.keyOf(tpId));
+        tpBuilder.withKey(InstanceIdentifier.keyOf(tpId));
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
 
         tpAugmentationBuilder.setName(interfaceName);
@@ -281,7 +281,7 @@ public class OvsdbSouthboundTestUtil {
     }
 
     public OvsdbNodeAugmentation extractOvsdbNode(Node node) {
-        return node.getAugmentation(OvsdbNodeAugmentation.class);
+        return node.augmentation(OvsdbNodeAugmentation.class);
     }
 
     public static IpAddress createIpAddress(InetAddress address) {
@@ -381,13 +381,13 @@ public class OvsdbSouthboundTestUtil {
     }
 
     public OvsdbNodeAugmentation extractNodeAugmentation(Node node) {
-        return node.getAugmentation(OvsdbNodeAugmentation.class);
+        return node.augmentation(OvsdbNodeAugmentation.class);
     }
 
     public OvsdbBridgeAugmentation extractBridgeAugmentation(Node node) {
         if (node == null) {
             return null;
         }
-        return node.getAugmentation(OvsdbBridgeAugmentation.class);
+        return node.augmentation(OvsdbBridgeAugmentation.class);
     }
 }

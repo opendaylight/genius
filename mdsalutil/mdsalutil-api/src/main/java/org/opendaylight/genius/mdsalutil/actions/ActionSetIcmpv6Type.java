@@ -46,7 +46,7 @@ public class ActionSetIcmpv6Type extends ActionInfo {
                         .build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

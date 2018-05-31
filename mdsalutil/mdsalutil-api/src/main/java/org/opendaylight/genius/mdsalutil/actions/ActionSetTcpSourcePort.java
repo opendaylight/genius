@@ -46,7 +46,7 @@ public class ActionSetTcpSourcePort extends ActionInfo {
                         .setTcpSourcePort(new PortNumber(port)).build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

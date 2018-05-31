@@ -75,14 +75,14 @@ public final class InterfaceServiceUtil {
         boundService.add(new BoundServicesBuilder().setServicePriority((short) servicePriority)
                 .setServiceName(serviceName).build());
         return new ServicesInfoBuilder().setBoundServices(boundService)
-                .setKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
+                .withKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
     public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
             BigInteger cookie, List<Instruction> instructions) {
         StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority)
                 .setInstruction(instructions);
-        return new BoundServicesBuilder().setKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
+        return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
                 .setServicePriority(servicePriority).setServiceType(ServiceTypeFlowBased.class)
                 .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
     }
@@ -130,7 +130,7 @@ public final class InterfaceServiceUtil {
                 .child(Interface.class, new InterfaceKey(interfaceName)).build();
         Optional<Interface> ifInstance = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, id, broker);
         if (ifInstance.isPresent()) {
-            IfL2vlan vlanIface = ifInstance.get().getAugmentation(IfL2vlan.class);
+            IfL2vlan vlanIface = ifInstance.get().augmentation(IfL2vlan.class);
             return vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().shortValue();
         }
         return -1;

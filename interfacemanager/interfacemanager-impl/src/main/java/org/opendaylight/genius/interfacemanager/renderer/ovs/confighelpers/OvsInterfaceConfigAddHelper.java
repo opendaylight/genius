@@ -89,7 +89,7 @@ public final class OvsInterfaceConfigAddHelper {
         // TODO Disentangle the transactions
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(configTx -> {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(operTx -> {
-                IfTunnel ifTunnel = interfaceNew.getAugmentation(IfTunnel.class);
+                IfTunnel ifTunnel = interfaceNew.augmentation(IfTunnel.class);
                 if (ifTunnel != null) {
                     addTunnelConfiguration(parentRefs, interfaceNew, ifTunnel, configTx, operTx, futures);
                 } else {
@@ -103,7 +103,7 @@ public final class OvsInterfaceConfigAddHelper {
     private void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs,
             WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
             List<ListenableFuture<Void>> futures) {
-        IfL2vlan ifL2vlan = interfaceNew.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlan = interfaceNew.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;

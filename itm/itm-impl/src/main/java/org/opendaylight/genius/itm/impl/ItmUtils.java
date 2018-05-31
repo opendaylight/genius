@@ -317,7 +317,7 @@ public final class ItmUtils {
     }
 
     public static DPNTEPsInfo createDPNTepInfo(BigInteger dpId, List<TunnelEndPoints> endpoints) {
-        return new DPNTEPsInfoBuilder().setKey(new DPNTEPsInfoKey(dpId)).setTunnelEndPoints(endpoints).build();
+        return new DPNTEPsInfoBuilder().withKey(new DPNTEPsInfoKey(dpId)).setTunnelEndPoints(endpoints).build();
     }
 
     public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName,
@@ -326,7 +326,7 @@ public final class ItmUtils {
                                                         Class<? extends TunnelTypeBase>  tunnelType,
                                                         String tos) {
         // when Interface Mgr provides support to take in Dpn Id
-        return new TunnelEndPointsBuilder().setKey(new TunnelEndPointsKey(ipAddress, portName,tunnelType, vlanId))
+        return new TunnelEndPointsBuilder().withKey(new TunnelEndPointsKey(ipAddress, portName,tunnelType, vlanId))
                 .setSubnetMask(prefix).setGwIpAddress(gwAddress).setTzMembership(zones)
                 .setOptionOfTunnel(isOfTunnel).setInterfaceName(ItmUtils.getInterfaceName(dpnId, portName, vlanId))
                 .setTunnelType(tunnelType)
@@ -349,7 +349,7 @@ public final class ItmUtils {
     }
 
     public static Interface buildLogicalTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled) {
-        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+        InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
         builder.addAugmentation(ParentRefs.class, parentRefs);
@@ -383,7 +383,7 @@ public final class ItmUtils {
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                                                  Integer monitorInterval, boolean useOfTunnel, String parentIfaceName,
                                                  List<TunnelOptions> tunnelOptions) {
-        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(ifName)).setName(ifName)
+        InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs =
                 new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).setParentInterface(parentIfaceName).build();
@@ -416,10 +416,10 @@ public final class ItmUtils {
                                                    Boolean monitorEnabled,
                                                    Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                                                    Integer monitorInterval) {
-        InterfaceBuilder builder = new InterfaceBuilder().setKey(new InterfaceKey(tunnelIfName))
+        InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(tunnelIfName))
                 .setName(tunnelIfName).setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         List<NodeIdentifier> nodeIds = new ArrayList<>();
-        NodeIdentifier hwNode = new NodeIdentifierBuilder().setKey(new NodeIdentifierKey(topoId))
+        NodeIdentifier hwNode = new NodeIdentifierBuilder().withKey(new NodeIdentifierKey(topoId))
                 .setTopologyId(topoId).setNodeId(nodeId).build();
         nodeIds.add(hwNode);
         ParentRefs parent = new ParentRefsBuilder().setNodeIdentifier(nodeIds).build();
@@ -437,7 +437,7 @@ public final class ItmUtils {
     public static InternalTunnel buildInternalTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
                                                      Class<? extends TunnelTypeBase> tunType,
                                                      String trunkInterfaceName) {
-        return new InternalTunnelBuilder().setKey(new InternalTunnelKey(dstDpnId, srcDpnId, tunType))
+        return new InternalTunnelBuilder().withKey(new InternalTunnelKey(dstDpnId, srcDpnId, tunType))
                 .setDestinationDPN(dstDpnId)
                 .setSourceDPN(srcDpnId).setTransportType(tunType)
                 .setTunnelInterfaceNames(Collections.singletonList(trunkInterfaceName)).build();
@@ -446,7 +446,7 @@ public final class ItmUtils {
     public static ExternalTunnel buildExternalTunnel(String srcNode, String dstNode,
                                                      Class<? extends TunnelTypeBase> tunType,
                                                      String trunkInterfaceName) {
-        return new ExternalTunnelBuilder().setKey(
+        return new ExternalTunnelBuilder().withKey(
                 new ExternalTunnelKey(dstNode, srcNode, tunType))
                 .setSourceDevice(srcNode).setDestinationDevice(dstNode)
                 .setTunnelInterfaceName(trunkInterfaceName)
@@ -819,7 +819,7 @@ public final class ItmUtils {
         List<DpnIds> dpnIdList = new ArrayList<>();
         DpnIdsBuilder builder = new DpnIdsBuilder();
         for (BigInteger dpnId : dpnIds) {
-            dpnIdList.add(builder.setKey(new DpnIdsKey(dpnId)).setDPN(dpnId).build());
+            dpnIdList.add(builder.withKey(new DpnIdsKey(dpnId)).setDPN(dpnId).build());
         }
         return dpnIdList;
     }
@@ -1165,7 +1165,7 @@ public final class ItmUtils {
         Node bridgeNode = null;
         String datapathId = null;
 
-        NodeId ovsdbNodeId = node.getKey().getNodeId();
+        NodeId ovsdbNodeId = node.key().getNodeId();
 
         NodeId brNodeId = new NodeId(ovsdbNodeId.getValue()
             + "/" + ITMConstants.BRIDGE_URI_PREFIX + "/" + bridge);
@@ -1182,7 +1182,7 @@ public final class ItmUtils {
             bridgeNode = opBridgeNode.get();
         }
         if (bridgeNode != null) {
-            ovsdbBridgeAugmentation = bridgeNode.getAugmentation(OvsdbBridgeAugmentation.class);
+            ovsdbBridgeAugmentation = bridgeNode.augmentation(OvsdbBridgeAugmentation.class);
         }
 
         if (ovsdbBridgeAugmentation != null && ovsdbBridgeAugmentation.getDatapathId() != null) {
@@ -1320,8 +1320,8 @@ public final class ItmUtils {
         StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 ItmUtils.getInterface(name, ifaceManager);
-        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
-        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
+        ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
         if (ifTunnel == null || parentRefs == null) {
             return null;
         }
@@ -1353,7 +1353,7 @@ public final class ItmUtils {
                     .setTepIp(ifTunnel.getTunnelDestination());
             stlBuilder.setTransportType(tunnel.getTransportType());
         }
-        stlBuilder.setKey(tlKey).setTunnelInterfaceName(name).setOperState(tunOpStatus).setTunnelState(state)
+        stlBuilder.withKey(tlKey).setTunnelInterfaceName(name).setOperState(tunOpStatus).setTunnelState(state)
                 .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build());
         return stlBuilder.build();
     }
@@ -1400,7 +1400,7 @@ public final class ItmUtils {
         /* populate tos option only if its not default value of 0 */
         if (tos != null && !tos.equals("0")) {
             TunnelOptionsBuilder optionsBuilder = new TunnelOptionsBuilder();
-            optionsBuilder.setKey(new TunnelOptionsKey("tos"));
+            optionsBuilder.withKey(new TunnelOptionsKey("tos"));
             optionsBuilder.setTunnelOption("tos");
             optionsBuilder.setValue(tos);
             tunOptions.add(optionsBuilder.build());
@@ -1408,7 +1408,7 @@ public final class ItmUtils {
 
         if (tep.getTunnelType() == TunnelTypeVxlan.class && itmConfig.isGpeExtensionEnabled()) {
             TunnelOptionsBuilder optionsBuilder = new TunnelOptionsBuilder();
-            optionsBuilder.setKey(new TunnelOptionsKey("exts"));
+            optionsBuilder.withKey(new TunnelOptionsKey("exts"));
             optionsBuilder.setTunnelOption("exts");
             optionsBuilder.setValue("gpe");
             tunOptions.add(optionsBuilder.build());

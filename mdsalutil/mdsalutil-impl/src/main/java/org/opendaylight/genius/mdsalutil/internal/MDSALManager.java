@@ -373,7 +373,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     protected InstanceIdentifier<Node> nodeToInstanceId(Node node) {
-        return InstanceIdentifier.builder(Nodes.class).child(Node.class, node.getKey()).build();
+        return InstanceIdentifier.builder(Nodes.class).child(Node.class, node.key()).build();
     }
 
     protected static NodeConnectorRef getNodeConnRef(final String nodeId, final String port) {
@@ -396,7 +396,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     protected Node buildDpnNode(BigInteger dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
-        Node nodeDpn = new NodeBuilder().setId(nodeId).setKey(new NodeKey(nodeId)).build();
+        Node nodeDpn = new NodeBuilder().setId(nodeId).withKey(new NodeKey(nodeId)).build();
 
         return nodeDpn;
     }
@@ -849,14 +849,14 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         try {
             return singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, groupInstanceId).isPresent();
         } catch (ReadFailedException e) {
-            LOG.warn("Exception while reading group {} for Node {}", groupId, nodeDpn.getKey());
+            LOG.warn("Exception while reading group {} for Node {}", groupId, nodeDpn.key());
         }
         return false;
     }
 
     private InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {
         InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Group.class, new GroupKey(new GroupId(groupId))).build();
         return groupInstanceId;
     }
@@ -875,7 +875,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     private InstanceIdentifier<Flow> buildFlowInstanceIdentifier(BigInteger dpnId, short tableId, FlowKey flowKey) {
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, buildDpnNode(dpnId).getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, buildDpnNode(dpnId).key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(tableId)).child(Flow.class, flowKey).build();
         return flowInstanceId;
     }
@@ -883,7 +883,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private InstanceIdentifier<Bucket> buildBucketInstanceIdentifier(long groupId, long bucketId,
             Node nodeDpn) {
         InstanceIdentifier<Bucket> bucketInstanceId = InstanceIdentifier.builder(Nodes.class)
-                .child(Node.class, nodeDpn.getKey()).augmentation(FlowCapableNode.class)
+                .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Group.class, new GroupKey(new GroupId(groupId)))
                 .child(Buckets.class)
                 .child(Bucket.class, new BucketKey(new BucketId(bucketId))).build();

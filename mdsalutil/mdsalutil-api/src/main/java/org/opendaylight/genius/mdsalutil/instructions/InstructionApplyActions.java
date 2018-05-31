@@ -38,7 +38,7 @@ public class InstructionApplyActions extends AbstractInstructionInfoImpl {
                         )
                         .build()
                 )
-                .setKey(new InstructionKey(instructionKey))
+                .withKey(new InstructionKey(instructionKey))
                 .build();
     }
 

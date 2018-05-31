@@ -46,7 +46,7 @@ public class ActionSetTcpDestinationPort extends ActionInfo {
                         .setTcpDestinationPort(new PortNumber(port)).build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

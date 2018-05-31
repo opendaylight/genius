@@ -32,7 +32,7 @@ public abstract class GroupEntity extends AbstractSwitchEntity {
             groupBuilder = new GroupBuilder();
 
             GroupId groupId = new GroupId(getGroupId());
-            groupBuilder.setKey(new GroupKey(groupId));
+            groupBuilder.withKey(new GroupKey(groupId));
             groupBuilder.setGroupId(groupId);
 
             groupBuilder.setGroupName(getGroupName());

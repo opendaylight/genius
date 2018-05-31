@@ -216,19 +216,19 @@ public class TepCommandHelperTest {
         instanceIdentifierList.add(vtepsIdentifier);
         instanceIdentifierList.add(subnetsIdentifier);
         DeviceVteps deviceVteps = new DeviceVtepsBuilder().setIpAddress(ipAddress1)
-                .setKey(new DeviceVtepsKey(ipAddress1, sourceDevice))
+                .withKey(new DeviceVtepsKey(ipAddress1, sourceDevice))
                 .setNodeId(sourceDevice).setTopologyId(destinationDevice).build();
         vteps = new VtepsBuilder().setPortname(portName1).setDpnId(dpId2)
-                .setIpAddress(ipAddress1).setKey(new VtepsKey(dpId2,portName1)).build();
+                .setIpAddress(ipAddress1).withKey(new VtepsKey(dpId2,portName1)).build();
         vtepsTest = new VtepsBuilder().build();
         deviceVtepsList.add(deviceVteps);
         vtepsList.add(vteps);
-        subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
+        subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).withKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).setVteps(vtepsList).build();
         subnetsList.add(subnetsTest);
-        transportZone = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType1).setKey(new
+        transportZone = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType1).withKey(new
                 TransportZoneKey(transportZone1)).setSubnets(subnetsList).build();
-        transportZoneNew = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType2).setKey(new
+        transportZoneNew = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType2).withKey(new
                 TransportZoneKey(transportZone1)).setSubnets(subnetsList).build();
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
@@ -237,7 +237,7 @@ public class TepCommandHelperTest {
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         InternalTunnel internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
                 .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName))
-                .setKey(new InternalTunnelKey(dpId1, dpId2, tunnelType1)).setTransportType(tunnelType1).build();
+                .withKey(new InternalTunnelKey(dpId1, dpId2, tunnelType1)).setTransportType(tunnelType1).build();
         internalTunnelList.add(internalTunnelTest);
         StateTunnelList stateTunnelListTest = new StateTunnelListBuilder().setTunnelInterfaceName(tunnelInterfaceName)
                 .setOperState(TunnelOperStatus.Up).build();

@@ -107,7 +107,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
                     getDpidFromInterfaceErrorMessage(interfaceName, "missing Interface in Config DataStore"));
         }
         if (Tunnel.class.equals(interfaceInfo.getType())) {
-            ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
+            ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
             dpId = parentRefs.getDatapathNodeIdentifier();
         } else {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -141,7 +141,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
         BridgeInterfaceEntry bridgeInterfaceEntry = bridgeEntry.getBridgeInterfaceEntry().get(0);
         InterfaceKey interfaceKey = new InterfaceKey(bridgeInterfaceEntry.getInterfaceName());
         Interface interfaceInfo = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
-        IfTunnel tunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+        IfTunnel tunnel = interfaceInfo.augmentation(IfTunnel.class);
         return Futures.immediateFuture(new GetEndpointIpForDpnOutputBuilder()
                 .setLocalIps(Collections.singletonList(tunnel.getTunnelSource())).build());
     }
@@ -179,7 +179,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
                     interfaceName));
         }
         if (Tunnel.class.equals(interfaceInfo.getType())) {
-            IfTunnel tnl = interfaceInfo.getAugmentation(IfTunnel.class);
+            IfTunnel tnl = interfaceInfo.augmentation(IfTunnel.class);
             Class<? extends TunnelTypeBase> tunType = tnl.getTunnelInterfaceType();
             return Futures.immediateFuture(new GetTunnelTypeOutputBuilder().setTunnelType(tunType).build());
         } else {

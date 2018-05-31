@@ -39,7 +39,7 @@ public class ActionDrop extends ActionInfo {
         DropAction dropAction = dab.build();
         ActionBuilder ab = new ActionBuilder();
         ab.setAction(new DropActionCaseBuilder().setDropAction(dropAction).build());
-        ab.setKey(new ActionKey(newActionKey)).build();
+        ab.withKey(new ActionKey(newActionKey)).build();
         return ab.build();
     }
 }

@@ -59,7 +59,7 @@ public class ActionSetFieldVlanVid extends ActionInfo {
                                     .build())
                             .build())
                     .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

@@ -52,7 +52,7 @@ public class ActionMoveSourceDestinationIp extends ActionInfo {
                 .build())
             .build();
         ab.setAction(new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegMove(regMove).build());
-        ab.setKey(new ActionKey(newActionKey));
+        ab.withKey(new ActionKey(newActionKey));
         return ab.build();
     }
 }

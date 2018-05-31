@@ -71,7 +71,7 @@ public final class HwVTEPInterfaceStateUpdateHelper {
         LOG.debug("starting bfd monitoring for the hwvtep {}", tunnelsInstanceIdentifier);
 
         TunnelsBuilder tunnelsBuilder = new TunnelsBuilder();
-        tunnelsBuilder.setKey(new TunnelsKey(tunnelsNew.getLocalLocatorRef(), tunnelsNew.getRemoteLocatorRef()));
+        tunnelsBuilder.withKey(new TunnelsKey(tunnelsNew.getLocalLocatorRef(), tunnelsNew.getRemoteLocatorRef()));
         tunnelsBuilder.setLocalLocatorRef(tunnelsNew.getLocalLocatorRef());
         tunnelsBuilder.setRemoteLocatorRef(tunnelsNew.getLocalLocatorRef());
         List<BfdParams> bfdParams = new ArrayList<>();

@@ -634,7 +634,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                                 .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                         return result;
                     }
-                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).getKey();
+                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).key();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
@@ -712,13 +712,13 @@ public class ItmManagerRpcService implements ItmRpcService {
                         continue;
                     }
                     foundVxlanTzone = true;
-                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).getKey();
+                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).key();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
                             .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
                             .build();
-                    DeviceVteps deviceVtep = new DeviceVtepsBuilder().setKey(deviceVtepKey).setIpAddress(hwIp)
+                    DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
                     WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                     //TO DO: add retry if it fails
@@ -786,13 +786,13 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                     return result;
                 }
-                SubnetsKey subnetsKey = transportZones.getTransportZone().get(0).getSubnets().get(0).getKey();
+                SubnetsKey subnetsKey = transportZones.getTransportZone().get(0).getSubnets().get(0).key();
                 DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
                 InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
                                 .child(TransportZone.class, new TransportZoneKey(transportZone))
                                 .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey).build();
-                DeviceVteps deviceVtep = new DeviceVtepsBuilder().setKey(deviceVtepKey).setIpAddress(hwIp)
+                DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                         .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
                 WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
                 //TO DO: add retry if it fails
@@ -805,7 +805,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
                             .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey2).build();
-                    DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().setKey(deviceVtepKey2).setIpAddress(hwIp)
+                    DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().withKey(deviceVtepKey2).setIpAddress(hwIp)
                             .setNodeId(nodeId.get(1))
                             .setTopologyId(input.getTopologyId()).build();
                     //TO DO: add retry if it fails
@@ -864,7 +864,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                     return result;
                 }
-                SubnetsKey subnetsKey = tzones.getTransportZone().get(0).getSubnets().get(0).getKey();
+                SubnetsKey subnetsKey = tzones.getTransportZone().get(0).getSubnets().get(0).key();
                 DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
                 InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
@@ -1050,7 +1050,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         Map<String, BigInteger> result = new HashMap<>();
         for (Node node : operInventoryNodes.getNode()) {
-            String name = node.getAugmentation(FlowCapableNode.class).getDescription();
+            String name = node.augmentation(FlowCapableNode.class).getDescription();
             if (nodeNames.contains(name)) {
                 String[] nodeId = node.getId().getValue().split(":");
                 result.put(name, new BigInteger(nodeId[1]));

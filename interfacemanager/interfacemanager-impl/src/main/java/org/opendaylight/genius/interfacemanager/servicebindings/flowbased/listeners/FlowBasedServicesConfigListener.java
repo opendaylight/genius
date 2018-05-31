@@ -140,7 +140,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                                                      final InstanceIdentifier<ServicesInfo> rootIdentifier,
                                                      final DataObjectModification<ServicesInfo> rootNode) {
         final List<BoundServices> boundServices = rootNode.getDataAfter().getBoundServices();
-        final ServicesInfoKey servicesInfoKey = rootNode.getDataAfter().getKey();
+        final ServicesInfoKey servicesInfoKey = rootNode.getDataAfter().key();
         final BoundServices boundServicesBefore = dataObjectModification.getDataBefore();
         final BoundServices boundServicesAfter =  dataObjectModification.getDataAfter();
 
@@ -150,14 +150,14 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 break;
             case SUBTREE_MODIFIED:
                 update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
-                        boundServicesBefore.getKey()), boundServicesBefore, boundServicesAfter, boundServices);
+                        boundServicesBefore.key()), boundServicesBefore, boundServicesAfter, boundServices);
                 break;
             case WRITE:
                 if (boundServicesBefore == null) {
                     add(servicesInfoKey, boundServicesAfter, boundServices);
                 } else {
                     update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
-                            boundServicesBefore.getKey()), boundServicesBefore, boundServicesAfter, boundServices);
+                            boundServicesBefore.key()), boundServicesBefore, boundServicesAfter, boundServices);
                 }
                 break;
             default:
