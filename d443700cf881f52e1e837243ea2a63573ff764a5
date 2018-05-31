@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "533007d7_18ed1511",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "03ab36ab_e2625764",
+      "range": {
+        "startLine": 68,
+        "startChar": 1,
+        "endLine": 68,
+        "endChar": 29
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0a248146_008e8b6b",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 15
@@ -36,6 +60,30 @@
       "writtenOn": "2018-05-31T08:05:51Z",
       "side": 1,
       "message": "Monitoring enable/disable is requested by services, which results in creating/deleting corresponding p2p tunnel for monitoring. There are scenarios where a service may fail to disable monitoring when it is not needed, for example case when a VM migrates from a BFD monitored source DPN to another one, while the controller cluster is down. In such scenarios the current solution will not be able to delete the unwanted p2p tunnel created on the previous source.",
+      "range": {
+        "startLine": 87,
+        "startChar": 2,
+        "endLine": 88,
+        "endChar": 116
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee339978_db7013f2",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0a248146_008e8b6b",
       "range": {
         "startLine": 87,
         "startChar": 2,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "7112a4f1_5322d308",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "In a cluster reboot scenario, if the southbound is connecting while we are still deriving this operational DS, it will result in race conditions. ITM currently does not use EOS for northbound operations",
+      "parentUuid": "ec5ce17d_947d160f",
+      "range": {
+        "startLine": 138,
+        "startChar": 14,
+        "endLine": 138,
+        "endChar": 34
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8a542bc5_c7127abb",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 15
@@ -82,6 +154,30 @@
       "writtenOn": "2018-05-31T08:05:51Z",
       "side": 1,
       "message": "if p2p and of-tunnel can not coexist, then why do we want it here (per tunnel)? It can be kept global or per DPN.",
+      "range": {
+        "startLine": 207,
+        "startChar": 16,
+        "endLine": 207,
+        "endChar": 37
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5425582c_7bc6c66c",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "We decided that we will maintain fake states for all tunnels on top of the OF Tunnel, for easier southbound look ups and easier group-id programming on remotes.",
+      "parentUuid": "8a542bc5_c7127abb",
       "range": {
         "startLine": 207,
         "startChar": 16,
@@ -117,6 +213,30 @@
     },
     {
       "key": {
+        "uuid": "eaf872fd_e8c2d5e7",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "689ee3a8_ca70a4b0",
+      "range": {
+        "startLine": 223,
+        "startChar": 21,
+        "endLine": 223,
+        "endChar": 40
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a259c823_83c8ab65",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 15
@@ -128,6 +248,30 @@
       "writtenOn": "2018-05-31T08:05:51Z",
       "side": 1,
       "message": "are we creating tunnel interfaces? Why?",
+      "range": {
+        "startLine": 273,
+        "startChar": 22,
+        "endLine": 273,
+        "endChar": 38
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba82a2cc_5d984919",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "Clarified",
+      "parentUuid": "a259c823_83c8ab65",
       "range": {
         "startLine": 273,
         "startChar": 22,
@@ -163,6 +307,30 @@
     },
     {
       "key": {
+        "uuid": "6ddc8810_d4486996",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "Removed",
+      "parentUuid": "296233f3_ef1b92e0",
+      "range": {
+        "startLine": 356,
+        "startChar": 3,
+        "endLine": 356,
+        "endChar": 34
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "18e8297c_25e14e04",
         "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
         "patchSetId": 15
@@ -174,6 +342,30 @@
       "writtenOn": "2018-05-31T08:05:51Z",
       "side": 1,
       "message": "Add scale tests, measure KPIs and compare with p2p tunnels mesh.",
+      "range": {
+        "startLine": 509,
+        "startChar": 3,
+        "endLine": 509,
+        "endChar": 11
+      },
+      "revId": "d443700cf881f52e1e837243ea2a63573ff764a5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83cf1257_810488df",
+        "filename": "docs/specs/of-tunnels-support-for-itm-direct-tunnels.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 509,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-05-31T10:42:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "18e8297c_25e14e04",
       "range": {
         "startLine": 509,
         "startChar": 3,
