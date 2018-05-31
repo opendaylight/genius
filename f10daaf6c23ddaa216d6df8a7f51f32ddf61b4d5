@@ -60,6 +60,24 @@
     },
     {
       "key": {
+        "uuid": "a15722b6_0a6ac64c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 730,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-05-31T06:21:14Z",
+      "side": 1,
+      "message": "We had an issue with using session.getConsole() and writing to it. We were not able to use grep on the output. And so we placed session.getConsole() with System.out.\n  Being able to grep on the output was an important requirement especially in a scaled setup having huge output. It think its better retain System.out",
+      "parentUuid": "72f69c73_82ca1302",
+      "revId": "f10daaf6c23ddaa216d6df8a7f51f32ddf61b4d5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8115e27d_235732c4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowState.java",
         "patchSetId": 4
