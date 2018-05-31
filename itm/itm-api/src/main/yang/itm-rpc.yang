@@ -390,4 +390,26 @@ module itm-rpc {
             }
         }
     }
+
+    rpc get-watch-port-for-tunnel {
+        description "retrieve the watch port for the BFD enabled point to point tunnel";
+        input {
+            leaf source-node {
+                type string;
+            }
+
+            leaf destination-node {
+                type string;
+            }
+
+        }
+        output {
+            leaf port-no {
+                type uint32;
+            }
+            leaf portname {
+                type string;
+            }
+        }
+    }
 }
