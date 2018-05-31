@@ -210,13 +210,13 @@ public class ItmInternalTunnelAddTest {
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
         tunnelEndPointsListGre.add(tunnelEndPointsGre);
         tunnelEndPointsListGreNew.add(tunnelEndPointsGreNew);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).setKey(new DPNTEPsInfoKey(dpId1))
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
-        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).setKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
+        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlanNew).build();
-        dpntePsInfoGre = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).setKey(new DPNTEPsInfoKey(dpId1))
+        dpntePsInfoGre = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
                 .setTunnelEndPoints(tunnelEndPointsListGre).build();
-        dpntePsInfoGreNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).setKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
+        dpntePsInfoGreNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListGreNew).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true)
                 .setMonitorProtocol(monitorProtocol).build();

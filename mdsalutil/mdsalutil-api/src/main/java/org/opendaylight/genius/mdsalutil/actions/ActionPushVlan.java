@@ -39,6 +39,6 @@ public class ActionPushVlan extends ActionInfo {
                 new PushVlanActionCaseBuilder().setPushVlanAction(
                         new PushVlanActionBuilder().setEthernetType(
                                 NwConstants.ETHTYPE_802_1Q).build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

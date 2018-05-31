@@ -72,7 +72,7 @@ public class ItmTepAutoConfigTest {
     @Before
     public void start() throws InterruptedException {
         transportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
-            .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setKey(new TransportZoneKey(ItmTestConstants.TZ_NAME))
+            .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME))
             .build();
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
@@ -644,7 +644,7 @@ public class ItmTepAutoConfigTest {
         // create the same TZ
         TransportZone transportZoneNorth = new TransportZoneBuilder().setZoneName(ItmTestConstants.NOT_HOSTED_TZ_NAME)
             .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-            .setKey(new TransportZoneKey(ItmTestConstants.NOT_HOSTED_TZ_NAME)).build();
+            .withKey(new TransportZoneKey(ItmTestConstants.NOT_HOSTED_TZ_NAME)).build();
         Assert.assertNotNull(transportZoneNorth);
 
         ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, ItmTepAutoConfigTestUtil

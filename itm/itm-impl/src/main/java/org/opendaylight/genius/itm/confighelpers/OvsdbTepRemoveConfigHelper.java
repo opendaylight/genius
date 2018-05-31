@@ -106,7 +106,7 @@ public final class OvsdbTepRemoveConfigHelper {
 
             // subnet list already exists case; check for dummy-subnet
             for (Subnets subnet : subnetList) {
-                if (subnet.getKey().getPrefix().equals(subnetMaskObj)) {
+                if (subnet.key().getPrefix().equals(subnetMaskObj)) {
                     LOG.trace("Subnet exists in the subnet list of transport-zone {}.", tzName);
                     // get vtep list of existing subnet
                     vtepList = subnet.getVteps();

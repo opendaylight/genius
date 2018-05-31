@@ -58,7 +58,7 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
             applyValue(nxAugMatchBuilder, builder.build());
             NxAugMatchNodesNodeTableFlow nxAugMatch = nxAugMatchBuilder.build();
             GeneralAugMatchNodesNodeTableFlow existingAugmentations = matchBuilder
-                    .getAugmentation(GeneralAugMatchNodesNodeTableFlow.class);
+                    .augmentation(GeneralAugMatchNodesNodeTableFlow.class);
             GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
                     nxAugMatch, keyClass);
             matchBuilder.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);

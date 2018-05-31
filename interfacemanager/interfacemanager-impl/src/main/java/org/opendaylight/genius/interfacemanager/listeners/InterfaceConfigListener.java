@@ -97,7 +97,7 @@ public class InterfaceConfigListener
             return;
         }
         LOG.debug("Received Interface Remove Event: {}, {}", instanceIdentifier, removedInterface);
-        ParentRefs parentRefs = removedInterface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = removedInterface.augmentation(ParentRefs.class);
         if (parentRefs == null
                 || parentRefs.getDatapathNodeIdentifier() == null && parentRefs.getParentInterface() == null) {
             LOG.debug("parent refs not specified for {}", removedInterface.getName());
@@ -122,7 +122,7 @@ public class InterfaceConfigListener
         }
         LOG.debug("Received Interface Update Event: {}, {}, {}", instanceIdentifier, originalInterface,
                   updatedInterface);
-        ParentRefs parentRefs = updatedInterface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = updatedInterface.augmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getParentInterface() == null
                 && !InterfaceManagerCommonUtils.isTunnelInterface(updatedInterface)) {
             // If parentRefs are missing, try to find a matching parent and
@@ -150,7 +150,7 @@ public class InterfaceConfigListener
             return;
         }
         LOG.debug("Received Interface Add Event: {}, {}", instanceIdentifier, newInterface);
-        ParentRefs parentRefs = newInterface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = newInterface.augmentation(ParentRefs.class);
         if (parentRefs == null || parentRefs.getParentInterface() == null) {
             // If parentRefs are missing, try to find a matching parent and
             // update - this will trigger another DCN
@@ -185,7 +185,7 @@ public class InterfaceConfigListener
         if (InterfaceManagerCommonUtils.isOfTunnelInterface(theInterface)) {
             return SouthboundUtils.generateOfTunnelName(
                     theParentRefs.getDatapathNodeIdentifier(),
-                    theInterface.getAugmentation(IfTunnel.class));
+                    theInterface.augmentation(IfTunnel.class));
         } else if (InterfaceManagerCommonUtils.isTunnelInterface(theInterface)) {
             return theInterface.getName();
         } else {

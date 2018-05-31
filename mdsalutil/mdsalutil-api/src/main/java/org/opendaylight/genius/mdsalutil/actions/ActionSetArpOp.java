@@ -56,7 +56,7 @@ public class ActionSetArpOp extends ActionInfo {
                     .setValue(BigInteger.valueOf(value))
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

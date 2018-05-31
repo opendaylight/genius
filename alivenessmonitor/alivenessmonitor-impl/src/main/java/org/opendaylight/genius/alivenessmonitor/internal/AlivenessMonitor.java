@@ -597,7 +597,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 List<Long> monitorIds1 = entry.getMonitorIds();
                 monitorIds1.add(monitorId);
                 InterfaceMonitorEntry newEntry1 = new InterfaceMonitorEntryBuilder()
-                         .setKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds1).build();
+                         .withKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds1).build();
                 tx.merge(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry1);
             } else {
                     // Create new monitor entry
@@ -1134,7 +1134,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 List<Long> monitorIds = entry.getMonitorIds();
                 monitorIds.remove(monitorId);
                 InterfaceMonitorEntry newEntry = new InterfaceMonitorEntryBuilder(entry)
-                          .setKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
+                          .withKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
                 tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry,
                             CREATE_MISSING_PARENT);
                 return tx.submit();

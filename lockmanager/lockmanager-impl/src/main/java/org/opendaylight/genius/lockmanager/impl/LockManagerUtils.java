@@ -62,7 +62,7 @@ public class LockManagerUtils {
     }
 
     public Lock buildLock(String lockName, String owner) {
-        return new LockBuilder().setKey(new LockKey(lockName)).setLockName(lockName)
+        return new LockBuilder().withKey(new LockKey(lockName)).setLockName(lockName)
                 .setLockOwner(owner).build();
     }
 

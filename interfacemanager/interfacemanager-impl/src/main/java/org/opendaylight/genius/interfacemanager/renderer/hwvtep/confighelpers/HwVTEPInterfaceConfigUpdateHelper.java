@@ -62,7 +62,7 @@ public final class HwVTEPInterfaceConfigUpdateHelper {
                 physicalSwitchId, localTEPInstanceIdentifier, remoteTEPInstanceIdentifier);
 
         LOG.debug("updating bfd monitoring parameters for the hwvtep {}", tunnelsInstanceIdentifier);
-        tunnelsBuilder.setKey(new TunnelsKey(new HwvtepPhysicalLocatorRef(localTEPInstanceIdentifier),
+        tunnelsBuilder.withKey(new TunnelsKey(new HwvtepPhysicalLocatorRef(localTEPInstanceIdentifier),
                 new HwvtepPhysicalLocatorRef(remoteTEPInstanceIdentifier)));
         List<BfdParams> bfdParams = new ArrayList<>();
         SouthboundUtils.fillBfdParameters(bfdParams, ifTunnel);

@@ -62,7 +62,7 @@ public class ActionSetDestinationIp extends ActionInfo {
                         .setIpv4Destination(new Ipv4Prefix(destination)).build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

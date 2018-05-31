@@ -237,6 +237,6 @@ public final class SrmRpcUtils {
             Operations operation, Class<? extends EntityNameBase> serviceName) {
         return InstanceIdentifier.create(ServiceOps.class)
             .child(Services.class, new ServicesKey(serviceName))
-            .child(Operations.class, operation.getKey());
+            .child(Operations.class, operation.key());
     }
 }

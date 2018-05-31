@@ -149,7 +149,7 @@ public class MDSALUtil {
             int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
             List<InstructionInfo> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
-        return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
+        return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).withKey(key)
                 .setPriority(priority).setInstructions(buildInstructions(listInstructionInfo))
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
                 .setFlowName(flowName).setTableId(tableId).setStrict(isStrict)
@@ -171,7 +171,7 @@ public class MDSALUtil {
                                   int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
                                   List<Instruction> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
-        return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).setKey(key)
+        return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).withKey(key)
                 .setPriority(priority)
                 .setInstructions(new InstructionsBuilder().setInstruction(listInstructionInfo).build())
                 .setBarrier(false).setInstallHw(true).setHardTimeout(hardTimeOut).setIdleTimeout(idleTimeOut)
@@ -193,7 +193,7 @@ public class MDSALUtil {
 
     public static Group buildGroup(long groupId, String groupName, GroupTypes groupType, Buckets buckets) {
         GroupId groupIdentifier = new GroupId(groupId);
-        return new GroupBuilder().setGroupId(groupIdentifier).setKey(new GroupKey(groupIdentifier))
+        return new GroupBuilder().setGroupId(groupIdentifier).withKey(new GroupKey(groupIdentifier))
                 .setGroupName(groupName).setGroupType(groupType).setBuckets(buckets).build();
     }
 
@@ -251,7 +251,7 @@ public class MDSALUtil {
         return new ActionBuilder().setAction(
                 new SetFieldCaseBuilder().setSetField(new SetFieldBuilder().setTunnel(new TunnelBuilder()
                 .setTunnelId(tunnelId).build()).build())
-                .build()).setKey(new ActionKey(actionKey)).build();
+                .build()).withKey(new ActionKey(actionKey)).build();
     }
 
     public static List<Action> buildActions(List<ActionInfo> actions) {
@@ -281,7 +281,7 @@ public class MDSALUtil {
             long watchGroup) {
         return new BucketBuilder().setAction(actionsList).setWeight(weight).setWatchGroup(watchGroup)
                 .setWatchPort(watchPort).setBucketId(new BucketId(Long.valueOf(bucketId)))
-                .setKey(new BucketKey(new BucketId(Long.valueOf(bucketId)))).build();
+                .withKey(new BucketKey(new BucketId(Long.valueOf(bucketId)))).build();
     }
 
     public static Buckets buildBucketLists(List<Bucket> bucketList) {
@@ -419,7 +419,7 @@ public class MDSALUtil {
     public static Instruction buildAndGetPopVlanActionInstruction(int actionKey, int instructionKey) {
         Action popVlanAction = new ActionBuilder().setAction(
                 new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
-                .setKey(new ActionKey(actionKey)).build();
+                .withKey(new ActionKey(actionKey)).build();
         List<Action> listAction = new ArrayList<>();
         listAction.add(popVlanAction);
         return buildApplyActionsInstruction(listAction, instructionKey);
@@ -447,7 +447,7 @@ public class MDSALUtil {
         ActionBuilder ab = new ActionBuilder();
         ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegLoad(nxRegLoadBuilder.build()).build());
-        ab.setKey(new ActionKey(actionKey));
+        ab.withKey(new ActionKey(actionKey));
         return ab.build();
     }
 
@@ -468,7 +468,7 @@ public class MDSALUtil {
         InstructionBuilder instructionBuilder = new InstructionBuilder();
 
         instructionBuilder.setInstruction(applyActionsCase);
-        instructionBuilder.setKey(new InstructionKey(instructionKey));
+        instructionBuilder.withKey(new InstructionKey(instructionKey));
         return instructionBuilder.build();
     }
 
@@ -489,12 +489,12 @@ public class MDSALUtil {
         InstructionBuilder instructionBuilder = new InstructionBuilder();
 
         instructionBuilder.setInstruction(writeActionsCase);
-        instructionBuilder.setKey(new InstructionKey(instructionKey));
+        instructionBuilder.withKey(new InstructionKey(instructionKey));
         return instructionBuilder.build();
     }
 
     public static Instruction buildInstruction(Instruction instruction, int instructionKey) {
-        return new InstructionBuilder(instruction).setKey(new InstructionKey(instructionKey)).build();
+        return new InstructionBuilder(instruction).withKey(new InstructionKey(instructionKey)).build();
     }
 
     public static List<Instruction> buildInstructionsDrop() {
@@ -528,7 +528,7 @@ public class MDSALUtil {
                 .setInstruction(
                         new WriteMetadataCaseBuilder().setWriteMetadata(
                                 new WriteMetadataBuilder().setMetadata(metadata).setMetadataMask(mask).build())
-                                .build()).setKey(new InstructionKey(instructionKey)).build();
+                                .build()).withKey(new InstructionKey(instructionKey)).build();
     }
 
     public static Instruction buildAndGetGotoTableInstruction(short tableId, int instructionKey) {
@@ -536,7 +536,7 @@ public class MDSALUtil {
             .setInstruction(
                 new GoToTableCaseBuilder().setGoToTable(
                     new GoToTableBuilder().setTableId(tableId).build()).build())
-            .setKey(new InstructionKey(instructionKey)).build();
+            .withKey(new InstructionKey(instructionKey)).build();
     }
 
     /**
@@ -630,7 +630,7 @@ public class MDSALUtil {
                 LogicalDatastoreType.OPERATIONAL, nodeConnectorId);
         if (optNc.isPresent()) {
             NodeConnector nc = optNc.get();
-            FlowCapableNodeConnector fcnc = nc.getAugmentation(FlowCapableNodeConnector.class);
+            FlowCapableNodeConnector fcnc = nc.augmentation(FlowCapableNodeConnector.class);
             MacAddress macAddress = fcnc.getHardwareAddress();
             return HexEncode.bytesFromHexString(macAddress.getValue());
         }
@@ -651,7 +651,7 @@ public class MDSALUtil {
                 .child(NodeConnector.class,
                         new NodeConnectorKey(nodeConnectorId)).build();
         return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).toJavaUtil().map(
-            nc -> nc.getAugmentation(FlowCapableNodeConnector.class)).map(FlowCapableNodeConnector::getName).orElse(
+            nc -> nc.augmentation(FlowCapableNodeConnector.class)).map(FlowCapableNodeConnector::getName).orElse(
                 null);
     }
 
@@ -667,7 +667,7 @@ public class MDSALUtil {
                         .setStart(0).setEnd(15).build())
                 .setValue(BigInteger.valueOf(inPortVal)).build();
         ActionBuilder abExt = new ActionBuilder();
-        abExt.setKey(new ActionKey(actionKey));
+        abExt.withKey(new ActionKey(actionKey));
         abExt.setOrder(actionKey);
         abExt.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(regLoad).build());
         return abExt.build();
@@ -676,7 +676,7 @@ public class MDSALUtil {
     public static Action createPopVlanAction(final int actionKey) {
         return new ActionBuilder().setAction(
                new PopVlanActionCaseBuilder().setPopVlanAction(new PopVlanActionBuilder().build()).build())
-                .setKey(new ActionKey(actionKey)).setOrder(actionKey).build();
+                .withKey(new ActionKey(actionKey)).setOrder(actionKey).build();
     }
 
 }

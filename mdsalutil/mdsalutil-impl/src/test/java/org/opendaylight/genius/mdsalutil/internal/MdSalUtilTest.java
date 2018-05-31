@@ -141,7 +141,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
         FlowCapableNodeBuilder fcnBuilder = new FlowCapableNodeBuilder();
         NodeBuilder nodeBuilder = new NodeBuilder();
-        nodeBuilder.setKey(nodeKey);
+        nodeBuilder.withKey(nodeKey);
         nodeBuilder.addAugmentation(FlowCapableNode.class, fcnBuilder.build());
 
         WriteTransaction writeTx = getDataBroker().newWriteOnlyTransaction();

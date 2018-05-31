@@ -165,7 +165,7 @@ public class TerminationPointStateListener
         StateTunnelListKey stateTnlKey = new StateTunnelListKey(interfaceName);
         InstanceIdentifier<StateTunnelList> stateTnlII = ItmUtils.buildStateTunnelListId(stateTnlKey);
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
-        StateTunnelListBuilder stateTnlBuilder = new StateTunnelListBuilder().setKey(stateTnlKey);
+        StateTunnelListBuilder stateTnlBuilder = new StateTunnelListBuilder().withKey(stateTnlKey);
         stateTnlBuilder.setOperState(operStatus);
         transaction.merge(LogicalDatastoreType.OPERATIONAL, stateTnlII, stateTnlBuilder.build(), false);
     }

@@ -127,7 +127,7 @@ public final class InterfaceMetaUtils {
     }
 
     public BridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo) {
-        ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
         BigInteger dpn = parentRefs.getDatapathNodeIdentifier();
         return getBridgeRefEntryFromOperDS(dpn);
     }
@@ -186,7 +186,7 @@ public final class InterfaceMetaUtils {
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(childInterface);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey, bridgeInterfaceEntryKey);
-        BridgeInterfaceEntryBuilder entryBuilder = new BridgeInterfaceEntryBuilder().setKey(bridgeInterfaceEntryKey)
+        BridgeInterfaceEntryBuilder entryBuilder = new BridgeInterfaceEntryBuilder().withKey(bridgeInterfaceEntryKey)
                 .setInterfaceName(childInterface);
         batchingUtils.write(bridgeInterfaceEntryIid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
@@ -265,7 +265,7 @@ public final class InterfaceMetaUtils {
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         IfIndexInterface ifIndexInterface = new IfIndexInterfaceBuilder().setIfIndex(ifIndex)
-                .setKey(new IfIndexInterfaceKey(ifIndex)).setInterfaceName(infName).build();
+                .withKey(new IfIndexInterfaceKey(ifIndex)).setInterfaceName(infName).build();
         batchingUtils.write(id, ifIndexInterface, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
@@ -286,7 +286,7 @@ public final class InterfaceMetaUtils {
         InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = getBridgeEntryIdentifier(bridgeEntryKey);
 
         BridgeEntryBuilder bridgeEntryBuilder =
-                new BridgeEntryBuilder().setKey(bridgeEntryKey).setBridgeReference(ovsdbBridgeRef);
+                new BridgeEntryBuilder().withKey(bridgeEntryKey).setBridgeReference(ovsdbBridgeRef);
         tx.merge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), true);
     }
 
@@ -298,7 +298,7 @@ public final class InterfaceMetaUtils {
         InstanceIdentifier<BridgeRefEntry> bridgeEntryId =
                 InterfaceMetaUtils.getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         BridgeRefEntryBuilder tunnelDpnBridgeEntryBuilder =
-                new BridgeRefEntryBuilder().setKey(bridgeRefEntryKey).setDpid(dpnId)
+                new BridgeRefEntryBuilder().withKey(bridgeRefEntryKey).setDpid(dpnId)
                         .setBridgeReference(new OvsdbBridgeRef(bridgeIid));
         tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), true);
     }
@@ -320,7 +320,7 @@ public final class InterfaceMetaUtils {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
         TunnelInstanceInterface tunnelInstanceInterface = new TunnelInstanceInterfaceBuilder()
-                .setTunnelInstanceIdentifier(tunnelInstanceId).setKey(new TunnelInstanceInterfaceKey(tunnelInstanceId))
+                .setTunnelInstanceIdentifier(tunnelInstanceId).withKey(new TunnelInstanceInterfaceKey(tunnelInstanceId))
                 .setInterfaceName(infName).build();
         transaction.put(LogicalDatastoreType.OPERATIONAL, id, tunnelInstanceInterface, true);
 
@@ -394,7 +394,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void addBridgeEntryToCache(BridgeEntry bridgeEntry) {
-        addBridgeEntryToCache(bridgeEntry.getKey().getDpid(), bridgeEntry);
+        addBridgeEntryToCache(bridgeEntry.key().getDpid(), bridgeEntry);
     }
 
     public void removeFromBridgeEntryCache(BigInteger dpnId) {
@@ -402,7 +402,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void removeFromBridgeEntryCache(BridgeEntry bridgeEntry) {
-        removeFromBridgeEntryCache(bridgeEntry.getKey().getDpid());
+        removeFromBridgeEntryCache(bridgeEntry.key().getDpid());
     }
 
     public BridgeEntry getBridgeEntryFromCache(BigInteger dpnId) {
@@ -416,7 +416,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void addBridgeRefEntryToCache(BridgeRefEntry bridgeRefEntry) {
-        addBridgeRefEntryToCache(bridgeRefEntry.getKey().getDpid(), bridgeRefEntry);
+        addBridgeRefEntryToCache(bridgeRefEntry.key().getDpid(), bridgeRefEntry);
     }
 
     public void removeFromBridgeRefEntryCache(BigInteger dpnId) {
@@ -424,7 +424,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void removeFromBridgeRefEntryCache(BridgeRefEntry bridgeRefEntry) {
-        removeFromBridgeRefEntryCache(bridgeRefEntry.getKey().getDpid());
+        removeFromBridgeRefEntryCache(bridgeRefEntry.key().getDpid());
     }
 
     public BridgeRefEntry getBridgeRefEntryFromCache(BigInteger dpnId) {

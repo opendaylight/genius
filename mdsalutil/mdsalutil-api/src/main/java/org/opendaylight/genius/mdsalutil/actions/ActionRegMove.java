@@ -64,7 +64,7 @@ public class ActionRegMove extends ActionInfo {
         return new ActionBuilder()
                 .setAction(new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegMove(
                         nxRegMoveBuilder.build()).build())
-                .setKey(new ActionKey(newActionKey))
+                .withKey(new ActionKey(newActionKey))
                 .build();
     }
 

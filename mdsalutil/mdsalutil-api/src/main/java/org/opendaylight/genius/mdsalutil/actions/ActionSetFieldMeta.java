@@ -41,7 +41,7 @@ public class ActionSetFieldMeta extends ActionInfo {
                 new SetFieldCaseBuilder().setSetField(
                         new SetFieldBuilder().setMetadata(
                                 new MetadataBuilder().setMetadata(metadataValue).build())
-                                .build()).build()).setKey(new ActionKey(newActionKey)).build();
+                                .build()).build()).withKey(new ActionKey(newActionKey)).build();
     }
 
     @Override

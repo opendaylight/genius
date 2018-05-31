@@ -162,7 +162,7 @@ public final class InterfaceManagerCommonUtils {
     public List<Interface> getAllTunnelInterfacesFromCache() {
         return interfaceConfigMap.values().stream()
                 .filter(iface -> IfmUtil.getInterfaceType(iface) == InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE
-                        && iface.getAugmentation(IfTunnel.class).isInternal())
+                        && iface.augmentation(IfTunnel.class).isInternal())
                 .collect(Collectors.toList());
     }
 
@@ -323,7 +323,7 @@ public final class InterfaceManagerCommonUtils {
             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder()
-                .setKey(new org.opendaylight.yang.gen.v1.urn
+                .withKey(new org.opendaylight.yang.gen.v1.urn
                             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
                         interfaceName));
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -350,7 +350,7 @@ public final class InterfaceManagerCommonUtils {
         InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
         InterfaceChildEntry interfaceChildEntry = new InterfaceChildEntryBuilder()
-                .setKey(interfaceChildEntryKey)
+                .withKey(interfaceChildEntryKey)
                 .setChildInterface(childInterface)
                 .build();
         writer.accept(Pair.of(interfaceChildEntryIdentifier, interfaceChildEntry));
@@ -376,7 +376,7 @@ public final class InterfaceManagerCommonUtils {
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ncStr);
             NodeConnector nodeConnector = getNodeConnectorFromInventoryOperDS(nodeConnectorId);
             FlowCapableNodeConnector flowCapableNodeConnector = nodeConnector
-                    .getAugmentation(FlowCapableNodeConnector.class);
+                    .augmentation(FlowCapableNodeConnector.class);
             operStatus = getOpState(flowCapableNodeConnector);
         }
 
@@ -401,7 +401,7 @@ public final class InterfaceManagerCommonUtils {
                 .buildStateInterfaceId(interfaceName);
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder();
         ifaceBuilderChild.setOperStatus(operStatus);
-        ifaceBuilderChild.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        ifaceBuilderChild.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifChildStateId, ifaceBuilderChild.build());
     }
 
@@ -455,7 +455,7 @@ public final class InterfaceManagerCommonUtils {
             interfaceType = interfaceInfo.getType();
             ifaceBuilder.setType(interfaceType);
         }
-        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         ifaceBuilder.setStatistics(new StatisticsBuilder().setDiscontinuityTime(DateAndTime
                 .getDefaultInstance(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))).build());
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -506,7 +506,7 @@ public final class InterfaceManagerCommonUtils {
             childLowerLayerIfList.add(0, nodeConnectorId.getValue());
         } else {
             //logical tunnel group doesn't have OF port
-            ParentRefs parentRefs = interfaceInfo.getAugmentation(ParentRefs.class);
+            ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
             if (parentRefs != null) {
                 BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
                 String lowref = MDSALUtil.NODE_PREFIX + MDSALUtil.SEPARATOR + dpId + MDSALUtil.SEPARATOR + 0;
@@ -517,7 +517,7 @@ public final class InterfaceManagerCommonUtils {
         if (physAddress != null) {
             ifaceBuilder.setPhysAddress(physAddress);
         }
-        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         ifaceBuilder.setStatistics(new StatisticsBuilder().setDiscontinuityTime(DateAndTime
                 .getDefaultInstance(ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT))).build());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -597,7 +597,7 @@ public final class InterfaceManagerCommonUtils {
 
     public static boolean isTrunkInterface(Interface iface) {
         if (iface != null) {
-            IfL2vlan ifL2vlan = iface.getAugmentation(IfL2vlan.class);
+            IfL2vlan ifL2vlan = iface.augmentation(IfL2vlan.class);
             return ifL2vlan != null && IfL2vlan.L2vlanMode.Trunk.equals(ifL2vlan.getL2vlanMode());
         }
 
@@ -627,21 +627,21 @@ public final class InterfaceManagerCommonUtils {
                 .buildStateInterfaceId(interfaceName);
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(operStatus);
-        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
+        ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
         transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
     }
 
     public static boolean isTunnelInterface(Interface interfaceInfo) {
-        return interfaceInfo != null && interfaceInfo.getAugmentation(IfTunnel.class) != null;
+        return interfaceInfo != null && interfaceInfo.augmentation(IfTunnel.class) != null;
     }
 
     public static boolean isOfTunnelInterface(Interface interfaceInfo) {
         return isTunnelInterface(interfaceInfo)
-                && SouthboundUtils.isOfTunnel(interfaceInfo.getAugmentation(IfTunnel.class));
+                && SouthboundUtils.isOfTunnel(interfaceInfo.augmentation(IfTunnel.class));
     }
 
     public static boolean isVlanInterface(Interface interfaceInfo) {
-        return interfaceInfo != null && interfaceInfo.getAugmentation(IfL2vlan.class) != null;
+        return interfaceInfo != null && interfaceInfo.augmentation(IfL2vlan.class) != null;
     }
 
     // Cache Util methods
@@ -711,7 +711,7 @@ public final class InterfaceManagerCommonUtils {
                                                         .child(InterfaceNameEntry.class, interfaceNameEntryKey)
                                                         .build();
         InterfaceNameEntryBuilder entryBuilder =
-                new InterfaceNameEntryBuilder().setKey(interfaceNameEntryKey).setInterfaceName(infName);
+                new InterfaceNameEntryBuilder().withKey(interfaceNameEntryKey).setInterfaceName(infName);
         if (interfaceType != null) {
             entryBuilder.setInterfaceType(interfaceType);
         }

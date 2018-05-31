@@ -115,7 +115,7 @@ public final class OvsdbTepAddConfigHelper {
 
             // subnet list already exists case; check for dummy-subnet
             for (Subnets subnet : subnetList) {
-                if (subnet.getKey().getPrefix().equals(subnetMaskObj)) {
+                if (subnet.key().getPrefix().equals(subnetMaskObj)) {
                     LOG.trace("Subnet exists in the subnet list of transport-zone {}.", tzName);
                     // get vtep list of existing subnet
                     vtepList = subnet.getVteps();
@@ -186,7 +186,7 @@ public final class OvsdbTepAddConfigHelper {
             // create vtep
             VtepsKey vtepkey = new VtepsKey(dpid, portName);
             Vteps vtepObj =
-                new VtepsBuilder().setDpnId(dpid).setIpAddress(tepIpAddress).setKey(vtepkey).setPortname(portName)
+                new VtepsBuilder().setDpnId(dpid).setIpAddress(tepIpAddress).withKey(vtepkey).setPortname(portName)
                         .setOptionOfTunnel(ofTunnel).build();
 
             // Add vtep obtained from bridge into list
@@ -211,7 +211,7 @@ public final class OvsdbTepAddConfigHelper {
 
         Subnets subnet =
             new SubnetsBuilder().setGatewayIp(gatewayIP)
-                .setKey(subKey).setPrefix(subnetMaskObj)
+                .withKey(subKey).setPrefix(subnetMaskObj)
                 .setVlanId(vlanID).setVteps(updatedVtepList).build();
 
         // add subnet into subnet list
@@ -219,7 +219,7 @@ public final class OvsdbTepAddConfigHelper {
 
         // create TZ node with updated subnet having new vtep
         TransportZone updatedTzone =
-            new TransportZoneBuilder().setKey(new TransportZoneKey(tzName)).setSubnets(subnetList)
+            new TransportZoneBuilder().withKey(new TransportZoneKey(tzName)).setSubnets(subnetList)
                 .setZoneName(tzName).build();
 
         // Update TZ in Config DS to add vtep in TZ
@@ -305,7 +305,7 @@ public final class OvsdbTepAddConfigHelper {
         // create vtep
         UnknownVtepsKey vtepkey = new UnknownVtepsKey(dpid);
         UnknownVteps vtepObj =
-            new UnknownVtepsBuilder().setDpnId(dpid).setIpAddress(tepIpAddress).setKey(vtepkey)
+            new UnknownVtepsBuilder().setDpnId(dpid).setIpAddress(tepIpAddress).withKey(vtepkey)
                 .setOfTunnel(ofTunnel).build();
 
         // Add vtep obtained into unknown TZ tep list
@@ -313,7 +313,7 @@ public final class OvsdbTepAddConfigHelper {
 
         // create unknown TZ node with updated vtep list
         TepsInNotHostedTransportZone updatedTzone = new TepsInNotHostedTransportZoneBuilder()
-            .setKey(new TepsInNotHostedTransportZoneKey(tzName)).setZoneName(tzName)
+            .withKey(new TepsInNotHostedTransportZoneKey(tzName)).setZoneName(tzName)
             .setUnknownVteps(updatedVtepList).build();
 
         LOG.trace("Adding TEP  (DPID: {}, TEP IP: {}, of-tunnel: {}) into unhosted TZ: {}"

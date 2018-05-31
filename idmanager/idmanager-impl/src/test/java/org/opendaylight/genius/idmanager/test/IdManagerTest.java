@@ -163,10 +163,10 @@ public class IdManagerTest {
         asyncEventsWaiter.awaitEventsConsumption();
 
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
-        IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).setKey(new IdPoolKey(ID_POOL_NAME))
+        IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).withKey(new IdPoolKey(ID_POOL_NAME))
                 .setAvailableIdsHolder(createAvailableIdHolder(ID_LOW, ID_HIGH, ID_HIGH + 1))
                 .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L))).build();
-        IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).setKey(new IdPoolKey(localPoolName))
+        IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).withKey(new IdPoolKey(localPoolName))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
@@ -231,9 +231,9 @@ public class IdManagerTest {
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
-        IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).setKey(new IdPoolKey(ID_POOL_NAME))
+        IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).withKey(new IdPoolKey(ID_POOL_NAME))
                 .setReleasedIdsHolder(createReleaseIdHolder(Collections.emptyList())).build();
-        IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).setKey(new IdPoolKey(localPoolName))
+        IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).withKey(new IdPoolKey(localPoolName))
                 .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L)))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
@@ -282,10 +282,10 @@ public class IdManagerTest {
         asyncEventsWaiter.awaitEventsConsumption();
 
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
-        IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).setKey(new IdPoolKey(ID_POOL_NAME))
+        IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).withKey(new IdPoolKey(ID_POOL_NAME))
                 .setAvailableIdsHolder(createAvailableIdHolder(ID_LOW, ID_HIGH, ID_HIGH + 1))
                 .setReleasedIdsHolder(createReleaseIdHolder(Collections.emptyList())).build();
-        IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).setKey(new IdPoolKey(localPoolName))
+        IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).withKey(new IdPoolKey(localPoolName))
                 .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L)))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();

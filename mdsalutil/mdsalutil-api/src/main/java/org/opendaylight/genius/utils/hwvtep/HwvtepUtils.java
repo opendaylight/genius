@@ -239,7 +239,7 @@ public final class HwvtepUtils {
         InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createPhysicalLocatorInstanceIdentifier(nodeId,
                 phyLocator);
         TerminationPoint terminationPoint = new TerminationPointBuilder()
-                .setKey(HwvtepSouthboundUtils.getTerminationPointKey(phyLocator))
+                .withKey(HwvtepSouthboundUtils.getTerminationPointKey(phyLocator))
                 .addAugmentation(HwvtepPhysicalLocatorAugmentation.class, phyLocator).build();
 
         transaction.put(LogicalDatastoreType.CONFIGURATION, iid, terminationPoint, true);
@@ -444,7 +444,7 @@ public final class HwvtepUtils {
     public static void putRemoteMcastMac(final WriteTransaction transaction, final NodeId nodeId,
                                          RemoteMcastMacs remoteMcastMac) {
         InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
-                remoteMcastMac.getKey());
+                remoteMcastMac.key());
         transaction.put(LogicalDatastoreType.CONFIGURATION, iid, remoteMcastMac, true);
     }
 
@@ -452,7 +452,7 @@ public final class HwvtepUtils {
                                          final NodeId nodeId,
                                          RemoteMcastMacs remoteMcastMac) {
         InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
-                remoteMcastMac.getKey());
+                remoteMcastMac.key());
         transaction.put(logicalDatastoreType, iid, remoteMcastMac, true);
     }
 
@@ -660,7 +660,7 @@ public final class HwvtepUtils {
         Node hwvtepNode = getHwVtepNode(broker, LogicalDatastoreType.OPERATIONAL, nodeId);
         String dbVersion = "";
         if (hwvtepNode != null) {
-            dbVersion = hwvtepNode.getAugmentation(HwvtepGlobalAugmentation.class).getDbVersion();
+            dbVersion = hwvtepNode.augmentation(HwvtepGlobalAugmentation.class).getDbVersion();
         }
         return dbVersion;
     }

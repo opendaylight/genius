@@ -57,7 +57,7 @@ public class ActionRegLoad extends ActionInfo {
         return new ActionBuilder()
                 .setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(
                         nxRegLoadBuilder.build()).build())
-                .setKey(new ActionKey(newActionKey))
+                .withKey(new ActionKey(newActionKey))
                 .build();
     }
 

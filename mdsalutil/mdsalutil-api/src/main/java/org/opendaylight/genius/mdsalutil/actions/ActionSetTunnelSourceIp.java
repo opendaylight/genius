@@ -79,7 +79,7 @@ public class ActionSetTunnelSourceIp extends ActionInfo {
             ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegLoad(nxRegLoadBuilder.build()).build());
         }
-        ab.setKey(new ActionKey(newActionKey));
+        ab.withKey(new ActionKey(newActionKey));
         return ab.build();
     }
 

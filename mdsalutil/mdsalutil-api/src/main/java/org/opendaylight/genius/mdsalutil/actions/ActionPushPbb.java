@@ -39,6 +39,6 @@ public class ActionPushPbb extends ActionInfo {
                 new PushPbbActionCaseBuilder().setPushPbbAction(
                         new PushPbbActionBuilder()
                                 .setEthernetType(NwConstants.ETHTYPE_PBB).build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

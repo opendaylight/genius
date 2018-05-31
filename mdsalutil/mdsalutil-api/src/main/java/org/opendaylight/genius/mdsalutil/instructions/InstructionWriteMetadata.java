@@ -38,7 +38,7 @@ public class InstructionWriteMetadata extends AbstractInstructionInfoImpl {
                         )
                         .build()
                 )
-                .setKey(new InstructionKey(instructionKey))
+                .withKey(new InstructionKey(instructionKey))
                 .build();
     }
 

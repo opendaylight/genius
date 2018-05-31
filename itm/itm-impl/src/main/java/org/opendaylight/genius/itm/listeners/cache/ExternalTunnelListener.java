@@ -42,7 +42,7 @@ public class ExternalTunnelListener extends AbstractClusteredAsyncDataTreeChange
     @Override
     public void remove(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
                        @Nonnull ExternalTunnel externalTunnel) {
-        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(externalTunnel.getKey());
+        ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(externalTunnel.key());
     }
 
     @Override

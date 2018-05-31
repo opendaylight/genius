@@ -62,7 +62,7 @@ public class ActionSetSourceIpv6 extends ActionInfo {
                         .setIpv6Source(new Ipv6Prefix(source)).build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

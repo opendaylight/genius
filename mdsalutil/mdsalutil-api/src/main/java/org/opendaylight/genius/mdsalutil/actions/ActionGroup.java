@@ -40,7 +40,7 @@ public class ActionGroup extends ActionInfo {
         return new ActionBuilder().setAction(
                 new GroupActionCaseBuilder().setGroupAction(
                         new GroupActionBuilder().setGroupId(groupId).build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 
     public long getGroupId() {
