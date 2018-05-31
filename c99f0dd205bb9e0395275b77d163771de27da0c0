@@ -143,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "b89f2a8c_e4a72a83",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-05-31T09:37:02Z",
+      "side": 1,
+      "message": "Thanks Michael and Tom for valuable comments. Have done the changes based on your concern and verified modified approach is working fine. Request to review the changes and provide your comments if anything.\n\nThanks in Advance,\nKarthikeyan.",
+      "parentUuid": "4faf5436_a9c8c50e",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "077d70ec_10096928",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
         "patchSetId": 6
@@ -190,6 +208,24 @@
       "side": 1,
       "message": "only inlined, not static import or using Truth - but fine ;)",
       "parentUuid": "2d1ebdbd_a194f165",
+      "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f36e840e_6f49e20a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-05-31T09:37:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6337a3ba_702f870f",
       "revId": "c99f0dd205bb9e0395275b77d163771de27da0c0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
