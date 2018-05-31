@@ -166,7 +166,7 @@ public class TepCommandHelper {
             }
             return;
         }
-        Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
+        Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).withKey(vtepkey)
                 .setPortname(portName).build();
         validateForDuplicates(vtepCli, transportZone);
 
@@ -394,7 +394,7 @@ public class TepCommandHelper {
                         LOG.debug("subnets {}", subOb.get_prefix());
                         List<Vteps> vtepList = entry.getValue();
                         Subnets subnet = new SubnetsBuilder().setGatewayIp(subOb.get_gatewayIp())
-                                .setKey(subOb.get_key()).setPrefix(subOb.get_prefix()).setVlanId(subOb.get_vlanId())
+                                .withKey(subOb.get_key()).setPrefix(subOb.get_prefix()).setVlanId(subOb.get_vlanId())
                                 .setVteps(vtepList).build();
                         subnetList.add(subnet);
                         LOG.debug("vteps {}", vtepList);
@@ -411,18 +411,18 @@ public class TepCommandHelper {
                         if (tzoneFromDs.getTunnelType() == null
                                 || tzoneFromDs.getTunnelType().equals(TunnelTypeVxlan.class)) {
                             transportZone =
-                                    new TransportZoneBuilder().setKey(new TransportZoneKey(tz))
+                                    new TransportZoneBuilder().withKey(new TransportZoneKey(tz))
                                             .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList)
                                             .setZoneName(tz).build();
                         } else if (tzoneFromDs.getTunnelType().equals(TunnelTypeGre.class)) {
                             transportZone =
-                                    new TransportZoneBuilder().setKey(new TransportZoneKey(tz))
+                                    new TransportZoneBuilder().withKey(new TransportZoneKey(tz))
                                             .setTunnelType(TunnelTypeGre.class).setSubnets(subnetList)
                                             .setZoneName(tz).build();
                         }
                     } else {
                         transportZone =
-                                new TransportZoneBuilder().setKey(new TransportZoneKey(tz))
+                                new TransportZoneBuilder().withKey(new TransportZoneKey(tz))
                                         .setTunnelType(TunnelTypeVxlan.class).setSubnets(subnetList).setZoneName(tz)
                                         .build();
                     }
@@ -655,9 +655,9 @@ public class TepCommandHelper {
                                 InstanceIdentifier<T> vpath =
                                         (InstanceIdentifier<T>) InstanceIdentifier
                                                 .builder(TransportZones.class)
-                                                .child(TransportZone.class, tz.getKey())
-                                                .child(Subnets.class, sub.getKey())
-                                                .child(Vteps.class, vtep.getKey()).build();
+                                                .child(TransportZone.class, tz.key())
+                                                .child(Subnets.class, sub.key())
+                                                .child(Vteps.class, vtep.key()).build();
                                 if (sub.getVteps().remove(vtep)) {
                                     vtepPaths.add(vpath);
                                     if (sub.getVteps().size() == 0 || sub.getVteps() == null) {
@@ -678,8 +678,8 @@ public class TepCommandHelper {
                                 InstanceIdentifier<T> spath =
                                         (InstanceIdentifier<T>) InstanceIdentifier
                                                 .builder(TransportZones.class)
-                                                .child(TransportZone.class, tz.getKey())
-                                                .child(Subnets.class, sub.getKey()).build();
+                                                .child(TransportZone.class, tz.key())
+                                                .child(Subnets.class, sub.key()).build();
                                 subnetPaths.add(spath);
                                 if (tz.getSubnets() == null || tz.getSubnets().size() == 0) {
                                     tzDelList.add(tz);
@@ -692,7 +692,7 @@ public class TepCommandHelper {
                         if (transportZones.getTransportZone().remove(tz)) {
                             InstanceIdentifier<T> tpath =
                                     (InstanceIdentifier<T>) InstanceIdentifier.builder(TransportZones.class)
-                                            .child(TransportZone.class, tz.getKey()).build();
+                                            .child(TransportZone.class, tz.key()).build();
                             tzPaths.add(tpath);
                             if (transportZones.getTransportZone() == null
                                     || transportZones.getTransportZone().size() == 0) {
@@ -779,7 +779,7 @@ public class TepCommandHelper {
             LOG.debug("gateway is null");
         }
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
-        Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).setKey(vtepkey)
+        Vteps vtepCli = new VtepsBuilder().setDpnId(dpnId).setIpAddress(ipAddressObj).withKey(vtepkey)
                 .setPortname(portName).build();
         SubnetObject subObCli = new SubnetObject(gatewayIpObj, subnetsKey, subnetMaskObj, vlanId);
 
@@ -836,7 +836,7 @@ public class TepCommandHelper {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tzones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
-        TransportZone tzone = new TransportZoneBuilder().setKey(new TransportZoneKey(transportZoneName))
+        TransportZone tzone = new TransportZoneBuilder().withKey(new TransportZoneKey(transportZoneName))
                 .setTunnelType(tunType).build();
         if (tzones.isPresent()) {
             tzList = tzones.get().getTransportZone();

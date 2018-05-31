@@ -36,6 +36,6 @@ public class ActionPopPbb extends ActionInfo {
     public Action buildAction(int newActionKey) {
         return new ActionBuilder()
                 .setAction(new PopPbbActionCaseBuilder().setPopPbbAction(new PopPbbActionBuilder().build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

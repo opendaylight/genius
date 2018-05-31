@@ -62,7 +62,7 @@ public class ActionSetSourceIp extends ActionInfo {
                         .setIpv4Source(new Ipv4Prefix(source)).build())
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

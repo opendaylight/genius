@@ -227,7 +227,7 @@ public class ItmManagerRpcServiceTest {
     }
 
     private void setupMocks() {
-        deviceVteps = new DeviceVtepsBuilder().setIpAddress(ipAddress1).setKey(new DeviceVtepsKey(ipAddress1,"abc"))
+        deviceVteps = new DeviceVtepsBuilder().setIpAddress(ipAddress1).withKey(new DeviceVtepsKey(ipAddress1,"abc"))
                 .setNodeId(sourceDevice).setTopologyId(destinationDevice).build();
         deviceVtepsList.add(deviceVteps);
         stringList.add(sourceDevice);
@@ -240,20 +240,20 @@ public class ItmManagerRpcServiceTest {
                 .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
                 .setSubnetMask(ipPrefixTest)
-                .setKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
+                .withKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
         externalTunnel = new ExternalTunnelBuilder().setSourceDevice(sourceDevice)
                 .setDestinationDevice(destinationDevice).setTransportType(tunnelType1)
                 .setTunnelInterfaceName(tunnelInterfaceName)
-                .setKey(new ExternalTunnelKey(destinationDevice,sourceDevice,tunnelType1)).build();
+                .withKey(new ExternalTunnelKey(destinationDevice,sourceDevice,tunnelType1)).build();
         internalTunnel = new InternalTunnelBuilder()
                 .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName)).setDestinationDPN(dpId2)
                 .setSourceDPN(dpId1).setTransportType(tunnelType1)
-                .setKey(new InternalTunnelKey(dpId2, dpId1, tunnelType1)).build();
+                .withKey(new InternalTunnelKey(dpId2, dpId1, tunnelType1)).build();
         getInternalOrExternalInterfaceNameInput = new GetInternalOrExternalInterfaceNameInputBuilder()
                 .setDestinationIp(ipAddress1).setSourceDpid(dpId1).setTunnelType(tunnelType2).build();
         addExternalTunnelEndpointInput = new AddExternalTunnelEndpointInputBuilder().setTunnelType(tunnelType1)
@@ -282,11 +282,11 @@ public class ItmManagerRpcServiceTest {
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,
                 tunnelEndPointsVxlan.getIpAddress(),ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(), false, false,
                 monitorProtocol,null, false, null);
-        subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).setKey(new SubnetsKey(ipPrefixTest))
+        subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).withKey(new SubnetsKey(ipPrefixTest))
                 .setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnetsTest);
         transportZone = new TransportZoneBuilder().setZoneName(transportZone1)
-                .setTunnelType(tunnelType1).setKey(new TransportZoneKey(transportZone1))
+                .setTunnelType(tunnelType1).withKey(new TransportZoneKey(transportZone1))
                 .setSubnets(subnetsList).build();
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();

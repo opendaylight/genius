@@ -52,7 +52,7 @@ public class OvsVlanMemberConfigAddHelper {
             return futures;
         }
 
-        IfL2vlan parentIfL2Vlan = ifaceParent.getAugmentation(IfL2vlan.class);
+        IfL2vlan parentIfL2Vlan = ifaceParent.augmentation(IfL2vlan.class);
         if (parentIfL2Vlan == null || parentIfL2Vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Trunk) {
             LOG.error("Parent Interface: {} not of trunk Type when adding trunk-member: {}", ifaceParent, interfaceNew);
             return futures;

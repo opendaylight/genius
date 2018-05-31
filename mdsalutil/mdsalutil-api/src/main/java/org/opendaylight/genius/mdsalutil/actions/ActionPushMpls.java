@@ -38,6 +38,6 @@ public class ActionPushMpls extends ActionInfo {
         return new ActionBuilder().setAction(new PushMplsActionCaseBuilder().setPushMplsAction(
                 new PushMplsActionBuilder().setEthernetType(
                         NwConstants.ETHTYPE_MPLS_UC).build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 }

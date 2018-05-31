@@ -59,7 +59,7 @@ public class ActionLoadIpToSpa extends ActionInfo {
                         InetAddresses.coerceToInteger(InetAddresses.forString(address)) & 0xffffffffL))
                     .build())
                 .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

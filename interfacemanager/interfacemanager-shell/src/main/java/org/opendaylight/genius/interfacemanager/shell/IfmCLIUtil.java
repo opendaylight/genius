@@ -60,7 +60,7 @@ public final class IfmCLIUtil {
     static void showVlanOutput(InterfaceInfo ifaceInfo, Interface iface, CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
-        IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
+        IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue() : 0 : 0;
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1,
                 iface.getName()));
@@ -105,14 +105,14 @@ public final class IfmCLIUtil {
                 iface.getName(),
                 iface.getDescription() == null ? UNSET : iface.getDescription()));
         sb.setLength(0);
-        IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
         session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT,
                 new String(ifTunnel.getTunnelSource().getValue()),
                 new String(ifTunnel.getTunnelDestination().getValue()),
                 ifTunnel.getTunnelGateway() == null ? UNSET : new String(ifTunnel.getTunnelGateway().getValue()),
                 interfaceInfo == null ? InterfaceInfo.InterfaceAdminState.DISABLED : interfaceInfo.getAdminState()));
         sb.setLength(0);
-        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
         session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT + "\n",
                 interfaceInfo == null ? InterfaceOpState.DOWN : interfaceInfo.getOpState(),
                 String.format("%s/%s", parentRefs.getDatapathNodeIdentifier(),

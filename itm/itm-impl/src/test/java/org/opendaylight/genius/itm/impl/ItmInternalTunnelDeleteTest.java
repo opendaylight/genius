@@ -168,16 +168,16 @@ public class ItmInternalTunnelDeleteTest {
                 .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
                 .setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest)
-                .setKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
+                .withKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
         tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName2)
                 .setIpAddress(ipAddress2).setGwIpAddress(gtwyIp2).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
                 .setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
-        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).setKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
+        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlanNew).setTunnelEndPoints(tunnelEndPointsListVxlanNew)
                 .build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).setMonitorProtocol(monitorProtocol)
@@ -198,12 +198,12 @@ public class ItmInternalTunnelDeleteTest {
     public void testDeleteTunnels() {
 
         InstanceIdentifier<TunnelEndPoints> tunnelEndPointsIdentifier =
-                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, dpntePsInfoVxlan.getKey())
-                        .child(TunnelEndPoints.class,tunnelEndPointsVxlan.getKey()).build();
+                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, dpntePsInfoVxlan.key())
+                        .child(TunnelEndPoints.class,tunnelEndPointsVxlan.key()).build();
         InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier =
                 InstanceIdentifier.builder(DpnEndpoints.class).build();
         final InstanceIdentifier<DPNTEPsInfo> dpntePsInfoIdentifier = InstanceIdentifier.builder(DpnEndpoints.class)
-                .child(DPNTEPsInfo.class, dpntePsInfoVxlan.getKey()).build();
+                .child(DPNTEPsInfo.class, dpntePsInfoVxlan.key()).build();
 
         Optional<DpnEndpoints> dpnEndpointsOptional = Optional.of(dpnEndpoints);
 

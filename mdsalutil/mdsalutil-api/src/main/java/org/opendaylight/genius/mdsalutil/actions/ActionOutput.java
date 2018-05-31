@@ -62,7 +62,7 @@ public class ActionOutput extends ActionInfo {
                 new OutputActionCaseBuilder().setOutputAction(
                         new OutputActionBuilder().setMaxLength(maxLength)
                                 .setOutputNodeConnector(outputNodeConnector).build()).build())
-                .setKey(new ActionKey(newActionKey)).build();
+                .withKey(new ActionKey(newActionKey)).build();
     }
 
     @Override

@@ -96,7 +96,7 @@ public final class SouthboundUtils {
         }
         Node physicalSwitch = physicalSwitchOptional.get();
         PhysicalSwitchAugmentation physicalSwitchAugmentation = physicalSwitch
-                .getAugmentation(PhysicalSwitchAugmentation.class);
+                .augmentation(PhysicalSwitchAugmentation.class);
         return (InstanceIdentifier<Node>) physicalSwitchAugmentation.getManagedBy().getValue();
     }
 
@@ -198,7 +198,7 @@ public final class SouthboundUtils {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceInfo.getName());
-        ifaceBuilder.setKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
+        ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
         transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
     }
 
@@ -218,6 +218,7 @@ public final class SouthboundUtils {
     }
 
     public static BfdParams getBfdParams(String key, String value) {
-        return new BfdParamsBuilder().setBfdParamKey(key).setKey(new BfdParamsKey(key)).setBfdParamValue(value).build();
+        return new BfdParamsBuilder().setBfdParamKey(key).withKey(new BfdParamsKey(key)).setBfdParamValue(value)
+            .build();
     }
 }

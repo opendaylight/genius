@@ -167,7 +167,7 @@ public final class AlivenessMonitorUtils {
             if (existingMonitorIds != null && existingMonitorIds.contains(monitorId)) {
                 existingMonitorIds.remove(monitorId);
                 InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
-                interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setKey(new InterfaceMonitorIdKey(infName))
+                interfaceMonitorIdInstance = interfaceMonitorIdBuilder.withKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
                 tx.merge(LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance,
                         WriteTransaction.CREATE_MISSING_PARENTS);
@@ -187,7 +187,7 @@ public final class AlivenessMonitorUtils {
 
     public void handleTunnelMonitorUpdates(Interface interfaceOld, Interface interfaceNew) {
         String interfaceName = interfaceNew.getName();
-        IfTunnel ifTunnelNew = interfaceNew.getAugmentation(IfTunnel.class);
+        IfTunnel ifTunnelNew = interfaceNew.augmentation(IfTunnel.class);
         if (!lldpMonitoringEnabled(ifTunnelNew)) {
             return;
         }
@@ -198,7 +198,7 @@ public final class AlivenessMonitorUtils {
             startLLDPMonitoring(ifTunnelNew, interfaceName);
 
             // Delete old profile from Aliveness Manager
-            IfTunnel ifTunnelOld = interfaceOld.getAugmentation(IfTunnel.class);
+            IfTunnel ifTunnelOld = interfaceOld.augmentation(IfTunnel.class);
             if (!ifTunnelNew.getMonitorInterval().equals(ifTunnelOld.getMonitorInterval())) {
                 LOG.debug("deleting older monitor profile for interface {}", interfaceName);
                 long profileId = allocateProfile(FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW,
@@ -231,7 +231,7 @@ public final class AlivenessMonitorUtils {
             }
             if (!existingMonitorIds.contains(monitorId)) {
                 existingMonitorIds.add(monitorId);
-                interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setKey(new InterfaceMonitorIdKey(infName))
+                interfaceMonitorIdInstance = interfaceMonitorIdBuilder.withKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
                 tx.merge(LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance,
                         WriteTransaction.CREATE_MISSING_PARENTS);
@@ -240,7 +240,7 @@ public final class AlivenessMonitorUtils {
             existingMonitorIds = new ArrayList<>();
             existingMonitorIds.add(monitorId);
             interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setMonitorId(existingMonitorIds)
-                    .setKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
+                    .withKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
             tx.merge(LogicalDatastoreType.OPERATIONAL, id, interfaceMonitorIdInstance,
                     WriteTransaction.CREATE_MISSING_PARENTS);
         }
@@ -259,14 +259,14 @@ public final class AlivenessMonitorUtils {
             monitorIdInterfaceInstance = monitorIdInterfaceMap.get();
             existinginterfaceName = monitorIdInterfaceInstance.getInterfaceName();
             if (!existinginterfaceName.equals(infName)) {
-                monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setKey(new MonitorIdInterfaceKey(monitorId))
+                monitorIdInterfaceInstance = monitorIdInterfaceBuilder.withKey(new MonitorIdInterfaceKey(monitorId))
                         .setInterfaceName(infName).build();
                 tx.merge(LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance,
                         WriteTransaction.CREATE_MISSING_PARENTS);
             }
         } else {
             monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setMonitorId(monitorId)
-                    .setKey(new MonitorIdInterfaceKey(monitorId)).setInterfaceName(infName).build();
+                    .withKey(new MonitorIdInterfaceKey(monitorId)).setInterfaceName(infName).build();
             tx.merge(LogicalDatastoreType.OPERATIONAL, id, monitorIdInterfaceInstance,
                     WriteTransaction.CREATE_MISSING_PARENTS);
         }

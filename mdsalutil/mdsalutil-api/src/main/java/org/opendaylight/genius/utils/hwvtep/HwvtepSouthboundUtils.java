@@ -278,7 +278,7 @@ public final class HwvtepSouthboundUtils {
         HwvtepNodeName hwvtepName = new HwvtepNodeName(name);
 
         LogicalSwitchesBuilder lsBuilder = new LogicalSwitchesBuilder().setHwvtepNodeDescription(desc)
-                .setHwvtepNodeName(hwvtepName).setKey(new LogicalSwitchesKey(hwvtepName)).setTunnelKey(tunnelKey);
+                .setHwvtepNodeName(hwvtepName).withKey(new LogicalSwitchesKey(hwvtepName)).setTunnelKey(tunnelKey);
 
         if (replicationMode != null && !replicationMode.isEmpty()) {
             lsBuilder.setReplicationMode(replicationMode);
@@ -385,7 +385,7 @@ public final class HwvtepSouthboundUtils {
     public static VlanBindings createVlanBinding(NodeId nodeId, int vlanId, String logicalSwitchName) {
         VlanBindingsBuilder vbBuilder = new VlanBindingsBuilder();
         VlanBindingsKey vbKey = new VlanBindingsKey(new VlanId(vlanId));
-        vbBuilder.setKey(vbKey);
+        vbBuilder.withKey(vbKey);
         vbBuilder.setVlanIdKey(vbKey.getVlanIdKey());
 
         final InstanceIdentifier<LogicalSwitches> lSwitchIid = createLogicalSwitchesInstanceIdentifier(nodeId,

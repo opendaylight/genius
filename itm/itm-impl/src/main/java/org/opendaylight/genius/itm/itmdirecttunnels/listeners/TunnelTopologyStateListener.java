@@ -177,7 +177,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         InstanceIdentifier<OvsBridgeRefEntry> bridgeEntryId =
                 DirectTunnelUtils.getOvsBridgeRefEntryIdentifier(bridgeRefEntryKey);
         OvsBridgeRefEntryBuilder tunnelDpnBridgeEntryBuilder =
-                new OvsBridgeRefEntryBuilder().setKey(bridgeRefEntryKey).setDpid(dpnId)
+                new OvsBridgeRefEntryBuilder().withKey(bridgeRefEntryKey).setDpid(dpnId)
                         .setOvsBridgeReference(new OvsdbBridgeRef(bridgeIid));
         tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), true);
     }
@@ -197,7 +197,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         InstanceIdentifier<OvsBridgeEntry> bridgeEntryInstanceIdentifier =
                 DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
 
-        OvsBridgeEntryBuilder bridgeEntryBuilder = new OvsBridgeEntryBuilder().setKey(bridgeEntryKey)
+        OvsBridgeEntryBuilder bridgeEntryBuilder = new OvsBridgeEntryBuilder().withKey(bridgeEntryKey)
                 .setOvsBridgeReference(ovsdbBridgeRef);
         tx.merge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), true);
     }
@@ -218,7 +218,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
                         .ietf.interfaces.rev140508.interfaces.Interface iface =
                         dpnTepStateCache.getInterfaceFromCache(portName);
                 if (iface != null) {
-                    IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+                    IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
                     if (ifTunnel != null) {
                         directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
                     }

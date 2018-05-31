@@ -345,7 +345,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
         VtepsKey vtepkey = new VtepsKey(dpnID, port);
-        Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).setKey(vtepkey)
+        Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).withKey(vtepkey)
                 .setPortname(port).build();
         return vtepObj;
     }

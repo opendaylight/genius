@@ -327,7 +327,7 @@ public final class IfmUtil {
                     }
                 } else {
                     // For OF Tunnels default egress actions need to set tunnelIps
-                    IfTunnel ifTunnel = interfaceInfo.getAugmentation(IfTunnel.class);
+                    IfTunnel ifTunnel = interfaceInfo.augmentation(IfTunnel.class);
                     if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow()
                             && ifTunnel.getTunnelDestination() != null)) {
                         result.add(new ActionSetTunnelDestinationIp(actionKeyStart++, ifTunnel.getTunnelDestination()));
@@ -340,7 +340,7 @@ public final class IfmUtil {
                 // fall through
             case VLAN_INTERFACE:
                 if (isDefaultEgress) {
-                    IfL2vlan vlanIface = interfaceInfo.getAugmentation(IfL2vlan.class);
+                    IfL2vlan vlanIface = interfaceInfo.augmentation(IfL2vlan.class);
                     LOG.trace("get egress actions for l2vlan interface: {}", vlanIface);
                     boolean isVlanTransparent = false;
                     int vlanVid = 0;
@@ -462,7 +462,7 @@ public final class IfmUtil {
         if (ifType.isAssignableFrom(L2vlan.class)) {
             interfaceType = VLAN_INTERFACE;
         } else if (ifType.isAssignableFrom(Tunnel.class)) {
-            IfTunnel ifTunnel = iface.getAugmentation(IfTunnel.class);
+            IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
             Class<? extends org.opendaylight.yang.gen.v1.urn.opendaylight
                     .genius.interfacemanager.rev160406.TunnelTypeBase> tunnelType = ifTunnel
                     .getTunnelInterfaceType();
@@ -475,8 +475,8 @@ public final class IfmUtil {
     public static VlanInterfaceInfo getVlanInterfaceInfo(Interface iface, BigInteger dpId) {
         short vlanId = 0;
         String portName = null;
-        IfL2vlan vlanIface = iface.getAugmentation(IfL2vlan.class);
-        ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+        IfL2vlan vlanIface = iface.augmentation(IfL2vlan.class);
+        ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
         if (parentRefs != null && parentRefs.getParentInterface() != null) {
             portName = parentRefs.getParentInterface();
         } else {

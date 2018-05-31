@@ -324,7 +324,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             } else {
                 Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
                 if (iface != null) {
-                    ParentRefs parentRefs = iface.getAugmentation(ParentRefs.class);
+                    ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
                     interfaceInfo.setPortName(parentRefs.getParentInterface());
                 }
             }
@@ -576,7 +576,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return false;
         }
 
-        IfExternal ifExternal = iface.getAugmentation(IfExternal.class);
+        IfExternal ifExternal = iface.augmentation(IfExternal.class);
         return ifExternal != null && Boolean.TRUE.equals(ifExternal.isExternal());
     }
 
@@ -695,7 +695,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return null;
         }
 
-        OvsdbBridgeAugmentation bridge = node.getAugmentation(OvsdbBridgeAugmentation.class);
+        OvsdbBridgeAugmentation bridge = node.augmentation(OvsdbBridgeAugmentation.class);
         if (bridge == null) {
             LOG.error("Node {} has no bridge augmentation");
             return null;
@@ -805,8 +805,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         List<OvsdbTerminationPointAugmentation> ports = new ArrayList<>();
         List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         for (TerminationPoint ovsPort : portList) {
-            if (ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class) != null) {
-                ports.add(ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class));
+            if (ovsPort.augmentation(OvsdbTerminationPointAugmentation.class) != null) {
+                ports.add(ovsPort.augmentation(OvsdbTerminationPointAugmentation.class));
             }
         }
         LOG.debug("Found {} ports on bridge {}", ports.size(), dpnId);
@@ -828,7 +828,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         for (TerminationPoint ovsPort : portList) {
             OvsdbTerminationPointAugmentation portAug =
-                    ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
+                    ovsPort.augmentation(OvsdbTerminationPointAugmentation.class);
             if (portAug != null && SouthboundUtils.isInterfaceTypeTunnel(portAug.getInterfaceType())) {
                 tunnelPorts.add(portAug);
             }
@@ -857,7 +857,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (ovsPorts != null) {
             for (TerminationPoint ovsPort : ovsPorts) {
                 OvsdbTerminationPointAugmentation portAug =
-                        ovsPort.getAugmentation(OvsdbTerminationPointAugmentation.class);
+                        ovsPort.augmentation(OvsdbTerminationPointAugmentation.class);
                 if (portAug != null && portAug.getInterfaceType() != null) {
                     portMap.computeIfAbsent(portAug.getInterfaceType(), k -> new ArrayList<>()).add(portAug);
                 }

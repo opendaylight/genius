@@ -63,7 +63,7 @@ public class ActionSetFieldTunnelId extends ActionInfo {
                             .setTunnel(tunnelBuilder.build())
                             .build())
                     .build())
-            .setKey(new ActionKey(newActionKey))
+            .withKey(new ActionKey(newActionKey))
             .build();
     }
 

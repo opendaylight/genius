@@ -58,7 +58,7 @@ public final class InterfaceHelper {
                 .build();
 
         return new InterfaceBuilder()
-                .setKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
+                .withKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
                 .setName(interfaceInfo.getInterfaceName())
                 .setDescription("Vlan interface")
                 .setEnabled(true)
@@ -85,7 +85,7 @@ public final class InterfaceHelper {
                 .build();
 
         return new InterfaceBuilder()
-                .setKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
+                .withKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
                 .setName(interfaceInfo.getInterfaceName())
                 .setDescription("Tunnel interface")
                 .setEnabled(true)

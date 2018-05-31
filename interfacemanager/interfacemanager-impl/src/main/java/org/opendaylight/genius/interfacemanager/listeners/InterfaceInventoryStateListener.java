@@ -395,7 +395,7 @@ public class InterfaceInventoryStateListener
                         // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
                         // monitoring
                         interfaceMetaUtils.removeLportTagInterfaceMap(tx, interfaceName);
-                        handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.getAugmentation(IfTunnel.class));
+                        handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.augmentation(IfTunnel.class));
                         return;
                     }
                     // remove ingress flow only for northbound configured interfaces

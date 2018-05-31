@@ -76,7 +76,7 @@ public abstract class FlowEntity extends AbstractSwitchEntity {
     public FlowBuilder getFlowBuilder() {
         FlowBuilder flowBuilder = new FlowBuilder();
 
-        flowBuilder.setKey(new FlowKey(new FlowId(getFlowId())));
+        flowBuilder.withKey(new FlowKey(new FlowId(getFlowId())));
 
         flowBuilder.setTableId(getTableId());
         flowBuilder.setPriority(getPriority());

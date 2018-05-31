@@ -52,7 +52,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
 
     @Override
     public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
-        IfL2vlan ifL2vlan = removedInterface.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlan = removedInterface.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;
         }
@@ -60,7 +60,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     private void removeVlanMember(Interface removedInterface) {
-        ParentRefs parentRefs = removedInterface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = removedInterface.augmentation(ParentRefs.class);
         if (parentRefs == null) {
             LOG.error("Attempt to remove Vlan Trunk-Member {} without a parent interface", removedInterface);
             return;
@@ -79,11 +79,11 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     @Override
     public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier,
                        @Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
-        IfL2vlan ifL2vlanNew = updatedInterface.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlanNew = updatedInterface.augmentation(IfL2vlan.class);
         if (ifL2vlanNew == null) {
             return;
         }
-        IfL2vlan ifL2vlanOld = originalInterface.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlanOld = originalInterface.augmentation(IfL2vlan.class);
         if (IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanNew.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Trunk == ifL2vlanOld.getL2vlanMode()) {
             // Trunk subport add use case
@@ -97,7 +97,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
             return;
         }
 
-        ParentRefs parentRefsNew = updatedInterface.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefsNew = updatedInterface.augmentation(ParentRefs.class);
         if (parentRefsNew == null) {
             LOG.error("Configuration Error. Attempt to update Vlan Trunk-Member {} without a " + "parent interface",
                       updatedInterface);
@@ -120,7 +120,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     @Override
     public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier,
                     @Nonnull Interface newInterface) {
-        IfL2vlan ifL2vlan = newInterface.getAugmentation(IfL2vlan.class);
+        IfL2vlan ifL2vlan = newInterface.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;
         }
@@ -128,7 +128,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     private void addVlanMember(Interface added) {
-        ParentRefs parentRefs = added.getAugmentation(ParentRefs.class);
+        ParentRefs parentRefs = added.augmentation(ParentRefs.class);
         if (parentRefs == null) {
             return;
         }
