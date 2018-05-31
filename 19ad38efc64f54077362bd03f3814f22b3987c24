@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1204d85_782207cc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorWorker.java",
+        "patchSetId": 28
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-31T12:32:07Z",
+      "side": 1,
+      "message": "these 2 fields (enabled and internval) seem to only be set in the constructor, and read in the other methods.  As such, it would be much better to remove the \"\u003d null\" here, and make them final, and asssign a value to them in the constructor (with \"\u003d null\" in the respective \"else\" branches).",
+      "revId": "19ad38efc64f54077362bd03f3814f22b3987c24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2a848fbe_72a0b03e",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmManagerRpcServiceTest.java",
+        "patchSetId": 28
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-05-31T12:32:07Z",
+      "side": 1,
+      "message": "this is a bit strange - you are introducing a new field here, not @Mock it, but then never assign it, so it\u0027s null, and then using it in line 228... why not just remove the field and pass null then?",
+      "revId": "19ad38efc64f54077362bd03f3814f22b3987c24",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
