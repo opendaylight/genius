@@ -124,6 +124,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.G
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelTypeInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelTypeOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelTypeOutputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetWatchPortForTunnelInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetWatchPortForTunnelOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.IsDcgwPresentOutputBuilder;
@@ -758,6 +760,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                     .withError(RpcError.ErrorType.APPLICATION, "Adding l2 Gateway to DS Failed", e);
             return Futures.immediateFuture(resultBuilder.build());
         }
+    }
+
+    @Override
+    public ListenableFuture<RpcResult<GetWatchPortForTunnelOutput>> getWatchPortForTunnel(
+            GetWatchPortForTunnelInput input) {
+        throw new UnsupportedOperationException("TODO");
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
