@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "79b925ea_ffe562c1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-06-01T04:22:34Z",
+      "side": 1,
+      "message": "I have created a common worker named \"ItmMonitorWorker\" for both monitor toggle and monitor interval as both of them had common method except for setting the respective parameter.",
+      "parentUuid": "4d9597dd_478ac979",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8b39b872_9d9e9550",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
         "patchSetId": 17
@@ -138,6 +156,24 @@
       "side": 1,
       "message": "as above",
       "parentUuid": "5fa224c7_4b8620b3",
+      "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f1f9da47_7a4ab9f8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorToggleWorker.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2018-06-01T04:22:34Z",
+      "side": 1,
+      "message": "same as above :-)",
+      "parentUuid": "95924d7a_6c3255e3",
       "revId": "1e8c5e0fc1f152c6ea616e2e015a3af263a5cdaf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
