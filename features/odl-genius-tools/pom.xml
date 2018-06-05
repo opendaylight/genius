@@ -19,7 +19,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-tools</artifactId>
-  <version>0.4.2-SNAPSHOT</version>
+  <version>0.4.2</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: TOOLS</name>
 
@@ -27,14 +27,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>odl-mdsal-broker</artifactId>
-      <version>1.7.2-SNAPSHOT</version>
+      <version>1.7.2</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>odl-infrautils-metrics</artifactId>
-      <version>1.3.2-SNAPSHOT</version>
+      <version>1.3.2</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>

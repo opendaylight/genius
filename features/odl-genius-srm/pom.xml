@@ -19,7 +19,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-srm</artifactId>
-  <version>0.4.2-SNAPSHOT</version>
+  <version>0.4.2</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: SRM</name>
 
