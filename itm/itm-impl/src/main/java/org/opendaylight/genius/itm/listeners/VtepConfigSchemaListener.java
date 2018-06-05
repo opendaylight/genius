@@ -9,11 +9,13 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
@@ -127,6 +129,14 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
 
         VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
         addVteps(validatedSchema, vtepIpPool);
+    }
+
+    @Override
+    @PreDestroy
+    public void close() {
+        super.close();
+        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), Executors.DEFAULT_TIMEOUT_FOR_SHUTDOWN,
+                                                  Executors.DEFAULT_TIMEOUT_UNIT_FOR_SHUTDOWN);
     }
 
     /**
