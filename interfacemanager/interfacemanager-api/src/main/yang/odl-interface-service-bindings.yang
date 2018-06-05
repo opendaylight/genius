@@ -166,26 +166,26 @@ module interface-service-bindings {
     }
 
     augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
-        case "service-binding-nx-action-push-nsh-apply-actions-case" {
-            uses ofplugin:nx-action-push-nsh-grouping;
+        case "service-binding-nx-action-encap-apply-actions-case" {
+            uses ofplugin:nx-action-encap-grouping;
         }
     }
 
     augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
-        case "service-binding-nx-action-push-nsh-write-actions-case" {
-            uses ofplugin:nx-action-push-nsh-grouping;
+        case "service-binding-nx-action-encap-write-actions-case" {
+            uses ofplugin:nx-action-encap-grouping;
         }
     }
 
     augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
-        case "service-binding-nx-action-pop-nsh-apply-actions-case" {
-            uses ofplugin:nx-action-pop-nsh-grouping;
+        case "service-binding-nx-action-decap-apply-actions-case" {
+            uses ofplugin:nx-action-decap-grouping;
         }
     }
 
     augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
-        case "service-binding-nx-action-pop-nsh-write-actions-case" {
-            uses ofplugin:nx-action-pop-nsh-grouping;
+        case "service-binding-nx-action-decap-write-actions-case" {
+            uses ofplugin:nx-action-decap-grouping;
         }
     }
 
@@ -210,6 +210,18 @@ module interface-service-bindings {
     augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
         case "service-binding-nx-action-learn-write-actions-case" {
             uses ofplugin:nx-action-learn-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/apply-actions-case/apply-actions/action/action" {
+        case "service-binding-nx-action-dec-nsh-ttl-apply-actions-case" {
+            uses ofplugin:nx-action-dec-nsh-ttl-grouping;
+        }
+    }
+
+    augment "/service-bindings/services-info/bound-services/instruction/instruction/write-actions-case/write-actions/action/action" {
+        case "service-binding-nx-action-dec-nsh-ttl-write-actions-case" {
+            uses ofplugin:nx-action-dec-nsh-ttl-grouping;
         }
     }
 

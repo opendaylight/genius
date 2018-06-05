@@ -16,38 +16,42 @@ import java.util.Map;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionConntrackApplyActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionDecNshTtlApplyActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionDecapApplyActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionEncapApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionLearnApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionMultipathApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionOutputRegApplyActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionPopNshApplyActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionPushNshApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionRegLoadApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionRegMoveApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionResubmitApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionConntrackWriteActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionDecNshTtlWriteActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionDecapWriteActionsCase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionEncapWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionLearnWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionMultipathWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionOutputRegWriteActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionPopNshWriteActionsCase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionPushNshWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionRegLoadWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionRegMoveWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.write.actions._case.write.actions.action.action.ServiceBindingNxActionResubmitWriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionDecNshTtlNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionDecapNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionEncapNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionMultipathNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionOutputRegNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionPopNshNodesNodeTableFlowApplyActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionPushNshNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionResubmitNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionConntrackNodesNodeTableFlowWriteActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionDecNshTtlNodesNodeTableFlowWriteActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionDecapNodesNodeTableFlowWriteActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionEncapNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionLearnNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionMultipathNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionOutputRegNodesNodeTableFlowWriteActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionPopNshNodesNodeTableFlowWriteActionsCaseBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionPushNshNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder;
@@ -71,16 +75,18 @@ public final class ActionConverterUtil {
                 NxActionMultipathNodesNodeTableFlowApplyActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionOutputRegApplyActionsCase.class,
                 NxActionOutputRegNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPopNshApplyActionsCase.class,
-                NxActionPopNshNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPushNshApplyActionsCase.class,
-                NxActionPushNshNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecapApplyActionsCase.class,
+                NxActionDecapNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionEncapApplyActionsCase.class,
+                NxActionEncapNodesNodeTableFlowApplyActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegLoadApplyActionsCase.class,
                 NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegMoveApplyActionsCase.class,
                 NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitApplyActionsCase.class,
                 NxActionResubmitNodesNodeTableFlowApplyActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecNshTtlApplyActionsCase.class,
+                NxActionDecNshTtlNodesNodeTableFlowApplyActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionConntrackWriteActionsCase.class,
                 NxActionConntrackNodesNodeTableFlowWriteActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionLearnWriteActionsCase.class,
@@ -89,16 +95,18 @@ public final class ActionConverterUtil {
                 NxActionMultipathNodesNodeTableFlowWriteActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionOutputRegWriteActionsCase.class,
                 NxActionOutputRegNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPopNshWriteActionsCase.class,
-                NxActionPopNshNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionPushNshWriteActionsCase.class,
-                NxActionPushNshNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecapWriteActionsCase.class,
+                NxActionDecapNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionEncapWriteActionsCase.class,
+                NxActionEncapNodesNodeTableFlowWriteActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegLoadWriteActionsCase.class,
                 NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegMoveWriteActionsCase.class,
                 NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder.class);
         SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitWriteActionsCase.class,
                 NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder.class);
+        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecNshTtlWriteActionsCase.class,
+                NxActionDecNshTtlNodesNodeTableFlowWriteActionsCaseBuilder.class);
     }
 
     private ActionConverterUtil() { }
