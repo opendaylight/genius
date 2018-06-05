@@ -9,11 +9,14 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +61,8 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListener<VtepConfigSchema> {
+
+    private static final long TIMEOUT_FOR_SHUTDOWN = 30;
 
     private static final Logger LOG = LoggerFactory.getLogger(VtepConfigSchemaListener.class);
 
@@ -127,6 +132,13 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
 
         VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
         addVteps(validatedSchema, vtepIpPool);
+    }
+
+    @Override
+    @PreDestroy
+    public void close() {
+        super.close();
+        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), TIMEOUT_FOR_SHUTDOWN, TimeUnit.SECONDS);
     }
 
     /**
