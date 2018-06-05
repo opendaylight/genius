@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "025a908c_d4392feb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 536
+      },
+      "writtenOn": "2018-06-05T11:55:03Z",
+      "side": 1,
+      "message": "Please maintain ascending order of table ids.",
+      "range": {
+        "startLine": 138,
+        "startChar": 1,
+        "endLine": 139,
+        "endChar": 34
+      },
+      "revId": "676af66f0d56d99615d93084f4f62bd2a6e3d9f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
