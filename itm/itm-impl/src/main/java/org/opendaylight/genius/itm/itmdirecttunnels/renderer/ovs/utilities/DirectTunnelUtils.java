@@ -356,6 +356,7 @@ public final class DirectTunnelUtils {
         Builder<String, String> options = new ImmutableMap.Builder<>();
 
         // Options common to any kind of tunnel
+        options.put(TUNNEL_OPTIONS_KEY, TUNNEL_OPTIONS_VALUE_FLOW);
         IpAddress localIp = ifTunnel.getTunnelSource();
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
 
