@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a399c04_d5b293d1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-06T12:20:35Z",
+      "side": 1,
+      "message": "30 sec is a long time to potentially block/hang shutdown. Would 5 or 10 sec suffice?",
+      "revId": "c2252479005d806aceb8db443827201b87702ca7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
