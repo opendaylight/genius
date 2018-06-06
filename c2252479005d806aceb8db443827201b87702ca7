@@ -16,6 +16,24 @@
       "revId": "c2252479005d806aceb8db443827201b87702ca7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "229b3228_db66f1be",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-06-06T15:27:06Z",
+      "side": 1,
+      "message": "I can change this one and the others to 10 s. as well. We could even have this constant in a common place. Let me see.",
+      "parentUuid": "6a399c04_d5b293d1",
+      "revId": "c2252479005d806aceb8db443827201b87702ca7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
