@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2017, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -21,13 +21,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ITMBatchingUtils {
+
     private static final Logger LOG = LoggerFactory.getLogger(ITMBatchingUtils.class);
+
     private static final int DEF_BATCH_SIZE = 1000;
     private static final int DEF_PERIODICITY = 500;
+
+    private static final BlockingQueue<ActionableResource> DEFAULT_OPERATIONAL_SHARD_BUFFER_Q
+            = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ActionableResource> DEFAULT_CONFIG_SHARD_BUFFER_Q = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ActionableResource> TOPOLOGY_CONFIG_SHARD_BUFFER_Q = new LinkedBlockingQueue<>();
+
     private static DataBroker dataBroker;
-    private static BlockingQueue<ActionableResource> defaultOperationalShardBufferQ;
-    private static BlockingQueue<ActionableResource> defaultConfigShardBufferQ;
-    private static BlockingQueue<ActionableResource> topologyConfigShardBufferQ;
 
     // This could extend in future
     public enum EntityType  {
@@ -51,12 +56,15 @@ public final class ITMBatchingUtils {
         Integer batchSize = Integer.getInteger("batch.size", DEF_BATCH_SIZE);
         Integer batchInterval = Integer.getInteger("batch.wait.time", DEF_PERIODICITY);
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
-        resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", defaultOperationalShardBufferQ,
-                new DefaultBatchHandler(broker, LogicalDatastoreType.OPERATIONAL, batchSize, batchInterval));
-        resBatchingManager.registerBatchableResource("ITM-DEFAULT-CONFIG", defaultConfigShardBufferQ,
-                new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
-        resBatchingManager.registerBatchableResource("ITM-TOPOLOGY-CONFIG", topologyConfigShardBufferQ,
-                new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION, batchSize, batchInterval));
+        resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", DEFAULT_OPERATIONAL_SHARD_BUFFER_Q,
+                                                     new DefaultBatchHandler(broker, LogicalDatastoreType.OPERATIONAL,
+                                                                             batchSize, batchInterval));
+        resBatchingManager.registerBatchableResource("ITM-DEFAULT-CONFIG", DEFAULT_CONFIG_SHARD_BUFFER_Q,
+                                                     new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION,
+                                                                             batchSize, batchInterval));
+        resBatchingManager.registerBatchableResource("ITM-TOPOLOGY-CONFIG", TOPOLOGY_CONFIG_SHARD_BUFFER_Q,
+                                                     new DefaultBatchHandler(broker, LogicalDatastoreType.CONFIGURATION,
+                                                                             batchSize, batchInterval));
     }
 
 
@@ -80,9 +88,9 @@ public final class ITMBatchingUtils {
 
     public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
         switch (entityType) {
-            case DEFAULT_OPERATIONAL : return defaultOperationalShardBufferQ;
-            case DEFAULT_CONFIG : return defaultConfigShardBufferQ;
-            case TOPOLOGY_CONFIG: return topologyConfigShardBufferQ;
+            case DEFAULT_OPERATIONAL : return DEFAULT_OPERATIONAL_SHARD_BUFFER_Q;
+            case DEFAULT_CONFIG : return DEFAULT_CONFIG_SHARD_BUFFER_Q;
+            case TOPOLOGY_CONFIG: return TOPOLOGY_CONFIG_SHARD_BUFFER_Q;
             default : {
                 LOG.debug("entity type is neither operational or config, getQueue operation failed");
                 return null;
@@ -97,11 +105,5 @@ public final class ITMBatchingUtils {
         actResource.setInstance(null);
         LOG.debug("Adding to the Queue to batch the delete DS Operation - Id {}", path);
         getQueue(entityType).add(actResource);
-    }
-
-    static {
-        defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
-        defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
-        topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
     }
 }
