@@ -29,7 +29,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>interfacemanager-api</artifactId>
-      <version>${genius.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
