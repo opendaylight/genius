@@ -18,6 +18,7 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerServiceImpl;
+import org.opendaylight.genius.itm.diagstatus.ItmDiagStatusProvider;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
@@ -85,6 +86,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
+        bind(ItmDiagStatusProvider.class).toInstance(mock(ItmDiagStatusProvider.class));
 
         // Bindings to test infra (fakes & mocks)
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
