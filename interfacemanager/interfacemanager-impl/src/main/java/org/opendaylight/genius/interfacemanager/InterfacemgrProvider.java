@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -20,7 +20,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,6 +34,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.diagstatus.IfmDiagStatusProvider;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
@@ -43,6 +43,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.Southboun
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
@@ -109,6 +110,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final IfmConfig ifmConfig;
+    private final IfmDiagStatusProvider ifmStatusProvider;
     private Map<String, OvsdbTerminationPointAugmentation> ifaceToTpMap;
     private Map<String, InstanceIdentifier<Node>> ifaceToNodeIidMap;
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
@@ -119,7 +121,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
             final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
             final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig) {
+            final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig,
+            final IfmDiagStatusProvider ifmStatusProvider) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
@@ -129,26 +132,30 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.ifmConfig = ifmConfig;
+        this.ifmStatusProvider = ifmStatusProvider;
+        start();
     }
 
-    @PostConstruct
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
-        createIdPool();
         try {
+            createIdPool();
             configEntityCandidate = entityOwnershipService.registerCandidate(
                     new Entity(IfmConstants.INTERFACE_CONFIG_ENTITY, IfmConstants.INTERFACE_CONFIG_ENTITY));
             bindingEntityCandidate = entityOwnershipService.registerCandidate(
                     new Entity(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                             IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY));
+            this.ifaceToTpMap = new ConcurrentHashMap<>();
+            this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
+            this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
+            ifmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
+            LOG.info("InterfacemgrProvider Started");
         } catch (CandidateAlreadyRegisteredException e) {
             LOG.error("Failed to register entity {} with EntityOwnershipService", e.getEntity());
+            ifmStatusProvider.reportStatus(e);
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Failed to create idPool for InterfaceMgr", e);
         }
-
-        this.ifaceToTpMap = new ConcurrentHashMap<>();
-        this.ifaceToNodeIidMap = new ConcurrentHashMap<>();
-        this.nodeIidToBridgeMap = new ConcurrentHashMap<>();
-        LOG.info("InterfacemgrProvider Started");
     }
 
     @Override
@@ -161,7 +168,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (bindingEntityCandidate != null) {
             bindingEntityCandidate.close();
         }
-
+        ifmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
         LOG.info("InterfacemgrProvider Closed");
     }
 
@@ -173,17 +180,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         return this.dataBroker;
     }
 
-    private void createIdPool() {
+    private void createIdPool() throws ExecutionException, InterruptedException {
         CreateIdPoolInput createPool = new CreateIdPoolInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
                 .setLow(IfmConstants.IFM_ID_POOL_START).setHigh(IfmConstants.IFM_ID_POOL_END).build();
         // TODO: Error handling
         ListenableFuture<RpcResult<CreateIdPoolOutput>> result = idManager.createIdPool(createPool);
-        try {
-            if (result != null && result.get().isSuccessful()) {
-                LOG.debug("Created IdPool for InterfaceMgr");
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Failed to create idPool for InterfaceMgr", e);
+        if (result != null && result.get().isSuccessful()) {
+            LOG.debug("Created IdPool for InterfaceMgr");
         }
     }
 
