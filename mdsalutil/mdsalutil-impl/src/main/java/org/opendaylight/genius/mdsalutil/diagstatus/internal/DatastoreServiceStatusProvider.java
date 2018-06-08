@@ -7,11 +7,14 @@
  */
 package org.opendaylight.genius.mdsalutil.diagstatus.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.MalformedObjectNameException;
+import org.opendaylight.controller.cluster.datastore.jmx.mbeans.shard.ShardStatsMXBean;
 import org.opendaylight.controller.cluster.datastore.shardmanager.ShardManagerInfoMBean;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -35,6 +38,7 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
     private final DiagStatusService diagStatusService;
     private final ShardManagerInfoMBean operationalShardManagerInfo;
     private final ShardManagerInfoMBean configShardManagerInfo;
+    private final List<ShardStatsMXBean> allShardStats;
 
     @Inject
     public DatastoreServiceStatusProvider(@OsgiService DiagStatusService diagStatusService,
@@ -51,6 +55,19 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
         configShardManagerInfo = MBeanUtils.getMBean("org.opendaylight.controller:type="
                 + "DistributedConfigDatastore,Category=ShardManager,name=shard-manager-config",
                 ShardManagerInfoMBean.class);
+        LOG.info("Watching SyncStatus in oper and config ShardManagerInfoMBean");
+
+        allShardStats = new ArrayList<>(
+                operationalShardManagerInfo.getLocalShards().size() + configShardManagerInfo.getLocalShards().size());
+        for (String operationalShardName : operationalShardManagerInfo.getLocalShards()) {
+            allShardStats.add(MBeanUtils.getMBean("org.opendaylight.controller:type=DistributedOperationalDatastore,"
+                    + "Category=Shards,name=" + operationalShardName, ShardStatsMXBean.class));
+        }
+        for (String configShardName : configShardManagerInfo.getLocalShards()) {
+            allShardStats.add(MBeanUtils.getMBean("org.opendaylight.controller:type=DistributedConfigDatastore,"
+                    + "Category=Shards,name=" + configShardName, ShardStatsMXBean.class));
+        }
+        LOG.info("Watching RaftState in {}x ShardStatsMXBean", allShardStats.size());
 
         diagStatusService.report(getServiceDescriptor());
     }
@@ -65,17 +82,29 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public ServiceDescriptor getServiceDescriptor() {
         try {
-            boolean operSyncStatusValue = operationalShardManagerInfo.getSyncStatus();
-            boolean configSyncStatusValue = configShardManagerInfo.getSyncStatus();
-
-            String statusDesc;
-            ServiceState dataStoreServiceState;
-            if (operSyncStatusValue && configSyncStatusValue) {
-                dataStoreServiceState = ServiceState.OPERATIONAL;
-                statusDesc = dataStoreServiceState.name();
+            String statusDesc = null;
+            final ServiceState dataStoreServiceState;
+            if (operationalShardManagerInfo.getSyncStatus() && configShardManagerInfo.getSyncStatus()) {
+                for (ShardStatsMXBean shardStats : allShardStats) {
+                    String raftState = shardStats.getRaftState();
+                    if (!"Leader".equals(raftState) || "Follower".equals(raftState)) {
+                        if (statusDesc == null) {
+                            statusDesc = "Some Shard(s) are not Leader or Follower: ";
+                        } else {
+                            statusDesc += ", ";
+                        }
+                        statusDesc += shardStats.getShardName() + ":" + raftState;
+                    }
+                }
+                if (statusDesc != null) {
+                    dataStoreServiceState = ServiceState.ERROR;
+                } else {
+                    dataStoreServiceState = ServiceState.OPERATIONAL;
+                    statusDesc = "Data store is fully operational";
+                }
             } else {
                 dataStoreServiceState = ServiceState.ERROR;
-                statusDesc = "datastore out of sync";
+                statusDesc = "Data store out of sync";
             }
             return new ServiceDescriptor(DATASTORE_SERVICE_NAME, dataStoreServiceState, statusDesc);
 
