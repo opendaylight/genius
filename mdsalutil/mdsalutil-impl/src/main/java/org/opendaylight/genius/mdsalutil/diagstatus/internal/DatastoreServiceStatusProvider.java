@@ -46,9 +46,9 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
 
     @Override
     public ServiceDescriptor getServiceDescriptor() {
-        ServiceState dataStoreServiceState;
-        String statusDesc;
         try {
+            ServiceState dataStoreServiceState;
+            String statusDesc;
             Boolean operSyncStatusValue = (Boolean) MBeanUtils.getMBeanAttribute("org.opendaylight.controller:type="
                             + "DistributedOperationalDatastore,Category=ShardManager,name=shard-manager-operational",
                     "SyncStatus");
@@ -67,14 +67,10 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
                 dataStoreServiceState = ServiceState.ERROR;
                 statusDesc = "Unable to obtain the datastore status (getMBeanAttribute returned null?!)";
             }
+            return new ServiceDescriptor(DATASTORE_SERVICE_NAME, dataStoreServiceState, statusDesc);
         } catch (JMException e) {
             LOG.error("Unable to obtain the datastore status due to JMException", e);
-            dataStoreServiceState = ServiceState.ERROR;
-            statusDesc = "Unable to obtain the datastore status: " + e.getMessage();
-            // TODO use https://jira.opendaylight.org/browse/INFRAUTILS-31 here when available
-            // to report the details of the root cause of the JMX problem to diagstatus consumers.
+            return new ServiceDescriptor(DATASTORE_SERVICE_NAME, e);
         }
-
-        return new ServiceDescriptor(DATASTORE_SERVICE_NAME, dataStoreServiceState, statusDesc);
     }
 }
