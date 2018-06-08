@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
+ * Copyright (c) 2016, 2018 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -27,6 +27,7 @@ import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
+import org.opendaylight.genius.itm.diagstatus.ItmDiagStatusProvider;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
 import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
@@ -37,6 +38,8 @@ import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.diagstatus.ServiceState;
+import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
@@ -74,6 +77,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final VtepConfigSchemaListener vtepConfigSchemaListener;
     private final InterfaceStateListener ifStateListener;
     private final EntityOwnershipService entityOwnershipService;
+    private final ItmDiagStatusProvider itmStatusProvider;
     private RpcProviderRegistry rpcProviderRegistry;
     private final ItmTunnelEventListener itmStateListener;
     private final OvsdbNodeListener ovsdbChangeListener;
@@ -96,7 +100,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        OvsdbNodeListener ovsdbNodeListener,
                        TunnelMonitoringConfig tunnelMonitoringConfig,
                        EntityOwnershipService entityOwnershipService,
-                       DpnTepStateCache dpnTepStateCache) {
+                       DpnTepStateCache dpnTepStateCache,
+                       final ItmDiagStatusProvider itmDiagStatusProvider) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -112,6 +117,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.tunnelMonitoringConfig = tunnelMonitoringConfig;
         this.entityOwnershipService = entityOwnershipService;
         this.dpnTepStateCache = dpnTepStateCache;
+        this.itmStatusProvider = itmDiagStatusProvider;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
@@ -121,9 +127,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         try {
             createIdPool();
             registerEntityForOwnership();
+            itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
             LOG.info("ItmProvider Started");
         } catch (Exception ex) {
-            LOG.info("ItmProvider failed to start");
+            itmStatusProvider.reportStatus(ex);
+            LOG.info("ItmProvider failed to start", ex);
         }
     }
 
@@ -154,6 +162,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         if (registryCandidate != null) {
             registryCandidate.close();
         }
+        itmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
         LOG.info("ItmProvider Closed");
     }
 
