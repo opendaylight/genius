@@ -19,6 +19,7 @@ import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEv
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
+import org.opendaylight.genius.interfacemanager.diagstatus.IfmDiagStatusProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeRefEntryListener;
@@ -94,5 +95,6 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(VlanMemberConfigListener.class);
         bind(InterfaceStateListener.class);
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
+        bind(IfmDiagStatusProvider.class).toInstance(mock(IfmDiagStatusProvider.class));
     }
 }
