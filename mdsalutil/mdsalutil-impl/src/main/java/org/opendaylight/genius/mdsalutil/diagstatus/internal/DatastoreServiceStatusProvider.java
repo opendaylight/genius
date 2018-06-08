@@ -10,7 +10,7 @@ package org.opendaylight.genius.mdsalutil.diagstatus.internal;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.management.JMException;
+import org.opendaylight.controller.cluster.datastore.shardmanager.ShardManagerInfoMBean;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.diagstatus.MBeanUtils;
 import org.opendaylight.infrautils.diagstatus.ServiceDescriptor;
@@ -45,31 +45,32 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public ServiceDescriptor getServiceDescriptor() {
         try {
-            ServiceState dataStoreServiceState;
+            ShardManagerInfoMBean operationalShardManagerInfo = MBeanUtils.getMBean("org.opendaylight.controller:type="
+                    + "DistributedOperationalDatastore,Category=ShardManager,name=shard-manager-operational",
+                    ShardManagerInfoMBean.class);
+            boolean operSyncStatusValue = operationalShardManagerInfo.getSyncStatus();
+
+            ShardManagerInfoMBean configShardManagerInfo = MBeanUtils.getMBean("org.opendaylight.controller:type="
+                    + "DistributedConfigDatastore,Category=ShardManager,name=shard-manager-config",
+                    ShardManagerInfoMBean.class);
+            boolean configSyncStatusValue = configShardManagerInfo.getSyncStatus();
+
             String statusDesc;
-            Boolean operSyncStatusValue = (Boolean) MBeanUtils.getMBeanAttribute("org.opendaylight.controller:type="
-                            + "DistributedOperationalDatastore,Category=ShardManager,name=shard-manager-operational",
-                    "SyncStatus");
-            Boolean configSyncStatusValue = (Boolean) MBeanUtils.getMBeanAttribute("org.opendaylight.controller:type="
-                            + "DistributedConfigDatastore,Category=ShardManager,name=shard-manager-config",
-                    "SyncStatus");
-            if (operSyncStatusValue != null && configSyncStatusValue != null) {
-                if (operSyncStatusValue && configSyncStatusValue) {
-                    dataStoreServiceState = ServiceState.OPERATIONAL;
-                    statusDesc = dataStoreServiceState.name();
-                } else {
-                    dataStoreServiceState = ServiceState.ERROR;
-                    statusDesc = "datastore out of sync";
-                }
+            ServiceState dataStoreServiceState;
+            if (operSyncStatusValue && configSyncStatusValue) {
+                dataStoreServiceState = ServiceState.OPERATIONAL;
+                statusDesc = dataStoreServiceState.name();
             } else {
                 dataStoreServiceState = ServiceState.ERROR;
-                statusDesc = "Unable to obtain the datastore status (getMBeanAttribute returned null?!)";
+                statusDesc = "datastore out of sync";
             }
             return new ServiceDescriptor(DATASTORE_SERVICE_NAME, dataStoreServiceState, statusDesc);
-        } catch (JMException e) {
-            LOG.error("Unable to obtain the datastore status due to JMException", e);
+
+        } catch (Throwable e) { // not just JMException, but anything that could go wrong
+            LOG.error("Unable to obtain the datastore status", e);
             return new ServiceDescriptor(DATASTORE_SERVICE_NAME, e);
         }
     }
