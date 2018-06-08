@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4e60203d_9bde382f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-08T16:10:20Z",
+      "side": 1,
+      "message": "why move LOG down? I\u0027m used to see it as the very first thing... ;)",
+      "revId": "547dfee591e32e883f29f7dc544e1cf2dc621bc2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
