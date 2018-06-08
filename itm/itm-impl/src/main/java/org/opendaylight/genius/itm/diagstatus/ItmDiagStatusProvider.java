@@ -31,14 +31,18 @@ public class ItmDiagStatusProvider implements ServiceStatusProvider {
                                  final DiagStatusService diagStatusService) {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(ITMConstants.ITM_SERVICE_NAME);
-        serviceDescriptor = new ServiceDescriptor(ITMConstants.ITM_SERVICE_NAME, ServiceState.OPERATIONAL);
-        diagStatusService.report(serviceDescriptor);
+        reportStatus(ServiceState.STARTING);
     }
 
     @PreDestroy
     public void close() {
-        serviceDescriptor = new ServiceDescriptor(ITMConstants.ITM_SERVICE_NAME, ServiceState.UNREGISTERED);
+        reportStatus(ServiceState.UNREGISTERED);
+    }
+
+    public void reportStatus(ServiceState serviceState) {
+        serviceDescriptor = new ServiceDescriptor(ITMConstants.ITM_SERVICE_NAME, serviceState);
         diagStatusService.report(serviceDescriptor);
+
     }
 
     @Override
