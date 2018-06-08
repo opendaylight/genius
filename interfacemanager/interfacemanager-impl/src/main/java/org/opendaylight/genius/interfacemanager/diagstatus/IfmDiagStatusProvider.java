@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2017, 2018 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -12,11 +12,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.opendaylight.genius.interfacemanager.IfmConstants;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.diagstatus.ServiceDescriptor;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.diagstatus.ServiceStatusProvider;
+
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 
 @Singleton
@@ -27,24 +27,30 @@ public class IfmDiagStatusProvider implements ServiceStatusProvider {
     private volatile ServiceDescriptor serviceDescriptor;
 
     @Inject
-    public IfmDiagStatusProvider(final InterfacemgrProvider interfaceMgrProvider,
-                                 final DiagStatusService diagStatusService) {
+    public IfmDiagStatusProvider(final DiagStatusService diagStatusService) {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(IfmConstants.INTERFACE_SERVICE_NAME);
-        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.OPERATIONAL);
+        reportStatus(ServiceState.STARTING);
+    }
+
+    public void reportStatus(ServiceState serviceState) {
+        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, serviceState);
+        diagStatusService.report(serviceDescriptor);
+    }
+
+    public void reportStatus(Throwable exception) {
+        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, exception);
         diagStatusService.report(serviceDescriptor);
     }
 
     @PreDestroy
     public void close() {
-        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.UNREGISTERED);
-        diagStatusService.report(serviceDescriptor);
+        reportStatus(ServiceState.UNREGISTERED);
     }
 
     @Override
     public ServiceDescriptor getServiceDescriptor() {
         // TODO Add logic here to derive the dynamic service state.
-        // Currently this is just returning the initial state.
         return serviceDescriptor;
     }
 }
