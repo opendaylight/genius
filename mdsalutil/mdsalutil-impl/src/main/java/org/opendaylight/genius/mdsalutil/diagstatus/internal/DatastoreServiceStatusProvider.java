@@ -35,8 +35,7 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
     public DatastoreServiceStatusProvider(@OsgiService DiagStatusService diagStatusService) {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(DATASTORE_SERVICE_NAME);
-        diagStatusService.report(new ServiceDescriptor(DATASTORE_SERVICE_NAME, ServiceState.OPERATIONAL,
-                "Service started"));
+        diagStatusService.report(getServiceDescriptor());
     }
 
     @PreDestroy
