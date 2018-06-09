@@ -101,38 +101,41 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         Interface.OperStatus operStatus = Interface.OperStatus.Up;
         Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
 
+        TunnelEndPointInfo tunnelEndPointInfo;
+        DpnTepInterfaceInfo dpnTepConfigInfo = null;
+
         // Fetch the interface/Tunnel from config DS if exists
-        TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+        // If it doesnt exists then "park" the processing and comeback to it when the data is available and
+        // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
+        try {
+            directTunnelUtils.getTunnelLocks().lock(interfaceName);
+            tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
 
-        if (tunnelEndPointInfo != null) {
-            DpnTepInterfaceInfo dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
-                    new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
-                    new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
-            if (dpnTepConfigInfo != null) {
-                StateTunnelList stateTnl = addStateEntry(tunnelEndPointInfo, interfaceName,
-                        operStatus, adminStatus, nodeConnectorId);
-
-                // This will be only tunnel If so not required
-                // If this interface is a tunnel interface, create the tunnel ingress flow,
-                // and start tunnel monitoring
-                if (stateTnl != null) {
-                    handleTunnelMonitoringAddition(nodeConnectorId, stateTnl.getIfIndex(), dpnTepConfigInfo,
-                            interfaceName, portNo);
-                }
-            } else {
-                LOG.error("DpnTepINfo is NULL while addState for interface {} ", interfaceName);
-                unableToProcess = true;
+            if (tunnelEndPointInfo != null) {
+                dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
+                        new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
+                        new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
             }
-        } else {
-            LOG.error("TunnelEndPointInfo is NULL while addState for interface {} ", interfaceName);
-            unableToProcess = true;
+            if (tunnelEndPointInfo == null || dpnTepConfigInfo == null) {
+                LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+                        + "Hence parking it", interfaceName);
+                NodeConnectorInfo nodeConnectorInfo = new NodeConnectorInfoBuilder().setNodeConnectorId(key)
+                        .setNodeConnector(fcNodeConnectorNew).build();
+                unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
+                return Collections.emptyList();
+            }
+        } finally {
+            directTunnelUtils.getTunnelLocks().unlock(interfaceName);
         }
-        if (unableToProcess) {
-            LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
-                    + "Hence parking it", interfaceName);
-            NodeConnectorInfo nodeConnectorInfo = new NodeConnectorInfoBuilder().setNodeConnectorId(key)
-                    .setNodeConnector(fcNodeConnectorNew).build();
-            unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
+        StateTunnelList stateTnl = addStateEntry(tunnelEndPointInfo, interfaceName,
+                operStatus, adminStatus, nodeConnectorId);
+
+        // This will be only tunnel If so not required
+        // If this interface is a tunnel interface, create the tunnel ingress flow,
+        // and start tunnel monitoring
+        if (stateTnl != null) {
+            handleTunnelMonitoringAddition(nodeConnectorId, stateTnl.getIfIndex(), dpnTepConfigInfo,
+                   interfaceName, portNo);
         }
         return Collections.emptyList();
     }
