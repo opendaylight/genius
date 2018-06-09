@@ -23,6 +23,7 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -61,11 +62,14 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
                                        final DpnTepStateCache dpnTepStateCache,
                                        final DPNTEPsInfoCache dpntePsInfoCache,
                                        final OvsBridgeEntryCache ovsBridgeEntryCache,
-                                       final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache)  {
+                                       final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
+                                       final UnprocessedNodeConnectorEndPointCache
+                                               unprocessedNodeConnectorEndPointCache)  {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
                         .augmentation(OvsdbBridgeAugmentation.class), dpnTepStateCache, dpntePsInfoCache,
-                unprocessedNodeConnectorCache, entityOwnershipUtils, directTunnelUtils);
+                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache,
+                entityOwnershipUtils, directTunnelUtils);
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.directTunnelUtils = directTunnelUtils;

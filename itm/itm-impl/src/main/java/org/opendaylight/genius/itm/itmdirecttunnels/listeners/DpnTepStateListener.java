@@ -7,21 +7,18 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
@@ -41,10 +38,12 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
                                final DpnTepStateCache dpnTepStateCache,
                                final DPNTEPsInfoCache dpntePsInfoCache,
                                final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
+                               final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache,
                                final DirectTunnelUtils directTunnelUtils) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(DpnTepsState.class).child(DpnsTeps.class),
-                dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache, entityOwnershipUtils,
+                dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
+                unprocessedNodeConnectorEndPointCache, entityOwnershipUtils,
                 directTunnelUtils);
         this.coordinator = coordinator;
         super.register();
@@ -58,45 +57,21 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
         for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
-            NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
-            if (nodeConnectorInfo != null) {
-                LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
-                // Queue the IntefaceAddWorkerForUnprocessNC in DJC
-                String portName = nodeConnectorInfo.getNodeConnector().getName();
-                InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
-                        new InterfaceStateAddWorkerForUnprocessedNC(nodeConnectorInfo.getNodeConnectorId(),
-                                nodeConnectorInfo.getNodeConnector(), portName);
-                coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+            try {
+                directTunnelUtils.getTunnelLocks().lock(remoteDpns.getTunnelName());
+                NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+                if (nodeConnectorInfo != null) {
+                    LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+                    // Queue the IntefaceAddWorkerForUnprocessNC in DJC
+                    String portName = nodeConnectorInfo.getNodeConnector().getName();
+                    InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
+                            new InterfaceStateAddWorkerForUnprocessedNC(nodeConnectorInfo.getNodeConnectorId(),
+                                    nodeConnectorInfo.getNodeConnector(), portName);
+                    coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+                }
+            } finally {
+                directTunnelUtils.getTunnelLocks().unlock(remoteDpns.getTunnelName());
             }
-        }
-    }
-
-    private class InterfaceStateAddWorkerForUnprocessedNC implements Callable<List<ListenableFuture<Void>>> {
-        private final InstanceIdentifier<FlowCapableNodeConnector> key;
-        private final FlowCapableNodeConnector fcNodeConnectorNew;
-        private final String interfaceName;
-
-        InterfaceStateAddWorkerForUnprocessedNC(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                                FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
-            this.key = key;
-            this.fcNodeConnectorNew = fcNodeConnectorNew;
-            this.interfaceName = portName;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            // If another renderer(for eg : OVS) needs to be supported, check can be performed here
-            // to call the respective helpers.
-            return addState(key, interfaceName, fcNodeConnectorNew);
-        }
-
-        @Override
-        public String toString() {
-            return "InterfaceStateAddWorkerForUnprocessedNC{"
-                    + "fcNodeConnectorIdentifier=" + key
-                    + ", fcNodeConnectorNew=" + fcNodeConnectorNew
-                    + ", interfaceName='" + interfaceName + '\''
-                    + '}';
         }
     }
 }
