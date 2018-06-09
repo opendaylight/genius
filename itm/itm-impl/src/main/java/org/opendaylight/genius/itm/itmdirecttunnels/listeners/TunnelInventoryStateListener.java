@@ -28,6 +28,7 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
@@ -70,10 +71,13 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                                         final DpnTepStateCache dpnTepStateCache,
                                         final DPNTEPsInfoCache dpntePsInfoCache,
                                         final UnprocessedNodeConnectorCache unprocessedNCCache,
+                                        final UnprocessedNodeConnectorEndPointCache
+                                                unprocessedNodeConnectorEndPointCache,
                                         final DirectTunnelUtils directTunnelUtils) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class)
                 .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class), dpnTepStateCache,
-                dpntePsInfoCache, unprocessedNCCache, entityOwnershipUtils, directTunnelUtils);
+                dpntePsInfoCache, unprocessedNCCache,
+                unprocessedNodeConnectorEndPointCache, entityOwnershipUtils, directTunnelUtils);
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.tunnelStateCache = tunnelStateCache;
@@ -148,9 +152,12 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
             LOG.debug("Node Connector Add {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         }
+        // Moved it down the execution path as the unprocessed cache, if reqd. needs to be built in all nodes.
+        /*
         if (!entityOwner()) {
             return;
         }
+        */
         if (!dpnTepStateCache.isConfigAvailable(portName)) {
             // Park the notification
             LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
