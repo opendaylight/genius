@@ -39,6 +39,7 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -150,6 +151,8 @@ public final class DirectTunnelUtils {
     private static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 
     private static final long INVALID_ID = 0;
+    private final KeyedLocks<String> tunnelLocks = new KeyedLocks<>();
+
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
 
     public static final ImmutableMap<Class<? extends TunnelTypeBase>,
@@ -171,6 +174,10 @@ public final class DirectTunnelUtils {
     public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager) {
         this.idManagerService = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
+    }
+
+    public KeyedLocks<String> getTunnelLocks() {
+        return tunnelLocks;
     }
 
     public BigInteger getDpnId(DatapathId datapathId) {
