@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94786934_742c7e06",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-06-11T10:27:48Z",
+      "side": 1,
+      "message": "configuration ? \nSoftware would be misleading.",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 21
+      },
+      "revId": "e4dd1132c26dbfb49a4b63ef90d3984748d582a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7050dfe1_7792e3dc",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-06-11T10:27:48Z",
+      "side": 1,
+      "message": "branch/topic name?",
+      "range": {
+        "startLine": 177,
+        "startChar": 2,
+        "endLine": 177,
+        "endChar": 42
+      },
+      "revId": "e4dd1132c26dbfb49a4b63ef90d3984748d582a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
