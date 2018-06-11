@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e77d3e1a_d5e6ef22",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-11T14:49:47Z",
+      "side": 1,
+      "message": "no, because it\u0027s also used in line 107, which is in the else of the if in line 87 that you are suggesting to move it into?\n\nStringBuilder done.",
+      "parentUuid": "fcfe6773_454a9f34",
+      "revId": "8a70c3d1fcc14a464dca0e76b4f86b7cd512f3a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d4ca398d_4f1a3d3a",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
         "patchSetId": 1
@@ -30,6 +48,30 @@
       "writtenOn": "2018-06-08T21:56:55Z",
       "side": 1,
       "message": "I think this should be !\"Follower\".",
+      "range": {
+        "startLine": 90,
+        "startChar": 55,
+        "endLine": 90,
+        "endChar": 65
+      },
+      "revId": "8a70c3d1fcc14a464dca0e76b4f86b7cd512f3a3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0bc65142_0260f4fa",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-11T14:49:47Z",
+      "side": 1,
+      "message": "Duh!! Yes, of course - thank you.",
+      "parentUuid": "d4ca398d_4f1a3d3a",
       "range": {
         "startLine": 90,
         "startChar": 55,
