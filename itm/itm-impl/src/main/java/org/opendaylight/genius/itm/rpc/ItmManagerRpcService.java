@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
@@ -38,6 +39,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -50,12 +52,9 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
-import org.opendaylight.genius.mdsalutil.ActionInfo;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.mdsalutil.MatchInfo;
-import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
-import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
+import org.opendaylight.genius.mdsalutil.*;
+import org.opendaylight.genius.mdsalutil.actions.*;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
@@ -157,7 +156,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.g
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.ComputesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -181,6 +182,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
+    private final DirectTunnelUtils directTunnelUtils;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
@@ -1125,25 +1127,28 @@ public class ItmManagerRpcService implements ItmRpcService {
                         .network.topology.topology.Node.class).getNodeId().getValue();
     }
 
-    private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
-           long tunnelKey, Integer actionKey) throws ReadFailedException {
+    private ListenableFuture<GetEgressActionsForTunnelOutput>getEgressActionsForInterface(
+            String interfaceName, long tunnelKey, Integer actionKey) throws OperationFailedException, InterruptedException, ExecutionException {
         int actionKeyStart = actionKey == null ? 0 : actionKey;
         DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+        TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+        int groupId;
         if (interfaceInfo == null) {
-            throw new IllegalStateException("Interface information not present in config DS for" + interfaceName);
+            LOG.debug("Interface information not present in config DS for {}," +
+                    "hence generating group-id", interfaceName);
+            groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME,
+                    tunnelEndPointInfo.getDstEndPointInfo());
+        } else {
+            groupId = interfaceInfo.getGroupId();
         }
-        Optional<StateTunnelList> ifState = tunnelStateCache
-                .get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
-        if (ifState.isPresent()) {
-            String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
-            List<Action> actions = getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(),
-                    tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
-            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
-        }
-        throw new IllegalStateException("Interface information not present in oper DS for" + interfaceName);
+
+        String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
+        List<Action> actions = getEgressActionInfosForInterface(tunnelType, groupId,
+                tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
+        return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
     }
 
-    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, String portNo, Long tunnelKey,
+    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, int groupId, Long tunnelKey,
                                                                      int actionKeyStart) {
         List<ActionInfo> result = new ArrayList<>();
         switch (tunnelType) {
@@ -1157,7 +1162,10 @@ public class ItmManagerRpcService implements ItmRpcService {
                 // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
                 result.add(new ActionSetFieldTunnelId(actionKeyStart++,
                         BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
-                result.add(new ActionOutput(actionKeyStart, new Uri(portNo)));
+                long regValue = MetaDataUtil.getReg6ValueForEgressTunnelTable(groupId);
+                result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, MetaDataUtil.REG6_START_INDEX,
+                        MetaDataUtil.REG6_END_INDEX, regValue));
+                result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_TUNNEL_TABLE));
                 break;
 
             default:

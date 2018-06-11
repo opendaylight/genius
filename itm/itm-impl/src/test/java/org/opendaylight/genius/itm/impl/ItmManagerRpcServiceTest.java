@@ -34,6 +34,7 @@ import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
@@ -181,6 +182,7 @@ public class ItmManagerRpcServiceTest {
     @Mock ItmConfig itmConfig;
     @Mock IInterfaceManager interfaceManager;
     @Mock InterfaceManagerService interfaceManagerService;
+    @Mock DirectTunnelUtils directTunnelUtils;
 
     ItmManagerRpcService itmManagerRpcService ;
 
@@ -223,7 +225,7 @@ public class ItmManagerRpcServiceTest {
 
         itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
             dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService,
-            ovsBridgeRefEntryCache, null);
+            ovsBridgeRefEntryCache, directTunnelUtils);
     }
 
     @After

@@ -301,6 +301,8 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                     long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
                     directTunnelUtils.makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
                             NwConstants.DEL_FLOW);
+                    directTunnelUtils.makeTunnelEgressFlow(dpnTepInfo, dpId, String.valueOf(portNo),
+                            interfaceName, NwConstants.DEL_FLOW);
                 } else {
                     LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
                 }
