@@ -203,6 +203,8 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
         directTunnelUtils.makeTunnelIngressFlow(dpnTepConfigInfo, dpId, portNo, interfaceName,
                 ifindex, NwConstants.ADD_FLOW);
+        directTunnelUtils.makeTunnelEgressFlow(dpnTepConfigInfo, dpId, String.valueOf(portNo),
+                interfaceName, NwConstants.ADD_FLOW);
     }
 
     private void createLportTagInterfaceMap(String infName, Integer ifIndex) {

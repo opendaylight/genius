@@ -257,8 +257,9 @@ module itm-state {
             }
 
             leaf group-id {
-                type uint32;
-                mandatory true;
+                type int32 {
+                    range "1..2147483647";
+                }
             }
 
             /* Remote DPNs to which this DPN-Tep has a tunnel */

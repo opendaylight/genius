@@ -18,6 +18,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,12 +26,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -43,25 +46,26 @@ import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerServi
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
-import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
+import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
@@ -86,7 +90,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -157,7 +160,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.g
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.ComputesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -177,16 +182,14 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final IInterfaceManager interfaceManager;
     private final InterfaceManagerService interfaceManagerService;
     private final DpnTepStateCache dpnTepStateCache;
-    private final TunnelStateCache tunnelStateCache;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
-    private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
+    private final DirectTunnelUtils directTunnelUtils;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
                                 final ItmConfig itmConfig, final DPNTEPsInfoCache dpnTEPsInfoCache,
                                 final IInterfaceManager interfaceManager, final DpnTepStateCache dpnTepStateCache,
-                                final TunnelStateCache tunnelStateCache,
                                 final InterfaceManagerService interfaceManagerService,
                                 final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                 final DirectTunnelUtils directTunnelUtils) {
@@ -198,7 +201,6 @@ public class ItmManagerRpcService implements ItmRpcService {
         this.interfaceManager = interfaceManager;
         this.interfaceManagerService = interfaceManagerService;
         this.dpnTepStateCache = dpnTepStateCache;
-        this.tunnelStateCache = tunnelStateCache;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.directTunnelUtils = directTunnelUtils;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -1144,25 +1146,30 @@ public class ItmManagerRpcService implements ItmRpcService {
                         .network.topology.topology.Node.class).getNodeId().getValue();
     }
 
-    private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
-           Long tunnelKey, Integer actionKey) throws ReadFailedException {
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH")
+    private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(
+            String interfaceName, long tunnelKey, Integer actionKey) throws OperationFailedException,
+            InterruptedException, ExecutionException {
         int actionKeyStart = actionKey == null ? 0 : actionKey;
         DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+        TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+        int remoteDpnId;
         if (interfaceInfo == null) {
-            throw new IllegalStateException("Interface information not present in config DS for" + interfaceName);
+            LOG.debug("Interface information not present in config DS for {},"
+                    + "hence generating group-id", interfaceName);
+            remoteDpnId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME,
+                    tunnelEndPointInfo.getDstEndPointInfo());
+        } else {
+            remoteDpnId = interfaceInfo.getGroupId();
         }
-        Optional<StateTunnelList> ifState = tunnelStateCache
-                .get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
-        if (ifState.isPresent()) {
-            String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
-            List<Action> actions = getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(),
-                    tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
-            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
-        }
-        throw new IllegalStateException("Interface information not present in oper DS for" + interfaceName);
+
+        String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
+        List<Action> actions = getEgressActionInfosForInterface(tunnelType, remoteDpnId,
+                tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
+        return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
     }
 
-    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, String portNo, Long tunnelKey,
+    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, int groupId, Long tunnelKey,
                                                                      int actionKeyStart) {
         List<ActionInfo> result = new ArrayList<>();
         switch (tunnelType) {
@@ -1176,7 +1183,10 @@ public class ItmManagerRpcService implements ItmRpcService {
                 // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
                 result.add(new ActionSetFieldTunnelId(actionKeyStart++,
                         BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
-                result.add(new ActionOutput(actionKeyStart, new Uri(portNo)));
+                long regValue = MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(groupId);
+                result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, MetaDataUtil.REG6_START_INDEX,
+                        MetaDataUtil.REG6_END_INDEX, regValue));
+                result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_TUNNEL_TABLE));
                 break;
 
             default:
