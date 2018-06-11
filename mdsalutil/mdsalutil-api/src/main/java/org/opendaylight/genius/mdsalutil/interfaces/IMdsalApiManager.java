@@ -57,7 +57,11 @@ public interface IMdsalApiManager {
 
     void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity);
 
+    void batchedAddFlow(BigInteger dpId, Flow flow);
+
     void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity);
+
+    void batchedRemoveFlow(BigInteger dpId, Flow flow);
 
     ListenableFuture<Void> removeFlow(BigInteger dpId, short tableId, FlowId flowId);
 
