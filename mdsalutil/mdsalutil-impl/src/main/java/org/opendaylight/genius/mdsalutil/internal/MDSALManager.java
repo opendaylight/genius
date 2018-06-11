@@ -806,8 +806,18 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
+    public void batchedAddFlow(BigInteger dpId, Flow flow) {
+        batchedAddFlowInternal(dpId, flow);
+    }
+
+    @Override
     public void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
         batchedRemoveFlowInternal(dpId, flowEntity.getFlowBuilder().build());
+    }
+
+    @Override
+    public void batchedRemoveFlow(BigInteger dpId, Flow flow) {
+        batchedRemoveFlowInternal(dpId, flow);
     }
 
     @Override
