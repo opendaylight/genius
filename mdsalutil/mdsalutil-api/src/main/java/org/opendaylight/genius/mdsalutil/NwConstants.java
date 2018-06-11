@@ -114,6 +114,7 @@ public interface NwConstants {
     BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
     BigInteger COOKIE_ARP_RESPONDER = new BigInteger("8220000", 16);
     BigInteger COOKIE_COE_KUBE_PROXY_TABLE = new BigInteger("8230000", 16);
+    BigInteger COOKIE_ITM_EGRESS_TUNNEL_TABLE = new BigInteger("8000000", 16);
 
     //Table IDs
     short VLAN_INTERFACE_INGRESS_TABLE = 0;
@@ -160,6 +161,7 @@ public interface NwConstants {
     short SFC_TRANSPORT_NEXT_HOP_TABLE = 86;
     short SFC_TRANSPORT_EGRESS_TABLE = 87;
     short QOS_DSCP_TABLE = 90;
+    short EGRESS_TUNNEL_TABLE = 95;
     short INGRESS_SFC_CLASSIFIER_FILTER_TABLE = 100;
     short INGRESS_SFC_CLASSIFIER_ACL_TABLE = 101;
     short COE_KUBE_PROXY_TABLE = 180;
