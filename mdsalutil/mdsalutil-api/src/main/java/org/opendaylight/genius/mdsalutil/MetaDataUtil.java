@@ -27,11 +27,15 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_SUBNET_ROUTE =         new BigInteger("000000FFFFFFFFFE", 16);
     public static final BigInteger METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE = new BigInteger("0000000000000002", 16);
     public static final BigInteger METADATA_MASK_ACL_DROP = new BigInteger("0000000000000004", 16);
+    public static final BigInteger REG6_MASK_REMOTE_DPN =     new BigInteger("0FFFFF0000000000", 16);
 
     public static final int METADATA_ELAN_TAG_OFFSET = 24;
     public static final int METADATA_ELAN_TAG_BITLEN = 16;
     public static final int METADATA_VPN_ID_OFFSET = 1;
     public static final int METADATA_VPN_ID_BITLEN = 23;
+
+    public static final int REG6_START_INDEX = 0;
+    public static final int REG6_END_INDEX = 31;
 
     private MetaDataUtil() { }
 
@@ -174,6 +178,14 @@ public final class MetaDataUtil {
     public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex, short interfaceType) {
         return getServiceIndexForReg6(serviceIndex).or(getLportTagForReg6(lportTag)
                 .or(getInterfaceTypeForReg6(interfaceType))).longValue();
+    }
+
+    public static long getReg6ValueForEgressTunnelTable(long remoteDpnId) {
+        return new BigInteger("FFFFF", 16).and(BigInteger.valueOf(remoteDpnId)).shiftLeft(8).longValue();
+    }
+
+    public static long getRemoteDpnIdMaskForEgressTunnelTable() {
+        return REG6_MASK_REMOTE_DPN.shiftRight(32).longValue();
     }
 
     public static long getLportTagMaskForReg6() {
