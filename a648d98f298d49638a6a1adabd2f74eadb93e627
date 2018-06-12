@@ -65,6 +65,23 @@
     },
     {
       "key": {
+        "uuid": "4f05fb22_c5d23f89",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-12T11:48:22Z",
+      "side": 1,
+      "message": "Can we use DataTreeEventCallbackRegistrar to do unprocessed tunnel logic? Do we really need one more cache?",
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "25655dad_b29e11e1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
         "patchSetId": 11
