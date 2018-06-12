@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0f3a91f9_1c6083b5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-06-12T12:01:23Z",
+      "side": 1,
+      "message": "Better to keep the pattern so it isn\u0027t confusing to new devs? Pretty simple to add final.",
+      "parentUuid": "7891f088_d5c6ee84",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0c6a40d_1ab95714",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
         "patchSetId": 1
