@@ -350,7 +350,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             // Read DPID from OVSDBBridgeAugmentation
             strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
             if (strDpnId == null || strDpnId.isEmpty()) {
-                LOG.warn("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
+                LOG.trace("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
                 return;
             }
 
