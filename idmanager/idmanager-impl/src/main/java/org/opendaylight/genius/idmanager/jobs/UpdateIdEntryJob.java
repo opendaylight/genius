@@ -63,7 +63,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
                     tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
                 }
             }).get();
-            LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
+            LOG.debug("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Error updating id entry job", e);
         } finally {
