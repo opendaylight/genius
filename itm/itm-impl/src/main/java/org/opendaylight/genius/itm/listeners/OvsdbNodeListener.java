@@ -56,7 +56,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node ovsdbNodeNew) {
+    public void add(@Nonnull Node ovsdbNodeNew) {
         String bridgeName = null;
         String strDpnId = "";
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
@@ -73,14 +73,13 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node removedDataObject) {
+    public void remove(@Nonnull Node removedDataObject) {
         LOG.trace("OvsdbNodeListener called for Ovsdb Node {} Remove.", removedDataObject);
         processBridgeUpdate(removedDataObject, false);
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node originalOvsdbNode,
-                       @Nonnull Node updatedOvsdbNode) {
+    public void update(@Nonnull Node originalOvsdbNode, Node updatedOvsdbNode) {
         String newLocalIp = null;
         String oldLocalIp = null;
         String tzName = null;
@@ -185,7 +184,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             // TBD: Move this time taking operations into DataStoreJobCoordinator
             String strOldDpnId = ItmUtils.getBridgeDpid(originalOvsdbNode, oldDpnBridgeName, dataBroker);
             if (strOldDpnId == null || strOldDpnId.isEmpty()) {
-                LOG.error("TEP {} cannot be deleted. DPID for bridge {} is NULL.", oldLocalIp, oldDpnBridgeName);
+                LOG.trace("TEP {} cannot be deleted. DPID for bridge {} is NULL.", oldLocalIp, oldDpnBridgeName);
                 return;
             }
             addOrRemoveTep(oldTzName, strOldDpnId, oldLocalIp, oldDpnBridgeName, false, false);
@@ -195,7 +194,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             // TBD: Move this time taking operations into DataStoreJobCoordinator
             String strNewDpnId = ItmUtils.getBridgeDpid(updatedOvsdbNode, newDpnBridgeName, dataBroker);
             if (strNewDpnId == null || strNewDpnId.isEmpty()) {
-                LOG.error("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
+                LOG.trace("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
                 return;
             }
             String localIp = isLocalIpUpdated ? oldLocalIp : newLocalIp;
@@ -282,7 +281,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             oldDpId = ItmUtils.getStrDatapathId(ovsdbOldBridgeAugmentation);
         }
         if (oldDpId == null && newDpId != null) {
-            LOG.trace("DpId changed to {} for bridge {}", newDpId, oldBridgeName);
+            LOG.trace("DpId changed from {} to {} for bridge {}",
+                    oldDpId, newDpId, oldBridgeName);
             return true;
         }
         return false;
@@ -300,6 +300,11 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             return null;
         }
 
+        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
+        if (ovsdbNodeExternalIdsList == null) {
+            LOG.debug("ExternalIds list does not exist in the OVSDB Node Augmentation.");
+        }
+
         OvsdbTepInfo ovsdbTepInfoObj = new OvsdbTepInfo();
 
         for (OpenvswitchOtherConfigs otherConfigs : ovsdbNodeOtherConfigsList) {
@@ -309,28 +314,20 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
         }
 
-        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
-        if (ovsdbNodeExternalIdsList == null) {
-            LOG.debug("ExternalIds list does not exist in the OVSDB Node Augmentation.");
-        } else {
-            for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
-                switch (externalId.getExternalIdKey()) {
-                    case ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME:
-                        ovsdbTepInfoObj.setTzName(externalId.getExternalIdValue());
-                        break;
-                    case ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME:
-                        ovsdbTepInfoObj.setBrName(externalId.getExternalIdValue());
-                        break;
-                    case ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL:
-                        ovsdbTepInfoObj.setOfTunnel(Boolean.parseBoolean(externalId.getExternalIdValue()));
-                        break;
-                    default:
-                        break;
-                }
+        for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
+            if (ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME.equals(externalId.getExternalIdKey())) {
+                String tzName = externalId.getExternalIdValue();
+                ovsdbTepInfoObj.setTzName(tzName);
+            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_BR_NAME.equals(externalId.getExternalIdKey())) {
+                String bridgeName = externalId.getExternalIdValue();
+                ovsdbTepInfoObj.setBrName(bridgeName);
+            } else if (ITMConstants.EXT_ID_TEP_PARAM_KEY_OF_TUNNEL.equals(externalId.getExternalIdKey())) {
+                boolean ofTunnel = Boolean.parseBoolean(externalId.getExternalIdValue());
+                ovsdbTepInfoObj.setOfTunnel(ofTunnel);
             }
         }
 
-        LOG.trace("ovsdbTepInfo retrieved {}", ovsdbTepInfoObj);
+        LOG.trace("{}", ovsdbTepInfoObj.toString());
         return ovsdbTepInfoObj;
     }
 
@@ -353,18 +350,19 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             // Read DPID from OVSDBBridgeAugmentation
             strDpnId = ItmUtils.getStrDatapathId(ovsdbNewBridgeAugmentation);
             if (strDpnId == null || strDpnId.isEmpty()) {
-                LOG.warn("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
+                LOG.trace("OvsdbBridgeAugmentation processBridgeUpdate: DPID for bridge {} is NULL.", bridgeName);
                 return;
             }
 
             // TBD: Move this time taking operations into DataStoreJobCoordinator
             Node ovsdbNodeFromBridge = ItmUtils.getOvsdbNode(ovsdbNewBridgeAugmentation, dataBroker);
-            // check for OVSDB node
+            // check for OVSDB node. NOTE: it can be null during bridge removal notification
+            // when switch is disconnected
             if (ovsdbNodeFromBridge != null) {
                 ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.augmentation(OvsdbNodeAugmentation.class);
             } else {
-                LOG.error("processBridgeUpdate: Ovsdb Node could not be fetched from Oper DS for bridge {}.",
-                        bridgeName);
+                LOG.warn("processBridgeUpdate: bridge {} removal case when Switch is disconnected."
+                         + "Hence, Ovsdb Node could not be fetched from Oper DS.", bridgeName);
                 return;
             }
         }
@@ -399,4 +397,5 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
         }
     }
+    // End of class
 }

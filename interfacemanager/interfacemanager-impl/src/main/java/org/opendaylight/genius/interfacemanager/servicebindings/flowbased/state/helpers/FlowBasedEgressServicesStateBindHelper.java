@@ -71,6 +71,5 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
 
     @Override
     public void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId, String ifaceName) {
-        LOG.info("bindServicesOnInterfaceType Egress - WIP");
     }
 }

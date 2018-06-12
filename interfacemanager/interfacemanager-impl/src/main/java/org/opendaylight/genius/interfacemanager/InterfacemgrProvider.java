@@ -231,7 +231,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
         Interface intf = interfaceManagerCommonUtils.getInterfaceFromConfigDS(new InterfaceKey(interfaceName));
         if (intf == null) {
-            LOG.error("Interface {} doesn't exist in config datastore", interfaceName);
+            LOG.warn("Interface {} doesn't exist in config datastore", interfaceName);
             return null;
         }
 
