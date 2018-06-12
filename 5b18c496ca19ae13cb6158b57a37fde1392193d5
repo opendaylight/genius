@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1799624e_65d3995e",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-12T17:08:12Z",
+      "side": 1,
+      "message": "This should be split up ideally, into three append() calls ;-).",
+      "revId": "5b18c496ca19ae13cb6158b57a37fde1392193d5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
