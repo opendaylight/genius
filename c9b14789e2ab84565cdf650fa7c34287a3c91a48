@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "78a5edea_78113b99",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-12T13:11:25Z",
+      "side": 1,
+      "message": "this does not seem to be used anywhere - yet?  Don\u0027t you want to put whatever I am assuming you are planning to follow-up with to use this into this change already, so that we can see where this is needed right here in this change?  Otherwise this, so far, just introduces an un-used new class.",
+      "revId": "c9b14789e2ab84565cdf650fa7c34287a3c91a48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "71352b2c_8b8e2b00",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-12T13:11:25Z",
+      "side": 1,
+      "message": "return the IITMProvider interface instead of the class TestItmProvider here?",
+      "revId": "c9b14789e2ab84565cdf650fa7c34287a3c91a48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03fb9ec2_7534b1a0",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-12T13:11:25Z",
+      "side": 1,
+      "message": "could you use org.opendaylight.infrautils.testutils.Partials.newPartial(TestItmProvider.class) instead here, from https://git.opendaylight.org/gerrit/#/c/71585/3/testutils/src/main/java/org/opendaylight/infrautils/testutils/Partials.java ?  I wanted to eventually remove all of org.opendaylight.yangtools.testutils.mockito.",
+      "revId": "c9b14789e2ab84565cdf650fa7c34287a3c91a48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f760b15_c1dfbc55",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-12T13:11:25Z",
+      "side": 1,
+      "message": "I\u0027m unable to judge and review the changes in this class.. someone with a good understanding of ITM internals should review what is being done here to +2 this.",
+      "revId": "c9b14789e2ab84565cdf650fa7c34287a3c91a48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "021c1ad9_5124d310",
+        "filename": "itm/itm-impl/src/main/resources/org/opendaylight/blueprint/itm.xml",
+        "patchSetId": 6
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-12T13:11:25Z",
+      "side": 1,
+      "message": "remove whitespace only changes in this file?",
+      "revId": "c9b14789e2ab84565cdf650fa7c34287a3c91a48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
