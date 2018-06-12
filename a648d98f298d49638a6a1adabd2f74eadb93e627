@@ -1,0 +1,124 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49488386_d6c2fc20",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedTunnelsStateCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-12T11:41:29Z",
+      "side": 1,
+      "message": "State",
+      "range": {
+        "startLine": 19,
+        "startChar": 76,
+        "endLine": 19,
+        "endChar": 82
+      },
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46e2fbad_1111de15",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-12T11:41:29Z",
+      "side": 1,
+      "message": "extra space",
+      "range": {
+        "startLine": 84,
+        "startChar": 12,
+        "endLine": 84,
+        "endChar": 13
+      },
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7facb80_eccc6236",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmCache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-12T11:41:29Z",
+      "side": 1,
+      "message": "This looks the same as UnprocessedTunnelsStateCache - why is this here?",
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25655dad_b29e11e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-12T11:41:29Z",
+      "side": 1,
+      "message": "Just do remove here - no need to get then remove",
+      "range": {
+        "startLine": 85,
+        "startChar": 41,
+        "endLine": 85,
+        "endChar": 44
+      },
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc20a566_314791ea",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/cli/TepCommandHelperTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-12T11:41:29Z",
+      "side": 1,
+      "message": "Why not use the real class instead of mocking?",
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4d006e98_a4efee4c",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-12T11:41:29Z",
+      "side": 1,
+      "message": "Use real class?",
+      "revId": "a648d98f298d49638a6a1adabd2f74eadb93e627",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
