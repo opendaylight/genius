@@ -284,4 +284,23 @@ public final class NWUtil {
         return isIpv4Address(ipAddress) ? ipAddress + NwConstants.IPV4PREFIX
                                         : ipAddress + NwConstants.IPV6PREFIX;
     }
+
+    /**
+     * Utility API that returns the corresponding etherType based on the ipPrefix address family.
+     * @param ipPrefix the ipPrefix address string either IPv4 prefix or IPv6 prefix.
+     * @return etherType of given ipPrefix.
+     */
+    public static int getEtherTypeFromIpPrefix(String ipPrefix) {
+        if (ipPrefix.contains("/")) {
+            ipPrefix = ipPrefix.substring(0, ipPrefix.indexOf("/"));
+        }
+        IpAddress ipAddress = new IpAddress(ipPrefix.toCharArray());
+        if (ipAddress.getIpv4Address() != null) {
+            return NwConstants.ETHTYPE_IPV4;
+        } else if (ipAddress.getIpv6Address() != null) {
+            return NwConstants.ETHTYPE_IPV6;
+        } else {
+            throw new IllegalArgumentException("Invalid IP Prefix: " + ipPrefix);
+        }
+    }
 }
