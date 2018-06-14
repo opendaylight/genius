@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "9dac0409_5a984f0b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-14T14:34:52Z",
+      "side": 1,
+      "message": "duh, yes right so that you really want to do here Faseela is:\n\n   return Futures.immediateFailedFuture(e);\n\nTom, in an ideal world the Cache should (also) have an async API...",
+      "parentUuid": "80b67a78_c8cac605",
+      "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "89a400bf_b444efaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
         "patchSetId": 1
