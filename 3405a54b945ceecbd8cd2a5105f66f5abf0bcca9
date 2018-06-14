@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e820c6b_6db44102",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-06-14T10:10:52Z",
+      "side": 1,
+      "message": "it should be error only, because it is erroneous case if dpid is not available for bridge. \nWithout this, tep deletion operation will not be performed.",
+      "range": {
+        "startLine": 188,
+        "startChar": 20,
+        "endLine": 188,
+        "endChar": 25
+      },
+      "revId": "3405a54b945ceecbd8cd2a5105f66f5abf0bcca9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ab4c0d32_345576f1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-06-14T10:10:52Z",
+      "side": 1,
+      "message": "it should be error only, because it is erroneous case if dpid is not available for bridge. \nWithout this, tep addition operation will not be performed.",
+      "range": {
+        "startLine": 198,
+        "startChar": 20,
+        "endLine": 198,
+        "endChar": 25
+      },
+      "revId": "3405a54b945ceecbd8cd2a5105f66f5abf0bcca9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "990a99be_bc246afb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-06-14T10:10:52Z",
+      "side": 1,
+      "message": "Again, it should be warnonly, because it is warning of unstable connection with switch, since dpid is not obtained for OvsdbBridgeAugmentation of bridge node.",
+      "range": {
+        "startLine": 356,
+        "startChar": 20,
+        "endLine": 356,
+        "endChar": 25
+      },
+      "revId": "3405a54b945ceecbd8cd2a5105f66f5abf0bcca9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
