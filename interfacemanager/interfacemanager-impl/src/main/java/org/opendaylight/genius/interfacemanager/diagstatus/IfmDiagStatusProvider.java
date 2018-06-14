@@ -31,15 +31,13 @@ public class IfmDiagStatusProvider implements ServiceStatusProvider {
                                  final DiagStatusService diagStatusService) {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(IfmConstants.INTERFACE_SERVICE_NAME);
-        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.OPERATIONAL,
-                "Service started");
+        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.OPERATIONAL);
         diagStatusService.report(serviceDescriptor);
     }
 
     @PreDestroy
     public void close() {
-        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.UNREGISTERED,
-                "Service Closed");
+        serviceDescriptor = new ServiceDescriptor(IfmConstants.INTERFACE_SERVICE_NAME, ServiceState.UNREGISTERED);
         diagStatusService.report(serviceDescriptor);
     }
 
