@@ -13,6 +13,7 @@ import com.google.common.primitives.Ints;
 import com.google.common.primitives.UnsignedBytes;
 import java.math.BigInteger;
 import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
@@ -283,5 +284,26 @@ public final class NWUtil {
     public static String toIpPrefix(String ipAddress) {
         return isIpv4Address(ipAddress) ? ipAddress + NwConstants.IPV4PREFIX
                                         : ipAddress + NwConstants.IPV6PREFIX;
+    }
+
+    /**
+     * Utility API that returns the corresponding etherType based on the ipPrefix address family.
+     * @param ipPrefix the ipPrefix address string either IPv4 prefix or IPv6 prefix.
+     * @return etherType of given ipPrefix.
+     */
+    public static int getEtherTypeFromIpPrefix(String ipPrefix) {
+        if (ipPrefix.contains("/")) {
+            int indexIpAddress = ipPrefix.indexOf('/');
+            if (indexIpAddress >= 0) {
+                ipPrefix = ipPrefix.substring(0, indexIpAddress);
+            }
+        }
+        InetAddress address = InetAddresses.forString(ipPrefix);
+        if (address instanceof Inet4Address) {
+            return NwConstants.ETHTYPE_IPV4;
+        } else if (address instanceof Inet6Address) {
+            return NwConstants.ETHTYPE_IPV6;
+        }
+        throw new IllegalArgumentException("Invalid IP Prefix: " + ipPrefix);
     }
 }
