@@ -34,6 +34,24 @@
       "revId": "965336a7481aa235d7c9dbaf7958dbace9deba93",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41faea22_8609e695",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-14T11:47:14Z",
+      "side": 1,
+      "message": "We all make mistakes and miss things - we all review a lot of code  :)",
+      "parentUuid": "15aaab4f_c9d08656",
+      "revId": "965336a7481aa235d7c9dbaf7958dbace9deba93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
