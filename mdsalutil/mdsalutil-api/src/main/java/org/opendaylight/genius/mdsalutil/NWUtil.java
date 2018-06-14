@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -226,5 +227,25 @@ public final class NWUtil {
     public static String toIpPrefix(String ipAddress) {
         return isIpv4Address(ipAddress) ? ipAddress + NwConstants.IPV4PREFIX
                                         : ipAddress + NwConstants.IPV6PREFIX;
+    }
+
+
+    /**
+     * Utility API that returns the corresponding etherType based on the ipPrefix address family.
+     * @param ipPrefix the ipPrefix address string either IPv4 prefix or IPv6 prefix.
+     * @return etherType of given ipPrefix.
+     */
+    public static int getEtherTypeFromIpPrefix(String ipPrefix) {
+        if (ipPrefix.contains("/")) {
+            ipPrefix = ipPrefix.substring(0, ipPrefix.indexOf("/"));
+        }
+        IpAddress ipAddress = new IpAddress(ipPrefix.toCharArray());
+        if (ipAddress.getIpv4Address() != null) {
+            return NwConstants.ETHTYPE_IPV4;
+        } else if (ipAddress.getIpv6Address() != null) {
+            return NwConstants.ETHTYPE_IPV6;
+        } else {
+            throw new IllegalArgumentException("Invalid IP Prefix: " + ipPrefix);
+        }
     }
 }
