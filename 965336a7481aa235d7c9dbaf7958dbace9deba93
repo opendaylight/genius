@@ -16,6 +16,24 @@
       "revId": "965336a7481aa235d7c9dbaf7958dbace9deba93",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3e89a82_df35f85b",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-14T10:32:51Z",
+      "side": 1,
+      "message": "https://git.opendaylight.org/gerrit/#/c/72797/5..6/mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java diff view PS 5 to 6 makes what this joke refers to more apparent than when viewing it just on final PS 6.",
+      "parentUuid": "15aaab4f_c9d08656",
+      "revId": "965336a7481aa235d7c9dbaf7958dbace9deba93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
