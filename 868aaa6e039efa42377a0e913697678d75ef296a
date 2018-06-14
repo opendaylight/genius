@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "09f630ba_c3bec563",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-14T12:46:13Z",
+      "side": 1,
+      "message": "I can see what you are doing here, but there is a much nicer way to write these kind of tests where you are expecting an Exception - have a look at org.opendaylight.infrautils.testutils.Asserts.assertThrows(Class\u003cT\u003e, JUnitExecutable)",
+      "revId": "868aaa6e039efa42377a0e913697678d75ef296a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
