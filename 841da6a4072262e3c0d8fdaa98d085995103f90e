@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6393e27_faeb3bfa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-14T07:06:11Z",
+      "side": 1,
+      "message": "this catch (ReadFailedException e) { throw new IllegalArgumentException( is a little bit weird; you don\u0027t want to / can\u0027t easily just \"throws ReadFailedException\" to progagate and let e.g. FutureRpcResults catch and deal with it?  Or is it time we introduce a ReadFailedRuntimeException... Tom/Stephen, thoughts?",
+      "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
