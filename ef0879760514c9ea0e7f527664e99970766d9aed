@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bedc10fe_aee9ddd8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-14T11:41:00Z",
+      "side": 1,
+      "message": "forString already throws RuntimeEx\u0027s (IAE and AssertionError) which would get propagated so why would you add a try/catch/rethrow here?",
+      "parentUuid": "4f810adc_dd99b74d",
+      "range": {
+        "startLine": 301,
+        "startChar": 8,
+        "endLine": 301,
+        "endChar": 64
+      },
+      "revId": "ef0879760514c9ea0e7f527664e99970766d9aed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2082a4c_30f33854",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
         "patchSetId": 1
