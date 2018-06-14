@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "3cbbe0d7_b2fef334",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 188,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-14T11:35:58Z",
+      "side": 1,
+      "message": "Tarun, please take a look at any existing netvirt \nCSIT log to see if this error line is showing up. If so, it means, even in normal cases this ERROR log is getting printed. If so this is not an error. Another thing i have noticed is the moment we enable TRACEs for ITM, these days we cannot see anything in the log, because this particular class is logging too much of some ovsdb update notifications. We need to take care of that",
+      "parentUuid": "d0397078_c2f1abfe",
+      "range": {
+        "startLine": 188,
+        "startChar": 20,
+        "endLine": 188,
+        "endChar": 25
+      },
+      "revId": "3405a54b945ceecbd8cd2a5105f66f5abf0bcca9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ab4c0d32_345576f1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 2
