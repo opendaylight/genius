@@ -97,6 +97,30 @@
     },
     {
       "key": {
+        "uuid": "aa27d434_e1b43bbe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 301,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-06-14T12:40:13Z",
+      "side": 1,
+      "message": "Hi Tom/Sridhar,\n\n  I have modified the code in different way to check the IPv4 address family or IPv6 address family for given IpPrefix. Please have look and share your inputs. I have tested the JUNIT for both positive and negative use cases and the new util method is working fine.\n\nThanks in Advance,\nKarthikeyan.",
+      "parentUuid": "02bf99b1_214dea2e",
+      "range": {
+        "startLine": 301,
+        "startChar": 8,
+        "endLine": 301,
+        "endChar": 64
+      },
+      "revId": "ef0879760514c9ea0e7f527664e99970766d9aed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b2082a4c_30f33854",
         "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
         "patchSetId": 1
@@ -108,6 +132,30 @@
       "writtenOn": "2018-06-14T10:27:18Z",
       "side": 1,
       "message": "Please add some negative tests (i.e., invalid args)",
+      "range": {
+        "startLine": 96,
+        "startChar": 8,
+        "endLine": 96,
+        "endChar": 87
+      },
+      "revId": "ef0879760514c9ea0e7f527664e99970766d9aed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4faa72bb_34abca6c",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-06-14T12:40:13Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b2082a4c_30f33854",
       "range": {
         "startLine": 96,
         "startChar": 8,
