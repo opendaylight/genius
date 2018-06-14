@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "15aaab4f_c9d08656",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/diagstatus/internal/DatastoreServiceStatusProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-14T10:07:19Z",
+      "side": 1,
+      "message": "I am not at all surprised that I am just really dumb and made a big classical boolean logic mistake.  I am however very distraught that even Tom and Stephen didn\u0027t catch this, and had both +1 this! You guys better watch more over what non-sense I am doing... ;:-))",
+      "revId": "965336a7481aa235d7c9dbaf7958dbace9deba93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
