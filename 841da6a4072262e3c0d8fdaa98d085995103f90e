@@ -34,6 +34,41 @@
       "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80b67a78_c8cac605",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-14T11:32:06Z",
+      "side": 1,
+      "message": "I don\u0027t think IAE is appropriate here - IAE is typically for invalid user input but this is an internal failure. Also the method signature already provides us a way to propagate exceptions, ie a failed ListenableFuture so let\u0027s use that.",
+      "parentUuid": "a6393e27_faeb3bfa",
+      "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89a400bf_b444efaa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-06-14T11:32:06Z",
+      "side": 1,
+      "message": "Same here.",
+      "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
