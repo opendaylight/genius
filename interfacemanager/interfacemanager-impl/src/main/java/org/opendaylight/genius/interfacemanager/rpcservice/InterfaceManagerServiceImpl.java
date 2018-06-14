@@ -17,21 +17,22 @@ import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
+import org.opendaylight.genius.interfacemanager.listeners.IfIndexInterfaceCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.IfIndexesInterfaceMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
@@ -86,14 +87,16 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     private final DataBroker dataBroker;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
+    private final IfIndexInterfaceCache ifIndexInterfaceCache;
 
     @Inject
     public InterfaceManagerServiceImpl(final DataBroker dataBroker,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final InterfaceMetaUtils interfaceMetaUtils) {
+            final InterfaceMetaUtils interfaceMetaUtils, final IfIndexInterfaceCache ifIndexInterfaceCache) {
         this.dataBroker = dataBroker;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
+        this.ifIndexInterfaceCache = ifIndexInterfaceCache;
     }
 
     @Override
@@ -239,14 +242,17 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     public ListenableFuture<GetInterfaceFromIfIndexOutput> getInterfaceFromIfIndex(
             GetInterfaceFromIfIndexInput input) {
         Integer ifIndex = input.getIfIndex();
-        InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
-                .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
-        Optional<IfIndexInterface> ifIndexesInterface = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id,
-                dataBroker);
+        Optional<IfIndexInterface> ifIndexesInterface;
+        try {
+            ifIndexesInterface = ifIndexInterfaceCache.get(ifIndex);
+        } catch (ReadFailedException e) {
+            throw new IllegalArgumentException(
+                    "Read failed " + ifIndex + " in OperationalDS," + e);
+        }
 
         if (!ifIndexesInterface.isPresent()) {
             throw new IllegalArgumentException(
-                    "Could not find " + id.toString() + " in OperationalDS for idIndex=" + ifIndex);
+                    "Could not find " + ifIndex + " in OperationalDS");
         }
         String interfaceName = ifIndexesInterface.get().getInterfaceName();
         // TODO as above, simplify the success case later, as we have the failure case below
