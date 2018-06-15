@@ -21,6 +21,7 @@ typedef ether-types {
              enum arp;
              enum lldp;
              enum bfd;
+	     enum nd;
          }
     }
 
