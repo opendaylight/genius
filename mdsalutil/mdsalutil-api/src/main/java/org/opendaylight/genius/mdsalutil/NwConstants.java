@@ -104,6 +104,7 @@ public interface NwConstants {
     BigInteger EGRESS_DISPATCHER_TABLE_COOKIE = new BigInteger("8000007", 16);
     BigInteger COOKIE_OUTBOUND_NAPT_TABLE = new BigInteger("8000008", 16);
     BigInteger COOKIE_L3_GW_MAC_TABLE = new BigInteger("8000009", 16);
+    BigInteger COOKIE_SUBNET_ROUTE_TABLE_MISS = new BigInteger("8000010", 16);
     BigInteger EGRESS_POLICY_CLASSIFIER_COOKIE = new BigInteger("8000230", 16);
     BigInteger EGRESS_POLICY_ROUTING_COOKIE = new BigInteger("8000231", 16);
     BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
