@@ -11,11 +11,13 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
+import org.opendaylight.infrautils.utils.function.CheckedFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,24 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
             txRunner.accept(wrappedTx);
             return realTx.submit();
         // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
+        } catch (Exception e) {
+            if (!realTx.cancel()) {
+                LOG.error("Transaction.cancel() returned false, which should never happen here");
+            }
+            return immediateFailedFuture(e);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public <E extends Exception, R> ListenableFuture<R> applyWithNewReadWriteTransactionAndSubmit(
+            CheckedFunction<ReadWriteTransaction, R, E> txRunner) {
+        ReadWriteTransaction realTx = broker.newReadWriteTransaction();
+        ReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
+        try {
+            R result = txRunner.apply(wrappedTx);
+            return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
+            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
                 LOG.error("Transaction.cancel() returned false, which should never happen here");
