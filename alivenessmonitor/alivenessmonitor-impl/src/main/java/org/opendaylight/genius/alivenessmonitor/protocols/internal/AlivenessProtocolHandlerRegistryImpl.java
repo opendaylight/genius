@@ -16,6 +16,8 @@ import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandl
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of AlivenessProtocolHandlerRegistry.
@@ -26,6 +28,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 @ThreadSafe
 public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHandlerRegistry {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerRegistryImpl.class);
+
     private final Map<EtherTypes, AlivenessProtocolHandler<?>> ethTypeToProtocolHandler =
             new EnumMap<>(EtherTypes.class);
     private final Map<Class<?>, AlivenessProtocolHandler<?>> packetTypeToProtocolHandler = new HashMap<>();
@@ -34,6 +38,7 @@ public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHa
     public synchronized void register(EtherTypes etherType, AlivenessProtocolHandler<?> protocolHandler) {
         ethTypeToProtocolHandler.put(etherType, protocolHandler);
         packetTypeToProtocolHandler.put(protocolHandler.getPacketClass(), protocolHandler);
+        LOG.trace("Registered AlivenessProtocolHandler etherType={}, protocolHandler={}", etherType, protocolHandler);
     }
 
     @Override
