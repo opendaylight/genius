@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4c5c5663_d57e7f48",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-06-15T04:29:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "35d84435_c1956f69",
+      "revId": "6031f4837ca7fb7dfcc6232919e72310099ab082",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "732b6482_85daf4b2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/diagstatus/IfmDiagStatusProvider.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "8113ec36_38ff4cf5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/diagstatus/IfmDiagStatusProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-06-15T04:29:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "732b6482_85daf4b2",
+      "revId": "6031f4837ca7fb7dfcc6232919e72310099ab082",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8fd52f68_b9bfedf9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/diagstatus/IfmDiagStatusProvider.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2018-06-14T09:44:03Z",
       "side": 1,
       "message": "remove description",
+      "revId": "6031f4837ca7fb7dfcc6232919e72310099ab082",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ccb1b961_0441821f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/diagstatus/IfmDiagStatusProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-06-15T04:29:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8fd52f68_b9bfedf9",
       "revId": "6031f4837ca7fb7dfcc6232919e72310099ab082",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
