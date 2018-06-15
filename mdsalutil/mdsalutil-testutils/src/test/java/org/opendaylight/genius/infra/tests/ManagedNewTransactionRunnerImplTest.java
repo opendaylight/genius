@@ -8,6 +8,7 @@
 package org.opendaylight.genius.infra.tests;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
@@ -21,6 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
+import org.opendaylight.controller.md.sal.common.api.data.AsyncWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -44,14 +46,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  */
 public class ManagedNewTransactionRunnerImplTest {
 
-    protected static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
+    static final InstanceIdentifier<TopLevelList> TEST_PATH = path(TOP_FOO_KEY);
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
 
-    protected DataBrokerFailuresImpl testableDataBroker;
-    protected SingleTransactionDataBroker singleTransactionDataBroker;
-    protected ManagedNewTransactionRunner managedNewTransactionRunner;
+    DataBrokerFailuresImpl testableDataBroker;
+    SingleTransactionDataBroker singleTransactionDataBroker;
+    ManagedNewTransactionRunner managedNewTransactionRunner;
 
     protected ManagedNewTransactionRunner createManagedNewTransactionRunnerToTest(DataBroker dataBroker) {
         return new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -71,15 +73,43 @@ public class ManagedNewTransactionRunnerImplTest {
     }
 
     @Test
-    public void testCallWithNewWriteOnlyTransactionAndSubmitPutSuccessfully() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-            writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
-        }).get();
-        singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH);
-        // Nothing to assert here: Failure in *Runner will cause Exception which will fail this test
+    public void testCallWithNewReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(tx -> { }).get();
     }
 
-    protected TopLevelList newTestDataObject() {
+    @Test
+    public void testApplyWithNewReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
+        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(tx -> 1).get());
+    }
+
+    @Test
+    public void testCallWithNewWriteOnlyTransactionAndSubmitPutSuccessfully() throws Exception {
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, data)).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Test
+    public void testCallWithNewReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
+            tx -> tx.put(OPERATIONAL, TEST_PATH, data)).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Test
+    public void testApplyWithNewReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
+        TopLevelList data = newTestDataObject();
+        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+            tx -> {
+                tx.put(OPERATIONAL, TEST_PATH, data);
+                return 1;
+            }).get());
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    TopLevelList newTestDataObject() {
         TreeComplexUsesAugment fooAugment = new TreeComplexUsesAugmentBuilder()
                 .setContainerWithUses(new ContainerWithUsesBuilder().setLeafFromGrouping("foo").build()).build();
         return topLevelList(TOP_FOO_KEY, fooAugment);
@@ -101,13 +131,71 @@ public class ManagedNewTransactionRunnerImplTest {
     }
 
     @Test
+    public void testCallWithNewReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
+        try {
+            managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(writeTx -> {
+                writeTx.put(OPERATIONAL, TEST_PATH, newTestDataObject());
+                // We now throw an arbitrary kind of checked (not unchecked!) exception here
+                throw new IOException("something didn't quite go as expected...");
+            }).get();
+            fail("This should have led to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof IOException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
+    public void testApplyWithNewReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
+        try {
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(writeTx -> {
+                writeTx.put(OPERATIONAL, TEST_PATH, newTestDataObject());
+                // We now throw an arbitrary kind of checked (not unchecked!) exception here
+                throw new IOException("something didn't quite go as expected...");
+            }).get();
+            fail("This should have led to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof IOException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
     public void testCallWithNewWriteOnlyTransactionCommitFailedException() throws Exception {
         try {
             testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
-            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-                writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
-            }).get();
-            fail("This should have lead to an ExecutionException!");
+            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
+            fail("This should have led to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof TransactionCommitFailedException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
+    public void testCallWithNewReadWriteTransactionCommitFailedException() throws Exception {
+        try {
+            testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
+            managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
+                writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
+            fail("This should have led to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof TransactionCommitFailedException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
+    public void testApplyWithNewReadWriteTransactionCommitFailedException() throws Exception {
+        try {
+            testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+                writeTx -> {
+                    writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
+                    return 1;
+                }).get();
+            fail("This should have led to an ExecutionException!");
         } catch (ExecutionException e) {
             assertThat(e.getCause() instanceof TransactionCommitFailedException).isTrue();
         }
@@ -118,10 +206,38 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testCallWithNewWriteOnlyTransactionOptimisticLockFailedException() throws Exception {
         try {
             testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
-            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-                writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
-            }).get();
-            fail("This should have lead to an ExecutionException!");
+            managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
+            fail("This should have led to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof OptimisticLockFailedException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
+    public void testCallWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
+        try {
+            testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
+            managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
+                writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
+            fail("This should have led to an ExecutionException!");
+        } catch (ExecutionException e) {
+            assertThat(e.getCause() instanceof OptimisticLockFailedException).isTrue();
+        }
+        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+    }
+
+    @Test
+    public void testApplyWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
+        try {
+            testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+                writeTx -> {
+                    writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
+                    return 1;
+                }).get();
+            fail("This should have led to an ExecutionException!");
         } catch (ExecutionException e) {
             assertThat(e.getCause() instanceof OptimisticLockFailedException).isTrue();
         }
@@ -129,10 +245,18 @@ public class ManagedNewTransactionRunnerImplTest {
     }
 
     @Test(expected = ExecutionException.class)
-    public void testCallWithNewWriteOnlyTransactionAndSubmitCannotSubmit() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-            writeTx.submit();
-        }).get();
+    public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCommit() throws Exception {
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(AsyncWriteTransaction::commit).get();
+    }
+
+    @Test(expected = ExecutionException.class)
+    public void testCallWithNewReadWriteTransactionAndSubmitCannotCommit() throws Exception {
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::commit).get();
+    }
+
+    @Test(expected = ExecutionException.class)
+    public void testApplyWithNewReadWriteTransactionAndSubmitCannotCommit() throws Exception {
+        managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::commit).get();
     }
 
     @Test(expected = ExecutionException.class)
@@ -142,12 +266,13 @@ public class ManagedNewTransactionRunnerImplTest {
         }).get();
     }
 
-    @SuppressWarnings("deprecation")
     @Test(expected = ExecutionException.class)
-    public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCommit() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-            writeTx.commit();
-        }).get();
+    public void testCallWithNewReadWriteTransactionAndSubmitCannotCancel() throws Exception {
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::cancel).get();
     }
 
+    @Test(expected = ExecutionException.class)
+    public void testApplyWithNewReadWriteTransactionAndSubmitCannotCancel() throws Exception {
+        managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::cancel).get();
+    }
 }
