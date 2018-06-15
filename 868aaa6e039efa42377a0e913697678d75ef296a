@@ -16,6 +16,24 @@
       "revId": "868aaa6e039efa42377a0e913697678d75ef296a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ae0a0a6_a9958e40",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-06-15T06:02:51Z",
+      "side": 1,
+      "message": "Thanks for pointing out this example. Please review the modified code changes.",
+      "parentUuid": "09f630ba_c3bec563",
+      "revId": "868aaa6e039efa42377a0e913697678d75ef296a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
