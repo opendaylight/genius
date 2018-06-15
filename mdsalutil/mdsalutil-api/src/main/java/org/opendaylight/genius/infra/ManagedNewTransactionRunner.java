@@ -8,6 +8,7 @@
 package org.opendaylight.genius.infra;
 
 import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.netty.util.concurrent.Future;
@@ -18,6 +19,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 
 /**
  * Managed transactions utility to simplify handling of new transactions and ensure they are always closed.
@@ -52,13 +54,18 @@ public interface ManagedNewTransactionRunner {
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param txRunner the {@link CheckedConsumer} that needs a new write only transaction
-     *
      * @return the {@link ListenableFuture} returned by {@link WriteTransaction#submit()},
-     *         or a failed future with an application specific exception (not from submit())
+     *     or a failed future with an application specific exception (not from submit())
      */
     @CheckReturnValue
+    @Deprecated
     <E extends Exception>
         ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner);
+
+    @CheckReturnValue
+    <D extends Datastore, E extends Exception>
+        FluentFuture<? extends CommitInfo> callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreWriteTransaction<D>, E> txRunner);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -81,13 +88,18 @@ public interface ManagedNewTransactionRunner {
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param txRunner the {@link CheckedConsumer} that needs a new read-write transaction
-     *
      * @return the {@link ListenableFuture} returned by {@link ReadWriteTransaction#submit()},
-     *         or a failed future with an application specific exception (not from submit())
+     *     or a failed future with an application specific exception (not from submit())
      */
     @CheckReturnValue
+    @Deprecated
     <E extends Exception> ListenableFuture<Void>
         callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction, E> txRunner);
+
+    @CheckReturnValue
+    <D extends Datastore, E extends Exception>
+        FluentFuture<? extends CommitInfo> callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreReadWriteTransaction<D>, E> txRunner);
 
     /**
      * Invokes a function with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -118,4 +130,9 @@ public interface ManagedNewTransactionRunner {
     <E extends Exception, R>
         ListenableFuture<R> returnFromSubmittedNewReadWriteTransaction(
             CheckedFunction<ReadWriteTransaction, R, E> txRunner);
+
+    @CheckReturnValue
+    <D extends Datastore, E extends Exception, R>
+        FluentFuture<R> returnFromSubmittedNewReadWriteTransaction(Class<D> datastoreType,
+            CheckedFunction<DatastoreReadWriteTransaction<D>, R, E> txRunner);
 }
