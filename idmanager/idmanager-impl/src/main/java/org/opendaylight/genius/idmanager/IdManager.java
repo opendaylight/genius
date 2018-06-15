@@ -37,8 +37,8 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
 import org.opendaylight.genius.idmanager.api.IdManagerMonitor;
@@ -373,14 +373,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
      * Changes made to availableIds and releasedIds will not be persisted to the datastore.
      */
     private long getIdBlockFromParentPool(String parentPoolName, IdLocalPool localIdPool)
-            throws OperationFailedException, IdManagerException {
+            throws IdManagerException {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Allocating block of id from parent pool {}", parentPoolName);
         }
         InstanceIdentifier<IdPool> idPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         parentPoolName = parentPoolName.intern();
         idUtils.lock(lockManager, parentPoolName);
-        long idCount = 0;
         try {
             // Check if the childpool already got id block.
             long availableIdCount =
@@ -389,16 +388,18 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             if (availableIdCount > 0) {
                 return availableIdCount;
             }
-            WriteTransaction tx = broker.newWriteOnlyTransaction();
-            IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, idPoolInstanceIdentifier);
-            idCount = allocateIdBlockFromParentPool(localIdPool, parentIdPool, tx);
-            tx.submit().checkedGet();
-        } catch (IdManagerException | NullPointerException e) {
-            LOG.error("Error getting id block from parent pool", e);
+            return txRunner.returnFromSubmittedNewReadWriteTransaction(confTx -> {
+                Optional<IdPool> parentIdPool = confTx.read(CONFIGURATION, idPoolInstanceIdentifier).checkedGet();
+                if (parentIdPool.isPresent()) {
+                    return allocateIdBlockFromParentPool(localIdPool, parentIdPool.get(), confTx);
+                }
+                return 0;
+            }).get().longValue();
+        } catch (NullPointerException | InterruptedException | ExecutionException e) {
+            throw new IdManagerException("Error getting id block from parent pool", e);
         } finally {
             idUtils.unlock(lockManager, parentPoolName);
         }
-        return idCount;
     }
 
     private long allocateIdBlockFromParentPool(IdLocalPool localPoolCache, IdPool parentIdPool, WriteTransaction tx)
@@ -677,8 +678,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return newIdValuesList;
     }
 
-    private IdLocalPool getOrCreateLocalIdPool(String parentPoolName, String localPoolName)
-            throws IdManagerException, ReadFailedException, OperationFailedException, TransactionCommitFailedException {
+    private IdLocalPool getOrCreateLocalIdPool(String parentPoolName, String localPoolName) throws IdManagerException {
         IdLocalPool localIdPool = localPool.get(parentPoolName);
         if (localIdPool == null) {
             idUtils.lock(lockManager, parentPoolName);
@@ -686,13 +686,23 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 // Check if a previous thread that got the cluster-wide lock
                 // first, has created the localPool
                 if (localPool.get(parentPoolName) == null) {
-                    WriteTransaction tx = broker.newWriteOnlyTransaction();
-                    InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils
-                            .getIdPoolInstance(parentPoolName);
-                    IdPool parentIdPool = singleTxDB.syncRead(CONFIGURATION, parentIdPoolInstanceIdentifier);
-                    // Return localIdPool
-                    localIdPool = createLocalPool(tx, localPoolName, parentIdPool);
-                    tx.submit().checkedGet();
+                    try {
+                        return txRunner.returnFromSubmittedNewReadWriteTransaction(confTx -> {
+                            InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils
+                                    .getIdPoolInstance(parentPoolName);
+                            Optional<IdPool> parentIdPool =
+                                    confTx.read(CONFIGURATION, parentIdPoolInstanceIdentifier).checkedGet();
+                            if (parentIdPool.isPresent()) {
+                                // Return localIdPool
+                                return createLocalPool(confTx, localPoolName, parentIdPool.get());
+                            } else {
+                                throw new ExpectedDataObjectNotFoundException(CONFIGURATION,
+                                        parentIdPoolInstanceIdentifier);
+                            }
+                        }).get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new IdManagerException("Error creating a local id pool", e);
+                    }
                 } else {
                     localIdPool = localPool.get(parentPoolName);
                 }

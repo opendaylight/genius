@@ -93,4 +93,24 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
             }
         }, executor);
     }
+
+    @Override
+    public <E extends Exception, R> ListenableFuture<R> returnFromSubmittedNewReadWriteTransaction(
+            CheckedFunction<ReadWriteTransaction, R, E> txRunner) {
+        return returnFromSubmittedNewReadWriteTransaction(txRunner, maxRetries);
+    }
+
+    private <R, E extends Exception> ListenableFuture<R> returnFromSubmittedNewReadWriteTransaction(
+            CheckedFunction<ReadWriteTransaction, R, E> txRunner, int tries) {
+        ListenableFuture<R> future = Objects.requireNonNull(
+                delegate.returnFromSubmittedNewReadWriteTransaction(txRunner),
+                "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
+        return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
+            if (tries - 1 > 0) {
+                return returnFromSubmittedNewReadWriteTransaction(txRunner, tries - 1);
+            } else {
+                throw optimisticLockFailedException;
+            }
+        }, executor);
+    }
 }
