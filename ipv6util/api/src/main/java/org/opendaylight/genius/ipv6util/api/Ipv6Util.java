@@ -240,4 +240,24 @@ public final class Ipv6Util {
 
         return new MacAddress(macAddress);
     }
+
+    /**
+     * Gets the formatted IP address. <br>
+     * e.g., <br>
+     * 1. input = "1001:db8:0:2::1", return = "1001:db8:0:2:0:0:0:1" <br>
+     * 2. input = "2607:f0d0:1002:51::4", return = "2607:f0d0:1002:51:0:0:0:4" <br>
+     * 3. input = "1001:db8:0:2:0:0:0:1", return = "1001:db8:0:2:0:0:0:1" <br>
+     * 4. input = "10.0.0.10", return = "10.0.0.10"
+     *
+     * @param ipAddress the IP address
+     * @return the formatted IP address
+     */
+    public static String getFormattedIpAddress(String ipAddress) {
+        try {
+            return InetAddress.getByName(ipAddress).getHostAddress();
+        } catch (UnknownHostException e) {
+            LOG.warn("Unknown host {}", ipAddress, e);
+            return null;
+        }
+    }
 }
