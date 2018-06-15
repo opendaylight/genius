@@ -25,6 +25,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <dependencies>
     <dependency>
+      <groupId>org.opendaylight.openflowplugin.libraries</groupId>
+      <artifactId>liblldp</artifactId>
+      <version>${openflowplugin.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.mdsal.model</groupId>
       <artifactId>ietf-inet-types-2013-07-15</artifactId>
     </dependency>

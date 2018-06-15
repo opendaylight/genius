@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.alivenessmonitor.internal;
 
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorStateId;
+import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorStateId;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
