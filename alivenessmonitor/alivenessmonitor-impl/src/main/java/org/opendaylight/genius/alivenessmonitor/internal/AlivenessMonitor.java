@@ -54,6 +54,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.genius.mdsalutil.packet.utils.PacketUtil;
 import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
@@ -279,18 +280,23 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onPacketReceived(PacketReceived packetReceived) {
         Class<? extends PacketInReason> pktInReason = packetReceived.getPacketInReason();
         if (LOG.isTraceEnabled()) {
             LOG.trace("Packet Received {}", packetReceived);
         }
+        if (pktInReason != SendToController.class) {
+            return;
+        }
+        byte[] data = packetReceived.getPayload();
+        Packet protocolPacket = null;
+        AlivenessProtocolHandler<Packet> livenessProtocolHandler = null;
 
-        if (pktInReason == SendToController.class) {
+        if (PacketUtil.isIpv4Packet(data)) {
             Packet packetInFormatted;
-            byte[] data = packetReceived.getPayload();
             Ethernet res = new Ethernet();
-
             try {
                 packetInFormatted = res.deserialize(data, 0, data.length * NetUtils.NUM_BITS_IN_A_BYTE);
             } catch (PacketException e) {
@@ -303,31 +309,30 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 return;
             }
 
-            Packet objPayload = packetInFormatted.getPayload();
-
-            if (objPayload == null) {
+            protocolPacket = packetInFormatted.getPayload();
+            if (protocolPacket == null) {
                 LOG.trace("Unsupported packet type. Ignoring the packet...");
                 return;
             }
-
             if (LOG.isTraceEnabled()) {
-                LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, objPayload.getClass());
+                LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, protocolPacket.getClass());
             }
+            livenessProtocolHandler = (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry
+                    .getOpt(protocolPacket.getClass());
 
-            @SuppressWarnings("unchecked")
-            AlivenessProtocolHandler<Packet> livenessProtocolHandler =
-                (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.getOpt(objPayload.getClass());
-            if (livenessProtocolHandler == null) {
-                return;
-            }
+        } else if (PacketUtil.isIpv6NaPacket(data)) {
+            livenessProtocolHandler =
+                    (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.get(EtherTypes.Ipv6Nd);
+        }
+        if (livenessProtocolHandler == null) {
+            return;
+        }
 
-            String monitorKey = livenessProtocolHandler.handlePacketIn(packetInFormatted.getPayload(), packetReceived);
-
-            if (monitorKey != null) {
-                processReceivedMonitorKey(monitorKey);
-            } else {
-                LOG.debug("No monitorkey associated with received packet");
-            }
+        String monitorKey = livenessProtocolHandler.handlePacketIn(protocolPacket, packetReceived);
+        if (monitorKey != null) {
+            processReceivedMonitorKey(monitorKey);
+        } else {
+            LOG.debug("No monitorkey associated with received packet");
         }
     }
 
@@ -435,9 +440,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     private String getIpAddress(EndpointType endpoint) {
         String ipAddress = "";
         if (endpoint instanceof IpAddress) {
-            ipAddress = ((IpAddress) endpoint).getIpAddress().getIpv4Address().getValue();
+            ipAddress = String.valueOf(((IpAddress) endpoint).getIpAddress().getValue());
         } else if (endpoint instanceof Interface) {
-            ipAddress = ((Interface) endpoint).getInterfaceIp().getIpv4Address().getValue();
+            ipAddress = String.valueOf(((Interface) endpoint).getInterfaceIp().getValue());
         }
         return ipAddress;
     }
