@@ -21,6 +21,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <argument ref="alivenessProtocolHandlerRegistry"/>
       <argument ref="packetProcessingService"/>
   </bean>
+  <bean id="alivenessProtocolHandlerIPv6ND" class="org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerIPv6ND">
+      <argument ref="dataBroker"/>
+      <argument ref="odlInterfaceRpcService"/>
+      <argument ref="alivenessProtocolHandlerRegistry"/>
+      <argument ref="ipv6NdUtilService"/>
+  </bean>
 
   <reference id="alivenessProtocolHandlerRegistry" interface="org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry"/>
   <reference id="dataBroker" interface="org.opendaylight.controller.md.sal.binding.api.DataBroker"/>
@@ -31,5 +37,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService" />
   <odl:rpc-service id="packetProcessingService"
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService" />
+  <odl:rpc-service id="ipv6NdUtilService"
+                   interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.ipv6.nd.util.rev170210.Ipv6NdUtilService"/>
 
 </blueprint>

@@ -17,13 +17,13 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.JdkFutureAdapters;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
@@ -32,7 +32,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.SendArpRequestInput;
@@ -44,7 +43,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
-import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,16 +124,16 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             return;
         }
         EndpointType source = monitorInfo.getSource().getEndpointType();
-        final String sourceInterface = Preconditions.checkNotNull(getInterfaceName(source),
+        final String sourceInterface = Preconditions.checkNotNull(AlivenessMonitorUtil.getInterfaceName(source),
                 "Source interface is required to send ARP Packet for monitoring");
 
-        final String srcIp = Preconditions.checkNotNull(getIpAddress(source),
+        final String srcIp = Preconditions.checkNotNull(AlivenessMonitorUtil.getIpAddress(source),
                 "Source Ip address is required to send ARP Packet for monitoring");
         final Optional<PhysAddress> srcMacAddressOptional = getMacAddress(source);
         if (srcMacAddressOptional.isPresent()) {
             PhysAddress srcMacAddress = srcMacAddressOptional.get();
             EndpointType target = monitorInfo.getDestination().getEndpointType();
-            final String targetIp = Preconditions.checkNotNull(getIpAddress(target),
+            final String targetIp = Preconditions.checkNotNull(AlivenessMonitorUtil.getIpAddress(target),
                     "Target Ip address is required to send ARP Packet for monitoring");
             if (LOG.isTraceEnabled()) {
                 LOG.trace("sendArpRequest interface {}, senderIPAddress {}, targetAddress {}", sourceInterface, srcIp,
@@ -161,7 +159,8 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
                 @Override
                 public void onSuccess(RpcResult<Void> result) {
                     if (result != null && !result.isSuccessful()) {
-                        LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
+                        LOG.warn("Rpc call to {} failed {}", msgFormat,
+                                AlivenessMonitorUtil.getErrorText(result.getErrors()));
                     } else {
                         LOG.debug("Successful RPC Result - {}", msgFormat);
                     }
@@ -170,34 +169,16 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
         }
     }
 
-    private String getErrorText(Collection<RpcError> errors) {
-        StringBuilder errorText = new StringBuilder();
-        for (RpcError error : errors) {
-            errorText.append(",").append(error.getErrorType()).append("-").append(error.getMessage());
-        }
-        return errorText.toString();
-    }
-
     @Override
     public String getUniqueMonitoringKey(MonitoringInfo monitorInfo) {
-        String interfaceName = getInterfaceName(monitorInfo.getSource().getEndpointType());
-        String sourceIp = getIpAddress(monitorInfo.getSource().getEndpointType());
-        String targetIp = getIpAddress(monitorInfo.getDestination().getEndpointType());
+        String interfaceName = AlivenessMonitorUtil.getInterfaceName(monitorInfo.getSource().getEndpointType());
+        String sourceIp = AlivenessMonitorUtil.getIpAddress(monitorInfo.getSource().getEndpointType());
+        String targetIp = AlivenessMonitorUtil.getIpAddress(monitorInfo.getDestination().getEndpointType());
         return getMonitoringKey(interfaceName, sourceIp, targetIp);
     }
 
     private String getMonitoringKey(String interfaceName, String sourceIp, String targetIp) {
         return interfaceName + SEPERATOR + sourceIp + SEPERATOR + targetIp + SEPERATOR + EtherTypes.Arp;
-    }
-
-    private String getIpAddress(EndpointType source) {
-        String ipAddress = null;
-        if (source instanceof IpAddress) {
-            ipAddress = ((IpAddress) source).getIpAddress().getIpv4Address().getValue();
-        } else if (source instanceof Interface) {
-            ipAddress = ((Interface) source).getInterfaceIp().getIpv4Address().getValue();
-        }
-        return ipAddress;
     }
 
     private Optional<PhysAddress> getMacAddress(EndpointType source) {
@@ -206,13 +187,5 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             result = Optional.of(((Interface) source).getMacAddress());
         }
         return result;
-    }
-
-    private String getInterfaceName(EndpointType endpoint) {
-        String interfaceName = null;
-        if (endpoint instanceof Interface) {
-            interfaceName = ((Interface) endpoint).getInterfaceName();
-        }
-        return interfaceName;
     }
 }

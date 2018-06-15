@@ -16,11 +16,13 @@ module aliveness-monitor {
         description "YANG model describes methods for monitoring endpoints.";
     }
 
-typedef ether-types {
+    // TODO: Need to rename
+    typedef ether-types {
         type enumeration {
              enum arp;
              enum lldp;
              enum bfd;
+             enum ipv6-nd;
          }
     }
 

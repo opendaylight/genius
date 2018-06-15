@@ -8,12 +8,14 @@
 
 package org.opendaylight.genius.ipv6util.api;
 
+import com.google.common.base.Preconditions;
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.ipv6.nd.packet.rev160620.EthernetHeader;
@@ -239,5 +241,45 @@ public final class Ipv6Util {
                 + StringUtils.leftPad(Integer.toHexString(0xFF & octets[15]), 2, "0");
 
         return new MacAddress(macAddress);
+    }
+
+    /**
+     * Gets the formatted IP address. <br>
+     * e.g., <br>
+     * 1. input = "1001:db8:0:2::1", return = "1001:db8:0:2:0:0:0:1" <br>
+     * 2. input = "2607:f0d0:1002:51::4", return = "2607:f0d0:1002:51:0:0:0:4" <br>
+     * 3. input = "1001:db8:0:2:0:0:0:1", return = "1001:db8:0:2:0:0:0:1" <br>
+     * 4. input = "10.0.0.10", return = "10.0.0.10"
+     *
+     * @param ipAddress the IP address
+     * @return the formatted IP address
+     */
+    public static String getFormattedIpAddress(IpAddress ipAddress) {
+        Preconditions.checkNotNull(ipAddress, "ipAddress is null");
+        if (ipAddress.getIpv4Address() != null) {
+            // No formatting required for IPv4 address.
+            return ipAddress.getIpv4Address().getValue();
+        } else {
+            // IPv6 case
+            return getFormattedIpv6Address(ipAddress.getIpv6Address());
+        }
+    }
+
+    /**
+     * Gets the formatted IPv6 address. <br>
+     * e.g., <br>
+     * 1. input = "1001:db8:0:2::1", return = "1001:db8:0:2:0:0:0:1" <br>
+     * 2. input = "2607:f0d0:1002:51::4", return = "2607:f0d0:1002:51:0:0:0:4" <br>
+     * 3. input = "1001:db8:0:2:0:0:0:1", return = "1001:db8:0:2:0:0:0:1" <br>
+     *
+     * @param ipv6Address the IPv6 address
+     * @return the formatted IPv6 address
+     */
+    public static String getFormattedIpv6Address(Ipv6Address ipv6Address) {
+        try {
+            return InetAddress.getByName(ipv6Address.getValue()).getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new IllegalArgumentException("Invalid ipv6Address=" + ipv6Address, e);
+        }
     }
 }

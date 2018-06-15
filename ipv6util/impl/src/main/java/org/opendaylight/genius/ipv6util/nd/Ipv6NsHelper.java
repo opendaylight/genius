@@ -25,7 +25,7 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.packet.IPProtocols;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.ipv6.nd.packet.rev160620.NeighborSolicitationPacket;
@@ -131,7 +131,7 @@ public class Ipv6NsHelper {
 
         // Tx the packet out of the controller.
         LOG.debug("Transmitting the Neighbor Solicitation packet out on {}", dpnId);
-        ListenableFutures.addErrorLogging(packetService.transmitPacket(input), LOG, "transmitPacket");
+        JdkFutures.addErrorLogging(packetService.transmitPacket(input), LOG, "transmitPacket");
         return true;
     }
 
@@ -147,6 +147,6 @@ public class Ipv6NsHelper {
                 "Transmitting Neighbor Solicitation packet out. srcMacAddress={}, srcIpv6Address={}, "
                         + "targetIpv6Address={}, dpId={}, ofGroupId={}",
                 srcMacAddress.getValue(), srcIpv6Address.getValue(), targetIpv6Address.getValue(), dpId, ofGroupId);
-        ListenableFutures.addErrorLogging(packetService.transmitPacket(input), LOG, "transmitPacket");
+        JdkFutures.addErrorLogging(packetService.transmitPacket(input), LOG, "transmitPacket");
     }
 }

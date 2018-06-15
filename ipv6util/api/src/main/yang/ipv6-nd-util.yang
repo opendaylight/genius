@@ -45,6 +45,9 @@ module ipv6-nd-util {
             }
             uses interfaces;
         }
+        output {
+
+        }
     }
 
     rpc send-neighbor-solicitation-to-of-group {
@@ -70,6 +73,9 @@ module ipv6-nd-util {
                mandatory "true";
                description "NS will be sent to the specified OpenFlow group ID.";
             }
+        }
+        output {
+
         }
     }
 
