@@ -7,11 +7,11 @@
  */
 package org.opendaylight.genius.alivenessmonitor.internal;
 
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getInterfaceMonitorMapId;
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorMapId;
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorProfileId;
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorStateId;
-import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitoringInfoId;
+import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getInterfaceMonitorMapId;
+import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorMapId;
+import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorProfileId;
+import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorStateId;
+import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitoringInfoId;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Optional;
@@ -50,10 +50,12 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
+import org.opendaylight.genius.mdsalutil.packet.utils.PacketUtil;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -89,7 +91,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411._interface.monitor.map.InterfaceMonitorEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.event.EventData;
@@ -277,18 +278,23 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onPacketReceived(PacketReceived packetReceived) {
         Class<? extends PacketInReason> pktInReason = packetReceived.getPacketInReason();
         if (LOG.isTraceEnabled()) {
             LOG.trace("Packet Received {}", packetReceived);
         }
+        if (pktInReason != SendToController.class) {
+            return;
+        }
+        byte[] data = packetReceived.getPayload();
+        Packet protocolPacket = null;
+        AlivenessProtocolHandler<Packet> livenessProtocolHandler = null;
 
-        if (pktInReason == SendToController.class) {
+        if (!PacketUtil.isIpv6NaPacket(data)) {
             Packet packetInFormatted;
-            byte[] data = packetReceived.getPayload();
             Ethernet res = new Ethernet();
-
             try {
                 packetInFormatted = res.deserialize(data, 0, data.length * NetUtils.NUM_BITS_IN_A_BYTE);
             } catch (PacketException e) {
@@ -301,31 +307,30 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 return;
             }
 
-            Packet objPayload = packetInFormatted.getPayload();
-
-            if (objPayload == null) {
+            protocolPacket = packetInFormatted.getPayload();
+            if (protocolPacket == null) {
                 LOG.trace("Unsupported packet type. Ignoring the packet...");
                 return;
             }
-
             if (LOG.isTraceEnabled()) {
-                LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, objPayload.getClass());
+                LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, protocolPacket.getClass());
             }
+            livenessProtocolHandler = (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry
+                    .getOpt(protocolPacket.getClass());
 
-            @SuppressWarnings("unchecked")
-            AlivenessProtocolHandler<Packet> livenessProtocolHandler =
-                (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.getOpt(objPayload.getClass());
-            if (livenessProtocolHandler == null) {
-                return;
-            }
+        } else if (PacketUtil.isIpv6NaPacket(data)) {
+            livenessProtocolHandler =
+                    (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.get(EtherTypes.Ipv6Nd);
+        }
+        if (livenessProtocolHandler == null) {
+            return;
+        }
 
-            String monitorKey = livenessProtocolHandler.handlePacketIn(packetInFormatted.getPayload(), packetReceived);
-
-            if (monitorKey != null) {
-                processReceivedMonitorKey(monitorKey);
-            } else {
-                LOG.debug("No monitorkey associated with received packet");
-            }
+        String monitorKey = livenessProtocolHandler.handlePacketIn(protocolPacket, packetReceived);
+        if (monitorKey != null) {
+            processReceivedMonitorKey(monitorKey);
+        } else {
+            LOG.debug("No monitorkey associated with received packet");
         }
     }
 
@@ -430,25 +435,15 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }, callbackExecutorService);
     }
 
-    private String getIpAddress(EndpointType endpoint) {
-        String ipAddress = "";
-        if (endpoint instanceof IpAddress) {
-            ipAddress = ((IpAddress) endpoint).getIpAddress().getIpv4Address().getValue();
-        } else if (endpoint instanceof Interface) {
-            ipAddress = ((Interface) endpoint).getInterfaceIp().getIpv4Address().getValue();
-        }
-        return ipAddress;
-    }
-
     private String getUniqueKey(String interfaceName, String ethType, EndpointType source, EndpointType destination) {
-        StringBuilder builder = new StringBuilder().append(interfaceName).append(AlivenessMonitorConstants.SEPERATOR)
-                .append(ethType);
+        StringBuilder builder =
+                new StringBuilder().append(interfaceName).append(AlivenessMonitorConstants.SEPERATOR).append(ethType);
         if (source != null) {
-            builder.append(AlivenessMonitorConstants.SEPERATOR).append(getIpAddress(source));
+            builder.append(AlivenessMonitorConstants.SEPERATOR).append(AlivenessMonitorUtil.getIpAddress(source));
         }
 
         if (destination != null) {
-            builder.append(AlivenessMonitorConstants.SEPERATOR).append(getIpAddress(destination));
+            builder.append(AlivenessMonitorConstants.SEPERATOR).append(AlivenessMonitorUtil.getIpAddress(destination));
         }
         return builder.toString();
     }
