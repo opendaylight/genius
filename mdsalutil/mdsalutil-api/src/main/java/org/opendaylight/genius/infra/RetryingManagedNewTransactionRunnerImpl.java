@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
+import org.opendaylight.infrautils.utils.function.CheckedFunction;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
@@ -88,6 +89,26 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
             if (tries - 1 > 0) {
                 return callWithNewReadWriteTransactionAndSubmit(txRunner, tries - 1);
+            } else {
+                throw optimisticLockFailedException;
+            }
+        }, executor);
+    }
+
+    @Override
+    public <E extends Exception, R> ListenableFuture<R> applyWithNewReadWriteTransactionAndSubmit(
+            CheckedFunction<ReadWriteTransaction, R, E> txRunner) {
+        return applyWithNewReadWriteTransactionAndSubmit(txRunner, maxRetries);
+    }
+
+    private <R, E extends Exception> ListenableFuture<R> applyWithNewReadWriteTransactionAndSubmit(
+            CheckedFunction<ReadWriteTransaction, R, E> txRunner, int tries) {
+        ListenableFuture<R> future = Objects.requireNonNull(
+                delegate.applyWithNewReadWriteTransactionAndSubmit(txRunner),
+                "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
+        return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
+            if (tries - 1 > 0) {
+                return applyWithNewReadWriteTransactionAndSubmit(txRunner, tries - 1);
             } else {
                 throw optimisticLockFailedException;
             }
