@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "d912b8ba_c94f5c99",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 249,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-17T17:57:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9dac0409_5a984f0b",
+      "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "89a400bf_b444efaa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
         "patchSetId": 1
@@ -84,6 +102,24 @@
       "writtenOn": "2018-06-14T11:32:06Z",
       "side": 1,
       "message": "Same here.",
+      "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "294ed54d_363db8b5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-17T17:57:35Z",
+      "side": 1,
+      "message": "This is an existing exception type which has been used in conjunction with FutureRpcResults, (I think almost all RPCs in this class were migrated to use it this way.). FutureRpcResults is catching this exception, and then logging proper ERROR, and doing a return of the RPC failure. Do we have to change this whole approach as part of this fix?",
+      "parentUuid": "89a400bf_b444efaa",
       "revId": "841da6a4072262e3c0d8fdaa98d085995103f90e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
