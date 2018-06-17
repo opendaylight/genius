@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9359797f_cbb6f4fe",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-17T05:08:42Z",
+      "side": 1,
+      "message": "are you planning to delay the listener intialization also as part of this patch? Or planning to do that separately?",
+      "revId": "9d47d5095369c6f93ff4694bea83c4ee975cc3e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
