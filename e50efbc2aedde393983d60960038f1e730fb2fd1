@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "875b3532_c22aa722",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a610867e_a2d7e607",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "163c5dec_0dc2dde3",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-06-18T15:12:58Z",
       "side": 1,
       "message": "however you wouldn\u0027t want to remove this catch (NullPointerException) right here in this patch already? ;)",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "58f8c34a_1e9375a1",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "163c5dec_0dc2dde3",
       "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "003d2e2e_c957643f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/CheckedFunction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ed02b970_30b639f3",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "34499705_b0a953d2",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 2
@@ -81,6 +135,24 @@
       "writtenOn": "2018-06-18T15:12:58Z",
       "side": 1,
       "message": "just about the naming... I\u0027m not a huge fan of return* I mean every method unless void returns stuff, but we don\u0027t name them all returnXYZ? ;-)  Not 100% sure I have a better idea, also adding Tom for any possible input... given that java.util.function.Function has apply(), perhaps naming this \"applyWithNewReadWriteTransactionAndSubmit\" could make sense?",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fee4d89b_f3ab2cab",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "The idea was to indicate that this allows the inner function to return a value, but I like the apply analogy with call (Callable/Function parallel).",
+      "parentUuid": "34499705_b0a953d2",
       "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "9f06d9a4_6095ea91",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "FluentFuture FTW ;-).",
+      "parentUuid": "ff2af7a0_37a7ccd4",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "82fc47f2_059a0d70",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
         "patchSetId": 2
@@ -121,6 +211,24 @@
     },
     {
       "key": {
+        "uuid": "61a7068f_dabfe2b8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "You seem to have forgotten how this function works ;-). This primes the pump for the catching async model used in the private method, and matches the approach used in the other implementations in this class.",
+      "parentUuid": "82fc47f2_059a0d70",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c014d749_8222fc0a",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
         "patchSetId": 2
@@ -132,6 +240,24 @@
       "writtenOn": "2018-06-18T15:12:58Z",
       "side": 1,
       "message": "if kept, adjust method name here to whatever we decide for the API",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9c68a057_ed51d334",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-18T15:59:03Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c014d749_8222fc0a",
       "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
