@@ -128,7 +128,7 @@ public interface DataTreeEventCallbackRegistrar {
      */
     default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
                                                       BiConsumer<@Nullable T, T> callback) {
-        onUpdate(store, path, (t1, t2) -> {
+        onAddOrUpdate(store, path, (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
         });
@@ -138,7 +138,7 @@ public interface DataTreeEventCallbackRegistrar {
                                                       BiConsumer<@Nullable T, T> callback,
                                                       Duration timeoutDuration,
                                                       Consumer<DataTreeIdentifier<T>> timedOutCallback) {
-        onUpdate(store, path, (t1, t2) -> {
+        onAddOrUpdate(store, path, (t1, t2) -> {
             callback.accept(t1, t2);
             return UNREGISTER;
         }, timeoutDuration, timedOutCallback);

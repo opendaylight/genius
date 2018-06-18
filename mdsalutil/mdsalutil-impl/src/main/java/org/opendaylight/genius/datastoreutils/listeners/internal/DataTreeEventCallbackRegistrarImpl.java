@@ -118,7 +118,7 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
                                                              callback, Duration timeoutDuration,
                                                      Consumer<DataTreeIdentifier<T>> timedOutCallback) {
         validateTimeout(timeoutDuration);
-        on(Operation.ADD_OR_UPDATE, store, path, callback, Duration.ZERO,
+        on(Operation.ADD_OR_UPDATE, store, path, callback, timeoutDuration,
                 requireNonNull(timedOutCallback, "timedOutCallback"));
     }
 
