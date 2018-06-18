@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8fc84144_766cb722",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NWUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2018-06-18T09:02:25Z",
+      "side": 1,
+      "message": "If ipPrefix contains \"/\", wont the index always be \u003e\u003d0 ?",
+      "range": {
+        "startLine": 294,
+        "startChar": 8,
+        "endLine": 296,
+        "endChar": 38
+      },
+      "revId": "a302e06775786edf172ba504609fa539be8b8fed",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
