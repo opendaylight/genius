@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd9bd764_4a43207c",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 0,
+      "message": "this throws an ExpectedDataObjectNotFoundException if there is is no idPoolInstance...",
+      "revId": "ba573389c9edf785f9352e0fa421c6ad4d120ac6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a610867e_a2d7e607",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "but this very silently ignores a missing entry and returns 0.  Unless someone much more familiar with idmanager can confirm to us that this is perfectly OK and safe, let us keep the current behaviour?",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "163c5dec_0dc2dde3",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 398,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "however you wouldn\u0027t want to remove this catch (NullPointerException) right here in this patch already? ;)",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88205cb3_bb8c3b08",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 700,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "right here you are actually even doing what I meant above! ;)  This seeems to exactly preserve the current behaviour, which is perhaps a good idea, just to be safe.",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed02b970_30b639f3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/CheckedFunction.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "and so you have in https://git.opendaylight.org/gerrit/#/c/73032/, so remove this from here now and use that?",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "34499705_b0a953d2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "just about the naming... I\u0027m not a huge fan of return* I mean every method unless void returns stuff, but we don\u0027t name them all returnXYZ? ;-)  Not 100% sure I have a better idea, also adding Tom for any possible input... given that java.util.function.Function has apply(), perhaps naming this \"applyWithNewReadWriteTransactionAndSubmit\" could make sense?",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff2af7a0_37a7ccd4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "LGTM (that \"v\" is the null Void from submit, so we just ditch it)",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "82fc47f2_059a0d70",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "why a separate private method instead of just inlining here?",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c014d749_8222fc0a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T15:12:58Z",
+      "side": 1,
+      "message": "if kept, adjust method name here to whatever we decide for the API",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
