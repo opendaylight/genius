@@ -16,6 +16,24 @@
       "revId": "9d47d5095369c6f93ff4694bea83c4ee975cc3e5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a796170f_9e0ac69b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-06-18T01:36:36Z",
+      "side": 1,
+      "message": "Need to figure out if we need to delay listener initialization. With this change ITM is not going to operational till provider is up. Only scenario where notifications can come before is when there is already data present, which would mean IdPools already initialized. See any scenario where we do want to delay listeners?\n\nI think that may come under SRM, SRM needs handles to all listeners too, right?",
+      "parentUuid": "9359797f_cbb6f4fe",
+      "revId": "9d47d5095369c6f93ff4694bea83c4ee975cc3e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
