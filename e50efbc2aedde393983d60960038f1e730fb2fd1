@@ -229,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "0581cb27_c40ceba1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-18T16:36:47Z",
+      "side": 1,
+      "message": "Duh! Yeah, right - with the recursion; I originally did that like this... ;-)",
+      "parentUuid": "61a7068f_dabfe2b8",
+      "revId": "e50efbc2aedde393983d60960038f1e730fb2fd1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c014d749_8222fc0a",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
         "patchSetId": 2
