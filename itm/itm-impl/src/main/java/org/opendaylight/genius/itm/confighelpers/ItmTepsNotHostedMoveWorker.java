@@ -29,11 +29,14 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
     private final  List<Vteps> vtepsList;
     private final  String tzName;
     private final  DataBroker dataBroker;
+    private final OvsdbTepAddConfigHelper ovsdbTepAddConfigHelper;
 
-    public ItmTepsNotHostedMoveWorker(List<Vteps> vtepsList, String tzName, DataBroker broker) {
+    public ItmTepsNotHostedMoveWorker(List<Vteps> vtepsList, String tzName, DataBroker broker,
+                                      OvsdbTepAddConfigHelper ovsdbTepAddConfigHelper) {
         this.vtepsList = vtepsList;
         this.tzName = tzName;
-        this.dataBroker = broker ;
+        this.dataBroker = broker;
+        this.ovsdbTepAddConfigHelper = ovsdbTepAddConfigHelper;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
                 + "DataStoreJobCoordinator for execution.");
 
         // Move TEP from TepsNotHosted list to NBI configured TZ.
-        OvsdbTepAddConfigHelper.addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepsList, null /*tepIpAddress*/,
+        ovsdbTepAddConfigHelper.addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepsList, null /*tepIpAddress*/,
                 tzName, dpnId, ITMConstants.DUMMY_PORT, false, wrTx);
 
         return Collections.singletonList(wrTx.submit());
