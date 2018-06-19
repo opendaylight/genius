@@ -61,7 +61,8 @@ public final class OvsdbTepAddConfigHelper {
      */
 
     public static void addTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
-                                               boolean ofTunnel, DataBroker dataBroker, WriteTransaction wrTx) {
+                                               boolean ofTunnel, DataBroker dataBroker, WriteTransaction wrTx)
+                                               throws Exception {
         BigInteger dpnId = BigInteger.valueOf(0);
 
         if (strDpnId != null && !strDpnId.isEmpty()) {
@@ -71,6 +72,20 @@ public final class OvsdbTepAddConfigHelper {
         // Get tep IP
         IpAddress tepIpAddress = new IpAddress(tepIp.toCharArray());
         TransportZone tzone = null;
+        String portName = ITMConstants.DUMMY_PORT;
+
+        // check if TEP received is already present in any other TZ.
+        TransportZone transportZone = ItmUtils.getTransportZoneOfVtep(dpnId, dataBroker);
+        if (transportZone != null) {
+            LOG.trace("Vtep (tep-ip: {} and dpid: {}) is already present in transport-zone: {}",
+                    tepIpAddress, dpnId, transportZone.getZoneName());
+            if (!transportZone.getZoneName().equals(tzName)) {
+                // remove TEP from TZ because TZ is updated for TEP from southbound in this case
+                OvsdbTepRemoveWorker ovsdbTepRemoveWorkerObj = new OvsdbTepRemoveWorker(tepIp, strDpnId,
+                        transportZone.getZoneName(), dataBroker);
+                ovsdbTepRemoveWorkerObj.call();
+            }
+        }
 
         // Case: TZ name is not given with OVS TEP.
         if (tzName == null) {
@@ -98,8 +113,6 @@ public final class OvsdbTepAddConfigHelper {
 
         // Get subnet list of corresponding TZ created from Northbound.
         List<Subnets> subnetList = tzone.getSubnets();
-        String portName = ITMConstants.DUMMY_PORT;
-
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
 
         if (subnetList == null || subnetList.isEmpty()) {

@@ -35,7 +35,7 @@ public final class ItmTepAutoConfigTestUtil {
 
     /* transaction methods */
     public static CheckedFuture<Void, TransactionCommitFailedException> addTep(String tepIp,
-        String strDpnId, String tzName, boolean ofTunnel, DataBroker dataBroker) {
+        String strDpnId, String tzName, boolean ofTunnel, DataBroker dataBroker) throws Exception {
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         // add TEP received from southbound OVSDB into ITM config DS.
