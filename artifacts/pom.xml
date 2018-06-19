@@ -32,11 +32,6 @@
         <artifactId>mdsalutil-api</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>tools-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <!-- Karaf Features -->
       <dependency>
@@ -78,20 +73,6 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>odl-genius-fcaps-application</artifactId>
-        <version>${project.version}</version>
-        <classifier>features</classifier>
-        <type>xml</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>odl-genius-srm</artifactId>
-        <version>${project.version}</version>
-        <classifier>features</classifier>
-        <type>xml</type>
-      </dependency>
-      <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>odl-genius-tools</artifactId>
         <version>${project.version}</version>
         <classifier>features</classifier>
         <type>xml</type>
