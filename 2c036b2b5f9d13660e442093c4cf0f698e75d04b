@@ -16,6 +16,24 @@
       "revId": "2c036b2b5f9d13660e442093c4cf0f698e75d04b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "972cb29b_52f6c41d",
+        "filename": "ipv6util/impl/src/test/java/org/opendaylight/genius/ipv6util/nd/Ipv6NsHelperTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-06-19T09:38:26Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6b8caa04_9a414e8f",
+      "revId": "2c036b2b5f9d13660e442093c4cf0f698e75d04b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
