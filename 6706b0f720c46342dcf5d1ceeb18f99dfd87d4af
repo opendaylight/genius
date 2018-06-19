@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6f51fdd2_79ce8700",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "see this will create some confusion - LogicalDatastoreType.CONFIGURATION here...",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e284ba61_f7d0fba0",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "... and Datastore.CONFIGURATION here.",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f8caf142_be1cae62",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "is there a strong reason for this, VS the good ol\u0027 LogicalDatastoreType enum?  It will invariably create confusion to have two.. perhaps we can find a way to avoid this - why could those new methods on ManagedNewTransactionRunner not just accept an LogicalDatastoreType argument, instead of this Datastore?",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b8abfaa_6425c0ec",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "How about naming these new ones the Managed*Transaction instead of a Datastore*Transaction?  (Because they are for the ManagedNewTransactionRunner.)",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "595e5303_a2c2efed",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "why extends WriteTransaction?  I\u0027m not concinved that backward compability is that important here - why not use this as an opportunity to boldly go.. don\u0027t extend, no @Deprecated \"old\" methods (and no close/submit!), just the new signatures!  When used in Lambda, then the impact is minor (you don\u0027t see the type name).  And where we\u0027re passing around open TX objects, it will be trivial to replace WriteTransaction arguments by ManagedWriteTransaction - and that will give us the type safety we, IMHO, badly need here - no more stupid enforcement of the new paradigm only at runtime, instead of at compile time.  We didn\u0027t have the balls to do this with the first iteration of our ManagedNewTransactionRunner, and had the NonSubmitCancelableDatastoreWriteTransaction \u0026 Co. - but I think we should dare to go do it right in this 2nd round.",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a4a831c8_d79b96f7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "Just asking, not -1: should we really already use FluentFuture here?  It will confuse people who are used to ListenableFuture from DataBroker... use this now, or only when the \"main\" DataBroker changes to this new API?  (Is that happening soon?)",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba75a136_4bf62dd0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-19T17:03:20Z",
+      "side": 1,
+      "message": "Re. CommitInfo ... will applications ever have *ANY* use for / interest in this?  Example? ;-)  My concern is just to keep this utility API simple so that people get it more easily, and use it without confusion / reluctance.",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
