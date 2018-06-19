@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.rpcservice;
 
-import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.DEBUG;
-import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE;
-import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.DEBUG;
+import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE;
+import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
