@@ -14,7 +14,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -45,14 +47,19 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
     private final ItmConfig itmConfig;
+    final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final OvsdbTepAddConfigHelper ovsdbTepAddConfigHelper;
 
     @Inject
-    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator) {
+    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator,
+                             DPNTEPsInfoCache dpnTEPsInfoCache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         this.itmConfig = itmConfig;
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
+        this.ovsdbTepAddConfigHelper = new OvsdbTepAddConfigHelper(dpnTEPsInfoCache);
     }
 
     @Override
@@ -229,7 +236,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
             jobCoordinator.enqueueJob(localIp,
-                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker));
+                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker, ovsdbTepAddConfigHelper));
         } else {
             // remove TEP
             LOG.trace("Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}", localIp,
@@ -363,7 +370,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             if (ovsdbNodeFromBridge != null) {
                 ovsdbNewNodeAugmentation = ovsdbNodeFromBridge.augmentation(OvsdbNodeAugmentation.class);
             } else {
-                LOG.error("processBridgeUpdate: Ovsdb Node could not be fetched from Oper DS for bridge {}.",
+                LOG.warn("processBridgeUpdate: Ovsdb Node could not be fetched from Oper DS for bridge {}.",
                         bridgeName);
                 return;
             }

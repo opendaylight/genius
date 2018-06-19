@@ -38,6 +38,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedMoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
@@ -91,6 +92,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final OvsdbTepAddConfigHelper ovsdbTepAddConfigHelper;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
@@ -119,6 +121,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
         serviceRecoveryRegistry.addRecoverableListener(ItmServiceRecoveryHandler.getServiceRegistryKey(), this);
+        this.ovsdbTepAddConfigHelper = new OvsdbTepAddConfigHelper(dpnTEPsInfoCache);
     }
 
     @Override
@@ -330,7 +333,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         // Enqueue 'add TEP received from southbound OVSDB into ITM config DS' operation
         // into DataStoreJobCoordinator
         ItmTepsNotHostedMoveWorker
-            moveWorker = new ItmTepsNotHostedMoveWorker(vtepsList, newZoneName, dataBroker);
+            moveWorker = new ItmTepsNotHostedMoveWorker(vtepsList, newZoneName, dataBroker, ovsdbTepAddConfigHelper);
         jobCoordinator.enqueueJob(newZoneName, moveWorker);
 
         if (mapNotHostedDPNToTunnelEndpt.size() > 0) {
