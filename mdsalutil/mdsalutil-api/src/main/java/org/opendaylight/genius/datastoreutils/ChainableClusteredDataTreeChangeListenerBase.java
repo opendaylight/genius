@@ -11,8 +11,8 @@ import java.util.Collection;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
-import org.opendaylight.genius.tools.mdsal.listener.ChainableDataTreeChangeListener;
-import org.opendaylight.genius.tools.mdsal.listener.ChainableDataTreeChangeListenerImpl;
+import org.opendaylight.serviceutils.tools.mdsal.listener.ChainableDataTreeChangeListener;
+import org.opendaylight.serviceutils.tools.mdsal.listener.ChainableDataTreeChangeListenerImpl;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
 /**
