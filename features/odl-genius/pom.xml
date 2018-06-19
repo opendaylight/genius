@@ -51,8 +51,9 @@
       <classifier>features</classifier>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.genius</groupId>
-      <artifactId>odl-genius-srm</artifactId>
+      <groupId>org.opendaylight.serviceutils</groupId>
+      <artifactId>odl-serviceutils-srm</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
