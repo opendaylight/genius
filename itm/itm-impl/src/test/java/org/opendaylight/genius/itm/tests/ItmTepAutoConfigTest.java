@@ -26,12 +26,16 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDefTransportZoneObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedTepNotHostedTransportZoneObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedTransportZoneObjects;
+import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
+import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
@@ -58,10 +62,12 @@ public class ItmTepAutoConfigTest {
 
     TransportZone transportZone;
     RetryingManagedNewTransactionRunner txRunner;
+    private OvsdbTepAddConfigHelper ovsdbTepAddConfigHelper;
 
     private @Inject DataBroker dataBroker;
     private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     private @Inject ItmProvider itmProvider;
+
 
     @Before
     public void start() throws InterruptedException {
@@ -69,6 +75,8 @@ public class ItmTepAutoConfigTest {
             .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME))
             .build();
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
+        ovsdbTepAddConfigHelper = new OvsdbTepAddConfigHelper(new DPNTEPsInfoCache(dataBroker,
+                new GuavaCacheProvider(new CacheManagersRegistryImpl())));
     }
 
     // Common method created for code-reuse
@@ -251,7 +259,7 @@ public class ItmTepAutoConfigTest {
         CheckedFuture<Void, TransactionCommitFailedException> futures =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.DEF_TZ_TEP_IP,
             ItmTestConstants.DEF_BR_DPID,
-            ITMConstants.DEFAULT_TRANSPORT_ZONE, false, dataBroker);
+            ITMConstants.DEFAULT_TRANSPORT_ZONE, false, dataBroker, ovsdbTepAddConfigHelper);
         futures.get();
 
         InstanceIdentifier<Vteps> vtepPath = ItmTepAutoConfigTestUtil.getTepIid(subnetMaskObj,
@@ -294,7 +302,8 @@ public class ItmTepAutoConfigTest {
         // add tep
         CheckedFuture<Void, TransactionCommitFailedException> futures =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
-                ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker);
+                ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker,
+                    ovsdbTepAddConfigHelper);
         futures.get();
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -609,7 +618,8 @@ public class ItmTepAutoConfigTest {
         // add into not hosted list
         CheckedFuture<Void, TransactionCommitFailedException> future =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker);
+                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
+                    dataBroker, ovsdbTepAddConfigHelper);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -625,7 +635,8 @@ public class ItmTepAutoConfigTest {
         // add into not hosted list
         CheckedFuture<Void, TransactionCommitFailedException> future =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker);
+                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
+                    dataBroker, ovsdbTepAddConfigHelper);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -651,7 +662,7 @@ public class ItmTepAutoConfigTest {
         CheckedFuture<Void, TransactionCommitFailedException> future =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
                 ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
-                dataBroker);
+                dataBroker, ovsdbTepAddConfigHelper);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);

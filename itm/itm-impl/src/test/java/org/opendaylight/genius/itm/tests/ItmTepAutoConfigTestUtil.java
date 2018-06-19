@@ -34,12 +34,13 @@ public final class ItmTepAutoConfigTestUtil {
     private ItmTepAutoConfigTestUtil() { }
 
     /* transaction methods */
-    public static CheckedFuture<Void, TransactionCommitFailedException> addTep(String tepIp,
-        String strDpnId, String tzName, boolean ofTunnel, DataBroker dataBroker) {
+    public static CheckedFuture<Void, TransactionCommitFailedException> addTep(String tepIp, String strDpnId,
+        String tzName, boolean ofTunnel, DataBroker dataBroker, OvsdbTepAddConfigHelper ovsdbTepAddConfigHelper)
+        throws Exception {
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         // add TEP received from southbound OVSDB into ITM config DS.
-        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel,
+        ovsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel,
             dataBroker, wrTx);
         return wrTx.submit();
     }
