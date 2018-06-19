@@ -44,7 +44,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
 
     <reference id="serviceRecoveryRegistry"
-               interface="org.opendaylight.genius.srm.ServiceRecoveryRegistry"/>
+               interface="org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry"/>
 
     <reference id="hwvtepNodeHACache"
              interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
