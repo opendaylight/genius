@@ -10,10 +10,10 @@ package org.opendaylight.genius.interfacemanager.recovery.impl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.opendaylight.genius.srm.RecoverableListener;
-import org.opendaylight.genius.srm.ServiceRecoveryInterface;
-import org.opendaylight.genius.srm.ServiceRecoveryRegistry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.srm.types.rev170711.GeniusIfm;
+import org.opendaylight.serviceutils.srm.RecoverableListener;
+import org.opendaylight.serviceutils.srm.ServiceRecoveryInterface;
+import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.srm.types.rev180626.GeniusIfm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

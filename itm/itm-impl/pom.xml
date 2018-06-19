@@ -49,6 +49,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.opendaylight.serviceutils</groupId>
+        <artifactId>serviceutils-artifacts</artifactId>
+        <version>0.2.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -64,8 +71,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.genius</groupId>
+      <groupId>org.opendaylight.serviceutils</groupId>
       <artifactId>tools-api</artifactId>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
@@ -181,9 +189,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.genius</groupId>
+      <groupId>org.opendaylight.serviceutils</groupId>
       <artifactId>srm-api</artifactId>
-      <version>${project.version}</version>
+      <version>0.2.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>

@@ -14,7 +14,8 @@ import org.opendaylight.infrautils.metrics.MetricProvider;
 /**
  * Metrics for datastore operations.
  */
-@Deprecated // This class is copy/pasted (and also package private) in org.opendaylight.genius.tools.mdsal.listener.
+@Deprecated // This class is copy/pasted (and also package private)
+// in org.opendaylight.serviceutils.tools.mdsal.listener.
 /* intentionally *NOT* public */ class DataStoreMetrics {
 
     private final MetricProvider metricProvider;

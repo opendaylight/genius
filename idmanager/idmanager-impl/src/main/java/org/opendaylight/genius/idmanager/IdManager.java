@@ -53,8 +53,8 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
-import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
@@ -283,16 +283,17 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
             // TODO return the Future from releaseIdFromLocalPool() instead.. check all callers @CheckReturnValue
             return Futures.immediateFuture((ReleaseIdOutput) null);
-        }).onFailureLogLevel(org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE).onFailure(e -> {
-            if (e instanceof IdDoesNotExistException) {
-                // Do not log full stack trace in case ID does not exist
-                LOG.error("RPC releaseId() failed due to IdDoesNotExistException; input = {}", input);
-            } else {
-                // But for all other cases do:
-                LOG.error("RPC releaseId() failed; input = {}", input, e);
-            }
-            idUtils.unlock(lockManager, uniqueKey);
-        }).build();
+        }).onFailureLogLevel(org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE)
+                .onFailure(e -> {
+                    if (e instanceof IdDoesNotExistException) {
+                        // Do not log full stack trace in case ID does not exist
+                        LOG.error("RPC releaseId() failed due to IdDoesNotExistException; input = {}", input);
+                    } else {
+                        // But for all other cases do:
+                        LOG.error("RPC releaseId() failed; input = {}", input, e);
+                    }
+                    idUtils.unlock(lockManager, uniqueKey);
+                }).build();
     }
 
     private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
