@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "524bc034_6c04194f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:38:57Z",
+      "side": 1,
+      "message": "The point of this interface is to make the transactions strongly-typed on the datastore type. We can’t extend the existing enum to provide this class-based typing, because enums are final.",
+      "parentUuid": "f8caf142_be1cae62",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b8abfaa_6425c0ec",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
         "patchSetId": 1
@@ -64,6 +82,24 @@
       "writtenOn": "2018-06-19T17:03:20Z",
       "side": 1,
       "message": "How about naming these new ones the Managed*Transaction instead of a Datastore*Transaction?  (Because they are for the ManagedNewTransactionRunner.)",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc2c6d62_2317d64a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:38:57Z",
+      "side": 1,
+      "message": "I named them this way because they’re not *for* the ManagedNewTransactionRunner, they’re datastore-specific transactions. We could add methods to the existing DataBroker which would return these (and that’s what I plan on suggesting once this is stabilised and proven useful in Genius and Netvirt).",
+      "parentUuid": "7b8abfaa_6425c0ec",
       "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +123,24 @@
     },
     {
       "key": {
+        "uuid": "90319f94_0bddbdbf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:38:57Z",
+      "side": 1,
+      "message": "We can’t switch in one go, because there are methods in Netvirt which pass transations to Genius methods.",
+      "parentUuid": "595e5303_a2c2efed",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4a831c8_d79b96f7",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 1
@@ -104,6 +158,24 @@
     },
     {
       "key": {
+        "uuid": "1211741b_97b9b74b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:38:57Z",
+      "side": 1,
+      "message": "DataBroker already has switched to the new API.",
+      "parentUuid": "a4a831c8_d79b96f7",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba75a136_4bf62dd0",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 1
@@ -115,6 +187,24 @@
       "writtenOn": "2018-06-19T17:03:20Z",
       "side": 1,
       "message": "Re. CommitInfo ... will applications ever have *ANY* use for / interest in this?  Example? ;-)  My concern is just to keep this utility API simple so that people get it more easily, and use it without confusion / reluctance.",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3db9a48c_216de012",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:38:57Z",
+      "side": 1,
+      "message": "That’s the return type from the DataBroker. You make a good point about the API though, perhaps we should use Void instead here...",
+      "parentUuid": "ba75a136_4bf62dd0",
       "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
