@@ -16,6 +16,24 @@
       "revId": "2523db0f45fb5111e67f90bf8e2999b69bfb1b33",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83648756_b6a1adc3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-06-20T09:57:27Z",
+      "side": 1,
+      "message": "But we\u0027re not catching OptimisticLock exception. What if IdPool creation fails due to other reasons? Will remove for now, but should be a way for IdManager to inform if idPool was present or not. i.e. OptimisticLock could be propogated as \u0027AlreadyExistsException\u0027",
+      "parentUuid": "49bfb9a0_ec0fd23d",
+      "revId": "2523db0f45fb5111e67f90bf8e2999b69bfb1b33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
