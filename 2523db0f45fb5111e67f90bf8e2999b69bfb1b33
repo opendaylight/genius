@@ -52,6 +52,24 @@
       "revId": "2523db0f45fb5111e67f90bf8e2999b69bfb1b33",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d41296cc_5bfaabec",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-06-20T10:34:46Z",
+      "side": 1,
+      "message": "Yeah, couldn\u0027t remember which exact was causing it and wanted to catch that. So I\u0027ll just catch for IdPool exceptions and not report error since with idpool creation any one node succeeding is good enough. I have some ideas on how to do all this in a better way, will discuss in next meeting or IRC.",
+      "parentUuid": "dfdff653_8cf0f486",
+      "revId": "2523db0f45fb5111e67f90bf8e2999b69bfb1b33",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
