@@ -8,8 +8,6 @@
 
 package org.opendaylight.genius.idmanager.jobs;
 
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
-
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,8 +15,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.idmanager.IdUtils;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -51,16 +49,16 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws TransactionCommitFailedException {
+    public List<ListenableFuture<Void>> call() {
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         try {
-            txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
                 idUtils.updateChildPool(tx, parentPoolName, localPoolName);
                 if (!newIdValues.isEmpty()) {
                     IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
-                    tx.merge(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
+                    tx.merge(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
                 } else {
-                    tx.delete(CONFIGURATION, idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
+                    tx.delete(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
                 }
             }).get();
             LOG.info("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
