@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3bac65a_3e1977a1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "if DatastoreReadTransaction becomes TypedReadTransaction, should this now be DatastoreType instead of just Datastore?  I know that makes it ressemble the LogicalDatastoreType enum more - good or bad?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89dbdfd2_e54562e6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "toEnum, perhaps?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9ea3d56d_1aa44311",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableDatastoreReadWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "the name of this class (now) doesn\u0027t make sense anymore, agreed?  The NonSubmitCancelable originally referred to those methods from the original old TXs throwing exceptions- but we just got rid of those!  So really this is now just a class [Typed?|Datastore](Read/Write)TransactionImpl?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "36fd95d4_8b0eb14a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/NonSubmitCancelableDatastoreWriteTransaction.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "same point just re naming",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "020e0566_e6f303b7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/TransactionAdapter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "this, and below, lost something nice that you had before in the previous iteration - if I TransactionAdapter.toReadWriteTransaction() a DatastoreReadWriteTransaction\u003cOperational\u003e (you know what I mean) then the code can write to Config... there should be a test covering that\u0027s not possible?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae88837b_ebed2f02",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/TransactionAdapter.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "seeing this gave me an idea.. how about https://git.opendaylight.org/gerrit/73270 ?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "adc82661_26e221dd",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/infra/tests/ManagedNewTransactionRunnerImplTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "by doing this, aren\u0027t you just using the tests for the existing API for the new methods - and loose coverage for the  old implementation?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5e011190_7ac9378f",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/infra/tests/RetryingManagedNewTransactionRunnerTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "same Q as in ManagedNewTransactionRunnerImplTest ...",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

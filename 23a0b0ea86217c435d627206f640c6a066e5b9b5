@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dd97f73a_23e1e300",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/infra/tests/ManagedNewTransactionRunnerImplTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 0,
+      "message": "not sure I understand why remove these?",
+      "revId": "23a0b0ea86217c435d627206f640c6a066e5b9b5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
