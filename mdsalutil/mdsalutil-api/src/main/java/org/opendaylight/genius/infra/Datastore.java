@@ -12,16 +12,17 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 /**
  * Strongly-typed representation of a datastore (configuration or operational).
  */
-public interface Datastore {
+public abstract class Datastore {
+
     /** Class representing the configuration datastore. */
-    Class<Configuration> CONFIGURATION = Configuration.class;
+    public static final Class<Configuration> CONFIGURATION = Configuration.class;
 
     /** Class representing the operational datastore. */
-    Class<Operational> OPERATIONAL = Operational.class;
+    public static final Class<Operational> OPERATIONAL = Operational.class;
 
-    interface Configuration extends Datastore {}
+    public static final class Configuration extends Datastore {}
 
-    interface Operational extends Datastore {}
+    public static final class Operational extends Datastore {}
 
     /**
      * Returns the logical datastore type corresponding to the given datastore class.
@@ -30,8 +31,8 @@ public interface Datastore {
      * @return The corresponding logical datastore type.
      * @throws IllegalArgumentException if the provided datastore class isn’t handled.
      */
-    static LogicalDatastoreType toType(Class<? extends Datastore> datastoreClass) {
-        if (Configuration.class.equals(datastoreClass)) {
+    public static LogicalDatastoreType toType(Class<? extends Datastore> datastoreClass) {
+        if (datastoreClass.equals(Configuration.class)) {
             return LogicalDatastoreType.CONFIGURATION;
         } else if (Operational.class.equals(datastoreClass)) {
             return LogicalDatastoreType.OPERATIONAL;
@@ -46,7 +47,7 @@ public interface Datastore {
      * @return The corresponding datastore class.
      * @throws IllegalArgumentException if the provided logical datastore type isn’t handled.
      */
-    static Class<? extends Datastore> toClass(LogicalDatastoreType datastoreType) {
+    public static Class<? extends Datastore> toClass(LogicalDatastoreType datastoreType) {
         switch (datastoreType) {
             case CONFIGURATION:
                 return CONFIGURATION;
@@ -56,4 +57,6 @@ public interface Datastore {
                 throw new IllegalArgumentException("Unknown datastore type " + datastoreType);
         }
     }
+
+    private Datastore() {}
 }
