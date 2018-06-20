@@ -28,6 +28,7 @@ import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedEx
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresImpl;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
@@ -68,8 +69,7 @@ public class ManagedNewTransactionRunnerImplTest {
 
     @Test
     public void testCallWithNewWriteOnlyTransactionAndSubmitEmptySuccessfully() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-        }).get();
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> { }).get();
     }
 
     @Test
@@ -79,7 +79,9 @@ public class ManagedNewTransactionRunnerImplTest {
 
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
-        assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(tx -> 1).get());
+        assertEquals(1,
+            (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+                tx -> 1).get());
     }
 
     @Test
@@ -102,8 +104,9 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testApplyWithNewReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
         assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+            Datastore.OPERATIONAL,
             tx -> {
-                tx.put(OPERATIONAL, TEST_PATH, data);
+                tx.put(TEST_PATH, data);
                 return 1;
             }).get());
         assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
@@ -148,8 +151,8 @@ public class ManagedNewTransactionRunnerImplTest {
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
         try {
-            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(writeTx -> {
-                writeTx.put(OPERATIONAL, TEST_PATH, newTestDataObject());
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, writeTx -> {
+                writeTx.put(TEST_PATH, newTestDataObject());
                 // We now throw an arbitrary kind of checked (not unchecked!) exception here
                 throw new IOException("something didn't quite go as expected...");
             }).get();
@@ -190,9 +193,9 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testApplyWithNewReadWriteTransactionCommitFailedException() throws Exception {
         try {
             testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
-            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
                 writeTx -> {
-                    writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
+                    writeTx.put(TEST_PATH, newTestDataObject());
                     return 1;
                 }).get();
             fail("This should have led to an ExecutionException!");
@@ -232,9 +235,9 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testApplyWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
         try {
             testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
-            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
                 writeTx -> {
-                    writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
+                    writeTx.put(TEST_PATH, newTestDataObject());
                     return 1;
                 }).get();
             fail("This should have led to an ExecutionException!");
@@ -255,11 +258,6 @@ public class ManagedNewTransactionRunnerImplTest {
     }
 
     @Test(expected = ExecutionException.class)
-    public void testApplyWithNewReadWriteTransactionAndSubmitCannotCommit() throws Exception {
-        managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::commit).get();
-    }
-
-    @Test(expected = ExecutionException.class)
     public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCancel() throws Exception {
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(AsyncWriteTransaction::cancel).get();
     }
@@ -267,10 +265,5 @@ public class ManagedNewTransactionRunnerImplTest {
     @Test(expected = ExecutionException.class)
     public void testCallWithNewReadWriteTransactionAndSubmitCannotCancel() throws Exception {
         managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::cancel).get();
-    }
-
-    @Test(expected = ExecutionException.class)
-    public void testApplyWithNewReadWriteTransactionAndSubmitCannotCancel() throws Exception {
-        managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(AsyncWriteTransaction::cancel).get();
     }
 }
