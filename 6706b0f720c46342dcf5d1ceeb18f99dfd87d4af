@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "3fe08e9e_3c7e1d7b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T15:09:18Z",
+      "side": 1,
+      "message": "\u003e I\u0027ll play around to see if we can\u0027t achieve the same with the enum.\n\nI\u0027ve tried this, see below, but that doesn\u0027t actually make it typesafe, so how you have it here is probably the best we can do (therefore fine with me).\n\nThis actually compiles, but that D type argument is just LogicalDatastoreType, and not LogicalDatastoreType.CONFIGURATION, so this is pointless (unless someone sees how this can be made to do what we need):\n\n  interface DatastoreWriteTransaction\u003cD extends Enum\u003cLogicalDatastoreType\u003e\u003e {\n\n    \u003cT extends DataObject\u003e void put(InstanceIdentifier\u003cT\u003e path, T data);\n\n  }\n\n  interface ManagedNewTransactionRunner {\n    @CheckReturnValue\n    \u003cD extends Enum\u003cLogicalDatastoreType\u003e, E extends Exception\u003e\n        FluentFuture\u003cVoid\u003e callWithNewWriteTransactionAndSubmit(D datastoreType,\n            CheckedConsumer\u003cDatastoreWriteTransaction\u003cD\u003e, E\u003e txRunner);\n  }\n\n  class ExampleUsage\u003cT extends DataObject\u003e {\n\n    ManagedNewTransactionRunner managedNewTransactionRunner;\n    \n    void foo() {\n        managedNewTransactionRunner.callWithNewWriteTransactionAndSubmit(LogicalDatastoreType.CONFIGURATION, tx -\u003e {\n            InstanceIdentifier\u003cT\u003e path \u003d null;\n            T data \u003d null;\n            tx.put(path, data);\n            barOK(tx); \n            barNOK(tx);\n        });\n    }\n\n    private void barOK(DatastoreWriteTransaction\u003cLogicalDatastoreType.CONFIGURATION\u003e tx) {\n    }\n\n    private void barNOK(DatastoreWriteTransaction\u003cLogicalDatastoreType.OPERATIONAL\u003e tx) {\n    }\n  }",
+      "parentUuid": "11a6d98c_6052c130",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d0096e7a_625ddfcf",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
         "patchSetId": 1
