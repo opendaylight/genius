@@ -8,8 +8,6 @@
 
 package org.opendaylight.genius.itm.listeners.cache;
 
-import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -27,8 +25,6 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ExternalTunnelListener extends AbstractClusteredAsyncDataTreeChangeListener<ExternalTunnel> {
-
-    private static final long TIMEOUT_FOR_SHUTDOWN = 30;
 
     private static final Logger LOG = LoggerFactory.getLogger(ExternalTunnelListener.class);
 
@@ -61,6 +57,6 @@ public class ExternalTunnelListener extends AbstractClusteredAsyncDataTreeChange
     @PreDestroy
     public void close() {
         super.close();
-        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), TIMEOUT_FOR_SHUTDOWN, TimeUnit.SECONDS);
+        Executors.shutdownAndAwaitTermination(getExecutorService());
     }
 }

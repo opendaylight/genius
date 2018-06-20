@@ -7,9 +7,7 @@
  */
 package org.opendaylight.genius.lockmanager.impl;
 
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -27,8 +25,6 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<Lock> {
-
-    private static final long TIMEOUT_FOR_SHUTDOWN = 30;
 
     private static final Logger LOG = LoggerFactory.getLogger(LockListener.class);
 
@@ -70,6 +66,6 @@ public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<L
     @PreDestroy
     public void close() {
         super.close();
-        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), TIMEOUT_FOR_SHUTDOWN, TimeUnit.SECONDS);
+        Executors.shutdownAndAwaitTermination(getExecutorService());
     }
 }

@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.idmanager;
 
-import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -25,8 +23,6 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener<IdPool> {
-
-    private static final long TIMEOUT_FOR_SHUTDOWN = 30;
 
     private static final Logger LOG = LoggerFactory.getLogger(IdPoolListener.class);
 
@@ -79,6 +75,6 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     @PreDestroy
     public void close() {
         super.close();
-        MoreExecutors.shutdownAndAwaitTermination(getExecutorService(), TIMEOUT_FOR_SHUTDOWN, TimeUnit.SECONDS);
+        Executors.shutdownAndAwaitTermination(getExecutorService());
     }
 }
