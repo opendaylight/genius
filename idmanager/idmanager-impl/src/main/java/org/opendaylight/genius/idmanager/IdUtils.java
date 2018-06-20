@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.idmanager;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
@@ -22,9 +24,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.DatastoreWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
@@ -171,7 +173,7 @@ public class IdUtils {
         return new AvailableIdsHolderBuilder();
     }
 
-    protected ReleasedIdsHolderBuilder getReleaseIdsHolderBuilder(IdPool pool) {
+    protected static ReleasedIdsHolderBuilder getReleaseIdsHolderBuilder(IdPool pool) {
         ReleasedIdsHolder releasedIds = pool.getReleasedIdsHolder();
         if (releasedIds != null) {
             return new ReleasedIdsHolderBuilder(releasedIds);
@@ -300,11 +302,11 @@ public class IdUtils {
         idPool.setAvailableIdsHolder(availableIdsHolder);
     }
 
-    public void updateChildPool(WriteTransaction tx, String poolName, String localPoolName) {
+    public void updateChildPool(DatastoreWriteTransaction<Configuration> tx, String poolName, String localPoolName) {
         ChildPools childPool = createChildPool(localPoolName);
         InstanceIdentifier<ChildPools> childPoolInstanceIdentifier =
                 getChildPoolsInstanceIdentifier(poolName, localPoolName);
-        tx.merge(LogicalDatastoreType.CONFIGURATION, childPoolInstanceIdentifier, childPool, true);
+        tx.merge(childPoolInstanceIdentifier, childPool, CREATE_MISSING_PARENTS);
     }
 
     public void incrementPoolUpdatedMap(String localPoolName) {
