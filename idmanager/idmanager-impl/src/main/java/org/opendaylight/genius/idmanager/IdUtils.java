@@ -171,7 +171,7 @@ public class IdUtils {
         return new AvailableIdsHolderBuilder();
     }
 
-    protected ReleasedIdsHolderBuilder getReleaseIdsHolderBuilder(IdPool pool) {
+    protected static ReleasedIdsHolderBuilder getReleaseIdsHolderBuilder(IdPool pool) {
         ReleasedIdsHolder releasedIds = pool.getReleasedIdsHolder();
         if (releasedIds != null) {
             return new ReleasedIdsHolderBuilder(releasedIds);
