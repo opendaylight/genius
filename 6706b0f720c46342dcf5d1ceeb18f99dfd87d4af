@@ -159,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "1af1ba2c_0e67f49f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:42:11Z",
+      "side": 1,
+      "message": "Oh and the whole point of using the new Datastore type *is* to enforce this at compile-time, in code which has been converted. I’m leaving the backwards-compatible shim in place so that we can convert code without needing to convert large swathes of code across both Netvirt and Genius in one go, but I deprecated the old methods so that they can easily be removed once that’s done.",
+      "parentUuid": "595e5303_a2c2efed",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a4a831c8_d79b96f7",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunner.java",
         "patchSetId": 1
