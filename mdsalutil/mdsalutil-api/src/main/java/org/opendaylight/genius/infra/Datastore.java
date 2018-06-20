@@ -9,15 +9,16 @@ package org.opendaylight.genius.infra;
 
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 
-public interface Datastore {
-    Class<Configuration> CONFIGURATION = Configuration.class;
-    Class<Operational> OPERATIONAL = Operational.class;
+public abstract class Datastore {
 
-    interface Configuration extends Datastore {}
+    public static final Class<Configuration> CONFIGURATION = Configuration.class;
+    public static final Class<Operational> OPERATIONAL = Operational.class;
 
-    interface Operational extends Datastore {}
+    public final class Configuration extends Datastore {}
 
-    static LogicalDatastoreType toType(Class<? extends Datastore> datastoreClass) {
+    public final class Operational extends Datastore {}
+
+    public static LogicalDatastoreType toType(Class<? extends Datastore> datastoreClass) {
         if (datastoreClass.equals(Configuration.class)) {
             return LogicalDatastoreType.CONFIGURATION;
         } else if (datastoreClass.equals(Operational.class)) {
@@ -27,7 +28,7 @@ public interface Datastore {
         }
     }
 
-    static Class<? extends Datastore> toClass(LogicalDatastoreType datastoreType) {
+    public static Class<? extends Datastore> toClass(LogicalDatastoreType datastoreType) {
         switch (datastoreType) {
             case CONFIGURATION:
                 return CONFIGURATION;
@@ -37,4 +38,6 @@ public interface Datastore {
                 throw new IllegalArgumentException("Unknown datastore type " + datastoreType);
         }
     }
+
+    private Datastore() {}
 }
