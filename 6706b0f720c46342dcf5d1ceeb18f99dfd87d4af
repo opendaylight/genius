@@ -142,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "2d91b0e6_2a32e6b2",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T16:29:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d0096e7a_625ddfcf",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b8abfaa_6425c0ec",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
         "patchSetId": 1
@@ -206,6 +224,24 @@
       "writtenOn": "2018-06-20T14:27:56Z",
       "side": 1,
       "message": "how about a FluentFeature instead of a CheckedFuture here as well then?  For consistency with ManagedNewTransactionRunner... all these different async APIs are very confusing for most mere mortals - if we define new APIs here, then let\u0027s at least be consistent within them?",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73569ef9_2cb51a30",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T16:29:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ade9c73b_fb7ff64c",
       "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -277,6 +313,24 @@
       "side": 1,
       "message": "But, as is, we are NOT getting the benefit to enforce this at compile-time!  Trust me, people WILL misuse this... do you want to bet on how many times we\u0027ll be chasing CSIT failures due to \"Invalid datastore %s used instead of %s\" IllegalArgumentException at run-time? ;-)  Those are, comparatively, *VERY* expensive VS catching the same at compile time.\n\nTherefore I feel fairly strongly about using this new round of transaction utility to get the new API pure and right and clean.  What we could do is to address things like \"methods in Netvirt which pass transations to Genius methods\" with a clearly separate temporary @Deprecated adapter, to make it easy to \"bridge\" to the existing world.",
       "parentUuid": "1af1ba2c_0e67f49f",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a8cc785_d2e78b68",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T16:29:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ad86e71b_9703d58d",
       "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
