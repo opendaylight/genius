@@ -12,6 +12,7 @@ import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitor
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorProfileId;
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitorStateId;
 import static org.opendaylight.genius.alivenessmonitor.internal.AlivenessMonitorUtil.getMonitoringInfoId;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -56,6 +57,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
@@ -136,7 +138,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     private static final boolean CREATE_MISSING_PARENT = true;
     private static final int INVALID_ID = 0;
 
-    private static class FutureCallbackImpl implements FutureCallback<Void> {
+    private static class FutureCallbackImpl implements FutureCallback<Object> {
         private final String message;
 
         FutureCallbackImpl(String message) {
@@ -149,7 +151,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }
 
         @Override
-        public void onSuccess(Void result) {
+        public void onSuccess(Object result) {
             LOG.debug("Success in Datastore operation - {}", message);
         }
     }
@@ -536,21 +538,18 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 }
                 MonitoringState monitoringState = monitoringStateBuilder.build();
 
-                Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId), monitoringInfo,
-                            CREATE_MISSING_PARENT);
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
+                    operTx.put(getMonitoringInfoId(monitorId), monitoringInfo, CREATE_MISSING_PARENT);
                     LOG.debug("adding oper monitoring info {}", monitoringInfo);
 
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitoringKey), monitoringState,
-                            CREATE_MISSING_PARENT);
+                    operTx.put(getMonitorStateId(monitoringKey), monitoringState, CREATE_MISSING_PARENT);
                     LOG.debug("adding oper monitoring state {}", monitoringState);
 
                     MonitoridKeyEntry mapEntry = new MonitoridKeyEntryBuilder().setMonitorId(monitorId)
                             .setMonitorKey(monitoringKey).build();
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorMapId(monitorId), mapEntry,
-                            CREATE_MISSING_PARENT);
+                    operTx.put(getMonitorMapId(monitorId), mapEntry, CREATE_MISSING_PARENT);
                     LOG.debug("adding oper map entry {}", mapEntry);
-                }), new FutureCallback<Void>() {
+                }).addCallback(new FutureCallback<CommitInfo>() {
                     @Override
                     public void onFailure(Throwable error) {
                         String errorMsg = String.format("Adding Monitoring info: %s in Datastore failed",
@@ -560,7 +559,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     }
 
                     @Override
-                    public void onSuccess(Void noarg) {
+                    public void onSuccess(CommitInfo commitInfo) {
                         lockMap.put(monitoringKey, new Semaphore(1, true));
                         if (ethType == EtherTypes.Bfd) {
                             handler.startMonitoringTask(monitoringInfo);
@@ -1092,14 +1091,14 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             String monitorKey = monitorIdKeyCache.getUnchecked(monitorId);
 
             // Cleanup the Data store
-            Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 if (monitorKey != null) {
-                    tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey));
+                    tx.delete(getMonitorStateId(monitorKey));
                     monitorIdKeyCache.invalidate(monitorId);
                 }
 
-                tx.delete(LogicalDatastoreType.OPERATIONAL, getMonitoringInfoId(monitorId));
-            }), new FutureCallbackImpl(String.format("Delete monitor state with Id %d", monitorId)),
+                tx.delete(getMonitoringInfoId(monitorId));
+            }).addCallback(new FutureCallbackImpl(String.format("Delete monitor state with Id %d", monitorId)),
                     MoreExecutors.directExecutor());
 
             MonitoringInfo info = optInfo.get();
