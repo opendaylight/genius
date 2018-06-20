@@ -231,6 +231,24 @@
     },
     {
       "key": {
+        "uuid": "66649048_407c3eb3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T17:44:31Z",
+      "side": 1,
+      "message": "I quite like TypedReadTransaction!",
+      "parentUuid": "6b598406_7484c60d",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ade9c73b_fb7ff64c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
         "patchSetId": 1
