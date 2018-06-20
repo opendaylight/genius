@@ -89,6 +89,41 @@
     },
     {
       "key": {
+        "uuid": "11a6d98c_6052c130",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T14:19:10Z",
+      "side": 1,
+      "message": "oh, wait I had a closer look now... generics magic?! I didn\u0027t immediately get that; I fear people won\u0027t get this - but you are perhaps right to point out that one doesn\u0027t have to fully understand the generics magic just to be able to use this correctly - the point is the type safety this brings.  \n\nI\u0027ll play around to see if we can\u0027t achieve the same with the enum.",
+      "parentUuid": "524bc034_6c04194f",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0096e7a_625ddfcf",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T14:19:10Z",
+      "side": 1,
+      "message": "naming apart, if I correctly understand what you are after re. generics magic here, then isn\u0027t this one wrong?  Did you mean that to be like the DatastoreWriteTransaction?",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7b8abfaa_6425c0ec",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
         "patchSetId": 1
@@ -118,6 +153,24 @@
       "side": 1,
       "message": "I named them this way because they’re not *for* the ManagedNewTransactionRunner, they’re datastore-specific transactions. We could add methods to the existing DataBroker which would return these (and that’s what I plan on suggesting once this is stabilised and proven useful in Genius and Netvirt).",
       "parentUuid": "7b8abfaa_6425c0ec",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd7da9ed_d8af3c71",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreReadTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T14:19:10Z",
+      "side": 1,
+      "message": "OK, that make sense, but then let\u0027s see if perhaps we can find a name which somehow expresses a part of \"LogicalDatastoreType\" in the name?  To me, the \"Datastore\" is the entire DB; read as database, or databorker.  So this is a transaction specific to one of the two available TYPES of the datastore - so... LogicalTypedReadTransaction?  OK, that\u0027s ugly... :-(  I don\u0027t suppose we simply wanted to have 2 fixed types - an OperationalRead[/Write]Transaction and a ConfigurationRead[/Write]Transaction?  That would be really simple and clear, to me.  I understand it\u0027s less \"open\", and (generics) \"sexy\" - but it\u0027s not like there are ever going to be any other?  Just a wild thought.",
+      "parentUuid": "bc2c6d62_2317d64a",
       "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -171,6 +224,24 @@
       "side": 1,
       "message": "Oh and the whole point of using the new Datastore type *is* to enforce this at compile-time, in code which has been converted. I’m leaving the backwards-compatible shim in place so that we can convert code without needing to convert large swathes of code across both Netvirt and Genius in one go, but I deprecated the old methods so that they can easily be removed once that’s done.",
       "parentUuid": "595e5303_a2c2efed",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad86e71b_9703d58d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/DatastoreWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T14:19:10Z",
+      "side": 1,
+      "message": "But, as is, we are NOT getting the benefit to enforce this at compile-time!  Trust me, people WILL misuse this... do you want to bet on how many times we\u0027ll be chasing CSIT failures due to \"Invalid datastore %s used instead of %s\" IllegalArgumentException at run-time? ;-)  Those are, comparatively, *VERY* expensive VS catching the same at compile time.\n\nTherefore I feel fairly strongly about using this new round of transaction utility to get the new API pure and right and clean.  What we could do is to address things like \"methods in Netvirt which pass transations to Genius methods\" with a clearly separate temporary @Deprecated adapter, to make it easy to \"bridge\" to the existing world.",
+      "parentUuid": "1af1ba2c_0e67f49f",
       "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
