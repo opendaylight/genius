@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "711d8268_51aa899e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T11:34:51Z",
+      "side": 1,
+      "message": "sorry to insist, but this still seems wrong to me, don\u0027t you want to have this even here - in BOTH catch:\n\n   ifmStatusProvider.reportStatus(e);\n\nI saw the discussion you had with Faseela, but something doesn\u0027t quite add up here, I fear... a LOG.error but not reportStatus(e); somehow feels inconsistent and wrong.  \n\nSo if it\u0027s perfectly normal for createIdPool() to fail, then that should be properly handled in there, not here? Although then it should probably catch some more specific error; OptimisticLock exception/AlreadyExistsException...\n\nIt seems to me that this \"suprising\" error handling here is an indication of another problem, which we should solve properly.",
+      "revId": "754e66e2891399193ff6d559901db366b0118fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c4a0d159_fee8d9b6",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-20T11:34:51Z",
+      "side": 1,
+      "message": "perhaps remove this TODO at this point?",
+      "revId": "754e66e2891399193ff6d559901db366b0118fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
