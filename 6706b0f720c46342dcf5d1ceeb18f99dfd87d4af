@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "8dc2cf55_80521769",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-20T07:39:58Z",
+      "side": 1,
+      "message": "The plan is to avoid references to LogicalDatastoreType altogether eventually ;-).",
+      "parentUuid": "e284ba61_f7d0fba0",
+      "revId": "6706b0f720c46342dcf5d1ceeb18f99dfd87d4af",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f8caf142_be1cae62",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
         "patchSetId": 1
