@@ -10,6 +10,7 @@ package org.opendaylight.genius.infra;
 import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
 import com.google.common.annotations.Beta;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import javax.inject.Inject;
@@ -18,6 +19,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 import org.opendaylight.infrautils.utils.function.CheckedFunction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +59,25 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
+    public <D extends Datastore, E extends Exception> FluentFuture<? extends CommitInfo>
+        callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreWriteTransaction<D>, E> txRunner) {
+        WriteTransaction realTx = broker.newWriteOnlyTransaction();
+        DatastoreWriteTransaction<D> wrappedTx = new NonSubmitCancelableDatastoreWriteTransaction<>(realTx);
+        try {
+            txRunner.accept(wrappedTx);
+            return realTx.commit();
+            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
+        } catch (Exception e) {
+            if (!realTx.cancel()) {
+                LOG.error("Transaction.cancel() return false - this should never happen (here)");
+            }
+            return FluentFuture.from(immediateFailedFuture(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public <E extends Exception> ListenableFuture<Void>
             callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
@@ -75,6 +96,25 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
 
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
+    public <D extends Datastore, E extends Exception> FluentFuture<? extends CommitInfo>
+        callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreReadWriteTransaction<D>, E> txRunner) {
+        ReadWriteTransaction realTx = broker.newReadWriteTransaction();
+        DatastoreReadWriteTransaction<D> wrappedTx = new NonSubmitCancelableDatastoreReadWriteTransaction<>(realTx);
+        try {
+            txRunner.accept(wrappedTx);
+            return realTx.commit();
+            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
+        } catch (Exception e) {
+            if (!realTx.cancel()) {
+                LOG.error("Transaction.cancel() returned false, which should never happen here");
+            }
+            return FluentFuture.from(immediateFailedFuture(e));
+        }
+    }
+
+    @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
     public <E extends Exception, R> ListenableFuture<R> applyWithNewReadWriteTransactionAndSubmit(
             CheckedFunction<ReadWriteTransaction, R, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
@@ -88,6 +128,24 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
                 LOG.error("Transaction.cancel() returned false, which should never happen here");
             }
             return immediateFailedFuture(e);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
+            Class<D> datastoreType, CheckedFunction<DatastoreReadWriteTransaction<D>, R, E> txRunner) {
+        ReadWriteTransaction realTx = broker.newReadWriteTransaction();
+        DatastoreReadWriteTransaction<D> wrappedTx = new NonSubmitCancelableDatastoreReadWriteTransaction<>(realTx);
+        try {
+            R result = txRunner.apply(wrappedTx);
+            return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
+            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
+        } catch (Exception e) {
+            if (!realTx.cancel()) {
+                LOG.error("Transaction.cancel() returned false, which should never happen here");
+            }
+            return FluentFuture.from(immediateFailedFuture(e));
         }
     }
 }
