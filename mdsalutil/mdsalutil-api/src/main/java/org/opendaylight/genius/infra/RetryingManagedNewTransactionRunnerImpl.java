@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.infra;
 
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -76,6 +77,31 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
+    public <D extends Datastore, E extends Exception> FluentFuture<Void>
+        callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreWriteTransaction<D>, E> txRunner) {
+        return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner, maxRetries);
+    }
+
+    private <D extends Datastore, E extends Exception> FluentFuture<Void>
+        callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreWriteTransaction<D>, E> txRunner, int tries) {
+
+        return Objects.requireNonNull(delegate.callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner),
+                "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
+                .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
+                    // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+                    if (tries - 1 > 0) {
+                        return (ListenableFuture) callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner,
+                                tries - 1);
+                    } else {
+                        // out of retries, so propagate the OptimisticLockFailedException
+                        throw optimisticLockFailedException;
+                    }
+                }, executor);
+    }
+
+    @Override
     public <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
             CheckedConsumer<ReadWriteTransaction, E> txRunner) {
         return callWithNewReadWriteTransactionAndSubmit(txRunner, maxRetries);
@@ -96,19 +122,44 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     @Override
-    public <E extends Exception, R> ListenableFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            CheckedFunction<ReadWriteTransaction, R, E> txRunner) {
-        return applyWithNewReadWriteTransactionAndSubmit(txRunner, maxRetries);
+    public <D extends Datastore, E extends Exception> FluentFuture<Void>
+        callWithNewReadWriteTransactionAndSubmit(
+            Class<D> datastoreType, CheckedConsumer<DatastoreReadWriteTransaction<D>, E> txRunner) {
+        return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, maxRetries);
     }
 
-    private <R, E extends Exception> ListenableFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            CheckedFunction<ReadWriteTransaction, R, E> txRunner, int tries) {
-        ListenableFuture<R> future = Objects.requireNonNull(
-                delegate.applyWithNewReadWriteTransactionAndSubmit(txRunner),
+    private <D extends Datastore, E extends Exception> FluentFuture<Void>
+        callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
+            CheckedConsumer<DatastoreReadWriteTransaction<D>, E> txRunner, int tries) {
+
+        return Objects.requireNonNull(delegate.callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
+                "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
+                .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
+                    // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+                    if (tries - 1 > 0) {
+                        return (ListenableFuture) callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner,
+                                tries - 1);
+                    } else {
+                        // out of retries, so propagate the OptimisticLockFailedException
+                        throw optimisticLockFailedException;
+                    }
+                }, executor);
+    }
+
+    @Override
+    public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
+            Class<D> datastoreType, CheckedFunction<DatastoreReadWriteTransaction<D>, R, E> txRunner) {
+        return applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, maxRetries);
+    }
+
+    private <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
+            Class<D> datastoreType, CheckedFunction<DatastoreReadWriteTransaction<D>, R, E> txRunner, int tries) {
+        FluentFuture<R> future = Objects.requireNonNull(
+                delegate.applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
                 "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
-        return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
+        return future.catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
             if (tries - 1 > 0) {
-                return applyWithNewReadWriteTransactionAndSubmit(txRunner, tries - 1);
+                return applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
             } else {
                 throw optimisticLockFailedException;
             }

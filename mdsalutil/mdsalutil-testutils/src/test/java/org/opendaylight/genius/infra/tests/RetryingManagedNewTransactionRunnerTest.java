@@ -13,6 +13,7 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.list.rev140701.two.level.list.TopLevelList;
@@ -42,6 +43,17 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
     }
 
     @Override
+    public void testCallWithNewTypedWriteOnlyTransactionOptimisticLockFailedException() throws Exception {
+        // contrary to the super() test implementation for (just) ManagedNewTransactionRunnerImpl, in the parent class
+        // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
+        testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+            writeTx -> writeTx.put(TEST_PATH, data)).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Override
     public void testCallWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
         // contrary to the super() test implementation for (just) ManagedNewTransactionRunnerImpl, in the parent class
         // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
@@ -53,14 +65,26 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
     }
 
     @Override
+    public void testCallWithNewTypedReadWriteTransactionOptimisticLockFailedException() throws Exception {
+        // contrary to the super() test implementation for (just) ManagedNewTransactionRunnerImpl, in the parent class
+        // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
+        testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+            writeTx -> writeTx.put(TEST_PATH, data)).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Override
     public void testApplyWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
         // contrary to the super() test implementation for (just) ManagedNewTransactionRunnerImpl, in the parent class
         // here we expect the x2 OptimisticLockFailedException to be retried, and then eventually succeed:
         testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
         TopLevelList data = newTestDataObject();
         assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+            Datastore.OPERATIONAL,
             writeTx -> {
-                writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, data);
+                writeTx.put(TEST_PATH, data);
                 return 1;
             }).get());
         assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
