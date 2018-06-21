@@ -16,6 +16,24 @@
       "revId": "23a0b0ea86217c435d627206f640c6a066e5b9b5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f69dd301_7dfbd8e8",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/infra/tests/ManagedNewTransactionRunnerImplTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-21T12:08:29Z",
+      "side": 0,
+      "message": "Because the method under test was removed ;-). I decided, since the applyWith... methods are brand new, we might as well skip the new-old implementation and keep only the new-new version.",
+      "parentUuid": "dd97f73a_23e1e300",
+      "revId": "23a0b0ea86217c435d627206f640c6a066e5b9b5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
