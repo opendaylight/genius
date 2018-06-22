@@ -564,6 +564,12 @@ References
 
 [2] https://specs.openstack.org/openstack/nova-specs/specs/kilo/template.html
 
+[3] IFM and ITM service recovery test-plan ->
+    https://docs.opendaylight.org/en/latest/submodules/genius/docs/testplans/service-recovery.html
+
+[4] ELAN service recovery test-plan ->
+    https://docs.opendaylight.org/projects/netvirt/en/latest/specs/service-recovery-elan.html
+
 .. note::
 
   This template was derived from [2], and has been modified to support our project.
