@@ -16,6 +16,24 @@
       "revId": "f82ef8e349593fef97a1570fb5be70ad7fa1d448",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ba3aff2_6ed6b61f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/TransactionAdapter.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-22T13:08:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "89e64abe_abaf5ebe",
+      "revId": "f82ef8e349593fef97a1570fb5be70ad7fa1d448",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
