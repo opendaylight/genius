@@ -34,6 +34,24 @@
       "revId": "23a0b0ea86217c435d627206f640c6a066e5b9b5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b778f81_282e9459",
+        "filename": "mdsalutil/mdsalutil-testutils/src/test/java/org/opendaylight/genius/infra/tests/ManagedNewTransactionRunnerImplTest.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 274,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-22T12:32:16Z",
+      "side": 0,
+      "message": "Done.  Now I got which new-old new-new is which - the old-old is still there, but the new-old from c/73036, which isn\u0027t used anywhere just yet, is already changed here - works for me.  We must must remember to rebase this before merge, to make sure nobody started using it already... ;-)",
+      "parentUuid": "f69dd301_7dfbd8e8",
+      "revId": "23a0b0ea86217c435d627206f640c6a066e5b9b5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

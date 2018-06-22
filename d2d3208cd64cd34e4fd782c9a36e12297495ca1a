@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2c28703e_275f99fd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-22T12:32:16Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "f3bac65a_3e1977a1",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "89dbdfd2_e54562e6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
         "patchSetId": 9
@@ -30,6 +48,24 @@
       "writtenOn": "2018-06-20T17:44:31Z",
       "side": 1,
       "message": "toEnum, perhaps?",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55297842_c3304edb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-22T12:32:16Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "89dbdfd2_e54562e6",
       "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
