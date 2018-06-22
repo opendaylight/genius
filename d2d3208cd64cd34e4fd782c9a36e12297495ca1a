@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "5bf219f2_23d74cdd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-22T13:08:40Z",
+      "side": 1,
+      "message": "Configuration and operational are arguably two different datastores; TBH I don’t really have a better name in mind. I wanted something short ;-).",
+      "parentUuid": "2c28703e_275f99fd",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "89dbdfd2_e54562e6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
         "patchSetId": 9
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "?",
       "parentUuid": "89dbdfd2_e54562e6",
+      "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f11e4003_84cfe629",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/Datastore.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-06-22T13:08:40Z",
+      "side": 1,
+      "message": "I was hoping the Javadocs in the current version would explain things...",
+      "parentUuid": "55297842_c3304edb",
       "revId": "d2d3208cd64cd34e4fd782c9a36e12297495ca1a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
