@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89e64abe_abaf5ebe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/TransactionAdapter.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-06-22T12:32:16Z",
+      "side": 1,
+      "message": "how about factoring out the x5 identical copy/pasted Preconditions.checkArgument into a checkStore() method?  Just in case someone wants to e.g. change the message in future -DRY.",
+      "revId": "f82ef8e349593fef97a1570fb5be70ad7fa1d448",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
