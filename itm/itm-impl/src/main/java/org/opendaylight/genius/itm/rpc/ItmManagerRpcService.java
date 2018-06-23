@@ -1145,7 +1145,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
-           long tunnelKey, Integer actionKey) throws ReadFailedException {
+           Long tunnelKey, Integer actionKey) throws ReadFailedException {
         int actionKeyStart = actionKey == null ? 0 : actionKey;
         DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
         if (interfaceInfo == null) {
