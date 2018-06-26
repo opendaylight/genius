@@ -7,12 +7,13 @@
  */
 package org.opendaylight.genius.idmanager.jobs;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -53,8 +54,7 @@ public class LocalPoolCreateJob implements Callable<List<ListenableFuture<Void>>
                 .setParentPoolName(parentPoolName).setPoolName(localPoolName);
         idLocalPool.getAvailableIds().refreshDataStore(idPool);
         idLocalPool.getReleasedIds().refreshDataStore(idPool);
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, localPoolInstanceIdentifier, idPool.build(),
-                    WriteTransaction.CREATE_MISSING_PARENTS)));
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> tx.put(localPoolInstanceIdentifier, idPool.build(), CREATE_MISSING_PARENTS)));
     }
 }
