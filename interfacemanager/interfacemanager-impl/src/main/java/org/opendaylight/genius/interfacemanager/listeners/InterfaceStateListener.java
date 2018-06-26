@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -77,7 +79,7 @@ public class InterfaceStateListener
                 // update opstate of interface if TEP has gone down/up as a
                 // result of BFD monitoring
                 LOG.debug("updating tunnel state for interface {}", interfaceStateNew.getName());
-                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceStateNew.getName(), bfdState)));
             }
             return Collections.emptyList();

@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TransactionAdapter;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
@@ -246,7 +249,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 BoundServicesState boundServicesState = FlowBasedServicesUtils
                         .getBoundServicesState(tx, interfaceName, serviceMode);
                 // if service-binding state is not present, construct the same using ifstate
@@ -258,7 +261,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                         return;
                     }
                     boundServicesState = FlowBasedServicesUtils.buildBoundServicesState(ifState, serviceMode);
-                    FlowBasedServicesUtils.addBoundServicesState(tx, interfaceName, boundServicesState);
+                    FlowBasedServicesUtils.addBoundServicesState(TransactionAdapter.toWriteTransaction(tx),
+                        interfaceName, boundServicesState);
                 }
                 flowBasedServicesAddable.bindService(futures, interfaceName, boundServicesNew, boundServicesList,
                         boundServicesState);
@@ -287,7 +291,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 // if this is the last service getting unbound, remove service-state cache information
                 BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
                         tx, interfaceName, serviceMode);

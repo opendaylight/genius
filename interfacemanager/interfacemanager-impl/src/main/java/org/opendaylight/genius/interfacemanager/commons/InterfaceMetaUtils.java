@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -20,6 +21,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Operational;
+import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -358,11 +360,11 @@ public final class InterfaceMetaUtils {
     }
 
     public static String getInterfaceForTunnelInstanceIdentifier(String tunnelInstanceId,
-                                                                 ReadTransaction tx) throws ReadFailedException {
+                                                                 TypedReadTransaction<Operational> tx)
+        throws ExecutionException, InterruptedException {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().toJavaUtil().map(
-                TunnelInstanceInterface::getInterfaceName).orElse(null);
+        return tx.read(id).get().toJavaUtil().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
     public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,

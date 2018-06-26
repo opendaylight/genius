@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +27,9 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -710,6 +715,13 @@ public final class FlowBasedServicesUtils {
         return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orNull();
     }
 
+    public static BoundServicesState getBoundServicesState(TypedReadTransaction<Operational> tx, String interfaceName,
+        Class<? extends ServiceModeBase> serviceMode) throws ExecutionException, InterruptedException {
+        InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
+            .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
+        return tx.read(id).get().orNull();
+    }
+
     public static void addBoundServicesState(WriteTransaction tx, String interfaceName,
                                              BoundServicesState interfaceBoundServicesState) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
@@ -718,17 +730,16 @@ public final class FlowBasedServicesUtils {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
-        tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState,
-                WriteTransaction.CREATE_MISSING_PARENTS);
+        tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState, CREATE_MISSING_PARENTS);
     }
 
-    public static  void removeBoundServicesState(WriteTransaction tx,
+    public static  void removeBoundServicesState(TypedWriteTransaction<Operational> tx,
                                                  String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
             serviceMode.getSimpleName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        tx.delete(LogicalDatastoreType.OPERATIONAL, id);
+        tx.delete(id);
     }
 
     public static boolean isInterfaceTypeBasedServiceBinding(String interfaceName) {

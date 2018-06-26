@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collections;
@@ -104,7 +106,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
-                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName, interfaceBfdStatus)));
             }
             return Collections.emptyList();
