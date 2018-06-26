@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
@@ -27,12 +28,10 @@ import java.util.concurrent.Future;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -530,12 +529,12 @@ public final class IfmUtil {
         return new PhysAddress(southboundMacAddress);
     }
 
-    public static void updateInterfaceParentRef(WriteTransaction writeTransaction, String interfaceName,
+    public static void updateInterfaceParentRef(TypedWriteTransaction<Configuration> tx, String interfaceName,
             String parentInterface) {
         InstanceIdentifier<ParentRefs> parentRefIdentifier = InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(interfaceName)).augmentation(ParentRefs.class).build();
         ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
-        writeTransaction.merge(LogicalDatastoreType.CONFIGURATION, parentRefIdentifier, parentRefs);
+        tx.merge(parentRefIdentifier, parentRefs);
         LOG.debug(
                 "Updating parentRefInterface for interfaceName {}. "
                         + "interfaceKey {}, with parentRef augmentation pointing to {}",
@@ -549,14 +548,6 @@ public final class IfmUtil {
                 .child(BoundServices.class, new BoundServicesKey(servicePriority)).build();
     }
 
-    public static void bindService(WriteTransaction writeTransaction, String interfaceName, BoundServices serviceInfo,
-            Class<? extends ServiceModeBase> serviceMode) {
-        LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
-        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
-                serviceInfo.getServicePriority(), interfaceName, serviceMode);
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
-    }
-
     public static void bindService(TypedWriteTransaction<Configuration> tx, String interfaceName,
         BoundServices serviceInfo, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
@@ -565,23 +556,17 @@ public final class IfmUtil {
         tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
     }
 
-    public static void unbindService(DataBroker dataBroker, JobCoordinator coordinator, String interfaceName,
-            InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
-        unbindService(new ManagedNewTransactionRunnerImpl(dataBroker), coordinator, interfaceName,
-                boundServicesInstanceIdentifier);
-    }
-
     public static void unbindService(ManagedNewTransactionRunner txRunner, JobCoordinator coordinator,
             String interfaceName, InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         coordinator.enqueueJob(interfaceName, () -> Collections.singletonList(
-                txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                     tx -> unbindService(tx, interfaceName, boundServicesInstanceIdentifier))));
     }
 
-    public static void unbindService(WriteTransaction tx, String interfaceName,
+    public static void unbindService(TypedWriteTransaction<Configuration> tx, String interfaceName,
             InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier) {
         LOG.info("Unbinding Service from : {}", interfaceName);
-        tx.delete(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier);
+        tx.delete(boundServicesInstanceIdentifier);
     }
 
     public static long getLogicalTunnelSelectGroupId(int lportTag) {

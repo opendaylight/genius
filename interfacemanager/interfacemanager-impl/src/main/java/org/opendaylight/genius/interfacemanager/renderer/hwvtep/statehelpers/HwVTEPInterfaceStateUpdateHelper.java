@@ -7,12 +7,14 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -36,7 +38,7 @@ public final class HwVTEPInterfaceStateUpdateHelper {
     public static List<ListenableFuture<Void>> updatePhysicalSwitch(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
         LOG.debug("updating physical switch for tunnels");
-        return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+        return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
             String interfaceName = InterfaceMetaUtils
                     .getInterfaceForTunnelInstanceIdentifier(tunnelsInstanceIdentifier.toString(), tx);
             if (interfaceName != null) {
@@ -77,8 +79,7 @@ public final class HwVTEPInterfaceStateUpdateHelper {
         List<BfdParams> bfdParams = new ArrayList<>();
         SouthboundUtils.fillBfdParameters(bfdParams, null);
         tunnelsBuilder.setBfdParams(bfdParams);
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier,
-                    tunnelsBuilder.build(), WriteTransaction.CREATE_MISSING_PARENTS)));
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> tx.put(tunnelsInstanceIdentifier, tunnelsBuilder.build(), CREATE_MISSING_PARENTS)));
     }
 }

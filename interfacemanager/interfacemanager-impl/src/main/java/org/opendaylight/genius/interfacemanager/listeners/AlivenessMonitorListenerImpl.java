@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.interfacemanager.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -54,7 +56,7 @@ public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
 
     @Override
     public void onMonitorEvent(MonitorEvent notification) {
-        ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+        ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
             Long monitorId = notification.getEventData().getMonitorId();
             String tunnelInterface = AlivenessMonitorUtils.getInterfaceFromMonitorId(tx, monitorId);
             if (tunnelInterface == null) {

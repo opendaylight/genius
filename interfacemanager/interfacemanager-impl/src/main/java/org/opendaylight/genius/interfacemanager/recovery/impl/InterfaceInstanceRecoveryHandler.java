@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.recovery.impl;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import java.time.Duration;
 import java.util.Collections;
 import javax.inject.Inject;
@@ -72,9 +74,8 @@ public class InterfaceInstanceRecoveryHandler implements ServiceRecoveryInterfac
                     new InterfaceKey(entityId));
             LOG.trace("deleting interface instance {}", entityId);
             jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
-                txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, interfaceId))),
-                    IfmConstants.JOB_MAX_RETRIES);
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(interfaceId))),
+                IfmConstants.JOB_MAX_RETRIES);
             eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL,
                     IfmUtil.buildStateInterfaceId(entityId), (unused) -> {
                     recreateInterfaceInstance(entityId, interfaceConfig, interfaceId);
@@ -89,8 +90,8 @@ public class InterfaceInstanceRecoveryHandler implements ServiceRecoveryInterfac
                                            InstanceIdentifier<Interface> interfaceId) {
         LOG.trace("recreating interface instance {}, {}", entityId, interfaceConfig);
         jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
-                txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.put(LogicalDatastoreType.CONFIGURATION, interfaceId, interfaceConfig))),
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                    tx -> tx.put(interfaceId, interfaceConfig))),
                 IfmConstants.JOB_MAX_RETRIES);
     }
 

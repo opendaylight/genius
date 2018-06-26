@@ -14,7 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -43,7 +44,8 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
     }
 
     @Override
-    public void bindServicesOnInterface(WriteTransaction tx, List<BoundServices> allServices, Interface ifaceState) {
+    public void bindServicesOnInterface(TypedReadWriteTransaction<Configuration> tx, List<BoundServices> allServices,
+            Interface ifaceState) {
         LOG.debug("binding services on interface {}", ifaceState.getName());
         if (L2vlan.class.equals(ifaceState.getType())) {
             bindServiceOnVlan(tx, allServices, ifaceState);
@@ -52,7 +54,8 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
         }
     }
 
-    private void bindServiceOnTunnel(WriteTransaction tx, List<BoundServices> allServices, Interface ifState) {
+    private void bindServiceOnTunnel(TypedReadWriteTransaction<Configuration> tx, List<BoundServices> allServices,
+            Interface ifState) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName());
@@ -73,7 +76,8 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
         }
     }
 
-    private void bindServiceOnVlan(WriteTransaction tx, List<BoundServices> allServices, Interface ifState) {
+    private void bindServiceOnVlan(TypedReadWriteTransaction<Configuration> tx, List<BoundServices> allServices,
+            Interface ifState) {
         LOG.info("bind all ingress services for vlan port: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);

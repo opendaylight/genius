@@ -14,7 +14,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -40,7 +41,7 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
     }
 
     @Override
-    public void bindServicesOnInterface(WriteTransaction tx, List<BoundServices> allServices,
+    public void bindServicesOnInterface(TypedReadWriteTransaction<Configuration> tx, List<BoundServices> allServices,
                                         Interface ifState) {
         LOG.info("bind all egress services for interface: {}", ifState.getName());
         NodeConnectorId nodeConnectorId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(ifState);

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
@@ -20,10 +22,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
@@ -267,7 +270,7 @@ public class SouthboundUtils {
 
     // Update is allowed only for tunnel monitoring attributes
     public static void updateBfdParamtersForTerminationPoint(InstanceIdentifier<?> bridgeIid, IfTunnel ifTunnel,
-            String portName, WriteTransaction transaction) {
+            String portName, TypedWriteTransaction<Configuration> transaction) {
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
         if (isOfTunnel(ifTunnel)) {
@@ -283,7 +286,7 @@ public class SouthboundUtils {
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-        transaction.merge(LogicalDatastoreType.CONFIGURATION, tpIid, tpBuilder.build(), true);
+        transaction.merge(tpIid, tpBuilder.build(), CREATE_MISSING_PARENTS);
     }
 
     private void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,

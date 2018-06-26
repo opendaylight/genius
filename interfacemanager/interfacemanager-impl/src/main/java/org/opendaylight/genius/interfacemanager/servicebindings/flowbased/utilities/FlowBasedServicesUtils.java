@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,15 +19,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -107,12 +112,12 @@ public final class FlowBasedServicesUtils {
                     org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_VXLAN_EXTERNAL,
                     org.opendaylight.genius.interfacemanager.globals.IfmConstants.ALL_MPLS_OVER_GRE);
 
-    public static ServicesInfo getServicesInfoForInterface(ReadTransaction tx, String interfaceName,
-            Class<? extends ServiceModeBase> serviceMode) throws ReadFailedException {
+    public static ServicesInfo getServicesInfoForInterface(TypedReadTransaction<Configuration> tx, String interfaceName,
+            Class<? extends ServiceModeBase> serviceMode) throws ExecutionException, InterruptedException {
         ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName, serviceMode);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder = InstanceIdentifier
                 .builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
-        return tx.read(LogicalDatastoreType.CONFIGURATION, servicesInfoIdentifierBuilder.build()).checkedGet().orNull();
+        return tx.read(servicesInfoIdentifierBuilder.build()).get().orNull();
     }
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName,
@@ -185,7 +190,7 @@ public final class FlowBasedServicesUtils {
     }
 
     public static void installInterfaceIngressFlow(BigInteger dpId, Interface iface, BoundServices boundServiceNew,
-            WriteTransaction writeTransaction, List<MatchInfo> matches, int lportTag, short tableId) {
+            TypedWriteTransaction<Configuration> tx, List<MatchInfo> matches, int lportTag, short tableId) {
         List<Instruction> instructions = boundServiceNew.augmentation(StypeOpenflow.class).getInstruction();
 
         int serviceInstructionsSize = instructions != null ? instructions.size() : 0;
@@ -236,17 +241,17 @@ public final class FlowBasedServicesUtils {
         StypeOpenflow stypeOpenflow = boundServiceNew.augmentation(StypeOpenflow.class);
         Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
                 stypeOpenflow.getFlowCookie(), matches, instructionSet);
-        installFlow(dpId, ingressFlow, writeTransaction);
+        installFlow(dpId, ingressFlow, tx);
     }
 
-    public static void installFlow(BigInteger dpId, Flow flow, WriteTransaction writeTransaction) {
+    public static void installFlow(BigInteger dpId, Flow flow, TypedWriteTransaction<Configuration> writeTransaction) {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         Node nodeDpn = buildInventoryDpnNode(dpId);
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
 
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
+        writeTransaction.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
     }
 
     private static Node buildInventoryDpnNode(BigInteger dpnId) {
@@ -255,7 +260,8 @@ public final class FlowBasedServicesUtils {
     }
 
     public static void installLPortDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
-            WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
+            TypedWriteTransaction<Configuration> tx, int interfaceTag, short currentServiceIndex,
+            short nextServiceIndex) {
         String serviceRef = boundService.getServiceName();
         List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForDispatcherTable(interfaceTag,
                 currentServiceIndex);
@@ -297,14 +303,14 @@ public final class FlowBasedServicesUtils {
                 instructions);
         LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
             interfaceName, flowRef);
-        installFlow(dpId, ingressFlow, writeTransaction);
+        installFlow(dpId, ingressFlow, tx);
     }
 
     public static void installEgressDispatcherFlows(BigInteger dpId, BoundServices boundService, String interfaceName,
-            WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex,
-            Interface iface) {
+            TypedWriteTransaction<Configuration> tx, int interfaceTag, short currentServiceIndex,
+            short nextServiceIndex, Interface iface) {
         LOG.debug("Installing Egress Dispatcher Flows on dpn : {}, for interface : {}", dpId, interfaceName);
-        installEgressDispatcherFlow(dpId, boundService, interfaceName, writeTransaction, interfaceTag,
+        installEgressDispatcherFlow(dpId, boundService, interfaceName, tx, interfaceTag,
                 currentServiceIndex, nextServiceIndex);
 
         // Install Split Horizon drop flow only for the default egress service -
@@ -313,13 +319,14 @@ public final class FlowBasedServicesUtils {
         // from an external interface (marked with the SH bit)
         if (boundService.getServicePriority() == ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
-            installEgressDispatcherSplitHorizonFlow(dpId, boundService, interfaceName, writeTransaction, interfaceTag,
+            installEgressDispatcherSplitHorizonFlow(dpId, boundService, interfaceName, tx, interfaceTag,
                     currentServiceIndex, iface);
         }
     }
 
     private static void installEgressDispatcherFlow(BigInteger dpId, BoundServices boundService, String interfaceName,
-            WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex, short nextServiceIndex) {
+            TypedWriteTransaction<Configuration> tx, int interfaceTag, short currentServiceIndex,
+            short nextServiceIndex) {
 
         // Get the metadata and mask from the service's write metadata instruction
         StypeOpenflow stypeOpenflow = boundService.augmentation(StypeOpenflow.class);
@@ -374,11 +381,11 @@ public final class FlowBasedServicesUtils {
                 boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie(), matches,
                 instructions);
         LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", interfaceName, flowRef);
-        installFlow(dpId, egressFlow, writeTransaction);
+        installFlow(dpId, egressFlow, tx);
     }
 
     public static void installEgressDispatcherSplitHorizonFlow(BigInteger dpId, BoundServices boundService,
-            String interfaceName, WriteTransaction writeTransaction, int interfaceTag, short currentServiceIndex,
+            String interfaceName, TypedWriteTransaction<Configuration> tx, int interfaceTag, short currentServiceIndex,
             Interface iface) {
         // only install split horizon drop flows for external interfaces
         if (!isExternal(iface)) {
@@ -409,7 +416,7 @@ public final class FlowBasedServicesUtils {
         Flow egressSplitHorizonFlow = MDSALUtil.buildFlow(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 splitHorizonFlowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), shMatches, shInstructions);
 
-        installFlow(dpId, egressSplitHorizonFlow, writeTransaction);
+        installFlow(dpId, egressSplitHorizonFlow, tx);
     }
 
     public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
@@ -462,7 +469,7 @@ public final class FlowBasedServicesUtils {
 
     public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
             String interfaceName, List<Instruction> instructions) {
-        return txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        return txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
             BoundServices
@@ -494,7 +501,7 @@ public final class FlowBasedServicesUtils {
             return;
         }
         LOG.debug("Removing Ingress Flows for {}", interfaceName);
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             String flowKeyStr = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, interfaceName);
             FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
             Node nodeDpn = buildInventoryDpnNode(dpId);
@@ -504,12 +511,12 @@ public final class FlowBasedServicesUtils {
                             flowKey)
                     .build();
 
-            tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+            tx.delete(flowInstanceId);
         }));
     }
 
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId,
-            WriteTransaction writeTransaction) {
+            TypedWriteTransaction<Configuration> writeTransaction) {
         String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name,
                 serviceOld.getServicePriority());
         LOG.debug("Removing Ingress Flow {}", flowKeyStr);
@@ -520,11 +527,11 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.VLAN_INTERFACE_INGRESS_TABLE)).child(Flow.class, flowKey)
                 .build();
 
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        writeTransaction.delete(flowInstanceId);
     }
 
     public static void removeLPortDispatcherFlow(BigInteger dpId, String iface, BoundServices boundServicesOld,
-            WriteTransaction writeTransaction, short currentServiceIndex) {
+            TypedWriteTransaction<Configuration> writeTransaction, short currentServiceIndex) {
         LOG.debug("Removing LPort Dispatcher Flows {}, {}", dpId, iface);
 
         boundServicesOld.augmentation(StypeOpenflow.class);
@@ -538,18 +545,18 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        writeTransaction.delete(flowInstanceId);
     }
 
     public static void removeEgressDispatcherFlows(BigInteger dpId, String iface,
-            WriteTransaction writeTransaction, short currentServiceIndex) {
+            TypedWriteTransaction<Configuration> writeTransaction, short currentServiceIndex) {
         LOG.debug("Removing Egress Dispatcher Flows {}, {}", dpId, iface);
         removeEgressDispatcherFlow(dpId, iface, writeTransaction, currentServiceIndex);
         removeEgressSplitHorizonDispatcherFlow(dpId, iface, writeTransaction);
     }
 
-    private static void removeEgressDispatcherFlow(BigInteger dpId, String iface, WriteTransaction writeTransaction,
-            short currentServiceIndex) {
+    private static void removeEgressDispatcherFlow(BigInteger dpId, String iface,
+            TypedWriteTransaction<Configuration> writeTransaction, short currentServiceIndex) {
         // build the flow and install it
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface,
                 currentServiceIndex);
@@ -560,11 +567,11 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        writeTransaction.delete(flowInstanceId);
     }
 
     public static void removeEgressSplitHorizonDispatcherFlow(BigInteger dpId, String iface,
-            WriteTransaction writeTransaction) {
+            TypedWriteTransaction<Configuration> writeTransaction) {
         // BigInteger.ONE is used for checking the Split-Horizon flag
         BigInteger shFlagSet = BigInteger.ONE;
         String shFlowRef = getSplitHorizonFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, iface,
@@ -576,7 +583,7 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE))
                 .child(Flow.class, shFlowKey).build();
 
-        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, shFlowInstanceId);
+        writeTransaction.delete(shFlowInstanceId);
     }
 
     public static String getFlowRef(short tableId, BigInteger dpnId, String infName) {
@@ -686,7 +693,8 @@ public final class FlowBasedServicesUtils {
         Flow ingressFlow = MDSALUtil.buildFlowNew(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef, priority, flowRef,
                 0, 0, NwConstants.VLAN_TABLE_COOKIE, matches, instructions);
         LOG.debug("Installing ingress flow {} for {}", flowRef, iface.getName());
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> installFlow(dpId, ingressFlow, tx)));
+        futures.add(
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> installFlow(dpId, ingressFlow, tx)));
     }
 
     public static BoundServicesState buildBoundServicesState(
@@ -710,7 +718,14 @@ public final class FlowBasedServicesUtils {
         return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orNull();
     }
 
-    public static void addBoundServicesState(WriteTransaction tx, String interfaceName,
+    public static BoundServicesState getBoundServicesState(TypedReadTransaction<Operational> tx, String interfaceName,
+        Class<? extends ServiceModeBase> serviceMode) throws ExecutionException, InterruptedException {
+        InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
+            .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
+        return tx.read(id).get().orNull();
+    }
+
+    public static void addBoundServicesState(TypedWriteTransaction<Operational> tx, String interfaceName,
                                              BoundServicesState interfaceBoundServicesState) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
             interfaceBoundServicesState.getInterfaceName(),
@@ -718,17 +733,16 @@ public final class FlowBasedServicesUtils {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
-        tx.put(LogicalDatastoreType.OPERATIONAL, id, interfaceBoundServicesState,
-                WriteTransaction.CREATE_MISSING_PARENTS);
+        tx.put(id, interfaceBoundServicesState, CREATE_MISSING_PARENTS);
     }
 
-    public static  void removeBoundServicesState(WriteTransaction tx,
+    public static  void removeBoundServicesState(TypedWriteTransaction<Operational> tx,
                                                  String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
             serviceMode.getSimpleName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        tx.delete(LogicalDatastoreType.OPERATIONAL, id);
+        tx.delete(id);
     }
 
     public static boolean isInterfaceTypeBasedServiceBinding(String interfaceName) {

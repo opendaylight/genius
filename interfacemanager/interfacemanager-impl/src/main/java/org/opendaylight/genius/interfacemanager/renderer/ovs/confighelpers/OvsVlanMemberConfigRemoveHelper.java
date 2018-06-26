@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -14,7 +17,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -62,21 +64,21 @@ public class OvsVlanMemberConfigRemoveHelper {
         }
 
         // Configuration changes
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             // Delete the interface child information
             List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
             InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
             InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
                     .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-            tx.delete(LogicalDatastoreType.CONFIGURATION, interfaceChildEntryIid);
+            tx.delete(interfaceChildEntryIid);
             // If this is the last child, remove the interface parent info as well.
             if (interfaceChildEntries.size() <= 1) {
-                tx.delete(LogicalDatastoreType.CONFIGURATION, interfaceParentEntryIid);
+                tx.delete(interfaceParentEntryIid);
             }
         }));
 
         // Operational changes
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                     .getInterfaceState(parentRefs.getParentInterface());

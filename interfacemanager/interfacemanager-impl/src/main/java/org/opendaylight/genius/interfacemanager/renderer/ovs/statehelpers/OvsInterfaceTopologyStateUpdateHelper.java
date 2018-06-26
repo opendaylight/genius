@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collections;
@@ -18,7 +20,6 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
@@ -43,20 +44,17 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final SouthboundUtils southboundUtils;
-    private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
     public OvsInterfaceTopologyStateUpdateHelper(DataBroker dataBroker, EntityOwnershipUtils entityOwnershipUtils,
             JobCoordinator coordinator, InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils,
-            InterfacemgrProvider interfacemgrProvider) {
+            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
-        this.interfacemgrProvider = interfacemgrProvider;
     }
 
     /*
@@ -66,7 +64,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
     public List<ListenableFuture<Void>> updateBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
                                                              OvsdbBridgeAugmentation bridgeNew,
                                                              OvsdbBridgeAugmentation bridgeOld) {
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
             BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
             BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
@@ -104,7 +102,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
-                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName, interfaceBfdStatus)));
             }
             return Collections.emptyList();
@@ -120,7 +118,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
         List<InterfaceBfdStatus> tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus();
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
             for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
-                if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
+                if (SouthboundUtils.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                     String bfdOpState = bfdState.getBfdStatusValue();
                     livenessState = SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState) ? Interface.OperStatus.Up
                             : Interface.OperStatus.Down;

@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,9 +19,11 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -88,13 +93,13 @@ public class OvsInterfaceConfigUpdateHelper {
             return futures;
         }
 
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
-                handleTunnelMonitorUpdates(tx, interfaceNew, interfaceOld);
-            } else if (!Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
-                handleInterfaceAdminStateUpdates(tx, interfaceNew, ifState);
-            }
-        }));
+        if (tunnelMonitoringAttributesModified(interfaceOld, interfaceNew)) {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                tx -> handleTunnelMonitorUpdates(tx, interfaceNew, interfaceOld)));
+        } else if (!Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+                tx -> handleInterfaceAdminStateUpdates(tx, interfaceNew, ifState)));
+        }
 
         return futures;
     }
@@ -137,7 +142,7 @@ public class OvsInterfaceConfigUpdateHelper {
      * tunnel type. As of now internal vxlan tunnels use LLDP monitoring and
      * external tunnels use BFD monitoring.
      */
-    private void handleTunnelMonitorUpdates(WriteTransaction transaction,
+    private void handleTunnelMonitorUpdates(TypedWriteTransaction<Configuration> transaction,
             Interface interfaceNew, Interface interfaceOld) {
         LOG.debug("tunnel monitoring attributes modified for interface {}", interfaceNew.getName());
         // update termination point on switch, if switch is connected
@@ -154,7 +159,8 @@ public class OvsInterfaceConfigUpdateHelper {
         }
     }
 
-    private void handleInterfaceAdminStateUpdates(WriteTransaction transaction, Interface interfaceNew,
+    private void handleInterfaceAdminStateUpdates(TypedWriteTransaction<Operational> transaction,
+            Interface interfaceNew,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         IfL2vlan ifL2vlan = interfaceNew.augmentation(IfL2vlan.class);
@@ -199,7 +205,7 @@ public class OvsInterfaceConfigUpdateHelper {
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                     InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
                             tx);

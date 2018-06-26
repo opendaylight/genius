@@ -7,9 +7,13 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -185,7 +189,7 @@ public class InterfaceTopologyStateListener
             BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
             LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
             // create bridge reference entry in interface meta operational DS
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 InterfaceMetaUtils.createBridgeRefEntry(dpnId, instanceIdentifier, tx);
 
                 // handle pre-provisioning of tunnels for the newly connected dpn
@@ -219,18 +223,22 @@ public class InterfaceTopologyStateListener
                 return Collections.emptyList();
             }
 
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+            // TODO skitt Use a transaction chain
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // delete bridge reference entry in interface meta operational DS
                 InterfaceMetaUtils.deleteBridgeRefEntry(dpnId, tx);
-
+            }));
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
                 // the bridge reference is copied to dpn-tunnel interfaces map, so that
                 // whenever a northbound delete
                 // happens when bridge is not connected, we need the bridge reference to
                 // clean up the topology config DS
                 InterfaceMetaUtils.addBridgeRefToBridgeInterfaceEntry(dpnId, new OvsdbBridgeRef(instanceIdentifier),
-                        tx);
+                    tx);
             }));
+            return futures;
         }
     }
 

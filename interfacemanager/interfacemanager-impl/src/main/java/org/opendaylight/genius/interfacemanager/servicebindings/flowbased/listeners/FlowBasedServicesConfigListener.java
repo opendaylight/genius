@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
@@ -246,7 +248,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 BoundServicesState boundServicesState = FlowBasedServicesUtils
                         .getBoundServicesState(tx, interfaceName, serviceMode);
                 // if service-binding state is not present, construct the same using ifstate
@@ -287,7 +289,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 // if this is the last service getting unbound, remove service-state cache information
                 BoundServicesState boundServiceState = FlowBasedServicesUtils.getBoundServicesState(
                         tx, interfaceName, serviceMode);

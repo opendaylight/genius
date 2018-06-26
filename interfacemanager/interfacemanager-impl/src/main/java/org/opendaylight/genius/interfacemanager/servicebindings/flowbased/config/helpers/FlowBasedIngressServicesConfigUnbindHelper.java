@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
@@ -59,7 +61,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
                                             List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 boundServicesState.getInterfaceName());
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             BigInteger dpId = boundServicesState.getDpid();
             if (boundServices.isEmpty()) {
                 // Remove default entry from Lport Dispatcher Table.
@@ -117,7 +119,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
 
     private void unbindServiceOnTunnel(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
                                        List<BoundServices> boundServices, BoundServicesState boundServicesState) {
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             BigInteger dpId = boundServicesState.getDpid();
 
             LOG.info("unbinding ingress service {} for tunnel port: {}", boundServiceOld.getServiceName(),

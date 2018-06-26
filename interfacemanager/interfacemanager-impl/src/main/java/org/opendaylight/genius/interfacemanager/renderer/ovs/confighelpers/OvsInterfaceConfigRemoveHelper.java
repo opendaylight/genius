@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -18,11 +19,12 @@ import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -79,21 +81,21 @@ public final class OvsInterfaceConfigRemoveHelper {
 
     public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
             IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
             if (ifTunnel != null) {
                 futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-                    confTx -> removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, tx, confTx)));
+                    confTx -> removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, operTx, confTx)));
             } else {
                 removeVlanConfiguration(parentRefs, interfaceOld.getName(),
-                        interfaceOld.augmentation(IfL2vlan.class), tx, futures);
+                        interfaceOld.augmentation(IfL2vlan.class), operTx, futures);
             }
         }));
         return futures;
     }
 
     private void removeVlanConfiguration(ParentRefs parentRefs, String interfaceName,
-            IfL2vlan ifL2vlan, WriteTransaction tx,
+            IfL2vlan ifL2vlan, TypedWriteTransaction<Operational> tx,
             List<ListenableFuture<Void>> futures) {
         if (parentRefs == null || ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
@@ -133,7 +135,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private void removeTunnelConfiguration(ParentRefs parentRefs, String interfaceName, IfTunnel ifTunnel,
-            WriteTransaction operTx, TypedReadWriteTransaction<Configuration> confTx)
+            TypedWriteTransaction<Operational> operTx, TypedReadWriteTransaction<Configuration> confTx)
             throws ExecutionException, InterruptedException {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
         BigInteger dpId = null;
@@ -205,7 +207,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         } else {
             interfaceManagerCommonUtils.removeTunnelIngressFlow(confTx, ifTunnel, dpId, interfaceName);
 
-            IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
+            IfmUtil.unbindService(txRunner, coordinator, interfaceName,
                     FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
         }
     }
@@ -214,7 +216,8 @@ public final class OvsInterfaceConfigRemoveHelper {
     // with unknown op-state, clear them.
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
-            String interfaceName, ParentRefs parentRefs, IfTunnel ifTunnel, WriteTransaction transaction) {
+            String interfaceName, ParentRefs parentRefs, IfTunnel ifTunnel,
+            TypedWriteTransaction<Operational> transaction) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
             .interfaces.state.Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
         if (ifState != null && ifState
@@ -247,7 +250,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // FIXME: If the no. of child entries exceeds 100, perform txn
                 // updates in batches of 100.
                 for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
@@ -277,10 +280,11 @@ public final class OvsInterfaceConfigRemoveHelper {
         mdsalApiManager.removeGroup(tx, srcDpnId, groupId);
     }
 
-    private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag, WriteTransaction operTx,
-        TypedReadWriteTransaction<Configuration> confTx) throws ExecutionException, InterruptedException {
+    private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag,
+            TypedWriteTransaction<Operational> operTx, TypedReadWriteTransaction<Configuration> confTx)
+            throws ExecutionException, InterruptedException {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
-        IfmUtil.unbindService(dataBroker, coordinator, ifaceName,
+        IfmUtil.unbindService(txRunner, coordinator, ifaceName,
                 FlowBasedServicesUtils.buildDefaultServiceId(ifaceName));
         interfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, operTx);
         interfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);

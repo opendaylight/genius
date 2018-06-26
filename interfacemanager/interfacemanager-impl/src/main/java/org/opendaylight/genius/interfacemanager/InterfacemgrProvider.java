@@ -8,7 +8,7 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -26,12 +26,13 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.diagstatus.IfmDiagStatusProvider;
@@ -417,8 +418,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         InstanceIdentifier<Interface> interfaceIId = interfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(CONFIGURATION, interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS));
+        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> tx.put(interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS));
         ListenableFutures.addErrorLogging(future, LOG, "Failed to (async) write {}", interfaceIId);
         return future;
     }
@@ -454,9 +455,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
-            BoundServices serviceInfo, WriteTransaction tx) {
+            BoundServices serviceInfo, TypedWriteTransaction<Configuration> tx) {
         if (tx == null) {
-            ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 wtx -> IfmUtil.bindService(wtx, interfaceName, serviceInfo, serviceMode)), LOG,
                 "Error binding the InterfacemgrProvider service");
         } else {
@@ -764,7 +765,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
+        public List<ListenableFuture<Void>> call() {
             if (readInterfaceBeforeWrite) {
                 Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
                 if (iface == null) {
@@ -772,7 +773,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                     return null;
                 }
             }
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> IfmUtil.updateInterfaceParentRef(tx, interfaceName, parentInterfaceName)));
         }
     }
