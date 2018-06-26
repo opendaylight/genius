@@ -8,11 +8,12 @@
 
 package org.opendaylight.genius.idmanager.jobs;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
@@ -37,8 +38,8 @@ public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>
     @Override
     public List<ListenableFuture<Void>> call() {
         InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            tx.delete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+            tx.delete(idPoolToBeDeleted);
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Deleted local pool {}", poolName);
             }
