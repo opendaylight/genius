@@ -7,13 +7,16 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+
 import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore.Operational;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -176,7 +179,8 @@ public final class SouthboundUtils {
         tpAugmentationBuilder.setDstIp(ip);
     }
 
-    public static void addStateEntry(Interface interfaceInfo, IfTunnel ifTunnel, WriteTransaction transaction) {
+    public static void addStateEntry(Interface interfaceInfo, IfTunnel ifTunnel,
+            TypedWriteTransaction<Operational> transaction) {
         LOG.debug("adding tep interface state for {}", interfaceInfo);
         if (interfaceInfo == null) {
             return;
@@ -199,7 +203,7 @@ public final class SouthboundUtils {
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceInfo.getName());
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
-        transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
+        transaction.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
     }
 
     public static void fillBfdParameters(List<BfdParams> bfdParams, IfTunnel ifTunnel) {

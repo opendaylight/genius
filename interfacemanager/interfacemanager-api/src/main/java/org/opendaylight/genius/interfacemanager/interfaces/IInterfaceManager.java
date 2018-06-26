@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -110,7 +111,7 @@ public interface IInterfaceManager {
     void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
 
     void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo,
-                     WriteTransaction tx);
+                     TypedWriteTransaction<Configuration> tx);
 
     void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode, BoundServices serviceInfo);
 

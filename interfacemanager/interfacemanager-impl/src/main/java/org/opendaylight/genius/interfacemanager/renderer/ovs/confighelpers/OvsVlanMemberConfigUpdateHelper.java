@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -100,7 +101,7 @@ public class OvsVlanMemberConfigUpdateHelper {
         if (pifState != null) {
             OperStatus operStatus = interfaceNew.isEnabled() ? pifState.getOperStatus() : OperStatus.Down;
             LOG.info("admin-state modified for interface {}", interfaceNew.getName());
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
                         .rev140508.interfaces.state.Interface>
                         ifStateId = IfmUtil.buildStateInterfaceId(interfaceNew.getName());
@@ -108,7 +109,7 @@ public class OvsVlanMemberConfigUpdateHelper {
                 ifaceBuilder.setOperStatus(operStatus);
                 ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceNew.getName()));
 
-                tx.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build());
+                tx.merge(ifStateId, ifaceBuilder.build());
             }));
         }
 

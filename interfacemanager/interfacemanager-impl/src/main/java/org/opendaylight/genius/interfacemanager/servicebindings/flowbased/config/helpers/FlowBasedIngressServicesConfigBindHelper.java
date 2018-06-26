@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
@@ -65,7 +67,7 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
         BigInteger dpId = boundServiceState.getDpid();
         LOG.info("binding ingress service {} for tunnel port: {}", boundServiceNew.getServiceName(),
                 boundServiceState.getInterfaceName());
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             Interface iface =
                     interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName());
             if (allServices.size() == 1) {
@@ -104,11 +106,11 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
                 List<MatchInfo> matches = FlowBasedServicesUtils.getMatchInfoForTunnelPortAtIngressTable(dpId, portNo);
 
                 // Separate transactions to remove and install flows
-                // TODO Should these be sequential?
-                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                // TODO skitt Should these be sequential?
+                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                     removeFlowTx -> FlowBasedServicesUtils.removeIngressFlow(iface.getName(), serviceToReplace,
                             dpId, removeFlowTx)));
-                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                     installFlowTransaction -> FlowBasedServicesUtils.installInterfaceIngressFlow(dpId, iface,
                             boundServiceNew, installFlowTransaction, matches, boundServiceState.getIfIndex(),
                             NwConstants.VLAN_INTERFACE_INGRESS_TABLE)));
@@ -119,7 +121,7 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
     private void bindServiceOnVlan(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                    List<BoundServices> allServices, BoundServicesState boundServiceState) {
         BigInteger dpId = boundServiceState.getDpid();
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             LOG.info("binding ingress service {} for vlan port: {}", boundServiceNew.getServiceName(), boundServiceState
                     .getInterfaceName());
             if (allServices.size() == 1) {

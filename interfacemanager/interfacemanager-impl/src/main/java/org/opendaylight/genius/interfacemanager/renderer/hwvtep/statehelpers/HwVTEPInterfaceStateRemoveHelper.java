@@ -7,10 +7,11 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -26,7 +27,7 @@ public final class HwVTEPInterfaceStateRemoveHelper {
     public static List<ListenableFuture<Void>> removeExternalTunnel(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier) {
         LOG.debug("Removing HwVTEP tunnel entries for tunnel: {}", tunnelsInstanceIdentifier);
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, tunnelsInstanceIdentifier)));
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> tx.delete(tunnelsInstanceIdentifier)));
     }
 }

@@ -7,12 +7,16 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -43,13 +47,12 @@ public final class HwVTEPInterfaceConfigAddHelper {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         // Topology config shard
         if (globalNodeId != null) {
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                addTerminationPoints(tx, globalNodeId, ifTunnel);
-            }));
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                tx -> addTerminationPoints(tx, globalNodeId, ifTunnel)));
         }
         // Default operational shard
         // TODO Move this to another listener, reacing to the config write above
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
             InterfaceMetaUtils.createTunnelToInterfaceMap(interfaceNew.getName(), physicalSwitchNodeId,
                     tx, ifTunnel);
             if (globalNodeId != null) {
@@ -64,7 +67,7 @@ public final class HwVTEPInterfaceConfigAddHelper {
      * of hwvtep schema with destination IP and tunnel-type. The configuration
      * needs to be done for both local endpoint as well as remote endpoint
      */
-    public static void addTerminationPoints(WriteTransaction transaction,
+    public static void addTerminationPoints(TypedWriteTransaction<Configuration> transaction,
             InstanceIdentifier<Node> globalNodeId, IfTunnel ifTunnel) {
         // InstanceIdentifier<TerminationPoint> localTEP =
         // createLocalPhysicalLocatorEntryIfNotPresent(futures,
@@ -75,7 +78,8 @@ public final class HwVTEPInterfaceConfigAddHelper {
         // remoteTEP);
     }
 
-    private static InstanceIdentifier<TerminationPoint> createRemotePhysicalLocatorEntry(WriteTransaction transaction,
+    private static InstanceIdentifier<TerminationPoint> createRemotePhysicalLocatorEntry(
+            TypedWriteTransaction<Configuration> transaction,
             InstanceIdentifier<Node> nodeIid, IpAddress destIPAddress) {
         String remoteIp = destIPAddress.getIpv4Address().getValue();
         LOG.debug("creating remote physical locator entry {}", remoteIp);
@@ -89,7 +93,7 @@ public final class HwVTEPInterfaceConfigAddHelper {
      * This method writes the termination end point details to the topology
      * Config DS
      */
-    private static void createPhysicalLocatorEntry(WriteTransaction transaction,
+    private static void createPhysicalLocatorEntry(TypedWriteTransaction<Configuration> transaction,
             InstanceIdentifier<TerminationPoint> tpPath, TerminationPointKey terminationPointKey,
             IpAddress destIPAddress) {
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
@@ -100,6 +104,6 @@ public final class HwVTEPInterfaceConfigAddHelper {
         SouthboundUtils.setDstIp(tpAugmentationBuilder, destIPAddress);
         tpBuilder.addAugmentation(HwvtepPhysicalLocatorAugmentation.class, tpAugmentationBuilder.build());
         LOG.debug("creating physical locator entry for {}", terminationPointKey);
-        transaction.put(LogicalDatastoreType.CONFIGURATION, tpPath, tpBuilder.build(), true);
+        transaction.put(tpPath, tpBuilder.build(), CREATE_MISSING_PARENTS);
     }
 }

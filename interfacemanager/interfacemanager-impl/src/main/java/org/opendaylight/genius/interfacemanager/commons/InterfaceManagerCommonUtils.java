@@ -33,7 +33,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -323,9 +322,8 @@ public final class InterfaceManagerCommonUtils {
         return String.valueOf(dpnId) + tableId + ifName;
     }
 
-    public static void setOpStateForInterface(WriteTransaction tx, String interfaceName,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-                    .Interface.OperStatus opStatus) {
+    public static void setOpStateForInterface(TypedWriteTransaction<Operational> tx, String interfaceName,
+            OperStatus opStatus) {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
             .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> interfaceId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
@@ -336,7 +334,7 @@ public final class InterfaceManagerCommonUtils {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface interfaceData = ifaceBuilder
                 .setOperStatus(opStatus).build();
-        tx.merge(LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData, CREATE_MISSING_PARENTS);
+        tx.merge(interfaceId, interfaceData, CREATE_MISSING_PARENTS);
     }
 
     public void createInterfaceChildEntry(@Nonnull TypedWriteTransaction<Configuration> tx, String parentInterface,
@@ -366,7 +364,7 @@ public final class InterfaceManagerCommonUtils {
         batchingUtils.delete(intfId, BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    public OperStatus updateStateEntry(Interface interfaceNew, WriteTransaction transaction,
+    public OperStatus updateStateEntry(Interface interfaceNew, TypedWriteTransaction<Operational> transaction,
            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
                                                   .rev140508.interfaces.state.Interface ifState) {
         final OperStatus operStatus;
@@ -396,7 +394,7 @@ public final class InterfaceManagerCommonUtils {
     public static void updateOperStatus(String interfaceName,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus,
-            WriteTransaction transaction) {
+            TypedWriteTransaction<Operational> transaction) {
         LOG.info("updating operational status {} for interface {}", interfaceName, operStatus);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
@@ -404,7 +402,7 @@ public final class InterfaceManagerCommonUtils {
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder();
         ifaceBuilderChild.setOperStatus(operStatus);
         ifaceBuilderChild.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifChildStateId, ifaceBuilderChild.build());
+        transaction.merge(ifChildStateId, ifaceBuilderChild.build());
     }
 
     public void addStateEntry(String interfaceName, List<ListenableFuture<Void>> futures,
@@ -541,28 +539,14 @@ public final class InterfaceManagerCommonUtils {
     }
 
 
-    public static void deleteStateEntry(String interfaceName, WriteTransaction transaction) {
-        LOG.debug("removing interface state entry for {}", interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
-            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
-                .buildStateInterfaceId(interfaceName);
-        transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
-    }
-
     public static void deleteStateEntry(TypedWriteTransaction<Operational> tx, String interfaceName) {
         LOG.debug("removing interface state entry for {}", interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
-            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
-            .buildStateInterfaceId(interfaceName);
-        tx.delete(ifChildStateId);
+        tx.delete(IfmUtil.buildStateInterfaceId(interfaceName));
     }
 
-    public void deleteInterfaceStateInformation(String interfaceName, WriteTransaction transaction) {
+    public void deleteInterfaceStateInformation(String interfaceName, TypedWriteTransaction<Operational> transaction) {
         LOG.debug("removing interface state information for {}", interfaceName);
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
-            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
-                .buildStateInterfaceId(interfaceName);
-        transaction.delete(LogicalDatastoreType.OPERATIONAL, ifStateId);
+        transaction.delete(IfmUtil.buildStateInterfaceId(interfaceName));
         interfaceMetaUtils.removeLportTagInterfaceMap(transaction, interfaceName);
     }
 
@@ -629,16 +613,15 @@ public final class InterfaceManagerCommonUtils {
      * update operational state of interface based on events like tunnel
      * monitoring
      */
-    public static void updateOpState(WriteTransaction transaction, String interfaceName,
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus) {
+    public static void updateOpState(TypedWriteTransaction<Operational> tx, String interfaceName,
+            OperStatus operStatus) {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
                 .buildStateInterfaceId(interfaceName);
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setOperStatus(operStatus);
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceName));
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
+        tx.merge(ifStateId, ifaceBuilder.build());
     }
 
     public static boolean isTunnelInterface(Interface interfaceInfo) {

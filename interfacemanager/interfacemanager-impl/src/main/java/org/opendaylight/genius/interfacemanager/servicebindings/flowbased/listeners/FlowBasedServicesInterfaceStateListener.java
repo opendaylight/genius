@@ -7,8 +7,13 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -138,24 +143,26 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
         @Override
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                ServicesInfo servicesInfo = FlowBasedServicesUtils
-                        .getServicesInfoForInterface(tx, iface.getName(), serviceMode);
-                if (servicesInfo == null) {
-                    LOG.trace("service info is null for interface {}", iface.getName());
-                    return;
-                }
+            futures.add(txRunner.applyWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+                confTx -> FlowBasedServicesUtils.getServicesInfoForInterface(confTx, iface.getName(),
+                    serviceMode)).transformAsync(servicesInfo -> {
+                        if (servicesInfo == null) {
+                            LOG.trace("service info is null for interface {}", iface.getName());
+                            return Futures.immediateFuture(null);
+                        }
 
-                List<BoundServices> allServices = servicesInfo.getBoundServices();
-                if (allServices == null || allServices.isEmpty()) {
-                    LOG.trace("bound services is empty for interface {}", iface.getName());
-                    return;
-                }
-                // Build the service-binding state if there are services bound on this interface
-                FlowBasedServicesUtils.addBoundServicesState(tx, iface.getName(), FlowBasedServicesUtils
-                        .buildBoundServicesState(iface, serviceMode));
-                flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
-            }));
+                        List<BoundServices> allServices = servicesInfo.getBoundServices();
+                        if (allServices == null || allServices.isEmpty()) {
+                            LOG.trace("bound services is empty for interface {}", iface.getName());
+                            return Futures.immediateFuture(null);
+                        }
+                        return txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
+                            // Build the service-binding state if there are services bound on this interface
+                            FlowBasedServicesUtils.addBoundServicesState(operTx, iface.getName(), FlowBasedServicesUtils
+                                .buildBoundServicesState(iface, serviceMode));
+                            flowBasedServicesStateAddable.bindServices(futures, iface, allServices, serviceMode);
+                        });
+                    }, MoreExecutors.directExecutor()));
             return futures;
         }
     }
@@ -175,7 +182,7 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
         @Override
         public List<ListenableFuture<Void>> call() {
             coordinator.enqueueJob(iface.getName(), () -> Collections
-                    .singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                    .singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
                         LOG.debug("unbinding services on interface {}", iface.getName());
                         ServicesInfo servicesInfo = FlowBasedServicesUtils
                                 .getServicesInfoForInterface(tx, iface.getName(), ServiceModeEgress.class);

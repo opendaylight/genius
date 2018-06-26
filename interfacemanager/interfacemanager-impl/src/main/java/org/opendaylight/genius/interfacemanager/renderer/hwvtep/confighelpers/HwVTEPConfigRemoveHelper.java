@@ -7,12 +7,15 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
@@ -41,11 +44,11 @@ public final class HwVTEPConfigRemoveHelper {
             IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
             //removeTunnelTableEntry(defaultOperShardTransaction, ifTunnel, physicalSwitchNodeId);
             // Topology configuration shard
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> removeTerminationEndPoint(tx, ifTunnel, globalNodeId)));
             // Default operational shard
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                    InterfaceManagerCommonUtils.deleteStateEntry(interfaceOld.getName(), tx);
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
+                    InterfaceManagerCommonUtils.deleteStateEntry(tx, interfaceOld.getName());
                     InterfaceMetaUtils.removeTunnelToInterfaceMap(physicalSwitchNodeId, tx, ifTunnel);
                 }
             ));
@@ -53,12 +56,12 @@ public final class HwVTEPConfigRemoveHelper {
         return futures;
     }
 
-    private static void removeTerminationEndPoint(WriteTransaction transaction, IfTunnel ifTunnel,
+    private static void removeTerminationEndPoint(TypedWriteTransaction<Configuration> transaction, IfTunnel ifTunnel,
             InstanceIdentifier<Node> globalNodeId) {
         LOG.info("removing remote termination end point {}", ifTunnel.getTunnelDestination());
         TerminationPointKey tpKey = SouthboundUtils
                 .getTerminationPointKey(ifTunnel.getTunnelDestination().getIpv4Address().getValue());
         InstanceIdentifier<TerminationPoint> tpPath = SouthboundUtils.createInstanceIdentifier(globalNodeId, tpKey);
-        transaction.delete(LogicalDatastoreType.CONFIGURATION, tpPath);
+        transaction.delete(tpPath);
     }
 }

@@ -7,11 +7,14 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -19,7 +22,9 @@ import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
+import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -294,17 +299,17 @@ public final class InterfaceMetaUtils {
     }
 
     public static void addBridgeRefToBridgeInterfaceEntry(BigInteger dpId, OvsdbBridgeRef ovsdbBridgeRef,
-            WriteTransaction tx) {
+            TypedWriteTransaction<Configuration> tx) {
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = getBridgeEntryIdentifier(bridgeEntryKey);
 
         BridgeEntryBuilder bridgeEntryBuilder =
                 new BridgeEntryBuilder().withKey(bridgeEntryKey).setBridgeReference(ovsdbBridgeRef);
-        tx.merge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), true);
+        tx.merge(bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), CREATE_MISSING_PARENTS);
     }
 
     public static void createBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid,
-                                            WriteTransaction tx) {
+                                            TypedWriteTransaction<Operational> tx) {
         LOG.debug("Creating bridge ref entry for dpn: {} bridge: {}",
                 dpnId, bridgeIid);
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
@@ -313,34 +318,29 @@ public final class InterfaceMetaUtils {
         BridgeRefEntryBuilder tunnelDpnBridgeEntryBuilder =
                 new BridgeRefEntryBuilder().withKey(bridgeRefEntryKey).setDpid(dpnId)
                         .setBridgeReference(new OvsdbBridgeRef(bridgeIid));
-        tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), true);
+        tx.put(bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), CREATE_MISSING_PARENTS);
     }
 
-    public static void deleteBridgeRefEntry(BigInteger dpnId,
-                                            WriteTransaction tx) {
-        LOG.debug("Deleting bridge ref entry for dpn: {}",
-                dpnId);
-        BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpnId);
-        InstanceIdentifier<BridgeRefEntry> bridgeEntryId =
-                InterfaceMetaUtils.getBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        tx.delete(LogicalDatastoreType.OPERATIONAL, bridgeEntryId);
+    public static void deleteBridgeRefEntry(BigInteger dpnId, TypedWriteTransaction<Operational> tx) {
+        LOG.debug("Deleting bridge ref entry for dpn: {}", dpnId);
+        tx.delete(InterfaceMetaUtils.getBridgeRefEntryIdentifier(new BridgeRefEntryKey(dpnId)));
     }
 
     public static void createTunnelToInterfaceMap(String tunnelInstanceId,
                                                   String infName,
-                                                  WriteTransaction transaction) {
+                                                  TypedWriteTransaction<Operational> transaction) {
         LOG.debug("creating tunnel instance identifier to interface map for {}",infName);
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
         TunnelInstanceInterface tunnelInstanceInterface = new TunnelInstanceInterfaceBuilder()
                 .setTunnelInstanceIdentifier(tunnelInstanceId).withKey(new TunnelInstanceInterfaceKey(tunnelInstanceId))
                 .setInterfaceName(infName).build();
-        transaction.put(LogicalDatastoreType.OPERATIONAL, id, tunnelInstanceInterface, true);
+        transaction.put(id, tunnelInstanceInterface, CREATE_MISSING_PARENTS);
 
     }
 
     public static void createTunnelToInterfaceMap(String infName,InstanceIdentifier<Node> nodeId,
-                                                  WriteTransaction transaction,
+                                                  TypedWriteTransaction<Operational> transaction,
                                                   IfTunnel ifTunnel) {
         InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer
                 .hwvtep.utilities.SouthboundUtils.createTunnelsInstanceIdentifier(nodeId,
@@ -349,20 +349,20 @@ public final class InterfaceMetaUtils {
     }
 
     public static void removeTunnelToInterfaceMap(InstanceIdentifier<Node> nodeId,
-                                                  WriteTransaction transaction,
+                                                  TypedWriteTransaction<Operational> transaction,
                                                   IfTunnel ifTunnel) {
         InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier = org.opendaylight.genius.interfacemanager.renderer
                 .hwvtep.utilities.SouthboundUtils.createTunnelsInstanceIdentifier(
                         nodeId, ifTunnel.getTunnelSource(), ifTunnel.getTunnelDestination());
-        transaction.delete(LogicalDatastoreType.OPERATIONAL, tunnelsInstanceIdentifier);
+        transaction.delete(tunnelsInstanceIdentifier);
     }
 
     public static String getInterfaceForTunnelInstanceIdentifier(String tunnelInstanceId,
-                                                                 ReadTransaction tx) throws ReadFailedException {
+                                                                 TypedReadTransaction<Operational> tx)
+        throws ExecutionException, InterruptedException {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().toJavaUtil().map(
-                TunnelInstanceInterface::getInterfaceName).orElse(null);
+        return tx.read(id).get().toJavaUtil().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
     public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
