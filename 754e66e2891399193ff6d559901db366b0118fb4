@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "65d080b6_f46a59c9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-06-28T08:39:26Z",
+      "side": 1,
+      "message": "Michael, the current code already has these catch exceptions and logging. Vishal is not introducing anything new. So can we get this patch in, and then fix the idmanager part separately?",
+      "parentUuid": "132a948b_13a91c82",
+      "revId": "754e66e2891399193ff6d559901db366b0118fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4a0d159_fee8d9b6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 10
