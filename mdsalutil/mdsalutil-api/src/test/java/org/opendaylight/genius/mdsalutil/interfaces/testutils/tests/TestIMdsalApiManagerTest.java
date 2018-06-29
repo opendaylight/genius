@@ -36,8 +36,9 @@ public class TestIMdsalApiManagerTest {
 
     @Test
     public void testAssertFlowsInAnyOrder() {
-        mdsalApiManager.installFlow(getNewFlow1());
-        mdsalApiManager.installFlow(getNewFlow2());
+        // We use null here for the transaction because we’re explicitly testing the mock
+        mdsalApiManager.addFlow(null, getNewFlow1());
+        mdsalApiManager.addFlow(null, getNewFlow2());
         mdsalApiManager.assertFlows(ImmutableList.of(getNewFlow1(), getNewFlow2()));
         mdsalApiManager.assertFlowsInAnyOrder(ImmutableList.of(getNewFlow2(), getNewFlow1()));
     }
