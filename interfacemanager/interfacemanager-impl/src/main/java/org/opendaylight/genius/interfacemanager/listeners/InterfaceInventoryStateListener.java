@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.math.BigInteger;
@@ -21,8 +24,10 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -375,7 +380,7 @@ public class InterfaceInventoryStateListener
             // delete the port entry from interface operational DS
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, operTx -> {
                 // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
                 // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
                 // scenario, and should be treated as port removal.
@@ -385,17 +390,19 @@ public class InterfaceInventoryStateListener
                     //Remove event is because of connection lost between controller and switch, or switch shutdown.
                     // Hence, don't remove the interface but set the status as "unknown"
                     ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
-                            tx);
+                            operTx);
                 } else {
-                    InterfaceManagerCommonUtils.deleteStateEntry(interfaceName, tx);
+                    InterfaceManagerCommonUtils.deleteStateEntry(operTx, interfaceName);
                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
                             .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
 
                     if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
                         // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
                         // monitoring
-                        interfaceMetaUtils.removeLportTagInterfaceMap(tx, interfaceName);
-                        handleTunnelMonitoringRemoval(dpId, iface.getName(), iface.augmentation(IfTunnel.class));
+                        interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
+                        futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+                            confTx -> handleTunnelMonitoringRemoval(confTx, dpId, iface.getName(),
+                                iface.augmentation(IfTunnel.class))));
                         return;
                     }
                     // remove ingress flow only for northbound configured interfaces
@@ -405,15 +412,16 @@ public class InterfaceInventoryStateListener
                     }
 
                     // Delete the Vpn Interface from DpnToInterface Op DS.
-                    InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, tx);
+                    InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
                 }
             }));
 
             return futures;
         }
 
-        private void handleTunnelMonitoringRemoval(BigInteger dpId, String removedInterfaceName, IfTunnel ifTunnel) {
-            interfaceManagerCommonUtils.removeTunnelIngressFlow(ifTunnel, dpId, removedInterfaceName);
+        private void handleTunnelMonitoringRemoval(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId,
+            String removedInterfaceName, IfTunnel ifTunnel) {
+            interfaceManagerCommonUtils.removeTunnelIngressFlow(tx, ifTunnel, dpId, removedInterfaceName);
 
             IfmUtil.unbindService(dataBroker, coordinator, removedInterfaceName,
                     FlowBasedServicesUtils.buildDefaultServiceId(removedInterfaceName));
