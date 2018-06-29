@@ -41,10 +41,10 @@ import org.slf4j.LoggerFactory;
  *
  * <p>This class is abstract just to save reading lines and typing keystrokes to
  * manually implement a bunch of methods we're not yet interested in.  Create instances
- * of it using it's static {@link #newInstance()} method.
+ * of it using its static {@link #newInstance()} method.
  *
  * @author Michael Vorburger
- * @autor Faseela K
+ * @author Faseela K
  */
 public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
@@ -169,36 +169,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
         getOrNewFlows().add(flowEntity);
         return Futures.immediateCheckedFuture(null);
-    }
-
-    @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
-            FlowEntity flowEntity) {
-        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
-        return installFlow(flowEntity);
-    }
-
-    @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
-            FlowEntity flowEntity) {
-        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
-        getOrNewFlows().remove(flowEntity);
-        return Futures.immediateCheckedFuture(null);
-    }
-
-    @Override
-    public synchronized void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
-        getOrNewFlows().add(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
-        getOrNewFlows().remove(flowEntity);
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group, long delayTime) {
-        getOrNewGroups().add(group);
     }
 
     @Override
