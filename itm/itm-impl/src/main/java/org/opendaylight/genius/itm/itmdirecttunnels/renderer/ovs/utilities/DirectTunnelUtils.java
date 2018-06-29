@@ -22,11 +22,13 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -327,30 +329,33 @@ public final class DirectTunnelUtils {
         ITMBatchingUtils.write(bridgeTunnelEntryIid, entryBuilder.build(), ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    public void makeTunnelIngressFlow(DpnTepInterfaceInfo dpnTepConfigInfo, BigInteger dpnId, long portNo,
-                                         String interfaceName, int ifIndex, int addOrRemoveFlow) {
-        LOG.debug("make tunnel ingress flow for {}", interfaceName);
+    public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpnId, long portNo,
+        String interfaceName, int ifIndex) {
+        LOG.debug("Adding tunnel ingress flow for {}", interfaceName);
         String flowRef =
-                getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
+            getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
         List<MatchInfoBase> matches = new ArrayList<>();
 
         List<InstructionInfo> mkInstructions = new ArrayList<>();
-        if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            matches.add(new MatchInPort(dpnId, portNo));
-            mkInstructions.add(new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex)
-                    .or(BigInteger.ONE), MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
-            short tableId = NwConstants.INTERNAL_TUNNEL_TABLE;
-            mkInstructions.add(new InstructionGotoTable(tableId));
-        }
+        matches.add(new MatchInPort(dpnId, portNo));
+        mkInstructions.add(new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex)
+            .or(BigInteger.ONE), MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
+        short tableId = NwConstants.INTERNAL_TUNNEL_TABLE;
+        mkInstructions.add(new InstructionGotoTable(tableId));
 
         FlowEntity flowEntity = MDSALUtil.buildFlowEntity(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, flowRef,
-                ITMConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
-                mkInstructions);
-        if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
-            mdsalApiManager.batchedAddFlow(dpnId, flowEntity);
-        } else {
-            mdsalApiManager.batchedRemoveFlow(dpnId, flowEntity);
-        }
+            ITMConstants.DEFAULT_FLOW_PRIORITY, interfaceName, 0, 0, NwConstants.COOKIE_VM_INGRESS_TABLE, matches,
+            mkInstructions);
+        mdsalApiManager.addFlow(tx, flowEntity);
+    }
+
+    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpnId,
+        String interfaceName) {
+        LOG.debug("Removing tunnel ingress flow for {}", interfaceName);
+        String flowRef =
+            getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
+
+        mdsalApiManager.removeFlow(tx, dpnId, flowRef, NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
     }
 
     private String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {

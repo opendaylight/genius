@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -15,11 +18,12 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -30,7 +34,6 @@ import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.Direc
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfoBuilder;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -211,29 +214,28 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
             return Collections.emptyList();
         }
         if (opstateModified) {
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // modify the attributes in interface operational DS
-                handleInterfaceStateUpdates(dpnTepInfo, tx, true, interfaceName, flowCapableNodeConnectorNew.getName(),
+                handleInterfaceStateUpdates(tx, dpnTepInfo, true, interfaceName, flowCapableNodeConnectorNew.getName(),
                         operStatusNew);
 
             }));
         } else {
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // modify the attributes in interface operational DS
-                handleInterfaceStateUpdates(dpnTepInfo, tx, false, interfaceName,
+                handleInterfaceStateUpdates(tx, dpnTepInfo, false, interfaceName,
                         flowCapableNodeConnectorNew.getName(), operStatusNew);
 
             }));
         }
     }
 
-    private void updateInterfaceStateOnNodeRemove(String interfaceName,
-                                                  FlowCapableNodeConnector flowCapableNodeConnector,
-                                                  WriteTransaction transaction) {
+    private void updateInterfaceStateOnNodeRemove(TypedWriteTransaction<Operational> tx, String interfaceName,
+        FlowCapableNodeConnector flowCapableNodeConnector) {
         LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
         DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
 
-        handleInterfaceStateUpdates(dpnTepInfo, transaction, true, interfaceName, flowCapableNodeConnector.getName(),
+        handleInterfaceStateUpdates(tx, dpnTepInfo, true, interfaceName, flowCapableNodeConnector.getName(),
                 Interface.OperStatus.Unknown);
     }
 
@@ -243,9 +245,10 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                 ? Interface.OperStatus.Up : Interface.OperStatus.Down;
     }
 
-    private void handleInterfaceStateUpdates(DpnTepInterfaceInfo dpnTepInfo, WriteTransaction transaction,
-                                             boolean opStateModified, String interfaceName, String portName,
-                                             Interface.OperStatus opState) {
+    private void handleInterfaceStateUpdates(TypedWriteTransaction<Operational> tx,
+        DpnTepInterfaceInfo dpnTepInfo,
+        boolean opStateModified, String interfaceName, String portName,
+        Interface.OperStatus opState) {
         if (dpnTepInfo == null && !interfaceName.equals(portName)) {
             return;
         }
@@ -260,7 +263,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
             stateTnlBuilder.setTunnelState(tunnelState);
             stateTnlBuilder.setOperState(DirectTunnelUtils.convertInterfaceToTunnelOperState(opState));
         }
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, tnlStateId, stateTnlBuilder.build(), false);
+        tx.merge(tnlStateId, stateTnlBuilder.build());
     }
 
     private boolean modifyOpState(DpnTepInterfaceInfo dpnTepInterfaceInfo, boolean opStateModified) {
@@ -272,40 +275,35 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
     }
 
     private List<ListenableFuture<Void>> removeInterfaceStateConfiguration(NodeConnectorId nodeConnectorIdNew,
-                                                                           NodeConnectorId nodeConnectorIdOld,
-                                                                           String interfaceName,
-                                                                           FlowCapableNodeConnector
-                                                                           fcNodeConnectorOld,
-                                                                           String parentInterface) {
+        NodeConnectorId nodeConnectorIdOld, String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         NodeConnectorId nodeConnectorId = (nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld))
                 ? nodeConnectorIdOld : nodeConnectorIdNew;
 
         BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
         // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
         // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
         // scenario, and should be treated as port removal.
-            if (fcNodeConnectorOld.getReason() != PortReason.Delete) {
-                //Remove event is because of connection lost between controller and switch, or switch shutdown.
-                // Hence, dont remove the interface but set the status as "unknown"
-                updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld, tx);
+        if (fcNodeConnectorOld.getReason() != PortReason.Delete) {
+            //Remove event is because of connection lost between controller and switch, or switch shutdown.
+            // Hence, dont remove the interface but set the status as "unknown"
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+                tx -> updateInterfaceStateOnNodeRemove(tx, interfaceName, fcNodeConnectorOld)));
+        } else {
+            LOG.debug("removing interface state for interface: {}", interfaceName);
+            directTunnelUtils.deleteTunnelStateEntry(interfaceName);
+            DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+            if (dpnTepInfo != null) {
+                futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
+                        //SF 419 This will only be tunnel interface
+                        directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
+                        directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+                }));
             } else {
-                LOG.debug("removing interface state for interface: {}", interfaceName);
-                directTunnelUtils.deleteTunnelStateEntry(interfaceName);
-                DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
-                if (dpnTepInfo != null) {
-                    //SF 419 This will only be tunnel interface
-                    directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
-                    long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
-                    directTunnelUtils.makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
-                            NwConstants.DEL_FLOW);
-                } else {
-                    LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
-                }
+                LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
             }
-        }));
+        }
         return futures;
     }
 
@@ -386,7 +384,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return removeInterfaceStateConfiguration(nodeConnectorIdNew, nodeConnectorIdOld, interfaceName,
-                    fcNodeConnectorOld, parentInterface);
+                    fcNodeConnectorOld);
         }
 
         @Override

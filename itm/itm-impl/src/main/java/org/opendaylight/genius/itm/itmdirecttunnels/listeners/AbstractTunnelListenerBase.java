@@ -7,13 +7,20 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
@@ -25,7 +32,6 @@ import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfoBuilder;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
-import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -60,6 +66,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
     protected final DPNTEPsInfoCache dpntePsInfoCache;
     protected final UnprocessedNodeConnectorCache unprocessedNCCache;
     protected final DirectTunnelUtils directTunnelUtils;
+    protected final ManagedNewTransactionRunner txRunner;
 
     private final EntityOwnershipUtils entityOwnershipUtils;
 
@@ -77,6 +84,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         this.unprocessedNCCache = unprocessedNodeConnectorCache;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.directTunnelUtils = directTunnelUtils;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     public boolean entityOwner() {
@@ -93,7 +101,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         if (portNo == ITMConstants.INVALID_PORT_NO) {
             LOG.trace("Cannot derive port number, not proceeding with Interface State "
                     + "addition for interface: {}", interfaceName);
-            return null;
+            return Collections.emptyList();
         }
 
         LOG.info("adding interface state to Oper DS for interface: {}", interfaceName);
@@ -103,6 +111,8 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
 
         // Fetch the interface/Tunnel from config DS if exists
         TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         if (tunnelEndPointInfo != null) {
             DpnTepInterfaceInfo dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
@@ -116,8 +126,9 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
                 // If this interface is a tunnel interface, create the tunnel ingress flow,
                 // and start tunnel monitoring
                 if (stateTnl != null) {
-                    handleTunnelMonitoringAddition(nodeConnectorId, stateTnl.getIfIndex(), dpnTepConfigInfo,
-                            interfaceName, portNo);
+                    futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                        tx -> handleTunnelMonitoringAddition(tx, nodeConnectorId, stateTnl.getIfIndex(), interfaceName,
+                            portNo)));
                 }
             } else {
                 LOG.error("DpnTepINfo is NULL while addState for interface {} ", interfaceName);
@@ -134,7 +145,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
                     .setNodeConnector(fcNodeConnectorNew).build();
             unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
         }
-        return Collections.emptyList();
+        return futures;
     }
 
     private StateTunnelList addStateEntry(TunnelEndPointInfo tunnelEndPointInfo, String interfaceName,
@@ -197,12 +208,11 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         return stlBuilder.build();
     }
 
-    private void handleTunnelMonitoringAddition(NodeConnectorId nodeConnectorId,
-                                                Integer ifindex, DpnTepInterfaceInfo dpnTepConfigInfo,
-                                                String interfaceName, long portNo) {
+    private void handleTunnelMonitoringAddition(TypedWriteTransaction<Datastore.Configuration> tx,
+        NodeConnectorId nodeConnectorId, Integer ifindex, String interfaceName, long portNo) {
         BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
-        directTunnelUtils.makeTunnelIngressFlow(dpnTepConfigInfo, dpId, portNo, interfaceName,
-                ifindex, NwConstants.ADD_FLOW);
+        directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName,
+                ifindex);
     }
 
     private void createLportTagInterfaceMap(String infName, Integer ifIndex) {

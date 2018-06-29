@@ -35,7 +35,9 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.api.IITMProvider;
@@ -473,10 +475,9 @@ public final class ItmUtils {
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public static void setUpOrRemoveTerminatingServiceTable(BigInteger dpnId, IMdsalApiManager mdsalManager,
-                                                            boolean addFlag) {
-        String logmsg = addFlag ? "Installing" : "Removing";
-        LOG.trace("{}PUNT to Controller flow in DPN {} ", logmsg, dpnId);
+    public static void addTerminatingServiceTable(TypedReadWriteTransaction<Configuration> tx,
+        BigInteger dpnId, IMdsalApiManager mdsalManager) {
+        LOG.trace("Installing PUNT to Controller flow in DPN {} ", dpnId);
         List<ActionInfo> listActionInfo = new ArrayList<>();
         listActionInfo.add(new ActionPuntToController());
 
@@ -489,16 +490,26 @@ public final class ItmUtils {
             mkInstructions.add(new InstructionApplyActions(listActionInfo));
 
             FlowEntity terminatingServiceTableFlowEntity = MDSALUtil
-                    .buildFlowEntity(dpnId, NwConstants.INTERNAL_TUNNEL_TABLE,
-                            getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, ITMConstants.LLDP_SERVICE_ID),
-                            5, String.format("%s:%d","ITM Flow Entry ", ITMConstants.LLDP_SERVICE_ID), 0, 0,
-                            ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)),
-                            mkMatches, mkInstructions);
-            if (addFlag) {
-                mdsalManager.installFlow(terminatingServiceTableFlowEntity);
-            } else {
-                mdsalManager.removeFlow(terminatingServiceTableFlowEntity);
-            }
+                .buildFlowEntity(dpnId, NwConstants.INTERNAL_TUNNEL_TABLE,
+                    getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, ITMConstants.LLDP_SERVICE_ID),
+                    5, String.format("%s:%d","ITM Flow Entry ", ITMConstants.LLDP_SERVICE_ID), 0, 0,
+                    ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)),
+                    mkMatches, mkInstructions);
+            mdsalManager.addFlow(tx, terminatingServiceTableFlowEntity);
+        } catch (Exception e) {
+            LOG.error("Error while setting up Table 36 for {}", dpnId, e);
+        }
+    }
+
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    public static void removeTerminatingServiceTable(TypedReadWriteTransaction<Configuration> tx,
+        BigInteger dpnId, IMdsalApiManager mdsalManager) {
+        LOG.trace("Removing PUNT to Controller flow in DPN {} ", dpnId);
+
+        try {
+            mdsalManager.removeFlow(tx, dpnId,
+                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, ITMConstants.LLDP_SERVICE_ID),
+                NwConstants.INTERNAL_TUNNEL_TABLE);
         } catch (Exception e) {
             LOG.error("Error while setting up Table 36 for {}", dpnId, e);
         }
