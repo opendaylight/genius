@@ -23,7 +23,9 @@ import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -444,6 +446,13 @@ public final class FlowBasedServicesUtils {
         return bindDefaultEgressDispatcherService(txRunner, interfaceName, instructions);
     }
 
+    public static void bindDefaultEgressDispatcherService(TypedWriteTransaction<Configuration> tx,
+        Interface interfaceInfo, String portNo, String interfaceName, int ifIndex) {
+        List<Instruction> instructions =
+            IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex, 0);
+        bindDefaultEgressDispatcherService(tx, interfaceName, instructions);
+    }
+
     public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
             Interface interfaceInfo, String interfaceName, int ifIndex, long groupId) {
         List<Instruction> instructions =
@@ -464,6 +473,19 @@ public final class FlowBasedServicesUtils {
                             priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
             IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
         });
+    }
+
+    public static void bindDefaultEgressDispatcherService(TypedWriteTransaction<Configuration> tx,
+        String interfaceName, List<Instruction> instructions) {
+        int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+            NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
+        BoundServices
+            serviceInfo =
+            getBoundServices(String.format("%s.%s", "default", interfaceName),
+                ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                    NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
+                priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
+        IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
     }
 
     public static void removeIngressFlow(String interfaceName, BigInteger dpId, ManagedNewTransactionRunner txRunner,

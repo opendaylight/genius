@@ -19,6 +19,8 @@ import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Operational;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
@@ -277,6 +279,17 @@ public final class InterfaceMetaUtils {
         InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
         tx.delete(LogicalDatastoreType.OPERATIONAL, id);
+        return ifIndex;
+    }
+
+    public int removeLportTagInterfaceMap(TypedWriteTransaction<Operational> tx, String infName) {
+        // workaround to get the id to remove from lport tag interface map
+        Integer ifIndex = IfmUtil.allocateId(idManager, IfmConstants.IFM_IDPOOL_NAME, infName);
+        IfmUtil.releaseId(idManager, IfmConstants.IFM_IDPOOL_NAME, infName);
+        LOG.debug("removing lport tag to interface map for {}",infName);
+        InstanceIdentifier<IfIndexInterface> id = InstanceIdentifier.builder(IfIndexesInterfaceMap.class)
+            .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifIndex)).build();
+        tx.delete(id);
         return ifIndex;
     }
 

@@ -7,16 +7,18 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -88,7 +90,7 @@ public class OvsInterfaceStateUpdateHelper {
         }
 
         if (opstateModified) {
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // modify the attributes in interface operational DS
                 handleInterfaceStateUpdates(iface, tx, ifaceBuilder, true, interfaceName,
                         flowCapableNodeConnectorNew.getName(), operStatusNew);
@@ -100,7 +102,7 @@ public class OvsInterfaceStateUpdateHelper {
                 }
             }));
         } else {
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // modify the attributes in interface operational DS
                 handleInterfaceStateUpdates(iface, tx, ifaceBuilder, false, interfaceName,
                         flowCapableNodeConnectorNew.getName(), operStatusNew);
@@ -109,14 +111,14 @@ public class OvsInterfaceStateUpdateHelper {
     }
 
     public void updateInterfaceStateOnNodeRemove(String interfaceName,
-            FlowCapableNodeConnector flowCapableNodeConnector, WriteTransaction transaction) {
+            FlowCapableNodeConnector flowCapableNodeConnector, TypedWriteTransaction<Operational> tx) {
         LOG.debug("Updating interface oper-status to UNKNOWN for : {}", interfaceName);
 
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceName);
-        handleInterfaceStateUpdates(iface, transaction, ifaceBuilder, true, interfaceName,
+        handleInterfaceStateUpdates(iface, tx, ifaceBuilder, true, interfaceName,
                 flowCapableNodeConnector.getName(), Interface.OperStatus.Unknown);
         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
             handleTunnelMonitoringUpdates(iface.augmentation(IfTunnel.class), interfaceName,
@@ -127,7 +129,7 @@ public class OvsInterfaceStateUpdateHelper {
     private void handleInterfaceStateUpdates(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface,
-            WriteTransaction transaction, InterfaceBuilder ifaceBuilder, boolean opStateModified,
+            TypedWriteTransaction<Operational> tx, InterfaceBuilder ifaceBuilder, boolean opStateModified,
             String interfaceName, String portName, Interface.OperStatus opState) {
         // if interface config DS is null, do the update only for the
         // lower-layer-interfaces
@@ -150,7 +152,7 @@ public class OvsInterfaceStateUpdateHelper {
             LOG.debug("updating interface oper status as {} for {}", opState.name(), interfaceName);
             ifaceBuilder.setOperStatus(opState);
         }
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), false);
+        tx.merge(ifStateId, ifaceBuilder.build());
     }
 
     public void handleTunnelMonitoringUpdates(IfTunnel ifTunnel,

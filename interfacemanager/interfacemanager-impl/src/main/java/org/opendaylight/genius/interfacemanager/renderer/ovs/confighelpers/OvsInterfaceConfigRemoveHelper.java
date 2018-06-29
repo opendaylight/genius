@@ -7,18 +7,21 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -26,7 +29,6 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -40,8 +42,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -81,7 +81,8 @@ public final class OvsInterfaceConfigRemoveHelper {
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
             if (ifTunnel != null) {
-                removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, tx);
+                futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+                    confTx -> removeTunnelConfiguration(parentRefs, interfaceOld.getName(), ifTunnel, tx, confTx)));
             } else {
                 removeVlanConfiguration(parentRefs, interfaceOld.getName(),
                         interfaceOld.augmentation(IfL2vlan.class), tx, futures);
@@ -131,7 +132,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private void removeTunnelConfiguration(ParentRefs parentRefs, String interfaceName, IfTunnel ifTunnel,
-            WriteTransaction defaultOperationalShardTransaction) {
+            WriteTransaction operTx, TypedReadWriteTransaction<Configuration> confTx) {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
         BigInteger dpId = null;
         if (parentRefs != null) {
@@ -170,13 +171,13 @@ public final class OvsInterfaceConfigRemoveHelper {
         }
 
         // delete tunnel ingress flow
-        removeTunnelIngressFlow(interfaceName, ifTunnel, dpId);
+        removeTunnelIngressFlow(confTx, interfaceName, ifTunnel, dpId);
 
         // delete bridge to tunnel interface mappings
         interfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
                 interfaceName);
-        int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(defaultOperationalShardTransaction, interfaceName);
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, defaultOperationalShardTransaction);
+        int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
+        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, operTx);
         // stop LLDP monitoring for the tunnel interface
         alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
 
@@ -184,7 +185,7 @@ public final class OvsInterfaceConfigRemoveHelper {
             removeMultipleVxlanTunnelsConfiguration(interfaceName, parentRefs);
 
         } else if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            removeLogicalTunnelGroup(dpId, interfaceName, lportTag, defaultOperationalShardTransaction);
+            removeLogicalTunnelGroup(dpId, interfaceName, lportTag, operTx, confTx);
         }
     }
 
@@ -193,13 +194,14 @@ public final class OvsInterfaceConfigRemoveHelper {
                 || bridgeInterfaceEntries.size() <= 1;
     }
 
-    public void removeTunnelIngressFlow(String interfaceName, IfTunnel ifTunnel, BigInteger dpId) {
+    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> confTx,
+        String interfaceName, IfTunnel ifTunnel, BigInteger dpId) {
         NodeConnectorId ncId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName,
                 interfaceManagerCommonUtils);
         if (ncId == null) {
             LOG.debug("Node Connector Id is null. Skipping remove tunnel ingress flow.");
         } else {
-            interfaceManagerCommonUtils.removeTunnelIngressFlow(ifTunnel, dpId, interfaceName);
+            interfaceManagerCommonUtils.removeTunnelIngressFlow(confTx, ifTunnel, dpId, interfaceName);
 
             IfmUtil.unbindService(dataBroker, coordinator, interfaceName,
                     FlowBasedServicesUtils.buildDefaultServiceId(interfaceName));
@@ -265,22 +267,22 @@ public final class OvsInterfaceConfigRemoveHelper {
         }
     }
 
-    private void removeLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag) {
+    private void removeLogicalTunnelSelectGroup(TypedReadWriteTransaction<Configuration> tx,
+        BigInteger srcDpnId, String interfaceName, int lportTag) {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
-        Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
-                                           MDSALUtil.buildBucketLists(Collections.emptyList()));
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} removed for {} srcDpnId {}",
-                group.getGroupId().getValue(), interfaceName, srcDpnId);
-        mdsalApiManager.syncRemoveGroup(srcDpnId, group);
+                groupId, interfaceName, srcDpnId);
+        mdsalApiManager.removeGroup(tx, srcDpnId, groupId);
     }
 
-    private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag, WriteTransaction tx) {
+    private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag, WriteTransaction operTx,
+        TypedReadWriteTransaction<Configuration> confTx) {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
         IfmUtil.unbindService(dataBroker, coordinator, ifaceName,
                 FlowBasedServicesUtils.buildDefaultServiceId(ifaceName));
-        interfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, tx);
+        interfaceManagerCommonUtils.deleteInterfaceStateInformation(ifaceName, operTx);
         interfaceManagerCommonUtils.deleteParentInterfaceEntry(ifaceName);
-        removeLogicalTunnelSelectGroup(dpnId, ifaceName, lportTag);
+        removeLogicalTunnelSelectGroup(confTx, dpnId, ifaceName, lportTag);
     }
 
     private void removeMultipleVxlanTunnelsConfiguration(String ifaceName, ParentRefs parentRef) {

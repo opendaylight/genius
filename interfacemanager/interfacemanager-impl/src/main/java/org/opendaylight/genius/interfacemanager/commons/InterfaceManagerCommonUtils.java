@@ -8,15 +8,18 @@
 
 package org.opendaylight.genius.interfacemanager.commons;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,12 +33,15 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -260,8 +266,8 @@ public final class InterfaceManagerCommonUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orNull();
     }
 
-    public void addTunnelIngressFlow(IfTunnel tunnel, BigInteger dpnId, long portNo, String interfaceName,
-            int ifIndex) {
+    public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, IfTunnel tunnel, BigInteger dpnId,
+        long portNo, String interfaceName, int ifIndex) {
         if (isTunnelWithoutIngressFlow(tunnel)) {
             return;
         }
@@ -285,17 +291,18 @@ public final class InterfaceManagerCommonUtils {
                 : tunnel.isInternal() ? NwConstants.INTERNAL_TUNNEL_TABLE : NwConstants.DHCP_TABLE_EXTERNAL_TUNNEL;
         mkInstructions.add(new InstructionGotoTable(tableId));
 
-        mdsalApiManager.batchedAddFlow(dpnId,
-                buildTunnelIngressFlowEntity(dpnId, interfaceName, matches, mkInstructions));
+        mdsalApiManager.addFlow(tx, buildTunnelIngressFlowEntity(dpnId, interfaceName, matches, mkInstructions));
     }
 
-    public void removeTunnelIngressFlow(IfTunnel tunnel, BigInteger dpnId, String interfaceName) {
+    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, IfTunnel tunnel, BigInteger dpnId,
+        String interfaceName) {
         if (isTunnelWithoutIngressFlow(tunnel)) {
             return;
         }
         LOG.debug("remove tunnel ingress flow for {}", interfaceName);
-        mdsalApiManager.batchedRemoveFlow(dpnId,
-                buildTunnelIngressFlowEntity(dpnId, interfaceName, Collections.emptyList(), Collections.emptyList()));
+        mdsalApiManager.removeFlow(tx, dpnId,
+            InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE,
+                interfaceName), NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
     }
 
     private static boolean isTunnelWithoutIngressFlow(IfTunnel tunnel) {
@@ -329,18 +336,13 @@ public final class InterfaceManagerCommonUtils {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface interfaceData = ifaceBuilder
                 .setOperStatus(opStatus).build();
-        tx.merge(LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData, WriteTransaction.CREATE_MISSING_PARENTS);
+        tx.merge(LogicalDatastoreType.OPERATIONAL, interfaceId, interfaceData, CREATE_MISSING_PARENTS);
     }
 
-    public void createInterfaceChildEntry(String parentInterface, String childInterface) {
+    public void createInterfaceChildEntry(@Nonnull TypedWriteTransaction<Configuration> tx, String parentInterface,
+        String childInterface) {
         createInterfaceChildEntry(parentInterface, childInterface,
-            pair -> batchingUtils.write(pair.getKey(), pair.getValue(), BatchingUtils.EntityType.DEFAULT_CONFIG));
-    }
-
-    public void createInterfaceChildEntry(String parentInterface, String childInterface,
-            @Nonnull WriteTransaction tx) {
-        createInterfaceChildEntry(parentInterface, childInterface,
-            pair -> tx.put(LogicalDatastoreType.CONFIGURATION, pair.getKey(), pair.getValue(), true));
+            pair -> tx.put(pair.getKey(), pair.getValue(), CREATE_MISSING_PARENTS));
     }
 
     private void createInterfaceChildEntry(String parentInterface, String childInterface,
@@ -408,13 +410,13 @@ public final class InterfaceManagerCommonUtils {
     public void addStateEntry(String interfaceName, List<ListenableFuture<Void>> futures,
                                      org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                                      .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-        futures.add(new ManagedNewTransactionRunnerImpl(dataBroker).callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> addStateEntry(interfaceName, tx, futures, ifState)));
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+            tx -> addStateEntry(tx, interfaceName, futures, ifState)));
     }
 
-    public void addStateEntry(String interfaceName, WriteTransaction interfaceOperShardTransaction,
-            List<ListenableFuture<Void>> futures, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+    public void addStateEntry(TypedWriteTransaction<Operational> tx, String interfaceName,
+        List<ListenableFuture<Void>> futures, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         // allocate lport tag and create interface-if-index map.
         // This is done even if interface-state is not present, so that there is
         // no throttling
@@ -461,7 +463,7 @@ public final class InterfaceManagerCommonUtils {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceName);
-        interfaceOperShardTransaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifaceBuilder.build(), true);
+        tx.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
 
         // install ingress flow
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -480,8 +482,8 @@ public final class InterfaceManagerCommonUtils {
 
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface addStateEntry(
-            Interface interfaceInfo, String interfaceName, WriteTransaction transaction, PhysAddress physAddress,
-            OperStatus operStatus, AdminStatus adminStatus, NodeConnectorId nodeConnectorId) {
+        Interface interfaceInfo, String interfaceName, TypedWriteTransaction<Operational> tx, PhysAddress physAddress,
+        OperStatus operStatus, AdminStatus adminStatus, NodeConnectorId nodeConnectorId) {
         LOG.debug("adding interface state for {}", interfaceName);
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder().setType(Other.class)
                 .setIfIndex(IfmConstants.DEFAULT_IFINDEX);
@@ -528,7 +530,7 @@ public final class InterfaceManagerCommonUtils {
         if (isTunnelInterface && !isOfTunnelInterface) {
             batchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         } else {
-            transaction.put(LogicalDatastoreType.OPERATIONAL, ifStateId, ifState, true);
+            tx.put(ifStateId, ifState, CREATE_MISSING_PARENTS);
         }
         if (nodeConnectorId != null) {
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -547,6 +549,14 @@ public final class InterfaceManagerCommonUtils {
         transaction.delete(LogicalDatastoreType.OPERATIONAL, ifChildStateId);
     }
 
+    public static void deleteStateEntry(TypedWriteTransaction<Operational> tx, String interfaceName) {
+        LOG.debug("removing interface state entry for {}", interfaceName);
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> ifChildStateId = IfmUtil
+            .buildStateInterfaceId(interfaceName);
+        tx.delete(ifChildStateId);
+    }
+
     public void deleteInterfaceStateInformation(String interfaceName, WriteTransaction transaction) {
         LOG.debug("removing interface state information for {}", interfaceName);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
@@ -559,8 +569,8 @@ public final class InterfaceManagerCommonUtils {
     // For trunk interfaces, binding to a parent interface which is already
     // bound to another trunk interface should not
     // be allowed
-    public boolean createInterfaceChildEntryIfNotPresent(WriteTransaction tx, String parentInterface,
-            String childInterface, IfL2vlan.L2vlanMode l2vlanMode) {
+    public boolean createInterfaceChildEntryIfNotPresent(TypedWriteTransaction<Configuration> tx,
+        String parentInterface, String childInterface, IfL2vlan.L2vlanMode l2vlanMode) {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier = InterfaceMetaUtils
                 .getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
@@ -591,7 +601,7 @@ public final class InterfaceManagerCommonUtils {
 
         LOG.info("Creating child interface {} of type {} bound on parent-interface {}",
                 childInterface, l2vlanMode, parentInterface);
-        createInterfaceChildEntry(parentInterface, childInterface, tx);
+        createInterfaceChildEntry(tx, parentInterface, childInterface);
         return true;
     }
 
@@ -730,13 +740,12 @@ public final class InterfaceManagerCommonUtils {
         return null;
     }
 
-    public static void deleteDpnToInterface(BigInteger dpId, String infName, ReadWriteTransaction transaction)
-            throws ReadFailedException {
+    public static void deleteDpnToInterface(BigInteger dpId, String infName, TypedReadWriteTransaction<Operational> tx)
+        throws ExecutionException, InterruptedException {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InstanceIdentifier<DpnToInterface> dpnToInterfaceId = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, dpnToInterfaceKey).build();
-        Optional<DpnToInterface> dpnToInterfaceOptional =
-                transaction.read(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId).checkedGet();
+        Optional<DpnToInterface> dpnToInterfaceOptional = tx.read(dpnToInterfaceId).get();
         if (!dpnToInterfaceOptional.isPresent()) {
             LOG.debug("DPN {} is already removed from the Operational DS", dpId);
             return;
@@ -748,10 +757,10 @@ public final class InterfaceManagerCommonUtils {
                 .child(DpnToInterface.class, dpnToInterfaceKey)
                 .child(InterfaceNameEntry.class, interfaceNameEntryKey)
                 .build();
-        transaction.delete(LogicalDatastoreType.OPERATIONAL, intfid);
+        tx.delete(intfid);
 
         if (interfaceNameEntries.size() <= 1) {
-            transaction.delete(LogicalDatastoreType.OPERATIONAL, dpnToInterfaceId);
+            tx.delete(dpnToInterfaceId);
         }
     }
 
