@@ -204,6 +204,14 @@ public interface NwConstants {
         NXM_OF_ARP_OP(0x0000, 15, 2, 16),
         NXM_OF_ARP_SPA(0x0000, 16, 4, 32),
         NXM_OF_ARP_TPA(0x0000, 17, 4, 32),
+        NXM_NX_IPV6_SRC(0x0001, 19, 16, 128),
+        NXM_NX_IPV6_DST(0x0001, 20, 16, 128),
+        NXM_NX_ICMPV6_TYPE(0x0001, 21, 1, 8),
+        NXM_NX_ND_TARGET(0x0001, 23, 16, 128),
+
+        OXM_OF_ICMPV6_TYPE(0x8000L, 29, 1, 8),
+        OXM_OF_IPV6_ND_TARGET(0x8000L, 31, 16, 128),
+
         OXM_OF_METADATA(0x8000L, 2, 8, -1),
         NXM_NX_REG0(0x0001, 0, 4, -1),
         NXM_NX_REG1(0x0001, 1, 4, -1),

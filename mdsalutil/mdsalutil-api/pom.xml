@@ -63,6 +63,17 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${openflowplugin.version}</version>
     </dependency>
     <dependency>
+         <groupId>org.opendaylight.openflowplugin</groupId>
+          <artifactId>openflowplugin-extension-eric</artifactId>
+         <version>${openflowplugin.version}</version>
+        </dependency>
+     <dependency>
+       <groupId>org.opendaylight.openflowplugin</groupId>
+       <artifactId>openflowjava-extension-eric</artifactId>
+       <version>${openflowplugin.version}</version>
+     </dependency>
+
+  <dependency>
       <groupId>org.opendaylight.ovsdb</groupId>
       <artifactId>hwvtepsouthbound-api</artifactId>
       <version>${genius.ovsdb.version}</version>
