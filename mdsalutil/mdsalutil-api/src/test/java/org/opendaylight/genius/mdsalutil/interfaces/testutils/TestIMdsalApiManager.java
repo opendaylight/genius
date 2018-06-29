@@ -18,14 +18,11 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -48,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * <p>This class is abstract just to save reading lines and typing keystrokes to
  * manually implement a bunch of methods we're not yet interested in.  Create instances
- * of it using it's static {@link #newInstance()} method.
+ * of it using its static {@link #newInstance()} method.
  *
  * @author Michael Vorburger
  * @author Faseela K
@@ -193,7 +190,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     @Override
     public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
         removeFlow(tx, dpId, flow.key(), flow.getTableId());
-
     }
 
     @Override
@@ -213,14 +209,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         getOrNewFlows().removeIf(
             flowEntity -> dpId.equals(flowEntity.getDpnId()) && flowId.equals(flowEntity.getFlowId())
                 && tableId == flowEntity.getTableId());
-    }
-
-    @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
-        FlowEntity flowEntity) {
-        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
-        getOrNewFlows().remove(flowEntity);
-        return Futures.immediateCheckedFuture(null);
     }
 
     @Override
@@ -253,43 +241,5 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     public void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
             long bucketId) {
         getOrNewBuckets().removeIf(bucket -> bucketId == bucket.getBucketId().getValue());
-    }
-
-    @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
-        getOrNewFlows().add(flowEntity);
-        return Futures.immediateCheckedFuture(null);
-    }
-
-    @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
-            FlowEntity flowEntity) {
-        // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
-        return installFlow(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
-        getOrNewFlows().add(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
-        getOrNewFlows().remove(flowEntity);
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group, long delayTime) {
-        getOrNewGroups().add(group);
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group) {
-        getOrNewGroups().add(group);
-    }
-
-    @Override
-    public void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
-        getOrNewGroups().remove(groupEntity);
     }
 }
