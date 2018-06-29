@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.mdsalutil.internal;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.BucketInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
@@ -54,6 +58,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
     DataBroker dataBroker;
+    ManagedNewTransactionRunner txRunner;
     @Mock
     PacketProcessingService ppS;
     MDSALManager mdSalMgr = null;
@@ -64,7 +69,8 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
     @Before
     public void setUp() throws Exception {
         dataBroker = getDataBroker();
-        mdSalMgr = new MDSALManager(dataBroker, ppS);
+        txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        mdSalMgr = new MDSALManager(dataBroker);
         flowFwder = new MockFlowForwarder(dataBroker);
         grpFwder = new MockGroupForwarder(dataBroker);
 
@@ -81,13 +87,13 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
         // Install Flow 1
         FlowEntity testFlow1 = createFlowEntity(dpnId, tableId1);
-        mdSalMgr.installFlowInternal(testFlow1).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.addFlow(tx, testFlow1)).get();
         flowFwder.awaitDataChangeCount(1);
 
         // Install FLow 2
         String tableId2 = "13";
         FlowEntity testFlow2 = createFlowEntity(dpnId, tableId2);
-        mdSalMgr.installFlowInternal(testFlow2).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.addFlow(tx, testFlow2)).get();
         flowFwder.awaitDataChangeCount(2);
     }
 
@@ -98,9 +104,9 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         FlowEntity testFlow = createFlowEntity(dpnId, tableId);
 
         // To test RemoveFlow add and then delete Flows
-        mdSalMgr.installFlowInternal(testFlow).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.addFlow(tx, testFlow)).get();
         flowFwder.awaitDataChangeCount(1);
-        mdSalMgr.removeFlowInternal(testFlow).get();
+        txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.removeFlow(tx, testFlow)).get();
         flowFwder.awaitDataChangeCount(0);
     }
 
@@ -111,14 +117,14 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         int vlanid = 100;
         GroupEntity grpEntity1 = createGroupEntity(NODE_ID, inport, vlanid);
 
-        mdSalMgr.installGroupInternal(grpEntity1).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.addGroup(tx, grpEntity1)).get();
         grpFwder.awaitDataChangeCount(1);
 
         // Install Group 2
         inport = "3";
         vlanid = 100;
         GroupEntity grpEntity2 = createGroupEntity(NODE_ID, inport, vlanid);
-        mdSalMgr.installGroupInternal(grpEntity2).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.addGroup(tx, grpEntity2)).get();
         grpFwder.awaitDataChangeCount(2);
     }
 
@@ -128,9 +134,10 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         int vlanid = 100;
         GroupEntity grpEntity = createGroupEntity(NODE_ID, inport, vlanid);
         // To test RemoveGroup add and then delete Group
-        mdSalMgr.installGroupInternal(grpEntity).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> mdSalMgr.addGroup(tx, grpEntity)).get();
         grpFwder.awaitDataChangeCount(1);
-        mdSalMgr.removeGroupInternal(grpEntity.getDpnId(), grpEntity.getGroupId()).get();
+        txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+            tx -> mdSalMgr.removeGroup(tx, grpEntity.getDpnId(), grpEntity.getGroupId())).get();
         grpFwder.awaitDataChangeCount(0);
     }
 
