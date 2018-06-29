@@ -24,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -111,7 +111,7 @@ public class ItmInternalTunnelDeleteTest {
 
     @Mock DataBroker dataBroker;
     @Mock ReadOnlyTransaction mockReadTx;
-    @Mock WriteTransaction mockWriteTx;
+    @Mock ReadWriteTransaction mockReadWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock JobCoordinator jobCoordinator;
@@ -136,10 +136,18 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
+        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+                .read(LogicalDatastoreType.CONFIGURATION,
+                        tunnelMonitorParamsInstanceIdentifier);
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
+        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+                .read(LogicalDatastoreType.CONFIGURATION,
+                        tunnelMonitorIntervalIdentifier);
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
+                .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
+        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
         itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
@@ -189,8 +197,9 @@ public class ItmInternalTunnelDeleteTest {
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
-        doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
+        doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        doReturn(true).when(mockReadWriteTx).cancel();
     }
 
     // Since all the unit test cases will be written to the new way, this should be taken care then.
@@ -213,6 +222,6 @@ public class ItmInternalTunnelDeleteTest {
         itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
         //FIXME: This verification is broken revisit this.
         //verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,dpntePsInfoIdentifier);
+        verify(mockReadWriteTx).delete(LogicalDatastoreType.CONFIGURATION,dpntePsInfoIdentifier);
     }
 }
