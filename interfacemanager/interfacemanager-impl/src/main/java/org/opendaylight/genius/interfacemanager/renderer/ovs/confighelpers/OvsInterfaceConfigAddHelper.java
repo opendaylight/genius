@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -22,9 +25,11 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -87,8 +92,8 @@ public final class OvsInterfaceConfigAddHelper {
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         // TODO Disentangle the transactions
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(configTx -> {
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(operTx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, configTx -> {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
                 IfTunnel ifTunnel = interfaceNew.augmentation(IfTunnel.class);
                 if (ifTunnel != null) {
                     addTunnelConfiguration(parentRefs, interfaceNew, ifTunnel, configTx, operTx, futures);
@@ -101,14 +106,14 @@ public final class OvsInterfaceConfigAddHelper {
     }
 
     private void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs,
-            WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
-            List<ListenableFuture<Void>> futures) {
+        TypedWriteTransaction<Configuration> confTx, TypedWriteTransaction<Operational> operTx,
+        List<ListenableFuture<Void>> futures) {
         IfL2vlan ifL2vlan = interfaceNew.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
         }
-        if (!interfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(defaultConfigShardTransaction,
+        if (!interfaceManagerCommonUtils.createInterfaceChildEntryIfNotPresent(confTx,
                 parentRefs.getParentInterface(), interfaceNew.getName(), ifL2vlan.getL2vlanMode())) {
             return;
         }
@@ -117,8 +122,7 @@ public final class OvsInterfaceConfigAddHelper {
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface());
 
-        interfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), defaultOperShardTransaction, futures,
-                ifState);
+        interfaceManagerCommonUtils.addStateEntry(operTx, interfaceNew.getName(), futures, ifState);
 
         VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(txRunner,
                 interfaceManagerCommonUtils, interfaceMetaUtils, interfaceNew.getName(), ifState);
@@ -126,7 +130,7 @@ public final class OvsInterfaceConfigAddHelper {
     }
 
     private void addTunnelConfiguration(ParentRefs parentRefs, Interface interfaceNew, IfTunnel ifTunnel,
-            WriteTransaction defaultConfigShardTransaction, WriteTransaction defaultOperShardTransaction,
+            TypedWriteTransaction<Configuration> confTx, TypedWriteTransaction<Operational> operTx,
             List<ListenableFuture<Void>> futures) {
         if (parentRefs == null) {
             LOG.warn(
@@ -145,7 +149,7 @@ public final class OvsInterfaceConfigAddHelper {
         LOG.info("adding tunnel configuration for interface {}", interfaceNew.getName());
 
         if (ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
-            futures.add(addLogicalTunnelGroup(interfaceNew, defaultOperShardTransaction));
+            futures.add(addLogicalTunnelGroup(interfaceNew, operTx, confTx));
             return;
         }
 
@@ -157,8 +161,7 @@ public final class OvsInterfaceConfigAddHelper {
                     || bridgeEntry.getBridgeInterfaceEntry() == null
                     || bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
-            interfaceManagerCommonUtils.createInterfaceChildEntry(tunnelName, interfaceNew.getName(),
-                    defaultConfigShardTransaction);
+            interfaceManagerCommonUtils.createInterfaceChildEntry(confTx, tunnelName, interfaceNew.getName());
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
                     .Interface
                     interfaceState = interfaceManagerCommonUtils.getInterfaceState(tunnelName);
@@ -175,8 +178,7 @@ public final class OvsInterfaceConfigAddHelper {
                 && !Strings.isNullOrEmpty(parentInterface)) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: createInterfaceChildEntry for {} in logical group {}",
                     tunnelName, parentInterface);
-            interfaceManagerCommonUtils.createInterfaceChildEntry(parentInterface, tunnelName,
-                    defaultConfigShardTransaction);
+            interfaceManagerCommonUtils.createInterfaceChildEntry(confTx, parentInterface, tunnelName);
         }
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         interfaceMetaUtils.createBridgeInterfaceEntryInConfigDS(dpId, interfaceNew.getName());
@@ -201,7 +203,7 @@ public final class OvsInterfaceConfigAddHelper {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
                 if (ncId != null) {
                     long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
-                    interfaceManagerCommonUtils.addTunnelIngressFlow(ifTunnel, dpId, portNo,
+                    interfaceManagerCommonUtils.addTunnelIngressFlow(confTx, ifTunnel, dpId, portNo,
                             interfaceNew.getName(), ifState.getIfIndex());
                     ListenableFuture<Void> future =
                             FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceNew,
@@ -254,14 +256,14 @@ public final class OvsInterfaceConfigAddHelper {
             }
 
             List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // FIXME: If the no. of child entries exceeds 100, perform txn
                 // updates in batches of 100.
                 for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
                     LOG.debug("adding interface state for vlan trunk member {}",
                             interfaceChildEntry.getChildInterface());
-                    interfaceManagerCommonUtils.addStateEntry(interfaceChildEntry.getChildInterface(), tx,
-                            futures, ifState);
+                    interfaceManagerCommonUtils.addStateEntry(tx, interfaceChildEntry.getChildInterface(),
+                        futures, ifState);
                 }
             }));
             return futures;
@@ -273,27 +275,29 @@ public final class OvsInterfaceConfigAddHelper {
         }
     }
 
-    private long createLogicalTunnelSelectGroup(BigInteger srcDpnId, String interfaceName, int lportTag) {
+    private long createLogicalTunnelSelectGroup(TypedWriteTransaction<Configuration> tx,
+        BigInteger srcDpnId, String interfaceName, int lportTag) {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
         Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
                                            MDSALUtil.buildBucketLists(Collections.emptyList()));
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} installed for {} srcDpnId {}",
                 group.getGroupId().getValue(), interfaceName, srcDpnId);
-        mdsalApiManager.syncInstallGroup(srcDpnId, group);
+        mdsalApiManager.addGroup(tx, srcDpnId, group);
         return groupId;
     }
 
-    private ListenableFuture<Void> addLogicalTunnelGroup(Interface itfNew, WriteTransaction tx) {
+    private ListenableFuture<Void> addLogicalTunnelGroup(Interface itfNew, TypedWriteTransaction<Operational> operTx,
+        TypedWriteTransaction<Configuration> confTx) {
         String ifaceName = itfNew.getName();
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
-            .Interface ifState = interfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, tx,
+            .Interface ifState = interfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, operTx,
                     null /*physAddress*/, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                     .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
                     .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
                     null /*nodeConnectorId*/);
-        long groupId = createLogicalTunnelSelectGroup(IfmUtil.getDpnFromInterface(ifState),
+        long groupId = createLogicalTunnelSelectGroup(confTx, IfmUtil.getDpnFromInterface(ifState),
                                                       itfNew.getName(), ifState.getIfIndex());
         return FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, itfNew,
                                                                   ifaceName, ifState.getIfIndex(), groupId);

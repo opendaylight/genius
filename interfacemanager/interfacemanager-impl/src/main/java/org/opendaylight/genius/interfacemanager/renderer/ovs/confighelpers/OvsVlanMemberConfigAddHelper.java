@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +42,9 @@ public class OvsVlanMemberConfigAddHelper {
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> interfaceManagerCommonUtils.createInterfaceChildEntry(parentRefs.getParentInterface(),
-                    interfaceNew.getName(), tx)));
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> interfaceManagerCommonUtils.createInterfaceChildEntry(tx, parentRefs.getParentInterface(),
+                    interfaceNew.getName())));
 
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);

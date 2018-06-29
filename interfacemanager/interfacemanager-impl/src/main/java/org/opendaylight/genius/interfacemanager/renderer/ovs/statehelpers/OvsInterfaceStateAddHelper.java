@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -104,7 +107,7 @@ public final class OvsInterfaceStateAddHelper {
             return futures;
         }
 
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
             Interface ifState = interfaceManagerCommonUtils.addStateEntry(iface, interfaceName,
                     tx, physAddress, operStatus, adminStatus, nodeConnectorId);
 
@@ -136,11 +139,12 @@ public final class OvsInterfaceStateAddHelper {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        interfaceManagerCommonUtils.addTunnelIngressFlow(
-                interfaceInfo.augmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
-        ListenableFuture<Void> future =
-                FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceInfo,
-                        Long.toString(portNo), interfaceName, ifIndex);
+        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+            interfaceManagerCommonUtils.addTunnelIngressFlow(
+                tx, interfaceInfo.augmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
+            FlowBasedServicesUtils.bindDefaultEgressDispatcherService(tx, interfaceInfo,
+                Long.toString(portNo), interfaceName, ifIndex);
+        });
         futures.add(future);
         Futures.addCallback(future, new FutureCallback<Void>() {
             @Override

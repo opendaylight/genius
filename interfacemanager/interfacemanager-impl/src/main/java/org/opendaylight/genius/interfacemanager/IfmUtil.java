@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
@@ -29,8 +30,10 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
@@ -549,6 +552,14 @@ public final class IfmUtil {
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
                 serviceInfo.getServicePriority(), interfaceName, serviceMode);
         writeTransaction.put(LogicalDatastoreType.CONFIGURATION, boundServicesInstanceIdentifier, serviceInfo, true);
+    }
+
+    public static void bindService(TypedWriteTransaction<Configuration> tx, String interfaceName,
+        BoundServices serviceInfo, Class<? extends ServiceModeBase> serviceMode) {
+        LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
+        InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
+            serviceInfo.getServicePriority(), interfaceName, serviceMode);
+        tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
     }
 
     public static void unbindService(DataBroker dataBroker, JobCoordinator coordinator, String interfaceName,
