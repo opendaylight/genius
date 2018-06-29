@@ -29,7 +29,6 @@ import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TransactionAdapter;
 import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -250,7 +249,7 @@ public class ItmTunnelAggregationHelper {
 
     private void updateTunnelAggregationGroupBucket(Interface ifaceState, IfTunnel ifTunnel,
                                                     ParentRefs parentRefs, InterfaceParentEntry groupParentEntry,
-                                                    int action, TypedWriteTransaction<Configuration> tx) {
+                                                    int action, TypedReadWriteTransaction<Configuration> tx) {
         String logicTunnelName = parentRefs.getParentInterface();
         List<InterfaceChildEntry> interfaceChildEntries = groupParentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null) {
@@ -278,15 +277,15 @@ public class ItmTunnelAggregationHelper {
         BigInteger srcDpnId = new BigInteger(split[1]);
         int portNumber = Integer.parseInt(split[2]);
         if (action == ADD_TUNNEL) {
-            if (!mdsalManager.groupExists(srcDpnId, groupId)) {
+            if (!mdsalManager.groupExists(tx, srcDpnId, groupId)) {
                 createLogicalTunnelSelectGroup(tx, srcDpnId, logicTunnelName, ifLogicTunnel.getInterfaceTag());
             }
             Bucket buckt = createBucket(ifaceName, ifTunnel, bucketId, portNumber);
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: add bucketId {} to groupId {}", bucketId, groupId);
-            mdsalManager.addBucketToTx(srcDpnId, groupId, buckt, TransactionAdapter.toWriteTransaction(tx));
+            mdsalManager.addBucket(tx, srcDpnId, groupId, buckt);
         } else {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: remove bucketId {} from groupId {}", bucketId, groupId);
-            mdsalManager.removeBucketToTx(srcDpnId, groupId, bucketId, TransactionAdapter.toWriteTransaction(tx));
+            mdsalManager.removeBucket(tx, srcDpnId, groupId, bucketId);
         }
     }
 
