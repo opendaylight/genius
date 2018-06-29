@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -20,10 +22,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
@@ -108,31 +112,31 @@ public final class ItmInternalTunnelAddWorker {
             return Collections.emptyList();
         }
 
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(transaction -> {
+        return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 //#####if dpn is not in meshedDpnList
-                buildTunnelFrom(dpn, meshedDpnList, mdsalManager, transaction);
+                buildTunnelFrom(tx, dpn, meshedDpnList, mdsalManager);
                 if (meshedDpnList != null) {
                     meshedDpnList.add(dpn);
                 }
                 // Update the config datastore -- FIXME -- Error Handling
-                updateDpnTepInfoToConfig(dpn, transaction);
+                updateDpnTepInfoToConfig(tx, dpn);
             }
         }));
     }
 
-    private static void updateDpnTepInfoToConfig(DPNTEPsInfo dpn, WriteTransaction tx) {
+    private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn) {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(dpn) ;
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
-        tx.merge(LogicalDatastoreType.CONFIGURATION, dep, tnlBuilder);
+        tx.merge(dep, tnlBuilder);
     }
 
-    private void buildTunnelFrom(DPNTEPsInfo srcDpn, Collection<DPNTEPsInfo> meshedDpnList,
-            IMdsalApiManager mdsalManager, WriteTransaction transaction) throws ExecutionException,
-            InterruptedException, OperationFailedException {
+    private void buildTunnelFrom(TypedReadWriteTransaction<Configuration> tx, DPNTEPsInfo srcDpn,
+        Collection<DPNTEPsInfo> meshedDpnList, IMdsalApiManager mdsalManager)
+        throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.trace("Building tunnels from DPN {} " , srcDpn);
         if (null == meshedDpnList || meshedDpnList.isEmpty()) {
             LOG.debug("No DPN in the mesh ");
@@ -140,15 +144,15 @@ public final class ItmInternalTunnelAddWorker {
         }
         for (DPNTEPsInfo dstDpn: meshedDpnList) {
             if (!srcDpn.equals(dstDpn)) {
-                wireUpWithinTransportZone(srcDpn, dstDpn, mdsalManager, transaction);
+                wireUpWithinTransportZone(tx, srcDpn, dstDpn, mdsalManager);
             }
         }
 
     }
 
-    private void wireUpWithinTransportZone(DPNTEPsInfo srcDpn, DPNTEPsInfo dstDpn,
-            IMdsalApiManager mdsalManager, WriteTransaction transaction) throws ExecutionException,
-            InterruptedException, OperationFailedException {
+    private void wireUpWithinTransportZone(TypedReadWriteTransaction<Configuration> tx, DPNTEPsInfo srcDpn,
+        DPNTEPsInfo dstDpn, IMdsalApiManager mdsalManager)
+        throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.trace("Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn);
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
         List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
@@ -159,8 +163,8 @@ public final class ItmInternalTunnelAddWorker {
                 if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
                     if (!ItmUtils.getIntersection(srcte.getTzMembership(), dstte.getTzMembership()).isEmpty()) {
                         // wire them up
-                        wireUpBidirectionalTunnel(srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
-                                mdsalManager, transaction);
+                        wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
+                                mdsalManager);
                         if (!ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
                             // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
                             break;
@@ -171,29 +175,30 @@ public final class ItmInternalTunnelAddWorker {
         }
     }
 
-    private void wireUpBidirectionalTunnel(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
-            BigInteger dstDpnId, IMdsalApiManager mdsalManager, WriteTransaction transaction)
-            throws ExecutionException, InterruptedException, OperationFailedException {
+    private void wireUpBidirectionalTunnel(TypedReadWriteTransaction<Configuration> tx, TunnelEndPoints srcte,
+        TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId, IMdsalApiManager mdsalManager)
+        throws ExecutionException, InterruptedException, OperationFailedException {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
 
         if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
-            ItmUtils.setUpOrRemoveTerminatingServiceTable(srcDpnId, mdsalManager, true);
-            ItmUtils.setUpOrRemoveTerminatingServiceTable(dstDpnId, mdsalManager, true);
+            ItmUtils.addTerminatingServiceTable(tx, srcDpnId, mdsalManager);
+            ItmUtils.addTerminatingServiceTable(tx, dstDpnId, mdsalManager);
         }
         // Create the forward direction tunnel
-        if (!wireUp(srcte, dstte, srcDpnId, dstDpnId, transaction)) {
+        if (!wireUp(tx, srcte, dstte, srcDpnId, dstDpnId)) {
             LOG.error("Could not build tunnel between end points {}, {} " , srcte, dstte);
         }
 
         // CHECK IF FORWARD IS NOT BUILT , REVERSE CAN BE BUILT
         // Create the tunnel for the reverse direction
-        if (!wireUp(dstte, srcte, dstDpnId, srcDpnId, transaction)) {
+        if (!wireUp(tx, dstte, srcte, dstDpnId, srcDpnId)) {
             LOG.error("Could not build tunnel between end points {}, {} " , dstte, srcte);
         }
     }
 
-    private boolean wireUp(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId,
-            WriteTransaction transaction) throws ExecutionException, InterruptedException, OperationFailedException {
+    private boolean wireUp(TypedWriteTransaction<Configuration> tx, TunnelEndPoints srcte, TunnelEndPoints dstte,
+        BigInteger srcDpnId, BigInteger dstDpnId)
+        throws ExecutionException, InterruptedException, OperationFailedException {
         // Wire Up logic
         LOG.trace("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
         String interfaceName = srcte.getInterfaceName();
@@ -215,7 +220,7 @@ public final class ItmInternalTunnelAddWorker {
         } else {
             createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
             // also update itm-state ds?
-            createInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName, transaction);
+            createInternalTunnel(tx, srcDpnId, dstDpnId, tunType, trunkInterfaceName);
         }
         return true;
     }
@@ -232,8 +237,7 @@ public final class ItmInternalTunnelAddWorker {
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
 
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
-        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false
-                : isTunnelMonitoringEnabled;
+        Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
@@ -255,16 +259,15 @@ public final class ItmInternalTunnelAddWorker {
         ItmUtils.ITM_CACHE.addInterface(iface);
     }
 
-    private static void createInternalTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
-                                             Class<? extends TunnelTypeBase> tunType,
-                                             String trunkInterfaceName, WriteTransaction transaction) {
+    private static void createInternalTunnel(TypedWriteTransaction<Configuration> tx, BigInteger srcDpnId,
+        BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName) {
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
         InternalTunnel tnl = ItmUtils.buildInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName);
         // Switching to individual transaction submit as batching latencies is causing ELAN failures.
         // Will revert when ELAN can handle this.
         // ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        transaction.merge(LogicalDatastoreType.CONFIGURATION,path, tnl, true) ;
+        tx.merge(path, tnl, CREATE_MISSING_PARENTS);
         ItmUtils.ITM_CACHE.addInternalTunnel(tnl);
     }
 
@@ -295,15 +298,15 @@ public final class ItmInternalTunnelAddWorker {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() throws Exception {
-            return singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+        public List<ListenableFuture<Void>> call() {
+            return singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
                 //The logical tunnel interface be created only when the first tunnel interface on each OVS is created
                 InternalTunnel tunnel = ItmUtils.ITM_CACHE.getInternalTunnel(logicTunnelGroupName);
                 if (tunnel == null) {
                     LOG.info("MULTIPLE_VxLAN_TUNNELS: add the logical tunnel group {} because a first tunnel"
                         + " interface on srcDpnId {} dstDpnId {} is created", logicTunnelGroupName, srcDpnId, dstDpnId);
                     createLogicalTunnelInterface(srcDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName);
-                    createInternalTunnel(srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName, tx);
+                    createInternalTunnel(tx, srcDpnId, dstDpnId, TunnelTypeLogicalGroup.class, logicTunnelGroupName);
                 } else {
                     LOG.debug("MULTIPLE_VxLAN_TUNNELS: not first tunnel on srcDpnId {} dstDpnId {}", srcDpnId,
                             dstDpnId);
@@ -326,8 +329,7 @@ public final class ItmInternalTunnelAddWorker {
         boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
 
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
-        Boolean isMonitorEnabled = tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) ? false
-                : isTunnelMonitoringEnabled;
+        Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(),

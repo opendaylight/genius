@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.rpc;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.ERROR;
 import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
@@ -523,8 +524,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                 String.format("%s:%d","ITM Flow Entry ",serviceId), 0, 0,
                 ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(serviceId)),mkMatches, input.getInstruction());
 
-        ListenableFuture<Void> installFlowResult =
-                mdsalManager.installFlow(input.getDpnId(), terminatingServiceTableFlow);
+        ListenableFuture<Void> installFlowResult = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> mdsalManager.addFlow(tx, input.getDpnId(), terminatingServiceTableFlow));
         Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
 
             @Override
@@ -551,15 +552,12 @@ public class ItmManagerRpcService implements ItmRpcService {
         LOG.info("remove terminatingServiceActions called with DpnId = {} and serviceId = {}",
                 input.getDpnId(), input.getServiceId());
         final SettableFuture<RpcResult<RemoveTerminatingServiceActionsOutput>> result = SettableFuture.create();
-        Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
-                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,input.getServiceId()), 5,
-                String.format("%s:%d","ITM Flow Entry ",input.getServiceId()), 0, 0,
-                ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(input.getServiceId())),
-                getTunnelMatchesForServiceId(input.getServiceId()), null);
 
-        ListenableFuture<Void> installFlowResult =
-                mdsalManager.removeFlow(input.getDpnId(), terminatingServiceTableFlow);
-        Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
+        ListenableFuture<Void> removeFlowResult = txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+            tx -> mdsalManager.removeFlow(tx, input.getDpnId(),
+                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId()),
+                NwConstants.INTERNAL_TUNNEL_TABLE));
+        Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
 
             @Override
             public void onSuccess(Void voidInstance) {
