@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "c3bba4bd_2fb6f9a5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T16:01:32Z",
+      "side": 1,
+      "message": "getChecked() and throws ReadFailedException ?  But not related to this change, so no reason to -1 for this.",
+      "parentUuid": "2b083f0f_d0dacd85",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ac09b51_70349007",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
         "patchSetId": 4
