@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22ba1be9_95791c58",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 655,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T15:52:50Z",
+      "side": 1,
+      "message": "Autsch! :-( But I guess you want to remain backwards \"compatible\" here? Same a few times in MDSALManager.",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ac09b51_70349007",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 935,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T15:52:50Z",
+      "side": 1,
+      "message": "while these new methods aren\u0027t a huge amount of code, they still copy/paste all the old implementations.  We could use the TransactionAdapter to avoid to copy/paste... unless you are planning to remove all @Deprecated methods very shortly - is that the plan?  Within days or weeks? ;-)",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da66978f_14f44431",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T15:52:50Z",
+      "side": 1,
+      "message": "is this intentionally neither public nor private now?  Perhaps annotate @VisibleForTesting?",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f6b5a893_df84c03e",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T15:52:50Z",
+      "side": 1,
+      "message": "@VisibleForTesting ?",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4ee310f2_98fe56a6",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T15:52:50Z",
+      "side": 1,
+      "message": "@VisibleForTesting ?",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7b0e2bbc_9f46a784",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 321,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-02T15:52:50Z",
+      "side": 1,
+      "message": "@VisibleForTesting ?",
+      "revId": "421ea6a822069040574a9c114bc10ded4cc4e5d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
