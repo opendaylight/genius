@@ -26,7 +26,6 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
@@ -343,9 +342,6 @@ public final class ItmInternalTunnelAddWorker {
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
 
-        //ITM TEP INTERFACE set the group Id here ..later
-        Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
-        dpnsTepsBuilder.setGroupId(groupId.longValue());
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
         remoteDpn.withKey(new RemoteDpnsKey(dstDpnId));
         remoteDpn.setDestinationDpnId(dstDpnId);
