@@ -17,7 +17,7 @@ public interface DpnTepInterfaceInfo {
 
     Class<? extends TunnelTypeBase> getTunnelType();
 
-    long getGroupId();
+    @Nullable long getGroupId();
 
     String getTunnelName();
 
