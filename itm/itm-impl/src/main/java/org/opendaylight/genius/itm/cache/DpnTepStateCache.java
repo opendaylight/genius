@@ -67,7 +67,6 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                     .setTunnelName(remoteDpns.getTunnelName())
-                    .setGroupId(dpnsTeps.getGroupId())
                     .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                     .setIsInternal(remoteDpns.isInternal())
                     .setTunnelType(dpnsTeps.getTunnelType()).build();
@@ -99,7 +98,6 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     teps.getRemoteDpns().forEach(remoteDpns -> {
                         DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                                 .setTunnelName(remoteDpns.getTunnelName())
-                                .setGroupId(teps.getGroupId())
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                                 .setIsInternal(remoteDpns.isInternal())
                                 .setTunnelType(teps.getTunnelType()).build();
