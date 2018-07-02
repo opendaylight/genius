@@ -17,8 +17,6 @@ public interface DpnTepInterfaceInfo {
 
     Class<? extends TunnelTypeBase> getTunnelType();
 
-    long getGroupId();
-
     String getTunnelName();
 
     boolean isMonitoringEnabled();
