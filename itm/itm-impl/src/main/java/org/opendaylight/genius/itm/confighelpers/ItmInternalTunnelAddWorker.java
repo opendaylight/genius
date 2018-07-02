@@ -343,9 +343,6 @@ public final class ItmInternalTunnelAddWorker {
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
 
-        //ITM TEP INTERFACE set the group Id here ..later
-        Integer groupId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, srcDpnId.toString());
-        dpnsTepsBuilder.setGroupId(groupId.longValue());
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
         remoteDpn.withKey(new RemoteDpnsKey(dstDpnId));
         remoteDpn.setDestinationDpnId(dstDpnId);
