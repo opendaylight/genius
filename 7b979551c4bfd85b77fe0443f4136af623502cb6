@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22d25d2f_aff946cc",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2018-07-02T09:11:09Z",
+      "side": 0,
+      "message": "Please get rid of this leaf altogether since its not going to be in use in the recent scheme of things",
+      "revId": "7b979551c4bfd85b77fe0443f4136af623502cb6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
