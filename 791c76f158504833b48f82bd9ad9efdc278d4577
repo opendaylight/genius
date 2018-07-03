@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "de04bd6d_12e48833",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-03T05:22:58Z",
+      "side": 1,
+      "message": "why group-id is still here? why not remove it?",
+      "revId": "791c76f158504833b48f82bd9ad9efdc278d4577",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
