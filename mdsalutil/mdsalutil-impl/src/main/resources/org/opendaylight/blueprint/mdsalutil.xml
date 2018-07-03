@@ -24,4 +24,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <service ref="hwvtepNodeHACacheImpl"
            interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
 
+  <reference id="upgradeConfig"
+             interface="org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.upgrade.rev180702.UpgradeConfig" />
+
 </blueprint>
