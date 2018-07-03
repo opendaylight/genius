@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Red Hat, Inc. and others. All rights reserved.
+ * Copyright (c) 2017, 2018 Red Hat, Inc. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -33,14 +33,19 @@ public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeLis
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateListener.class);
 
     private final AtomicBoolean isUpgradeInProgress = new AtomicBoolean(false);
+    private final UpgradeUtils upgradeUtils;
 
     @Inject
-    public UpgradeStateListener(@OsgiService final DataBroker dataBroker, final Config config) {
+    public UpgradeStateListener(@OsgiService final DataBroker dataBroker, final Config config,
+                                final UpgradeUtils upgradeStateUtils) {
         super(dataBroker, new DataTreeIdentifier<>(
                 LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Config.class)));
+        this.upgradeUtils = upgradeStateUtils;
         // When this config value is set from a file it is not accessible via the yang tree...
         // so we just write it once here just in case.
         try {
+            //TODO: DS Writes should ideally be done from one node to avoid ConflictingModExceptions
+            upgradeStateUtils.setUpgradeConfig(config.isUpgradeInProgress());
             SingleTransactionDataBroker.syncWrite(dataBroker, LogicalDatastoreType.CONFIGURATION,
                     InstanceIdentifier.create(Config.class), config);
         } catch (TransactionCommitFailedException e) {
@@ -55,18 +60,21 @@ public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeLis
 
     @Override
     public void add(@Nonnull Config newDataObject) {
+        upgradeUtils.setUpgradeConfig(newDataObject.isUpgradeInProgress());
         isUpgradeInProgress.set(newDataObject.isUpgradeInProgress());
         LOG.info("UpgradeStateListener.add: isUpgradeInProgress = {}", newDataObject.isUpgradeInProgress());
     }
 
     @Override
     public void remove(@Nonnull Config removedDataObject) {
+        upgradeUtils.setUpgradeConfig(false);
         isUpgradeInProgress.set(false);
         LOG.info("UpgradeStateListener.remove: isUpgradeInProgress = {}", false);
     }
 
     @Override
     public void update(@Nonnull Config originalDataObject, @Nonnull Config updatedDataObject) {
+        upgradeUtils.setUpgradeConfig(updatedDataObject.isUpgradeInProgress());
         isUpgradeInProgress.set(updatedDataObject.isUpgradeInProgress());
         LOG.info("UpgradeStateListener.update: isUpgradeInProgress = {}", updatedDataObject.isUpgradeInProgress());
     }
