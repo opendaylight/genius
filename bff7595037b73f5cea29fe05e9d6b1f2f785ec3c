@@ -22,6 +22,30 @@
       "revId": "bff7595037b73f5cea29fe05e9d6b1f2f785ec3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9930e2e2_ddaa5a79",
+        "filename": "alivenessmonitor/alivenessmonitor-impl-protocols/src/main/java/org/opendaylight/genius/alivenessmonitor/protocols/internal/AlivenessProtocolHandlerIPv6ND.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-04T06:38:06Z",
+      "side": 1,
+      "message": "Since this is an independent class and a public method, I feel it is good to have this check here as well. It makes this method independent from the caller.",
+      "parentUuid": "94cd0db1_c0f9f7e9",
+      "range": {
+        "startLine": 80,
+        "startChar": 8,
+        "endLine": 80,
+        "endChar": 47
+      },
+      "revId": "bff7595037b73f5cea29fe05e9d6b1f2f785ec3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
