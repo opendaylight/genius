@@ -34,7 +34,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <module>interfacemanager</module>
     <module>itm</module>
     <module>lockmanager</module>
-    <module>tools</module>
     <module>mdsalutil</module>
     <module>arputil</module>
     <module>idmanager</module>
@@ -44,7 +43,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
     <module>fcapsmanager</module>
     <module>fcapsapplication</module>
     <module>resourcemanager</module>
-    <module>srm</module>
   </modules>
 
   <profiles>
