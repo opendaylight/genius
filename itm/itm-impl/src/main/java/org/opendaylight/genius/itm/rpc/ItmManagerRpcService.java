@@ -8,8 +8,8 @@
 package org.opendaylight.genius.itm.rpc;
 
 import static java.util.Objects.requireNonNull;
-import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.LogLevel.ERROR;
-import static org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.ERROR;
+import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Optional;
@@ -58,7 +58,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
-import org.opendaylight.genius.tools.mdsal.rpc.FutureRpcResults;
+import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
