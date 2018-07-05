@@ -36,6 +36,24 @@
     },
     {
       "key": {
+        "uuid": "b652b2b3_f0cf04a1",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-05T15:31:25Z",
+      "side": 1,
+      "message": "+1 - propagate UnknownHostException",
+      "parentUuid": "1039aa06_5888a194",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e013d94_1ab2e7a5",
         "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/decoders/Ipv6NaDecoder.java",
         "patchSetId": 8
@@ -81,6 +99,24 @@
       "writtenOn": "2018-07-05T15:06:41Z",
       "side": 1,
       "message": "this catch and return null doesn\u0027t seem like a good idea; it should re-throw instead of this; in this case perhaps best not to propagate the BufferException as that seems like an internal impl detail, so instead wrap it in some sort of RuntimeException - perhaps an IllegalArgumentException",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ed154839_2aee586f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-05T15:31:25Z",
+      "side": 1,
+      "message": "+1 - propagate BufferException",
+      "parentUuid": "b4be820f_2dff4f0b",
       "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
