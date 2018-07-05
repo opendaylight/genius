@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "689703b3_b19acde7",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:09:36Z",
+      "side": 1,
+      "message": "the LOG.warn instead of error \"because it may just be an OptimisticLockException\" doesn\u0027t seem right to me.  Could I suggest that you use a RetryingManagedNewTransactionRunner (in line 36) and make this a LOG.error ?",
+      "revId": "91b264adf62f215f98db393bf02bf15888e48818",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
