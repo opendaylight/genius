@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.lockmanager.tests;
 
-import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorCause;
-import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorWithoutCausesOrMessages;
-import static org.opendaylight.genius.tools.mdsal.testutils.TestFutureRpcResults.assertVoidRpcSuccess;
+import static org.opendaylight.serviceutils.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorCause;
+import static org.opendaylight.serviceutils.tools.mdsal.testutils.TestFutureRpcResults.assertRpcErrorWithoutCausesOrMessages;
+import static org.opendaylight.serviceutils.tools.mdsal.testutils.TestFutureRpcResults.assertVoidRpcSuccess;
 
 import java.util.Timer;
 import java.util.TimerTask;
