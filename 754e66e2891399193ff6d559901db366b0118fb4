@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "e66c2f89_5d0ff240",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-07-05T08:04:59Z",
+      "side": 1,
+      "message": "I think Ankit is working on it as per status in Jira.",
+      "parentUuid": "ad84aadf_e4385077",
+      "revId": "754e66e2891399193ff6d559901db366b0118fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4a0d159_fee8d9b6",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 10
@@ -102,6 +120,24 @@
       "side": 1,
       "message": "?",
       "parentUuid": "c4a0d159_fee8d9b6",
+      "revId": "754e66e2891399193ff6d559901db366b0118fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d7d891d_0ad43413",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-07-05T08:04:59Z",
+      "side": 1,
+      "message": "Will remove this once satisfied that we\u0027re handling any possible optimistic exceptions correctly. Will do so in whatever the separate patch we come up with to properly handle idpool creation.",
+      "parentUuid": "b82eeb79_2ee54931",
       "revId": "754e66e2891399193ff6d559901db366b0118fb4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
