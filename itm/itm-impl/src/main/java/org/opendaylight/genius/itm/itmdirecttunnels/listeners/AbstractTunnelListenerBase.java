@@ -26,7 +26,7 @@ import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfoBuilder;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
+import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
