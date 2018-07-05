@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2fd99cd9_1ba0f2e5",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:06:41Z",
+      "side": 1,
+      "message": "isn\u0027t there a better way to do what yo uare after here?  The problem is that InetAddress.getByName() is known to be dangerous.. if ipAddress is not a valid IPv4 or IPv6 but a hostname, or even something which looks like / makes it think it may be a hostname, it does a blocking remote DNS lookup, which can lead to VERY confusing problems.  Ideally, simply do not use  InetAddress.getByName().  At the very least, make this method not take a String ipAddress but accept only a stronger type than String which you can sure of is actually a numerical address and never a hostname.",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1039aa06_5888a194",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:06:41Z",
+      "side": 1,
+      "message": "this catch and return null doesn\u0027t seem like a good idea; it should re-throw instead of this; either just propagate the UnknownHostException or if you must, wrap it in some sort of RuntimeException - perhaps an IllegalArgumentException",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e013d94_1ab2e7a5",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/decoders/Ipv6NaDecoder.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:06:41Z",
+      "side": 1,
+      "message": "should / could this code be covered by a unit test?",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc3f10f6_10936d5c",
+        "filename": "ipv6util/api/src/test/java/org/opendaylight/genius/ipv6util/api/Ipv6UtilTest.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:06:41Z",
+      "side": 1,
+      "message": "use infrautils\u0027 Asserts.assertThrows instead of null based error handling",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b4be820f_2dff4f0b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:06:41Z",
+      "side": 1,
+      "message": "this catch and return null doesn\u0027t seem like a good idea; it should re-throw instead of this; in this case perhaps best not to propagate the BufferException as that seems like an internal impl detail, so instead wrap it in some sort of RuntimeException - perhaps an IllegalArgumentException",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b6eeecd_77190412",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-05T15:06:41Z",
+      "side": 1,
+      "message": "as above, unless you expect this to be \"normal\" to happen (but in which case this would have to be a trace instead of a warn log), IMHO it\u0027s better not to just \"hide\" such a problem with a LOG and return false.",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
