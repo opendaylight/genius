@@ -1008,9 +1008,11 @@ public final class ItmUtils {
     }
 
     public static List<TunnelEndPoints> getTEPsForDpn(BigInteger srcDpn, Collection<DPNTEPsInfo> dpnList) {
+        List<TunnelEndPoints> tunnelEndPoints = new ArrayList<>();
         for (DPNTEPsInfo dpn : dpnList) {
             if (dpn.getDPNID().equals(srcDpn)) {
-                return dpn.getTunnelEndPoints() ;
+                tunnelEndPoints.addAll(dpn.getTunnelEndPoints());
+                return tunnelEndPoints ;
             }
         }
         return null;
