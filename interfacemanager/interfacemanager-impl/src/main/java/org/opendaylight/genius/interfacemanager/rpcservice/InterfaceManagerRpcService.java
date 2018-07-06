@@ -82,7 +82,13 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
     @Override
     public Future<RpcResult<GetInterfaceFromIfIndexOutput>> getInterfaceFromIfIndex(
             GetInterfaceFromIfIndexInput input) {
-        return fromListenableFuture(LOG, input, () -> interfaceManagerService.getInterfaceFromIfIndex(input)).build();
+        return fromListenableFuture(LOG, input, () -> interfaceManagerService.getInterfaceFromIfIndex(input))
+                .onFailureLogLevel(DEBUG)
+                .onFailure(cause -> {
+                    if (!(cause instanceof IllegalArgumentException)) {
+                        LOG.error("RPC getInterfaceFromIfIndex() failed; input = {}", input, cause);
+                    }
+                }).build();
     }
 
     @Override
