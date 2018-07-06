@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "31c605e2_073d57ce",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Used IpAddress datatype as parameter which makes sure that it is a numerical address and never a hostname.",
+      "parentUuid": "2fd99cd9_1ba0f2e5",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1039aa06_5888a194",
         "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
         "patchSetId": 8
@@ -54,6 +72,42 @@
     },
     {
       "key": {
+        "uuid": "3df15ba3_79c88e7c",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1039aa06_5888a194",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fed3d570_f58199a2",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Changed to throw IllegalArgumentException",
+      "parentUuid": "b652b2b3_f0cf04a1",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3e013d94_1ab2e7a5",
         "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/decoders/Ipv6NaDecoder.java",
         "patchSetId": 8
@@ -71,6 +125,24 @@
     },
     {
       "key": {
+        "uuid": "f7d79dd7_7018dd40",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/decoders/Ipv6NaDecoder.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3e013d94_1ab2e7a5",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "dc3f10f6_10936d5c",
         "filename": "ipv6util/api/src/test/java/org/opendaylight/genius/ipv6util/api/Ipv6UtilTest.java",
         "patchSetId": 8
@@ -82,6 +154,24 @@
       "writtenOn": "2018-07-05T15:06:41Z",
       "side": 1,
       "message": "use infrautils\u0027 Asserts.assertThrows instead of null based error handling",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba5ed7f4_9c849368",
+        "filename": "ipv6util/api/src/test/java/org/opendaylight/genius/ipv6util/api/Ipv6UtilTest.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dc3f10f6_10936d5c",
       "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -123,6 +213,42 @@
     },
     {
       "key": {
+        "uuid": "8c1a9f9a_cd3f49a1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Changed to throw IllegalArgumentException",
+      "parentUuid": "ed154839_2aee586f",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff8e5258_deaaa059",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b4be820f_2dff4f0b",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6b6eeecd_77190412",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
         "patchSetId": 8
@@ -134,6 +260,24 @@
       "writtenOn": "2018-07-05T15:06:41Z",
       "side": 1,
       "message": "as above, unless you expect this to be \"normal\" to happen (but in which case this would have to be a trace instead of a warn log), IMHO it\u0027s better not to just \"hide\" such a problem with a LOG and return false.",
+      "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf33ae6c_f6778831",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/packet/utils/PacketUtil.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-07-06T14:57:44Z",
+      "side": 1,
+      "message": "Changed to throw IllegalArgumentException",
+      "parentUuid": "6b6eeecd_77190412",
       "revId": "f79f0a1eaea37c794d53fa397b6b9f3e7b8aec35",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
