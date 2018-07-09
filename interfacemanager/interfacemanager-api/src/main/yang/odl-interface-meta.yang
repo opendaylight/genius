@@ -2,6 +2,10 @@ module odl-interface-meta {
     namespace "urn:opendaylight:genius:interfacemanager:meta";
     prefix "odlifmeta";
 
+    import ietf-interfaces {
+        prefix if;
+    }
+
     import ovsdb {
         prefix southbound; revision-date "2015-01-05";
     }
