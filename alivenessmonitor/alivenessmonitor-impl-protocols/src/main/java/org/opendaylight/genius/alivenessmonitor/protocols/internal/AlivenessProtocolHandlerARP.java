@@ -14,8 +14,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
@@ -152,22 +152,21 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             ListenableFuture<RpcResult<SendArpRequestOutput>> future = arpService.sendArpRequest(input);
             final String msgFormat = String.format("Send ARP Request on interface %s to destination %s",
                     sourceInterface, targetIp);
-            Futures.addCallback(JdkFutureAdapters.listenInPoolThread(future),
-                    new FutureCallback<RpcResult<SendArpRequestOutput>>() {
-                        @Override
-                        public void onFailure(Throwable error) {
-                            LOG.error("Error - {}", msgFormat, error);
-                        }
+            Futures.addCallback(future, new FutureCallback<RpcResult<SendArpRequestOutput>>() {
+                @Override
+                public void onFailure(Throwable error) {
+                    LOG.error("Error - {}", msgFormat, error);
+                }
 
-                        @Override
-                        public void onSuccess(RpcResult<SendArpRequestOutput> result) {
-                            if (result != null && !result.isSuccessful()) {
-                                LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
-                            } else {
-                                LOG.debug("Successful RPC Result - {}", msgFormat);
-                            }
-                        }
-                    });
+                @Override
+                public void onSuccess(RpcResult<SendArpRequestOutput> result) {
+                    if (result != null && !result.isSuccessful()) {
+                        LOG.warn("Rpc call to {} failed {}", msgFormat, getErrorText(result.getErrors()));
+                    } else {
+                        LOG.debug("Successful RPC Result - {}", msgFormat);
+                    }
+                }
+            }, MoreExecutors.directExecutor());
         }
     }
 
