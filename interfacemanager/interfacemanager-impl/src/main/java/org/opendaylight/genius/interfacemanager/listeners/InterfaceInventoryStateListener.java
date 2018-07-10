@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -420,7 +421,7 @@ public class InterfaceInventoryStateListener
         }
 
         private void handleTunnelMonitoringRemoval(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId,
-            String removedInterfaceName, IfTunnel ifTunnel) {
+            String removedInterfaceName, IfTunnel ifTunnel) throws ExecutionException, InterruptedException {
             interfaceManagerCommonUtils.removeTunnelIngressFlow(tx, ifTunnel, dpId, removedInterfaceName);
 
             IfmUtil.unbindService(dataBroker, coordinator, removedInterfaceName,

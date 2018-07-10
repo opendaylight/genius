@@ -295,7 +295,7 @@ public final class InterfaceManagerCommonUtils {
     }
 
     public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, IfTunnel tunnel, BigInteger dpnId,
-        String interfaceName) {
+        String interfaceName) throws ExecutionException, InterruptedException {
         if (isTunnelWithoutIngressFlow(tunnel)) {
             return;
         }
