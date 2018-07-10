@@ -16,8 +16,8 @@ import java.util.concurrent.Executor;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.infrautils.utils.function.CheckedConsumer;
-import org.opendaylight.infrautils.utils.function.CheckedFunction;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
@@ -55,12 +55,12 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     @Override
     public <E extends Exception> ListenableFuture<Void>
-        callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner) {
+        callWithNewWriteOnlyTransactionAndSubmit(InterruptibleCheckedConsumer<WriteTransaction, E> txRunner) {
         return callWithNewWriteOnlyTransactionAndSubmit(txRunner, maxRetries);
     }
 
-    private <E extends Exception> ListenableFuture<Void>
-        callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner, final int tries) {
+    private <E extends Exception> ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
+        InterruptibleCheckedConsumer<WriteTransaction, E> txRunner, final int tries) {
 
         ListenableFuture<Void> future = Objects.requireNonNull(
                  delegate.callWithNewWriteOnlyTransactionAndSubmit(txRunner),
@@ -79,13 +79,13 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     @Override
     public <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedWriteTransaction<D>, E> txRunner) {
+            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner) {
         return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner, maxRetries);
     }
 
     private <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedWriteTransaction<D>, E> txRunner, int tries) {
+            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner, int tries) {
 
         return Objects.requireNonNull(delegate.callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
@@ -103,12 +103,12 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     @Override
     public <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
-            CheckedConsumer<ReadWriteTransaction, E> txRunner) {
+            InterruptibleCheckedConsumer<ReadWriteTransaction, E> txRunner) {
         return callWithNewReadWriteTransactionAndSubmit(txRunner, maxRetries);
     }
 
     private <E extends Exception> ListenableFuture<Void> callWithNewReadWriteTransactionAndSubmit(
-            CheckedConsumer<ReadWriteTransaction, E> txRunner, final int tries) {
+            InterruptibleCheckedConsumer<ReadWriteTransaction, E> txRunner, final int tries) {
         ListenableFuture<Void> future = Objects.requireNonNull(
                  delegate.callWithNewReadWriteTransactionAndSubmit(txRunner),
                 "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
@@ -124,13 +124,13 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     @Override
     public <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, CheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner) {
+            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner) {
         return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, maxRetries);
     }
 
     private <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner, int tries) {
+            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner, int tries) {
 
         return Objects.requireNonNull(delegate.callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
@@ -148,12 +148,13 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
     @Override
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, CheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner) {
+            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner) {
         return applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, maxRetries);
     }
 
     private <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, CheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner, int tries) {
+            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner,
+            int tries) {
         FluentFuture<R> future = Objects.requireNonNull(
                 delegate.applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
                 "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
