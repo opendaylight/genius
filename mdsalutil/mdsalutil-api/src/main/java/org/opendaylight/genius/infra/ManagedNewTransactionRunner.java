@@ -20,6 +20,8 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 import org.opendaylight.infrautils.utils.function.CheckedFunction;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 
 /**
  * Managed transactions utility to simplify handling of new transactions and ensure they are always closed.
@@ -60,7 +62,8 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     @Deprecated
     <E extends Exception>
-        ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txRunner);
+        ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
+            InterruptibleCheckedConsumer<WriteTransaction, E> txRunner);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link WriteTransaction}, and then submits that transaction and
@@ -93,7 +96,7 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     <D extends Datastore, E extends Exception>
         FluentFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedWriteTransaction<D>, E> txRunner);
+            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -122,7 +125,7 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     @Deprecated
     <E extends Exception> ListenableFuture<Void>
-        callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction, E> txRunner);
+        callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txRunner);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -155,7 +158,7 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     <D extends Datastore, E extends Exception>
         FluentFuture<Void> callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner);
+            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner);
 
     /**
      * Invokes a function with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -189,5 +192,5 @@ public interface ManagedNewTransactionRunner {
     @CheckReturnValue
     <D extends Datastore, E extends Exception, R>
         FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            CheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner);
+            InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner);
 }

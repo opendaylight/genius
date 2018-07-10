@@ -17,8 +17,8 @@ import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.infrautils.utils.function.CheckedConsumer;
-import org.opendaylight.infrautils.utils.function.CheckedFunction;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public <E extends Exception> ListenableFuture<Void>
-            callWithNewWriteOnlyTransactionAndSubmit(CheckedConsumer<WriteTransaction, E> txCnsmr) {
+            callWithNewWriteOnlyTransactionAndSubmit(InterruptibleCheckedConsumer<WriteTransaction, E> txCnsmr) {
         WriteTransaction realTx = broker.newWriteOnlyTransaction();
         WriteTransaction wrappedTx = new NonSubmitCancelableWriteTransaction(realTx);
         try {
@@ -60,7 +60,7 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedWriteTransaction<D>, E> txRunner) {
+            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner) {
         WriteTransaction realTx = broker.newWriteOnlyTransaction();
         TypedWriteTransaction<D> wrappedTx =
                 new TypedWriteTransactionImpl<>(datastoreType, realTx);
@@ -79,7 +79,7 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public <E extends Exception> ListenableFuture<Void>
-            callWithNewReadWriteTransactionAndSubmit(CheckedConsumer<ReadWriteTransaction, E> txRunner) {
+            callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         ReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
         try {
@@ -98,7 +98,7 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
-            CheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner) {
+            InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         TypedReadWriteTransaction<D> wrappedTx =
                 new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
@@ -117,7 +117,7 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     @Override
     @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
-            Class<D> datastoreType, CheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner) {
+            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         TypedReadWriteTransaction<D> wrappedTx =
                 new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
