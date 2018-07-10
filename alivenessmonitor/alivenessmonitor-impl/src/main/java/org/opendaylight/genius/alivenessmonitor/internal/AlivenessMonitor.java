@@ -23,7 +23,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
@@ -228,23 +227,21 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 .setPoolName(AlivenessMonitorConstants.MONITOR_IDPOOL_NAME)
                 .setLow(AlivenessMonitorConstants.MONITOR_IDPOOL_START)
                 .setHigh(AlivenessMonitorConstants.MONITOR_IDPOOL_SIZE).build();
-        ListenableFuture<RpcResult<CreateIdPoolOutput>> resultFuture = idManager.createIdPool(createPool);
-        Futures.addCallback(JdkFutureAdapters.listenInPoolThread(resultFuture),
-                new FutureCallback<RpcResult<CreateIdPoolOutput>>() {
-                    @Override
-                    public void onFailure(Throwable error) {
-                        LOG.error("Failed to create idPool for Aliveness Monitor Service", error);
-                    }
+        Futures.addCallback(idManager.createIdPool(createPool), new FutureCallback<RpcResult<CreateIdPoolOutput>>() {
+            @Override
+            public void onFailure(Throwable error) {
+                LOG.error("Failed to create idPool for Aliveness Monitor Service", error);
+            }
 
-                    @Override
-                    public void onSuccess(@Nonnull RpcResult<CreateIdPoolOutput> result) {
-                        if (result.isSuccessful()) {
-                            LOG.debug("Created IdPool for Aliveness Monitor Service");
-                        } else {
-                            LOG.error("RPC to create Idpool failed {}", result.getErrors());
-                        }
-                    }
-                }, callbackExecutorService);
+            @Override
+            public void onSuccess(@Nonnull RpcResult<CreateIdPoolOutput> result) {
+                if (result.isSuccessful()) {
+                    LOG.debug("Created IdPool for Aliveness Monitor Service");
+                } else {
+                    LOG.error("RPC to create Idpool failed {}", result.getErrors());
+                }
+            }
+        }, callbackExecutorService);
     }
 
     private int getUniqueId(final String idKey) {

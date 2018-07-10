@@ -13,7 +13,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
@@ -177,20 +176,19 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             ListenableFuture<RpcResult<SendArpRequestOutput>> arpReqFt = sendArpRequest(builder.build());
             final SettableFuture<RpcResult<GetMacOutput>> ft = SettableFuture.create();
 
-            Futures.addCallback(JdkFutureAdapters.listenInPoolThread(arpReqFt, threadPool),
-                    new FutureCallback<RpcResult<SendArpRequestOutput>>() {
-                        @Override
-                        public void onFailure(Throwable ex) {
-                            RpcResultBuilder<GetMacOutput> resultBuilder = RpcResultBuilder.<GetMacOutput>failed()
-                                    .withError(ErrorType.APPLICATION, ex.getMessage(), ex);
-                            ft.set(resultBuilder.build());
-                        }
+            Futures.addCallback(arpReqFt, new FutureCallback<RpcResult<SendArpRequestOutput>>() {
+                @Override
+                public void onFailure(Throwable ex) {
+                    RpcResultBuilder<GetMacOutput> resultBuilder = RpcResultBuilder.<GetMacOutput>failed()
+                            .withError(ErrorType.APPLICATION, ex.getMessage(), ex);
+                    ft.set(resultBuilder.build());
+                }
 
-                        @Override
-                        public void onSuccess(RpcResult<SendArpRequestOutput> result) {
-                            LOG.trace("Successfully sent the arp pkt out for ip {}", dstIpAddress);
-                        }
-                    }, MoreExecutors.directExecutor());
+                @Override
+                public void onSuccess(RpcResult<SendArpRequestOutput> result) {
+                    LOG.trace("Successfully sent the arp pkt out for ip {}", dstIpAddress);
+                }
+            }, MoreExecutors.directExecutor());
 
             macAddrs.put(dstIpAddress, ft);
             return ft;

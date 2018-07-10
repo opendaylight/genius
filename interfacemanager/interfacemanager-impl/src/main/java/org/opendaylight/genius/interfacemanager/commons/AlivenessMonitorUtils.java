@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.commons;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -130,8 +128,7 @@ public final class AlivenessMonitorUtils {
                     MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
 
                     ListenableFuture<RpcResult<MonitorStopOutput>> future = alivenessMonitorService.monitorStop(input);
-                    ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
-                            LOG, "Stop LLDP monitoring for {}", trunkInterface);
+                    ListenableFutures.addErrorLogging(future, LOG, "Stop LLDP monitoring for {}", trunkInterface);
 
                     removeMonitorIdInterfaceMap(tx, monitorId);
                     removeMonitorIdFromInterfaceMonitorIdMap(tx, interfaceName, monitorId);
@@ -208,8 +205,7 @@ public final class AlivenessMonitorUtils {
 
                 ListenableFuture<RpcResult<MonitorProfileDeleteOutput>> future =
                         alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
-                ListenableFutures.addErrorLogging(JdkFutureAdapters.listenInPoolThread(future),
-                        LOG, "Delete monitor profile {}", interfaceName);
+                ListenableFutures.addErrorLogging(future, LOG, "Delete monitor profile {}", interfaceName);
             }
         }
     }

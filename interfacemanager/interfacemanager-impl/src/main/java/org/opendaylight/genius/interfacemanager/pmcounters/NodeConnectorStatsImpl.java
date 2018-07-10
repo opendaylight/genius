@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.pmcounters;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.JdkFutureAdapters;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -21,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
@@ -31,7 +29,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -161,14 +158,11 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             for (BigInteger node : nodes) {
                 LOG.trace("Requesting AllNodeConnectorStatistics and flow table statistics for node - {}", node);
                 // Call RPC to Get NodeConnector Stats for node
-                Future<RpcResult<GetNodeConnectorStatisticsOutput>> ncStatsFuture = opendaylightDirectStatisticsService
-                        .getNodeConnectorStatistics(buildGetNodeConnectorStatisticsInput(node));
-                //Create ListenableFuture to get RPC result asynchronously
-                ListenableFuture<RpcResult<GetNodeConnectorStatisticsOutput>> ncStatsListenableFuture =
-                        JdkFutureAdapters.listenInPoolThread(ncStatsFuture);
+                ListenableFuture<RpcResult<GetNodeConnectorStatisticsOutput>> ncStatsFuture =
+                        opendaylightDirectStatisticsService.getNodeConnectorStatistics(
+                            buildGetNodeConnectorStatisticsInput(node));
 
-                Futures.addCallback(ncStatsListenableFuture, new
-                        FutureCallback<RpcResult<GetNodeConnectorStatisticsOutput>>() {
+                Futures.addCallback(ncStatsFuture, new FutureCallback<RpcResult<GetNodeConnectorStatisticsOutput>>() {
 
                     @Override
                     public void onFailure(@Nonnull Throwable error) {
@@ -191,14 +185,10 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                 }, MoreExecutors.directExecutor());
 
                 // Call RPC to Get flow stats for node
-                Future<RpcResult<GetFlowStatisticsOutput>>  flowStatsFuture = opendaylightDirectStatisticsService
-                        .getFlowStatistics(buildGetFlowStatisticsInput(node));
-                //Create ListenableFuture to get RPC result asynchronously
-                ListenableFuture<RpcResult<GetFlowStatisticsOutput>> flowStatsListenableFuture =
-                        JdkFutureAdapters.listenInPoolThread(flowStatsFuture);
+                ListenableFuture<RpcResult<GetFlowStatisticsOutput>> flowStatsFuture =
+                        opendaylightDirectStatisticsService.getFlowStatistics(buildGetFlowStatisticsInput(node));
 
-                Futures.addCallback(flowStatsListenableFuture, new
-                        FutureCallback<RpcResult<GetFlowStatisticsOutput>>() {
+                Futures.addCallback(flowStatsFuture, new FutureCallback<RpcResult<GetFlowStatisticsOutput>>() {
 
                     @Override
                     public void onFailure(@Nonnull Throwable error) {
