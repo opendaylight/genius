@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.List;
 
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -169,7 +170,8 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flow The flow.
      */
-    void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow);
+    void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Removes the given flow.
@@ -177,7 +179,8 @@ public interface IMdsalApiManager {
      * @param tx The transaction to use.
      * @param flowEntity The flow entity.
      */
-    void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity);
+    void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Removes the given flow.
@@ -187,7 +190,8 @@ public interface IMdsalApiManager {
      * @param flowKey The flow key.
      * @param tableId The table identifier.
      */
-    void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey, short tableId);
+    void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey, short tableId)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Removes the given flow.
@@ -197,7 +201,8 @@ public interface IMdsalApiManager {
      * @param flowId The flow identifier.
      * @param tableId The table identifier.
      */
-    void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId, short tableId);
+    void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId, short tableId)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Remove a Flow using batched transaction.
@@ -319,7 +324,8 @@ public interface IMdsalApiManager {
      * @param groupEntity The group to remove.
      * @deprecated Use {@link #removeGroup(TypedReadWriteTransaction, GroupEntity)}.
      */
-    void removeGroup(TypedReadWriteTransaction<Configuration> tx, GroupEntity groupEntity);
+    void removeGroup(TypedReadWriteTransaction<Configuration> tx, GroupEntity groupEntity)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Remove a group using the given transaction.
@@ -328,7 +334,8 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param group The group to remove.
      */
-    void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group);
+    void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Remove a group using the given transaction.
@@ -337,7 +344,8 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param groupId The group identifier of the group to remove.
      */
-    void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId);
+    void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId)
+        throws ExecutionException, InterruptedException;
 
     /**
      * Remove a Group using batched transaction
@@ -483,6 +491,12 @@ public interface IMdsalApiManager {
     @Deprecated
     void addBucketToTx(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx);
 
+    void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId, Bucket bucket)
+            throws ExecutionException, InterruptedException;
+
     @Deprecated
     void removeBucketToTx(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx);
+
+    void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId, long bucketId)
+        throws ExecutionException, InterruptedException;
 }

@@ -38,6 +38,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
@@ -677,30 +678,29 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity)
+            throws ExecutionException, InterruptedException {
         removeFlow(tx, flowEntity.getDpnId(), flowEntity.getFlowId(), flowEntity.getTableId());
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow)
+            throws ExecutionException, InterruptedException {
         removeFlow(tx, dpId, flow.key(), flow.getTableId());
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId, short tableId) {
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId, short tableId)
+            throws ExecutionException, InterruptedException {
         removeFlow(tx, dpId, new FlowKey(new FlowId(flowId)), tableId);
     }
 
     @Override
     public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey,
-        short tableId) {
+            short tableId) throws ExecutionException, InterruptedException {
         InstanceIdentifier<Flow> flowInstanceIdentifier = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
-        try {
-            if (tx.read(flowInstanceIdentifier).get().isPresent()) {
-                tx.delete(flowInstanceIdentifier);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Error reading " + flowInstanceIdentifier + " from configuration", e);
+        if (tx.read(flowInstanceIdentifier).get().isPresent()) {
+            tx.delete(flowInstanceIdentifier);
         }
     }
 
@@ -730,27 +730,26 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, GroupEntity groupEntity) {
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, GroupEntity groupEntity)
+            throws ExecutionException, InterruptedException {
         removeGroup(tx, groupEntity.getDpnId(), groupEntity.getGroupId());
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group)
+            throws ExecutionException, InterruptedException {
         removeGroup(tx, dpId, group.getGroupId().getValue());
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId) {
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId)
+            throws ExecutionException, InterruptedException {
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-        try {
-            if (tx.read(groupInstanceId).get().isPresent()) {
-                tx.delete(groupInstanceId);
-            } else {
-                LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Error reading " + groupInstanceId + " from configuration", e);
+        if (tx.read(groupInstanceId).get().isPresent()) {
+            tx.delete(groupInstanceId);
+        } else {
+            LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
         }
     }
 
@@ -914,8 +913,40 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
+    public void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId, Bucket bucket)
+            throws ExecutionException, InterruptedException {
+        Node nodeDpn = buildDpnNode(dpId);
+        if (groupExists(tx, nodeDpn, groupId)) {
+            InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
+                bucket.getBucketId().getValue(), nodeDpn);
+            tx.put(bucketInstanceId, bucket);
+        }
+    }
+
+    private void addBucket(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
+        Node nodeDpn = buildDpnNode(dpId);
+        if (groupExists(nodeDpn, groupId)) {
+            InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
+                bucket.getBucketId().getValue(), nodeDpn);
+            tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
+        }
+    }
+
+    @Override
     public void removeBucketToTx(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
         deleteBucket(dpId, groupId, bucketId, tx);
+    }
+
+    @Override
+    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId, long bucketId)
+            throws ExecutionException, InterruptedException {
+        Node nodeDpn = buildDpnNode(dpId);
+        if (groupExists(tx, nodeDpn, groupId)) {
+            InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId, bucketId, nodeDpn);
+            tx.delete(bucketInstanceId);
+        } else {
+            LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
+        }
     }
 
     private void deleteBucket(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
@@ -925,15 +956,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             tx.delete(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
         } else {
             LOG.debug("Group {} does not exist for dpn {}", groupId, dpId);
-        }
-    }
-
-    private void addBucket(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
-        Node nodeDpn = buildDpnNode(dpId);
-        if (groupExists(nodeDpn, groupId)) {
-            InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
-                    bucket.getBucketId().getValue(), nodeDpn);
-            tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
         }
     }
 
@@ -950,6 +972,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             LOG.warn("Exception while reading group {} for Node {}", groupId, nodeDpn.key());
         }
         return false;
+    }
+
+    private boolean groupExists(TypedReadTransaction<Configuration> tx, Node nodeDpn, long groupId)
+           throws ExecutionException, InterruptedException {
+        return tx.read(buildGroupInstanceIdentifier(groupId, nodeDpn)).get().isPresent();
     }
 
     private InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {
