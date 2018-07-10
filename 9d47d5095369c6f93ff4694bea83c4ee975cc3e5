@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1f4ba3dc_f636a048",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-07-10T02:14:27Z",
+      "side": 1,
+      "message": "I am thinking of delaying the listeners registration after the EOS is elected. During cluster reboot, this can be an issue when south bound events occur even before EOS is registered. \nWhat do you think? This can be a different patch though.",
+      "parentUuid": "a796170f_9e0ac69b",
+      "revId": "9d47d5095369c6f93ff4694bea83c4ee975cc3e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "320d2179_3063ae78",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 6
