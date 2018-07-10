@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "b66e1553_dd4b89cf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-07-10T03:26:44Z",
+      "side": 1,
+      "message": "Agree and that would be a better approach. I think I had done something similar in a d/s patch that I had. It was fix for an issue where EOS registration wasn\u0027t withdrawn when service went into error. Maybe you can use that and push it upstream?",
+      "parentUuid": "1f4ba3dc_f636a048",
+      "revId": "9d47d5095369c6f93ff4694bea83c4ee975cc3e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "320d2179_3063ae78",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 6
