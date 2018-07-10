@@ -48,7 +48,6 @@ public class TerminationPointStateListener extends
     private final JobCoordinator coordinator;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
-    private final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler;
 
     @Inject
     public TerminationPointStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
@@ -65,7 +64,6 @@ public class TerminationPointStateListener extends
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.dataBroker = dataBroker;
-        this.interfaceServiceRecoveryHandler = interfaceServiceRecoveryHandler;
         registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
