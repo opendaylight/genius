@@ -351,7 +351,7 @@ public final class DirectTunnelUtils {
     }
 
     public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpnId,
-        String interfaceName) {
+        String interfaceName) throws ExecutionException, InterruptedException {
         LOG.debug("Removing tunnel ingress flow for {}", interfaceName);
         String flowRef =
             getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);

@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -132,7 +133,8 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private void removeTunnelConfiguration(ParentRefs parentRefs, String interfaceName, IfTunnel ifTunnel,
-            WriteTransaction operTx, TypedReadWriteTransaction<Configuration> confTx) {
+            WriteTransaction operTx, TypedReadWriteTransaction<Configuration> confTx)
+            throws ExecutionException, InterruptedException {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
         BigInteger dpId = null;
         if (parentRefs != null) {
@@ -195,7 +197,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> confTx,
-        String interfaceName, IfTunnel ifTunnel, BigInteger dpId) {
+        String interfaceName, IfTunnel ifTunnel, BigInteger dpId) throws ExecutionException, InterruptedException {
         NodeConnectorId ncId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName,
                 interfaceManagerCommonUtils);
         if (ncId == null) {
@@ -268,7 +270,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private void removeLogicalTunnelSelectGroup(TypedReadWriteTransaction<Configuration> tx,
-        BigInteger srcDpnId, String interfaceName, int lportTag) {
+        BigInteger srcDpnId, String interfaceName, int lportTag) throws ExecutionException, InterruptedException {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} removed for {} srcDpnId {}",
                 groupId, interfaceName, srcDpnId);
@@ -276,7 +278,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag, WriteTransaction operTx,
-        TypedReadWriteTransaction<Configuration> confTx) {
+        TypedReadWriteTransaction<Configuration> confTx) throws ExecutionException, InterruptedException {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);
         IfmUtil.unbindService(dataBroker, coordinator, ifaceName,
                 FlowBasedServicesUtils.buildDefaultServiceId(ifaceName));

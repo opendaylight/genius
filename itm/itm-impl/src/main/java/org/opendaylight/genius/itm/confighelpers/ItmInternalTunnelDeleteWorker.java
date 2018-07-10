@@ -474,7 +474,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, String interfaceName,
-        BigInteger dpId) {
+        BigInteger dpId) throws ExecutionException, InterruptedException {
         directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
     }
 
