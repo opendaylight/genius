@@ -229,7 +229,7 @@ public class DataTreeEventCallbackRegistrarTest {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void testExceptionInCallbackMustBeLogged() throws TransactionCommitFailedException, InterruptedException {
-        logCaptureRule.expectLastErrorMessageContains("TestListener");
+        logCaptureRule.expectLastErrorMessageContains("Error notifying listener");
 
         DataBroker spiedDataBroker = spy(db);
         final DataTreeChangeListener mockListener = mock(DataTreeChangeListener.class, "TestListener");
