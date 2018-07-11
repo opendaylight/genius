@@ -82,8 +82,8 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
 
     @Override
     public void remove(@Nonnull InstanceIdentifier<FlowCapableNodeConnector> key,
-                       @Nonnull FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        String portName = flowCapableNodeConnectorOld.getName();
+                       @Nonnull FlowCapableNodeConnector flowCapableNodeConnector) {
+        String portName = flowCapableNodeConnector.getName();
         LOG.debug("InterfaceInventoryState Remove for {}", portName);
         // ITM Direct Tunnels Return if its not tunnel port and if its not Internal
         if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
@@ -103,16 +103,16 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         if (!entityOwner()) {
             return;
         }
-        LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
+        LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnector);
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-        remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName);
+        remove(nodeConnectorId, flowCapableNodeConnector, portName);
     }
 
-    private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
+    private void remove(NodeConnectorId nodeConnectorId,
                         FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
         LOG.debug("InterfaceInventoryState REMOVE for {}", portName);
-        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(nodeConnectorIdNew,
-                nodeConnectorIdOld, fcNodeConnectorNew, portName);
+        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(nodeConnectorId,
+                fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, portStateRemoveWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
@@ -273,22 +273,21 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         return !dpnTepInterfaceInfo.isMonitoringEnabled() && modifyOpState(dpnTepInterfaceInfo, opStateModified);
     }
 
-    private List<ListenableFuture<Void>> removeInterfaceStateConfiguration(NodeConnectorId nodeConnectorIdNew,
-        NodeConnectorId nodeConnectorIdOld, String interfaceName, FlowCapableNodeConnector fcNodeConnectorOld) {
+    private List<ListenableFuture<Void>> removeInterfaceStateConfiguration(NodeConnectorId nodeConnectorId,
+                                                                           String interfaceName,
+                                                                           FlowCapableNodeConnector
+                                                                                   flowCapableNodeConnector) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-
-        NodeConnectorId nodeConnectorId = (nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld))
-                ? nodeConnectorIdOld : nodeConnectorIdNew;
 
         BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
         // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
         // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
         // scenario, and should be treated as port removal.
-        if (fcNodeConnectorOld.getReason() != PortReason.Delete) {
+        if (flowCapableNodeConnector.getReason() != PortReason.Delete) {
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
-                tx -> updateInterfaceStateOnNodeRemove(tx, interfaceName, fcNodeConnectorOld)));
+                tx -> updateInterfaceStateOnNodeRemove(tx, interfaceName, flowCapableNodeConnector)));
         } else {
             LOG.debug("removing interface state for interface: {}", interfaceName);
             directTunnelUtils.deleteTunnelStateEntry(interfaceName);
@@ -362,17 +361,14 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
     }
 
     private class InterfaceStateRemoveWorker implements Callable {
-        private final NodeConnectorId nodeConnectorIdNew;
-        private final NodeConnectorId nodeConnectorIdOld;
-        private final FlowCapableNodeConnector fcNodeConnectorOld;
+        private final NodeConnectorId nodeConnectorId;
+        private final FlowCapableNodeConnector flowCapableNodeConnector;
         private final String interfaceName;
 
-        InterfaceStateRemoveWorker(NodeConnectorId nodeConnectorIdNew,
-            NodeConnectorId nodeConnectorIdOld, FlowCapableNodeConnector fcNodeConnectorOld,
-            String interfaceName) {
-            this.nodeConnectorIdNew = nodeConnectorIdNew;
-            this.nodeConnectorIdOld = nodeConnectorIdOld;
-            this.fcNodeConnectorOld = fcNodeConnectorOld;
+        InterfaceStateRemoveWorker(NodeConnectorId nodeConnectorId, FlowCapableNodeConnector flowCapableNodeConnector,
+                                   String interfaceName) {
+            this.nodeConnectorId = nodeConnectorId;
+            this.flowCapableNodeConnector = flowCapableNodeConnector;
             this.interfaceName = interfaceName;
         }
 
@@ -380,15 +376,13 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         public Object call() {
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            return removeInterfaceStateConfiguration(nodeConnectorIdNew, nodeConnectorIdOld, interfaceName,
-                    fcNodeConnectorOld);
+            return removeInterfaceStateConfiguration(nodeConnectorId, interfaceName, flowCapableNodeConnector);
         }
 
         @Override
         public String toString() {
-            return "InterfaceStateRemoveWorker{nodeConnectorIdNew=" + nodeConnectorIdNew + ", nodeConnectorIdOld="
-                    + nodeConnectorIdOld + ", fcNodeConnectorOld=" + fcNodeConnectorOld + ", interfaceName='"
-                    + interfaceName + '\'' + '}';
+            return "InterfaceStateRemoveWorker{nodeConnectorId=" + nodeConnectorId + ", fcNodeConnector"
+                    + flowCapableNodeConnector + ", interfaceName='" + interfaceName + '\'' + '}';
         }
     }
 }
