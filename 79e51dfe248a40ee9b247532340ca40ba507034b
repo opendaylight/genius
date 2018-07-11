@@ -16,6 +16,24 @@
       "revId": "79e51dfe248a40ee9b247532340ca40ba507034b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b45d4d42_491ccffe",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 702,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-07-11T07:25:54Z",
+      "side": 0,
+      "message": "I added it when I wrote the new version of removeFlow() to preserve the original behaviour (of wrapping exceptions in a RuntimeException).\n\nhttps://git.opendaylight.org/gerrit/73882 makes NetVirt compatible with this patch (so it needs to go in first).\n\nhttps://git.opendaylight.org/gerrit/73884 in InfraUtils and https://git.opendaylight.org/gerrit/73885 in Genius provide a more general fix for exception propagation.",
+      "parentUuid": "5037beda_ec73bbce",
+      "revId": "79e51dfe248a40ee9b247532340ca40ba507034b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
