@@ -19,7 +19,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -30,7 +29,6 @@ import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -42,9 +40,6 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -123,10 +118,6 @@ public final class OvsInterfaceConfigAddHelper {
                 .getInterfaceState(parentRefs.getParentInterface());
 
         interfaceManagerCommonUtils.addStateEntry(operTx, interfaceNew.getName(), futures, ifState);
-
-        VlanMemberStateAddWorker vlanMemberStateAddWorker = new VlanMemberStateAddWorker(txRunner,
-                interfaceManagerCommonUtils, interfaceMetaUtils, interfaceNew.getName(), ifState);
-        coordinator.enqueueJob(interfaceNew.getName(), vlanMemberStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
     private void addTunnelConfiguration(ParentRefs parentRefs, Interface interfaceNew, IfTunnel ifTunnel,
@@ -223,55 +214,6 @@ public final class OvsInterfaceConfigAddHelper {
                     }, MoreExecutors.directExecutor());
                 }
             }
-        }
-    }
-
-    private static class VlanMemberStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
-        private final ManagedNewTransactionRunner txRunner;
-        private final InterfaceMetaUtils interfaceMetaUtils;
-        private final String interfaceName;
-        private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
-        private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState;
-
-        VlanMemberStateAddWorker(ManagedNewTransactionRunner txRunner,
-                InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-                InterfaceMetaUtils interfaceMetaUtils, String interfaceName,
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                        .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
-            this.txRunner = txRunner;
-            this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-            this.interfaceMetaUtils = interfaceMetaUtils;
-            this.interfaceName = interfaceName;
-            this.ifState = ifState;
-        }
-
-        @Override
-        public List<ListenableFuture<Void>> call() {
-            InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
-            InterfaceParentEntry interfaceParentEntry = interfaceMetaUtils
-                    .getInterfaceParentEntryFromConfigDS(interfaceParentEntryKey);
-            if (interfaceParentEntry == null || interfaceParentEntry.getInterfaceChildEntry() == null) {
-                return null;
-            }
-
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
-            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
-                // FIXME: If the no. of child entries exceeds 100, perform txn
-                // updates in batches of 100.
-                for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
-                    LOG.debug("adding interface state for vlan trunk member {}",
-                            interfaceChildEntry.getChildInterface());
-                    interfaceManagerCommonUtils.addStateEntry(tx, interfaceChildEntry.getChildInterface(),
-                        futures, ifState);
-                }
-            }));
-            return futures;
-        }
-
-        @Override
-        public String toString() {
-            return "VlanMemberStateAddWorker [interfaceName=" + interfaceName + ", ifState=" + ifState + "]";
         }
     }
 
