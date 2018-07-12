@@ -46,6 +46,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="serviceRecoveryRegistry"
                interface="org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry"/>
 
+    <reference id="dataTreeEventCallbackRegistrar"
+               interface="org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar"/>
+
     <reference id="hwvtepNodeHACache"
              interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
 
