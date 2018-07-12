@@ -8,15 +8,19 @@
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -45,25 +49,32 @@ public class OvsVlanMemberConfigAddHelper {
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> interfaceManagerCommonUtils.createInterfaceChildEntry(tx, parentRefs.getParentInterface(),
                     interfaceNew.getName())));
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+            tx -> addVlanMemberState(tx, parentRefs, interfaceNew)));
+        return futures;
+    }
 
+    public List<ListenableFuture<Void>> addVlanMemberState(TypedWriteTransaction<Datastore.Operational> tx,
+                                                     ParentRefs parentRefs, Interface interfaceNew) {
         InterfaceKey interfaceKey = new InterfaceKey(parentRefs.getParentInterface());
         Interface ifaceParent = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
         if (ifaceParent == null) {
             LOG.info("Parent Interface: {} not found when adding child interface: {}", parentRefs.getParentInterface(),
                     interfaceNew.getName());
-            return futures;
+            return Collections.emptyList();
         }
 
         IfL2vlan parentIfL2Vlan = ifaceParent.augmentation(IfL2vlan.class);
         if (parentIfL2Vlan == null || parentIfL2Vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Trunk) {
             LOG.error("Parent Interface: {} not of trunk Type when adding trunk-member: {}", ifaceParent, interfaceNew);
-            return futures;
+            return Collections.emptyList();
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface());
-        interfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), futures, ifState);
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        interfaceManagerCommonUtils.addStateEntry(tx, interfaceNew.getName(), futures, ifState);
         return futures;
     }
 }
