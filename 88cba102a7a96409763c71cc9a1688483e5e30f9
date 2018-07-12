@@ -16,6 +16,24 @@
       "revId": "88cba102a7a96409763c71cc9a1688483e5e30f9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bfc9e965_11fab5e0",
+        "filename": "features/odl-genius/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-07-12T01:46:33Z",
+      "side": 1,
+      "message": "now it is failing verification and distribution both",
+      "parentUuid": "c49c4a86_9576ba9a",
+      "revId": "88cba102a7a96409763c71cc9a1688483e5e30f9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
