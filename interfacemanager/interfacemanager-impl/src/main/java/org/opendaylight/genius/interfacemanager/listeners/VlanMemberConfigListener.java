@@ -12,7 +12,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers.OvsVlanMemberConfigUpdateHelper;
@@ -35,19 +39,24 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     private final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper;
     private final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper;
     private final OvsVlanMemberConfigUpdateHelper ovsVlanMemberConfigUpdateHelper;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public VlanMemberConfigListener(final DataBroker dataBroker,
             final JobCoordinator coordinator,
             final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
             final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper,
-            final OvsVlanMemberConfigUpdateHelper ovsVlanMemberConfigUpdateHelper) {
+            final OvsVlanMemberConfigUpdateHelper ovsVlanMemberConfigUpdateHelper,
+            final DataTreeEventCallbackRegistrar eventCallbacks) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(Interfaces.class).child(Interface.class));
         this.coordinator = coordinator;
         this.ovsVlanMemberConfigAddHelper = ovsVlanMemberConfigAddHelper;
         this.ovsVlanMemberConfigRemoveHelper = ovsVlanMemberConfigRemoveHelper;
         this.ovsVlanMemberConfigUpdateHelper = ovsVlanMemberConfigUpdateHelper;
+        this.eventCallbacks = eventCallbacks;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @Override
@@ -93,6 +102,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
                 && IfL2vlan.L2vlanMode.TrunkMember == ifL2vlanOld.getL2vlanMode()) {
             // Trunk subport remove use case
             removeVlanMember(originalInterface);
+            return;
         } else if (IfL2vlan.L2vlanMode.TrunkMember != ifL2vlanNew.getL2vlanMode()) {
             return;
         }
@@ -138,7 +148,15 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
             LOG.error("Attempt to add Vlan Trunk-Member {} with same parent interface name.", added);
             return;
         }
-        coordinator.enqueueJob(lowerLayerIf, () -> ovsVlanMemberConfigAddHelper.addConfiguration(parentRefs, added),
-                               IfmConstants.JOB_MAX_RETRIES);
+
+        LOG.info("registering callback on interface-state for {} for proceeding with "
+                + "vlan member configuration for interface {}", lowerLayerIf, added.getName());
+        eventCallbacks.onAddOrUpdate(LogicalDatastoreType.OPERATIONAL,
+                IfmUtil.buildStateInterfaceId(parentRefs.getParentInterface()), (unused, alsoUnused) -> {
+                LOG.info("parent interface configuration {} detected for l2vlan-member {},"
+                    + "proceeding with state creation", parentRefs.getParentInterface(), added.getName());
+                ovsVlanMemberConfigAddHelper.addConfiguration(parentRefs, added);
+                return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+            });
     }
 }

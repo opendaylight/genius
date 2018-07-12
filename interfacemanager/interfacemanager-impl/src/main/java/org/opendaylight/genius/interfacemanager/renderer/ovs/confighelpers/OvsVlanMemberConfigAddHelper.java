@@ -61,7 +61,7 @@ public class OvsVlanMemberConfigAddHelper {
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface());
         interfaceManagerCommonUtils.addStateEntry(interfaceNew.getName(), futures, ifState);
         return futures;
