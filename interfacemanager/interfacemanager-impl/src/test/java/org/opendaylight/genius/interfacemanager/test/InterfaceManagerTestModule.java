@@ -14,11 +14,13 @@ import java.net.UnknownHostException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
@@ -76,7 +78,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
         bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
-
+        bind(DataTreeEventCallbackRegistrar.class).toInstance(mock(DataTreeEventCallbackRegistrar.class));
+        bind(ManagedNewTransactionRunner.class).toInstance(mock(ManagedNewTransactionRunner.class));
         bind(DataImportBootReady.class).annotatedWith(OsgiService.class).toInstance(new DataImportBootReady() {});
 
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
