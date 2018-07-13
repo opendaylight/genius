@@ -692,7 +692,8 @@ public final class FlowBasedServicesUtils {
                                              DataBroker dataBroker, String interfaceName,
                                              BoundServicesState interfaceBoundServicesState) {
         LOG.info("adding bound-service state information for interface : {}, service-mode : {}",
-            interfaceBoundServicesState.getInterfaceName(), interfaceBoundServicesState.getServiceMode().getName());
+            interfaceBoundServicesState.getInterfaceName(),
+                interfaceBoundServicesState.getServiceMode().getSimpleName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
@@ -705,7 +706,7 @@ public final class FlowBasedServicesUtils {
                                                  DataBroker dataBroker,
                                                  String interfaceName, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("remove bound-service state information for interface : {}, service-mode : {}", interfaceName,
-            serviceMode.getName());
+            serviceMode.getSimpleName());
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
         WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();

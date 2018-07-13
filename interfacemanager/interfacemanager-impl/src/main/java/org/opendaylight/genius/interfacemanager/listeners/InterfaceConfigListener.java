@@ -103,20 +103,6 @@ public class InterfaceConfigListener
         return InterfaceConfigListener.this;
     }
 
-    private void updateInterfaceParentRefs(Interface iface) {
-        String ifName = iface.getName();
-        // try to acquire the parent interface name from Southbound
-        String parentRefName = interfaceMgrProvider.getParentRefNameForInterface(ifName);
-        if (parentRefName == null) {
-            LOG.debug("parent refs not specified for {}, failed acquiring it from southbound", ifName);
-            return;
-        }
-        LOG.debug("retrieved parent ref {} for interface {} from southbound, updating parentRef in datastore",
-                parentRefName, ifName);
-        interfaceMgrProvider.updateInterfaceParentRef(ifName, parentRefName, false);
-        return;
-    }
-
     @Override
     protected void remove(InstanceIdentifier<Interface> key, Interface interfaceOld) {
         interfaceManagerCommonUtils.removeFromInterfaceCache(interfaceOld);
@@ -148,10 +134,10 @@ public class InterfaceConfigListener
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
+
         LOG.debug("Received Interface Update Event: {}, {}, {}", key, interfaceOld, interfaceNew);
         ParentRefs parentRefs = interfaceNew.getAugmentation(ParentRefs.class);
-        if (parentRefs == null || parentRefs.getParentInterface() == null
-                && !InterfaceManagerCommonUtils.isTunnelInterface(interfaceNew)) {
+        if (parentRefs == null || parentRefs.getParentInterface() == null) {
             // If parentRefs are missing, try to find a matching parent and
             // update - this will trigger another DCN
             updateInterfaceParentRefs(interfaceNew);
@@ -195,6 +181,23 @@ public class InterfaceConfigListener
                 interfaceNew.getName());
         String synchronizationKey = getSynchronizationKey(interfaceNew, parentRefs);
         coordinator.enqueueJob(synchronizationKey, configWorker, IfmConstants.JOB_MAX_RETRIES);
+
+    }
+
+    private void updateInterfaceParentRefs(Interface iface) {
+        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+            return; // update of parent refs is needed only for vm ports, and not tunnels
+        }
+        String ifName = iface.getName();
+        // try to acquire the parent interface name from Southbound
+        String parentRefName = interfaceMgrProvider.getParentRefNameForInterface(ifName);
+        if (parentRefName == null) {
+            LOG.debug("parent refs not specified for {}, failed acquiring it from southbound", ifName);
+            return;
+        }
+        LOG.debug("retrieved parent ref {} for interface {} from southbound, updating parentRef in datastore",
+                  parentRefName, ifName);
+        interfaceMgrProvider.updateInterfaceParentRef(ifName, parentRefName, false);
     }
 
     private String getSynchronizationKey(Interface theInterface, ParentRefs theParentRefs) {
