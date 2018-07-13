@@ -180,7 +180,7 @@ Interface service binding config
 
 Yang Data Model
 `odl-interface-service-bindings.yang <https://github.com/opendaylight/genius/blob/master/interfacemanager/interfacemanager-api/src/main/yang/odl-interface-service-bindings.yang>`__
-contains the service binding configuration daatmodel.
+contains the service binding configuration datamodel.
 
 An application can bind services to a particular interface by
 configuring MD-SAL data node at path /config/interface-service-binding.
