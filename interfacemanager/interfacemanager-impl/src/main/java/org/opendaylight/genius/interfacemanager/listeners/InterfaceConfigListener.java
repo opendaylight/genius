@@ -123,8 +123,7 @@ public class InterfaceConfigListener
         LOG.debug("Received Interface Update Event: {}, {}, {}", instanceIdentifier, originalInterface,
                   updatedInterface);
         ParentRefs parentRefs = updatedInterface.augmentation(ParentRefs.class);
-        if (parentRefs == null || parentRefs.getParentInterface() == null
-                && !InterfaceManagerCommonUtils.isTunnelInterface(updatedInterface)) {
+        if (parentRefs == null || parentRefs.getParentInterface() == null) {
             // If parentRefs are missing, try to find a matching parent and
             // update - this will trigger another DCN
             updateInterfaceParentRefs(updatedInterface);
@@ -169,6 +168,9 @@ public class InterfaceConfigListener
     }
 
     private void updateInterfaceParentRefs(Interface iface) {
+        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+            return; // update of parent refs is needed only for vm ports, and not tunnels
+        }
         String ifName = iface.getName();
         // try to acquire the parent interface name from Southbound
         String parentRefName = interfaceMgrProvider.getParentRefNameForInterface(ifName);
