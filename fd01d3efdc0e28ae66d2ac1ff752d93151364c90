@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6430a212_1220355e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/confighelpers/OvsInterfaceConfigAddHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-13T01:41:13Z",
+      "side": 0,
+      "message": "We no longer have to iterate over the list of vlan members while configuring trunks, as we have deterministic way of making the member listener itself process the member configuration. This avoids a lot of race conditions and complexities",
+      "revId": "fd01d3efdc0e28ae66d2ac1ff752d93151364c90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

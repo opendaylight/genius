@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45d96a22_cae02cde",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/VlanMemberConfigListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-13T01:41:13Z",
+      "side": 1,
+      "message": "Vishal, can you check if this return looks right? Was there any specific reason why it was proceeding even after the delete?",
+      "revId": "43ef5f86580a7d0d2f595ad1b2d927067aa12e5f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
