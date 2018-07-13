@@ -16,6 +16,24 @@
       "revId": "3c8a156a19d735a05aaf247bc1d1d20ccbde8f14",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baedca2e_98667e19",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-07-13T11:19:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b73ec9a_84a8c567",
+      "revId": "3c8a156a19d735a05aaf247bc1d1d20ccbde8f14",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
