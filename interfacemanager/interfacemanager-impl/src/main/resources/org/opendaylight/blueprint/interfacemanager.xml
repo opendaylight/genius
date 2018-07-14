@@ -46,6 +46,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <reference id="serviceRecoveryRegistry"
                interface="org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry"/>
 
+    <reference id="dataTreeEventCallbackRegistrar"
+               interface="org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar"/>
+
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
     <odl:clustered-app-config id="ifmConfig"
