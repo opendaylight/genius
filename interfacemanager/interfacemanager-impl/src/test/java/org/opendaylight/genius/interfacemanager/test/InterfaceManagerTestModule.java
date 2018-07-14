@@ -13,9 +13,11 @@ import java.net.UnknownHostException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.listeners.CacheBridgeEntryConfigListener;
@@ -63,7 +65,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(DataBroker.class).toInstance(dataBroker);
 
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
-
+        bind(DataTreeEventCallbackRegistrar.class).toInstance(mock(DataTreeEventCallbackRegistrar.class));
+        bind(ManagedNewTransactionRunner.class).toInstance(mock(ManagedNewTransactionRunner.class));
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
         bind(IdManagerService.class).to(IdManager.class);
