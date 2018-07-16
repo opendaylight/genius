@@ -119,11 +119,14 @@ public final class IfmUtil {
             .build();
 
     public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
+        return new BigInteger(getDpnStringFromNodeConnectorId(portId));
+    }
+
+    public static String getDpnStringFromNodeConnectorId(NodeConnectorId portId) {
         /*
          * NodeConnectorId is of form 'openflow:dpnid:portnum'
          */
-        String[] split = portId.getValue().split(IfmConstants.OF_URI_SEPARATOR);
-        return new BigInteger(split[1]);
+        return portId.getValue().split(IfmConstants.OF_URI_SEPARATOR)[1];
     }
 
     public static BigInteger getDpnFromInterface(

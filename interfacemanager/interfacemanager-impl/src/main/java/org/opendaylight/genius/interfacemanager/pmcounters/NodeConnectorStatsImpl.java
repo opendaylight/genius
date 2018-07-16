@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,8 +68,8 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     private static final Logger LOG = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
 
     private static final int THREAD_POOL_SIZE = 4;
-    private final Set<BigInteger> nodes = ConcurrentHashMap.newKeySet();
-    Map<BigInteger, Set<Counter>> metricsCountersPerNodeMap = new ConcurrentHashMap<>();
+    private final Set<String> nodes = ConcurrentHashMap.newKeySet();
+    private final Map<String, Set<Counter>> metricsCountersPerNodeMap = new ConcurrentHashMap<>();
     private final OpendaylightDirectStatisticsService opendaylightDirectStatisticsService;
     private final ScheduledExecutorService portStatExecutorService;
     private final EntityOwnershipUtils entityOwnershipUtils;
@@ -155,7 +154,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Requesting port stats - {}");
             }
-            for (BigInteger node : nodes) {
+            for (String node : nodes) {
                 LOG.trace("Requesting AllNodeConnectorStatistics and flow table statistics for node - {}", node);
                 // Call RPC to Get NodeConnector Stats for node
                 ListenableFuture<RpcResult<GetNodeConnectorStatisticsOutput>> ncStatsFuture =
@@ -230,20 +229,20 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         /**
          * This method builds GetNodeConnectorStatisticsInput which is input for NodeConnectorStatistics RPC.
          */
-        private GetNodeConnectorStatisticsInput buildGetNodeConnectorStatisticsInput(BigInteger dpId) {
+        private GetNodeConnectorStatisticsInput buildGetNodeConnectorStatisticsInput(String dpId) {
             return new GetNodeConnectorStatisticsInputBuilder()
                     .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                            .child(Node.class, new NodeKey(new NodeId("openflow:" + dpId.toString()))).build()))
+                            .child(Node.class, new NodeKey(new NodeId("openflow:" + dpId))).build()))
                     .build();
         }
 
         /**
          * This method builds GetFlowStatisticsInput which is input for FlowStatistics RPC.
          */
-        private GetFlowStatisticsInput buildGetFlowStatisticsInput(BigInteger dpId) {
+        private GetFlowStatisticsInput buildGetFlowStatisticsInput(String dpId) {
             return new GetFlowStatisticsInputBuilder()
                     .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                            .child(Node.class, new NodeKey(new NodeId("openflow:" + dpId.toString()))).build()))
+                            .child(Node.class, new NodeKey(new NodeId("openflow:" + dpId))).build()))
                     .build();
         }
     }
@@ -264,7 +263,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      * - set counter with values fetched from NodeConnectorStatistics
      */
     private void processNodeConnectorStatistics(GetNodeConnectorStatisticsOutput nodeConnectorStatisticsOutput,
-                                                BigInteger dpid) {
+                                                String dpid) {
         String port = "";
         String portUuid = "";
         List<NodeConnectorStatisticsAndPortNumberMap> ncStatsAndPortMapList = nodeConnectorStatisticsOutput
@@ -272,10 +271,10 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         // Parse NodeConnectorStatistics and create/update counters for them
         for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : ncStatsAndPortMapList) {
             NodeConnectorId nodeConnector = ncStatsAndPortMap.getNodeConnectorId();
-            LOG.trace("Create/update metric counter for NodeConnector: {} of node: {}", nodeConnector, dpid.toString());
+            LOG.trace("Create/update metric counter for NodeConnector: {} of node: {}", nodeConnector, dpid);
             port = nodeConnector.getValue();
             // update port name as per port name maintained in portNameCache
-            String portNameInCache = "openflow" + ":" + dpid.toString() + ":" + port;
+            String portNameInCache = "openflow" + ":" + dpid + ":" + port;
             java.util.Optional<String> portName = portNameCache.get(portNameInCache);
             if (portName.isPresent()) {
                 Optional<List<InterfaceChildEntry>> interfaceChildEntries = interfaceChildCache
@@ -334,7 +333,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      * - creates/updates Flow table counters using Infrautils metrics API
      * - set counter with values fetched from FlowStatistics
      */
-    private void processFlowStatistics(GetFlowStatisticsOutput flowStatsOutput, BigInteger dpid) {
+    private void processFlowStatistics(GetFlowStatisticsOutput flowStatsOutput, String dpid) {
         Map<Short, AtomicInteger> flowTableMap = new HashMap<>();
         // Get all flows for node from RPC result
         List<FlowAndStatisticsMapList> flowTableAndStatisticsMapList = flowStatsOutput.getFlowAndStatisticsMapList();
@@ -343,7 +342,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             // populate map to maintain flow count per table
             flowTableMap.computeIfAbsent(tableId, key -> new AtomicInteger(0)).incrementAndGet();
         }
-        LOG.trace("FlowTableStatistics (tableId:counter): {} for node: {}", flowTableMap.entrySet(), dpid.toString());
+        LOG.trace("FlowTableStatistics (tableId:counter): {} for node: {}", flowTableMap.entrySet(), dpid);
         for (Map.Entry<Short, AtomicInteger> flowTable : flowTableMap.entrySet()) {
             Short tableId = flowTable.getKey();
             AtomicInteger flowCount = flowTable.getValue();
@@ -364,7 +363,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      * @param tableId table-id value of switch
      * @return counter object
      */
-    private Counter getCounter(String counterName, BigInteger switchId, String port, String aliasId, String tableId) {
+    private Counter getCounter(String counterName, String switchId, String port, String aliasId, String tableId) {
         /*
          * Pattern to be followed for key generation:
          *
@@ -380,7 +379,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                         CounterConstants.LBL_KEY_ENTITY_TYPE, CounterConstants.LBL_KEY_SWITCHID,
                         CounterConstants.LBL_KEY_PORTID, CounterConstants.LBL_KEY_ALIASID,
                         CounterConstants.LBL_KEY_COUNTER_NAME);
-            counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_PORT).label(switchId.toString())
+            counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_PORT).label(switchId)
                     .label(port).label(aliasId).label(counterName);
         }
         if (tableId != null) {
@@ -389,7 +388,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                         .module("interfacemanager").id(CounterConstants.CNT_TYPE_ENTITY_CNT_ID).build(),
                         CounterConstants.LBL_KEY_ENTITY_TYPE, CounterConstants.LBL_KEY_SWITCHID,
                         CounterConstants.LBL_KEY_FLOWTBLID, CounterConstants.LBL_KEY_COUNTER_NAME);
-            counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_FLOWTBL).label(switchId.toString())
+            counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_FLOWTBL).label(switchId)
                     .label(tableId).label(counterName);
         }
 
@@ -418,8 +417,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     @Override
     protected void remove(InstanceIdentifier<Node> identifier, Node node) {
         NodeId nodeId = node.getId();
-        String nodeVal = nodeId.getValue().split(":")[1];
-        BigInteger dpId = new BigInteger(nodeVal);
+        String dpId = nodeId.getValue().split(":")[1];
         if (nodes.contains(dpId)) {
             nodes.remove(dpId);
             // remove counters set from node
@@ -447,7 +445,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         NodeId nodeId = node.getId();
         if (entityOwnershipUtils.isEntityOwner(IfmConstants.SERVICE_ENTITY_TYPE, nodeId.getValue())) {
             LOG.trace("Locally connected switch {}",nodeId.getValue());
-            BigInteger dpId = new BigInteger(nodeId.getValue().split(":")[1]);
+            String dpId = nodeId.getValue().split(":")[1];
             if (nodes.contains(dpId)) {
                 return;
             }
