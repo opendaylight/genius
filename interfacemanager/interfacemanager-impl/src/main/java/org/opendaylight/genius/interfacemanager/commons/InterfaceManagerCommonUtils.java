@@ -781,7 +781,7 @@ public final class InterfaceManagerCommonUtils {
     }
 
     private static String getDpnPrefixedPortName(NodeConnectorId nodeConnectorId, String portName) {
-        String dpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId).toString();
+        String dpnId = IfmUtil.getDpnStringFromNodeConnectorId(nodeConnectorId);
         return getDpnPrefixedPortName(dpnId, portName);
     }
 
