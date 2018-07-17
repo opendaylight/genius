@@ -34,6 +34,24 @@
       "revId": "24b33a6bad43ffddde49c99aca295dce95d4681c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "40ec8ac8_a942a06d",
+        "filename": "features/odl-genius-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-17T21:08:06Z",
+      "side": 1,
+      "message": "Err, that is with an odl-mdsal-broker rebuilt to not include odl-mdsal-models, of course :)",
+      "parentUuid": "d599e155_d64dcdd8",
+      "revId": "24b33a6bad43ffddde49c99aca295dce95d4681c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
