@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "389fd1da_6f918f90",
+        "filename": "features/odl-genius-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-17T19:45:25Z",
+      "side": 1,
+      "message": "am getting confused on how you figure out which rfc to put :P",
+      "revId": "24b33a6bad43ffddde49c99aca295dce95d4681c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
