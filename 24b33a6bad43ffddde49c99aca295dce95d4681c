@@ -16,6 +16,24 @@
       "revId": "24b33a6bad43ffddde49c99aca295dce95d4681c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d599e155_d64dcdd8",
+        "filename": "features/odl-genius-api/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-17T21:05:52Z",
+      "side": 1,
+      "message": "well, migration was easy:\n- remove this dependency altogether\n- rebuild\n- check what models were in generated feature\n- look for those models in mdsal features\n- minimize required features based on dependency\n\nIn this particular case, 7224 is the iana-if-type model, which pulls in ietf-interfaces (7223), which pulls in inet/yang types (6991).",
+      "parentUuid": "389fd1da_6f918f90",
+      "revId": "24b33a6bad43ffddde49c99aca295dce95d4681c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
