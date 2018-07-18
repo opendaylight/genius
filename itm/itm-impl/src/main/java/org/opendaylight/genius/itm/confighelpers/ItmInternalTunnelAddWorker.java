@@ -319,7 +319,7 @@ public final class ItmInternalTunnelAddWorker {
             BigInteger srcDpnId, BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType,
             String trunkInterfaceName, String parentInterfaceName) throws ExecutionException, InterruptedException,
             OperationFailedException {
-        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask())
                 ? gatewayIpObj : srcte.getGwIpAddress() ;
         LOG.debug("Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {},"
