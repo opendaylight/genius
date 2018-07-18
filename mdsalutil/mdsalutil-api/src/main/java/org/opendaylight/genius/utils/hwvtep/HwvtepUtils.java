@@ -326,7 +326,7 @@ public final class HwvtepUtils {
     public static HwvtepPhysicalLocatorAugmentation getPhysicalLocator(DataBroker broker,
             LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
-                .createHwvtepPhysicalLocatorAugmentation(String.valueOf(phyLocatorIp.getValue()));
+                .createHwvtepPhysicalLocatorAugmentation(phyLocatorIp.stringValue());
         InstanceIdentifier<HwvtepPhysicalLocatorAugmentation> iid = HwvtepSouthboundUtils
                 .createPhysicalLocatorInstanceIdentifier(nodeId, phyLocatorAug)
                 .augmentation(HwvtepPhysicalLocatorAugmentation.class);
@@ -911,7 +911,7 @@ public final class HwvtepUtils {
                                                           String logicalSwitchName, IpAddress remoteVtepIp) {
         NodeId nodeId = new NodeId(deviceNodeId);
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
-                .createHwvtepPhysicalLocatorAugmentation(String.valueOf(remoteVtepIp.getValue()));
+                .createHwvtepPhysicalLocatorAugmentation(remoteVtepIp.stringValue());
         List<RemoteUcastMacs> macs = new ArrayList<>();
         for (PhysAddress mac : macAddresses) {
             // TODO: Query ARP cache to get IP address corresponding to
@@ -936,7 +936,7 @@ public final class HwvtepUtils {
         Iterable<PhysAddress> macAddresses, String logicalSwitchName, IpAddress remoteVtepIp) {
         NodeId nodeId = new NodeId(deviceNodeId);
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
-            .createHwvtepPhysicalLocatorAugmentation(String.valueOf(remoteVtepIp.getValue()));
+            .createHwvtepPhysicalLocatorAugmentation(remoteVtepIp.stringValue());
         // TODO: Query ARP cache to get IP address corresponding to the MAC
         StreamSupport.stream(macAddresses.spliterator(), false)
             .map(macAddress -> HwvtepSouthboundUtils.createRemoteUcastMac(nodeId,

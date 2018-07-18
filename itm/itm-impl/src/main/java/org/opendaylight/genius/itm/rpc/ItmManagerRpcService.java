@@ -600,8 +600,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         IpAddress dstIp = input.getDestinationIp() ;
         InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class,
-                        new ExternalTunnelKey(String.valueOf(dstIp.getValue()),
-                            srcDpn.toString(), input.getTunnelType()));
+                        new ExternalTunnelKey(dstIp.stringValue(), srcDpn.toString(), input.getTunnelType()));
 
         Optional<ExternalTunnel> optExtTunnel = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path1, dataBroker);
 

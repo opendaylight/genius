@@ -47,6 +47,7 @@ import org.opendaylight.openflowplugin.libraries.liblldp.HexEncode;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -484,8 +485,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                     throws InterruptedException {
         arpRespRecvd.mark();
 
-        IpAddress srcIp = new IpAddress(srcInetAddr.getHostAddress().toCharArray());
-        IpAddress dstIp = new IpAddress(dstInetAddr.getHostAddress().toCharArray());
+        IpAddress srcIp = IetfInetUtil.INSTANCE.ipAddressFor(srcInetAddr);
+        IpAddress dstIp = IetfInetUtil.INSTANCE.ipAddressFor(dstInetAddr);
         String srcMacAddress = NWUtil.toStringMacAddress(srcMacAddressBytes);
         PhysAddress srcMac = new PhysAddress(srcMacAddress);
         String dstMacAddress = NWUtil.toStringMacAddress(dstMacAddressBytes);
@@ -514,8 +515,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
         builder.setOfTableId((long) tableId);
-        builder.setSrcIpaddress(new IpAddress(srcInetAddr.getHostAddress().toCharArray()));
-        builder.setDstIpaddress(new IpAddress(dstInetAddr.getHostAddress().toCharArray()));
+        builder.setSrcIpaddress(IetfInetUtil.INSTANCE.ipAddressFor(srcInetAddr));
+        builder.setDstIpaddress(IetfInetUtil.INSTANCE.ipAddressFor(dstInetAddr));
         builder.setSrcMac(new PhysAddress(macAddress));
         builder.setMetadata(metadata);
         ListenableFuture<?> offerNotification = notificationPublishService.offerNotification(builder.build());
@@ -529,7 +530,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private void checkAndFireMacChangedNotification(String interfaceName, InetAddress inetAddr, byte[] macAddressBytes)
             throws InterruptedException {
 
-        IpAddress ip = new IpAddress(inetAddr.getHostAddress().toCharArray());
+        IpAddress ip = IetfInetUtil.INSTANCE.ipAddressFor(inetAddr);
         String macAddress = NWUtil.toStringMacAddress(macAddressBytes);
         PhysAddress mac = new PhysAddress(macAddress);
 

@@ -56,6 +56,7 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -310,7 +311,7 @@ public final class ItmUtils {
     }
 
     public static InetAddress getInetAddressFromIpAddress(IpAddress ip) {
-        return InetAddresses.forString(String.valueOf(ip.getValue()));
+        return IetfInetUtil.INSTANCE.inetAddressFor(ip);
     }
 
     public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(BigInteger dpIdKey) {
@@ -592,7 +593,7 @@ public final class ItmUtils {
         SubnetUtils subnetUtils = new SubnetUtils(subnetCidr);
         IpAddress gatewayIp = schema.getGatewayIp();
         if (gatewayIp != null) {
-            String strGatewayIp = String.valueOf(gatewayIp.getValue());
+            String strGatewayIp = gatewayIp.stringValue();
             if (!strGatewayIp.equals(ITMConstants.DUMMY_IP_ADDRESS) && !subnetUtils.getInfo().isInRange(strGatewayIp)) {
                 Preconditions.checkArgument(false, "Gateway IP address " + strGatewayIp
                         + " is not in subnet range " + subnetCidr);
@@ -762,7 +763,7 @@ public final class ItmUtils {
     }
 
     public static String getSubnetCidrAsString(IpPrefix subnet) {
-        return subnet == null ? StringUtils.EMPTY : String.valueOf(subnet.getValue());
+        return subnet == null ? StringUtils.EMPTY : subnet.stringValue();
     }
 
     public static <T> List<T> emptyIfNull(List<T> list) {

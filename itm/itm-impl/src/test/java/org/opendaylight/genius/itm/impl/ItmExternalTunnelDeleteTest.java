@@ -246,11 +246,10 @@ public class ItmExternalTunnelDeleteTest {
                 .setTransportType(tunnelType1).setDestinationDevice("hwvtep:1").setSourceDevice(dpId2.toString())
                 .withKey(new ExternalTunnelKey(dpId2.toString() , hwVtep1.getNodeId() , tunnelType1)).build();
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(parentInterfaceName,
-            String.valueOf(tunnelEndPointsVxlan.getIpAddress().getValue()),
-            String.valueOf(ipAddress1.getValue()), tunnelType1.getName());
+            tunnelEndPointsVxlan.getIpAddress().stringValue(), ipAddress1.stringValue(), tunnelType1.getName());
         trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
         path = InstanceIdentifier.create(ExternalTunnelList.class)
-                .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(String.valueOf(ipAddress1.getValue()),
+                .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(ipAddress1.stringValue(),
                     dpId2.toString(), tunnelType1));
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();

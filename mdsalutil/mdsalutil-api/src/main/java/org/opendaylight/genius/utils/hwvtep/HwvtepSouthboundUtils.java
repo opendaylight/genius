@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.EncapsulationTypeBase;
@@ -232,7 +233,7 @@ public final class HwvtepSouthboundUtils {
         TerminationPointKey tpKey = null;
         if (phyLocator.getEncapsulationType() != null && phyLocator.getDstIp() != null) {
             String encapType = HwvtepSouthboundConstants.ENCAPS_TYPE_MAP.get(phyLocator.getEncapsulationType());
-            String tpKeyStr = encapType + ":" + String.valueOf(phyLocator.getDstIp().getValue());
+            String tpKeyStr = encapType + ":" + phyLocator.getDstIp().stringValue();
             tpKey = new TerminationPointKey(new TpId(tpKeyStr));
         }
         return tpKey;
@@ -297,7 +298,7 @@ public final class HwvtepSouthboundUtils {
         // FIXME: Get encapsulation type dynamically
         Class<? extends EncapsulationTypeBase> encapTypeClass = createEncapsulationType(StringUtils.EMPTY);
         HwvtepPhysicalLocatorAugmentationBuilder phyLocBuilder = new HwvtepPhysicalLocatorAugmentationBuilder()
-                .setEncapsulationType(encapTypeClass).setDstIp(new IpAddress(ipAddress.toCharArray()));
+                .setEncapsulationType(encapTypeClass).setDstIp(IpAddressBuilder.getDefaultInstance(ipAddress));
         return phyLocBuilder.build();
     }
 

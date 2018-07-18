@@ -207,9 +207,7 @@ public final class ItmInternalTunnelAddWorker {
         // Form the trunk Interface Name
 
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
-                new String(srcte.getIpAddress().getValue()),
-                new String(dstte.getIpAddress().getValue()),
-                tunTypeStr);
+                srcte.getIpAddress().stringValue(), dstte.getIpAddress().stringValue(), tunTypeStr);
         String parentInterfaceName = null;
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
             parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId);
@@ -319,7 +317,7 @@ public final class ItmInternalTunnelAddWorker {
             BigInteger srcDpnId, BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType,
             String trunkInterfaceName, String parentInterfaceName) throws ExecutionException, InterruptedException,
             OperationFailedException {
-        IpAddress gatewayIpObj = new IpAddress("0.0.0.0".toCharArray());
+        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask())
                 ? gatewayIpObj : srcte.getGwIpAddress() ;
         LOG.debug("Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {},"

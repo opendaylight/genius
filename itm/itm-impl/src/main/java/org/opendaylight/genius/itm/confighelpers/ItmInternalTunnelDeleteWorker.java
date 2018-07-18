@@ -252,8 +252,8 @@ public class ItmInternalTunnelDeleteWorker {
     private void removeTrunkInterface(TypedWriteTransaction<Configuration> tx, TunnelEndPoints srcTep,
         TunnelEndPoints dstTep, BigInteger srcDpnId, BigInteger dstDpnId) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
-                new String(srcTep.getIpAddress().getValue()),
-                new String(dstTep.getIpAddress().getValue()),
+                srcTep.getIpAddress().stringValue(),
+                dstTep.getIpAddress().stringValue(),
                 srcTep.getTunnelType().getName());
         LOG.trace("Removing forward Trunk Interface {}" , trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
@@ -268,14 +268,14 @@ public class ItmInternalTunnelDeleteWorker {
         ItmUtils.ITM_CACHE.removeInternalTunnel(trunkfwdIfName);
         // Release the Ids for the forward trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(srcTep.getInterfaceName(),
-                new String(srcTep.getIpAddress().getValue()),
-                new String(dstTep.getIpAddress().getValue()),
+                srcTep.getIpAddress().stringValue(),
+                dstTep.getIpAddress().stringValue(),
                 srcTep.getTunnelType().getName());
         removeLogicalGroupTunnel(srcDpnId, dstDpnId);
 
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(dstTep.getInterfaceName(),
-                new String(dstTep.getIpAddress().getValue()),
-                new String(srcTep.getIpAddress().getValue()),
+                dstTep.getIpAddress().stringValue(),
+                srcTep.getIpAddress().stringValue(),
                 srcTep.getTunnelType().getName());
         LOG.trace("Removing Reverse Trunk Interface {}", trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
@@ -290,8 +290,8 @@ public class ItmInternalTunnelDeleteWorker {
 
         // Release the Ids for the reverse trunk interface Name
         ItmUtils.releaseIdForTrunkInterfaceName(dstTep.getInterfaceName(),
-                new String(dstTep.getIpAddress().getValue()),
-                new String(srcTep.getIpAddress().getValue()),
+                dstTep.getIpAddress().stringValue(),
+                srcTep.getIpAddress().stringValue(),
                 dstTep.getTunnelType().getName());
         removeLogicalGroupTunnel(dstDpnId, srcDpnId);
     }

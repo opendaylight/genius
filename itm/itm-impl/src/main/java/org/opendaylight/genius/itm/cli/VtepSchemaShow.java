@@ -115,9 +115,9 @@ public class VtepSchemaShow extends OsgiCommandSupport {
         String portName = StringUtils.defaultString(schema.getPortName());
         String vlanId = String.valueOf(schema.getVlanId());
         String subnetCIDR = (schema.getSubnet() == null) ? StringUtils.EMPTY
-                : String.valueOf(schema.getSubnet().getValue());
+                : schema.getSubnet().stringValue();
         String gatewayIp = (schema.getGatewayIp() == null) ? StringUtils.EMPTY
-                : String.valueOf(schema.getGatewayIp().getValue());
+                : schema.getGatewayIp().stringValue();
         String transportZone = StringUtils.defaultString(schema.getTransportZoneName());
         String strTunnelType ;
 
