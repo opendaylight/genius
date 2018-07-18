@@ -72,14 +72,12 @@ public class ItmExternalTunnelAddWorker {
                 String interfaceName = firstEndPt.getInterfaceName();
                 String tunTypeStr = tunType.getName();
                 String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
-                        new String(firstEndPt.getIpAddress().getValue()),
-                        new String(extIp.getValue()), tunTypeStr);
-                char[] subnetMaskArray = firstEndPt.getSubnetMask().getValue();
+                        firstEndPt.getIpAddress().stringValue(), extIp.stringValue(), tunTypeStr);
+                String subnetMaskStr = firstEndPt.getSubnetMask().stringValue();
                 boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
                 List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(firstEndPt, itmConfig);
-                String subnetMaskStr = String.valueOf(subnetMaskArray);
                 SubnetUtils utils = new SubnetUtils(subnetMaskStr);
-                String dcGwyIpStr = String.valueOf(extIp.getValue());
+                String dcGwyIpStr = extIp.stringValue();
                 IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
                 IpAddress gwyIpAddress =
                         utils.getInfo().isInRange(dcGwyIpStr) ? gatewayIpObj : firstEndPt.getGwIpAddress();
@@ -98,10 +96,10 @@ public class ItmExternalTunnelAddWorker {
                 transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, iface, true);
                 // update external_tunnel_list ds
                 InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
-                        .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(extIp.getValue()),
+                        .child(ExternalTunnel.class, new ExternalTunnelKey(extIp.stringValue(),
                                 teps.getDPNID().toString(), tunType));
                 ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(),
-                    String.valueOf(extIp.getValue()), tunType, trunkInterfaceName);
+                    extIp.stringValue(), tunType, trunkInterfaceName);
                 transaction.merge(LogicalDatastoreType.CONFIGURATION, path, tnl, true);
             }
             return Collections.singletonList(transaction.submit());
@@ -279,7 +277,7 @@ public class ItmExternalTunnelAddWorker {
         String parentIf =  ItmUtils.getHwParentIf(topoId, srcNodeid);
         String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(parentIf,
-                new String(srcIp.getValue()), new String(dstIp.getValue()), tunTypeStr);
+                srcIp.stringValue(), dstIp.stringValue(), tunTypeStr);
         LOG.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
@@ -312,7 +310,7 @@ public class ItmExternalTunnelAddWorker {
         String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);
         String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(parentIf,
-                new String(srcIp.getValue()), new String(dstIp.getValue()), tunTypeStr);
+                srcIp.stringValue(), dstIp.stringValue(), tunTypeStr);
         LOG.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);

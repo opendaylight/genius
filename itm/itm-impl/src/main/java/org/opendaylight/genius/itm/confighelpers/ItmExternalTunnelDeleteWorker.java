@@ -61,23 +61,20 @@ public final class ItmExternalTunnelDeleteWorker {
             if (originalTzMembership.size() == 1) {
                 String interfaceName = firstEndPt.getInterfaceName();
                 String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
-                        new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()),
-                        tunType.getName());
+                        firstEndPt.getIpAddress().stringValue(), extIp.stringValue(), tunType.getName());
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
                 transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
                 ItmUtils.ITM_CACHE.removeInterface(trunkInterfaceName);
 
                 InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class).child(
                         ExternalTunnel.class,
-                        ItmUtils.getExternalTunnelKey(String.valueOf(extIp.getValue()), teps.getDPNID().toString(),
-                                tunType));
+                        ItmUtils.getExternalTunnelKey(extIp.stringValue(), teps.getDPNID().toString(), tunType));
                 transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
                 LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
                 ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
                 // Release the Ids for the trunk interface Name
                 ItmUtils.releaseIdForTrunkInterfaceName(interfaceName,
-                        new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()),
-                        tunType.getName());
+                        firstEndPt.getIpAddress().stringValue(), extIp.stringValue(), tunType.getName());
             }
         }
         return Collections.singletonList(transaction.submit());
@@ -96,21 +93,20 @@ public final class ItmExternalTunnelDeleteWorker {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             String interfaceName = firstEndPt.getInterfaceName();
             String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
-                    new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());
+                    firstEndPt.getIpAddress().stringValue(), extIp.stringValue(), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
             ItmUtils.ITM_CACHE.removeInterface(trunkInterfaceName);
 
             InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class).child(
                     ExternalTunnel.class,
-                    ItmUtils.getExternalTunnelKey(String.valueOf(extIp.getValue()), teps.getDPNID().toString(),
-                            tunType));
+                    ItmUtils.getExternalTunnelKey(extIp.stringValue(), teps.getDPNID().toString(), tunType));
             writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, path);
             LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
             ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
             // Release the Ids for the trunk interface Name
             ItmUtils.releaseIdForTrunkInterfaceName(interfaceName,
-                    new String(firstEndPt.getIpAddress().getValue()), new String(extIp.getValue()), tunType.getName());
+                    firstEndPt.getIpAddress().stringValue(), extIp.stringValue(), tunType.getName());
         }
         return Collections.singletonList(writeTransaction.submit());
     }
@@ -234,7 +230,7 @@ public final class ItmExternalTunnelDeleteWorker {
             LOG.trace("deleting tunnel from {} to {} ", dpnid.toString(), nodeId);
             String parentIf = interfaceName;
             String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
-                    new String(cssIpAddress.getValue()), new String(hwIpAddress.getValue()), tunType.getName());
+                    cssIpAddress.stringValue(), hwIpAddress.stringValue(), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(fwdTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
@@ -250,7 +246,7 @@ public final class ItmExternalTunnelDeleteWorker {
 
             String parentIf = ItmUtils.getHwParentIf(topologyId, nodeId);
             String revTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
-                    new String(hwIpAddress.getValue()), new String(cssIpAddress.getValue()), tunType.getName());
+                    hwIpAddress.stringValue(), cssIpAddress.stringValue(), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(revTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
@@ -270,7 +266,7 @@ public final class ItmExternalTunnelDeleteWorker {
             LOG.trace("deleting tunnel from {} to {} ", nodeId1, nodeId2);
             String parentIf = ItmUtils.getHwParentIf(topologyId1, nodeId1);
             String fwdTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
-                    new String(hwIpAddress1.getValue()), new String(hwIpAddress2.getValue()), tunType.getName());
+                    hwIpAddress1.stringValue(), hwIpAddress2.stringValue(), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(fwdTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 
@@ -286,7 +282,7 @@ public final class ItmExternalTunnelDeleteWorker {
 
             String parentIf = ItmUtils.getHwParentIf(topologyId2, nodeId2);
             String revTrunkIf = ItmUtils.getTrunkInterfaceName(parentIf,
-                    new String(hwIpAddress2.getValue()), new String(hwIpAddress1.getValue()), tunType.getName());
+                    hwIpAddress2.stringValue(), hwIpAddress1.stringValue(), tunType.getName());
             InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(revTrunkIf);
             transaction.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
 

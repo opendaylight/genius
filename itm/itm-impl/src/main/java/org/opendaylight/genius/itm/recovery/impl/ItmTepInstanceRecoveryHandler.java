@@ -201,7 +201,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 LOG.error("Transport Zone {} subnet {} has no vteps", transportZone.getZoneName(), sub.getPrefix());
             }
             for (Vteps vtep : sub.getVteps()) {
-                if (ipAddress.equals(String.valueOf(vtep.getIpAddress().getValue()))) {
+                if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
 
                     List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);
                     LOG.trace("Transportzone {} found match for tep {} to be recovered", transportZone.getZoneName(),

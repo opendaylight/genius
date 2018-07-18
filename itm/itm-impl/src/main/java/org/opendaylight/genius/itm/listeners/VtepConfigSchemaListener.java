@@ -277,8 +277,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             }
             try {
                 tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
-                        String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp,
-                        schema.getTransportZoneName(), null);
+                        ipAddress.stringValue(), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
             } catch (TepException e) {
                 LOG.error("create local cache Failed", e);
             }
@@ -305,7 +304,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
      * @return the string
      */
     private String handleGatewayIp(IpAddress gatewayIp) {
-        String strGatewayIp = gatewayIp == null ? null : String.valueOf(gatewayIp.getValue());
+        String strGatewayIp = gatewayIp == null ? null : gatewayIp.stringValue();
         if (StringUtils.isBlank(strGatewayIp) || StringUtils.equals(ITMConstants.DUMMY_IP_ADDRESS, strGatewayIp)) {
             // To avoid a validation exception in TepCommandHelper
             strGatewayIp = null;
@@ -347,7 +346,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             IpAddress ipAddress = vtep.getIpAddress();
             try {
                 tepCommandHelper.deleteVtep(dpnId, vtep.getPortname(), schema.getVlanId(),
-                    String.valueOf(ipAddress.getValue()), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+                    ipAddress.stringValue(), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
             } catch (TepException e) {
                 LOG.error("delete Vtep Failed", e);
             }

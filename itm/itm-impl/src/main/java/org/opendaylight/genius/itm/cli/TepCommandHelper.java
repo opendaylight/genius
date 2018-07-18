@@ -486,9 +486,9 @@ public class TepCommandHelper {
                             strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
                         }
                         result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s",
-                                tz.getZoneName(), strTunnelType, new String(sub.getPrefix().getValue()),
-                                new String(sub.getGatewayIp().getValue()), sub.getVlanId().toString(),
-                                vtep.getDpnId().toString(), new String(vtep.getIpAddress().getValue()),
+                                tz.getZoneName(), strTunnelType, sub.getPrefix().stringValue(),
+                                sub.getGatewayIp().stringValue(), sub.getVlanId().toString(),
+                                vtep.getDpnId().toString(), vtep.getIpAddress().stringValue(),
                                 vtep.getPortname()));
                     }
                 }
@@ -759,8 +759,8 @@ public class TepCommandHelper {
                 }
                 System.out.println(String.format(displayFormat, tunnelInst.getTunnelInterfaceName(),
                         tunnelInst.getSrcInfo().getTepDeviceId(), tunnelInst.getDstInfo().getTepDeviceId(),
-                        new String(tunnelInst.getSrcInfo().getTepIp().getValue()),
-                        new String(tunnelInst.getDstInfo().getTepIp().getValue()), tunnelState, tunnelType));
+                        tunnelInst.getSrcInfo().getTepIp().stringValue(),
+                        tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
     }

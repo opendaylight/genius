@@ -18,7 +18,9 @@ import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.infrautils.testutils.Asserts;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
 
@@ -140,10 +142,10 @@ public class NWUtilTest {
     }
 
     private IpAddress buildIpAddress(String ipAddress) {
-        return new IpAddress(ipAddress.toCharArray());
+        return IpAddressBuilder.getDefaultInstance(ipAddress);
     }
 
     private IpPrefix buildIpPrefix(String cidr) {
-        return new IpPrefix(cidr.toCharArray());
+        return IpPrefixBuilder.getDefaultInstance(cidr);
     }
 }

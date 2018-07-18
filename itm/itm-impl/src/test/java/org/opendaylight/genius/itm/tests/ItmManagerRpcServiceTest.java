@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -145,10 +144,10 @@ public class ItmManagerRpcServiceTest {
     GetTunnelInterfaceNameInput getTunnelInterfaceNameInput;
 
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()),
+            .child(ExternalTunnel.class, new ExternalTunnelKey(ItmTestConstants.IP_ADDRESS_3.stringValue(),
                     ItmTestConstants.DP_ID_1.toString(), TunnelTypeMplsOverGre.class));
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifierNew = InstanceIdentifier.create(ExternalTunnelList.class)
-            .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()),
+            .child(ExternalTunnel.class, new ExternalTunnelKey(ItmTestConstants.IP_ADDRESS_3.stringValue(),
                     ItmTestConstants.DP_ID_1.toString(), ItmTestConstants.TUNNEL_TYPE_VXLAN));
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier2 = InstanceIdentifier.create(ExternalTunnelList.class)
             .child(ExternalTunnel.class, new ExternalTunnelKey(ItmTestConstants.DESTINATION_DEVICE,
@@ -182,8 +181,8 @@ public class ItmManagerRpcServiceTest {
         stringList.add(ItmTestConstants.SOURCE_DEVICE_2);
 
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME,
-            String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()),
-            String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()),
+            ItmTestConstants.IP_ADDRESS_3.stringValue(),
+            ItmTestConstants.IP_ADDRESS_3.stringValue(),
                 ItmTestConstants.TUNNEL_TYPE_VXLAN.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(ItmTestConstants.VLAN_ID)
@@ -258,7 +257,7 @@ public class ItmManagerRpcServiceTest {
 
         // build external tunnel objects
         externalTunnel = new ExternalTunnelBuilder().setSourceDevice(ItmTestConstants.DP_ID_1.toString())
-                .setDestinationDevice(String.valueOf(ItmTestConstants.IP_ADDRESS_3.getValue()))
+                .setDestinationDevice(ItmTestConstants.IP_ADDRESS_3.stringValue())
                 .setTransportType(TunnelTypeMplsOverGre.class)
                 .setTunnelInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME).build();
 
