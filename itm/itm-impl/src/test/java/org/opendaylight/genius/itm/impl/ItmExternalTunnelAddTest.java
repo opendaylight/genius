@@ -267,17 +267,16 @@ public class ItmExternalTunnelAddTest {
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(parentInterfaceName,
-                String.valueOf(tunnelEndPointsVxlan.getIpAddress().getValue()),
-            String.valueOf(ipAddress2.getValue()),tunnelType1.getName());
+                tunnelEndPointsVxlan.getIpAddress().stringValue(), ipAddress2.stringValue(),tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
-                .child(ExternalTunnel.class, new ExternalTunnelKey(String.valueOf(ipAddress2.getValue()),
+                .child(ExternalTunnel.class, new ExternalTunnelKey(ipAddress2.stringValue(),
                         dpId1.toString(), tunnelType1));
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"), true, tunnelType1, ipAddress3,
                 ipAddress2, gtwyIp1, tunnelEndPointsVxlan.getVLANID(), false, false, monitorProtocol, null,  false,
                 null);
-        externalTunnel = ItmUtils.buildExternalTunnel(dpId1.toString(),String.valueOf(ipAddress2.getValue()),
+        externalTunnel = ItmUtils.buildExternalTunnel(dpId1.toString(), ipAddress2.stringValue(),
                 tunnelType1, trunkInterfaceName);
         subnets = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).withKey(new SubnetsKey(ipPrefixTest))
                 .setVteps(vtepsList).setDeviceVteps(deviceVtepsList).build();

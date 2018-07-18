@@ -147,7 +147,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     public synchronized ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
             GetTunnelInterfaceNameInput input) {
         String interfaceName = interfaceNames.get(input.getSourceDpid())
-                .get(new String(tepIps.get(input.getDestinationDpid()).getValue()));
+                .get(tepIps.get(input.getDestinationDpid()).stringValue());
         GetTunnelInterfaceNameOutput output =
                 new GetTunnelInterfaceNameOutputBuilder().setInterfaceName(interfaceName).build();
         return RpcResultBuilder.success(output).buildFuture();

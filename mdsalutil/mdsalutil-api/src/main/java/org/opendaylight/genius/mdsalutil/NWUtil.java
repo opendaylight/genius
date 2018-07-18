@@ -22,6 +22,7 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Prefix;
@@ -234,8 +235,8 @@ public final class NWUtil {
      */
     public static boolean isIpAddressInRange(IpAddress ipAddress, IpPrefix cidr) {
         if (ipAddress.getIpv4Address() != null && cidr.getIpv4Prefix() != null) {
-            SubnetUtils subnetUtils = new SubnetUtils(String.valueOf(cidr.getValue()));
-            return subnetUtils.getInfo().isInRange(String.valueOf(ipAddress.getValue()));
+            SubnetUtils subnetUtils = new SubnetUtils(cidr.stringValue());
+            return subnetUtils.getInfo().isInRange(ipAddress.stringValue());
         } else if (ipAddress.getIpv6Address() != null && cidr.getIpv6Prefix() != null) {
             return isIpAddressInRange(ipAddress.getIpv6Address(), cidr.getIpv6Prefix());
         }
@@ -294,7 +295,7 @@ public final class NWUtil {
         if (ipPrefix.contains("/")) {
             ipPrefix = ipPrefix.substring(0, ipPrefix.indexOf("/"));
         }
-        IpAddress ipAddress = new IpAddress(ipPrefix.toCharArray());
+        IpAddress ipAddress = IpAddressBuilder.getDefaultInstance(ipPrefix);
         if (ipAddress.getIpv4Address() != null) {
             return NwConstants.ETHTYPE_IPV4;
         } else if (ipAddress.getIpv6Address() != null) {
