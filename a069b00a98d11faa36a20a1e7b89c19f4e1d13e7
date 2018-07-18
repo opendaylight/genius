@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b732e214_d6fb3b89",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-07-18T12:28:57Z",
+      "side": 1,
+      "message": "get is checked here for presence and then ItmTunnelStatusOutOfOrderEventWorker does another get check then processes then removes. Why not just remove here?",
+      "revId": "a069b00a98d11faa36a20a1e7b89c19f4e1d13e7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
