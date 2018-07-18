@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "09d7424e_8b1821fa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-18T09:36:30Z",
+      "side": 1,
+      "message": "remove?",
+      "revId": "dbc7e27cbc7d0400d2a3b8f873a05f5b53d7cfd3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
