@@ -107,9 +107,9 @@ public final class IfmCLIUtil {
         sb.setLength(0);
         IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
         session.getConsole().println(fmt.format(VXLAN_OUTPUT_FORMAT,
-                new String(ifTunnel.getTunnelSource().getValue()),
-                new String(ifTunnel.getTunnelDestination().getValue()),
-                ifTunnel.getTunnelGateway() == null ? UNSET : new String(ifTunnel.getTunnelGateway().getValue()),
+                ifTunnel.getTunnelSource().stringValue(),
+                ifTunnel.getTunnelDestination().stringValue(),
+                ifTunnel.getTunnelGateway() == null ? UNSET : ifTunnel.getTunnelGateway().stringValue(),
                 interfaceInfo == null ? InterfaceInfo.InterfaceAdminState.DISABLED : interfaceInfo.getAdminState()));
         sb.setLength(0);
         ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
