@@ -304,7 +304,7 @@ public class OvsdbSouthboundTestUtil {
     }
 
     public static String connectionInfoToString(final ConnectionInfo connectionInfo) {
-        return String.valueOf(connectionInfo.getRemoteIp().getValue()) + ":"
+        return connectionInfo.getRemoteIp().stringValue() + ":"
                 + connectionInfo.getRemotePort().getValue();
     }
 
