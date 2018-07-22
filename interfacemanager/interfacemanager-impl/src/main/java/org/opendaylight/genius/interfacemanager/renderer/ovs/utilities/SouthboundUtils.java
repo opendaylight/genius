@@ -219,13 +219,13 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_LOCAL_IP, TUNNEL_OPTIONS_VALUE_FLOW);
         } else {
             IpAddress localIp = ifTunnel.getTunnelSource();
-            options.put(TUNNEL_OPTIONS_LOCAL_IP, String.valueOf(localIp.getValue()));
+            options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.stringValue());
         }
         if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
             options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
         } else {
             IpAddress remoteIp = ifTunnel.getTunnelDestination();
-            options.put(TUNNEL_OPTIONS_REMOTE_IP, String.valueOf(remoteIp.getValue()));
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.stringValue());
         }
         // Specific options for each type of tunnel
         if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
@@ -424,8 +424,8 @@ public class SouthboundUtils {
 
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
-        String sourceKey = new String(ifTunnel.getTunnelSource().getValue());
-        String remoteKey = new String(ifTunnel.getTunnelDestination().getValue());
+        String sourceKey = ifTunnel.getTunnelSource().stringValue();
+        String remoteKey = ifTunnel.getTunnelDestination().stringValue();
         if (ifTunnel.isTunnelSourceIpFlow() != null) {
             sourceKey = "flow";
         }
