@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f21f7255_a9a37ef6",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-23T12:00:36Z",
+      "side": 1,
+      "message": "Vishal SFT is failing, as upgradeConfig is not available by this time. I am trying to see if injecting the same helps",
+      "revId": "a7a23ebdc684d70d1c9f5a12603a9a7a5a79b970",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
