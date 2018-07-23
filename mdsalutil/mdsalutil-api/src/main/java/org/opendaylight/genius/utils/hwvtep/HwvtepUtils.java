@@ -13,7 +13,6 @@ import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CR
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
@@ -26,6 +25,7 @@ import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.HwvtepGlobalAugmentation;
@@ -917,8 +917,9 @@ public final class HwvtepUtils {
             // TODO: Query ARP cache to get IP address corresponding to
             // the MAC
             //IpAddress ipAddress = null;
-            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId, mac.getValue().toLowerCase(Locale.getDefault()),
-                    /*ipAddress*/ null, logicalSwitchName, phyLocatorAug));
+            macs.add(HwvtepSouthboundUtils.createRemoteUcastMac(nodeId,
+                IetfYangUtil.INSTANCE.canonizePhysAddress(mac).getValue(), /*ipAddress*/ null, logicalSwitchName,
+                phyLocatorAug));
         }
         return addRemoteUcastMacs(broker, nodeId, macs);
     }
@@ -940,7 +941,7 @@ public final class HwvtepUtils {
         // TODO: Query ARP cache to get IP address corresponding to the MAC
         StreamSupport.stream(macAddresses.spliterator(), false)
             .map(macAddress -> HwvtepSouthboundUtils.createRemoteUcastMac(nodeId,
-                macAddress.getValue().toLowerCase(Locale.getDefault()), /*ipAddress*/ null, logicalSwitchName,
+                IetfYangUtil.INSTANCE.canonizePhysAddress(macAddress).getValue(), /*ipAddress*/ null, logicalSwitchName,
                 phyLocatorAug))
             .forEach(mac -> addRemoteUcastMac(tx, nodeId, mac));
     }
