@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "57fcdbe2_1277371d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-23T13:10:01Z",
+      "side": 1,
+      "message": "still not done, but never mind ;-)",
+      "parentUuid": "0f3a91f9_1c6083b5",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0c6a40d_1ab95714",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
         "patchSetId": 1
@@ -48,6 +66,24 @@
       "writtenOn": "2018-03-07T11:46:09Z",
       "side": 1,
       "message": "final x2 (FYI you can configure your IDE to do it automatically; my opendaylight-eclipse-setup will do it for you, or ask Faseela how to do this in IntelliJ)",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f13da93_20819e4d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-23T13:10:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b0c6a40d_1ab95714",
       "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -82,6 +118,24 @@
       "writtenOn": "2018-03-07T11:46:09Z",
       "side": 1,
       "message": "final x2",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99d4348a_136a9605",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InternalTunnelListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-23T13:10:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9cf6cad3_972d52e1",
       "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
