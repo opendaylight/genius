@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.utils.hwvtep;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableBiMap;
 import java.util.ArrayList;
@@ -293,12 +295,25 @@ public final class HwvtepSouthboundUtils {
      * @param ipAddress
      *            the ip address
      * @return the hwvtep physical locator augmentation
+     * @deprecated Use {@link #createHwvtepPhysicalLocatorAugmentation(IpAddress)} instead.
      */
+    @Deprecated
     public static HwvtepPhysicalLocatorAugmentation createHwvtepPhysicalLocatorAugmentation(String ipAddress) {
+        return createHwvtepPhysicalLocatorAugmentation(IpAddressBuilder.getDefaultInstance(ipAddress));
+    }
+
+    /**
+     * Create hwvtep physical locator augmentation.
+     *
+     * @param ipAddress the ip address
+     * @return the hwvtep physical locator augmentation
+     * @throws NullPointerException if {@code ipAddress} is null
+     */
+    public static HwvtepPhysicalLocatorAugmentation createHwvtepPhysicalLocatorAugmentation(IpAddress ipAddress) {
         // FIXME: Get encapsulation type dynamically
         Class<? extends EncapsulationTypeBase> encapTypeClass = createEncapsulationType(StringUtils.EMPTY);
         HwvtepPhysicalLocatorAugmentationBuilder phyLocBuilder = new HwvtepPhysicalLocatorAugmentationBuilder()
-                .setEncapsulationType(encapTypeClass).setDstIp(IpAddressBuilder.getDefaultInstance(ipAddress));
+                .setEncapsulationType(EncapsulationTypeVxlanOverIpv4.class).setDstIp(requireNonNull(ipAddress));
         return phyLocBuilder.build();
     }
 
