@@ -103,49 +103,35 @@ public class NWUtilTest {
     @Test
     public void testNegativeEtherTypeFromIpPrefix() {
         //IPv4 Negative cases
-        IllegalArgumentException thrown = null;
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("10.0.1.256");
-        });
-        assertEquals("Cannot create IpAddress from 10.0.1.256", thrown.getMessage());
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("172.168.290.2");
-        });
-        assertEquals("Cannot create IpAddress from 172.168.290.2", thrown.getMessage());
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("225.0.1.256/32");
-        });
-        assertEquals("Cannot create IpAddress from 225.0.1.256", thrown.getMessage());
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("254.200.100.256/28");
-        });
-        assertEquals("Cannot create IpAddress from 254.200.100.256", thrown.getMessage());
+        assertThrowsBadAddress("10.0.1.256");
+        assertThrowsBadAddress("172.168.290.2");
+        assertThrowsBadAddress("225.0.1.256/32");
+        assertThrowsBadAddress("254.200.100.256/28");
 
         //IPv6 Negative cases
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("1001:db8:0:2:f816:3eff:fe5e:7e1fg");
-        });
-        assertEquals("Cannot create IpAddress from 1001:db8:0:2:f816:3eff:fe5e:7e1fg", thrown.getMessage());
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("2001:db8:0:6:f81k::");
-        });
-        assertEquals("Cannot create IpAddress from 2001:db8:0:6:f81k::", thrown.getMessage());
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("2001:db8:0:ffw::/64");
-        });
-        assertEquals("Cannot create IpAddress from 2001:db8:0:ffw::", thrown.getMessage());
-        thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
-            getEtherTypeFromIpPrefix("aaaa:bbbb:cccc:dddd:eeee:ffff:gggg:hhhh/128");
-        });
-        assertEquals("Cannot create IpAddress from aaaa:bbbb:cccc:dddd:eeee:ffff:gggg:hhhh",
-                thrown.getMessage());
+        assertThrowsBadAddress("1001:db8:0:2:f816:3eff:fe5e:7e1fg");
+        assertThrowsBadAddress("2001:db8:0:6:f81k::");
+        assertThrowsBadAddress("2001:db8:0:ffw::/64");
+        assertThrowsBadAddress("aaaa:bbbb:cccc:dddd:eeee:ffff:gggg:hhhh/128");
     }
 
-    private IpAddress buildIpAddress(String ipAddress) {
+    private static void assertThrowsBadAddress(final String address) {
+        final IllegalArgumentException thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
+            getEtherTypeFromIpPrefix(address);
+        });
+        final String stripped = address.replaceAll("/.*", "");
+        final String expected = String.format("Supplied value \"%s\" does not match required pattern \"%s\"",
+            stripped, "((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|"
+                + "(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))"
+                + "(%[\\p{N}\\p{L}]+)?");
+        assertEquals(expected, thrown.getMessage());
+    }
+
+    private static IpAddress buildIpAddress(String ipAddress) {
         return IpAddressBuilder.getDefaultInstance(ipAddress);
     }
 
-    private IpPrefix buildIpPrefix(String cidr) {
+    private static IpPrefix buildIpPrefix(String cidr) {
         return IpPrefixBuilder.getDefaultInstance(cidr);
     }
 }
