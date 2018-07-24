@@ -34,6 +34,24 @@
       "revId": "2042431851d26c26965a7902fb9e03cb7bf42e8c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa85fe82_040f41f4",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-07-24T10:31:44Z",
+      "side": 1,
+      "message": "It\u0027s not, but obviously the original felt it was.",
+      "parentUuid": "3b1d83bd_dc47d466",
+      "revId": "2042431851d26c26965a7902fb9e03cb7bf42e8c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
