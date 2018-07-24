@@ -8,6 +8,7 @@
 
 package org.opendaylight.genius.mdsalutil.tests;
 
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -119,12 +120,7 @@ public class NWUtilTest {
         final IllegalArgumentException thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
             getEtherTypeFromIpPrefix(address);
         });
-        final String stripped = address.replaceAll("/.*", "");
-        final String expected = String.format("Supplied value \"%s\" does not match required pattern \"%s\"",
-            stripped, "((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|"
-                + "(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))"
-                + "(%[\\p{N}\\p{L}]+)?");
-        assertEquals(expected, thrown.getMessage());
+        assertThat(thrown.getMessage()).contains(address.replaceAll("/.*", ""));
     }
 
     private static IpAddress buildIpAddress(String ipAddress) {
