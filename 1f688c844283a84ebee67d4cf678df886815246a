@@ -16,6 +16,24 @@
       "revId": "1f688c844283a84ebee67d4cf678df886815246a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa4e7ba0_8bcc2f21",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 19
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-24T15:12:56Z",
+      "side": 1,
+      "message": "nope, neither - but there would have been a different problem... ;-)",
+      "parentUuid": "e992bffc_615aaa68",
+      "revId": "1f688c844283a84ebee67d4cf678df886815246a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
