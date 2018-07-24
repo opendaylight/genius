@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a5f1a4a_41df2b2f",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-24T09:53:24Z",
+      "side": 1,
+      "message": "is it really important to check the exact message?  The point of this test seems to be to make sure that getEtherTypeFromIpPrefix() throws an IllegalArgumentException for bad addresses - how about just removing the entire getMessage() assertion all together?",
+      "revId": "2042431851d26c26965a7902fb9e03cb7bf42e8c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
