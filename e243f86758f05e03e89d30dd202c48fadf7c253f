@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "bd78dbee_072fab9f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-07-24T14:38:50Z",
+      "side": 1,
+      "message": "personally I keep the final to keep consistency and accepted practices. it just makes it easier for new devs rather than confusing them or expecting them to know about all the new and cool stuff that changes daily :)",
+      "parentUuid": "c432bae0_08388605",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0c6a40d_1ab95714",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
         "patchSetId": 1
