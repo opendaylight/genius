@@ -11,6 +11,7 @@ package org.opendaylight.genius.mdsalutil.internal;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
+@Named("geniusUpgradeStateListener") // to distinguish the <bean id=".."> from serviceutils' UpgradeStateListener
 @OsgiServiceProvider(classes = UpgradeState.class)
 public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeListener<Config> implements UpgradeState {
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateListener.class);
