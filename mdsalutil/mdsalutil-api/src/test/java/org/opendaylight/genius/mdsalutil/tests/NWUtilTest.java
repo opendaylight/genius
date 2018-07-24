@@ -116,15 +116,9 @@ public class NWUtilTest {
     }
 
     private static void assertThrowsBadAddress(final String address) {
-        final IllegalArgumentException thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
+        Asserts.assertThrows(IllegalArgumentException.class, () -> {
             getEtherTypeFromIpPrefix(address);
         });
-        final String stripped = address.replaceAll("/.*", "");
-        final String expected = String.format("Supplied value \"%s\" does not match required pattern \"%s\"",
-            stripped, "((:|[0-9a-fA-F]{0,4}):)([0-9a-fA-F]{0,4}:){0,5}((([0-9a-fA-F]{0,4}:)?(:|[0-9a-fA-F]{0,4}))|"
-                + "(((25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9]?[0-9])))"
-                + "(%[\\p{N}\\p{L}]+)?");
-        assertEquals(expected, thrown.getMessage());
     }
 
     private static IpAddress buildIpAddress(String ipAddress) {
