@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "c432bae0_08388605",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-07-24T08:02:23Z",
+      "side": 1,
+      "message": "Michael,\n  I thought Sam wanted to keep the final and so I retained it.",
+      "parentUuid": "57fcdbe2_1277371d",
+      "revId": "e243f86758f05e03e89d30dd202c48fadf7c253f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b0c6a40d_1ab95714",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/InterfaceConfigListener.java",
         "patchSetId": 1
