@@ -16,6 +16,24 @@
       "revId": "2042431851d26c26965a7902fb9e03cb7bf42e8c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3b1d83bd_dc47d466",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/NWUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-24T10:16:32Z",
+      "side": 1,
+      "message": "\u003d\u003d\u003e https://git.opendaylight.org/gerrit/#/c/74383/",
+      "parentUuid": "5a5f1a4a_41df2b2f",
+      "revId": "2042431851d26c26965a7902fb9e03cb7bf42e8c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
