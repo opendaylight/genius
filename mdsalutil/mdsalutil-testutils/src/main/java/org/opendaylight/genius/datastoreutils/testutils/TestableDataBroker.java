@@ -35,7 +35,8 @@ public abstract class TestableDataBroker implements DataBroker {
 
     public static TestableDataBroker newInstance() {
         TestableDataBroker testableDataBroker = Mockito.mock(TestableDataBroker.class, realOrException());
-        testableDataBroker.executor = Executors.newSingleThreadExecutor(TestableDataBroker.class.getSimpleName(), LOG);
+        testableDataBroker.executor =
+            Executors.newListeningSingleThreadExecutor(TestableDataBroker.class.getSimpleName(), LOG);
         return testableDataBroker;
     }
 

@@ -66,7 +66,8 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
 
     @Inject
     public DataTreeEventCallbackRegistrarImpl(@OsgiService DataBroker dataBroker) {
-        this(dataBroker, Executors.newSingleThreadScheduledExecutor("DataTreeEventCallbackRegistrar-Timeouter", LOG));
+        this(dataBroker,
+            Executors.newListeningSingleThreadScheduledExecutor("DataTreeEventCallbackRegistrar-Timeouter", LOG));
     }
 
     @VisibleForTesting

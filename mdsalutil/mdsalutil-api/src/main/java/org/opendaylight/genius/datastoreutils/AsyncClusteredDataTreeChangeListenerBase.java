@@ -67,7 +67,7 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
     }
 
     private static ExecutorService newThreadPoolExecutor(Class<?> clazz) {
-        return Executors.newSingleThreadExecutor(
+        return Executors.newListeningSingleThreadExecutor(
                 // class name first so it shows up in logs' prefix, but fixed length
                 clazz.getName() + "_AsyncClusteredDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
     }

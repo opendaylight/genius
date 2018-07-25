@@ -33,7 +33,7 @@ public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<L
     @Inject
     public LockListener(@OsgiService DataBroker dataBroker, LockManagerServiceImpl lockManager) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Locks.class).child(Lock.class),
-              Executors.newSingleThreadExecutor("LockListener", LOG));
+              Executors.newListeningSingleThreadExecutor("LockListener", LOG));
         this.lockManager = lockManager;
     }
 

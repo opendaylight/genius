@@ -78,7 +78,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     public VtepConfigSchemaListener(DataBroker dataBroker, ItmConfig itmConfig) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(VtepConfigSchemas.class).child(VtepConfigSchema.class), Executors
-                      .newSingleThreadExecutor("VtepConfigSchemaListener", LOG));
+                      .newListeningSingleThreadExecutor("VtepConfigSchemaListener", LOG));
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
     }

@@ -304,7 +304,7 @@ public class IdManagerTest {
         int numberOfTasks = 3;
         CountDownLatch latch = new CountDownLatch(numberOfTasks);
         Set<Long> idSet = Sets.newConcurrentHashSet();
-        ExecutorService executor = Executors.newCachedThreadPool("requestIdsConcurrently()", LOG);
+        ExecutorService executor = Executors.newListeningCachedThreadPool("requestIdsConcurrently()", LOG);
         AtomicReference<Throwable> exceptionInExecutorAtomic = new AtomicReference<>();
         for (int i = 0; i < numberOfTasks; i++) {
             final String idKey;

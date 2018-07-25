@@ -33,7 +33,7 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     public IdPoolListener(DataBroker dataBroker, IdManager idManager, IdUtils idUtils) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(IdPools.class).child(IdPool.class), Executors
-                      .newSingleThreadExecutor("IdPoolListener", LOG));
+                      .newListeningSingleThreadExecutor("IdPoolListener", LOG));
         this.idManager = idManager;
         this.idUtils = idUtils;
     }

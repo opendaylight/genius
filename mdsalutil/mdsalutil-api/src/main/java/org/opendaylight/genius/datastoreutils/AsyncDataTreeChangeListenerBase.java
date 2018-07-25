@@ -63,7 +63,7 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
     }
 
     private static ExecutorService newThreadPoolExecutor(Class<?> clazz) {
-        return Executors.newSingleThreadExecutor(
+        return Executors.newListeningSingleThreadExecutor(
                 // class name first so it shows up in logs' prefix, but fixed length
                 clazz.getName() + "_AsyncDataTreeChangeListenerBase-DataTreeChangeHandler", LOG);
     }

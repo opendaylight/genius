@@ -32,7 +32,7 @@ public class ExternalTunnelListener extends AbstractClusteredAsyncDataTreeChange
     public ExternalTunnelListener(final DataBroker dataBroker) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class),
-              Executors.newSingleThreadExecutor("ExternalTunnelListener", LOG));
+              Executors.newListeningSingleThreadExecutor("ExternalTunnelListener", LOG));
     }
 
     @Override
