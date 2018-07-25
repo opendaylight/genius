@@ -7,12 +7,11 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.bound.services.instruction.instruction.apply.actions._case.apply.actions.action.action.ServiceBindingNxActionConntrackApplyActionsCase;
@@ -55,61 +54,75 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.write.actions._case.write.actions.action.action.NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class ActionConverterUtil {
+    private static final Map<Class<? extends Action>, Function<Action, Action>> SERVICE_TO_OF =
+            ImmutableMap.<Class<? extends Action>, Function<Action, Action>>builder()
+            .put(ServiceBindingNxActionConntrackApplyActionsCase.class,
+                input -> new NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionConntrackApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionLearnApplyActionsCase.class,
+                input -> new NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionLearnApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionMultipathApplyActionsCase.class,
+                input -> new NxActionMultipathNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionMultipathApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionOutputRegApplyActionsCase.class,
+                input -> new NxActionOutputRegNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionOutputRegApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionDecapApplyActionsCase.class,
+                input -> new NxActionDecapNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionDecapApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionEncapApplyActionsCase.class,
+                input -> new NxActionEncapNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionEncapApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionRegLoadApplyActionsCase.class,
+                input -> new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionRegLoadApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionRegMoveApplyActionsCase.class,
+                input -> new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionRegMoveApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionResubmitApplyActionsCase.class,
+                input -> new NxActionResubmitNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionResubmitApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionDecNshTtlApplyActionsCase.class,
+                input -> new NxActionDecNshTtlNodesNodeTableFlowApplyActionsCaseBuilder(
+                    (ServiceBindingNxActionDecNshTtlApplyActionsCase) input).build())
+            .put(ServiceBindingNxActionConntrackWriteActionsCase.class,
+                input -> new NxActionConntrackNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionConntrackWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionLearnWriteActionsCase.class,
+                input -> new NxActionLearnNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionLearnWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionMultipathWriteActionsCase.class,
+                input -> new NxActionMultipathNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionMultipathWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionOutputRegWriteActionsCase.class,
+                input -> new NxActionOutputRegNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionOutputRegWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionDecapWriteActionsCase.class,
+                input -> new NxActionDecapNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionDecapWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionEncapWriteActionsCase.class,
+                input -> new NxActionEncapNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionEncapWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionRegLoadWriteActionsCase.class,
+                input -> new NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionRegLoadWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionRegMoveWriteActionsCase.class,
+                input -> new NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionRegMoveWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionResubmitWriteActionsCase.class,
+                input -> new NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionResubmitWriteActionsCase) input).build())
+            .put(ServiceBindingNxActionDecNshTtlWriteActionsCase.class,
+                input -> new NxActionDecNshTtlNodesNodeTableFlowWriteActionsCaseBuilder(
+                    (ServiceBindingNxActionDecNshTtlWriteActionsCase) input).build())
+            .build();
 
-    private static final Logger LOG = LoggerFactory.getLogger(ActionConverterUtil.class);
-    private static final Map<Class<? extends Action>, Class<?>> SERVICE_ACTION_TO_OF_ACTION_MAP = new HashMap<>();
-    private static final String BUILD_METHOD = "build";
-    private static final String AUGMENTATION_METHOD = "augmentation";
-    private static final String GET_IMPL_METHOD = "getImplementedInterface";
+    private ActionConverterUtil() {
 
-    static {
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionConntrackApplyActionsCase.class,
-                NxActionConntrackNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionLearnApplyActionsCase.class,
-                NxActionLearnNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionMultipathApplyActionsCase.class,
-                NxActionMultipathNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionOutputRegApplyActionsCase.class,
-                NxActionOutputRegNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecapApplyActionsCase.class,
-                NxActionDecapNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionEncapApplyActionsCase.class,
-                NxActionEncapNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegLoadApplyActionsCase.class,
-                NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegMoveApplyActionsCase.class,
-                NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitApplyActionsCase.class,
-                NxActionResubmitNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecNshTtlApplyActionsCase.class,
-                NxActionDecNshTtlNodesNodeTableFlowApplyActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionConntrackWriteActionsCase.class,
-                NxActionConntrackNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionLearnWriteActionsCase.class,
-                NxActionLearnNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionMultipathWriteActionsCase.class,
-                NxActionMultipathNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionOutputRegWriteActionsCase.class,
-                NxActionOutputRegNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecapWriteActionsCase.class,
-                NxActionDecapNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionEncapWriteActionsCase.class,
-                NxActionEncapNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegLoadWriteActionsCase.class,
-                NxActionRegLoadNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionRegMoveWriteActionsCase.class,
-                NxActionRegMoveNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionResubmitWriteActionsCase.class,
-                NxActionResubmitNodesNodeTableFlowWriteActionsCaseBuilder.class);
-        SERVICE_ACTION_TO_OF_ACTION_MAP.put(ServiceBindingNxActionDecNshTtlWriteActionsCase.class,
-                NxActionDecNshTtlNodesNodeTableFlowWriteActionsCaseBuilder.class);
     }
-
-    private ActionConverterUtil() { }
 
     public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action
         .types.rev131112.action.list.Action> convertServiceActionToFlowAction(
@@ -148,56 +161,7 @@ public final class ActionConverterUtil {
     }
 
     public static Action convertServiceActionToFlowAction(Action inAction) {
-        Class ofActionClass = SERVICE_ACTION_TO_OF_ACTION_MAP.get(inAction.getImplementedInterface());
-        if (ofActionClass != null) {
-            try {
-                Method build = ofActionClass.getDeclaredMethod(BUILD_METHOD);
-                Object ofActionObj = ofActionClass.newInstance();
-                ofActionObj = build.invoke(copy(inAction, ofActionObj));
-                LOG.debug("Converted {} action to {} action", inAction.getImplementedInterface(),
-                        ((Action) ofActionObj).getImplementedInterface());
-                inAction = (Action) ofActionObj;
-            } catch (InstantiationException e) {
-                LOG.error("Failed to instantiate OF action class {}", ofActionClass);
-            } catch (IllegalAccessException e) {
-                LOG.error("Cannot access some fields in {}", ofActionClass);
-            } catch (NoSuchMethodException e) {
-                LOG.error("Method build does not exist in {}", ofActionClass);
-            } catch (InvocationTargetException e) {
-                LOG.error("Method build invocation failed in {}", ofActionClass);
-            }
-        }
-        return inAction;
-    }
-
-    private static Object copy(Object src, Object dest) {
-        Method[] gettersAndSetters = src.getClass().getDeclaredMethods();
-        for (Method gettersAndSetter : gettersAndSetters) {
-            String methodName = gettersAndSetter.getName();
-            gettersAndSetter.setAccessible(true);
-            try {
-                if (methodName.equals(AUGMENTATION_METHOD) || methodName.equals(GET_IMPL_METHOD)) {
-                    continue;
-                }
-                if (methodName.startsWith("get")) {
-                    dest = dest.getClass()
-                            .getMethod(methodName.replaceFirst("get", "set"), gettersAndSetter.getReturnType())
-                            .invoke(dest, gettersAndSetter.invoke(src, null));
-                } else if (methodName.startsWith("is")) {
-                    dest = dest.getClass()
-                            .getMethod(methodName.replaceFirst("is", "set"), gettersAndSetter.getReturnType())
-                            .invoke(dest, gettersAndSetter.invoke(src, null));
-                }
-            } catch (NoSuchMethodException e) {
-                LOG.error("Method {} does not exist in {}", methodName, src.getClass(), e);
-            } catch (IllegalArgumentException e) {
-                LOG.error("Method {} invocation failed in {} due to illegal argument.", methodName, dest.getClass(), e);
-            } catch (InvocationTargetException e) {
-                LOG.error("Method {} invocation failed in {}", methodName, dest.getClass(), e);
-            } catch (IllegalAccessException e) {
-                LOG.error("Cannot access method {} in {}", methodName, dest.getClass(), e);
-            }
-        }
-        return dest;
+        final Function<Action, Action> func = SERVICE_TO_OF.get(inAction.getImplementedInterface());
+        return func == null ? inAction : func.apply(inAction);
     }
 }
