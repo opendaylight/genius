@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "767e9e33_f8c1212d",
+        "filename": "ipv6util/impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-26T09:30:56Z",
+      "side": 1,
+      "message": "use ${project.version} here, to make it easier to cherry-pick and version bump ?",
+      "revId": "14bf4532683db3ed49eb66fcdde23c5506346fb3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
