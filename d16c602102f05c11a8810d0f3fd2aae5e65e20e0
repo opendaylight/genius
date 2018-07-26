@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1c8a26d7_a7c9d399",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-26T12:10:43Z",
+      "side": 0,
+      "message": "if I understand the flow in this code correctly, then loosing this cancel() is not a problem here - but it would be good if others could look this over to confirm.",
+      "revId": "d16c602102f05c11a8810d0f3fd2aae5e65e20e0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
