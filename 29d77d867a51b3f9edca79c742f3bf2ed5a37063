@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "12033e74_8afcbe00",
+        "filename": "resourcemanager/resourcemanager-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-26T09:30:39Z",
+      "side": 1,
+      "message": "use ${project.version} here, to make it easier to cherry-pick and version bump ?",
+      "revId": "29d77d867a51b3f9edca79c742f3bf2ed5a37063",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
