@@ -217,7 +217,7 @@ public class LockManagerServiceImpl implements LockManagerService {
             if (!result.isPresent()) {
                 LOG.debug("Writing lock lockData {}", lockData);
                 tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
-                tx.submit().get();
+                tx.commit().get();
                 return true;
             } else {
                 String lockDataOwner = result.get().getLockOwner();
