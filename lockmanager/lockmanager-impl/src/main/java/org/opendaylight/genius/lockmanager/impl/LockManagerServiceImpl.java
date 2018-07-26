@@ -20,9 +20,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
@@ -53,13 +53,11 @@ public class LockManagerServiceImpl implements LockManagerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LockManagerServiceImpl.class);
 
-    private final DataBroker broker;
     private final RetryingManagedNewTransactionRunner txRunner;
     private final LockManagerUtils lockManagerUtils;
 
     @Inject
     public LockManagerServiceImpl(final @OsgiService DataBroker dataBroker, final LockManagerUtils lockManagerUtils) {
-        this.broker = dataBroker;
         this.lockManagerUtils = lockManagerUtils;
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
     }
@@ -212,22 +210,21 @@ public class LockManagerServiceImpl implements LockManagerService {
             throws InterruptedException, ExecutionException {
         String lockName = lockData.getLockName();
         synchronized (lockName.intern()) {
-            ReadWriteTransaction tx = broker.newReadWriteTransaction();
-            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
-            if (!result.isPresent()) {
-                LOG.debug("Writing lock lockData {}", lockData);
-                tx.put(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier, lockData, true);
-                tx.commit().get();
-                return true;
-            } else {
-                String lockDataOwner = result.get().getLockOwner();
-                String currentOwner = lockData.getLockOwner();
-                if (currentOwner.equals(lockDataOwner)) {
+            return txRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, tx -> {
+                Optional<Lock> result = tx.read(lockInstanceIdentifier).get();
+                if (!result.isPresent()) {
+                    LOG.debug("Writing lock lockData {}", lockData);
+                    tx.put(lockInstanceIdentifier, lockData, true);
                     return true;
+                } else {
+                    String lockDataOwner = result.get().getLockOwner();
+                    String currentOwner = lockData.getLockOwner();
+                    if (currentOwner.equals(lockDataOwner)) {
+                        return true;
+                    }
                 }
-            }
-            tx.cancel();
-            return false;
+                return false;
+            }).get();
         }
     }
 }
