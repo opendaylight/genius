@@ -7,15 +7,18 @@
  */
 package org.opendaylight.genius.interfacemanager.recovery.impl;
 
+import java.time.Duration;
 import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
+import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -37,17 +40,20 @@ public class InterfaceInstanceRecoveryHandler implements ServiceRecoveryInterfac
     private final JobCoordinator jobCoordinator;
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     @Inject
     public InterfaceInstanceRecoveryHandler(DataBroker dataBroker,
                                             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                             JobCoordinator jobCoordinator,
                                             ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                            EntityOwnershipUtils entityOwnershipUtils) {
+                                            EntityOwnershipUtils entityOwnershipUtils,
+                                            DataTreeEventCallbackRegistrar eventCallbacks) {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.jobCoordinator = jobCoordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.eventCallbacks = eventCallbacks;
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(buildServiceRegistryKey(), this);
     }
 
@@ -69,12 +75,23 @@ public class InterfaceInstanceRecoveryHandler implements ServiceRecoveryInterfac
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, interfaceId))),
                     IfmConstants.JOB_MAX_RETRIES);
-            LOG.trace("recreating interface instance {}, {}", entityId, interfaceConfig);
-            jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
+            eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL,
+                    IfmUtil.buildStateInterfaceId(entityId), (unused) -> {
+                    recreateInterfaceInstance(entityId, interfaceConfig, interfaceId);
+                    return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+                }, Duration.ofMillis(5000), (id) -> {
+                    recreateInterfaceInstance(entityId, interfaceConfig, interfaceId);
+                });
+        }
+    }
+
+    private void recreateInterfaceInstance(String entityId, Interface interfaceConfig,
+                                           InstanceIdentifier<Interface> interfaceId) {
+        LOG.trace("recreating interface instance {}, {}", entityId, interfaceConfig);
+        jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> tx.put(LogicalDatastoreType.CONFIGURATION, interfaceId, interfaceConfig))),
-                    IfmConstants.JOB_MAX_RETRIES);
-        }
+                IfmConstants.JOB_MAX_RETRIES);
     }
 
     private String buildServiceRegistryKey() {
