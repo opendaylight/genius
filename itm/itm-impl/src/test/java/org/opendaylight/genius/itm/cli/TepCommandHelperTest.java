@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -375,8 +377,7 @@ public class TepCommandHelperTest {
     }
 
     @Test
-    public void testConfigureTunnelType() {
-
+    public void testConfigureTunnelType() throws ExecutionException, InterruptedException {
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
