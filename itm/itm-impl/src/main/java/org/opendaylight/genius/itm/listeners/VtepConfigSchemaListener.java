@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -120,7 +121,11 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
                 .validateForAddVtepConfigSchema(vtepConfigSchema, getAllVtepConfigSchemas());
 
         VtepIpPool vtepIpPool = processAvailableIps(validatedSchema);
-        addVteps(validatedSchema, vtepIpPool);
+        try {
+            addVteps(validatedSchema, vtepIpPool);
+        } catch (ExecutionException | InterruptedException e) {
+            LOG.error("Add VtepConfigSchema failed : {}", vtepConfigSchema, e);
+        }
     }
 
     /**
@@ -191,7 +196,11 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             String subnetCidr = ItmUtils.getSubnetCidrAsString(original.getSubnet());
             VtepIpPool vtepIpPool = getVtepIpPool(subnetCidr);
             LOG.debug("Adding of DPNs in Diff Schema: {}", diffSchema) ;
-            addVteps(diffSchema, vtepIpPool);
+            try {
+                addVteps(diffSchema, vtepIpPool);
+            } catch (ExecutionException | InterruptedException e) {
+                LOG.error("Add VtepConfigSchema failed : {}", diffSchema, e);
+            }
         }
     }
 
@@ -234,7 +243,8 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
      * @param vtepIpPool
      *            the vtep ip pool
      */
-    private void addVteps(VtepConfigSchema schema, VtepIpPool vtepIpPool) {
+    private void addVteps(VtepConfigSchema schema, VtepIpPool vtepIpPool) throws ExecutionException,
+            InterruptedException {
         if (schema.getDpnIds() == null || schema.getDpnIds().isEmpty()) {
             LOG.debug("DPN list is empty, skipping addVteps for schema: {}", schema);
             return;
