@@ -17,18 +17,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
@@ -78,7 +80,7 @@ public class TepCommandHelper {
     private static final AtomicInteger CHECK = new AtomicInteger();
 
     private final DataBroker dataBroker;
-    private final ManagedNewTransactionRunner txRunner;
+    private final RetryingManagedNewTransactionRunner txRunner;
     private final ItmConfig itmConfig;
 
     /*
@@ -94,12 +96,12 @@ public class TepCommandHelper {
     @Inject
     public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
-        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
         this.itmConfig = itmConfig;
     }
 
     @PostConstruct
-    public void start() {
+    public void start() throws ExecutionException, InterruptedException {
         boolean defTzEnabled = itmConfig.isDefTzEnabled();
         if (defTzEnabled) {
             String tunnelType = itmConfig.getDefTzTunnelType();
@@ -801,7 +803,8 @@ public class TepCommandHelper {
         return exists;
     }
 
-    public void configureTunnelType(String transportZoneName, String tunnelType) {
+    public void configureTunnelType(String transportZoneName, String tunnelType) throws ExecutionException,
+            InterruptedException {
         LOG.debug("configureTunnelType {} for transportZone {}", tunnelType, transportZoneName);
 
         TransportZone transportZoneFromConfigDS = ItmUtils.getTransportZoneFromConfigDS(transportZoneName, dataBroker);
@@ -828,7 +831,6 @@ public class TepCommandHelper {
         tunnelType = StringUtils.upperCase(tunnelType);
         tunType = ItmUtils.TUNNEL_TYPE_MAP.get(tunnelType);
 
-        TransportZones transportZones = null;
         List<TransportZone> tzList = null;
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tzones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
@@ -844,8 +846,9 @@ public class TepCommandHelper {
             tzList = new ArrayList<>();
         }
         tzList.add(tzone);
-        transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, path, transportZones, dataBroker);
+        TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(LogicalDatastoreType.CONFIGURATION,
+                path, transportZones, WriteTransaction.CREATE_MISSING_PARENTS)).get();
 
     }
 
