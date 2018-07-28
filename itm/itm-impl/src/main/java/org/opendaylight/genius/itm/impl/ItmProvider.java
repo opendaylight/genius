@@ -272,7 +272,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public void configureTunnelType(String transportZone, String tunnelType) {
         LOG .debug("ItmProvider: configureTunnelType {} for transportZone {}", tunnelType, transportZone);
-        tepCommandHelper.configureTunnelType(transportZone,tunnelType);
+        try {
+            tepCommandHelper.configureTunnelType(transportZone,tunnelType);
+        } catch (ExecutionException | InterruptedException e) {
+            LOG .error("configureTunnelType {} failed for transportZone {}", tunnelType, transportZone);
+        }
     }
 
     @Override
