@@ -34,6 +34,24 @@
       "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0ea53d5_14886d29",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-07-30T13:18:27Z",
+      "side": 1,
+      "message": "Doesn\u0027t this move us closer to the previous autotunnel implementation where the tunnels are created as nodes come up? That was having issues since the tunnels didn\u0027t come up quick enough.",
+      "parentUuid": "fd3c8e98_e3e27d52",
+      "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
