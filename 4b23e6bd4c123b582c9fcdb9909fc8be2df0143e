@@ -16,6 +16,24 @@
       "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fd3c8e98_e3e27d52",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-07-30T12:30:28Z",
+      "side": 1,
+      "message": "Yes, it is possible to postpone default-transport-zone creation at later point of time, when first TEP from southbound comes that is intended for default-transport-zone.",
+      "parentUuid": "ddf386f9_f914d793",
+      "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
