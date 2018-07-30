@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ddf386f9_f914d793",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-30T11:37:39Z",
+      "side": 1,
+      "message": "that\u0027s an interesting question.  We never really formally said so far that we cannot use the data store in a @PostConstruct, but the typical pattern is @Inject DataBroker, keep it in a final field - but not actually use it just yet.  I would agree that it\u0027s probably much better if we do not.  The e.g. Spring or Guice DI documentation typically also say similar things (initial DI should be fast and not fail; so normally you don\u0027t do e.g. datbase work there).  I cannot comment on the functionality here, but if there is any way to do these datastore operations a little later than during the blueprint initialization, that\u0027s probably not a bad idea.  Not understanding this functionality, am not clear where you could move this to... a listener, perhaps?  Why does whatever this does have to happen at start up?",
+      "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
