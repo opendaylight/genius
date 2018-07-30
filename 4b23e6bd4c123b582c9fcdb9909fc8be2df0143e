@@ -70,6 +70,23 @@
       "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f38e81f6_3fe7096a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-07-30T18:09:36Z",
+      "side": 1,
+      "message": "Michael, do we really need a retrytransaction here, as we are sure that the DS write has succeeded in one node, and that is good enough? Should I just catch the exception and ignore, for this particular scenario?",
+      "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
