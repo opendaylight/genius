@@ -52,6 +52,24 @@
       "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad22dbb0_417505e4",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-07-30T14:00:20Z",
+      "side": 1,
+      "message": "When def-TZ is not created at start-up and then default-transport-zone shall be created when very first TEP comes for it. In this case, tunnels formation will not happen for first TEP because atleast 2 TEPs are required for tunnel formation, so issue of tunnel not formed quickly, should not be of concern for first TEP addition wherein default-TZ creation will be carried out.\nBut, first TEP addition would be slow compared to subsequent TEP additions. 2nd TEP onwards, TEP addition will be done as it is done now.",
+      "parentUuid": "b0ea53d5_14886d29",
+      "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
