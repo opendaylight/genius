@@ -91,9 +91,6 @@ public class TepCommandHelper {
     private List<TransportZone> transportZoneArrayList = new ArrayList<>();
     private final List<Vteps> vtepDelCommitList = new ArrayList<>();
 
-    // private List<InstanceIdentifier<? extends DataObject>> vtepPaths = new
-    // ArrayList<>();
-
     @Inject
     public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig) {
         this.dataBroker = dataBroker;
@@ -861,18 +858,6 @@ public class TepCommandHelper {
      *            the tunnel type
      */
     private void validateTunnelType(String transportZoneName, String tunnelType,TransportZone tzoneFromConfigDs) {
-        /*
-         * String strTunnelType = ItmUtils.validateTunnelType(tunnelType);
-         *
-         * TransportZone tZone = getTransportZone(tZoneName); if (tZone != null)
-         * { if (!StringUtils.equalsIgnoreCase(strTunnelType,
-         * tZone.getTunnelType()) && ItmUtils.isNotEmpty(tZone.getSubnets())) {
-         * String errorMsg = new StringBuilder("Changing the tunnel type from "
-         * ).append(tZone.getTunnelType()) .append(" to ").append(strTunnelType)
-         * .append(" is not allowed for already configured transport zone ["
-         * ).append(tZoneName) .append("].").toString();
-         * Preconditions.checkArgument(false, errorMsg); } }
-         */
         String strTunnelType = ItmUtils.validateTunnelType(tunnelType);
         Class<? extends TunnelTypeBase> tunType;
         if (strTunnelType.equals(ITMConstants.TUNNEL_TYPE_VXLAN)) {
@@ -880,8 +865,7 @@ public class TepCommandHelper {
         } else {
             tunType = TunnelTypeGre.class;
         }
-        // TransportZone tZone = getTransportZone(tZoneName);
-        // if (tZone != null) {
+
         if (tzoneFromConfigDs != null) {
             if (!tzoneFromConfigDs.getTunnelType().equals(tunType)  && ItmUtils.isNotEmpty(tzoneFromConfigDs
                     .getSubnets())) {
