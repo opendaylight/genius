@@ -420,8 +420,6 @@ public class InterfaceInventoryStateListener
 
             IfmUtil.unbindService(dataBroker, coordinator, removedInterfaceName,
                     FlowBasedServicesUtils.buildDefaultServiceId(removedInterfaceName));
-
-            futures.add(transaction.submit());
             alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, removedInterfaceName);
         }
 
