@@ -87,6 +87,24 @@
       "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d42824c3_c8bf8d3c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 851,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-07-31T08:48:44Z",
+      "side": 1,
+      "message": "IMHO you should always use a RetryingManagedNewTransactionRunner, and never manually catch and ignore.  Just because it\u0027s too easy to do it wrong when doing it yourself - and there is no real disadvantage to using the RetryingManagedNewTransactionRunner.. at best, the commit() will succeed and it\u0027s all good.  At worst it will retry, but silently.  If it till fails after 3 atttemps, you probably do want to know about it?  --  What you can and in this particular case perhaps should do though is a ReadWriteTx and check if the data that this must write is already present, would that make sense here?",
+      "parentUuid": "f38e81f6_3fe7096a",
+      "revId": "4b23e6bd4c123b582c9fcdb9909fc8be2df0143e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
