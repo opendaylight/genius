@@ -112,7 +112,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
                         FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
         LOG.debug("InterfaceInventoryState REMOVE for {}", portName);
-        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(nodeConnectorIdNew,
+        TunnelInterfaceStateRemoveWorker portStateRemoveWorker = new TunnelInterfaceStateRemoveWorker(nodeConnectorIdNew,
                 nodeConnectorIdOld, fcNodeConnectorNew, portName, portName);
         coordinator.enqueueJob(portName, portStateRemoveWorker, ITMConstants.JOB_MAX_RETRIES);
     }
@@ -134,8 +134,8 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         }
         LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
 
-        InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
-                fcNodeConnectorNew, portName);
+        TunnelInterfaceStateUpdateWorker portStateUpdateWorker =
+                new TunnelInterfaceStateUpdateWorker(key, fcNodeConnectorOld, fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, portStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
@@ -163,13 +163,11 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         }
 
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-        if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
-            //NodeConnectorId nodeConnectorId =
-            // InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(key,
-                    fcNodeConnectorNew, portName);
-            coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
-        }
+        // NodeConnectorId nodeConnectorId =
+        // InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        TunnelInterfaceStateAddWorker ifStateAddWorker =
+                new TunnelInterfaceStateAddWorker(key, fcNodeConnectorNew, portName);
+        coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
     private List<ListenableFuture<Void>> updateState(InstanceIdentifier<FlowCapableNodeConnector> key,
@@ -310,13 +308,13 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         return futures;
     }
 
-    private class InterfaceStateAddWorker implements Callable {
+    private class TunnelInterfaceStateAddWorker implements Callable {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
 
-        InterfaceStateAddWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
+        TunnelInterfaceStateAddWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
+                                      FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
             this.key = key;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
             this.interfaceName = portName;
@@ -331,20 +329,20 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
 
         @Override
         public String toString() {
-            return "InterfaceStateAddWorker{fcNodeConnectorIdentifier=" + key + ", fcNodeConnectorNew="
+            return "TunnelInterfaceStateAddWorker{fcNodeConnectorIdentifier=" + key + ", fcNodeConnectorNew="
                     + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
         }
     }
 
-    private class InterfaceStateUpdateWorker implements Callable {
+    private class TunnelInterfaceStateUpdateWorker implements Callable {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
 
-        InterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                   FlowCapableNodeConnector fcNodeConnectorOld,
-                                   FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
+        TunnelInterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
+                                         FlowCapableNodeConnector fcNodeConnectorOld,
+                                         FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
             this.key = key;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
@@ -360,21 +358,21 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
 
         @Override
         public String toString() {
-            return "InterfaceStateUpdateWorker{key=" + key + ", fcNodeConnectorOld=" + fcNodeConnectorOld
+            return "TunnelInterfaceStateUpdateWorker{key=" + key + ", fcNodeConnectorOld=" + fcNodeConnectorOld
                     + ", fcNodeConnectorNew=" + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
         }
     }
 
-    private class InterfaceStateRemoveWorker implements Callable {
+    private class TunnelInterfaceStateRemoveWorker implements Callable {
         private final NodeConnectorId nodeConnectorIdNew;
         private final NodeConnectorId nodeConnectorIdOld;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final String interfaceName;
         private final String parentInterface;
 
-        InterfaceStateRemoveWorker(NodeConnectorId nodeConnectorIdNew,
-                                   NodeConnectorId nodeConnectorIdOld, FlowCapableNodeConnector fcNodeConnectorOld,
-                                   String interfaceName, String parentInterface) {
+        TunnelInterfaceStateRemoveWorker(NodeConnectorId nodeConnectorIdNew,
+                                         NodeConnectorId nodeConnectorIdOld, FlowCapableNodeConnector fcNodeConnectorOld,
+                                         String interfaceName, String parentInterface) {
             this.nodeConnectorIdNew = nodeConnectorIdNew;
             this.nodeConnectorIdOld = nodeConnectorIdOld;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
@@ -392,7 +390,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
 
         @Override
         public String toString() {
-            return "InterfaceStateRemoveWorker{nodeConnectorIdNew=" + nodeConnectorIdNew + ", nodeConnectorIdOld="
+            return "TunnelInterfaceStateRemoveWorker{nodeConnectorIdNew=" + nodeConnectorIdNew + ", nodeConnectorIdOld="
                     + nodeConnectorIdOld + ", fcNodeConnectorOld=" + fcNodeConnectorOld + ", interfaceName='"
                     + interfaceName + '\'' + '}';
         }
