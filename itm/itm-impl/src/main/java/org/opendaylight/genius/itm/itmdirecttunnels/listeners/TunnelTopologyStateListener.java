@@ -84,7 +84,8 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         if (entityOwner()) {
             LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeOld);
-            RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
+            TunnelRendererStateRemoveWorker rendererStateRemoveWorker =
+                    new TunnelRendererStateRemoveWorker(identifier, bridgeOld);
             coordinator.enqueueJob(bridgeOld.getBridgeName().getValue(), rendererStateRemoveWorker,
                     ITMConstants.JOB_MAX_RETRIES);
         }
@@ -103,12 +104,13 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         DatapathId oldDpid = bridgeOld.getDatapathId();
         DatapathId newDpid = bridgeNew.getDatapathId();
         if (oldDpid == null && newDpid != null) {
-            RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
+            TunnelRendererStateAddWorker rendererStateAddWorker =
+                    new TunnelRendererStateAddWorker(identifier, bridgeNew);
             coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                     ITMConstants.JOB_MAX_RETRIES);
         } else if (oldDpid != null && !oldDpid.equals(newDpid)) {
-            RendererStateUpdateWorker rendererStateAddWorker =
-                    new RendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
+            TunnelRendererStateUpdateWorker rendererStateAddWorker =
+                    new TunnelRendererStateUpdateWorker(identifier, bridgeNew, bridgeOld);
             coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                     ITMConstants.JOB_MAX_RETRIES);
         }
@@ -120,7 +122,8 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         if (entityOwner()) {
             LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeNew);
-            RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
+            TunnelRendererStateAddWorker rendererStateAddWorker =
+                    new TunnelRendererStateAddWorker(identifier, bridgeNew);
             coordinator.enqueueJob(bridgeNew.getBridgeName().getValue(), rendererStateAddWorker,
                     ITMConstants.JOB_MAX_RETRIES);
         }
@@ -238,12 +241,12 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         }
     }
 
-    private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelRendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
         private final InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid;
         private final OvsdbBridgeAugmentation bridgeNew;
 
-        RendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                               OvsdbBridgeAugmentation bridgeNew) {
+        TunnelRendererStateAddWorker(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+                                     OvsdbBridgeAugmentation bridgeNew) {
             this.bridgeIid = bridgeIid;
             this.bridgeNew = bridgeNew;
         }
@@ -274,12 +277,12 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         }
     }
 
-    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelRendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         private final OvsdbBridgeAugmentation bridgeNew;
 
-        RendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                  OvsdbBridgeAugmentation bridgeNew) {
+        TunnelRendererStateRemoveWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                                        OvsdbBridgeAugmentation bridgeNew) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
         }
@@ -292,13 +295,13 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
         }
     }
 
-    private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelRendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         private final OvsdbBridgeAugmentation bridgeNew;
         private final OvsdbBridgeAugmentation bridgeOld;
 
-        RendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
-                                  OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
+        TunnelRendererStateUpdateWorker(InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier,
+                                        OvsdbBridgeAugmentation bridgeNew, OvsdbBridgeAugmentation bridgeOld) {
             this.instanceIdentifier = instanceIdentifier;
             this.bridgeNew = bridgeNew;
             this.bridgeOld = bridgeOld;
