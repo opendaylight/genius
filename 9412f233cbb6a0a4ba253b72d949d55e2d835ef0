@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "830eb5e4_911e2618",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelTopologyStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-01T08:08:41Z",
+      "side": 1,
+      "message": "Can we have consistent naming for add and remove workers?",
+      "revId": "9412f233cbb6a0a4ba253b72d949d55e2d835ef0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
