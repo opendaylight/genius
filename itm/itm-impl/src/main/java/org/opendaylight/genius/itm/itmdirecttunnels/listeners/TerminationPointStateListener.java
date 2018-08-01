@@ -78,7 +78,7 @@ public class TerminationPointStateListener
             LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
             if (tpOld.getInterfaceBfdStatus() != null) {
                 LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
-                RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
+                RendererTunnelStateRemoveWorker rendererStateRemoveWorker = new RendererTunnelStateRemoveWorker(tpOld);
                 coordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
             }
         }
@@ -95,7 +95,7 @@ public class TerminationPointStateListener
                     || DirectTunnelUtils.ifBfdStatusNotEqual(tpOld, tpNew)) {
                 LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
                         identifier, tpOld, tpNew);
-                RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
+                RendererTunnelStateUpdateWorker rendererStateAddWorker = new RendererTunnelStateUpdateWorker(tpNew);
                 coordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
             }
         }
@@ -109,7 +109,7 @@ public class TerminationPointStateListener
             LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (tpNew.getInterfaceBfdStatus() != null  && !tpNew.getInterfaceBfdStatus().isEmpty()) {
                 LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
-                RendererStateUpdateWorker rendererStateUpdateWorker = new RendererStateUpdateWorker(tpNew);
+                RendererTunnelStateUpdateWorker rendererStateUpdateWorker = new RendererTunnelStateUpdateWorker(tpNew);
                 coordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);
             }
         }
@@ -170,10 +170,10 @@ public class TerminationPointStateListener
         transaction.merge(LogicalDatastoreType.OPERATIONAL, stateTnlII, stateTnlBuilder.build(), false);
     }
 
-    private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererTunnelStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         private final OvsdbTerminationPointAugmentation terminationPointNew;
 
-        RendererStateUpdateWorker(OvsdbTerminationPointAugmentation tpNew) {
+        RendererTunnelStateUpdateWorker(OvsdbTerminationPointAugmentation tpNew) {
             this.terminationPointNew = tpNew;
         }
 
@@ -185,10 +185,10 @@ public class TerminationPointStateListener
         }
     }
 
-    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererTunnelStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final OvsdbTerminationPointAugmentation terminationPointOld;
 
-        RendererStateRemoveWorker(OvsdbTerminationPointAugmentation tpNew) {
+        RendererTunnelStateRemoveWorker(OvsdbTerminationPointAugmentation tpNew) {
             this.terminationPointOld = tpNew;
         }
 
