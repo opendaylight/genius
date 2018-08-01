@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c835b9d5_2073bae2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-08-01T09:34:17Z",
+      "side": 0,
+      "message": "redundant as seen on line 151, 163",
+      "range": {
+        "startLine": 169,
+        "startChar": 8,
+        "endLine": 169,
+        "endChar": 110
+      },
+      "revId": "04b060a3aa1519bf951b70a3cbc593dc949f5d0b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
