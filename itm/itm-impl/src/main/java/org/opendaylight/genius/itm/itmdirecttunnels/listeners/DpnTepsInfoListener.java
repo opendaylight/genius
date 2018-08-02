@@ -65,7 +65,7 @@ public class DpnTepsInfoListener extends AbstractTunnelListenerBase<DPNTEPsInfo>
                 Collection<NodeConnectorInfo> nodeConnectorInfoList = unprocessedNodeConnectorEndPointCache.get(dpnId);
                 if (nodeConnectorInfoList != null) {
                     for (NodeConnectorInfo ncInfo : nodeConnectorInfoList) {
-                        LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", ncInfo
+                        LOG.info("Processing the Unprocessed NodeConnector for Tunnel {}", ncInfo
                                 .getNodeConnector().getName());
                         // Queue the InterfaceStateAddWorker in DJC
 
