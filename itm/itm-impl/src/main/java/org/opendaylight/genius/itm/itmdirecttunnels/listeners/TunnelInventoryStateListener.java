@@ -170,7 +170,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         // InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         TunnelInterfaceStateAddWorker ifStateAddWorker =
                 new TunnelInterfaceStateAddWorker(key, fcNodeConnectorNew, portName);
-        coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+       coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
     private List<ListenableFuture<Void>> updateState(String interfaceName,
