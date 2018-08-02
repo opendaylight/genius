@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2e70cea_7f1a17c8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-02T11:29:22Z",
+      "side": 1,
+      "message": "wait a second, by doing this, you turn the (judging from its name) synchronous ItmUtils.syncWrite() operation, which I\u0027m guessing (have not checked the code) uses a blocking get() to await the completion of the write() with an async operation... the callWithNewWriteOnlyTransactionAndSubmit() returns a future - which one should *NEVER* just ignore.  To get the equivalent functionality to how it was, you could simply do a get() on the returned future here.",
+      "revId": "3f34cca03a361a8dc3cdaf6b37ebe5d083cf53e5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
