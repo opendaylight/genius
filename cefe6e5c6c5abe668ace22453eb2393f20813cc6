@@ -16,6 +16,75 @@
       "revId": "cefe6e5c6c5abe668ace22453eb2393f20813cc6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9d0bac7_6c8a568e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-02T14:32:18Z",
+      "side": 1,
+      "message": "IMHO it would be much better if instead of a LOG.error() here, you would let it propagate here, and deal with it \"higher up\".  Ultimately this is going to be called from an RPC - so just let all error \"bubble up\" and let FutureRpcResults deal with it.",
+      "parentUuid": "c02bea34_884b4d7b",
+      "revId": "cefe6e5c6c5abe668ace22453eb2393f20813cc6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "277eb756_112e7120",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-02T14:32:18Z",
+      "side": 1,
+      "message": "and if you do have to keep it, remove the extra space here... ;-)",
+      "revId": "cefe6e5c6c5abe668ace22453eb2393f20813cc6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3237a24_bde1ea9d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-02T14:32:18Z",
+      "side": 1,
+      "message": "why only trace instead of error or at least warn, here?  This seems dangerous to me, as it could silently hide problems, no?",
+      "revId": "cefe6e5c6c5abe668ace22453eb2393f20813cc6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc2ae639_fbb74ddb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-02T14:32:18Z",
+      "side": 1,
+      "message": "why only trace instead of error or at least warn, here?  This seems dangerous to me, as it could silently hide problems, no?",
+      "revId": "cefe6e5c6c5abe668ace22453eb2393f20813cc6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
