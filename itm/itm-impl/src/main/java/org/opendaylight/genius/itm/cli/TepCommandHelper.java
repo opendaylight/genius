@@ -464,12 +464,10 @@ public class TepCommandHelper {
                     + "---------------------------------");
             for (TransportZone tz : transportZones.getTransportZone()) {
                 if (tz.getSubnets() == null || tz.getSubnets().isEmpty()) {
-                    LOG.error("Transport Zone {} has no subnets", tz.getZoneName());
                     continue;
                 }
                 for (Subnets sub : tz.getSubnets()) {
                     if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
-                        LOG.error("Transport Zone {} subnet {} has no vteps", tz.getZoneName(), sub.getPrefix());
                         continue;
                     }
                     for (Vteps vtep : sub.getVteps()) {
