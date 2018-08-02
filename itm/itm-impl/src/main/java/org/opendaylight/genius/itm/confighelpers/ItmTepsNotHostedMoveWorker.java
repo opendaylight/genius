@@ -48,7 +48,7 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
 
         // Move TEP from TepsNotHosted list to NBI configured TZ.
         OvsdbTepAddConfigHelper.addVtepInITMConfigDS(subnetList, subnetMaskObj, vtepsList, null /*tepIpAddress*/,
-                tzName, dpnId, ITMConstants.DUMMY_PORT, false, wrTx);
+                tzName, dpnId, ITMConstants.DUMMY_PORT, false, 1, null, wrTx);
 
         return Collections.singletonList(wrTx.submit());
     }

@@ -24,13 +24,18 @@ public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>>
     private final String strDpid;
     private final String tzName;
     private final boolean ofTunnel;
+    private final int weight;
+    private final String optionTunnelTos;
     private final DataBroker dataBroker;
 
-    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel, DataBroker broker) {
+    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel, int weight,
+                             String optionTunnelTos, DataBroker broker) {
         this.tepIp = tepIp;
         this.strDpid = strDpnId;
         this.tzName = tzName;
         this.ofTunnel = ofTunnel;
+        this.weight = weight;
+        this.optionTunnelTos = optionTunnelTos;
         this.dataBroker = broker;
     }
 
@@ -41,7 +46,7 @@ public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>>
         LOG.trace("Add TEP task is picked from DataStoreJobCoordinator for execution.");
 
         // add TEP received from southbound OVSDB into ITM config DS.
-        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpid, tzName, ofTunnel,
+        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpid, tzName, ofTunnel, weight, optionTunnelTos,
             dataBroker, wrTx);
 
         return Collections.singletonList(wrTx.submit());

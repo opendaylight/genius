@@ -122,6 +122,11 @@ module itm {
                     type boolean;
                     default false;
                 }
+                leaf weight {
+                    type uint16;
+                    default 1;
+                    description "Bucket weight if tunnel belongs to OF select group";
+                }
                 leaf option-tunnel-tos {
                     description "Value of ToS bits to be set on the encapsulating
                            packet.  The value of 'inherit' will copy the DSCP value

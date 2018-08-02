@@ -88,6 +88,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         String oldDpnBridgeName = null;
         String newDpnBridgeName = null;
         boolean newOfTunnel = false;
+        int newWeight = 1;
+        String newOptionTunnelTos = null;
         boolean isTepInfoUpdated = false;
         boolean isTepInfoDeleted = false;
         boolean isLocalIpAdded = false;
@@ -95,6 +97,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         boolean isLocalIpUpdated = false;
         boolean isTzChanged = false;
         boolean isDpnBrChanged = false;
+
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Update.", originalOvsdbNode.getNodeId().getValue());
 
@@ -131,6 +134,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             newLocalIp = newTepInfoObj.getLocalIp();
             newDpnBridgeName = newTepInfoObj.getBrName();
             newOfTunnel = newTepInfoObj.getOfTunnel();
+            newWeight = newTepInfoObj.getWeight();
+            newOptionTunnelTos = newTepInfoObj.getOptionTunnelTos();
         }
 
         if (oldTepInfoObj != null) {
@@ -188,7 +193,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.error("TEP {} cannot be deleted. DPID for bridge {} is NULL.", oldLocalIp, oldDpnBridgeName);
                 return;
             }
-            addOrRemoveTep(oldTzName, strOldDpnId, oldLocalIp, oldDpnBridgeName, false, false);
+            addOrRemoveTep(oldTzName, strOldDpnId, oldLocalIp, oldDpnBridgeName, false, 1, null, false);
         }
         // handle TEP-add in add case, TZ change case, Bridge change case
         if (isLocalIpAdded || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
@@ -199,12 +204,13 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 return;
             }
             String localIp = isLocalIpUpdated ? oldLocalIp : newLocalIp;
-            addOrRemoveTep(tzName, strNewDpnId, localIp, newDpnBridgeName,  newOfTunnel, true);
+            addOrRemoveTep(tzName, strNewDpnId, localIp, newDpnBridgeName,  newOfTunnel, newWeight,
+                    newOptionTunnelTos, true);
         }
     }
 
     private void addOrRemoveTep(String tzName, String strDpnId, String localIp, String  bridgeName,
-                                boolean newOfTunnel, boolean isTepAdd) {
+                                boolean newOfTunnel, int weight, String optionTunnelTos, boolean isTepAdd) {
         // check if defTzEnabled flag is false in config file,
         // if flag is OFF, then no need to add TEP into ITM config DS.
         if (tzName == null || tzName.equals(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
@@ -229,7 +235,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
             jobCoordinator.enqueueJob(localIp,
-                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker));
+                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, weight, optionTunnelTos, dataBroker));
         } else {
             // remove TEP
             LOG.trace("Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}", localIp,
@@ -382,6 +388,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             String tzName = ovsdbTepInfo.getTzName();
             String newBridgeName = ovsdbTepInfo.getBrName();
             boolean ofTunnel = ovsdbTepInfo.getOfTunnel();
+            int weight = ovsdbTepInfo.getWeight();
+            String optionTunnelTos = ovsdbTepInfo.getOptionTunnelTos();
 
             // check if Local IP is configured or not
             if (newLocalIp != null && !newLocalIp.isEmpty()) {
@@ -390,7 +398,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 if (newBridgeName.equals(bridgeName)) {
                     LOG.trace("processBridgeUpdate for bridge {} that is configured with Local IP.", bridgeName);
                     // add or remove tep based on bridge (br-int) is added or removed
-                    addOrRemoveTep(tzName, strDpnId, newLocalIp, newBridgeName,  ofTunnel, isBridgeAdd);
+                    addOrRemoveTep(tzName, strDpnId, newLocalIp, newBridgeName,  ofTunnel, weight,
+                            optionTunnelTos, isBridgeAdd);
                 } else {
                     LOG.trace("processBridgeUpdate invoked for bridge {}, nothing to do.", bridgeName);
                 }

@@ -26,7 +26,8 @@ class ExpectedTepNotHostedTransportZoneObjects {
                          dpnId = ItmTestConstants.NOT_HOSTED_INT_TZ_TEPDPN_ID
                          ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP)
                          ofTunnel = ItmTestConstants.OF_TUNNEL
-                   ]
+                         weight = ItmTestConstants.WEIGHT
+                  ]
             ]
         ]
     }

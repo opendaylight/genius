@@ -65,4 +65,5 @@ public interface ItmTestConstants {
     String NOT_HOSTED_TZ_NAME = "NotHostedTZ";
     Boolean OF_TUNNEL = false;
     String NOT_HOSTED_DEF_BR_DPID = "00:00:00:00:00:00:00:00";
+    Integer WEIGHT = 1;
 }
