@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c02bea34_884b4d7b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 277,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-02T12:24:46Z",
+      "side": 1,
+      "message": "I had to catch this in different places, so that the API is not changed. and in some other places so that we dont throw the exception to the base listener thread",
+      "revId": "cefe6e5c6c5abe668ace22453eb2393f20813cc6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
