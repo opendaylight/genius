@@ -57,11 +57,12 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
         for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
+            String tunnelName = remoteDpns.getTunnelName();
             try {
-                directTunnelUtils.getTunnelLocks().lock(remoteDpns.getTunnelName());
-                NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+                directTunnelUtils.getTunnelLocks().lock(tunnelName);
+                NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(tunnelName);
                 if (nodeConnectorInfo != null) {
-                    LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+                    LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", tunnelName);
                     // Queue the IntefaceAddWorkerForUnprocessNC in DJC
                     String portName = nodeConnectorInfo.getNodeConnector().getName();
                     InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
@@ -70,7 +71,7 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
                     coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
                 }
             } finally {
-                directTunnelUtils.getTunnelLocks().unlock(remoteDpns.getTunnelName());
+                directTunnelUtils.getTunnelLocks().unlock(tunnelName);
             }
         }
     }
