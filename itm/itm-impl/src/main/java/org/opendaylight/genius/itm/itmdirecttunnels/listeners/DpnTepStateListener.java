@@ -62,7 +62,7 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
                 directTunnelUtils.getTunnelLocks().lock(tunnelName);
                 NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(tunnelName);
                 if (nodeConnectorInfo != null) {
-                    LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", tunnelName);
+                    LOG.info("Processing the Unprocessed NodeConnector for Tunnel {}", tunnelName);
                     // Queue the IntefaceAddWorkerForUnprocessNC in DJC
                     String portName = nodeConnectorInfo.getNodeConnector().getName();
                     InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
