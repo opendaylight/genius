@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1f7e899_1351b0c7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/AbstractTunnelListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-02T17:46:55Z",
+      "side": 1,
+      "message": "Great finding Chintan!",
+      "revId": "0bcda2d235f5ef10d242fbb4f734c91964450cde",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
