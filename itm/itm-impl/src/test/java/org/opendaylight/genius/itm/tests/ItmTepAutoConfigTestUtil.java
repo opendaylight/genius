@@ -39,7 +39,7 @@ public final class ItmTepAutoConfigTestUtil {
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         // add TEP received from southbound OVSDB into ITM config DS.
-        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel,
+        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel, 1, null,
             dataBroker, wrTx);
         return wrTx.submit();
     }

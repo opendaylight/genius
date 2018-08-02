@@ -14,6 +14,8 @@ public class OvsdbTepInfo {
     private String tzName = null;
     private String brName = ITMConstants.DEFAULT_BRIDGE_NAME;
     private boolean ofTunnel = false;
+    private int weight = 1;
+    private String optionTunnelTos = null;
 
     // get methods
     public String getLocalIp() {
@@ -30,6 +32,14 @@ public class OvsdbTepInfo {
 
     public boolean getOfTunnel() {
         return ofTunnel;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public String getOptionTunnelTos() {
+        return optionTunnelTos;
     }
 
     // set methods
@@ -49,10 +59,19 @@ public class OvsdbTepInfo {
         this.ofTunnel = ofTunnel;
     }
 
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public void setOptionTunnelTos(String optionTunnelTos) {
+        this.optionTunnelTos = optionTunnelTos;
+    }
+
     @Override
     public String toString() {
         return "OvsdbTepInfo  { "
                 + "Ovsdb node TepInfo TEP parameters: Local IP: " + localIp + " TZ name: " + tzName
-                + " Bridge name: " + brName + " of-tunnel flag: " + ofTunnel + " }" ;
+                + " Bridge name: " + brName + " of-tunnel flag: " + ofTunnel + " weight: " + weight
+                + " Option-tunnel-tos: " + optionTunnelTos + " }" ;
     }
 }
