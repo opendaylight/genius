@@ -166,13 +166,11 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         }
 
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-        if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
-            //NodeConnectorId nodeConnectorId =
-            // InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(key,
-                    fcNodeConnectorNew, portName);
-            coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
-        }
+        //NodeConnectorId nodeConnectorId =
+        // InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
+        InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(key,
+                fcNodeConnectorNew, portName);
+        coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
     private List<ListenableFuture<Void>> updateState(String interfaceName,
