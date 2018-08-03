@@ -8,6 +8,7 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorStateId;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
@@ -23,11 +24,13 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
@@ -73,6 +76,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
 
     private final DataBroker dataBroker;
     private final AlivenessMonitor alivenessMonitor;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
@@ -81,6 +85,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
                       .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class));
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.alivenessMonitor = alivenessMonitor;
         alivenessProtocolHandlerRegistry.register(EtherTypes.Bfd, this);
     }
@@ -112,7 +117,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         LOG.debug("Acquiring lock for monitor key : {} to process monitor DCN", monitorKey);
         alivenessMonitor.acquireLock(lock);
 
-        final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+        final ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction();
 
         ListenableFuture<Optional<MonitoringState>> stateResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorStateId(monitorKey));
@@ -128,10 +133,9 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
                     final boolean stateChanged = true;
                     final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey)
                             .setState(newTunnelOpState).build();
-                    tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), state);
-                    ListenableFuture<Void> writeResult = tx.submit();
-                    // WRITE Callback
-                    Futures.addCallback(writeResult, new FutureCallback<Void>() {
+                    txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, wTx -> {
+                        wTx.merge(getMonitorStateId(monitorKey), state);
+                    }).addCallback(new FutureCallback<Void>() {
 
                         @Override
                         public void onSuccess(Void arg0) {
@@ -159,8 +163,6 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
                     }, MoreExecutors.directExecutor());
                 } else {
                     LOG.warn("Monitoring State not available for key: {} to process the Packet received", monitorKey);
-                    // Complete the transaction
-                    tx.submit();
                     alivenessMonitor.releaseLock(lock);
                 }
             }
@@ -169,8 +171,6 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
             public void onFailure(@Nonnull Throwable error) {
                 LOG.error("Error when reading Monitoring State for key: {} to process the Packet received", monitorKey,
                         error);
-                // FIXME: Not sure if the transaction status is valid to cancel
-                tx.cancel();
                 alivenessMonitor.releaseLock(lock);
             }
         }, MoreExecutors.directExecutor());
