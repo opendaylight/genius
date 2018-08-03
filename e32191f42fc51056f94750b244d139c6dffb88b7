@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3b60c64_8691488a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/AbstractTunnelListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-08-03T04:53:38Z",
+      "side": 1,
+      "message": "@Hema,\ncan we have this as info? \nor error seems about right?",
+      "range": {
+        "startLine": 101,
+        "startChar": 16,
+        "endLine": 101,
+        "endChar": 21
+      },
+      "revId": "e32191f42fc51056f94750b244d139c6dffb88b7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
