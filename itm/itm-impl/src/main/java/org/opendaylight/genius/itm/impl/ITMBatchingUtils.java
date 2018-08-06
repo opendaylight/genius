@@ -24,7 +24,7 @@ public final class ITMBatchingUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ITMBatchingUtils.class);
 
-    private static final int DEF_BATCH_SIZE = 1000;
+    private static final int DEF_BATCH_SIZE = 200;
     private static final int DEF_PERIODICITY = 500;
 
     private static final BlockingQueue<ActionableResource> DEFAULT_OPERATIONAL_SHARD_BUFFER_Q

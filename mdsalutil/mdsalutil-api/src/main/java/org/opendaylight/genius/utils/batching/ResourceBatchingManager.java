@@ -57,7 +57,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     private static final TimeUnit TIME_UNIT = TimeUnit.MILLISECONDS;
 
     private static final int PERIODICITY_IN_MS = 500;
-    private static final int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 200;
 
     public enum ShardResource {
         CONFIG_TOPOLOGY(LogicalDatastoreType.CONFIGURATION),

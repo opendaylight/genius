@@ -125,7 +125,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     protected void start() throws Exception {
         LOG.info("{} start", getClass().getSimpleName());
 
-        int batchSize = Integer.getInteger("batch.size", 1000);
+        int batchSize = Integer.getInteger("batch.size", 200);
         int batchInterval = Integer.getInteger("batch.wait.time", 500);
 
         flowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(dataBroker, batchSize, batchInterval));
