@@ -33,7 +33,7 @@ public class BatchingUtils implements AutoCloseable {
     private static final String DEFAULT_CONFIG_RES_TYPE = "INTERFACEMGR-DEFAULT-CONFIG";
     private static final String TOPOLOGY_CONFIG_RES_TYPE = "INTERFACEMGR-TOPOLOGY-CONFIG";
 
-    private static final int DEFAULT_BATCH_SIZE = 1000;
+    private static final int DEFAULT_BATCH_SIZE = 200;
     private static final int DEFAULT_BATCH_INTERVAL = 500;
 
     private final BlockingQueue<ActionableResource> topologyConfigShardBufferQ = new LinkedBlockingQueue<>();

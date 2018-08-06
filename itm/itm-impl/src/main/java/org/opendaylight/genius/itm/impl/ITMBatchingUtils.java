@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public final class ITMBatchingUtils {
     private static final Logger LOG = LoggerFactory.getLogger((Class)ITMBatchingUtils.class);
-    public static final int BATCH_SIZE = 1000;
+    public static final int BATCH_SIZE = 200;
     public static final int PERIODICITY = 500;
     public static Integer batchSize;
     public static Integer batchInterval;
