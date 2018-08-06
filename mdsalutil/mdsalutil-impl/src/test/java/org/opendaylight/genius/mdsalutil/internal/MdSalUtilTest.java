@@ -34,6 +34,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionPushVlan;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteActions;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
+import org.opendaylight.infrautils.utils.concurrent.FluentFutures2;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeBuilder;
@@ -56,6 +57,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
     DataBroker dataBroker;
     @Mock
     PacketProcessingService ppS;
+    FluentFutures2 fluentFutures2;
     MDSALManager mdSalMgr = null;
     MockFlowForwarder flowFwder = null;
     MockGroupForwarder grpFwder = null;
@@ -64,7 +66,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
     @Before
     public void setUp() throws Exception {
         dataBroker = getDataBroker();
-        mdSalMgr = new MDSALManager(dataBroker, ppS);
+        mdSalMgr = new MDSALManager(dataBroker, ppS, fluentFutures2);
         flowFwder = new MockFlowForwarder(dataBroker);
         grpFwder = new MockGroupForwarder(dataBroker);
 
