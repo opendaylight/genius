@@ -8,8 +8,9 @@
 package org.opendaylight.genius.mdsalutil.interfaces;
 
 import com.google.common.util.concurrent.CheckedFuture;
-
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -33,7 +34,8 @@ public interface IMdsalApiManager {
     /**
      * Adds a flow.
      *
-     * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
+     * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}
+     *              or {@link #installFlowEntity(FlowEntity)}.
      */
     @Deprecated
     CheckedFuture<Void,TransactionCommitFailedException> installFlow(FlowEntity flowEntity);
@@ -41,7 +43,8 @@ public interface IMdsalApiManager {
     /**
      * Adds a flow.
      *
-     * @deprecated Use {@link #addFlow(TypedWriteTransaction, BigInteger, Flow)}.
+     * @deprecated Use {@link #addFlow(TypedWriteTransaction, BigInteger, Flow)}
+     *              or {@link #installFlowEntity(BigInteger, Flow)}.
      */
     @Deprecated
     CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity);
@@ -49,10 +52,41 @@ public interface IMdsalApiManager {
     /**
      * Adds a flow.
      *
-     * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
+     * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}
+     *              or {@link #installFlowEntity(FlowEntity)}.
      */
     @Deprecated
     CheckedFuture<Void,TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity);
+
+    /**
+     * Adds a flow.
+     *
+     * @param flowEntity
+     *            Flow being added
+     */
+    FluentFuture<Void> installFlowEntity(FlowEntity flowEntity);
+
+
+    /**
+     * Adds a flow.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param flowEntity
+     *            Flow being added
+     */
+    FluentFuture<Void> installFlowEntity(BigInteger dpId, Flow flowEntity);
+
+
+    /**
+     * Adds a flow.
+     *
+     * @param dpId
+     *            dpn Id
+     * @param flowEntity
+     *            Flow being added
+     */
+    FluentFuture<Void> installFlowEntity(BigInteger dpId, FlowEntity flowEntity);
 
     /**
      * Add a Flow to batched transaction.
@@ -142,7 +176,8 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
-     * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
+     * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}
+     *              or {@link #removeFlowEntity(FlowEntity)}.
      */
     @Deprecated
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(FlowEntity flowEntity);
@@ -150,7 +185,8 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
-     * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, BigInteger, Flow)}.
+     * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, BigInteger, Flow)}
+     *              or {@link #removeFlowEntity(BigInteger, Flow)}.
      */
     @Deprecated
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity);
@@ -158,7 +194,8 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
-     * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
+     * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}
+     *              or {@link #removeFlowEntity(BigInteger, FlowEntity)}.
      */
     @Deprecated
     CheckedFuture<Void,TransactionCommitFailedException> removeFlow(BigInteger dpId, FlowEntity flowEntity);
@@ -203,6 +240,29 @@ public interface IMdsalApiManager {
      */
     void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId, short tableId)
         throws ExecutionException, InterruptedException;
+
+    /**
+     * Removes the given flow.
+     *
+     * @param dpId The DPN identifier.
+     * @param flowEntity The flow.
+     */
+    FluentFuture<Void> removeFlowEntity(BigInteger dpId, Flow flowEntity);
+
+    /**
+     * Removes the given flow.
+     *
+     * @param dpId The DPN identifier.
+     * @param flowEntity The flow.
+     */
+    FluentFuture<Void> removeFlowEntity(BigInteger dpId, FlowEntity flowEntity);
+
+    /**
+     * Removes the given flow.
+     *
+     * @param flowEntity The flow.
+     */
+    FluentFuture<Void> removeFlowEntity(FlowEntity flowEntity);
 
     /**
      * Remove a Flow using batched transaction.
