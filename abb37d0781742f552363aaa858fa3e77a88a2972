@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "afaadec5_84f5c79e",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-06T09:38:15Z",
+      "side": 1,
+      "message": "why?  We do want to encourage people to write flows in an existing larger transaction, so the variants with to not take a Tx arg (but create a micro Tx themselves just to write the flow) should all be @deprecated and discouraged, not encouraged like this does... also applies to all of below.",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3004fa23_bb803518",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-06T09:38:15Z",
+      "side": 1,
+      "message": "as per above - ideally, I would love to see this not being introduced at all.  If you have to (really?), then this has to immediately and already be @Deprecated - and hopefully removed, soon.",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8b9214a_61419f05",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-06T09:38:15Z",
+      "side": 1,
+      "message": "hang on, this (from https://git.opendaylight.org/gerrit/#/c/74759/4/common/util/src/main/java/org/opendaylight/infrautils/utils/concurrent/FluentFutures2.java) is a static method, so ... why are you introducing this field instead of just using FluentFutures2.toChecked() where you need it?  It\u0027s unusual and very confusing (because its unset) as it currently is, so remove, please.",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "42e58cec_82e142bb",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-06T09:38:15Z",
+      "side": 1,
+      "message": "this looks like you are doing this because you do not want to log the stack trace in case of an OptimisticLockFailedException?  Shouldn\u0027t we just use the RetryingManagedNewTransactionRunner instead here then?",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
