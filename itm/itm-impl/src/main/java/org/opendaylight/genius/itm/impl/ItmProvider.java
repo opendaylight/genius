@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.impl;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -23,9 +24,11 @@ import javax.inject.Singleton;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.diagstatus.ItmDiagStatusProvider;
@@ -89,6 +92,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final TunnelMonitoringConfig tunnelMonitoringConfig;
     private EntityOwnershipCandidateRegistration registryCandidate;
     private final DpnTepStateCache dpnTepStateCache;
+    private final TunnelStateCache tunnelStateCache;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -105,7 +109,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        TunnelMonitoringConfig tunnelMonitoringConfig,
                        EntityOwnershipService entityOwnershipService,
                        DpnTepStateCache dpnTepStateCache,
-                       final ItmDiagStatusProvider itmDiagStatusProvider) {
+                       final ItmDiagStatusProvider itmDiagStatusProvider,
+                       final TunnelStateCache tunnelStateCache) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -122,6 +127,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.entityOwnershipService = entityOwnershipService;
         this.dpnTepStateCache = dpnTepStateCache;
         this.itmStatusProvider = itmDiagStatusProvider;
+        this.tunnelStateCache = tunnelStateCache;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
     }
 
@@ -374,5 +380,10 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public Interface getInterface(String tunnelName) {
         return dpnTepStateCache.getInterfaceFromCache(tunnelName);
+    }
+
+    @Override
+    public Optional<StateTunnelList> getTunnelState(String interfaceName) throws ReadFailedException {
+        return tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
     }
 }
