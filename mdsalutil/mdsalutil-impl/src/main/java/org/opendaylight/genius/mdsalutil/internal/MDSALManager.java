@@ -361,7 +361,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return nodeConnectorRef;
     }
 
-    private Node buildDpnNode(BigInteger dpnId) {
+    private static Node buildDpnNode(BigInteger dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
         Node nodeDpn = new NodeBuilder().setId(nodeId).withKey(new NodeKey(nodeId)).build();
 
@@ -442,7 +442,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    class GroupListener extends AsyncClusteredDataTreeChangeListenerBase<Group, GroupListener> {
+    private class GroupListener extends AsyncClusteredDataTreeChangeListenerBase<Group, GroupListener> {
 
         GroupListener() {
             super(Group.class, GroupListener.class);
@@ -487,7 +487,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    class FlowListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowListener> {
+    private class FlowListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowListener> {
 
         FlowListener() {
             super(Flow.class, FlowListener.class);
@@ -530,7 +530,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    class FlowConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowConfigListener> {
+    private class FlowConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowConfigListener> {
         private final Logger flowLog = LoggerFactory.getLogger(FlowConfigListener.class);
 
         FlowConfigListener() {
@@ -567,7 +567,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private BigInteger getDpnFromString(String dpnString) {
+    private static BigInteger getDpnFromString(String dpnString) {
         String[] split = dpnString.split(":");
         return new BigInteger(split[1]);
     }
@@ -959,7 +959,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return false;
     }
 
-    private InstanceIdentifier<Flow> buildFlowInstanceIdentifier(BigInteger dpnId, short tableId, FlowKey flowKey) {
+    private static InstanceIdentifier<Flow> buildFlowInstanceIdentifier(BigInteger dpnId, short tableId,
+            FlowKey flowKey) {
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, buildDpnNode(dpnId).key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(tableId)).child(Flow.class, flowKey).build();
