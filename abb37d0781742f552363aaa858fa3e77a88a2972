@@ -107,6 +107,24 @@
     },
     {
       "key": {
+        "uuid": "a6c885b8_e92fb98d",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T12:26:38Z",
+      "side": 1,
+      "message": "Oh sh* sorry, it was meant to be in https://git.opendaylight.org/gerrit/#/c/74759/ but was wrong there; it\u0027s fixed by https://git.opendaylight.org/gerrit/#/c/74887/ - will you adapt?",
+      "parentUuid": "e6877bca_879eac65",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42e58cec_82e142bb",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
         "patchSetId": 3
