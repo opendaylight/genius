@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3743c228_035c14a1",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "no no, this is all wrong.. instead of turning this ReadWriteTransaction into a ReadOnlyTransaction and then using the txRunner to create ANOTHER and SEPARATE NEW Tx below (line 384), what would be much better is to use a txRunner.callWithNewReadWriteTransactionAndSubmit() here instead - do you see what I mean?",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6fd34771_88713aec",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "lower-case operTx",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "760277a5_2132eb7f",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 575,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "see above, this as is is all wrong and upside down; you want to use a single callWithNewWriteOnlyTransactionAndSubmit instead of creating 3 new TXs",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c396fd70_f54d36bb",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "as above, this is doing the opposite of what we want",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "842006be_b30a71c1",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 913,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "again, this is also wrong",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b85f5c83_b825d0f1",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1010,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "also",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3d1e49e_0d07a4f9",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1115,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "also",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bab5f0b4_9946e5f3",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "again",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "319270d7_834f49ed",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1204,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T22:01:34Z",
+      "side": 1,
+      "message": "no no...",
+      "revId": "97b8bd2512c6c5153510e05c4b7cd703ed172aaf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
