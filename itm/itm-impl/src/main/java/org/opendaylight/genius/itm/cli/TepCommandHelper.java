@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -29,8 +30,11 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -75,6 +79,8 @@ public class TepCommandHelper {
     private final RetryingManagedNewTransactionRunner txRunner;
     private final ItmConfig itmConfig;
     private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
+    private final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
+    private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
     static int check = 0;
 
     /*
@@ -92,11 +98,15 @@ public class TepCommandHelper {
 
     @Inject
     public TepCommandHelper(final DataBroker dataBroker, final ItmConfig itmConfig,
-                            final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache) {
+                            final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache,
+                            final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
+                            final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
         this.itmConfig = itmConfig;
         this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
+        this.unprocessedNodeConnectorCache = unprocessedNodeConnectorCache;
+        this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
     }
 
     @PostConstruct
@@ -533,12 +543,15 @@ public class TepCommandHelper {
                     break;
                 case ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME:
                     cacheContent = unprocessedTunnelsStateCache.getAllUnprocessedTunnels();
+                case ITMConstants.UNPROCESSED_NODE_CONNECTOR_CACHE:
+                    showAllUnprocessedNCCaches();
                     break;
                 default:
                     cacheContent = null;
             }
             System.out.println("Number of data in cache " + cacheContent.size());
-            if (cacheContent != null && !cacheContent.isEmpty()) {
+            if (cacheContent != null && !cacheContent.isEmpty()
+                    && !cacheName.equals(ITMConstants.UNPROCESSED_NODE_CONNECTOR_CACHE)) {
                 for (String key : cacheContent) {
                     System.out.println(key + " ");
                 }
@@ -552,8 +565,41 @@ public class TepCommandHelper {
         boolean valid = false;
         valid = name.equals(ITMConstants.INTERNAL_TUNNEL_CACHE_NAME)
                 || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME)
-                || name.equals(ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME);
+                || name.equals(ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME)
+                || name.equals(ITMConstants.UNPROCESSED_NODE_CONNECTOR_CACHE);
         return valid;
+    }
+
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
+    public void showAllUnprocessedNCCaches() {
+        Map<String, NodeConnectorInfo> cacheContent = unprocessedNodeConnectorCache.getAllPresent();
+
+        if (!cacheContent.isEmpty()) {
+            System.out.println("Unprocessed Node Connector Cache");
+            Set<String> keys = cacheContent.keySet();
+            for (String key : keys) {
+                NodeConnectorInfo nc = cacheContent.get(key);
+                System.out.println(" KEY:  " + key + " Value: " + nc);
+            }
+        } else {
+            System.out.println("No data in cache for " + cacheContent);
+        }
+
+        Map<String, Set<NodeConnectorInfo>> ncEndPtCacheContent = unprocessedNodeConnectorEndPointCache.getAllPresent();
+
+        if (!ncEndPtCacheContent.isEmpty()) {
+            System.out.println("Unprocessed Node Connector End Point Cache");
+            Set<String> ncKeys = ncEndPtCacheContent.keySet();
+            for (String key : ncKeys) {
+                Set<NodeConnectorInfo> ncInfos = ncEndPtCacheContent.get(key);
+                System.out.println(" KEY: " + key);
+                if (!ncInfos.isEmpty()) {
+                    ncInfos.forEach(ncInfo -> System.out.println("  --  VALUE: " + ncInfo));
+                }
+            }
+        } else {
+            System.out.println("No data in cache for " + ncEndPtCacheContent);
+        }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -738,7 +784,9 @@ public class TepCommandHelper {
 
         for (StateTunnelList tunnelInst : tunnelLists) {
            // Display only the internal tunnels
-            if (tunnelInst.getDstInfo().getTepDeviceType().equals(TepTypeInternal.class)) {
+            if ((tunnelInst.getSrcInfo() != null)
+                && (tunnelInst.getDstInfo() != null)
+                && (TepTypeInternal.class.equals(tunnelInst.getDstInfo().getTepDeviceType()))) {
                 String tunnelInterfaceName = tunnelInst.getTunnelInterfaceName();
                 LOG.trace("tunnelInterfaceName::: {}", tunnelInterfaceName);
                 String tunnelState = ITMConstants.TUNNEL_STATE_UNKNOWN;

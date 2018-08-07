@@ -57,20 +57,15 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
         for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
-            try {
-                directTunnelUtils.getTunnelLocks().lock(remoteDpns.getTunnelName());
-                NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
-                if (nodeConnectorInfo != null) {
-                    LOG.info("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
-                    // Queue the IntefaceAddWorkerForUnprocessNC in DJC
-                    String portName = nodeConnectorInfo.getNodeConnector().getName();
-                    InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
-                            new InterfaceStateAddWorkerForUnprocessedNC(nodeConnectorInfo.getNodeConnectorId(),
-                                    nodeConnectorInfo.getNodeConnector(), portName);
-                    coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
-                }
-            } finally {
-                directTunnelUtils.getTunnelLocks().unlock(remoteDpns.getTunnelName());
+            NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+            if (nodeConnectorInfo != null) {
+                LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+                // Queue the IntefaceAddWorkerForUnprocessNC in DJC
+                String portName = nodeConnectorInfo.getNodeConnector().getName();
+                InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
+                        new InterfaceStateAddWorkerForUnprocessedNC(nodeConnectorInfo.getNodeConnectorId(),
+                                nodeConnectorInfo.getNodeConnector(), portName);
+                coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
             }
         }
     }

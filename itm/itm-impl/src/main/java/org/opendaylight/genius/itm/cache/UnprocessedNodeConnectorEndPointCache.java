@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.cache;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,5 +48,9 @@ public class UnprocessedNodeConnectorEndPointCache {
 
     public Collection<NodeConnectorInfo> get(String dpnId) {
         return unProcessedNodeConnectorEndPtMap.get(dpnId);
+    }
+
+    public Map<String, Set<NodeConnectorInfo>> getAllPresent() {
+        return unProcessedNodeConnectorEndPtMap;
     }
 }
