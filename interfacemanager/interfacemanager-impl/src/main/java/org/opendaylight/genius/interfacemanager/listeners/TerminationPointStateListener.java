@@ -90,12 +90,10 @@ public class TerminationPointStateListener extends
     @Override
     protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                           OvsdbTerminationPointAugmentation tpOld) {
-        if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
-                && interfaceManagerCommonUtils.isTunnelInternal(tpOld.getName())) {
-            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for internal tunnel {}",
-                    tpOld.getName());
-            return;
-        }
+        // No ItmDirectTunnels or Internal Tunnel checking is done here as this DTCN only results in removal
+        // of interface entry from BFD internal cache. For internal tunnels when ItmDirectTunnel is enabled,
+        // the entry won't be in cache, but ConcurrentHashMap will just ignore when key is not present.
+
         LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
 
         String oldInterfaceName = SouthboundUtils.getExternalInterfaceIdValue(tpOld);
@@ -118,11 +116,13 @@ public class TerminationPointStateListener extends
                           OvsdbTerminationPointAugmentation tpOld,
                           OvsdbTerminationPointAugmentation tpNew) {
         if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
-                && interfaceManagerCommonUtils.isTunnelInternal(tpNew.getName())) {
+            && InterfaceManagerCommonUtils.isTunnelPort(tpNew.getName())
+            && interfaceManagerCommonUtils.getInterfaceFromConfigDS(tpNew.getName()) == null) {
             LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point update - "
                     + "old {}, new {} internal tunnel", tpOld.getName(), tpNew.getName());
             return;
         }
+
 
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
         if (org.opendaylight.genius.interfacemanager.renderer.ovs.utilities
@@ -170,9 +170,10 @@ public class TerminationPointStateListener extends
     protected void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                        OvsdbTerminationPointAugmentation tpNew) {
         if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
-                && interfaceManagerCommonUtils.isTunnelInternal(tpNew.getName())) {
-            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for internal tunnel {}",
-                    tpNew.getName());
+            && InterfaceManagerCommonUtils.isTunnelPort(tpNew.getName())
+            && interfaceManagerCommonUtils.getInterfaceFromConfigDS(tpNew.getName()) == null) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for"
+                    + " internal tunnel {}", tpNew.getName());
             return;
         }
         update(identifier, null, tpNew);
