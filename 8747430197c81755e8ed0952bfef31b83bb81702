@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e80f489f_a7bfbc88",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T21:04:36Z",
+      "side": 1,
+      "message": "we could put these lines into a shared method instead of copy/pasting them from above?  Not super important, but would be bit nicer/better.",
+      "revId": "8747430197c81755e8ed0952bfef31b83bb81702",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f0e51c48_37f66fb3",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T21:04:36Z",
+      "side": 1,
+      "message": "also, as above, could avoid copy/pasting 2 lines",
+      "revId": "8747430197c81755e8ed0952bfef31b83bb81702",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "02d85c62_66587741",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T21:04:36Z",
+      "side": 1,
+      "message": "as above, it would be a bit nicer not to copy/paste 3 lines",
+      "revId": "8747430197c81755e8ed0952bfef31b83bb81702",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b6ce9c4_6b65b5f1",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T21:04:36Z",
+      "side": 1,
+      "message": "as above, it would be a bit nicer not to copy/paste 4 lines",
+      "revId": "8747430197c81755e8ed0952bfef31b83bb81702",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2877444b_eb61dad1",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 979,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T21:04:36Z",
+      "side": 1,
+      "message": "minor typo returnM (but doesn\u0027t really matter much, as just a private method)",
+      "revId": "8747430197c81755e8ed0952bfef31b83bb81702",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
