@@ -7,11 +7,13 @@
  */
 package org.opendaylight.genius.itm.api;
 
+import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -90,4 +92,6 @@ public interface IITMProvider {
     boolean validateIP(String ip);
 
     Interface getInterface(String tunnelName);
+
+    Optional<StateTunnelList> getTunnelState(String interfaceName) throws ReadFailedException;
 }
