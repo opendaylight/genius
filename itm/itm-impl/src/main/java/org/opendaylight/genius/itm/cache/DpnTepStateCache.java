@@ -21,6 +21,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfoBuilder;
@@ -47,11 +48,13 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     private final DataBroker dataBroker;
     private final DPNTEPsInfoCache dpnTepsInfoCache;
+    private final IInterfaceManager interfaceManager;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
 
     @Inject
-    public DpnTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider, DPNTEPsInfoCache dpnTepsInfoCache) {
+    public DpnTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider, DPNTEPsInfoCache dpnTepsInfoCache,
+                            IInterfaceManager interfaceManager) {
         super(DpnsTeps.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class).build(), cacheProvider,
             (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId(),
@@ -59,6 +62,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     .child(DpnsTeps.class, new DpnsTepsKey(sourceDpnId)).build());
         this.dataBroker = dataBroker;
         this.dpnTepsInfoCache = dpnTepsInfoCache;
+        this.interfaceManager = interfaceManager;
     }
 
     @Override
@@ -73,6 +77,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
             dpnTepInterfaceMap.put(dpn, value);
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                     dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+            // Added to build the cache in all nodes across cluster
+            interfaceManager.addInternalTunnelToIgnoreCache(remoteDpns.getTunnelName());
         }
     }
 
