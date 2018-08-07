@@ -33,10 +33,12 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.diagstatus.IfmDiagStatusProvider;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.interfacemanager.listeners.InternalTunnelIgnoreCache;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.interfacemanager.rpcservice.InterfaceManagerRpcService;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -111,12 +113,14 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
     private EntityOwnershipCandidateRegistration configEntityCandidate;
     private EntityOwnershipCandidateRegistration bindingEntityCandidate;
+    private InternalTunnelIgnoreCache internalTunnelIgnoreCache;
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig) {
+                                final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
+                                final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig,
+                                final InternalTunnelIgnoreCache internalTunnelIgnoreCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;
@@ -126,6 +130,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.ifmConfig = ifmConfig;
+        this.internalTunnelIgnoreCache = internalTunnelIgnoreCache;
+        start();
     }
 
     @PostConstruct
@@ -873,5 +879,20 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public boolean isItmDirectTunnelsEnabled() {
         return ifmConfig.isItmDirectTunnels();
+    }
+
+    @Override
+    public void addInternalTunnelToIgnoreCache(String tunnelName) {
+        internalTunnelIgnoreCache.add(tunnelName);
+    }
+
+    @Override
+    public String removeInternalTunnelFromIgnoreCache(String tunnelName) {
+        return internalTunnelIgnoreCache.remove(tunnelName);
+    }
+
+    @Override
+    public boolean isInternalTunnelInIgnoreCache(String tunnelName) {
+        return internalTunnelIgnoreCache.isPresent(tunnelName);
     }
 }
