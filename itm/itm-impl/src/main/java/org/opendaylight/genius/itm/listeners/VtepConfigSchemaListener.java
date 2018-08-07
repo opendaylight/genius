@@ -256,7 +256,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
                     schema);
             return;
         }
-        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig);
+        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig, null, null);
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
@@ -326,7 +326,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
      *            the dpn ids list to be deleted
      */
     private void deleteVteps(VtepConfigSchema schema, List<BigInteger> lstDpnIdsToBeDeleted) {
-        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig);
+        TepCommandHelper tepCommandHelper = new TepCommandHelper(this.dataBroker, itmConfig, null, null);
         List<IpAddress> freeIps = new ArrayList<>();
 
         String subnetCidr = ItmUtils.getSubnetCidrAsString(schema.getSubnet());
