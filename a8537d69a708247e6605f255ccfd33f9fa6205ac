@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8061801_c5fff914",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-08-07T04:52:03Z",
+      "side": 1,
+      "message": "For every Tep that is added ,this checked will be done and this operation seems to be heavy one with nested loops. Can we have an in memory map of \u003ctepip, TZ\u003e across all nodes and this can be used for these lookups.",
+      "revId": "a8537d69a708247e6605f255ccfd33f9fa6205ac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4cf777b_6a33de54",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1436,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-08-07T04:52:03Z",
+      "side": 1,
+      "message": "Can such processing be avoided ?",
+      "revId": "a8537d69a708247e6605f255ccfd33f9fa6205ac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
