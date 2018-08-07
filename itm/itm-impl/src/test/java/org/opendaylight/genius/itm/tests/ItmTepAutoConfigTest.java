@@ -24,6 +24,8 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -59,6 +61,8 @@ public class ItmTepAutoConfigTest {
 
     TransportZone transportZone;
     TransportZones transportZones;
+    UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
+    UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
 
     // list objects
     List<TransportZone> transportZoneList = new ArrayList<>();
@@ -79,6 +83,8 @@ public class ItmTepAutoConfigTest {
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         unprocessedTunnelsStateCache = new UnprocessedTunnelsStateCache();
+        this.unprocessedNodeConnectorCache = unprocessedNodeConnectorCache;
+        this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
     }
 
     // Common method created for code-reuse
@@ -96,7 +102,8 @@ public class ItmTepAutoConfigTest {
         // Create TepCommandHelper object which creates/deletes default-TZ based
         // on def-tz-enabled flag
         TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
-                unprocessedTunnelsStateCache);
+                unprocessedTunnelsStateCache,
+                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
         tepCmdHelper.start();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
@@ -224,7 +231,8 @@ public class ItmTepAutoConfigTest {
             .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_GRE).build();
 
         TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
-                unprocessedTunnelsStateCache);
+                unprocessedTunnelsStateCache,
+                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
         tepCmdHelper.start();
 
         // Create TepCommandHelper object which creates/deletes default-TZ based on def-tz-enabled flag
@@ -240,7 +248,9 @@ public class ItmTepAutoConfigTest {
         itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(false).build();
 
         // Create TepCommandHelper object which creates/deletes default-TZ based on def-tz-enabled flag
-        tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj, unprocessedTunnelsStateCache);
+        tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj, unprocessedTunnelsStateCache,
+                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
+
         tepCmdHelper.start();
 
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
@@ -254,7 +264,8 @@ public class ItmTepAutoConfigTest {
             .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
 
         TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
-                unprocessedTunnelsStateCache);
+                unprocessedTunnelsStateCache,
+                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
         tepCmdHelper.start();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
