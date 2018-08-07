@@ -129,10 +129,12 @@ public class InterfaceInventoryStateListener
     @Override
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
-        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
-                && interfaceManagerCommonUtils.isTunnelInternal(flowCapableNodeConnectorOld.getName())) {
-            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector removed for internal tunnel {}",
-                    flowCapableNodeConnectorOld.getName());
+        String interfaceName = flowCapableNodeConnectorOld.getName();
+        if ((interfacemgrProvider.isItmDirectTunnelsEnabled()
+            && InterfaceManagerCommonUtils.isTunnelPort(interfaceName))
+            && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
+            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector removed for"
+                    + " internal tunnel {}", interfaceName);
             return;
         }
 
@@ -162,10 +164,12 @@ public class InterfaceInventoryStateListener
     @Override
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
         FlowCapableNodeConnector fcNodeConnectorNew) {
-        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
-                && interfaceManagerCommonUtils.isTunnelInternal(fcNodeConnectorNew.getName())) {
-            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector Update for internal tunnel {}",
-                    fcNodeConnectorNew.getName());
+        String interfaceName = fcNodeConnectorNew.getName();
+        if ((interfacemgrProvider.isItmDirectTunnelsEnabled()
+            && InterfaceManagerCommonUtils.isTunnelPort(interfaceName))
+            && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
+            LOG.debug("ITM Direct Tunnels is enabled, hence ignoring node connector Update for"
+                    + " internal tunnel {}", interfaceName);
             return;
         }
 
@@ -187,10 +191,12 @@ public class InterfaceInventoryStateListener
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
-        if (interfacemgrProvider.isItmDirectTunnelsEnabled()
-                && interfaceManagerCommonUtils.isTunnelInternal(fcNodeConnectorNew.getName())) {
-            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector add for internal tunnel {}",
-                    fcNodeConnectorNew.getName());
+        String interfaceName = fcNodeConnectorNew.getName();
+        if ((interfacemgrProvider.isItmDirectTunnelsEnabled()
+            &&  InterfaceManagerCommonUtils.isTunnelPort(interfaceName))
+            && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
+            LOG.debug("ITM Direct Tunnels is enabled, ignoring node connector add for"
+                    + " internal tunnel {}", interfaceName);
             return;
         }
 
