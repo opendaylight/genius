@@ -190,4 +190,10 @@ public interface IInterfaceManager {
     long getLogicalTunnelSelectGroupId(int lportTag);
 
     boolean isItmDirectTunnelsEnabled();
+
+    void addInternalTunnelToIgnoreCache(String tunnelName);
+
+    String removeInternalTunnelFromIgnoreCache(String tunnelName);
+
+    boolean isInternalTunnelInIgnoreCache(String tunnelName);
 }
