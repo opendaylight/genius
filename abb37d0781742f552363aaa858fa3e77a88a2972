@@ -157,6 +157,24 @@
       "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7ab7b3c_5a268fee",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-07T21:04:36Z",
+      "side": 1,
+      "message": "seen, thanks.  I think the way it is now (Patch Set 6) this may not be ever hit anymore (because the RetryingManagedNewTransactionRunner will already handle the OptimisticLockFailedException...) so it will never hit onFailure - or may be it does if it gives up - I cannot remember the exact implementation.  So leave it in if you want to be extra sure, but I think this may actually never run anymore now that we use the RetryingManagedNewTransactionRunner.",
+      "parentUuid": "e17ca1ef_4b057dcc",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
