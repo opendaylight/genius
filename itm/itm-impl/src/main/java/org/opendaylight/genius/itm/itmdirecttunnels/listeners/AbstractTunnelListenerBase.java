@@ -105,9 +105,6 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
 
         LOG.info("adding interface state to Oper DS for interface: {}", interfaceName);
 
-        Interface.OperStatus operStatus = Interface.OperStatus.Up;
-        Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
-
         TunnelEndPointInfo tunnelEndPointInfo;
         DpnTepInterfaceInfo dpnTepConfigInfo = null;
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -115,24 +112,22 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         // Fetch the interface/Tunnel from config DS if exists
         // If it doesnt exists then "park" the processing and comeback to it when the data is available and
         // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
-        try {
-            directTunnelUtils.getTunnelLocks().lock(interfaceName);
-            tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+        tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
 
-            if (tunnelEndPointInfo != null) {
-                dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
-                        new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
-                        new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
-            }
-            if (tunnelEndPointInfo == null || dpnTepConfigInfo == null) {
-                LOG.info("Unable to process the NodeConnector ADD event for {} as Config not available."
-                        + "Hence parking it", interfaceName);
-                unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
-                return Collections.emptyList();
-            }
-        } finally {
-            directTunnelUtils.getTunnelLocks().unlock(interfaceName);
+        if (tunnelEndPointInfo != null) {
+            dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
+                    new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
+                    new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
         }
+        if (tunnelEndPointInfo == null || dpnTepConfigInfo == null) {
+            LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+                    + "Hence parking it", interfaceName);
+            unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
+            return Collections.emptyList();
+        }
+        Interface.OperStatus operStatus = Interface.OperStatus.Up;
+        Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
+
         StateTunnelList stateTnl = addStateEntry(tunnelEndPointInfo, interfaceName,
                 operStatus, adminStatus, nodeConnectorInfo);
 
@@ -154,7 +149,6 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         final StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
         Class<? extends TunnelTypeBase> tunnelType;
         java.util.Optional<DPNTEPsInfo> srcDpnTepsInfo;
-        java.util.Optional<DPNTEPsInfo> dstDpnTePsInfo;
 
         // Retrieve Port No from nodeConnectorId
         InstanceIdentifier<FlowCapableNodeConnector> key = nodeConnectorInfo.getNodeConnectorId();
@@ -167,30 +161,21 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         LOG.debug("Source Dpn TEP Interface Info {}", dpnTepInfo);
         tunnelType = dpnTepInfo.getTunnelType();
 
-        try {
-            directTunnelUtils.getTunnelLocks().lock(tunnelEndPointInfo.getSrcEndPointInfo());
-            srcDpnTepsInfo = dpntePsInfoCache
-                    .getDPNTepFromDPNId(new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()));
-            if (!srcDpnTepsInfo.isPresent()) {
-                LOG.info("Unable to add State for tunnel {}. Hence Parking with key {}",
-                        interfaceName, tunnelEndPointInfo.getSrcEndPointInfo());
-                unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(), nodeConnectorInfo);
-            }
-        } finally {
-            directTunnelUtils.getTunnelLocks().unlock(tunnelEndPointInfo.getSrcEndPointInfo());
+        srcDpnTepsInfo = dpntePsInfoCache
+                .getDPNTepFromDPNId(new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()));
+        if (!srcDpnTepsInfo.isPresent()) {
+            LOG.debug("Unable to add State for tunnel {}. Hence Parking with key {}",
+                    interfaceName, tunnelEndPointInfo.getSrcEndPointInfo());
+            unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(), nodeConnectorInfo);
         }
 
-        try {
-            directTunnelUtils.getTunnelLocks().lock(tunnelEndPointInfo.getDstEndPointInfo());
-            dstDpnTePsInfo = dpntePsInfoCache
-                    .getDPNTepFromDPNId(new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
-            if (!dstDpnTePsInfo.isPresent()) {
-                LOG.info("Unable to add State for tunnel {}. Hence Parking with key {}",
-                        interfaceName, tunnelEndPointInfo.getDstEndPointInfo());
-                unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getDstEndPointInfo(), nodeConnectorInfo);
-            }
-        } finally {
-            directTunnelUtils.getTunnelLocks().unlock(tunnelEndPointInfo.getDstEndPointInfo());
+        java.util.Optional<DPNTEPsInfo> dstDpnTePsInfo;
+        dstDpnTePsInfo = dpntePsInfoCache
+                .getDPNTepFromDPNId(new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
+        if (!dstDpnTePsInfo.isPresent()) {
+            LOG.debug("Unable to add State for tunnel {}. Hence Parking with key {}",
+                    interfaceName, tunnelEndPointInfo.getDstEndPointInfo());
+            unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(), nodeConnectorInfo);
         }
 
         if (!(srcDpnTepsInfo.isPresent() && dstDpnTePsInfo.isPresent())) {
