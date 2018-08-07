@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "0d6c8aec_1b1eb4f8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-08-07T10:09:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afaadec5_84f5c79e",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3004fa23_bb803518",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2018-08-06T09:38:15Z",
       "side": 1,
       "message": "as per above - ideally, I would love to see this not being introduced at all.  If you have to (really?), then this has to immediately and already be @Deprecated - and hopefully removed, soon.",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d8e270a_874e5820",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-08-07T10:09:19Z",
+      "side": 1,
+      "message": "removed as suggested",
+      "parentUuid": "3004fa23_bb803518",
       "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "e6877bca_879eac65",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-08-07T10:09:19Z",
+      "side": 1,
+      "message": ".toChecked is not static? I reckon.",
+      "parentUuid": "e8b9214a_61419f05",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "42e58cec_82e142bb",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
         "patchSetId": 3
@@ -64,6 +118,24 @@
       "writtenOn": "2018-08-06T09:38:15Z",
       "side": 1,
       "message": "this looks like you are doing this because you do not want to log the stack trace in case of an OptimisticLockFailedException?  Shouldn\u0027t we just use the RetryingManagedNewTransactionRunner instead here then?",
+      "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e17ca1ef_4b057dcc",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1040,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-08-07T10:09:19Z",
+      "side": 1,
+      "message": "added RetryingManagedNewTransactionRunner",
+      "parentUuid": "42e58cec_82e142bb",
       "revId": "abb37d0781742f552363aaa858fa3e77a88a2972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
