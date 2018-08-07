@@ -127,6 +127,17 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
             tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
 
             if (tunnelEndPointInfo != null) {
+                BigInteger srcDpnId = new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo());
+                BigInteger dpnId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
+                if (srcDpnId.compareTo(dpnId) != 0) {
+                    //This is a preventive measure to check if the node connector is coming from the switch
+                    // to which the tunnel was pushed. If it came from wrong switch due to duplicate tunnel
+                    // then drop the node connector event.
+                    LOG.error("The Source DPN ID {} from ITM Config does not match with the DPN ID {},"
+                                    + "fetched from NodeConnector Add event. Returning here.",
+                            srcDpnId, dpnId);
+                    return Collections.emptyList();
+                }
                 dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
                         new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
                         new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
