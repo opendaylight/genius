@@ -12,7 +12,6 @@ import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CR
 import static org.opendaylight.infrautils.utils.concurrent.FluentFutures2.toChecked;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -30,16 +29,19 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.TransactionAdapter;
 import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -98,7 +100,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final SingleTransactionDataBroker singleTxDb;
     private final FlowListener flowListener = new FlowListener();
     private final FlowConfigListener flowConfigListener = new FlowConfigListener();
     private final GroupListener groupListener = new GroupListener();
@@ -119,7 +120,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         this.dataBroker = db;
         this.txRunner = new RetryingManagedNewTransactionRunner(db);
         this.packetProcessingService = pktProcService;
-        singleTxDb = new SingleTransactionDataBroker(dataBroker);
         LOG.info("MDSAL Manager Initialized ");
     }
 
@@ -233,26 +233,27 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @VisibleForTesting
     FluentFuture<Void> removeFlowInternal(FlowEntity flowEntity) {
         return addCallBackForDeleteFlowAndReturnm(txRunner
-                .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+                .callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION,
                     tx -> deleteFlowEntityInternal(flowEntity, tx)));
     }
 
-    private void deleteFlowEntityInternal(FlowEntity flowEntity, WriteTransaction tx) {
+    private void deleteFlowEntityInternal(FlowEntity flowEntity, ReadWriteTransaction tx) {
         BigInteger dpId = flowEntity.getDpnId();
         short tableId = flowEntity.getTableId();
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
         deleteFlow(dpId, tableId, flowKey, tx);
     }
 
-    private void deleteFlowEntityInternal(FlowEntity flowEntity, TypedWriteTransaction<Datastore.Configuration> tx) {
+    private void deleteFlowEntityInternal(FlowEntity flowEntity,
+            TypedReadWriteTransaction<Datastore.Configuration> tx) {
         BigInteger dpId = flowEntity.getDpnId();
         short tableId = flowEntity.getTableId();
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
         deleteFlow(dpId, tableId, flowKey, tx);
     }
 
-    private void deleteFlow(BigInteger dpId, short tableId, FlowKey flowKey, WriteTransaction tx) {
-        if (flowExists(dpId, tableId, flowKey)) {
+    private void deleteFlow(BigInteger dpId, short tableId, FlowKey flowKey, ReadWriteTransaction tx) {
+        if (flowExists(tx, dpId, tableId, flowKey)) {
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
         } else {
@@ -261,8 +262,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     private void deleteFlow(BigInteger dpId, short tableId, FlowKey flowKey,
-                            TypedWriteTransaction<Datastore.Configuration> tx) {
-        if (flowExists(dpId, tableId, flowKey)) {
+                            TypedReadWriteTransaction<Datastore.Configuration> tx) {
+        if (flowExists(TransactionAdapter.toReadWriteTransaction(tx), dpId, tableId, flowKey)) {
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             tx.delete(flowInstanceId);
         } else {
@@ -272,7 +273,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     private FluentFuture<Void> removeFlowNewInternal(BigInteger dpnId, Flow flowEntity) {
         LOG.debug("Remove flow {}", flowEntity);
-        return txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+        return txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> {
                 FlowKey flowKey = new FlowKey(flowEntity.getId());
                 short tableId = flowEntity.getTableId();
@@ -280,7 +281,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             });
     }
 
-    private void deleteFlowInternal(BigInteger dpId, Flow flow, WriteTransaction tx) {
+    private void deleteFlowInternal(BigInteger dpId, Flow flow, ReadWriteTransaction tx) {
         FlowKey flowKey = new FlowKey(flow.getId());
         short tableId = flow.getTableId();
         deleteFlow(dpId, tableId, flowKey, tx);
@@ -289,13 +290,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @VisibleForTesting
     FluentFuture<Void> removeGroupInternal(BigInteger dpnId, long groupId) {
         return addCallBackForInstallGroupAndReturn(txRunner
-            .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+            .callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> removeGroupInternal(dpnId, groupId, tx)));
     }
 
-    private void removeGroupInternal(BigInteger dpnId, long groupId, WriteTransaction tx) {
+    private void removeGroupInternal(BigInteger dpnId, long groupId, ReadWriteTransaction tx) {
         Node nodeDpn = buildDpnNode(dpnId);
-        if (groupExists(nodeDpn, groupId)) {
+        if (groupExists(tx, nodeDpn, groupId)) {
             InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
             tx.delete(LogicalDatastoreType.CONFIGURATION, groupInstanceId);
         } else {
@@ -304,9 +305,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     private void removeGroupInternal(BigInteger dpnId, long groupId,
-                                     TypedWriteTransaction<Datastore.Configuration> tx) {
+            TypedReadWriteTransaction<Datastore.Configuration> tx) throws ExecutionException, InterruptedException {
         Node nodeDpn = buildDpnNode(dpnId);
-        if (groupExists(nodeDpn, groupId)) {
+        if (groupExists(tx, nodeDpn, groupId)) {
             InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
             tx.delete(groupInstanceId);
         } else {
@@ -592,7 +593,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public ListenableFuture<Void> removeFlow(BigInteger dpId, short tableId, FlowId flowId) {
-        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+        ListenableFuture<Void> future = txRunner.callWithNewReadWriteTransactionAndSubmit(
             tx -> deleteFlow(dpId, tableId, new FlowKey(flowId), tx));
 
         Futures.addCallback(future, new FutureCallback<Void>() {
@@ -884,9 +885,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private void addBucket(BigInteger dpId, long groupId, Bucket bucket, WriteTransaction tx) {
+    private void addBucket(BigInteger dpId, long groupId, Bucket bucket, ReadWriteTransaction tx) {
         Node nodeDpn = buildDpnNode(dpId);
-        if (groupExists(nodeDpn, groupId)) {
+        if (groupExists(tx, nodeDpn, groupId)) {
             InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
                 bucket.getBucketId().getValue(), nodeDpn);
             tx.put(LogicalDatastoreType.CONFIGURATION, bucketInstanceId, bucket);
@@ -910,9 +911,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private void deleteBucket(BigInteger dpId, long groupId, long bucketId, WriteTransaction tx) {
+    private void deleteBucket(BigInteger dpId, long groupId, long bucketId, ReadWriteTransaction tx) {
         Node nodeDpn = buildDpnNode(dpId);
-        if (groupExists(nodeDpn, groupId)) {
+        if (groupExists(tx, nodeDpn, groupId)) {
             InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId, bucketId, nodeDpn);
             tx.delete(LogicalDatastoreType.CONFIGURATION, bucketInstanceId);
         } else {
@@ -922,17 +923,20 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public boolean groupExists(BigInteger dpId, long groupId) {
-        return groupExists(buildDpnNode(dpId), groupId);
+        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+            return groupExists(tx, buildDpnNode(dpId), groupId);
+        }
     }
 
-    private boolean groupExists(Node nodeDpn, long groupId) {
+    private boolean groupExists(ReadTransaction tx, Node nodeDpn, long groupId) {
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
         try {
-            return singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, groupInstanceId).isPresent();
+            return tx.read(LogicalDatastoreType.CONFIGURATION, groupInstanceId).checkedGet().isPresent();
         } catch (ReadFailedException e) {
-            LOG.warn("Exception while reading group {} for Node {}", groupId, nodeDpn.key());
+            LOG.warn("Exception while checking group {} exists for Node {} - returning false, may be wrong", groupId,
+                    nodeDpn.key(), e);
+            return false;
         }
-        return false;
     }
 
     private boolean groupExists(TypedReadTransaction<Configuration> tx, Node nodeDpn, long groupId)
@@ -947,16 +951,15 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return groupInstanceId;
     }
 
-    private boolean flowExists(BigInteger dpId, short tableId, FlowKey flowKey) {
+    private boolean flowExists(ReadTransaction tx, BigInteger dpId, short tableId, FlowKey flowKey) {
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
         try {
-            Optional<Flow> flowOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
-                    flowInstanceId);
-            return flowOptional.isPresent();
-        } catch (ReadFailedException e) {
-            LOG.warn("Exception while reading flow {} for dpn {}", flowKey, dpId);
+            return tx.read(LogicalDatastoreType.CONFIGURATION, flowInstanceId).get().isPresent();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.warn("Exception while check if flow {} exists for dpn {} - returning false, may be wrong", flowKey,
+                    dpId, e);
+            return false;
         }
-        return false;
     }
 
     private static InstanceIdentifier<Flow> buildFlowInstanceIdentifier(BigInteger dpnId, short tableId,
