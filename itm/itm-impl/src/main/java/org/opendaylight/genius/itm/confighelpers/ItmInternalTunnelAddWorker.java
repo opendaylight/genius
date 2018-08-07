@@ -353,6 +353,9 @@ public final class ItmInternalTunnelAddWorker {
         dpnTeps.add(dpnsTepsBuilder.build());
         dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
         updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
+        // Store the internal tunnel name in InterfaceManager's cache,
+        // so that InterfaceManager can ignore South Bound events for these interfaces.
+        interfaceManager.addInternalTunnelToIgnoreCache(trunkInterfaceName);
         addTunnelConfiguration(iface);
     }
 

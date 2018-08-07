@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.cache;
 
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.inject.Singleton;
@@ -27,5 +28,10 @@ public class UnprocessedNodeConnectorCache {
 
     public NodeConnectorInfo remove(String tunnelName) {
         return unprocessedNodeConnectorMap.remove(tunnelName);
+    }
+
+    public Set<Map.Entry<String, NodeConnectorInfo>> getAllEntries() {
+
+        return unprocessedNodeConnectorMap.entrySet();
     }
 }
