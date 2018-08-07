@@ -68,4 +68,5 @@ public interface ITMConstants {
     int INVALID_PORT_NO = -1;
     int DEFAULT_FLOW_PRIORITY = 5;
     String OF_URI_SEPARATOR = ":";
+    String UNPROCESSED_NODE_CONNECTOR_CACHE = "UnprocessedNCCache";
 }
