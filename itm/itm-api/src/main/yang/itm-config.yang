@@ -26,7 +26,7 @@ module itm-config {
     container tunnel-monitor-params {
       leaf enabled {
          type boolean;
-         default true;
+         default false;
       }
 
       leaf monitor-protocol {

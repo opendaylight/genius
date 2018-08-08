@@ -24,7 +24,7 @@ public interface ITMConstants {
 
     int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring
-    boolean DEFAULT_MONITOR_ENABLED = true;
+    boolean DEFAULT_MONITOR_ENABLED = false;
     int DEFAULT_MONITOR_INTERVAL = 10000;
     int BFD_DEFAULT_MONITOR_INTERVAL = 1000;
     int MIN_MONITOR_INTERVAL = 1000;
