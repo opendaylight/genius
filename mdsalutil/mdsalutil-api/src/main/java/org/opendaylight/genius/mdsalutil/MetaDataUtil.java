@@ -28,6 +28,11 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE = new BigInteger("0000000000000002", 16);
     public static final BigInteger METADATA_MASK_ACL_DROP = new BigInteger("0000000000000004", 16);
 
+    public static final int METADATA_ELAN_TAG_OFFSET = 24;
+    public static final int METADATA_ELAN_TAG_BITLEN = 16;
+    public static final int METADATA_VPN_ID_OFFSET = 1;
+    public static final int METADATA_VPN_ID_BITLEN = 23;
+
     private MetaDataUtil() { }
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
