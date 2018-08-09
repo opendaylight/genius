@@ -29,6 +29,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
@@ -161,6 +163,7 @@ public class ItmExternalTunnelAddTest {
     @Mock DataBroker dataBroker;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
+    @Mock TypedWriteTransaction<Datastore.Configuration> typedWriteTransaction;
     @Mock IdManagerService idManagerService;
     @Mock ItmConfig itmConfig;
 
@@ -394,27 +397,21 @@ public class ItmExternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null);
-        externalTunnelAddWorker.buildHwVtepsTunnels(null, cfgdHwVtepsList);
+        externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null, typedWriteTransaction);
+        externalTunnelAddWorker.buildHwVtepsTunnels(null, cfgdHwVtepsList, typedWriteTransaction);
 
-        verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID1,extTunnelIf1,true);
-        verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1,
-                externalTunnel1, true);
-        verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,ifIID2,hwTunnelIf2,true);
-        verify(mockWriteTx, times(2)).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier2,
-                externalTunnel2, true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID3,extTunnelIf3,true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier3,
-                externalTunnel3, true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID4,hwTunnelIf4,true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier4,
-                externalTunnel4, true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID5,hwTunnelIf5,true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier5,
-                externalTunnel5, true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,ifIID6,hwTunnelIf6,true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier6,
-                externalTunnel6, true);
+        verify(typedWriteTransaction, times(2)).merge(ifIID1, extTunnelIf1, true);
+        verify(typedWriteTransaction, times(2)).merge(externalTunnelIdentifier1, externalTunnel1, true);
+        verify(typedWriteTransaction, times(2)).merge(ifIID2, hwTunnelIf2, true);
+        verify(typedWriteTransaction, times(2)).merge(externalTunnelIdentifier2, externalTunnel2, true);
+        verify(typedWriteTransaction).merge(ifIID3,extTunnelIf3,true);
+        verify(typedWriteTransaction).merge(externalTunnelIdentifier3, externalTunnel3, true);
+        verify(typedWriteTransaction).merge(ifIID4, hwTunnelIf4, true);
+        verify(typedWriteTransaction).merge(externalTunnelIdentifier4, externalTunnel4, true);
+        verify(typedWriteTransaction).merge(ifIID5, hwTunnelIf5, true);
+        verify(typedWriteTransaction).merge(externalTunnelIdentifier5, externalTunnel5, true);
+        verify(typedWriteTransaction).merge(ifIID6, hwTunnelIf6, true);
+        verify(typedWriteTransaction).merge(externalTunnelIdentifier6, externalTunnel6, true);
 
     }
 
