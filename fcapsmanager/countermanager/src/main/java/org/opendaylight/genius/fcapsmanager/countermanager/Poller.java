@@ -9,7 +9,6 @@ package org.opendaylight.genius.fcapsmanager.countermanager;
 
 import java.lang.management.ManagementFactory;
 import java.util.Map;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.management.InstanceNotFoundException;
@@ -18,6 +17,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import org.opendaylight.genius.fcapsmanager.PMServiceFacade;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class Poller {
      */
     public void polling() {
         LOG.debug("Poller Polling Mbean List and the content is {}", pmRegistrationListener.getBeanNames());
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService service = Executors.newListeningSingleThreadScheduledExecutor("fcaps-Poller", LOG);
         service.scheduleAtFixedRate(new PollerTask(), 0, 5, TimeUnit.SECONDS);
     }
 

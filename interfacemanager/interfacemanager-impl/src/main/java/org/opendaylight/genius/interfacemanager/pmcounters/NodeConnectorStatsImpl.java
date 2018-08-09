@@ -7,21 +7,20 @@
  */
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
+import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningScheduledThreadPool;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.Nonnull;
@@ -97,8 +96,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         this.ifmConfig = ifmConfigObj;
         this.metricProvider = metricProvider;
         registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-        portStatExecutorService = Executors.newScheduledThreadPool(THREAD_POOL_SIZE,
-            getThreadFactory("Port Stats " + "Request Task"));
+        portStatExecutorService = newListeningScheduledThreadPool(THREAD_POOL_SIZE, "Port Stats Request Task", LOG);
     }
 
     @Override
@@ -245,14 +243,6 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             .child(Node.class, new NodeKey(new NodeId("openflow:" + dpId))).build()))
                     .build();
         }
-    }
-
-    private ThreadFactory getThreadFactory(String threadNameFormat) {
-        ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
-        builder.setNameFormat(threadNameFormat);
-        builder.setUncaughtExceptionHandler((thread, exception) -> LOG
-                .error("Received Uncaught Exception event in Thread: {}", thread.getName(), exception));
-        return builder.build();
     }
 
     /**

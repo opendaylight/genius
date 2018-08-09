@@ -23,9 +23,8 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,7 +34,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -84,10 +83,10 @@ public class ResourceBatchingManager implements AutoCloseable {
     private final ConcurrentHashMap<String, Pair<BlockingQueue<ActionableResource>, ResourceHandler>>
             resourceHandlerMapper = new ConcurrentHashMap<>();
 
-    private final ConcurrentHashMap<String, ScheduledThreadPoolExecutor>
+    private final ConcurrentHashMap<String, ScheduledExecutorService>
             resourceBatchingThreadMapper = new ConcurrentHashMap<>();
 
-    private final Map<String, Set<InstanceIdentifier>> pendingModificationByResourceType = new ConcurrentHashMap<>();
+    private final Map<String, Set<InstanceIdentifier<?>>> pendingModificationByResourceType = new ConcurrentHashMap<>();
 
     private static ResourceBatchingManager instance;
 
@@ -102,7 +101,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     @Override
     public void close() {
         LOG.trace("ResourceBatchingManager Closed, closing all batched resources");
-        resourceBatchingThreadMapper.values().forEach(ScheduledThreadPoolExecutor::shutdown);
+        resourceBatchingThreadMapper.values().forEach(ScheduledExecutorService::shutdown);
     }
 
     public void registerBatchableResource(
@@ -111,16 +110,13 @@ public class ResourceBatchingManager implements AutoCloseable {
         Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
 
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
-        ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor)
-                Executors.newScheduledThreadPool(1, ThreadFactoryProvider.builder()
-                        .namePrefix("ResourceBatchingManager").logger(LOG).build().get());
+        ScheduledExecutorService resDelegatorService =
+                Executors.newListeningScheduledThreadPool(1, "ResourceBatchingManager", LOG);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());
-        if (resDelegatorService.getPoolSize() == 0) {
-            resDelegatorService.scheduleWithFixedDelay(
-                    new Batcher(resourceType), resHandler.getBatchInterval(), resHandler.getBatchInterval(), TIME_UNIT);
-        }
+        resDelegatorService.scheduleWithFixedDelay(
+                new Batcher(resourceType), resHandler.getBatchInterval(), resHandler.getBatchInterval(), TIME_UNIT);
         pendingModificationByResourceType.putIfAbsent(resourceType, ConcurrentHashMap.newKeySet());
     }
 
@@ -256,7 +252,7 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     public void deregisterBatchableResource(String resourceType) {
-        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = resourceBatchingThreadMapper.get(resourceType);
+        ScheduledExecutorService scheduledThreadPoolExecutor = resourceBatchingThreadMapper.get(resourceType);
         if (scheduledThreadPoolExecutor != null) {
             scheduledThreadPoolExecutor.shutdown();
         }
