@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "148a989f_3752a149",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-08-09T07:15:25Z",
+      "side": 1,
+      "message": "I have checked the code and case of changing local_ip while del-manager is performed, will be handled with updation of new local_ip set. Existing code handles this scenario in addTepReceivedFromOvsdb() method.",
+      "parentUuid": "ecd39624_0db7f620",
+      "revId": "7a137534bff76b97abb1dbb49958c3ad0f8546d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c4929c4a_a8485615",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedMoveWorker.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2018-08-09T06:54:08Z",
       "side": 1,
       "message": "I think ItmTepsNotHostedMovedWorker and ovsdbTepAddConfigHelper can both be combined into one class.I will add a Jira to do such refactoring. We can do this later.",
+      "revId": "7a137534bff76b97abb1dbb49958c3ad0f8546d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51815f3d_d6936b5a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedMoveWorker.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-08-09T07:15:25Z",
+      "side": 1,
+      "message": "Ok fine.",
+      "parentUuid": "c4929c4a_a8485615",
       "revId": "7a137534bff76b97abb1dbb49958c3ad0f8546d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
