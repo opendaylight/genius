@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +34,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -112,8 +111,7 @@ public class ResourceBatchingManager implements AutoCloseable {
 
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
         ScheduledThreadPoolExecutor resDelegatorService = (ScheduledThreadPoolExecutor)
-                Executors.newScheduledThreadPool(1, ThreadFactoryProvider.builder()
-                        .namePrefix("ResourceBatchingManager").logger(LOG).build().get());
+                Executors.newListeningScheduledThreadPool(1, "ResourceBatchingManager", LOG);
         resourceBatchingThreadMapper.put(resourceType, resDelegatorService);
         LOG.info("Registered resourceType {} with batchSize {} and batchInterval {}", resourceType,
                 resHandler.getBatchSize(), resHandler.getBatchInterval());

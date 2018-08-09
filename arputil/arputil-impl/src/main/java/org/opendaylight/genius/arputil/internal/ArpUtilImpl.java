@@ -26,7 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -43,6 +42,7 @@ import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.infrautils.inject.AbstractLifecycle;
 import org.opendaylight.infrautils.metrics.Meter;
 import org.opendaylight.infrautils.metrics.MetricProvider;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.openflowplugin.libraries.liblldp.HexEncode;
 import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -107,7 +107,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private final NotificationService notificationService;
     private final OdlInterfaceRpcService odlInterfaceRpcService;
     private ListenerRegistration<ArpUtilImpl> listenerRegistration;
-    private final ExecutorService threadPool = Executors.newFixedThreadPool(1);
+    private final ExecutorService threadPool = Executors.newFixedThreadPool(1, "ArpUtil", LOG);
     private final ConcurrentMap<String, String> macsDB = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, SettableFuture<RpcResult<GetMacOutput>>> macAddrs = new ConcurrentHashMap<>();
 

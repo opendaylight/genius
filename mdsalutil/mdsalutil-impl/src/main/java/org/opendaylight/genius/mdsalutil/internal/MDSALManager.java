@@ -9,6 +9,7 @@
 package org.opendaylight.genius.mdsalutil.internal;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningSingleThreadExecutor;
 import static org.opendaylight.infrautils.utils.concurrent.FluentFutures2.toChecked;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -26,7 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -97,7 +97,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private final PacketProcessingService packetProcessingService;
     private final ConcurrentMap<FlowInfoKey, Runnable> flowMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<GroupInfoKey, Runnable> groupMap = new ConcurrentHashMap<>();
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorService = newListeningSingleThreadExecutor("genius-MDSALManager", LOG);
     private final SingleTransactionDataBroker singleTxDb;
     private final FlowListener flowListener = new FlowListener();
     private final FlowConfigListener flowConfigListener = new FlowConfigListener();
