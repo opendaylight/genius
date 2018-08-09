@@ -13,8 +13,10 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -1115,18 +1117,33 @@ public final class ItmUtils {
         return result;
     }
 
-    public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker) {
-        InstanceIdentifier<DcGatewayIpList> dcGatewayIpListid =
-                InstanceIdentifier.builder(DcGatewayIpList.class).build();
-        Optional<DcGatewayIpList> dcGatewayIpListConfig =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dcGatewayIpListid, broker);
-        if (dcGatewayIpListConfig.isPresent()) {
-            DcGatewayIpList containerList = dcGatewayIpListConfig.get();
-            if (containerList != null) {
-                return containerList.getDcGatewayIp();
+    public static List<DcGatewayIp> getDcGatewayIpList(TypedReadWriteTransaction<Configuration> tx)
+        throws ExecutionException, InterruptedException {
+        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        FluentFuture<Optional<DcGatewayIpList>> future =
+                tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
+        future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
+            @Override
+            public void onSuccess(@Nonnull  Optional<DcGatewayIpList> optional) {
+                try {
+                    Optional<DcGatewayIpList> opt = future.get();
+                    if (opt.isPresent()) {
+                        DcGatewayIpList list = opt.get();
+                        if (list != null) {
+                            dcGatewayIpList.addAll(list.getDcGatewayIp());
+                        }
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    LOG.error("DcGateway IpList read failed", e);
+                }
             }
-        }
-        return null;
+
+            @Override
+            public void onFailure(Throwable error) {
+                LOG.error("DcGateway IpList read failed", error);
+            }
+        }, MoreExecutors.directExecutor());
+        return dcGatewayIpList;
     }
 
     public static boolean falseIfNull(Boolean value) {
