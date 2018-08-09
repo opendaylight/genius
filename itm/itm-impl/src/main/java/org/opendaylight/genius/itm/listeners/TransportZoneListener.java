@@ -9,7 +9,7 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,9 +21,10 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
@@ -133,21 +134,22 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     private void initializeTZNode(DataBroker db) {
-        ReadWriteTransaction transaction = db.newReadWriteTransaction();
+        ManagedNewTransactionRunner txRunner = new ManagedNewTransactionRunnerImpl(db);
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.create(TransportZones.class);
-        CheckedFuture<Optional<TransportZones>, ReadFailedException> tzones = transaction
-                .read(LogicalDatastoreType.CONFIGURATION, path);
-        try {
-            if (!tzones.get().isPresent()) {
-                TransportZonesBuilder tzb = new TransportZonesBuilder();
-                transaction.put(LogicalDatastoreType.CONFIGURATION, path, tzb.build());
-                transaction.submit();
-            } else {
-                transaction.cancel();
+        txRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION,
+            tx -> {
+                try {
+                    FluentFuture<Optional<TransportZones>> tzones = tx.read(path);
+                    if (!tzones.get().isPresent()) {
+                        TransportZonesBuilder tzb = new TransportZonesBuilder();
+                        tx.put(path, tzb.build());
+                    }
+                } catch (Exception e) {
+                    LOG.error("Error initializing TransportZones {}", e);
+                }
+                return Collections.emptyList();
             }
-        } catch (Exception e) {
-            LOG.error("Error initializing TransportZones {}", e);
-        }
+        ).isDone();
     }
 
     @Override
@@ -217,8 +219,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager, itmConfig,
-                            itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+                    new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager,
+                            itmInternalTunnelAddWorker, externalTunnelAddWorker));
         }
         if (!oldDpnTepsList.isEmpty()) {
             LOG.trace("Removing TEPs ");
@@ -244,8 +246,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (!newHwList.isEmpty()) {
             LOG.trace("Adding HW TEPs ");
             jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), new ItmTepAddWorker(Collections.emptyList(),
-                    newHwList, dataBroker, mdsalManager, itmConfig, itmInternalTunnelAddWorker, externalTunnelAddWorker,
-                    dpnTEPsInfoCache));
+                    newHwList, dataBroker, mdsalManager, itmInternalTunnelAddWorker, externalTunnelAddWorker));
         }
         if (!oldHwList.isEmpty()) {
             LOG.trace("Removing HW TEPs ");
@@ -266,8 +267,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
             LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
             LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
             jobCoordinator.enqueueJob(transportZone.getZoneName(),
-                    new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, mdsalManager, itmConfig,
-                            itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
+                new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, mdsalManager, itmInternalTunnelAddWorker,
+                        externalTunnelAddWorker));
         }
     }
 

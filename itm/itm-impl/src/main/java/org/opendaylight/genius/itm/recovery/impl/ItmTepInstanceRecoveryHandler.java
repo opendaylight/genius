@@ -91,12 +91,10 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         this.eventCallbacks = eventCallbacks;
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
-        this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
-                dpntePsInfoCache);
+        this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
-                ovsBridgeRefEntryCache, tunnelStateCache,
-                directTunnelUtils);
+                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils);
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(getServiceRegistryKey(), this);
     }
 
@@ -179,9 +177,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         eventCallbackCount.incrementAndGet();
         if (eventCallbackCount.intValue() == registeredEventSize || registeredEventSize == 0) {
             LOG.info("Re-creating TEP {}", tzName);
-            ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepts, null, dataBroker,
-                    imdsalApiManager, itmConfig, itmInternalTunnelAddWorker, itmExternalTunnelAddWorker,
-                    dpntePsInfoCache);
+            ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepts, null, dataBroker, imdsalApiManager,
+                    itmInternalTunnelAddWorker, itmExternalTunnelAddWorker);
             jobCoordinator.enqueueJob(tzName, tepAddWorker);
         } else {
             LOG.trace("{} call back events registered for {} tunnel interfaces",
