@@ -7,12 +7,14 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
@@ -27,7 +29,6 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepRemoveWorker.class);
 
-    private final DataBroker dataBroker;
     private final List<DPNTEPsInfo> delDpnList ;
     private Collection<DPNTEPsInfo> meshedDpnList ;
     private final IMdsalApiManager mdsalManager;
@@ -35,17 +36,19 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private final TransportZone originalTZone;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final ManagedNewTransactionRunner txRunner;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
-            DataBroker broker, IMdsalApiManager mdsalManager,
-            ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker, DPNTEPsInfoCache dpnTEPsInfoCache) {
+                              IMdsalApiManager mdsalManager,
+                              ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker,
+                              DPNTEPsInfoCache dpnTEPsInfoCache, ManagedNewTransactionRunner txRunner) {
         this.delDpnList = delDpnList;
-        this.dataBroker = broker;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
         this.originalTZone = originalTZone;
         this.itmInternalTunnelDeleteWorker = itmInternalTunnelDeleteWorker;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
+        this.txRunner = txRunner;
         LOG.trace("ItmTepRemoveWorker initialized with  DpnList {}", delDpnList);
         LOG.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}", delHwList);
     }
@@ -54,13 +57,14 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(mdsalManager, delDpnList,
-                meshedDpnList));
+        futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(mdsalManager, delDpnList, meshedDpnList));
         LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",
                 delDpnList, meshedDpnList);
         // IF EXTERNAL TUNNELS NEEDS TO BE DELETED, DO IT HERE, IT COULD BE TO DC GATEWAY OR TOR SWITCH
-        List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
-        if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
+        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+            tx -> dcGatewayIpList.addAll(ItmUtils.getDcGatewayIpList(tx))).isDone();
+        if (!dcGatewayIpList.isEmpty()) {
             List<DPNTEPsInfo>  dpnDeleteList = new ArrayList<>();
             for (DPNTEPsInfo dpnTEPInfo : delDpnList) {
                 List<TunnelEndPoints> tunnelEndPointsList = dpnTEPInfo.getTunnelEndPoints();
@@ -72,19 +76,18 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
                 }
             }
             for (DcGatewayIp dcGatewayIp : dcGatewayIpList) {
-                futures.addAll(ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker,
-                        dpnDeleteList , meshedDpnList, dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType()));
+                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                    tx -> ItmExternalTunnelDeleteWorker.deleteTunnels(dpnDeleteList , meshedDpnList,
+                        dcGatewayIp.getIpAddress(), dcGatewayIp.getTunnnelType(), tx)));
             }
         }
-
-        futures.addAll(ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, delDpnList,
-                cfgdHwVteps, this.originalTZone));
-        return futures ;
+        futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+            tx -> ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(delDpnList, cfgdHwVteps, this.originalTZone, tx)));
+        return futures;
     }
 
     @Override
     public String toString() {
-        return "ItmTepRemoveWorker  { "
-                + "Delete Dpn List : " + delDpnList + " }" ;
+        return "ItmTepRemoveWorker  { Delete Dpn List : " + delDpnList + " }" ;
     }
 }

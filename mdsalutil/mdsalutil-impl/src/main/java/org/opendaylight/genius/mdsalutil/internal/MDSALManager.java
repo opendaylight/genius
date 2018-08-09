@@ -232,7 +232,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @VisibleForTesting
     FluentFuture<Void> removeFlowInternal(FlowEntity flowEntity) {
-        return addCallBackForDeleteFlowAndReturnm(txRunner
+        return addCallBackForDeleteFlowAndReturn(txRunner
                 .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                     tx -> deleteFlowEntityInternal(flowEntity, tx)));
     }
@@ -977,7 +977,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return bucketInstanceId;
     }
 
-    private FluentFuture<Void> addCallBackForDeleteFlowAndReturnm(FluentFuture<Void> fluentFuture) {
+    private FluentFuture<Void> addCallBackForDeleteFlowAndReturn(FluentFuture<Void> fluentFuture) {
         return callBack(fluentFuture, "Delete Flow");
     }
 
