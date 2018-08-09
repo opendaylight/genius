@@ -335,6 +335,16 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     }
 
     private void processReceivedMonitorKey(final String monitorKey) {
+        class Result {
+            final MonitoringState currentState;
+            final MonitoringState state;
+
+            Result(MonitoringState currentState, MonitoringState state) {
+                this.currentState = currentState;
+                this.state = state;
+            }
+        }
+
         Preconditions.checkNotNull(monitorKey, "Monitor Key required to process the state");
 
         LOG.debug("Processing monitorKey: {} for received packet", monitorKey);
@@ -343,94 +353,69 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         LOG.debug("Acquiring lock for monitor key : {} to process monitor packet", monitorKey);
         acquireLock(lock);
 
-        final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
+        txRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
+            Optional<MonitoringState> optState = tx.read(getMonitorStateId(monitorKey)).get();
+            if (optState.isPresent()) {
+                final MonitoringState currentState = optState.get();
 
-        ListenableFuture<Optional<MonitoringState>> stateResult = tx.read(LogicalDatastoreType.OPERATIONAL,
-                getMonitorStateId(monitorKey));
-
-        // READ Callback
-        Futures.addCallback(stateResult, new FutureCallback<Optional<MonitoringState>>() {
-
-            @Override
-            public void onSuccess(@Nonnull Optional<MonitoringState> optState) {
-
-                if (optState.isPresent()) {
-                    final MonitoringState currentState = optState.get();
-
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace("OnPacketReceived : Monitoring state from ODS : {} ", currentState);
-                    }
-
-                    // Long responsePendingCount = currentState.getResponsePendingCount();
-                    //
-                    // Need to relook at the pending count logic to support N
-                    // out of M scenarios
-                    // if (currentState.getState() != LivenessState.Up) {
-                    // //Reset responsePendingCount when state changes from DOWN
-                    // to UP
-                    // responsePendingCount = INITIAL_COUNT;
-                    // }
-                    //
-                    // if (responsePendingCount > INITIAL_COUNT) {
-                    // responsePendingCount =
-                    // currentState.getResponsePendingCount() - 1;
-                    // }
-                    Long responsePendingCount = INITIAL_COUNT;
-
-                    final boolean stateChanged = currentState.getState() == LivenessState.Down
-                            || currentState.getState() == LivenessState.Unknown;
-
-                    final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey)
-                            .setState(LivenessState.Up).setResponsePendingCount(responsePendingCount).build();
-                    tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), state);
-                    ListenableFuture<Void> writeResult = tx.submit();
-
-                    // WRITE Callback
-                    Futures.addCallback(writeResult, new FutureCallback<Void>() {
-                        @Override
-                        public void onSuccess(Void noarg) {
-                            releaseLock(lock);
-                            if (stateChanged) {
-                                // send notifications
-                                if (LOG.isTraceEnabled()) {
-                                    LOG.trace("Sending notification for monitor Id : {} with Current State: {}",
-                                            currentState.getMonitorId(), LivenessState.Up);
-                                }
-                                publishNotification(currentState.getMonitorId(), LivenessState.Up);
-                            } else {
-                                if (LOG.isTraceEnabled()) {
-                                    LOG.trace("Successful in writing monitoring state {} to ODS", state);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Throwable error) {
-                            releaseLock(lock);
-                            LOG.warn("Error in writing monitoring state : {} to Datastore", monitorKey, error);
-                            if (LOG.isTraceEnabled()) {
-                                LOG.trace("Error in writing monitoring state: {} to Datastore", state);
-                            }
-                        }
-                    }, callbackExecutorService);
-                } else {
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace("Monitoring State not available for key: {} to process the Packet received",
-                                monitorKey);
-                    }
-                    // Complete the transaction
-                    tx.submit();
-                    releaseLock(lock);
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("OnPacketReceived : Monitoring state from ODS : {} ", currentState);
                 }
+
+                // Long responsePendingCount = currentState.getResponsePendingCount();
+                //
+                // Need to relook at the pending count logic to support N
+                // out of M scenarios
+                // if (currentState.getState() != LivenessState.Up) {
+                // //Reset responsePendingCount when state changes from DOWN
+                // to UP
+                // responsePendingCount = INITIAL_COUNT;
+                // }
+                //
+                // if (responsePendingCount > INITIAL_COUNT) {
+                // responsePendingCount =
+                // currentState.getResponsePendingCount() - 1;
+                // }
+                Long responsePendingCount = INITIAL_COUNT;
+
+                final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey)
+                        .setState(LivenessState.Up).setResponsePendingCount(responsePendingCount).build();
+                tx.merge(getMonitorStateId(monitorKey), state);
+
+                return Optional.of(new Result(currentState, state));
+            } else {
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Monitoring State not available for key: {} to process the Packet received",
+                            monitorKey);
+                }
+                return Optional.<Result>absent();
+            }
+        }).addCallback(new FutureCallback<Optional<Result>>() {
+            @Override
+            public void onSuccess(Optional<Result> optResult) {
+                releaseLock(lock);
+                optResult.toJavaUtil().ifPresent(result -> {
+                    final boolean stateChanged = result.currentState.getState() == LivenessState.Down
+                            || result.currentState.getState() == LivenessState.Unknown;
+                    if (stateChanged) {
+                        // send notifications
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("Sending notification for monitor Id : {} with Current State: {}",
+                                    result.currentState.getMonitorId(), LivenessState.Up);
+                        }
+                        publishNotification(result.currentState.getMonitorId(), LivenessState.Up);
+                    } else {
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("Successful in writing monitoring state {} to ODS", result.state);
+                        }
+                    }
+                });
             }
 
             @Override
             public void onFailure(Throwable error) {
-                LOG.error("Error when reading Monitoring State for key: {} to process the Packet received", monitorKey,
-                        error);
-                // FIXME: Not sure if the transaction status is valid to cancel
-                tx.cancel();
                 releaseLock(lock);
+                LOG.warn("Error in reading or writing monitoring state : {} to Datastore", monitorKey, error);
             }
         }, callbackExecutorService);
     }
