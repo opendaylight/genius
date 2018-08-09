@@ -17,7 +17,6 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -119,8 +118,6 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
 
     private List<ListenableFuture<Void>> updateTunnel(Interface updated) throws Exception {
         LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
-        final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(updated);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, updated.getName());
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
@@ -152,7 +149,6 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
             LOG.debug("Tunnel is not yet added but an update has come in for {},so cache it",updated.getName());
             unprocessedTunnelsStateCache.add(updated.getName(),tunnelOperStatus);
         }
-
-        return Collections.singletonList(writeTransaction.submit());
+        return Collections.emptyList();
     }
 }

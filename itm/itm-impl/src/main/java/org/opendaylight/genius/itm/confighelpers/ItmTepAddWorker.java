@@ -13,10 +13,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
 import org.slf4j.Logger;
@@ -31,22 +32,20 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
     private final List<DPNTEPsInfo> cfgdDpnList ;
     private final IMdsalApiManager mdsalManager;
     private final List<HwVtep> cfgdHwVteps;
-    private final ItmConfig itmConfig;
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
-    private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final ManagedNewTransactionRunner txRunner;
 
     public ItmTepAddWorker(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> hwVtepList, DataBroker broker,
-            IMdsalApiManager mdsalManager, ItmConfig itmConfig, ItmInternalTunnelAddWorker itmInternalTunnelAddWorker,
-            ItmExternalTunnelAddWorker externalTunnelAddWorker, DPNTEPsInfoCache dpnTEPsInfoCache) {
+                           IMdsalApiManager mdsalManager, ItmInternalTunnelAddWorker itmInternalTunnelAddWorker,
+                           ItmExternalTunnelAddWorker externalTunnelAddWorker) {
         this.cfgdDpnList = cfgdDpnList ;
         this.dataBroker = broker ;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = hwVtepList;
-        this.itmConfig = itmConfig;
         this.itmInternalTunnelAddWorker = itmInternalTunnelAddWorker;
         this.externalTunnelAddWorker = externalTunnelAddWorker;
-        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         LOG.trace("ItmTepAddWorker initialized with  DpnList {}",cfgdDpnList);
         LOG.trace("ItmTepAddWorker initialized with  hwvteplist {}",hwVtepList);
     }
@@ -57,8 +56,8 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
         this.meshedDpnList = ItmUtils.getDpnTEPsInfos(dataBroker);
         LOG.debug("Invoking Internal Tunnel build method with Configured DpnList {} ; Meshed DpnList {} ",
                 cfgdDpnList, meshedDpnList);
-        futures.addAll(itmInternalTunnelAddWorker.buildAllTunnels(mdsalManager, cfgdDpnList,
-                meshedDpnList)) ;
+        futures.addAll(itmInternalTunnelAddWorker.buildAllTunnels(mdsalManager, cfgdDpnList, meshedDpnList));
+
         // IF EXTERNAL TUNNELS NEEDS TO BE BUILT, DO IT HERE. IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
         if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
@@ -69,8 +68,9 @@ public class ItmTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
         }
         //futures.addAll(ItmExternalTunnelAddWorker.buildTunnelsToExternalEndPoint(dataBroker,meshedDpnList, extIp) ;
         LOG.debug("invoking build hwVtepTunnels with hwVteplist {}", cfgdHwVteps);
-        futures.addAll(externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnList,cfgdHwVteps));
-        return futures ;
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+            tx -> externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnList, cfgdHwVteps, tx)));
+        return futures;
     }
 
     @Override
