@@ -16,6 +16,24 @@
       "revId": "feb7dd6a2332f90e0906a2e985579fb2d7fd00c2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dfe7ce88_69b70295",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-13T15:47:17Z",
+      "side": 1,
+      "message": "I think we have so much synchronous everywhere (very little code is actually async) that this isn\u0027t a real issue.  If others know more about this and fear this could block, please elaborate why (is this being hit at very high frequency?) and we would have to be see how this can be done differently.  ut I\u0027ve actually tried, and it\u0027s a PITA, which is why I\u0027ve done it like this.",
+      "parentUuid": "4336bbb3_05b1e15d",
+      "revId": "feb7dd6a2332f90e0906a2e985579fb2d7fd00c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
