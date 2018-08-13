@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4336bbb3_05b1e15d",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 357,
+      "author": {
+        "id": 8004
+      },
+      "writtenOn": "2018-08-13T06:03:37Z",
+      "side": 1,
+      "message": "forcing this(synchronous), because we need to move to managed transaction.\nIs this OK?",
+      "revId": "feb7dd6a2332f90e0906a2e985579fb2d7fd00c2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
