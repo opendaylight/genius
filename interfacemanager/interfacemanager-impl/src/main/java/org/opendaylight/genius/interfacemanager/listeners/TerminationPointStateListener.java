@@ -41,6 +41,7 @@ public class TerminationPointStateListener extends
         AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener>
         implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final InterfacemgrProvider interfaceMgrProvider;
     private final DataBroker dataBroker;
@@ -104,6 +105,7 @@ public class TerminationPointStateListener extends
         }
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
+            EVENT_LOGGER.info(" REMOVE {} {} ", getClass(), tpOld.getName());
             RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
             coordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
         }
@@ -173,6 +175,7 @@ public class TerminationPointStateListener extends
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(tpNew.getName()) == null) {
             LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for"
                     + " internal tunnel {}", tpNew.getName());
+            EVENT_LOGGER.info(" ADD {} {} ", getClass(), tpNew.getName());
             return;
         }
         update(identifier, null, tpNew);

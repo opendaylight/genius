@@ -49,6 +49,8 @@ import org.slf4j.LoggerFactory;
 
 public final class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
+
     public static final String HWVTEP_TOPOLOGY = "hwvtep:1";
     public static final TopologyId HWVTEP_TOPOLOGY_ID = new TopologyId(new Uri(HWVTEP_TOPOLOGY));
     public static final String TEP_PREFIX = "vxlan_over_ipv4:";
@@ -204,6 +206,7 @@ public final class SouthboundUtils {
             .buildStateInterfaceId(interfaceInfo.getName());
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
         transaction.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
+        EVENT_LOGGER.info(" ADD {} {} ", SouthboundUtils.class, interfaceInfo.getName());
     }
 
     public static void fillBfdParameters(List<BfdParams> bfdParams, IfTunnel ifTunnel) {

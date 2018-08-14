@@ -78,6 +78,8 @@ public class InterfaceInventoryStateListener
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
+
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
@@ -161,6 +163,7 @@ public class InterfaceInventoryStateListener
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
 
+        EVENT_LOGGER.info(" REMOVE {} {} ", getClass(), portName);
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
 
@@ -186,7 +189,7 @@ public class InterfaceInventoryStateListener
             return;
         }
 
-
+        EVENT_LOGGER.info(" UPDATE {} {} ", getClass(), fcNodeConnectorNew.getName());
         if (fcNodeConnectorNew.getReason() == PortReason.Delete
                 || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
