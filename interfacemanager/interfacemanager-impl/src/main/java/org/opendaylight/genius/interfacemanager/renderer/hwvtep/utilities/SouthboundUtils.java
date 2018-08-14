@@ -46,9 +46,13 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 public final class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
+    private static final Marker MARKER = MarkerFactory.getMarker("GeniusEventLogger");
+
     public static final String HWVTEP_TOPOLOGY = "hwvtep:1";
     public static final TopologyId HWVTEP_TOPOLOGY_ID = new TopologyId(new Uri(HWVTEP_TOPOLOGY));
     public static final String TEP_PREFIX = "vxlan_over_ipv4:";
@@ -204,6 +208,7 @@ public final class SouthboundUtils {
             .buildStateInterfaceId(interfaceInfo.getName());
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
         transaction.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
+        LOG.info(MARKER, "ADD {}", interfaceInfo.getName());
     }
 
     public static void fillBfdParameters(List<BfdParams> bfdParams, IfTunnel ifTunnel) {

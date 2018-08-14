@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
+ * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
@@ -33,10 +33,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
 
 @Singleton
 public class OvsInterfaceTopologyStateUpdateHelper {
+
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
+    private static final Marker MARKER = MarkerFactory.getMarker("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
@@ -102,6 +107,7 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
+                LOG.info(MARKER, " UPDATE {}", interfaceName);
                 return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName, interfaceBfdStatus)));
             }

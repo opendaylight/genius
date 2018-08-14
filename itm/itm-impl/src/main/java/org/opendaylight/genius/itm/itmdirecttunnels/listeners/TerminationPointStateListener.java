@@ -41,11 +41,14 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 public class TerminationPointStateListener
         extends AbstractClusteredSyncDataTreeChangeListener<OvsdbTerminationPointAugmentation> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
+    private static final Marker MARKER = MarkerFactory.getMarker("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
@@ -93,6 +96,7 @@ public class TerminationPointStateListener
             LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (DirectTunnelUtils.changeInBfdMonitoringDetected(tpOld, tpNew)
                     || DirectTunnelUtils.ifBfdStatusNotEqual(tpOld, tpNew)) {
+                LOG.info(MARKER, "UPDATE, BFD status {}", tpNew.getName());
                 LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
                         identifier, tpOld, tpNew);
                 RendererTunnelStateUpdateWorker rendererStateAddWorker = new RendererTunnelStateUpdateWorker(tpNew);
@@ -108,6 +112,7 @@ public class TerminationPointStateListener
                 && dpnTepStateCache.isInternal(tpNew.getName())) {
             LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (tpNew.getInterfaceBfdStatus() != null  && !tpNew.getInterfaceBfdStatus().isEmpty()) {
+                LOG.info(MARKER, "ADD {}", tpNew.getName());
                 LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
                 RendererTunnelStateUpdateWorker rendererStateUpdateWorker = new RendererTunnelStateUpdateWorker(tpNew);
                 coordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);
