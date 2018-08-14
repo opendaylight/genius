@@ -7,19 +7,15 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Collections;
-import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
-import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.util.concurrent.*;
+import java.util.*;
+import org.opendaylight.controller.md.sal.binding.api.*;
+import org.opendaylight.genius.itm.impl.*;
+import org.opendaylight.genius.utils.*;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.*;
+import org.opendaylight.yangtools.yang.binding.*;
+import org.slf4j.*;
 
 public final class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
@@ -28,13 +24,11 @@ public final class ItmTunnelStateRemoveHelper {
 
     public static List<ListenableFuture<Void>> removeTunnel(Interface iface, DataBroker broker) throws Exception {
         LOG.debug("Invoking ItmTunnelStateRemoveHelper for Interface {} ", iface);
-        WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
-
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
         LOG.trace("Deleting tunnel_state for Id: {}", stListId);
+        GeniusEventLogger.logInfo(ItmTunnelStateRemoveHelper.class.getSimpleName(), " REMOVE ", stListId.toString());
         ITMBatchingUtils.delete(stListId, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-
-        return Collections.singletonList(writeTransaction.submit());
+        return Collections.emptyList();
     }
 }

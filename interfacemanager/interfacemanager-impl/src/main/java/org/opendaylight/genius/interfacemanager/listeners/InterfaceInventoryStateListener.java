@@ -39,6 +39,7 @@ import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRe
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
@@ -154,6 +155,7 @@ public class InterfaceInventoryStateListener
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
 
+        GeniusEventLogger.logInfo(getClass().getSimpleName(), " REMOVE ", portName);
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
 
@@ -177,6 +179,7 @@ public class InterfaceInventoryStateListener
             return;
         }
 
+        GeniusEventLogger.logInfo(getClass().getSimpleName(), " UPDATE ", fcNodeConnectorNew.getName());
         if (fcNodeConnectorNew.getReason() == PortReason.Delete
                 || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
