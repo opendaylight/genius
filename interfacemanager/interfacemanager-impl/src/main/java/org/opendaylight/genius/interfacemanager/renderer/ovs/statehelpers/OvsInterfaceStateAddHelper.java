@@ -29,6 +29,7 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
@@ -84,6 +85,7 @@ public final class OvsInterfaceStateAddHelper {
     private List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
             long portNo, PhysAddress physAddress) {
         LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
+        GeniusEventLogger.logInfo(getClass(), " ADD ", interfaceName);
 
         if (portNo == IfmConstants.INVALID_PORT_NO) {
             LOG.trace("Cannot derive port number, not proceeding with Interface State " + "addition for interface: {}",
@@ -130,7 +132,7 @@ public final class OvsInterfaceStateAddHelper {
                         Long.toString(portNo), interfaceName, ifState.getIfIndex()));
             }
         }));
-
+        GeniusEventLogger.logInfo(getClass(), " ADD ", interfaceName);
         return futures;
     }
 
@@ -138,6 +140,7 @@ public final class OvsInterfaceStateAddHelper {
             Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
+        GeniusEventLogger.logInfo(getClass(), " ADD, TunnelIngressFlow ", interfaceName);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(

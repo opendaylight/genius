@@ -28,6 +28,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
@@ -71,6 +72,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
+            GeniusEventLogger.logInfo(getClass(), " ADD ", iface.getName());
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), () -> ItmTunnelStateAddHelper
                     .addTunnel(iface, interfaceManager, dataBroker));
@@ -85,6 +87,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
+            GeniusEventLogger.logInfo(getClass(), " REMOVE ", iface.getName());
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(),
                 () -> ItmTunnelStateRemoveHelper.removeTunnel(iface, dataBroker));
@@ -103,6 +106,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
          * type can't be edited on the fly
          */
         if (ItmUtils.isItmIfType(originalInterface.getType())) {
+            GeniusEventLogger.logInfo(getClass(), " UPDATE ", updatedInterface.getName());
             LOG.trace("Interface updated. Old: {} New: {}", originalInterface, updatedInterface);
             OperStatus operStatus = updatedInterface.getOperStatus();
             if (!Objects.equals(originalInterface.getOperStatus(), updatedInterface.getOperStatus())) {
