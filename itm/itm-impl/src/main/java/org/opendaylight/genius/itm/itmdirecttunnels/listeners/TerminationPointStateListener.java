@@ -25,6 +25,7 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -93,6 +94,7 @@ public class TerminationPointStateListener
             LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (DirectTunnelUtils.changeInBfdMonitoringDetected(tpOld, tpNew)
                     || DirectTunnelUtils.ifBfdStatusNotEqual(tpOld, tpNew)) {
+                GeniusEventLogger.logEvent("ITM-TerminationPointState, UPDATE, BFD status {}", tpNew.getName());
                 LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
                         identifier, tpOld, tpNew);
                 RendererTunnelStateUpdateWorker rendererStateAddWorker = new RendererTunnelStateUpdateWorker(tpNew);
@@ -108,6 +110,7 @@ public class TerminationPointStateListener
                 && dpnTepStateCache.isInternal(tpNew.getName())) {
             LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (tpNew.getInterfaceBfdStatus() != null  && !tpNew.getInterfaceBfdStatus().isEmpty()) {
+                GeniusEventLogger.logEvent("ITM-TerminationPointState, ADD {}", tpNew.getName());
                 LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
                 RendererTunnelStateUpdateWorker rendererStateUpdateWorker = new RendererTunnelStateUpdateWorker(tpNew);
                 coordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);

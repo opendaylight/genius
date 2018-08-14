@@ -14,6 +14,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
@@ -33,6 +34,7 @@ public final class ItmTunnelStateRemoveHelper {
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
         LOG.trace("Deleting tunnel_state for Id: {}", stListId);
+        GeniusEventLogger.logEvent("ItmTunnelStateRemove, REMOVE {}", stListId);
         ITMBatchingUtils.delete(stListId, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
 
         return Collections.singletonList(writeTransaction.submit());

@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2016, 2017 Ericsson India Global Services Pvt Ltd. and others.  All rights reserved.
  *
@@ -23,6 +24,7 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
@@ -104,6 +106,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
+                GeniusEventLogger.logEvent("OvsInterfaceTopologyStateUpdate, UPDATE {}",
+                        interfaceName, " status {}", interfaceState.getOperStatus());
                 return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName, interfaceBfdStatus)));
             }
