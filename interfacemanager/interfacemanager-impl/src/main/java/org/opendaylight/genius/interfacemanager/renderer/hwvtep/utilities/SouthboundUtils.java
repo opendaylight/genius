@@ -18,6 +18,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -204,6 +205,7 @@ public final class SouthboundUtils {
             .buildStateInterfaceId(interfaceInfo.getName());
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
         transaction.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
+        GeniusEventLogger.logInfo(SouthboundUtils.class, " ADD ", interfaceInfo.getName());
     }
 
     public static void fillBfdParameters(List<BfdParams> bfdParams, IfTunnel ifTunnel) {

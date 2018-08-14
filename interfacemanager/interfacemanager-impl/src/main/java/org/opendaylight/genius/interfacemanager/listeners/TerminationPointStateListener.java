@@ -22,6 +22,7 @@ import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
@@ -104,6 +105,7 @@ public class TerminationPointStateListener extends
         }
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
+            GeniusEventLogger.logInfo(getClass(), " REMOVE ", tpOld.getName());
             RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
             coordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
         }
@@ -173,6 +175,7 @@ public class TerminationPointStateListener extends
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(tpNew.getName()) == null) {
             LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for"
                     + " internal tunnel {}", tpNew.getName());
+            GeniusEventLogger.logInfo(getClass(), " ADD ", tpNew.getName());
             return;
         }
         update(identifier, null, tpNew);

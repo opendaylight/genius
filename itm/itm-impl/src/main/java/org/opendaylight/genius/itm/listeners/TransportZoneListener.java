@@ -45,6 +45,7 @@ import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.recovery.impl.ItmServiceRecoveryHandler;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.GeniusEventLogger;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
@@ -155,6 +156,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     public void remove(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
                        @Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
+        GeniusEventLogger.logInfo(getClass(), " REMOVE ", transportZone.getZoneName());
         boolean allowTunnelDeletion;
 
         // check if TZ received for removal is default-transport-zone,
@@ -197,6 +199,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                        @Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                   updatedTransportZone);
+        GeniusEventLogger.logInfo(getClass(), " UPDATE ", updatedTransportZone.getZoneName());
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -259,6 +262,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     @Override
     public void add(@Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Add Event: {}", transportZone);
+        GeniusEventLogger.logInfo(getClass(), " ADD ", transportZone.getZoneName());
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
         List<HwVtep> hwVtepList = createhWVteps(transportZone);
         opDpnList.addAll(getDPNTepInfoFromNotHosted(transportZone));
