@@ -73,6 +73,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * This class listens for interface creation/removal/update in Configuration DS.
@@ -83,6 +85,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransportZoneListener.class);
+    private static final Marker MARKER = MarkerFactory.getMarker("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
@@ -155,6 +158,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     public void remove(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
                        @Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
+        LOG.info(MARKER, "REMOVE {} {}", transportZone.getZoneName(), getClass().getSimpleName());
         boolean allowTunnelDeletion;
 
         // check if TZ received for removal is default-transport-zone,
@@ -197,6 +201,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                        @Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                   updatedTransportZone);
+        LOG.info(MARKER, "UPDATE {} {}", updatedTransportZone.getZoneName(), getClass().getSimpleName());
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -259,6 +264,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     @Override
     public void add(@Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Add Event: {}", transportZone);
+        LOG.info(MARKER, "ADD {} {}", transportZone.getZoneName(), getClass().getSimpleName());
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
         List<HwVtep> hwVtepList = createhWVteps(transportZone);
         opDpnList.addAll(getDPNTepInfoFromNotHosted(transportZone));

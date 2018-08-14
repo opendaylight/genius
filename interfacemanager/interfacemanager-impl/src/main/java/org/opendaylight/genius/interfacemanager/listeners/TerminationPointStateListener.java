@@ -35,12 +35,15 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 @Singleton
 public class TerminationPointStateListener extends
         AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener>
         implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
+    private static final Marker MARKER = MarkerFactory.getMarker("GeniusEventLogger");
 
     private final InterfacemgrProvider interfaceMgrProvider;
     private final DataBroker dataBroker;
@@ -104,6 +107,7 @@ public class TerminationPointStateListener extends
         }
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
+            LOG.info(MARKER, "REMOVE {} {}", tpOld.getName(), getClass().getSimpleName());
             RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
             coordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
         }
@@ -173,6 +177,7 @@ public class TerminationPointStateListener extends
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(tpNew.getName()) == null) {
             LOG.debug("ITM Direct Tunnels is enabled, hence ignoring termination point add for"
                     + " internal tunnel {}", tpNew.getName());
+            LOG.info(MARKER, "ADD {} {}", tpNew.getName(), getClass().getSimpleName());
             return;
         }
         update(identifier, null, tpNew);
