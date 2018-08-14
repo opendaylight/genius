@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<Interface> {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
@@ -71,6 +72,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
+            EVENT_LOGGER.info(" ADD {} {} ", getClass(), iface.getName());
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), () -> ItmTunnelStateAddHelper
                     .addTunnel(iface, interfaceManager, dataBroker));
@@ -85,6 +87,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
+            EVENT_LOGGER.info(" REMOVE {} {} ", getClass(), iface.getName());
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(),
                 () -> ItmTunnelStateRemoveHelper.removeTunnel(iface, dataBroker));
@@ -103,6 +106,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
          * type can't be edited on the fly
          */
         if (ItmUtils.isItmIfType(originalInterface.getType())) {
+            EVENT_LOGGER.info(" UPDATE {} {} ", getClass(), updatedInterface.getName());
             LOG.trace("Interface updated. Old: {} New: {}", originalInterface, updatedInterface);
             OperStatus operStatus = updatedInterface.getOperStatus();
             if (!Objects.equals(originalInterface.getOperStatus(), updatedInterface.getOperStatus())) {

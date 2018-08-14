@@ -83,6 +83,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransportZoneListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
@@ -155,6 +156,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     public void remove(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
                        @Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
+        EVENT_LOGGER.info(" REMOVE {} {} ", getClass(), transportZone.getZoneName());
         boolean allowTunnelDeletion;
 
         // check if TZ received for removal is default-transport-zone,
@@ -197,6 +199,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                        @Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                   updatedTransportZone);
+        EVENT_LOGGER.info(" UPDATE {} {} ", getClass(), updatedTransportZone.getZoneName());
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -259,6 +262,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     @Override
     public void add(@Nonnull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Add Event: {}", transportZone);
+        EVENT_LOGGER.info(" ADD {} {} ", getClass(), transportZone.getZoneName());
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
         List<HwVtep> hwVtepList = createhWVteps(transportZone);
         opDpnList.addAll(getDPNTepInfoFromNotHosted(transportZone));

@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
@@ -84,6 +85,7 @@ public final class OvsInterfaceStateAddHelper {
     private List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
             long portNo, PhysAddress physAddress) {
         LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
+        EVENT_LOGGER.info(" ADD {} {} ", getClass(), interfaceName);
 
         if (portNo == IfmConstants.INVALID_PORT_NO) {
             LOG.trace("Cannot derive port number, not proceeding with Interface State " + "addition for interface: {}",
@@ -130,7 +132,7 @@ public final class OvsInterfaceStateAddHelper {
                         Long.toString(portNo), interfaceName, ifState.getIfIndex()));
             }
         }));
-
+        EVENT_LOGGER.info(" ADD {} {} ", getClass(), interfaceName);
         return futures;
     }
 
@@ -138,6 +140,7 @@ public final class OvsInterfaceStateAddHelper {
             Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
+        EVENT_LOGGER.info(" ADD TunnelIngressFlow {} {} ", getClass(), interfaceName);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(
