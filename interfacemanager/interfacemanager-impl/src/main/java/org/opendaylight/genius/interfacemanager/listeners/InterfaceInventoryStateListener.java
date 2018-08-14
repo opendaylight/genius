@@ -61,6 +61,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 /**
  * This Class is a Data Change Listener for FlowCapableNodeConnector updates.
@@ -78,6 +80,8 @@ public class InterfaceInventoryStateListener
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
+    private static final Marker marker = MarkerFactory.getMarker("GeniusEventLogger");
+
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
@@ -161,6 +165,7 @@ public class InterfaceInventoryStateListener
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
 
+        LOG.info(marker, "REMOVE {} {}", portName, getClass().getSimpleName());
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
 
@@ -186,7 +191,7 @@ public class InterfaceInventoryStateListener
             return;
         }
 
-
+        LOG.info(marker, "UPDATE {} {}", fcNodeConnectorNew.getName(), getClass().getSimpleName());
         if (fcNodeConnectorNew.getReason() == PortReason.Delete
                 || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {

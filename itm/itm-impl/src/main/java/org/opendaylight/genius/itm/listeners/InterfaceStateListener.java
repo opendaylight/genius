@@ -40,11 +40,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 @Singleton
 public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<Interface> {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
+    private static final Marker marker = MarkerFactory.getMarker("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
@@ -71,6 +74,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
+            LOG.info(marker, "ADD {} {}", iface.getName(), getClass().getSimpleName());
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), () -> ItmTunnelStateAddHelper
                     .addTunnel(iface, interfaceManager, dataBroker));
@@ -85,6 +89,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
+            LOG.info(marker, " REMOVE {} {}", iface.getName(), getClass().getSimpleName());
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(),
                 () -> ItmTunnelStateRemoveHelper.removeTunnel(iface, dataBroker));
@@ -103,6 +108,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
          * type can't be edited on the fly
          */
         if (ItmUtils.isItmIfType(originalInterface.getType())) {
+            LOG.info(marker, " UPDATE {} {}", updatedInterface.getName(), getClass().getSimpleName());
             LOG.trace("Interface updated. Old: {} New: {}", originalInterface, updatedInterface);
             OperStatus operStatus = updatedInterface.getOperStatus();
             if (!Objects.equals(originalInterface.getOperStatus(), updatedInterface.getOperStatus())) {

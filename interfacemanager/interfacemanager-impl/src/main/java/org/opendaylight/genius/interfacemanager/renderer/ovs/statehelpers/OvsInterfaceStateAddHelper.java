@@ -7,37 +7,24 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.interfacemanager.IfmConstants;
-import org.opendaylight.genius.interfacemanager.IfmUtil;
-import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
-import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
+import com.google.common.util.concurrent.*;
+import java.math.*;
+import java.util.*;
+import javax.annotation.*;
+import javax.inject.*;
+import org.opendaylight.controller.md.sal.binding.api.*;
+import static org.opendaylight.genius.infra.Datastore.*;
+import org.opendaylight.genius.infra.*;
+import org.opendaylight.genius.interfacemanager.*;
+import org.opendaylight.genius.interfacemanager.commons.*;
+import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.*;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.*;
+import org.slf4j.*;
 
 /**
  * This worker is responsible for adding the openflow-interfaces/of-port-info
@@ -48,6 +35,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
+    private static final Marker marker = MarkerFactory.getMarker("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
@@ -84,6 +72,7 @@ public final class OvsInterfaceStateAddHelper {
     private List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
             long portNo, PhysAddress physAddress) {
         LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
+        LOG.info(marker, "ADD {} {}", interfaceName, getClass().getSimpleName());
 
         if (portNo == IfmConstants.INVALID_PORT_NO) {
             LOG.trace("Cannot derive port number, not proceeding with Interface State " + "addition for interface: {}",
@@ -130,7 +119,7 @@ public final class OvsInterfaceStateAddHelper {
                         Long.toString(portNo), interfaceName, ifState.getIfIndex()));
             }
         }));
-
+        LOG.info(marker, "ADD {} {}", interfaceName, getClass().getSimpleName());
         return futures;
     }
 
@@ -138,6 +127,7 @@ public final class OvsInterfaceStateAddHelper {
             Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
+        LOG.info(marker, "ADD, TunnelIngressFlow ", interfaceName, getClass().getSimpleName());
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(
