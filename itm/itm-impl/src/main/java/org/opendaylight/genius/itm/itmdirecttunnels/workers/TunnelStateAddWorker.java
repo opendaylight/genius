@@ -8,6 +8,8 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.workers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -78,12 +80,18 @@ public final class TunnelStateAddWorker {
 
         // This will be only tunnel If so not required
         // If this interface is a tunnel interface, create the tunnel ingress flow,
+        // Egress flow for table 95 is installed based on dstId of the remote dpn,
+        // allocate id is done here as well, and idmanager creates uuid if not present.
         // and start tunnel monitoring
         if (stateTnl != null) {
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                tx -> directTunnelUtils.addTunnelIngressFlow(tx,
-                    DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId), portNo, interfaceName,
-                    stateTnl.getIfIndex())));
+                tx -> {
+                    BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
+                    String dstDpId = tunnelStateInfo.getDstDpnTepsInfo().getDPNID().toString();
+                    directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex());
+                    directTunnelUtils.addTunnelEgressFlow(tx, dpId, String.valueOf(portNo),
+                        directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, dstDpId), interfaceName);
+                }));
         }
         return Collections.emptyList();
     }
