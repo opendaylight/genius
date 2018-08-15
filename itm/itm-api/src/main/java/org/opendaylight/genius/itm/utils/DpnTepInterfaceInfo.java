@@ -22,4 +22,6 @@ public interface DpnTepInterfaceInfo {
     boolean isMonitoringEnabled();
 
     boolean isInternal();
+
+    int getGroupId();
 }
