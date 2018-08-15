@@ -36,6 +36,7 @@ import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.Direc
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfoBuilder;
+import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -297,6 +298,8 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                     //SF 419 This will only be tunnel interface
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+                    directTunnelUtils.makeTunnelEgressFlow(dpId, null, -1,
+                            interfaceName, NwConstants.DEL_FLOW);
                 }));
             } else {
                 LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
