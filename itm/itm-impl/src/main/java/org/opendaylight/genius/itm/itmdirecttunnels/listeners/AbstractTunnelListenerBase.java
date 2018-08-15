@@ -116,16 +116,15 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
 
         TunnelEndPointInfo tunnelEndPointInfo;
-        DpnTepInterfaceInfo dpnTepConfigInfo = null;
         List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         // Fetch the interface/Tunnel from config DS if exists
         // If it doesnt exists then "park" the processing and comeback to it when the data is available and
         // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
+        DpnTepInterfaceInfo dpnTepConfigInfo = null;
         try {
             directTunnelUtils.getTunnelLocks().lock(interfaceName);
             tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
-
             if (tunnelEndPointInfo != null) {
                 BigInteger srcDpnId = new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo());
                 BigInteger dpnId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -158,9 +157,10 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         // If this interface is a tunnel interface, create the tunnel ingress flow,
         // and start tunnel monitoring
         if (stateTnl != null) {
+            int finalGroupId = dpnTepConfigInfo.getGroupId();
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> handleTunnelMonitoringAddition(tx, nodeConnectorId, stateTnl.getIfIndex(), interfaceName,
-                            portNo)));
+                tx -> handleTunnelMonitoringAddition(tx, nodeConnectorId, stateTnl.getIfIndex(),
+                        finalGroupId, interfaceName, portNo)));
         }
         return futures;
     }
@@ -258,10 +258,11 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
     }
 
     private void handleTunnelMonitoringAddition(TypedWriteTransaction<Datastore.Configuration> tx,
-        NodeConnectorId nodeConnectorId, Integer ifindex, String interfaceName, long portNo) {
+        NodeConnectorId nodeConnectorId, Integer ifindex, Integer groupId, String interfaceName, long portNo) {
         BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
         directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName,
                 ifindex);
+        directTunnelUtils.addTunnelEgressFlow(tx, dpId, String.valueOf(portNo), groupId, interfaceName);
     }
 
     private void createLportTagInterfaceMap(String infName, Integer ifIndex) {
