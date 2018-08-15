@@ -29,20 +29,25 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -78,6 +83,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
@@ -364,6 +370,33 @@ public final class DirectTunnelUtils {
             getTunnelInterfaceFlowRef(dpnId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
 
         mdsalApiManager.removeFlow(tx, dpnId, flowRef, NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
+    }
+
+    public void makeTunnelEgressFlow(BigInteger dpnId, String portNo, int groupId,
+                                     String interfaceName, int addOrRemoveFlow) {
+        LOG.debug("make tunnel egress flow for {}", interfaceName);
+        String flowRef =
+                getTunnelInterfaceFlowRef(dpnId, NwConstants.EGRESS_TUNNEL_TABLE, interfaceName);
+        List<MatchInfoBase> matches = new ArrayList<>();
+
+        List<Instruction> mkInstructions = new ArrayList<>();
+        List<ActionInfo> result = new ArrayList<>();
+        if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
+            matches.add(new NxMatchRegister(NxmNxReg6.class,
+                    MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(groupId)));
+            result.add(new ActionOutput(0, new Uri(portNo)));
+            mkInstructions.add(MDSALUtil.buildApplyActionsInstruction(MDSALUtil.buildActions(result)));
+        }
+
+        Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_TUNNEL_TABLE, flowRef,
+                5, flowRef, 0, 0, NwConstants.COOKIE_ITM_EGRESS_TUNNEL_TABLE,
+                matches, mkInstructions);
+
+        if (NwConstants.ADD_FLOW == addOrRemoveFlow) {
+            mdsalApiManager.batchedAddFlow(dpnId, egressFlow);
+        } else {
+            mdsalApiManager.batchedRemoveFlow(dpnId, egressFlow);
+        }
     }
 
     private String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
