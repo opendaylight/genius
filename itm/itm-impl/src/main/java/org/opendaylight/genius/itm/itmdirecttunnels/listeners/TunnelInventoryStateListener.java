@@ -297,6 +297,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                     //SF 419 This will only be tunnel interface
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+                    directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
                 }));
             } else {
                 LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
