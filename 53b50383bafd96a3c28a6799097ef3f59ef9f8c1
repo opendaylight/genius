@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a58e1b9c_fd911cec",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-16T09:05:20Z",
+      "side": 1,
+      "message": "I think the commit message should explain *why* (for future reference at least, so that we know how to re-evaluate this in a few months/years\u0027 time).",
+      "revId": "53b50383bafd96a3c28a6799097ef3f59ef9f8c1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
