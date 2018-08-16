@@ -10,8 +10,11 @@ package org.opendaylight.genius.arputil.test;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceivedBuilder;
@@ -48,9 +51,11 @@ public final class ArpUtilTestUtil {
                                      "00 01 02 03 04 05",                               // Target MAC Address
                                      "C0 A8 0 2"                                        // Target IP Address
         );
+        InstanceIdentifier<Node> iid = InstanceIdentifier.builder(Nodes.class)
+                .child(Node.class, new NodeKey(new NodeId("openflow:12345"))).build();
 
         return new PacketReceivedBuilder().setPacketInReason(SendToController.class).setTableId(new TableId(ID))
-                .setPayload(payload).setIngress(new NodeConnectorRef(InstanceIdentifier.create(Node.class)))
+                .setPayload(payload).setIngress(new NodeConnectorRef(iid))
                 .setMatch(new MatchBuilder().setMetadata(new MetadataBuilder().setMetadata(META_DATA).build()).build())
                 .build();
     }
