@@ -96,6 +96,7 @@ import org.slf4j.LoggerFactory;
 public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService, PacketProcessingListener {
     private static final Logger LOG = LoggerFactory.getLogger(ArpUtilImpl.class);
     private static final String MODULENAME = "odl.genius.arputil.";
+    private static final String OPENFLOW_PFX = "openflow:";
 
     private final DataBroker dataBroker;
     private final PacketProcessingService packetProcessingService;
@@ -278,7 +279,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         return packetProcessingService.transmitPacket(new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                        .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                        .child(Node.class, new NodeKey(new NodeId(OPENFLOW_PFX + dpnId))).build()))
                 .setIngress(nodeConnectorRef).setEgress(ref).build());
     }
 
@@ -287,7 +288,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         TransmitPacketInput transmitPacketInput = new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
-                        .child(Node.class, new NodeKey(new NodeId("openflow:" + dpnId))).toInstance()))
+                        .child(Node.class, new NodeKey(new NodeId(OPENFLOW_PFX + dpnId))).build()))
                 .setIngress(nodeConnectorRef).setEgress(ref).setAction(actions).build();
         LOG.trace("PacketOut message framed for transmitting {}", transmitPacketInput);
         return packetProcessingService.transmitPacket(transmitPacketInput);
@@ -373,6 +374,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
         if (pktInReason == SendToController.class) {
             try {
+                BigInteger dpnId = extractDpnId(packetReceived);
                 int tableId = packetReceived.getTableId().getValue();
 
                 byte[] data = packetReceived.getPayload();
@@ -397,11 +399,11 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr, srcMac);
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(), NWUtil.toStringMacAddress(srcMac));
                 if (arp.getOpCode() == ArpConstants.ARP_REQUEST_OP) {
-                    fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, tableId,
+                    fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, dpnId, tableId,
                             metadata.getMetadata());
                 } else {
-                    fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, tableId, metadata.getMetadata(),
-                            dstInetAddr, dstMac);
+                    fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, dpnId, tableId,
+                                                 metadata.getMetadata(), dstInetAddr, dstMac);
                 }
                 if (macAddrs.get(srcInetAddr.getHostAddress()) != null) {
                     threadPool.execute(new MacResponderTask(arp));
@@ -475,7 +477,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
-            int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
+            BigInteger dpnId, int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
                     throws InterruptedException {
         arpRespRecvd.mark();
 
@@ -488,6 +490,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         ArpResponseReceivedBuilder builder = new ArpResponseReceivedBuilder();
         builder.setInterface(interfaceName);
         builder.setSrcIpaddress(srcIp);
+        builder.setDpnId(dpnId);
         builder.setOfTableId((long) tableId);
         builder.setSrcMac(srcMac);
         builder.setMetadata(metadata);
@@ -503,11 +506,12 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpReqRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMac,
-            InetAddress dstInetAddr, int tableId, BigInteger metadata) throws InterruptedException {
+            InetAddress dstInetAddr, BigInteger dpnId, int tableId, BigInteger metadata) throws InterruptedException {
         arpReqRecvd.mark();
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
+        builder.setDpnId(dpnId);
         builder.setOfTableId((long) tableId);
         builder.setSrcIpaddress(new IpAddress(srcInetAddr.getHostAddress().toCharArray()));
         builder.setDstIpaddress(new IpAddress(dstInetAddr.getHostAddress().toCharArray()));
@@ -538,5 +542,17 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             builder.setMacaddress(mac);
             notificationPublishService.putNotification(builder.build());
         }
+    }
+
+    private BigInteger extractDpnId(PacketReceived packetReceived) {
+        NodeKey nodeKey = packetReceived.getIngress().getValue().firstKeyOf(Node.class);
+        String nodeKeyString = nodeKey.getId().getValue();
+
+        if (!nodeKeyString.startsWith(OPENFLOW_PFX)) {
+            LOG.warn("Could not extract DPN for packet-in, doesn't start with 'openflow:' {}", packetReceived);
+            return null;
+        }
+
+        return new BigInteger(nodeKeyString.substring(OPENFLOW_PFX.length()));
     }
 }
