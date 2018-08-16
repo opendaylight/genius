@@ -19,3 +19,4 @@ Contents:
    qos-shaping
    service-binding-on-tunnels
    service-recovery
+   arputil-dpn-id-in-notifications
