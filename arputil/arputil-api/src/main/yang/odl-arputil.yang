@@ -122,6 +122,9 @@ module odl-arputil {
          leaf metadata {
              type uint64;
          }
+         leaf dpn-id {
+            type uint64;
+         }
     }
 
     notification arp-response-received {
@@ -147,6 +150,9 @@ module odl-arputil {
          }
          leaf metadata {
              type uint64;
+         }
+         leaf dpn-id {
+            type uint64;
          }
     }
 
