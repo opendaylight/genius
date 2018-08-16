@@ -379,6 +379,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
         if (pktInReason == SendToController.class) {
             try {
+                BigInteger dpn = extractDpn(packetReceived);
                 int tableId = packetReceived.getTableId().getValue();
 
                 byte[] data = packetReceived.getPayload();
@@ -403,11 +404,11 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 checkAndFireMacChangedNotification(interfaceName, srcInetAddr, srcMac);
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(), NWUtil.toStringMacAddress(srcMac));
                 if (arp.getOpCode() == ArpConstants.ARP_REQUEST_OP) {
-                    fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, tableId,
+                    fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, dpn, tableId,
                             metadata.getMetadata());
                 } else {
-                    fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, tableId, metadata.getMetadata(),
-                            dstInetAddr, dstMac);
+                    fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, dpn, tableId,
+                                                 metadata.getMetadata(), dstInetAddr, dstMac);
                 }
                 if (macAddrs.get(srcInetAddr.getHostAddress()) != null) {
                     threadPool.execute(new MacResponderTask(arp));
@@ -481,7 +482,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
-            int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
+            BigInteger dpn, int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
                     throws InterruptedException {
         arpRespRecvd.mark();
 
@@ -494,6 +495,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         ArpResponseReceivedBuilder builder = new ArpResponseReceivedBuilder();
         builder.setInterface(interfaceName);
         builder.setSrcIpaddress(srcIp);
+        builder.setDpId(dpn);
         builder.setOfTableId((long) tableId);
         builder.setSrcMac(srcMac);
         builder.setMetadata(metadata);
@@ -509,11 +511,12 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpReqRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMac,
-            InetAddress dstInetAddr, int tableId, BigInteger metadata) throws InterruptedException {
+            InetAddress dstInetAddr, BigInteger dpn, int tableId, BigInteger metadata) throws InterruptedException {
         arpReqRecvd.mark();
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
+        builder.setDpId(dpn);
         builder.setOfTableId((long) tableId);
         builder.setSrcIpaddress(IetfInetUtil.INSTANCE.ipAddressFor(srcInetAddr));
         builder.setDstIpaddress(IetfInetUtil.INSTANCE.ipAddressFor(dstInetAddr));
@@ -544,5 +547,11 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             builder.setMacaddress(mac);
             notificationPublishService.putNotification(builder.build());
         }
+    }
+
+    private BigInteger extractDpn(PacketReceived packetReceived) {
+        NodeKey nodeKey = packetReceived.getIngress().getValue().firstKeyOf(Node.class);
+        String dpnAsString = nodeKey.getId().getValue().substring("openflow:".length());
+        return new BigInteger(dpnAsString);
     }
 }
