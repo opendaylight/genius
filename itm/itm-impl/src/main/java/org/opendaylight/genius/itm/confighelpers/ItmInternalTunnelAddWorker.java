@@ -25,6 +25,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -80,12 +81,14 @@ public final class ItmInternalTunnelAddWorker {
     private final DirectTunnelUtils directTunnelUtils;
     private final IInterfaceManager interfaceManager;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+    private final DpnTepStateCache dpnTepStateCache;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                       TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
                                       DirectTunnelUtils directTunnelUtil,
                                       IInterfaceManager interfaceManager,
-                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
+                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                      DpnTepStateCache dpnTepStateCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
@@ -93,6 +96,7 @@ public final class ItmInternalTunnelAddWorker {
         this.directTunnelUtils = directTunnelUtil;
         this.interfaceManager = interfaceManager;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
+        this.dpnTepStateCache = dpnTepStateCache;
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
         monitorInterval = Integer.valueOf(tunnelMonitoringConfig.getMonitorInterval());
@@ -357,6 +361,8 @@ public final class ItmInternalTunnelAddWorker {
         // so that InterfaceManager can ignore South Bound events for these interfaces.
         interfaceManager.addInternalTunnelToIgnoreCache(trunkInterfaceName);
         addTunnelConfiguration(iface);
+        dpnTepStateCache.addTunnelEndPointInfoToCache(trunkInterfaceName,srcDpnId.toString(),
+                dstDpnId.toString());
     }
 
     private static void updateDpnTepInterfaceInfoToConfig(DpnTepsState dpnTeps) {

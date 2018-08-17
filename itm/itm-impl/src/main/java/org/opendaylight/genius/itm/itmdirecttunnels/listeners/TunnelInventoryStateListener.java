@@ -326,7 +326,8 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         public Object call() throws Exception {
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            return addState(key, interfaceName, fcNodeConnectorNew);
+            // TunnelEndPointInfo and DpnTepInterfaceInfo are not available, hence passing null
+            return addState(key, interfaceName, fcNodeConnectorNew, null, null);
         }
 
         @Override

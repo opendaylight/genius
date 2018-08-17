@@ -61,6 +61,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     private final ItmExternalTunnelAddWorker itmExternalTunnelAddWorker;
     private final DPNTEPsInfoCache dpntePsInfoCache;
+    private final DpnTepStateCache dpnTepStateCache;
     private final DataBroker dataBroker;
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     private final ItmConfig itmConfig;
@@ -87,10 +88,12 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         this.imdsalApiManager = imdsalApiMgr;
         this.jobCoordinator = jobCoordinator;
         this.dpntePsInfoCache = dpntePsInfoCache;
+        this.dpnTepStateCache = dpnTepStateCache;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.eventCallbacks = eventCallbacks;
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
+                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache,
+                dpnTepStateCache);
         this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
                 dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
