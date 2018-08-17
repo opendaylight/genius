@@ -10,10 +10,14 @@ package org.opendaylight.genius.infra;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.Futures;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -42,7 +46,7 @@ public final class TransactionAdapter {
             TypedReadWriteTransactionImpl nonSubmitCancelableDatastoreReadWriteTransaction =
                     (TypedReadWriteTransactionImpl) datastoreTx;
             return new ReadWriteTransactionAdapter(nonSubmitCancelableDatastoreReadWriteTransaction.datastoreType,
-                    nonSubmitCancelableDatastoreReadWriteTransaction.delegate);
+                    nonSubmitCancelableDatastoreReadWriteTransaction);
         }
         throw new IllegalArgumentException(
                 "Unsupported TypedWriteTransaction implementation " + datastoreTx.getClass());
@@ -60,7 +64,7 @@ public final class TransactionAdapter {
             TypedWriteTransactionImpl nonSubmitCancelableDatastoreWriteTransaction =
                     (TypedWriteTransactionImpl) datastoreTx;
             return new WriteTransactionAdapter(nonSubmitCancelableDatastoreWriteTransaction.datastoreType,
-                    nonSubmitCancelableDatastoreWriteTransaction.delegate);
+                    nonSubmitCancelableDatastoreWriteTransaction);
         }
         throw new IllegalArgumentException(
                 "Unsupported TypedWriteTransaction implementation " + datastoreTx.getClass());
@@ -68,57 +72,73 @@ public final class TransactionAdapter {
 
     // We want to subclass this class, even though it has a private constructor
     @SuppressWarnings("FinalClass")
-    private static class WriteTransactionAdapter extends NonSubmitCancelableWriteTransaction {
+    private static class WriteTransactionAdapter<D extends Datastore> implements WriteTransaction {
         final LogicalDatastoreType datastoreType;
+        final TypedWriteTransaction<D> delegate;
 
-        private WriteTransactionAdapter(LogicalDatastoreType datastoreType, WriteTransaction delegate) {
-            super(delegate);
+        private WriteTransactionAdapter(LogicalDatastoreType datastoreType, TypedWriteTransaction<D> delegate) {
             this.datastoreType = datastoreType;
+            this.delegate = delegate;
         }
 
         @Override
         public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
             checkStore(store);
-            super.put(store, path, data);
+            delegate.put(path, data);
         }
 
         @Override
         public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
                 boolean createMissingParents) {
             checkStore(store);
-            super.put(store, path, data, createMissingParents);
+            delegate.put(path, data, createMissingParents);
         }
 
         @Override
         public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
             checkStore(store);
-            super.merge(store, path, data);
+            delegate.merge(path, data);
         }
 
         @Override
         public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
                 boolean createMissingParents) {
             checkStore(store);
-            super.merge(store, path, data, createMissingParents);
+            delegate.merge(path, data, createMissingParents);
+        }
+
+        @Override
+        public boolean cancel() {
+            throw new UnsupportedOperationException("Managed transactions mustn't be cancelled");
         }
 
         @Override
         public void delete(LogicalDatastoreType store, InstanceIdentifier<?> path) {
             checkStore(store);
-            super.delete(store, path);
+            delegate.delete(path);
+        }
+
+        @Override
+        public @NonNull FluentFuture<? extends CommitInfo> commit() {
+            throw new UnsupportedOperationException("Managed transactions mustn't be committed");
         }
 
         void checkStore(LogicalDatastoreType store) {
             Preconditions.checkArgument(datastoreType.equals(store), "Invalid datastore %s used instead of %s", store,
                 datastoreType);
         }
+
+        @Override
+        public Object getIdentifier() {
+            return delegate.getIdentifier();
+        }
     }
 
-    private static final class ReadWriteTransactionAdapter extends WriteTransactionAdapter
+    private static final class ReadWriteTransactionAdapter<D extends Datastore> extends WriteTransactionAdapter<D>
             implements ReadWriteTransaction {
-        private final ReadWriteTransaction delegate;
+        private final TypedReadWriteTransaction<D> delegate;
 
-        private ReadWriteTransactionAdapter(LogicalDatastoreType datastoreType, ReadWriteTransaction delegate) {
+        private ReadWriteTransactionAdapter(LogicalDatastoreType datastoreType, TypedReadWriteTransaction<D> delegate) {
             super(datastoreType, delegate);
             this.delegate = delegate;
         }
@@ -127,7 +147,8 @@ public final class TransactionAdapter {
         public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
                 InstanceIdentifier<T> path) {
             checkStore(store);
-            return delegate.read(datastoreType, path);
+            return Futures.makeChecked(delegate.read(path),
+                e -> new ReadFailedException("Error reading from the datastore", e));
         }
     }
 }
