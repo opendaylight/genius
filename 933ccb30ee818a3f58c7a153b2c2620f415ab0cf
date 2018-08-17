@@ -1,0 +1,90 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2d6a21ae_7cf46191",
+        "filename": "arputil/arputil-api/src/main/yang/odl-arputil.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-08-17T03:40:14Z",
+      "side": 1,
+      "message": "dpn-id",
+      "range": {
+        "startLine": 125,
+        "startChar": 14,
+        "endLine": 125,
+        "endChar": 20
+      },
+      "revId": "933ccb30ee818a3f58c7a153b2c2620f415ab0cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ffa10d82_b0cd58f9",
+        "filename": "arputil/arputil-api/src/main/yang/odl-arputil.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-08-17T03:40:14Z",
+      "side": 1,
+      "message": "change this to dpn-id here. All through genius/netvirt we use dpnid for datapath id as openflow gives it. dpid is mostly used for the ovsdb hex format datapath id. This allows easy way to remember what this actually contains. More of a semantic consistency comment.",
+      "range": {
+        "startLine": 154,
+        "startChar": 14,
+        "endLine": 154,
+        "endChar": 19
+      },
+      "revId": "933ccb30ee818a3f58c7a153b2c2620f415ab0cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5d97b945_0ca26967",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-08-17T03:40:14Z",
+      "side": 1,
+      "message": "dpnId \u003d extractDpnId",
+      "range": {
+        "startLine": 382,
+        "startChar": 16,
+        "endLine": 382,
+        "endChar": 43
+      },
+      "revId": "933ccb30ee818a3f58c7a153b2c2620f415ab0cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2f34d154_a090c6d1",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-08-17T03:40:14Z",
+      "side": 1,
+      "message": "dpnId",
+      "revId": "933ccb30ee818a3f58c7a153b2c2620f415ab0cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
