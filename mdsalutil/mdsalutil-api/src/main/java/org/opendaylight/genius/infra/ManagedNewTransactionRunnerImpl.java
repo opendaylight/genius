@@ -11,6 +11,7 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
 import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import javax.inject.Inject;
@@ -81,10 +82,16 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     public <E extends Exception> ListenableFuture<Void>
             callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
-        ReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
+        WriteTrackingReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
         try {
             txRunner.accept(wrappedTx);
-            return realTx.submit();
+            if (wrappedTx.isWritten()) {
+                // The transaction contains changes, commit it
+                return realTx.submit();
+            }
+            // The transaction only handled reads, cancel it
+            realTx.cancel();
+            return Futures.immediateCheckedFuture(null);
         // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -100,11 +107,17 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
-        TypedReadWriteTransaction<D> wrappedTx =
-                new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
+        WriteTrackingTypedReadWriteTransactionImpl<D> wrappedTx =
+            new WriteTrackingTypedReadWriteTransactionImpl<>(datastoreType, realTx);
         try {
             txRunner.accept(wrappedTx);
-            return realTx.commit().transform(commitInfo -> null, MoreExecutors.directExecutor());
+            if (wrappedTx.isWritten()) {
+                // The transaction contains changes, commit it
+                return realTx.commit().transform(v -> null, MoreExecutors.directExecutor());
+            }
+            // The transaction only handled reads, cancel it
+            realTx.cancel();
+            return FluentFuture.from(Futures.immediateFuture(null));
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -119,11 +132,17 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txRunner) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
-        TypedReadWriteTransaction<D> wrappedTx =
-                new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
+        WriteTrackingTypedReadWriteTransactionImpl<D> wrappedTx =
+                new WriteTrackingTypedReadWriteTransactionImpl<>(datastoreType, realTx);
         try {
             R result = txRunner.apply(wrappedTx);
-            return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
+            if (wrappedTx.isWritten()) {
+                // The transaction contains changes, commit it
+                return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
+            }
+            // The transaction only handled reads, cancel it
+            realTx.cancel();
+            return FluentFuture.from(Futures.immediateFuture(result));
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
