@@ -97,6 +97,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     public DpnTepInterfaceInfo getDpnTepInterface(BigInteger srcDpnId, BigInteger dstDpnId) {
         DpnTepInterfaceInfo  dpnTepInterfaceInfo = dpnTepInterfaceMap.get(getDpnId(srcDpnId, dstDpnId));
         if (dpnTepInterfaceInfo == null) {
+            LOG.debug("DpnTepInterface is null for source DpnId {}, Destination DpnId {}", srcDpnId, dstDpnId);
             try {
                 Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
                 if (dpnsTeps.isPresent()) {
@@ -213,13 +214,15 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     }
 
     //Start: TunnelEndPoint Cache accessors
-    private void addTunnelEndPointInfoToCache(String tunnelName, String srcEndPtInfo, String dstEndPtInfo) {
+    public void addTunnelEndPointInfoToCache(String tunnelName, String srcEndPtInfo, String dstEndPtInfo) {
         TunnelEndPointInfo tunnelEndPointInfo = new TunnelEndPointInfoBuilder().setSrcEndPointInfo(srcEndPtInfo)
                 .setDstEndPointInfo(dstEndPtInfo).build();
         tunnelEndpointMap.put(tunnelName, tunnelEndPointInfo);
     }
 
     public TunnelEndPointInfo getTunnelEndPointInfoFromCache(String tunnelName) {
+        // This will always be available in cache as its populated during tunnel mesh up as well.
+        // No need to read from DS on cache miss
         return tunnelEndpointMap.get(tunnelName);
     }
 }

@@ -33,8 +33,8 @@ public class UnprocessedNodeConnectorEndPointCache {
         unProcessedNodeConnectorEndPtMap.computeIfAbsent(dpnId, key -> ConcurrentHashMap.newKeySet()).add(ncInfo);
     }
 
-    public void remove(String dpnId) {
-        unProcessedNodeConnectorEndPtMap.remove(dpnId);
+    public Collection<NodeConnectorInfo> remove(String dpnId) {
+        return unProcessedNodeConnectorEndPtMap.remove(dpnId);
     }
 
     public void remove(String dpnId, NodeConnectorInfo ncInfo) {

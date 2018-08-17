@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -90,7 +89,9 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
     }
 
     public List<ListenableFuture<Void>> addState(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                                 String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew)
+                                                 String interfaceName, FlowCapableNodeConnector fcNodeConnectorNew,
+                                                 TunnelEndPointInfo inputTunnelEndPointInfo,
+                                                 DpnTepInterfaceInfo inputDpnTepConfigInfo)
             throws ExecutionException, InterruptedException, OperationFailedException {
         NodeConnectorInfo nodeConnectorInfo = new NodeConnectorInfoBuilder().setNodeConnectorId(key)
                 .setNodeConnector(fcNodeConnectorNew).build();
@@ -107,23 +108,33 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
 
         TunnelEndPointInfo tunnelEndPointInfo;
         DpnTepInterfaceInfo dpnTepConfigInfo = null;
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        if (!(inputDpnTepConfigInfo == null || inputDpnTepConfigInfo == null)) {
+            // The addState is being called from DpnTepStateListener and so data is already available
+            // don't look up again
+            LOG.debug("Incoming TunnelEndPointInfo: {}, DpnTepInterfaceInfo: {}", inputTunnelEndPointInfo,
+                    inputDpnTepConfigInfo);
+            tunnelEndPointInfo = inputTunnelEndPointInfo;
+            dpnTepConfigInfo = inputDpnTepConfigInfo;
+        } else {
 
-        // Fetch the interface/Tunnel from config DS if exists
-        // If it doesnt exists then "park" the processing and comeback to it when the data is available and
-        // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
-        tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+            // Fetch the interface/Tunnel from config DS if exists
+            // If it doesnt exists then "park" the processing and comeback to it when the data is available and
+            // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
 
-        if (tunnelEndPointInfo != null) {
-            dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
-                    new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
-                    new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
-        }
-        if (tunnelEndPointInfo == null || dpnTepConfigInfo == null) {
-            LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
-                    + "Hence parking it", interfaceName);
-            unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
-            return Collections.emptyList();
+            tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceName);
+
+            if (tunnelEndPointInfo != null) {
+                LOG.debug("TunnelEndPointInfo is not null {}", tunnelEndPointInfo);
+                dpnTepConfigInfo = dpnTepStateCache.getDpnTepInterface(
+                        new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()),
+                        new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
+            }
+            if (tunnelEndPointInfo == null || dpnTepConfigInfo == null) {
+                LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+                        + "Hence parking it", interfaceName);
+                unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
+                return Collections.emptyList();
+            }
         }
         Interface.OperStatus operStatus = Interface.OperStatus.Up;
         Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
@@ -175,7 +186,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         if (!dstDpnTePsInfo.isPresent()) {
             LOG.debug("Unable to add State for tunnel {}. Hence Parking with key {}",
                     interfaceName, tunnelEndPointInfo.getDstEndPointInfo());
-            unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(), nodeConnectorInfo);
+            unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getDstEndPointInfo(), nodeConnectorInfo);
         }
 
         if (!(srcDpnTepsInfo.isPresent() && dstDpnTePsInfo.isPresent())) {
@@ -244,19 +255,25 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
+        private final TunnelEndPointInfo tunnelEndPointInfo;
+        private final DpnTepInterfaceInfo dpnTepConfigInfo;
 
         InterfaceStateAddWorkerForUnprocessedNC(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                                FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
+                                                FlowCapableNodeConnector fcNodeConnectorNew, String portName,
+                                                TunnelEndPointInfo tunnelEndPointInfo,
+                                                DpnTepInterfaceInfo dpnTepConfigInfo) {
             this.key = key;
             this.fcNodeConnectorNew = fcNodeConnectorNew;
             this.interfaceName = portName;
+            this.tunnelEndPointInfo = tunnelEndPointInfo;
+            this.dpnTepConfigInfo = dpnTepConfigInfo;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
-            return addState(key, interfaceName, fcNodeConnectorNew);
+            return addState(key, interfaceName, fcNodeConnectorNew, tunnelEndPointInfo, dpnTepConfigInfo);
         }
 
         @Override

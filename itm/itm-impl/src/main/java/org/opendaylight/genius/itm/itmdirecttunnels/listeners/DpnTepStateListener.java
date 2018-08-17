@@ -16,7 +16,11 @@ import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
+import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfoBuilder;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfoBuilder;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
@@ -51,9 +55,6 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
 
     @Override
     public void add(@Nonnull InstanceIdentifier<DpnsTeps> instanceIdentifier, @Nonnull DpnsTeps dpnsTeps) {
-        if (!entityOwner()) {
-            return;
-        }
         for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
@@ -62,9 +63,17 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
                 LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
                 // Queue the IntefaceAddWorkerForUnprocessNC in DJC
                 String portName = nodeConnectorInfo.getNodeConnector().getName();
+                TunnelEndPointInfo tunnelEndPointInfo = new TunnelEndPointInfoBuilder()
+                        .setSrcEndPointInfo(dpnsTeps.getSourceDpnId().toString())
+                        .setDstEndPointInfo(remoteDpns.getDestinationDpnId().toString()).build();
+                DpnTepInterfaceInfo dpnTepConfigInfo = new DpnTepInterfaceInfoBuilder()
+                        .setTunnelName(remoteDpns.getTunnelName())
+                        .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
+                        .setIsInternal(remoteDpns.isInternal())
+                        .setTunnelType(dpnsTeps.getTunnelType()).build();
                 InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
                         new InterfaceStateAddWorkerForUnprocessedNC(nodeConnectorInfo.getNodeConnectorId(),
-                                nodeConnectorInfo.getNodeConnector(), portName);
+                                nodeConnectorInfo.getNodeConnector(), portName, tunnelEndPointInfo,dpnTepConfigInfo);
                 coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
             }
         }
