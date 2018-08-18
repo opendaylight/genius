@@ -1,0 +1,214 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "feb9120b_ede1335c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 898,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "This is actually a Law of Demeter violation. Why not just pass the InternalTunnelIgnoreCache directly into callers?",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8602fcc3_67679e9d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "This can be combined with previous line...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fc8b54e8_3cdece02",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "...same here...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06832397_9aafb001",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "...same here...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "829a164b_580c54e5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "combine with previous line...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a27f5fbe_b94bb0f3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "...same here...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a4f22ab7_593da8fb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "Instead of exposing the internal map as mutable, how about return the entrySet as an Iterable and rename the method to entries? ...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8cc4883_a1dc63d3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/UnprocessedNodeConnectorEndPointCache.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "...same here...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "876af865_3de13396",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "Iterate the entrySet...",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b0aa5e05_9d8f1533",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "...same here",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d56e131c_9c87945a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 595,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "No need to check this.",
+      "range": {
+        "startLine": 595,
+        "startChar": 29,
+        "endLine": 595,
+        "endChar": 36
+      },
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "304c2852_94879437",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/AbstractTunnelListenerBase.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-18T22:06:19Z",
+      "side": 1,
+      "message": "Why not just inline these instead of putting in immutable vars?",
+      "revId": "8ed2f0ce752a72ac8f272bdc582967d8398d6b3e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
