@@ -1,0 +1,123 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "dda5e1de_a773c06e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "1. fix typo, 2. single line, 3. add missing trailing dot:\n\n    Separate Logger to capture events for debugging.",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a9dfe1ec_26074089",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "Wait this looks very strange... something is wrong here, it seems that this writeTransaction, which for some reason you propose to move as part of this change (but why?) is not actually used?  Then why don\u0027t we just remove it?  As part of this, or raise another, change - whatever you prefer.",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8dd37d76_ab7f845a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "I feel like this utility could with with some JavaDoc explaining what the point of this separate logger is... and perhaps that would also help you to find another name for it?  And explain what the \"event\" String means?",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b922709f_8b598d90",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "remove empty line here?  Even just single line like this:\n\n    private GeniusEventLogger() { }",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9bddd17_5831c1a3",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "I\u0027ve noticed that you have used a \"convention\" to always prefix that \u0027event\u0027 String with the class name.. that is useful to find out what logged it, but how about not having that as a convention but actually making that part of the signature, to enforce it?  So something like:\n\n    public static void someName(Class\u003c?\u003e klass, String event, Object... objects) {\n\n        LOG.info(\"{} ... {} ... {}\", klass, event, objects);",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb0e5c70_2a0152aa",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "how about naming this method logInfo?  Just in case you later ever want to have e.g. warn as well?",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e9500e3d_abb79194",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-20T15:35:09Z",
+      "side": 1,
+      "message": "isn\u0027t this a bit verbose?  How about just:\n\n    \"Event {}, Object {}\"",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
