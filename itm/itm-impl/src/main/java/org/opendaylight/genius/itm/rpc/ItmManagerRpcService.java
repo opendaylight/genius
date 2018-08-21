@@ -14,6 +14,7 @@ import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -33,12 +34,12 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -69,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeRefInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
@@ -76,6 +78,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.o
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
@@ -87,6 +90,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
@@ -182,6 +186,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
+    private final RetryingManagedNewTransactionRunner retryingTxRunner;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
@@ -203,6 +208,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.directTunnelUtils = directTunnelUtils;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.retryingTxRunner = new RetryingManagedNewTransactionRunner(dataBroker);
     }
 
     @PostConstruct
@@ -218,10 +224,10 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
             GetTunnelInterfaceNameInput input) {
-        RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
+        RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld;
         BigInteger sourceDpn = input.getSourceDpid();
         BigInteger destinationDpn = input.getDestinationDpid();
-        Optional<InternalTunnel> optTunnel = Optional.absent();
+        Optional<InternalTunnel> optTunnel;
 
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getDpnTepInterface(sourceDpn, destinationDpn);
@@ -232,27 +238,23 @@ public class ItmManagerRpcService implements ItmRpcService {
                 return Futures.immediateFuture(resultBld.build());
             }
         }
-        if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
-            optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn,
-                                                         TunnelTypeLogicalGroup.class, dataBroker);
-            LOG.debug("MULTIPLE_VxLAN_TUNNELS: getTunnelInterfaceName {}", optTunnel);
-        }
-        if (!optTunnel.isPresent()) {
-            optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn, input.getTunnelType(), dataBroker);
-        }
-        if (optTunnel.isPresent()) {
-            InternalTunnel tunnel = optTunnel.get();
-            GetTunnelInterfaceNameOutputBuilder output = new GetTunnelInterfaceNameOutputBuilder() ;
-            List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
-            if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
-                output.setInterfaceName(tunnelInterfaces.get(0));
-                resultBld = RpcResultBuilder.success();
-                resultBld.withResult(output.build());
+        try {
+            optTunnel = getInternalTunnel(input.getTunnelType(), sourceDpn, destinationDpn);
+            if (optTunnel.isPresent()) {
+                InternalTunnel tunnel = optTunnel.get();
+                GetTunnelInterfaceNameOutputBuilder output = new GetTunnelInterfaceNameOutputBuilder();
+                List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
+                if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
+                    output.setInterfaceName(tunnelInterfaces.get(0));
+                    resultBld = RpcResultBuilder.success();
+                    resultBld.withResult(output.build());
+                } else {
+                    resultBld = failed();
+                }
             } else {
                 resultBld = failed();
             }
-
-        } else {
+        } catch (ReadFailedException e) {
             resultBld = failed();
         }
         return Futures.immediateFuture(resultBld.build());
@@ -383,15 +385,16 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<RemoveExternalTunnelEndpointOutput>> result = SettableFuture.create();
         Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, meshedDpnList,
-                input.getDestinationIp(), input.getTunnelType());
-        InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
-                .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        transaction.delete(LogicalDatastoreType.CONFIGURATION, extPath);
-        ListenableFuture<Void> futureCheck = transaction.submit();
-        Futures.addCallback(futureCheck, new FutureCallback<Void>() {
-
+        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> {
+                ItmExternalTunnelDeleteWorker.deleteTunnels(meshedDpnList, input.getDestinationIp(),
+                        input.getTunnelType(), tx);
+                InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
+                        .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+                tx.delete(extPath);
+            }
+        );
+        future.addCallback(new FutureCallback<Void>() {
             @Override public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<RemoveExternalTunnelEndpointOutput>success().build());
             }
@@ -404,7 +407,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 result.set(RpcResultBuilder.<RemoveExternalTunnelEndpointOutput>failed()
                         .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
             }
-        });
+        }, MoreExecutors.directExecutor());
         return result;
     }
 
@@ -413,10 +416,25 @@ public class ItmManagerRpcService implements ItmRpcService {
             RemoveExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<RemoveExternalTunnelFromDpnsOutput>> result = SettableFuture.create();
-        List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, input.getDpnId()) ;
-        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, cfgDpnList,
-                input.getDestinationIp(), input.getTunnelType());
-        result.set(RpcResultBuilder.<RemoveExternalTunnelFromDpnsOutput>success().build());
+        List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, input.getDpnId());
+        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> ItmExternalTunnelDeleteWorker.deleteTunnels(cfgDpnList, input.getDestinationIp(),
+                input.getTunnelType(), tx));
+
+        future.addCallback(new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void voidInstance) {
+                result.set(RpcResultBuilder.<RemoveExternalTunnelFromDpnsOutput>success().build());
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                String msg = "Unable to remove external tunnel from DPN";
+                LOG.error("remove ext tunnel failed. {}.", msg, error);
+                result.set(RpcResultBuilder.<RemoveExternalTunnelFromDpnsOutput>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+            }
+        }, MoreExecutors.directExecutor());
         return result;
     }
 
@@ -425,25 +443,26 @@ public class ItmManagerRpcService implements ItmRpcService {
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<BuildExternalTunnelFromDpnsOutput>> result = SettableFuture.create();
-        List<ListenableFuture<Void>> extTunnelResultList = externalTunnelAddWorker
-            .buildTunnelsFromDpnToExternalEndPoint(input.getDpnId(), input.getDestinationIp(),input.getTunnelType());
-        for (ListenableFuture<Void> extTunnelResult : extTunnelResultList) {
-            Futures.addCallback(extTunnelResult, new FutureCallback<Void>() {
+        FluentFuture<Void> extTunnelResultList =
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                tx -> externalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(input.getDpnId(),
+                    input.getDestinationIp(),input.getTunnelType(), tx));
 
-                @Override
-                public void onSuccess(Void voidInstance) {
-                    result.set(RpcResultBuilder.<BuildExternalTunnelFromDpnsOutput>success().build());
-                }
+        extTunnelResultList.addCallback(new FutureCallback<Void>() {
 
-                @Override
-                public void onFailure(Throwable error) {
-                    String msg = "Unable to create ext tunnel";
-                    LOG.error("create ext tunnel failed. {}.", msg, error);
-                    result.set(RpcResultBuilder.<BuildExternalTunnelFromDpnsOutput>failed()
-                            .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
-                }
-            });
-        }
+            @Override
+            public void onSuccess(Void voidInstance) {
+                result.set(RpcResultBuilder.<BuildExternalTunnelFromDpnsOutput>success().build());
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                String msg = "Unable to create ext tunnel";
+                LOG.error("create ext tunnel failed. {}.", msg, error);
+                result.set(RpcResultBuilder.<BuildExternalTunnelFromDpnsOutput>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+            }
+        }, MoreExecutors.directExecutor());
         return result;
     }
 
@@ -455,18 +474,20 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<AddExternalTunnelEndpointOutput>> result = SettableFuture.create();
         Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList,
-                input.getDestinationIp(), input.getTunnelType());
         InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                 .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp =
                 new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp())
                         .setTunnnelType(input.getTunnelType()).build();
-        WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, extPath,dcGatewayIp, true);
-        ListenableFuture<Void> futureCheck = writeTransaction.submit();
-        Futures.addCallback(futureCheck, new FutureCallback<Void>() {
 
+        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> {
+                externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList, input.getDestinationIp(),
+                        input.getTunnelType(), tx);
+                tx.put(extPath, dcGatewayIp, true);
+            }
+        );
+        future.addCallback(new FutureCallback<Void>() {
             @Override public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<AddExternalTunnelEndpointOutput>success().build());
             }
@@ -481,7 +502,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 result.set(RpcResultBuilder.<AddExternalTunnelEndpointOutput>failed()
                         .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
             }
-        });
+        }, MoreExecutors.directExecutor());
         return result;
     }
 
@@ -618,7 +639,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
-                    Optional<InternalTunnel> optTunnel = Optional.absent();
+                    Optional<InternalTunnel> optTunnel;
                     if (interfaceManager.isItmDirectTunnelsEnabled()) {
                         DpnTepInterfaceInfo interfaceInfo =
                                 dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID());
@@ -629,33 +650,30 @@ public class ItmManagerRpcService implements ItmRpcService {
                             return Futures.immediateFuture(resultBld.build());
                         }
                     }
-
-                    if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
-                        optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
-                                                                     TunnelTypeLogicalGroup.class, dataBroker);
-                        LOG.debug("MULTIPLE_VxLAN_TUNNELS: getInternalOrExternalInterfaceName {}", optTunnel);
-                    }
-                    if (!optTunnel.isPresent()) {
-                        optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
-                                                                     input.getTunnelType(), dataBroker);
-                    }
-                    if (optTunnel.isPresent()) {
-                        InternalTunnel tunnel = optTunnel.get();
-                        List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
-                        if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
-                            GetInternalOrExternalInterfaceNameOutputBuilder
-                                    output =
-                                    new GetInternalOrExternalInterfaceNameOutputBuilder()
-                                            .setInterfaceName(tunnelInterfaces.get(0));
-                            resultBld = RpcResultBuilder.success();
-                            resultBld.withResult(output.build());
+                    try {
+                        optTunnel = getInternalTunnel(input.getTunnelType(), srcDpn, teps.getDPNID());
+                        if (optTunnel.isPresent()) {
+                            InternalTunnel tunnel = optTunnel.get();
+                            List<String> tunnelInterfaces = tunnel.getTunnelInterfaceNames();
+                            if (tunnelInterfaces != null && !tunnelInterfaces.isEmpty()) {
+                                GetInternalOrExternalInterfaceNameOutputBuilder
+                                        output =
+                                        new GetInternalOrExternalInterfaceNameOutputBuilder()
+                                                .setInterfaceName(tunnelInterfaces.get(0));
+                                resultBld = RpcResultBuilder.success();
+                                resultBld.withResult(output.build());
+                            } else {
+                                LOG.error("No tunnel interface found between source DPN {} ans destination IP {}",
+                                    srcDpn, dstIp);
+                            }
+                            break;
                         } else {
-                            LOG.error("No tunnel interface found between source DPN {} ans destination IP {}", srcDpn,
-                                    dstIp);
+                            LOG.error("Tunnel not found for source DPN {} ans destination IP {}", srcDpn, dstIp);
                         }
-                        break;
-                    } else {
-                        LOG.error("Tunnel not found for source DPN {} ans destination IP {}", srcDpn, dstIp);
+                    } catch (ReadFailedException e) {
+                        LOG.error("getInternalTunnel faild for source DPN {} ans destination IP {} with error:",
+                            srcDpn, dstIp, e);
+                        resultBld = RpcResultBuilder.failed();
                     }
                 }
             }
@@ -699,14 +717,9 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
                             .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
                             .build();
-                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                    //TO DO: add retry if it fails
-
-                    transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
-
-                    ListenableFuture<Void> futureCheck = transaction.submit();
-                    Futures.addCallback(futureCheck, new FutureCallback<Void>() {
-
+                    FluentFuture<Void> future =
+                        retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(path));
+                    future.addCallback(new FutureCallback<Void>() {
                         @Override public void onSuccess(Void voidInstance) {
                             result.set(RpcResultBuilder.<DeleteL2GwDeviceOutput>success().build());
                         }
@@ -717,8 +730,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             result.set(RpcResultBuilder.<DeleteL2GwDeviceOutput>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                         }
-                    });
-
+                    }, MoreExecutors.directExecutor());
                 }
             } else {
                 result.set(RpcResultBuilder.<DeleteL2GwDeviceOutput>failed()
@@ -779,12 +791,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .build();
                     DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
-                    WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
                     //TO DO: add retry if it fails
-                    transaction.put(LogicalDatastoreType.CONFIGURATION, path, deviceVtep, true);
+                    FluentFuture<Void> future = retryingTxRunner
+                        .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(path, deviceVtep, true));
 
-                    ListenableFuture<Void> futureCheck = transaction.submit();
-                    Futures.addCallback(futureCheck, new FutureCallback<Void>() {
+                    future.addCallback(new FutureCallback<Void>() {
 
                         @Override public void onSuccess(Void voidInstance) {
                             result.set(RpcResultBuilder.<AddL2GwDeviceOutput>success().build());
@@ -796,7 +807,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             result.set(RpcResultBuilder.<AddL2GwDeviceOutput>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
                         }
-                    });
+                    }, MoreExecutors.directExecutor());
 
                 }
             } else {
@@ -859,27 +870,26 @@ public class ItmManagerRpcService implements ItmRpcService {
                                 .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey).build();
                 DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                         .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
-                WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-                //TO DO: add retry if it fails
-                LOG.trace("writing hWvtep{}",deviceVtep);
-                writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path, deviceVtep, true);
-
-                if (nodeId.size() == 2) {
-                    LOG.trace("second node-id {}",nodeId.get(1));
-                    DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
-                    InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier.builder(TransportZones.class)
-                            .child(TransportZone.class, new TransportZoneKey(transportZone))
-                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey2).build();
-                    DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().withKey(deviceVtepKey2).setIpAddress(hwIp)
-                            .setNodeId(nodeId.get(1))
-                            .setTopologyId(input.getTopologyId()).build();
-                    //TO DO: add retry if it fails
-                    LOG.trace("writing {}",deviceVtep2);
-                    writeTransaction.put(LogicalDatastoreType.CONFIGURATION, path2, deviceVtep2, true);
-                }
-                ListenableFuture<Void> futureCheck = writeTransaction.submit();
-                Futures.addCallback(futureCheck, new FutureCallback<Void>() {
-
+                LOG.trace("writing hWvtep{}", deviceVtep);
+                FluentFuture<Void> future =
+                    retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                        tx -> {
+                            tx.put(path, deviceVtep, true);
+                            if (nodeId.size() == 2) {
+                                LOG.trace("second node-id {}", nodeId.get(1));
+                                DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
+                                InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier.builder(TransportZones.class)
+                                        .child(TransportZone.class, new TransportZoneKey(transportZone))
+                                        .child(Subnets.class, subnetsKey)
+                                        .child(DeviceVteps.class, deviceVtepKey2).build();
+                                DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().withKey(deviceVtepKey2)
+                                        .setIpAddress(hwIp).setNodeId(nodeId.get(1))
+                                        .setTopologyId(input.getTopologyId()).build();
+                                LOG.trace("writing {}", deviceVtep2);
+                                tx.put(path2, deviceVtep2, true);
+                            }
+                        });
+                future.addCallback(new FutureCallback<Void>() {
                     @Override
                     public void onSuccess(Void voidInstance) {
                         result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>success().build());
@@ -930,27 +940,28 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 SubnetsKey subnetsKey = tzones.getTransportZone().get(0).getSubnets().get(0).key();
-                DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
-                InstanceIdentifier<DeviceVteps> path =
-                        InstanceIdentifier.builder(TransportZones.class)
-                                .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
-                                deviceVtepKey).build();
-                WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-                //TO DO: add retry if it fails
-                transaction.delete(LogicalDatastoreType.CONFIGURATION, path);
 
-                DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
-                InstanceIdentifier<DeviceVteps> path2 =
-                        InstanceIdentifier.builder(TransportZones.class)
-                                .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
-                                deviceVtepKey2).build();
-                //TO DO: add retry if it fails
-                transaction.delete(LogicalDatastoreType.CONFIGURATION, path2);
+                FluentFuture<Void> future =
+                    retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                        tx -> {
+                            DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
+                            InstanceIdentifier<DeviceVteps> path =
+                                    InstanceIdentifier.builder(TransportZones.class)
+                                            .child(TransportZone.class, new TransportZoneKey(transportZone))
+                                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
+                                            deviceVtepKey).build();
+                            tx.delete(path);
+                            DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
+                            InstanceIdentifier<DeviceVteps> path2 =
+                                    InstanceIdentifier.builder(TransportZones.class)
+                                            .child(TransportZone.class, new TransportZoneKey(transportZone))
+                                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
+                                            deviceVtepKey2).build();
+                            tx.delete(path2);
+                        }
+                    );
 
-                ListenableFuture<Void> futureCheck = transaction.submit();
-                Futures.addCallback(futureCheck, new FutureCallback<Void>() {
+                future.addCallback(new FutureCallback<Void>() {
 
                     @Override
                     public void onSuccess(Void voidInstance) {
@@ -965,7 +976,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                                 .withError(RpcError.ErrorType.APPLICATION, msg, error)
                                 .build());
                     }
-                });
+                }, MoreExecutors.directExecutor());
             }
             return result;
         } catch (Exception e) {
@@ -1000,12 +1011,15 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
         RpcResultBuilder<IsDcgwPresentOutput> resultBld = RpcResultBuilder.success();
 
-        List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
+        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+            tx -> dcGatewayIpList.addAll(ItmUtils.getDcGatewayIpList(tx))).isDone();
+
         String dcgwIpStr = input.getDcgwIp();
         IpAddress dcgwIpAddr = IpAddressBuilder.getDefaultInstance(dcgwIpStr);
         long retVal;
 
-        if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()
+        if (!dcGatewayIpList.isEmpty()
                 && dcGatewayIpList.stream().anyMatch(gwIp -> Objects.equal(gwIp.getIpAddress(), dcgwIpAddr))) {
             //Match found
             retVal = 1;
@@ -1181,5 +1195,27 @@ public class ItmManagerRpcService implements ItmRpcService {
                 break;
         }
         return result;
+    }
+
+    private Optional<InternalTunnel> getInternalTunnel(Class<? extends TunnelTypeBase> tunType, BigInteger srcDpn,
+        BigInteger dstDpn) throws ReadFailedException {
+        Optional<InternalTunnel> tunnel = Optional.absent();
+        if (ItmUtils.isTunnelAggregationUsed(tunType)) {
+            try {
+                LOG.debug("MULTIPLE_VxLAN_TUNNELS: getInternalOrExternalInterfaceName {}", tunnel);
+                tunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, dstDpn, TunnelTypeLogicalGroup.class,
+                    singleTransactionDataBroker);
+            } catch (ReadFailedException e) {
+                return singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
+                    InstanceIdentifier.create(TunnelList.class).child(InternalTunnel.class,
+                        new InternalTunnelKey(dstDpn, srcDpn, tunType)));
+            }
+        }
+        if (!tunnel.isPresent()) {
+            return singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
+                InstanceIdentifier.create(TunnelList.class).child(InternalTunnel.class,
+                    new InternalTunnelKey(dstDpn, srcDpn, tunType)));
+        }
+        return tunnel;
     }
 }

@@ -9,15 +9,13 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,10 +29,11 @@ import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
@@ -56,7 +55,6 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -97,7 +95,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.ip.pools.VtepIpPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.ip.pools.VtepIpPoolKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeExternal;
@@ -133,8 +130,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -151,12 +146,11 @@ import org.slf4j.LoggerFactory;
 public final class ItmUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
-
     private static final String TUNNEL = "tun";
     private static final IpPrefix DUMMY_IP_PREFIX = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX);
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
-    public static final ItmCache ITM_CACHE = new ItmCache();
 
+    public static final ItmCache ITM_CACHE = new ItmCache();
     public static final ImmutableMap<String, Class<? extends TunnelTypeBase>>
             TUNNEL_TYPE_MAP =
             new ImmutableMap.Builder<String, Class<? extends TunnelTypeBase>>()
@@ -165,13 +159,22 @@ public final class ItmUtils {
                     .put(ITMConstants.TUNNEL_TYPE_VXLAN, TunnelTypeVxlan.class)
                     .build();
 
-    private static final BiMap<String,Class<? extends TunnelTypeBase>> STRING_CLASS_IMMUTABLE_BI_MAP =
-            ImmutableBiMap.copyOf(TUNNEL_TYPE_MAP);
-
     private ItmUtils() {
     }
 
-    public static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
+    public static final FutureCallback<Void> DEFAULT_WRITE_CALLBACK = new FutureCallback<Void>() {
+        @Override
+        public void onSuccess(Void result) {
+            LOG.debug("Success in Datastore write operation");
+        }
+
+        @Override
+        public void onFailure(@Nonnull Throwable error) {
+            LOG.error("Error in Datastore write operation", error);
+        }
+    };
+
+    private static final FutureCallback<Void> DEFAULT_READ_CALLBACK = new FutureCallback<Void>() {
         @Override
         public void onSuccess(Void result) {
             LOG.debug("Success in Datastore write operation");
@@ -201,75 +204,8 @@ public final class ItmUtils {
         }
     }
 
-
-    /**
-     * Asynchronous non-blocking write to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncWrite(LogicalDatastoreType datastoreType,
-                                                         InstanceIdentifier<T> path, T data, DataBroker broker,
-                                                         FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
-    }
-
-    /**
-     * Asynchronous non-blocking update to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncUpdate(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, T data, DataBroker broker,
-                                                          FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
-    }
-
-    /**
-     * Asynchronous non-blocking single delete to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, DataBroker broker,
-                                                          FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback);
-    }
-
-    /**
-     * Asynchronous non-blocking bulk delete to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,
-                                                              final LogicalDatastoreType datastoreType,
-                                                              List<InstanceIdentifier<T>> pathList,
-                                                              FutureCallback<Void> callback) {
-        if (!pathList.isEmpty()) {
-            WriteTransaction tx = broker.newWriteOnlyTransaction();
-            for (InstanceIdentifier<T> path : pathList) {
-                tx.delete(datastoreType, path);
-            }
-            Futures.addCallback(tx.submit(), callback);
-        }
-    }
-
     public static String getInterfaceName(final BigInteger datapathid, final String portName, final Integer vlanId) {
         return String.format("%s:%s:%s", datapathid, portName, vlanId);
-    }
-
-    public static BigInteger getDpnIdFromInterfaceName(String interfaceName) {
-        String[] dpnStr = interfaceName.split(":");
-        return new BigInteger(dpnStr[0]);
     }
 
     public static String getTrunkInterfaceName(String parentInterfaceName,
@@ -310,15 +246,6 @@ public final class ItmUtils {
         return groupName;
     }
 
-    public static InetAddress getInetAddressFromIpAddress(IpAddress ip) {
-        return IetfInetUtil.INSTANCE.inetAddressFor(ip);
-    }
-
-    public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(BigInteger dpIdKey) {
-        return InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, new DPNTEPsInfoKey(dpIdKey))
-                .build();
-    }
-
     public static DPNTEPsInfo createDPNTepInfo(BigInteger dpId, List<TunnelEndPoints> endpoints) {
         return new DPNTEPsInfoBuilder().withKey(new DPNTEPsInfoKey(dpId)).setTunnelEndPoints(endpoints).build();
     }
@@ -335,10 +262,6 @@ public final class ItmUtils {
                 .setTunnelType(tunnelType)
                 .setOptionTunnelTos(tos)
                 .build();
-    }
-
-    public static DpnEndpoints createDpnEndpoints(List<DPNTEPsInfo> dpnTepInfo) {
-        return new DpnEndpointsBuilder().setDPNTEPsInfo(dpnTepInfo).build();
     }
 
     public static InstanceIdentifier<Interface> buildId(String interfaceName) {
@@ -523,10 +446,6 @@ public final class ItmUtils {
     public static InstanceIdentifier<VtepConfigSchema> getVtepConfigSchemaIdentifier(String schemaName) {
         return InstanceIdentifier.builder(VtepConfigSchemas.class)
                 .child(VtepConfigSchema.class, new VtepConfigSchemaKey(schemaName)).build();
-    }
-
-    public static InstanceIdentifier<VtepConfigSchema> getVtepConfigSchemaIdentifier() {
-        return InstanceIdentifier.builder(VtepConfigSchemas.class).child(VtepConfigSchema.class).build();
     }
 
     public static InstanceIdentifier<VtepConfigSchemas> getVtepConfigSchemasIdentifier() {
@@ -798,26 +717,6 @@ public final class ItmUtils {
         return String.format("%s:%s", topoId, srcNodeid);
     }
 
-    /**
-     * Synchronous blocking write to data store.
-     *
-     * @deprecated Use
-     * {@link SingleTransactionDataBroker#syncWrite(DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
-     *             instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void syncWrite(LogicalDatastoreType datastoreType,
-                                                        InstanceIdentifier<T> path, T data, DataBroker broker) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        try {
-            tx.submit().get();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("ITMUtils:SyncWrite , Error writing to datastore (path, data) : ({}, {})", path, data);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
     @Nonnull
     public static List<BigInteger> getDpnIdList(List<DpnIds> dpnIds) {
         List<BigInteger> dpnList = new ArrayList<>() ;
@@ -848,11 +747,11 @@ public final class ItmUtils {
     }
 
     @Nonnull
-    public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
+    public static List<String> getInternalTunnelInterfaces(ManagedNewTransactionRunner tx) {
         List<String> tunnelList = new ArrayList<>();
         Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
         if (internalInterfaces.isEmpty()) {
-            updateTunnelsCache(dataBroker);
+            updateTunnelsCache(tx);
             internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
         }
         LOG.debug("ItmUtils.getTunnelList Cache Internal Interfaces size: {} ", internalInterfaces.size());
@@ -861,137 +760,17 @@ public final class ItmUtils {
         return tunnelList;
     }
 
-    public static List<InternalTunnel> getInternalTunnelsFromCache(DataBroker dataBroker) {
+    public static List<InternalTunnel> getInternalTunnelsFromCache(ManagedNewTransactionRunner tx) {
         List<InternalTunnel> tunnelList = new ArrayList<>();
         Collection<InternalTunnel> internalInterfaces = ITM_CACHE.getAllInternalTunnel();
         if (internalInterfaces.isEmpty()) {
-            updateTunnelsCache(dataBroker);
+            updateTunnelsCache(tx);
             internalInterfaces = ITM_CACHE.getAllInternalTunnel();
         }
         LOG.debug("Number of Internal Tunnel Interfaces in cache: {} ", internalInterfaces.size());
         tunnelList.addAll(internalInterfaces);
         LOG.trace("List of Internal Tunnels: {}", tunnelList);
         return tunnelList;
-    }
-
-    public static List<String> getTunnelsofTzone(List<HwVtep> hwVteps, String tzone, DataBroker dataBroker,
-                                                 Boolean hwVtepsExist) {
-        List<String> tunnels = new ArrayList<>();
-        InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
-                .child(TransportZone.class, new TransportZoneKey(tzone)).build();
-        Optional<TransportZone> transportZoneOptional =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
-        if (transportZoneOptional.isPresent()) {
-            TransportZone transportZone = transportZoneOptional.get();
-            Class<? extends TunnelTypeBase> tunType = transportZone.getTunnelType();
-            if (transportZone.getSubnets() != null && !transportZone.getSubnets().isEmpty()) {
-                for (Subnets sub : transportZone.getSubnets()) {
-                    if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
-                        for (Vteps vtepLocal : sub.getVteps()) {
-                            for (Vteps vtepRemote : sub.getVteps()) {
-                                if (!vtepLocal.equals(vtepRemote)) {
-                                    InternalTunnelKey key = new InternalTunnelKey(vtepRemote.getDpnId(),
-                                            vtepLocal.getDpnId(), tunType);
-                                    InstanceIdentifier<InternalTunnel> intIID =
-                                            InstanceIdentifier.builder(TunnelList.class)
-                                                    .child(InternalTunnel.class, key).build();
-                                    Optional<InternalTunnel> tunnelsOptional =
-                                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
-                                    if (tunnelsOptional.isPresent()) {
-                                        List<String> tunnelInterfaceNames = tunnelsOptional
-                                                .get().getTunnelInterfaceNames();
-                                        if (tunnelInterfaceNames != null && !tunnelInterfaceNames.isEmpty()) {
-                                            String tunnelInterfaceName = tunnelInterfaceNames.get(0);
-                                            LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
-                                            tunnels.add(tunnelInterfaceName);
-                                        }
-                                    }
-                                }
-                            }
-                            if (hwVteps != null && !hwVteps.isEmpty()) {
-                                for (HwVtep hwVtep : hwVteps) {
-                                    tunnels.add(getExtTunnel(hwVtep.getNodeId(), vtepLocal.getDpnId().toString(),
-                                            tunType, dataBroker));
-                                    tunnels.add(getExtTunnel(vtepLocal.getDpnId().toString(), hwVtep.getNodeId(),
-                                            tunType, dataBroker));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (hwVtepsExist) {
-                for (HwVtep hwVtep : hwVteps) {
-                    for (HwVtep hwVtepOther : hwVteps) {
-                        if (!hwVtep.getHwIp().equals(hwVtepOther.getHwIp())) {
-                            tunnels.add(getExtTunnel(hwVtep.getNodeId(), hwVtepOther.getNodeId(),
-                                    tunType, dataBroker));
-                            tunnels.add(getExtTunnel(hwVtepOther.getNodeId(), hwVtep.getNodeId(),
-                                    tunType, dataBroker));
-                        }
-                    }
-                }
-            }
-        }
-        return tunnels;
-    }
-
-    public static List<String> getInternalTunnelsofTzone(String tzone, DataBroker dataBroker) {
-        List<String> tunnels = new ArrayList<>();
-        LOG.trace("Getting internal tunnels of {}",tzone);
-        InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
-                .child(TransportZone.class, new TransportZoneKey(tzone)).build();
-        Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
-                path, dataBroker);
-        if (transportZoneOptional.isPresent()) {
-            TransportZone transportZone = transportZoneOptional.get();
-            if (transportZone.getSubnets() != null && !transportZone.getSubnets().isEmpty()) {
-                for (Subnets sub : transportZone.getSubnets()) {
-                    if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
-                        for (Vteps vtepLocal : sub.getVteps()) {
-                            for (Vteps vtepRemote : sub.getVteps()) {
-                                if (!vtepLocal.equals(vtepRemote)) {
-                                    InternalTunnelKey key =
-                                            new InternalTunnelKey(vtepRemote.getDpnId(), vtepLocal.getDpnId(),
-                                                    transportZone.getTunnelType());
-                                    InstanceIdentifier<InternalTunnel> intIID =
-                                            InstanceIdentifier.builder(TunnelList.class)
-                                                    .child(InternalTunnel.class, key).build();
-                                    Optional<InternalTunnel> tunnelsOptional =
-                                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
-                                    if (tunnelsOptional.isPresent()) {
-                                        List<String> tunnelInterfaceNames = tunnelsOptional.get()
-                                                .getTunnelInterfaceNames();
-                                        if (tunnelInterfaceNames != null && !tunnelInterfaceNames.isEmpty()) {
-                                            String tunnelInterfaceName = tunnelInterfaceNames.get(0);
-                                            LOG.trace("Internal Tunnel added {}", tunnelInterfaceName);
-                                            tunnels.add(tunnelInterfaceName);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return tunnels;
-    }
-
-    private static String getExtTunnel(String nodeId, String dpId,Class<? extends TunnelTypeBase> tunType, DataBroker
-            dataBroker) {
-        LOG.trace("getting ext tunnel for {} and dpId {}",nodeId,dpId);
-        ExternalTunnelKey key = getExternalTunnelKey(dpId, nodeId, tunType);
-        InstanceIdentifier<ExternalTunnel> intIID = InstanceIdentifier.builder(ExternalTunnelList.class)
-                .child(ExternalTunnel.class, key).build();
-        Optional<ExternalTunnel> tunnelsOptional =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, intIID, dataBroker);
-        if (tunnelsOptional.isPresent()) {
-            String tunnelInterfaceName = tunnelsOptional.get().getTunnelInterfaceName();
-            LOG.trace("ext tunnel returned {} ", tunnelInterfaceName);
-            return tunnelInterfaceName;
-        }
-        return null;
     }
 
     @SuppressFBWarnings("RV_CHECK_FOR_POSITIVE_INDEXOF")
@@ -1019,49 +798,47 @@ public final class ItmUtils {
         return null;
     }
 
-    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
-        List<InternalTunnel> result = null;
-        InstanceIdentifier<TunnelList> iid = InstanceIdentifier.builder(TunnelList.class).build();
-        Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
-
-        if (tunnelList.isPresent()) {
-            result = tunnelList.get().getInternalTunnel();
+    public static List<InternalTunnel> getAllInternalTunnels(TypedReadWriteTransaction<Configuration> tx) {
+        try {
+            Optional<TunnelList> tunnelList = tx.read(InstanceIdentifier.builder(TunnelList.class).build()).get();
+            if (tunnelList.isPresent()) {
+                return tunnelList.get().getInternalTunnel();
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            LOG.error("get all internal tunnels failed");
         }
-        if (result == null) {
-            result = Collections.emptyList();
-        }
-        return result;
+        return Collections.emptyList();
     }
 
-    public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
+    public static InternalTunnel getInternalTunnel(String interfaceName, ManagedNewTransactionRunner tx) {
         InternalTunnel internalTunnel = ITM_CACHE.getInternalTunnel(interfaceName);
         if (internalTunnel == null) {
-            updateTunnelsCache(broker);
+            updateTunnelsCache(tx);
             internalTunnel = ITM_CACHE.getInternalTunnel(interfaceName);
         }
         return internalTunnel;
     }
 
-    public static ExternalTunnel getExternalTunnel(String interfaceName, DataBroker broker) {
+    public static ExternalTunnel getExternalTunnel(String interfaceName, ManagedNewTransactionRunner tx) {
         ExternalTunnel externalTunnel = ITM_CACHE.getExternalTunnel(interfaceName);
         if (externalTunnel == null) {
-            updateTunnelsCache(broker);
+            updateTunnelsCache(tx);
             externalTunnel = ITM_CACHE.getExternalTunnel(interfaceName);
         }
         return externalTunnel;
     }
 
-    private static List<ExternalTunnel> getAllExternalTunnels(DataBroker dataBroker) {
-        List<ExternalTunnel> result = null;
-        InstanceIdentifier<ExternalTunnelList> iid = InstanceIdentifier.builder(ExternalTunnelList.class).build();
-        Optional<ExternalTunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
-        if (tunnelList.isPresent()) {
-            result = tunnelList.get().getExternalTunnel();
+    private static List<ExternalTunnel> getAllExternalTunnels(TypedReadWriteTransaction<Configuration> tx) {
+        try {
+            Optional<ExternalTunnelList> tunnelList =
+                tx.read(InstanceIdentifier.builder(ExternalTunnelList.class).build()).get();
+            if (tunnelList.isPresent()) {
+                return tunnelList.get().getExternalTunnel();
+            }
+        } catch (ExecutionException | InterruptedException e) {
+            LOG.error("get all external tunnels failed");
         }
-        if (result == null) {
-            result = Collections.emptyList();
-        }
-        return result;
+        return Collections.emptyList();
     }
 
     public static String convertTunnelTypetoString(Class<? extends TunnelTypeBase> tunType) {
@@ -1092,15 +869,19 @@ public final class ItmUtils {
         return key;
     }
 
-    private static void updateTunnelsCache(DataBroker broker) {
-        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
-        for (InternalTunnel tunnel : internalTunnels) {
-            ITM_CACHE.addInternalTunnel(tunnel);
-        }
-        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
-        for (ExternalTunnel tunnel : externalTunnels) {
-            ITM_CACHE.addExternalTunnel(tunnel);
-        }
+    private static void updateTunnelsCache(ManagedNewTransactionRunner txRunner) {
+        txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
+            List<InternalTunnel> internalTunnels = getAllInternalTunnels(tx);
+            for (InternalTunnel tunnel : internalTunnels) {
+                ITM_CACHE.addInternalTunnel(tunnel);
+            }
+        }).addCallback(ItmUtils.DEFAULT_READ_CALLBACK, MoreExecutors.directExecutor());
+        txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
+            List<ExternalTunnel> externalTunnels = getAllExternalTunnels(tx);
+            for (ExternalTunnel tunnel : externalTunnels) {
+                ITM_CACHE.addExternalTunnel(tunnel);
+            }
+        }).addCallback(ItmUtils.DEFAULT_READ_CALLBACK, MoreExecutors.directExecutor());
     }
 
     public static Interface getInterface(
@@ -1115,18 +896,33 @@ public final class ItmUtils {
         return result;
     }
 
-    public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker) {
-        InstanceIdentifier<DcGatewayIpList> dcGatewayIpListid =
-                InstanceIdentifier.builder(DcGatewayIpList.class).build();
-        Optional<DcGatewayIpList> dcGatewayIpListConfig =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dcGatewayIpListid, broker);
-        if (dcGatewayIpListConfig.isPresent()) {
-            DcGatewayIpList containerList = dcGatewayIpListConfig.get();
-            if (containerList != null) {
-                return containerList.getDcGatewayIp();
+    public static List<DcGatewayIp> getDcGatewayIpList(TypedReadWriteTransaction<Configuration> tx)
+        throws ExecutionException, InterruptedException {
+        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        FluentFuture<Optional<DcGatewayIpList>> future =
+                tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
+        future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
+            @Override
+            public void onSuccess(@Nonnull  Optional<DcGatewayIpList> optional) {
+                try {
+                    Optional<DcGatewayIpList> opt = future.get();
+                    if (opt.isPresent()) {
+                        DcGatewayIpList list = opt.get();
+                        if (list != null) {
+                            dcGatewayIpList.addAll(list.getDcGatewayIp());
+                        }
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    LOG.error("DcGateway IpList read failed", e);
+                }
             }
-        }
-        return null;
+
+            @Override
+            public void onFailure(Throwable error) {
+                LOG.error("DcGateway IpList read failed", error);
+            }
+        }, MoreExecutors.directExecutor());
+        return dcGatewayIpList;
     }
 
     public static boolean falseIfNull(Boolean value) {
@@ -1142,10 +938,6 @@ public final class ItmUtils {
         }
         LOG.debug(" getIntersection - L1 {}, L2 - {}, Intersection - {}", list1, list2, list);
         return list;
-    }
-
-    public static void addTransportZoneMembership(List<TzMembership> zones, String zoneName) {
-        zones.add(new TzMembershipBuilder().setZoneName(zoneName).build());
     }
 
     public static  List<TzMembership> createTransportZoneMembership(String zoneName) {
@@ -1344,7 +1136,7 @@ public final class ItmUtils {
 
     public static StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state,
                                                        TunnelOperStatus tunOpStatus, IInterfaceManager  ifaceManager,
-                                                       DataBroker broker) {
+                                                       ManagedNewTransactionRunner tx) {
         StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
                 ItmUtils.getInterface(name, ifaceManager);
@@ -1362,7 +1154,7 @@ public final class ItmUtils {
         ExternalTunnel externalTunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
         if (internalTunnel == null && externalTunnel == null) {
             // both not present in cache. let us update and try again.
-            ItmUtils.updateTunnelsCache(broker);
+            ItmUtils.updateTunnelsCache(tx);
             internalTunnel = ItmUtils.ITM_CACHE.getInternalTunnel(name);
             externalTunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
         }
@@ -1397,19 +1189,15 @@ public final class ItmUtils {
     }
 
     public static InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
-        return InstanceIdentifier.builder(TunnelsState.class)
-                .child(StateTunnelList.class, tlKey).build();
+        return InstanceIdentifier.builder(TunnelsState.class).child(StateTunnelList.class, tlKey).build();
     }
 
     @Nonnull
-    public static  Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger destDpn,
-                                                                    Class<? extends TunnelTypeBase> type,
-                                                                    DataBroker dataBroker) {
-        InstanceIdentifier<InternalTunnel> pathLogicTunnel = InstanceIdentifier.create(TunnelList.class)
-                .child(InternalTunnel.class,
-                        new InternalTunnelKey(destDpn, srcDpn, type));
-        //TODO: need to be replaced by cached copy
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, pathLogicTunnel, dataBroker);
+    public static  Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger dstDpn,
+        Class<? extends TunnelTypeBase> type, SingleTransactionDataBroker tx) throws ReadFailedException {
+        return tx.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
+            InstanceIdentifier.create(TunnelList.class).child(InternalTunnel.class, new InternalTunnelKey(dstDpn,
+                srcDpn, type)));
     }
 
     public static boolean isTunnelAggregationUsed(Class<? extends TunnelTypeBase> tunType) {
@@ -1490,11 +1278,4 @@ public final class ItmUtils {
         return null;
     }
 
-    public static Class<? extends TunnelTypeBase> convertStringToTunnelType(String tunnelType) {
-        Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
-        if (STRING_CLASS_IMMUTABLE_BI_MAP.containsKey(tunnelType)) {
-            tunType = STRING_CLASS_IMMUTABLE_BI_MAP.get(tunnelType);
-        }
-        return tunType ;
-    }
 }

@@ -85,7 +85,7 @@ public class ItmTzInstanceRecoveryHandler extends
 
     private void recoverTransportZone(String entityId) throws InterruptedException {
         //List of Internel tunnels
-        List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+        List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(txRunner);
         LOG.debug("List of tunnel interfaces: {}" , tunnelList);
         InstanceIdentifier<TransportZone> tzII = ItmUtils.getTZInstanceIdentifier(entityId);
         TransportZone tz = ItmUtils.getTransportZoneFromConfigDS(entityId , dataBroker);

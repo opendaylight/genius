@@ -17,14 +17,14 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateAddHelper;
-import org.opendaylight.genius.itm.confighelpers.ItmTunnelStateRemoveHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -52,6 +52,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     private final ItmTunnelAggregationHelper tunnelAggregationHelper;
     private final TunnelStateCache tunnelStateCache;
     private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public InterfaceStateListener(final DataBroker dataBroker, IInterfaceManager iinterfacemanager,
@@ -65,6 +66,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
         this.tunnelAggregationHelper = tunnelAggregation;
         this.tunnelStateCache = tunnelStateCache;
         this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), () -> ItmTunnelStateAddHelper
-                    .addTunnel(iface, interfaceManager, dataBroker));
+                    .addTunnel(iface, interfaceManager, txRunner));
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
                 tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.ADD_TUNNEL,
                                                                  dataBroker);
@@ -86,8 +88,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
-            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(),
-                () -> ItmTunnelStateRemoveHelper.removeTunnel(iface, dataBroker));
+            jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(), () -> removeTunnel(iface));
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
                 tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.DEL_TUNNEL,
                                                                  dataBroker);
@@ -119,8 +120,6 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
 
     private List<ListenableFuture<Void>> updateTunnel(Interface updated) throws Exception {
         LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
-        final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(updated);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, updated.getName());
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
@@ -152,7 +151,15 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
             LOG.debug("Tunnel is not yet added but an update has come in for {},so cache it",updated.getName());
             unprocessedTunnelsStateCache.add(updated.getName(),tunnelOperStatus);
         }
+        return Collections.emptyList();
+    }
 
-        return Collections.singletonList(writeTransaction.submit());
+    private static List<ListenableFuture<Void>> removeTunnel(Interface iface) throws Exception {
+        LOG.debug("Invoking removeTunnel for Interface {}", iface);
+        StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
+        InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
+        LOG.trace("Deleting tunnel_state for Id: {}", stListId);
+        ITMBatchingUtils.delete(stListId, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+        return Collections.emptyList();
     }
 }

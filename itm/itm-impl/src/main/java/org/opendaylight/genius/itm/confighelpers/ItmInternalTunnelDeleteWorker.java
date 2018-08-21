@@ -156,7 +156,7 @@ public class ItmInternalTunnelDeleteWorker {
 
                                         } else {
                                             if (checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(),
-                                                    srcTep.getTunnelType(), dataBroker)) {
+                                                    srcTep.getTunnelType(), tx)) {
                                                 // remove all trunk interfaces
                                                 LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                         + "Destination TEP {} ", srcTep, dstTep);
@@ -297,10 +297,15 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId,
-                                              Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
-        InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
-                .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
+        Class<? extends TunnelTypeBase> tunType, TypedReadWriteTransaction<Configuration> tx)
+        throws ExecutionException, InterruptedException {
+        try {
+            return tx.read(InstanceIdentifier.create(TunnelList.class)
+                .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType))).get().isPresent();
+        } catch (ExecutionException | InterruptedException e) {
+            LOG.error("removal of trunk interface failed because of DS read:", e);
+        }
+        return false;
     }
 
     private void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId) {

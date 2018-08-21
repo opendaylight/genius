@@ -10,8 +10,7 @@ package org.opendaylight.genius.itm.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -30,9 +29,8 @@ public final class ItmTunnelStateAddHelper {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static List<ListenableFuture<Void>> addTunnel(Interface iface, IInterfaceManager ifaceManager,
-                                                         DataBroker broker) throws Exception {
+                                                         ManagedNewTransactionRunner tx) throws Exception {
         LOG.debug("Invoking ItmTunnelStateAddHelper for Interface {} ", iface);
-        final WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, iface.getName());
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
@@ -60,14 +58,13 @@ public final class ItmTunnelStateAddHelper {
              * disrupting existing behavior.
              */
             tunnelStateList = ItmUtils.buildStateTunnelList(tlKey, iface.getName(), tunnelState, tunnelOperStatus,
-                    ifaceManager, broker);
+                    ifaceManager, tx);
             LOG.trace("Batching the Creation of tunnel_state: {} for Id: {}", tunnelStateList, stListId);
             ITMBatchingUtils.write(stListId, tunnelStateList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         } catch (Exception e) {
             LOG.warn("Exception trying to create tunnel state for {}", iface.getName(), e);
         }
-
-        return Collections.singletonList(writeTransaction.submit());
+        return Collections.emptyList();
     }
 
 }
