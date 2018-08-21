@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "295ada13_50b7a6a8",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-08-21T12:05:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "dda5e1de_a773c06e",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a9dfe1ec_26074089",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateRemoveHelper.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-08-20T15:35:09Z",
       "side": 1,
       "message": "Wait this looks very strange... something is wrong here, it seems that this writeTransaction, which for some reason you propose to move as part of this change (but why?) is not actually used?  Then why don\u0027t we just remove it?  As part of this, or raise another, change - whatever you prefer.",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3f58c47_01a8b68c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTunnelStateRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-08-21T12:05:27Z",
+      "side": 1,
+      "message": "reverted it.",
+      "parentUuid": "a9dfe1ec_26074089",
       "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "96402277_4b6fb8d4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-08-21T12:05:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b922709f_8b598d90",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9bddd17_5831c1a3",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
         "patchSetId": 2
@@ -81,6 +135,24 @@
       "writtenOn": "2018-08-20T15:35:09Z",
       "side": 1,
       "message": "I\u0027ve noticed that you have used a \"convention\" to always prefix that \u0027event\u0027 String with the class name.. that is useful to find out what logged it, but how about not having that as a convention but actually making that part of the signature, to enforce it?  So something like:\n\n    public static void someName(Class\u003c?\u003e klass, String event, Object... objects) {\n\n        LOG.info(\"{} ... {} ... {}\", klass, event, objects);",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e85365e_a67b22da",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-08-21T12:05:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9bddd17_5831c1a3",
       "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "671f6ec9_e93bb458",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-08-21T12:05:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bb0e5c70_2a0152aa",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e9500e3d_abb79194",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
         "patchSetId": 2
@@ -115,6 +205,24 @@
       "writtenOn": "2018-08-20T15:35:09Z",
       "side": 1,
       "message": "isn\u0027t this a bit verbose?  How about just:\n\n    \"Event {}, Object {}\"",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3be2d682_a218f197",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-08-21T12:05:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e9500e3d_abb79194",
       "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
