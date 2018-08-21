@@ -33,6 +33,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -89,7 +90,7 @@ public class DataTreeEventCallbackRegistrarTest {
         // because otherwise we hit a deadlock :( with this test!
         ConstantSchemaAbstractDataBrokerTest dataBrokerTest = new ConstantSchemaAbstractDataBrokerTest(true) {
             @Override
-            protected Iterable<YangModuleInfo> getModuleInfos() throws Exception {
+            protected Set<YangModuleInfo> getModuleInfos() throws Exception {
                 return ImmutableSet.of(BindingReflections.getModuleInfo(TwoLevelList.class),
                         BindingReflections.getModuleInfo(TreeComplexUsesAugment.class));
             }
