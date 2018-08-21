@@ -16,6 +16,40 @@
       "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c123dce_47e93adc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-21T09:11:22Z",
+      "side": 1,
+      "message": "how about putting this into an \"} else {\" block? \n\nWould make it much more obvious and easy to read, to me.\n\nDitto x2 below.",
+      "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "baf96291_c0edfd27",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/WriteTrackingReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-21T09:11:22Z",
+      "side": 1,
+      "message": "volatile is interesting - I am not sure Transactions are even supported to be be used from multiple threads, do you know if they are supposed to?  If so, not 100% sure other impls. we have elsewhere (e.g. tracing) all do this right... ;-) Eithe way, the volatile still really doesn\u0027t hurt (minor perf impact, but who cares), of course.",
+      "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
