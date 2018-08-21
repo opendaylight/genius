@@ -13,8 +13,10 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -201,54 +203,12 @@ public final class ItmUtils {
         }
     }
 
-
-    /**
-     * Asynchronous non-blocking write to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncWrite(LogicalDatastoreType datastoreType,
-                                                         InstanceIdentifier<T> path, T data, DataBroker broker,
-                                                         FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
-    }
-
-    /**
-     * Asynchronous non-blocking update to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncUpdate(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, T data, DataBroker broker,
-                                                          FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
-    }
-
-    /**
-     * Asynchronous non-blocking single delete to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, DataBroker broker,
-                                                          FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback);
-    }
-
     /**
      * Asynchronous non-blocking bulk delete to data store.
      *
      * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
      */
+    @SuppressWarnings("checkstyle:newWriteOnlyTransaction")
     @Deprecated
     public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,
                                                               final LogicalDatastoreType datastoreType,
@@ -798,26 +758,6 @@ public final class ItmUtils {
         return String.format("%s:%s", topoId, srcNodeid);
     }
 
-    /**
-     * Synchronous blocking write to data store.
-     *
-     * @deprecated Use
-     * {@link SingleTransactionDataBroker#syncWrite(DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
-     *             instead of this.
-     */
-    @Deprecated
-    public static <T extends DataObject> void syncWrite(LogicalDatastoreType datastoreType,
-                                                        InstanceIdentifier<T> path, T data, DataBroker broker) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        try {
-            tx.submit().get();
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("ITMUtils:SyncWrite , Error writing to datastore (path, data) : ({}, {})", path, data);
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
     @Nonnull
     public static List<BigInteger> getDpnIdList(List<DpnIds> dpnIds) {
         List<BigInteger> dpnList = new ArrayList<>() ;
@@ -1115,18 +1055,33 @@ public final class ItmUtils {
         return result;
     }
 
-    public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker) {
-        InstanceIdentifier<DcGatewayIpList> dcGatewayIpListid =
-                InstanceIdentifier.builder(DcGatewayIpList.class).build();
-        Optional<DcGatewayIpList> dcGatewayIpListConfig =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dcGatewayIpListid, broker);
-        if (dcGatewayIpListConfig.isPresent()) {
-            DcGatewayIpList containerList = dcGatewayIpListConfig.get();
-            if (containerList != null) {
-                return containerList.getDcGatewayIp();
+    public static List<DcGatewayIp> getDcGatewayIpList(TypedReadWriteTransaction<Configuration> tx)
+        throws ExecutionException, InterruptedException {
+        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        FluentFuture<Optional<DcGatewayIpList>> future =
+                tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
+        future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
+            @Override
+            public void onSuccess(@Nonnull  Optional<DcGatewayIpList> optional) {
+                try {
+                    Optional<DcGatewayIpList> opt = future.get();
+                    if (opt.isPresent()) {
+                        DcGatewayIpList list = opt.get();
+                        if (list != null) {
+                            dcGatewayIpList.addAll(list.getDcGatewayIp());
+                        }
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    LOG.error("DcGateway IpList read failed", e);
+                }
             }
-        }
-        return null;
+
+            @Override
+            public void onFailure(Throwable error) {
+                LOG.error("DcGateway IpList read failed", error);
+            }
+        }, MoreExecutors.directExecutor());
+        return dcGatewayIpList;
     }
 
     public static boolean falseIfNull(Boolean value) {
@@ -1397,8 +1352,7 @@ public final class ItmUtils {
     }
 
     public static InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
-        return InstanceIdentifier.builder(TunnelsState.class)
-                .child(StateTunnelList.class, tlKey).build();
+        return InstanceIdentifier.builder(TunnelsState.class).child(StateTunnelList.class, tlKey).build();
     }
 
     @Nonnull

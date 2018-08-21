@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.monitoring;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -19,8 +19,10 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.JMException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -43,6 +45,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
 
     private final DataBroker broker;
     private final JobCoordinator jobCoordinator;
+    private final ManagedNewTransactionRunner txRunner;
     private JMXAlarmAgent alarmAgent;
     private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
@@ -53,6 +56,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
               InstanceIdentifier.create(TunnelsState.class).child(StateTunnelList.class));
         this.broker = dataBroker;
         this.jobCoordinator = jobCoordinator;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
         try {
             alarmAgent = new JMXAlarmAgent();
@@ -110,7 +114,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         if (operStatus != null) {
             if (operStatus != stateTunnelList.getOperState()) {
                 jobCoordinator.enqueueJob(stateTunnelList.getTunnelInterfaceName(),
-                        new ItmTunnelStatusOutOfOrderEventWorker(instanceIdentifier, stateTunnelList, operStatus));
+                        new ItmTunnelStatusOutOfOrderEventWorker(instanceIdentifier, stateTunnelList, operStatus,
+                                txRunner));
             } else {
                 LOG.debug("BFD status in unprocessed cache is the same as in DTCN for {} "
                     + "hence no operations ",stateTunnelList.getTunnelInterfaceName());
@@ -337,30 +342,29 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<ListenableFuture<Void>>> {
         private InstanceIdentifier<StateTunnelList> identifier;
         private StateTunnelList add;
         private TunnelOperStatus operStatus;
+        private ManagedNewTransactionRunner txRunner;
 
         ItmTunnelStatusOutOfOrderEventWorker(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList add,
-                                             TunnelOperStatus operStatus) {
+                                             TunnelOperStatus operStatus,
+                                             ManagedNewTransactionRunner tx) {
             this.identifier = identifier;
             this.add = add;
             this.operStatus = operStatus;
+            this.txRunner = tx;
         }
 
         @Override
         public List<ListenableFuture<Void>> call() throws Exception {
             // Process any unprocessed interface bfd updates
-            final List<ListenableFuture<Void>> futures = new ArrayList<>();
             LOG.debug(" Tunnel events are processed out order for {} hence updating it from cache",
                     add.getTunnelInterfaceName());
-            WriteTransaction transaction = broker.newWriteOnlyTransaction();
-            StateTunnelListBuilder stlBuilder = new StateTunnelListBuilder(add);
-            stlBuilder.setOperState(operStatus);
-            transaction.merge(LogicalDatastoreType.OPERATIONAL, identifier, stlBuilder.build(), false);
-            futures.add(transaction.submit());
-            return futures;
+            return Collections.singletonList(txRunner
+                .callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL, tx -> tx.merge(identifier,
+                    new StateTunnelListBuilder(add).setOperState(operStatus).build(), false)));
         }
     }
 }
