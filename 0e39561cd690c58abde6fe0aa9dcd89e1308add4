@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1e3dda1d_a934636a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:41:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f25ada3e_e4556a67",
+      "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0c123dce_47e93adc",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "81004402_1456fd95",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:41:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "0c123dce_47e93adc",
+      "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "baf96291_c0edfd27",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/WriteTrackingReadWriteTransaction.java",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-21T09:11:22Z",
       "side": 1,
       "message": "volatile is interesting - I am not sure Transactions are even supported to be be used from multiple threads, do you know if they are supposed to?  If so, not 100% sure other impls. we have elsewhere (e.g. tracing) all do this right... ;-) Eithe way, the volatile still really doesn\u0027t hurt (minor perf impact, but who cares), of course.",
+      "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "705be5ed_f04b7dbd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/WriteTrackingReadWriteTransaction.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:41:25Z",
+      "side": 1,
+      "message": "They\u0027re not supposed to be used in multiple threads, no, although async support using executors probably means we end up doing so in some cases... I thought I\u0027d play it safe, we only pay the volatile penalty once, at the end, when reading the value.",
+      "parentUuid": "baf96291_c0edfd27",
       "revId": "0e39561cd690c58abde6fe0aa9dcd89e1308add4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
