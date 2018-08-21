@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Objects;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
@@ -165,5 +166,10 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
                 throw optimisticLockFailedException;
             }
         }, executor);
+    }
+
+    @Override
+    public <R> R applyWithNewTransactionChainAndClose(Function<ManagedTransactionChain, R> chainConsumer) {
+        throw new UnsupportedOperationException("The retrying transaction manager doesn't support transaction chains");
     }
 }
