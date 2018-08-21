@@ -10,18 +10,22 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
+import com.google.common.base.Function;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -41,6 +45,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -381,42 +386,57 @@ public class InterfaceInventoryStateListener
             // delete the port entry from interface operational DS
             BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
-            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, operTx -> {
-                // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
-                // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
-                // scenario, and should be treated as port removal.
-                LOG.debug("Removing interface state information for interface: {}", interfaceName);
-                if (fcNodeConnectorOld.getReason() != PortReason.Delete
+            futures.add(txRunner.applyWithNewTransactionChainAndClose(txChain ->
+                txChain.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL, operTx -> {
+                    // In a genuine port delete scenario, the reason will be there in the incoming event, for all
+                    // remaining
+                    // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM
+                    // migration
+                    // scenario, and should be treated as port removal.
+                    LOG.debug("Removing interface state information for interface: {}", interfaceName);
+                    if (fcNodeConnectorOld.getReason() != PortReason.Delete
                         && nodeConnectorIdNew.equals(nodeConnectorIdOld)) {
-                    //Remove event is because of connection lost between controller and switch, or switch shutdown.
-                    // Hence, don't remove the interface but set the status as "unknown"
-                    ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName, fcNodeConnectorOld,
+                        //Remove event is because of connection lost between controller and switch, or switch shutdown.
+                        // Hence, don't remove the interface but set the status as "unknown"
+                        ovsInterfaceStateUpdateHelper.updateInterfaceStateOnNodeRemove(interfaceName,
+                            fcNodeConnectorOld,
                             operTx);
-                } else {
-                    InterfaceManagerCommonUtils.deleteStateEntry(operTx, interfaceName);
-                    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                    } else {
+                        InterfaceManagerCommonUtils.deleteStateEntry(operTx, interfaceName);
+                        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
                             .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
 
-                    if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                        // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
-                        // monitoring
-                        interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
-                        futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-                            confTx -> handleTunnelMonitoringRemoval(confTx, dpId, iface.getName(),
-                                iface.augmentation(IfTunnel.class))));
-                        return;
-                    }
-                    // remove ingress flow only for northbound configured interfaces
-                    // skip this check for non-unique ports(Ex: br-int,br-ex)
-                    if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
-                        FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
-                    }
+                        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                            // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
+                            // monitoring
+                            interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
+                            return Optional.of((InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>,
+                                ExecutionException>) confTx -> handleTunnelMonitoringRemoval(confTx, dpId,
+                                iface.getName(),
+                                iface.augmentation(IfTunnel.class)));
+                        }
+                        // remove ingress flow only for northbound configured interfaces
+                        // skip this check for non-unique ports(Ex: br-int,br-ex)
+                        if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
+                            FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
+                        }
 
-                    // Delete the Vpn Interface from DpnToInterface Op DS.
-                    InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
-                }
-            }));
-
+                        // Delete the Vpn Interface from DpnToInterface Op DS.
+                        InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
+                    }
+                    return Optional.empty();
+                }).transform(new Function<Optional<?>, Void>() {
+                    @NullableDecl
+                    @Override
+                    public Void apply(@NullableDecl Optional<?> optionalJob) {
+                        if (optionalJob != null && optionalJob.isPresent()) {
+                            txChain.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+                                (InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>, ?
+                                    extends Exception>) optionalJob.get());
+                        }
+                        return null;
+                    }
+                }, MoreExecutors.directExecutor())));
             return futures;
         }
 
