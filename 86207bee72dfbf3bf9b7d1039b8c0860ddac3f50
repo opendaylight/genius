@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f50773eb_220a0126",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:52:10Z",
+      "side": 1,
+      "message": "What happens if the commit fails?",
+      "revId": "86207bee72dfbf3bf9b7d1039b8c0860ddac3f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e51cd9c9_35de7dee",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 919,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:52:10Z",
+      "side": 1,
+      "message": "Same here, the result is ignored.",
+      "revId": "86207bee72dfbf3bf9b7d1039b8c0860ddac3f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "153e4922_20d92324",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 930,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:52:10Z",
+      "side": 1,
+      "message": "... and again.",
+      "revId": "86207bee72dfbf3bf9b7d1039b8c0860ddac3f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0f6609bf_73ea51c2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:52:10Z",
+      "side": 1,
+      "message": "This might as well return void.",
+      "revId": "86207bee72dfbf3bf9b7d1039b8c0860ddac3f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bad2f9ab_51f67d8c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:52:10Z",
+      "side": 1,
+      "message": "Couldn\u0027t we use a read-write transaction instead? That would ensure that the read value matches the state the transaction is operating in.",
+      "revId": "86207bee72dfbf3bf9b7d1039b8c0860ddac3f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f735a633_40d24e30",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-21T09:52:10Z",
+      "side": 1,
+      "message": "As above.",
+      "revId": "86207bee72dfbf3bf9b7d1039b8c0860ddac3f50",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
