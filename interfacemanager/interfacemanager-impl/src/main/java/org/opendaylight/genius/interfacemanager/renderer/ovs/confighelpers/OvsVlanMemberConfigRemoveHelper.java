@@ -13,6 +13,7 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -51,7 +52,6 @@ public class OvsVlanMemberConfigRemoveHelper {
 
     public List<ListenableFuture<Void>> removeConfiguration(ParentRefs parentRefs, Interface interfaceOld) {
         LOG.debug("remove vlan member configuration {}", interfaceOld.getName());
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentRefs.getParentInterface());
         InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIid = InterfaceMetaUtils
@@ -60,36 +60,41 @@ public class OvsVlanMemberConfigRemoveHelper {
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIid);
 
         if (interfaceParentEntry == null) {
-            return futures;
+            return Collections.emptyList();
         }
 
-        // Configuration changes
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            // Delete the interface child information
-            List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
-            InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
-            InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
+        return txRunner.applyWithNewTransactionChainAndClose(txChain -> {
+            List<ListenableFuture<Void>> futures = new ArrayList<>();
+
+            // Configuration changes
+            futures.add(txChain.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+                // Delete the interface child information
+                List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
+                InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
+                InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
                     .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
-            tx.delete(interfaceChildEntryIid);
-            // If this is the last child, remove the interface parent info as well.
-            if (interfaceChildEntries.size() <= 1) {
-                tx.delete(interfaceParentEntryIid);
-            }
-        }));
+                tx.delete(interfaceChildEntryIid);
+                // If this is the last child, remove the interface parent info as well.
+                if (interfaceChildEntries.size() <= 1) {
+                    tx.delete(interfaceParentEntryIid);
+                }
+            }));
 
-        // Operational changes
-        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            // Operational changes
+            futures.add(txChain.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
-                    .getInterfaceState(parentRefs.getParentInterface());
-            if (ifState != null) {
-                LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
-                BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
-                interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(), tx);
-                FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, txRunner, futures);
-            }
-        }));
+                    .getInterfaceState(tx, parentRefs.getParentInterface());
+                if (ifState != null) {
+                    LOG.debug("delete vlan member interface state {}", interfaceOld.getName());
+                    BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
+                    interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceOld.getName(), tx);
+                    // TODO skitt The following is another configuration transaction, we'll deal with it later
+                    FlowBasedServicesUtils.removeIngressFlow(interfaceOld.getName(), dpId, txRunner, futures);
+                }
+            }));
 
-        return futures;
+            return futures;
+        });
     }
 }
