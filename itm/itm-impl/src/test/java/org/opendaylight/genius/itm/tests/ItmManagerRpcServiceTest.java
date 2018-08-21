@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import org.junit.Before;
@@ -26,6 +27,9 @@ import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
@@ -97,6 +101,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsOutput;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 
@@ -169,6 +174,7 @@ public class ItmManagerRpcServiceTest {
 
     @Inject DataBroker dataBroker;
     @Inject ItmManagerRpcService itmManagerRpcService ;
+    final ManagedNewTransactionRunner txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
 
     @Before
     public void setUp() throws Exception {
@@ -270,23 +276,17 @@ public class ItmManagerRpcServiceTest {
                 .setInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME).build();
 
         // commit external tunnel into config DS
-
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, externalTunnelIdentifier,
-            externalTunnel, dataBroker);
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, externalTunnelIdentifier2,
-            externalTunnel2, dataBroker);
+        syncWrite(externalTunnelIdentifier, externalTunnel);
+        syncWrite(externalTunnelIdentifier2, externalTunnel2);
 
         // commit internal tunnel into config DS
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier,
-            internalTunnel, dataBroker);
+        syncWrite(internalTunnelIdentifier, internalTunnel);
 
         // commit dpnEndpoints into config DS
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
-            dpnEndpoints, dataBroker);
+        syncWrite(dpnEndpointsIdentifier, dpnEndpoints);
 
         // commit TZ into config DS
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, transportZonesIdentifier,
-            transportZones, dataBroker);
+        syncWrite(transportZonesIdentifier, transportZones);
     }
 
     @Test
@@ -460,5 +460,14 @@ public class ItmManagerRpcServiceTest {
 
         // check for interfaceName
         assertThat(ItmTestConstants.PARENT_INTERFACE_NAME).isEqualTo(rpcRes.get().getResult().getInterfaceName());
+    }
+
+    private <T extends DataObject> void syncWrite(InstanceIdentifier<T> path, T data) {
+        try {
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+                tx -> tx.put(path, data, true)).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 }
