@@ -14,6 +14,7 @@ import io.netty.util.concurrent.Future;
 import java.util.concurrent.CompletionStage;
 import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
@@ -25,6 +26,28 @@ import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
  * submitted or cancelled.
  */
 public interface ManagedTransactionFactory {
+    /**
+     * Invokes a function with a <b>NEW</b> {@link TypedReadTransaction}, and ensures that that transaction is closed.
+     * Thus when this method returns, that transaction is guaranteed to have been closed, and will never "leak" and
+     * waste memory.
+     *
+     * <p>The function must not itself attempt to close the transaction. (It can't directly, since
+     * {@link TypedReadTransaction} doesn't expose a {@code close()} method.)
+     *
+     * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
+     * other.
+     *
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read transaction
+     *
+     * @return the result of the function.
+     *
+     * @throws E if an error occurs.
+     * @throws InterruptedException if the transaction is interrupted.
+     */
+    <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(Class<D> datastoreType,
+        InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E, InterruptedException;
+
     /**
      * Invokes a function with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
      * returns the Future from that submission, or cancels it if an exception was thrown and returns a failed
@@ -58,6 +81,26 @@ public interface ManagedTransactionFactory {
     <D extends Datastore, E extends Exception, R>
         FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction);
+
+    /**
+     * Invokes a function with a <b>NEW</b> {@link ReadTransaction}, and ensures that that transaction is closed.
+     * Thus when this method returns, that transaction is guaranteed to have been closed, and will never "leak" and
+     * waste memory.
+     *
+     * <p>The function must not itself attempt to close the transaction. (It can't directly, since
+     * {@link ReadTransaction} doesn't expose a {@code close()} method.)
+     *
+     * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
+     * other.
+     *
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param txConsumer the {@link InterruptibleCheckedFunction} that needs a new read transaction
+     *
+     * @throws E if an error occurs.
+     * @throws InterruptedException if the transaction is interrupted.
+     */
+    <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(Class<D> datastoreType,
+        InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E, InterruptedException;
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and

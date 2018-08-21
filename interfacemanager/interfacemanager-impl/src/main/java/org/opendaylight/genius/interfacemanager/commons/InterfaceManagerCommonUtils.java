@@ -39,6 +39,7 @@ import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -239,12 +240,18 @@ public final class InterfaceManagerCommonUtils {
      */
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
             .Interface getInterfaceState(String interfaceName) {
+        return interfaceStateMap.computeIfAbsent(interfaceName, this::getInterfaceStateFromOperDS);
+    }
+
+    public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+        .Interface getInterfaceState(TypedReadTransaction<Operational> tx, String interfaceName)
+            throws ExecutionException, InterruptedException {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
             ifState = getInterfaceStateFromCache(interfaceName);
         if (ifState != null) {
             return ifState;
         }
-        ifState = getInterfaceStateFromOperDS(interfaceName);
+        ifState = getInterfaceStateFromOperDS(tx, interfaceName);
         if (ifState != null) {
             interfaceStateMap.put(ifState.getName(), ifState);
         }
@@ -255,6 +262,13 @@ public final class InterfaceManagerCommonUtils {
         .ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(String interfaceName) {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
             IfmUtil.buildStateInterfaceId(interfaceName), dataBroker).orNull();
+    }
+
+    public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+        .ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(
+            TypedReadTransaction<Operational> tx, String interfaceName)
+            throws ExecutionException, InterruptedException {
+        return tx.read(IfmUtil.buildStateInterfaceId(interfaceName)).get().orNull();
     }
 
     @Deprecated
