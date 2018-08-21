@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import io.netty.util.concurrent.Future;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -19,6 +20,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.infrautils.utils.function.CheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
+import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 
 /**
  * Managed transactions utility to simplify handling of new transactions and ensure they are always closed.
@@ -52,7 +54,7 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      * {@link ListenableFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
-     * @param txRunner the {@link CheckedConsumer} that needs a new write only transaction
+     * @param txConsumer the {@link CheckedConsumer} that needs a new write only transaction
      * @return the {@link ListenableFuture} returned by {@link WriteTransaction#submit()},
      *     or a failed future with an application specific exception (not from submit())
      */
@@ -60,7 +62,7 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
     @Deprecated
     <E extends Exception>
         ListenableFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
-            InterruptibleCheckedConsumer<WriteTransaction, E> txRunner);
+            InterruptibleCheckedConsumer<WriteTransaction, E> txConsumer);
 
     /**
      * Invokes a consumer with a <b>NEW</b> {@link ReadWriteTransaction}, and then submits that transaction and
@@ -82,13 +84,33 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      * {@link ListenableFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
-     * @param txRunner the {@link CheckedConsumer} that needs a new read-write transaction
+     * @param txConsumer the {@link CheckedConsumer} that needs a new read-write transaction
      * @return the {@link ListenableFuture} returned by {@link ReadWriteTransaction#submit()},
      *     or a failed future with an application specific exception (not from submit())
      */
     @CheckReturnValue
     @Deprecated
     <E extends Exception> ListenableFuture<Void>
-        callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txRunner);
+        callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txConsumer);
 
+    /**
+     * Invokes a function with a new {@link ManagedTransactionChain}, which is a wrapper around standard transaction
+     * chains providing managed semantics. The transaction chain will be closed when the function returns.
+     *
+     * <p>This is an asynchronous API, like {@link DataBroker}'s own; when this method returns, the transactions in
+     * the chain may well still be ongoing in the background, or pending. <strong>It is up to the consumer and
+     * caller</strong> to agree on how failure will be handled; for example, the return type can include the futures
+     * corresponding to the transactions in the chain. The implementation uses a default transaction chain listener
+     * which logs an error if any of the transactions fail.
+     *
+     * <p>The MD-SAL transaction chain semantics are preserved: each transaction in the chain will see the results of
+     * the previous transactions in the chain, even if they haven't been fully committed yet; and any error will result
+     * in subsequent transactions in the chain <strong>not</strong> being submitted.
+     *
+     * @param chainConsumer The {@link InterruptibleCheckedFunction} that will build transactions in the transaction
+     * chain.
+     * @param <R> The type of result returned by the function.
+     * @return The result of the function call.
+     */
+    <R> R applyWithNewTransactionChainAndClose(Function<ManagedTransactionChain, R> chainConsumer);
 }

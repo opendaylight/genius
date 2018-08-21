@@ -12,6 +12,7 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import javax.annotation.CheckReturnValue;
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -33,6 +34,16 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     }
 
     @Override
+    public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(
+            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
+            throws E, InterruptedException {
+        try (ReadOnlyTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
+            TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
+            return txFunction.apply(wrappedTx);
+        }
+    }
+
+    @Override
     @CheckReturnValue
     @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception, R>
@@ -49,6 +60,16 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
                 LOG.error("Transaction.cancel() returned false, which should never happen here");
             }
             return FluentFuture.from(immediateFailedFuture(e));
+        }
+    }
+
+    @Override
+    public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
+            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
+            throws E, InterruptedException {
+        try (ReadOnlyTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
+            TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
+            txConsumer.accept(wrappedTx);
         }
     }
 
