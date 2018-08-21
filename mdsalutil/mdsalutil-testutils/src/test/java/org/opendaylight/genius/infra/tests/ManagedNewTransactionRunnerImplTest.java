@@ -11,14 +11,15 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
+import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 import static org.opendaylight.infrautils.testutils.Asserts.assertThrows;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,7 +31,6 @@ import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedEx
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresImpl;
-import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
@@ -70,13 +70,24 @@ public class ManagedNewTransactionRunnerImplTest {
     }
 
     @Test
+    public void testApplyWithNewReadTransactionAndCloseEmptySuccessfully() throws Exception {
+        Assert.assertEquals(Long.valueOf(1),
+            managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(OPERATIONAL, tx -> 1L));
+    }
+
+    @Test
+    public void testCallWithNewReadTransactionAndCloseEmptySuccessfully() throws Exception {
+        managedNewTransactionRunner.callWithNewReadOnlyTransactionAndClose(OPERATIONAL, tx -> { });
+    }
+
+    @Test
     public void testCallWithNewWriteOnlyTransactionAndSubmitEmptySuccessfully() throws Exception {
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> { }).get();
     }
 
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionAndSubmitEmptySuccessfully() throws Exception {
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL, writeTx -> {
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, writeTx -> {
         }).get();
     }
 
@@ -87,14 +98,14 @@ public class ManagedNewTransactionRunnerImplTest {
 
     @Test
     public void testCallWithNewTypedReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, tx -> {
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
         }).get();
     }
 
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitEmptySuccessfully() throws Exception {
         assertEquals(1,
-            (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+            (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
                 tx -> 1).get());
     }
 
@@ -103,43 +114,52 @@ public class ManagedNewTransactionRunnerImplTest {
         TopLevelList data = newTestDataObject();
         managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
             writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, data)).get();
-        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+        assertEquals(data, singleTransactionDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
             writeTx -> writeTx.put(TEST_PATH, data)).get();
-        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+        assertEquals(data, singleTransactionDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testCallWithNewReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
         managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
-            tx -> tx.put(OPERATIONAL, TEST_PATH, data)).get();
-        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+            tx -> tx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, data)).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testCallWithNewTypedReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
-        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
             tx -> tx.put(TEST_PATH, data)).get();
-        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+        assertEquals(data, singleTransactionDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
     }
 
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitPutSuccessfully() throws Exception {
         TopLevelList data = newTestDataObject();
         assertEquals(1, (long) managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
-            Datastore.OPERATIONAL,
+            OPERATIONAL,
             tx -> {
                 tx.put(TEST_PATH, data);
                 return 1;
             }).get());
-        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+        assertEquals(data, singleTransactionDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, TEST_PATH));
+    }
+
+    @Test
+    public void testCallWithNewReadTransactionAndCloseReadSuccessfully() throws Exception {
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+            tx -> tx.put(TEST_PATH, data)).get();
+        assertEquals(data, managedNewTransactionRunner.applyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
+            tx -> tx.read(TEST_PATH)).get().get());
     }
 
     TopLevelList newTestDataObject() {
@@ -153,27 +173,29 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
-                    writeTx.put(OPERATIONAL, TEST_PATH, newTestDataObject());
+                    writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
                     // We now throw an arbitrary kind of checked (not unchecked!) exception here
                     throw new IOException("something didn't quite go as expected...");
                 }).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof IOException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
     public void testCallWithNewTypedWriteOnlyTransactionAndSubmitPutButLaterException() throws Exception {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
-                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL, writeTx -> {
+                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, writeTx -> {
                     writeTx.put(TEST_PATH, newTestDataObject());
                     // We now throw an arbitrary kind of checked (not unchecked!) exception here
                     throw new IOException("something didn't quite go as expected...");
                 }).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof IOException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -181,34 +203,36 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(writeTx -> {
-                    writeTx.put(OPERATIONAL, TEST_PATH, newTestDataObject());
+                    writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
                     // We now throw an arbitrary kind of checked (not unchecked!) exception here
                     throw new IOException("something didn't quite go as expected...");
                 }).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof IOException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
     public void testCallWithNewTypedReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
-                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, writeTx -> {
+                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, writeTx -> {
                     writeTx.put(TEST_PATH, newTestDataObject());
                     // We now throw an arbitrary kind of checked (not unchecked!) exception here
                     throw new IOException("something didn't quite go as expected...");
                 }).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof IOException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
     public void testApplyWithNewReadWriteTransactionAndSubmitPutButLaterException() throws Exception {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
-                managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+                managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
                     writeTx -> {
                         writeTx.put(TEST_PATH, newTestDataObject());
                         // We now throw an arbitrary kind of checked (not unchecked!) exception here
@@ -216,7 +240,8 @@ public class ManagedNewTransactionRunnerImplTest {
                     }).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof IOException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -228,7 +253,8 @@ public class ManagedNewTransactionRunnerImplTest {
                     writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof TransactionCommitFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -236,11 +262,12 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
-                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     writeTx -> writeTx.put(TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof TransactionCommitFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -252,7 +279,8 @@ public class ManagedNewTransactionRunnerImplTest {
                     writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof TransactionCommitFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -260,11 +288,12 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
-                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
                     writeTx -> writeTx.put(TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof TransactionCommitFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -272,14 +301,15 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 testableDataBroker.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
-                managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+                managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
                     writeTx -> {
                         writeTx.put(TEST_PATH, newTestDataObject());
                         return 1;
                     }).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof TransactionCommitFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -291,7 +321,8 @@ public class ManagedNewTransactionRunnerImplTest {
                     writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof OptimisticLockFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -299,11 +330,12 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
-                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     writeTx -> writeTx.put(TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof OptimisticLockFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -315,7 +347,8 @@ public class ManagedNewTransactionRunnerImplTest {
                     writeTx -> writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof OptimisticLockFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
@@ -323,18 +356,19 @@ public class ManagedNewTransactionRunnerImplTest {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
                 testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
-                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
                     writeTx -> writeTx.put(TEST_PATH, newTestDataObject())).get();
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof OptimisticLockFailedException);
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
     public void testApplyWithNewReadWriteTransactionOptimisticLockFailedException() throws Exception {
         try {
             testableDataBroker.failSubmits(2, new OptimisticLockFailedException("bada boum bam!"));
-            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+            managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
                 writeTx -> {
                     writeTx.put(TEST_PATH, newTestDataObject());
                     return 1;
@@ -343,7 +377,8 @@ public class ManagedNewTransactionRunnerImplTest {
         } catch (ExecutionException e) {
             assertThat(e.getCause() instanceof OptimisticLockFailedException).isTrue();
         }
-        assertThat(singleTransactionDataBroker.syncReadOptional(OPERATIONAL, TEST_PATH)).isAbsent();
+        assertThat(
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
     }
 
     @Test
