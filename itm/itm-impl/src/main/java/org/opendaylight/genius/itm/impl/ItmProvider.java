@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
@@ -50,9 +49,6 @@ import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
@@ -63,7 +59,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
-import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,7 +130,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            createIdPool();
             registerEntityForOwnership();
             itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
             LOG.info("ItmProvider Started");
@@ -174,22 +168,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
         itmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
         LOG.info("ItmProvider Closed");
-    }
-
-    private void createIdPool() {
-        CreateIdPoolInput createPool = new CreateIdPoolInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setLow(ITMConstants.ITM_IDPOOL_START)
-                .setHigh(new BigInteger(ITMConstants.ITM_IDPOOL_SIZE).longValue())
-                .build();
-        try {
-            ListenableFuture<RpcResult<CreateIdPoolOutput>> result = idManager.createIdPool(createPool);
-            if (result != null && result.get().isSuccessful()) {
-                LOG.debug("Created IdPool for ITM Service");
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Failed to create idPool for ITM Service ", e);
-        }
     }
 
     @Override
