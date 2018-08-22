@@ -135,7 +135,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            createIdPool();
             registerEntityForOwnership();
             itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
             LOG.info("ItmProvider Started");
