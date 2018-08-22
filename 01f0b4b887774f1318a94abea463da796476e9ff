@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "752ec0d0_495660d4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-22T10:52:08Z",
+      "side": 0,
+      "message": "this was previously multi-shard? isn\u0027t it? :(",
+      "revId": "01f0b4b887774f1318a94abea463da796476e9ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

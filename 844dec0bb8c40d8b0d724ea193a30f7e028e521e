@@ -37,6 +37,40 @@
     },
     {
       "key": {
+        "uuid": "a20a9e93_1786ad6b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/config/helpers/FlowBasedIngressServicesConfigBindHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-22T10:52:08Z",
+      "side": 1,
+      "message": "there is no need for this to be sequential.. the delete and create are for two separate nodes",
+      "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f4818fc_50124e34",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-22T10:52:08Z",
+      "side": 1,
+      "message": "isn\u0027t this confTx just used for a READ here now? do we need managedtransactionrunner for that?",
+      "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4dc55315_674194f9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
         "patchSetId": 2
