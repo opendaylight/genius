@@ -16,6 +16,24 @@
       "revId": "01f0b4b887774f1318a94abea463da796476e9ff",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73d4815c_5992fe07",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceTopologyStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-22T12:36:12Z",
+      "side": 0,
+      "message": "I\u0027m not sure... We can revisit this later; with the new patch at least we have two transactions for operational and config.",
+      "parentUuid": "752ec0d0_495660d4",
+      "revId": "01f0b4b887774f1318a94abea463da796476e9ff",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
