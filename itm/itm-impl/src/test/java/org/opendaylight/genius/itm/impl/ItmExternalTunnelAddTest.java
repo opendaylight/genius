@@ -43,7 +43,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -80,7 +79,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmExternalTunnelAddTest {
@@ -229,40 +227,6 @@ public class ItmExternalTunnelAddTest {
         dpnEndpointsVxlan = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
         transportZone = new TransportZoneBuilder().setTunnelType(tunnelType1).setZoneName(transportZone1).withKey(new
                 TransportZoneKey(transportZone1)).setSubnets(subnetsList).build();
-        idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
-        getIdInput1 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
-        idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
-        getIdInput2 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.30:VXLAN").build();
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
-        idOutputOptional3 = RpcResultBuilder.success(expectedId3).buildFuture();
-        getIdInput3 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/s3:192.168.56.30:192.168.56.101:VXLAN")
-                .build();
-        doReturn(idOutputOptional3).when(idManagerService).allocateId(getIdInput3);
-        idOutputOptional4 = RpcResultBuilder.success(expectedId4).buildFuture();
-        getIdInput4 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep://192.168.101.40:6640/physicalswitch/s4:192.168.56.40:192.168.56.101:VXLAN")
-                .build();
-        doReturn(idOutputOptional4).when(idManagerService).allocateId(getIdInput4);
-        idOutputOptional5 = RpcResultBuilder.success(expectedId5).buildFuture();
-        getIdInput5 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/s3:192.168.56.30:192.168.56.40:VXLAN")
-                .build();
-        doReturn(idOutputOptional5).when(idManagerService).allocateId(getIdInput5);
-        idOutputOptional6 = RpcResultBuilder.success(expectedId6).buildFuture();
-        getIdInput6 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep://192.168.101.40:6640/physicalswitch/s4:192.168.56.40:192.168.56.30:VXLAN")
-                .build();
-        doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
