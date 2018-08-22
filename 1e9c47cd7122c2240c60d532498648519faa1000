@@ -159,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "c2754711_209b7246",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-22T16:18:46Z",
+      "side": 1,
+      "message": "why did you use a String loggerClass instead of a strongly typed Class\u003c?\u003e klass ?",
+      "parentUuid": "1e85365e_a67b22da",
+      "revId": "1e9c47cd7122c2240c60d532498648519faa1000",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bb0e5c70_2a0152aa",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/GeniusEventLogger.java",
         "patchSetId": 2
