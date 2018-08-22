@@ -32,14 +32,12 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -185,49 +183,6 @@ public class ItmExternalTunnelDeleteTest {
         vteps = new VtepsBuilder().setDpnId(dpId2).setIpAddress(ipAddress1).setPortname(portName1).withKey(new
                 VtepsKey(dpId2,portName1)).build();
         vtepsList.add(vteps);
-        idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
-        getIdInput1 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.30:VXLAN").build();
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
-        idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
-        getIdInput2 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep:1:192.168.56.30:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
-        idOutputOptional3 = RpcResultBuilder.success(expectedId3).buildFuture();
-        getIdInput3 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional3).when(idManagerService).allocateId(getIdInput3);
-        idOutputOptional4 = RpcResultBuilder.success(expectedId4).buildFuture();
-        getIdInput4 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep:1:192.168.56.40:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional4).when(idManagerService).allocateId(getIdInput4);
-        idOutputOptional5 = RpcResultBuilder.success(expectedId5).buildFuture();
-        getIdInput5 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/"
-                        + "s3:192.168.56.40:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional5).when(idManagerService).allocateId(getIdInput5);
-        idOutputOptional6 = RpcResultBuilder.success(expectedId6).buildFuture();
-        getIdInput6 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/"
-                        + "s3:192.168.56.40:192.168.56.30:VXLAN")
-                .build();
-        doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
-        idOutputOptional7 = RpcResultBuilder.success(expectedId7).buildFuture();
-        getIdInput7 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("hwvtep:1:hwvtep:1:192.168.56.30:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional7).when(idManagerService).allocateId(getIdInput7);
-        idOutputOptional8 = RpcResultBuilder.success(expectedId8).buildFuture();
-        getIdInput8 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.30:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional8).when(idManagerService).allocateId(getIdInput8);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
                 .setIpAddress(ipAddress3).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)

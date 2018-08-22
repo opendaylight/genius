@@ -22,6 +22,7 @@ import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
@@ -248,7 +249,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
                 .setDstInfo(dstInfoBuilder.build()).setSrcInfo(srcInfoBuilder.build()).setTransportType(tunnelType)
                 .setPortNumber(String.valueOf(portNo));
         int ifIndex;
-        ifIndex = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, interfaceName);
+        ifIndex = directTunnelUtils.allocateId(IfmConstants.IFM_IDPOOL_NAME, interfaceName);
         createLportTagInterfaceMap(interfaceName, ifIndex);
         stlBuilder.setIfIndex(ifIndex);
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
