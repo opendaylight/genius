@@ -29,7 +29,6 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
@@ -39,8 +38,6 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -241,16 +238,6 @@ public class ItmInternalTunnelAddTest {
     @Test
     public void testBuild_all_tunnels_VXLANtype() {
 
-        AllocateIdInput getIdInput1 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.102:VXLAN").build();
-        AllocateIdInput getIdInput2 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.102:192.168.56.101:VXLAN").build();
-
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
-
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType1.getName());
         trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp2,tepIp1,
@@ -272,16 +259,6 @@ public class ItmInternalTunnelAddTest {
     @Test
     public void testBuild_all_tunnels_GREtype() {
 
-        AllocateIdInput getIdInput1 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.102:GRE").build();
-        AllocateIdInput getIdInput2 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.102:192.168.56.101:GRE").build();
-
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
-
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType2.getName());
         trunkInterfaceName2 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp2,tepIp1,
@@ -301,16 +278,6 @@ public class ItmInternalTunnelAddTest {
 
     @Test
     public void testBuild_all_tunnels_Boyhtype() {
-
-        AllocateIdInput getIdInput1 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.101:192.168.56.102:VXLAN").build();
-        AllocateIdInput getIdInput2 = new AllocateIdInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setIdKey("1:phy0:100:192.168.56.102:192.168.56.101:GRE").build();
-
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
 
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType1.getName());
