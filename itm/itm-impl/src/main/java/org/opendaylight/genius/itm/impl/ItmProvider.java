@@ -8,65 +8,40 @@
 package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import org.apache.felix.service.command.CommandSession;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
-import org.opendaylight.genius.itm.api.IITMProvider;
-import org.opendaylight.genius.itm.cache.DpnTepStateCache;
-import org.opendaylight.genius.itm.cache.TunnelStateCache;
-import org.opendaylight.genius.itm.cli.TepCommandHelper;
-import org.opendaylight.genius.itm.cli.TepException;
-import org.opendaylight.genius.itm.diagstatus.ItmDiagStatusProvider;
-import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
-import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
-import org.opendaylight.genius.itm.listeners.TransportZoneListener;
-import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
-import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
-import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
-import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
-import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.infrautils.diagstatus.ServiceState;
-import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
-import org.opendaylight.mdsal.eos.binding.api.Entity;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
-import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
-import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
-import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.base.*;
+import java.math.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.regex.*;
+import javax.annotation.*;
+import javax.inject.*;
+import org.apache.felix.service.command.*;
+import org.opendaylight.controller.md.sal.binding.api.*;
+import org.opendaylight.controller.md.sal.common.api.data.*;
+import org.opendaylight.controller.sal.binding.api.*;
+import org.opendaylight.genius.itm.api.*;
+import org.opendaylight.genius.itm.cache.*;
+import org.opendaylight.genius.itm.cli.*;
+import org.opendaylight.genius.itm.diagstatus.*;
+import org.opendaylight.genius.itm.globals.*;
+import org.opendaylight.genius.itm.listeners.*;
+import org.opendaylight.genius.itm.monitoring.*;
+import org.opendaylight.genius.itm.rpc.*;
+import org.opendaylight.genius.mdsalutil.*;
+import org.opendaylight.infrautils.diagstatus.*;
+import org.opendaylight.infrautils.utils.concurrent.*;
+import org.opendaylight.mdsal.eos.binding.api.*;
+import org.opendaylight.mdsal.eos.common.api.*;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.*;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.*;
+import org.ops4j.pax.cdi.api.*;
+import org.slf4j.*;
 
 @Singleton
 @OsgiServiceProvider
@@ -135,7 +110,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void start() {
         try {
-            createIdPool();
             registerEntityForOwnership();
             itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
             LOG.info("ItmProvider Started");
@@ -174,22 +148,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
         itmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
         LOG.info("ItmProvider Closed");
-    }
-
-    private void createIdPool() {
-        CreateIdPoolInput createPool = new CreateIdPoolInputBuilder()
-                .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
-                .setLow(ITMConstants.ITM_IDPOOL_START)
-                .setHigh(new BigInteger(ITMConstants.ITM_IDPOOL_SIZE).longValue())
-                .build();
-        try {
-            ListenableFuture<RpcResult<CreateIdPoolOutput>> result = idManager.createIdPool(createPool);
-            if (result != null && result.get().isSuccessful()) {
-                LOG.debug("Created IdPool for ITM Service");
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Failed to create idPool for ITM Service ", e);
-        }
     }
 
     @Override
