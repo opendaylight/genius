@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "51116868_6b6ab0ed",
+        "filename": "interfacemanager/interfacemanager-api/src/main/java/org/opendaylight/genius/interfacemanager/interfaces/IInterfaceManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-22T08:05:12Z",
+      "side": 1,
+      "message": "this is not used anywhere in netvirt?",
+      "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4dc55315_674194f9",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
         "patchSetId": 2
