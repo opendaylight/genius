@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ccef11e4_32e0b522",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/AbstractTunnelListenerBase.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-23T06:04:44Z",
+      "side": 1,
+      "message": "can we remove the constant in idpools for ITMConstants if it is nowhere else used",
+      "revId": "1c0f35d2be4c398ba241617554b9d52a68ea591f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
