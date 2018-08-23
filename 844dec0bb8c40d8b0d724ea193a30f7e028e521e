@@ -139,6 +139,24 @@
       "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29df0a20_f57ef842",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-23T07:18:21Z",
+      "side": 1,
+      "message": "If the job coordinator waits for the returned future to complete, yes, both operations will occur in the context of the same job.",
+      "parentUuid": "8fcd50e6_1c7028cd",
+      "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
