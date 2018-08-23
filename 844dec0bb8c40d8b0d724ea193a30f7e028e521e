@@ -121,6 +121,24 @@
       "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8fcd50e6_1c7028cd",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesInterfaceStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 148,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-23T02:28:40Z",
+      "side": 1,
+      "message": "Stephen, I have not gone into the details of the transformAsync.. But could you plase confirm that both these operations will come in the context of the same Jobccordinator job, and we will not end up doing the two operations separately? It is important for the functionality that this whole job gets executed before we take up a new job for the same key from job-coordinator",
+      "parentUuid": "4dc55315_674194f9",
+      "revId": "844dec0bb8c40d8b0d724ea193a30f7e028e521e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
