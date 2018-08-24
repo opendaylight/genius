@@ -382,7 +382,7 @@ public class AlivenessMonitorTest {
                         .thenReturn(Futures.immediateCheckedFuture(optEntry));
         RpcResult<MonitorStopOutput> result = alivenessMonitor.monitorStop(input).get();
         verify(idManager).releaseId(any(ReleaseIdInput.class));
-        verify(writeTx, times(2)).delete(eq(LogicalDatastoreType.OPERATIONAL),
+        verify(writeTx, times(3)).delete(eq(LogicalDatastoreType.OPERATIONAL),
                 any(InstanceIdentifier.class));
         assertTrue("Monitor stop rpc result", result.isSuccessful());
     }
