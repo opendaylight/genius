@@ -1074,6 +1074,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 }
 
                 tx.delete(getMonitoringInfoId(monitorId));
+
+                //Remove monitorid-key-map
+                tx.delete(getMonitorMapId(monitorId));
             }).addCallback(new FutureCallbackImpl(String.format("Delete monitor state with Id %d", monitorId)),
                     MoreExecutors.directExecutor());
 
@@ -1108,10 +1111,14 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 InterfaceMonitorEntry entry = optEntry.get();
                 List<Long> monitorIds = entry.getMonitorIds();
                 monitorIds.remove(monitorId);
-                InterfaceMonitorEntry newEntry = new InterfaceMonitorEntryBuilder(entry)
-                          .withKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
-                tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry,
+                if(monitorIds.isEmpty()){
+                    tx.delete(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName));
+                } else {
+                    InterfaceMonitorEntry newEntry = new InterfaceMonitorEntryBuilder(entry)
+                            .withKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
+                    tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry,
                             CREATE_MISSING_PARENT);
+                }
                 return tx.submit();
             } else {
                 LOG.warn("No Interface map entry found {} to remove monitorId {}", interfaceName, monitorId);
