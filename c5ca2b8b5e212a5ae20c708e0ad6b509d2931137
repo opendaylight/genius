@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d614a545_56f12c71",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "This comes from FluentFuture which uses Guava Futures :-/.",
+      "parentUuid": "49241e1b_3677c6ca",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51d7f160_ed5f3139",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "a9dca519_46161ce3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "This also matches the declaration in Guava.",
+      "parentUuid": "51d7f160_ed5f3139",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ca71050_566967aa",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-27T12:02:13Z",
       "side": 1,
       "message": "autsch - having to cast here is really ugly to read - hard to avoid?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e677fe2a_9fb1d834",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "Yes, unfortunately... This, and the following transform, end up being uglier than they should be because we\u0027re splitting a configuration transaction from an operational transaction by building an optional operation on the configuration transaction, which is applied later if necessary. If we could completely separate the two transactions, we could apply them as separate transactions in the chain, and avoid all this ugliness (including the Guava includes at the top).",
+      "parentUuid": "8ca71050_566967aa",
       "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "9c214ee7_62ec6869",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionChain.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "I left them in because I want an explicit representation of transaction chains; the fact that they\u0027re equivalent to transaction factories is an implementation detail.",
+      "parentUuid": "7ba0cb1b_fd5e4c32",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e4e65473_45485804",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
         "patchSetId": 2
@@ -104,6 +176,24 @@
     },
     {
       "key": {
+        "uuid": "0f30fc05_f93ab546",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "Yes, current code works with no change.",
+      "parentUuid": "e4e65473_45485804",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0ba9a20e_7307c83b",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
         "patchSetId": 2
@@ -115,6 +205,24 @@
       "writtenOn": "2018-08-27T12:02:13Z",
       "side": 1,
       "message": "oh this is new, right?  Do you want name this method using a *ReadOnly* naming convention, to be in line with the existing callWithNewWriteOnlyTransactionAndSubmit? Or intentionally chaning that nomenclature with this?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7c9ce837_6a2a4e23",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "Ah yes, I meant to do that before pushing the patch and forgot!",
+      "parentUuid": "0ba9a20e_7307c83b",
       "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -155,6 +263,24 @@
     },
     {
       "key": {
+        "uuid": "0f0103ce_8d65adfe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "Mostly; the methods handling read-only transactions are new. I could split this into two or three patches, one to extract the factory, one to add read-only transaction support, and one to add chains! It might make things easier to review.",
+      "parentUuid": "508f08b1_7d186079",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e14cc75a_7714dc54",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
         "patchSetId": 2
@@ -166,6 +292,24 @@
       "writtenOn": "2018-08-27T12:02:13Z",
       "side": 1,
       "message": "I\u0027m not sure I agree that ready only TXs should ever be retried - let\u0027s discuss?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2c3550c5_ec650b75",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-27T13:51:26Z",
+      "side": 1,
+      "message": "This addresses (partially, since this handling should be propagated to read-write transactions too) an issue the Ericsson developers have seen: during cluster bring-up, shards become available at different times, and a read can fail because the corresponding shard isn\u0027t available yet. This also occurs during fail-over in ask mode: the first transaction to hit a downed node will fail, but it can be retried.\n\nI can split this out into a separate patch of course.",
+      "parentUuid": "e14cc75a_7714dc54",
       "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
