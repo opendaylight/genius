@@ -1,0 +1,191 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49241e1b_3677c6ca",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "given that in the next file you\u0027ve used the other one, it\u0027s presumably it\u0027s just an IDE mistake why still use Guava\u0027s old Function instead of the now standardized java.util.function.Function? Not that it matters a huge deal, but we should use JDK where we can?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "51d7f160_ed5f3139",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "I\u0027m curious - are you use the Checker Framework yourself?  Normally we use the JDK\u0027s or ECJ\u0027s (org.eclipse) @Nullable instead of this type...",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8ca71050_566967aa",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 413,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "autsch - having to cast here is really ugly to read - hard to avoid?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "04048208_943b02a3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "I (think I do) understand what you are doing here, but I fear here we\u0027ve gone beyond code that 99% of typical ODL contributors will be able to both understand when read yet alone be able to write... wondering if there is any way we could simplify this.  (If I have time, may be I\u0027ll have a go at trying a simplification, but not before later this week.)",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ba0cb1b_fd5e4c32",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionChain.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "with this (and its *Impl) being, currently, still, empty, do you want to remove this from this change, for now, and it in when you will actually add functionality here which you don\u0027t want in ManagedTransactionFactory?  I assume that may be idea.  As it is now, I found it confusing to understand on first review (like \"whoa, what\u0027s what here now\").",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4e65473_45485804",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "this is entirely moved over (exactly as is) from ManagedNewTransactionRunner, right?  So we stay fully backward compatible?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ba9a20e_7307c83b",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "oh this is new, right?  Do you want name this method using a *ReadOnly* naming convention, to be in line with the existing callWithNewWriteOnlyTransactionAndSubmit? Or intentionally chaning that nomenclature with this?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f5724b08_14003afb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactory.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 102,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "as above, *ReadOnly* ?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "508f08b1_7d186079",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedTransactionFactoryImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "is this entirely moved over (exactly as is) from ManagedNewTransactionRunnerImpl?  (Gerrit makes it hard to understand moved code.)",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e14cc75a_7714dc54",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "I\u0027m not sure I agree that ready only TXs should ever be retried - let\u0027s discuss?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "50c74b97_6786f857",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T12:02:13Z",
+      "side": 1,
+      "message": "as mentioned above, when is a ReadFailedException retriable?  How can it fail at first and pass on a new attempt?",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
