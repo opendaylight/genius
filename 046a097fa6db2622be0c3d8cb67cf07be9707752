@@ -16,6 +16,24 @@
       "revId": "046a097fa6db2622be0c3d8cb67cf07be9707752",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8388a4e7_07516b9f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/batching/ResourceBatchingManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-27T15:40:19Z",
+      "side": 0,
+      "message": "yeah this seems odd. It does this check after it is published to resourceBatchingThreadMapper but that\u0027s only for shutting it down. There\u0027s no other code that submits a task to the executor.",
+      "parentUuid": "d08875de_68ae1860",
+      "revId": "046a097fa6db2622be0c3d8cb67cf07be9707752",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
