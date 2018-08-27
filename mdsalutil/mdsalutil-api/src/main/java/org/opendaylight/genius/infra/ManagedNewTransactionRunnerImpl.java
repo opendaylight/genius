@@ -24,11 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ManagedNewTransactionRunner}.
+ * Implementation of {@link ManagedNewTransactionRunner}. This is based on {@link ManagedTransactionFactoryImpl} but
+ * re-implements operations based on read-write transactions to cancel transactions which don't end up making any
+ * changes to the datastore.
  */
 @Beta
 // Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
-public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRunner {
+public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryImpl
+        implements ManagedNewTransactionRunner {
 
     private static final Logger LOG = LoggerFactory.getLogger(ManagedNewTransactionRunnerImpl.class);
 
@@ -36,6 +39,7 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
 
     @Inject
     public ManagedNewTransactionRunnerImpl(DataBroker broker) {
+        super(broker);
         this.broker = broker;
     }
 
@@ -54,26 +58,6 @@ public class ManagedNewTransactionRunnerImpl implements ManagedNewTransactionRun
                 LOG.error("Transaction.cancel() return false - this should never happen (here)");
             }
             return immediateFailedFuture(e);
-        }
-    }
-
-    @Override
-    @SuppressWarnings("checkstyle:IllegalCatch")
-    public <D extends Datastore, E extends Exception> FluentFuture<Void>
-        callWithNewWriteOnlyTransactionAndSubmit(Class<D> datastoreType,
-            InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txRunner) {
-        WriteTransaction realTx = broker.newWriteOnlyTransaction();
-        TypedWriteTransaction<D> wrappedTx =
-                new TypedWriteTransactionImpl<>(datastoreType, realTx);
-        try {
-            txRunner.accept(wrappedTx);
-            return realTx.commit().transform(commitInfo -> null, MoreExecutors.directExecutor());
-            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
-        } catch (Exception e) {
-            if (!realTx.cancel()) {
-                LOG.error("Transaction.cancel() return false - this should never happen (here)");
-            }
-            return FluentFuture.from(immediateFailedFuture(e));
         }
     }
 
