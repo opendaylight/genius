@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d887bc40_9a7f31b4",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T13:52:10Z",
+      "side": 1,
+      "message": "I don\u0027t suppose this should be \"hardened\" and better check that nodeKey.getId().getValue() actually does startsWith(\"openflow:\") ?",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "856fc6db_711d4663",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T13:52:10Z",
+      "side": 1,
+      "message": "I was going to suggest using BigInteger\u0027s static valueOf(long value) instead of new BigInteger() to save an object allocation in case of common values such as 0 \u0026 Co but given that you don\u0027t know if it\u0027s a long or really a BigInteger, and can\u0027t see an easy and performant way to check for that, this is probably fine, so ignore; I\u0027m just talking to myself.",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
