@@ -316,6 +316,24 @@
     },
     {
       "key": {
+        "uuid": "27b152d4_4e2942a8",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-27T14:16:12Z",
+      "side": 1,
+      "message": "Oh, interesting.  Then how about propagating it to read-write transactions too as part of this patch, and noting this in the JavaDoc of the RetryingManagedNewTransactionRunner (not this class) ?",
+      "parentUuid": "2c3550c5_ec650b75",
+      "revId": "c5ca2b8b5e212a5ae20c708e0ad6b509d2931137",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "50c74b97_6786f857",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
         "patchSetId": 2
