@@ -10,6 +10,7 @@ package org.opendaylight.genius.mdsalutil.internal;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
+import com.google.common.base.Optional;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,10 +37,19 @@ public class UpgradeUtils {
     }
 
     public void setUpgradeConfig(boolean state) {
+        InstanceIdentifier<UpgradeConfig> iid = InstanceIdentifier.create(UpgradeConfig.class);
         UpgradeConfig upgradeConfig = new UpgradeConfigBuilder().setUpgradeInProgress(state).build();
         try {
-            txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(
-                InstanceIdentifier.create(UpgradeConfig.class), upgradeConfig, CREATE_MISSING_PARENTS)).get();
+            txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
+                Optional<UpgradeConfig> optPrevUpgradeConfig = tx.read(iid).get();
+                if (optPrevUpgradeConfig.isPresent()) {
+                    if (!optPrevUpgradeConfig.get().equals(upgradeConfig)) {
+                        tx.merge(iid, upgradeConfig, CREATE_MISSING_PARENTS);
+                    }
+                } else {
+                    tx.put(iid, upgradeConfig, CREATE_MISSING_PARENTS);
+                }
+            }).get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Unable to update UpgradeState", e);
         }
