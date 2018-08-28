@@ -92,8 +92,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
                 .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
                     // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
                     if (tries - 1 > 0) {
-                        return (ListenableFuture) callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner,
-                                tries - 1);
+                        return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                     } else {
                         // out of retries, so propagate the OptimisticLockFailedException
                         throw optimisticLockFailedException;
@@ -137,8 +136,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
                 .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
                     // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
                     if (tries - 1 > 0) {
-                        return (ListenableFuture) callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner,
-                                tries - 1);
+                        return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                     } else {
                         // out of retries, so propagate the OptimisticLockFailedException
                         throw optimisticLockFailedException;
