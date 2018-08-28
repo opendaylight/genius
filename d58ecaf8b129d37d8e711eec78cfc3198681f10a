@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "a33eade1_72fb1d66",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-08-28T07:36:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d887bc40_9a7f31b4",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "856fc6db_711d4663",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "a766c17f_18e8eb0f",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-08-28T07:36:35Z",
+      "side": 1,
+      "message": "\u003cignores crazy guy talking to himself in the street\u003e",
+      "parentUuid": "856fc6db_711d4663",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b53a4247_0dab1d85",
         "filename": "docs/specs/arputil-dpn-id-in-notifications.rst",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-28T05:27:57Z",
       "side": 1,
       "message": "Is the targeted release Nitrogen or is it Neon and back ported to Fluorine and Oxygen?\nCan it be back ported to Oxygen considering this patch has Yang changes and maybe too late ?",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30a6abb9_ff5ba9a9",
+        "filename": "docs/specs/arputil-dpn-id-in-notifications.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-08-28T07:36:35Z",
+      "side": 1,
+      "message": "That\u0027s a good question. We (Red Hat) need it for Oxygen. All in all, this is an additive, backwards compatible change.",
+      "parentUuid": "b53a4247_0dab1d85",
       "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
