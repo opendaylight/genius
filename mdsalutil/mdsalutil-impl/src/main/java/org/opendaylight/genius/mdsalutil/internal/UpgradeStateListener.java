@@ -20,7 +20,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.UpgradeState;
-import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
+import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.ops4j.pax.cdi.api.OsgiService;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Named("geniusUpgradeStateListener") // to distinguish the <bean id=".."> from serviceutils' UpgradeStateListener
 @OsgiServiceProvider(classes = UpgradeState.class)
-public class UpgradeStateListener extends AbstractClusteredSyncDataTreeChangeListener<Config> implements UpgradeState {
+public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Config> implements UpgradeState {
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateListener.class);
 
     private final AtomicBoolean isUpgradeInProgress = new AtomicBoolean(false);
