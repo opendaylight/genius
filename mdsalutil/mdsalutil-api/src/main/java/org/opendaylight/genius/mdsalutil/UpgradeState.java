@@ -13,6 +13,6 @@ package org.opendaylight.genius.mdsalutil;
  */
 public interface UpgradeState {
 
-    boolean isUpgradeInProgress();
+    boolean isUpgradeInProgress(); // TODO throws ReadFailedException;
 
 }
