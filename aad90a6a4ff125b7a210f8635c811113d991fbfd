@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "16ee52a0_c870b2e2",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-29T05:14:58Z",
+      "side": 1,
+      "message": "is this a local variable? Or does this read from DS? If local, will this be broken if the listener is not clustered?",
+      "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
