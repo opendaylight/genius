@@ -7,9 +7,13 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Configures a DataBroker to simulate failures, useful for tests.
@@ -17,6 +21,24 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
  * @author Michael Vorburger.ch
  */
 public interface DataBrokerFailures {
+
+    /**
+     * Fails all future reads.
+     *
+     * @param exception a {@link ReadFailedException} to throw from a
+     * {@link ReadOnlyTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     */
+    void failReads(ReadFailedException exception);
+
+    /**
+     * Fails N future reads.
+     *
+     * @param howManyTimes how many times to throw the passed exception, until it resets.
+     *
+     * @param exception a {@link ReadFailedException} to throw from a
+     * {@link ReadOnlyTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     */
+    void failReads(int howManyTimes, ReadFailedException exception);
 
     /**
      * Fails all future Transaction submits.
@@ -51,7 +73,13 @@ public interface DataBrokerFailures {
     void failButSubmitsAnyways();
 
     /**
-     * Resets any earlier {@link #unfailSubmits()}.
+     * Resets any earlier {@link #failReads(ReadFailedException)} or {@link #failReads(int, ReadFailedException)}.
+     */
+    void unfailReads();
+
+    /**
+     * Resets any earlier {@link #failSubmits(TransactionCommitFailedException)} or
+     * {@link #failSubmits(int, TransactionCommitFailedException)}.
      */
     void unfailSubmits();
 }
