@@ -12,11 +12,13 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.slf4j.Logger;
@@ -62,8 +64,22 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
             throws E, InterruptedException {
-        LOG.warn("The retrying transaction manager doesn't implement retry semantics with read-only transactions");
-        return delegate.applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction);
+        return applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction, maxRetries);
+    }
+
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    private <R, D extends Datastore, E extends Exception> R applyWithNewReadOnlyTransactionAndClose(
+            Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction,
+            int tries) throws E, InterruptedException {
+        try {
+            return delegate.applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction);
+        } catch (Exception e) {
+            if (isRetriableException(e) && tries - 1 > 0) {
+                return applyWithNewReadOnlyTransactionAndClose(datastoreType, txFunction, tries - 1);
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -78,11 +94,11 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         FluentFuture<R> future = Objects.requireNonNull(
             delegate.applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
             "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
-        return future.catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
-            if (tries - 1 > 0) {
+        return future.catchingAsync(Exception.class, exception -> {
+            if (isRetriableException(exception) && tries - 1 > 0) {
                 return applyWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
             } else {
-                throw optimisticLockFailedException;
+                throw exception;
             }
         }, executor);
     }
@@ -96,8 +112,22 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
             Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
             throws E, InterruptedException {
-        LOG.warn("The retrying transaction manager doesn't implement retry semantics with read-only transactions");
-        delegate.callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer);
+        callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer, maxRetries);
+    }
+
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    private <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
+            Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer, int tries)
+            throws E, InterruptedException {
+        try {
+            delegate.callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer);
+        } catch (Exception e) {
+            if (isRetriableException(e) && tries - 1 > 0) {
+                callWithNewReadOnlyTransactionAndClose(datastoreType, txConsumer, tries - 1);
+            } else {
+                throw e;
+            }
+        }
     }
 
     @Override
@@ -111,11 +141,11 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         ListenableFuture<Void> future = Objects.requireNonNull(
             delegate.callWithNewReadWriteTransactionAndSubmit(txRunner),
             "delegate.callWithNewReadWriteTransactionAndSubmit() == null");
-        return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
-            if (tries - 1 > 0) {
+        return Futures.catchingAsync(future, Exception.class, exception -> {
+            if (isRetriableException(exception) && tries - 1 > 0) {
                 return callWithNewReadWriteTransactionAndSubmit(txRunner, tries - 1);
             } else {
-                throw optimisticLockFailedException;
+                throw exception;
             }
         }, executor);
     }
@@ -133,13 +163,13 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
 
         return Objects.requireNonNull(delegate.callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
             "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
-            .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
+            .catchingAsync(Exception.class, exception -> {
                 // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
-                if (tries - 1 > 0) {
+                if (isRetriableException(exception) && tries - 1 > 0) {
                     return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                 } else {
-                    // out of retries, so propagate the OptimisticLockFailedException
-                    throw optimisticLockFailedException;
+                    // out of retries, so propagate the exception
+                    throw exception;
                 }
             }, executor);
     }
@@ -189,5 +219,10 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
                         throw optimisticLockFailedException;
                     }
                 }, executor);
+    }
+
+    private boolean isRetriableException(Throwable throwable) {
+        return throwable instanceof OptimisticLockFailedException || throwable instanceof ReadFailedException || (
+            throwable instanceof ExecutionException && isRetriableException(throwable.getCause()));
     }
 }
