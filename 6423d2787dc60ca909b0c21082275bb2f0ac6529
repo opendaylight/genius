@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3b019efe_a2c97766",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-29T02:15:22Z",
+      "side": 1,
+      "message": "I assume the intention is to avoid OLFE but I don\u0027t think doing a merge in lieu of a put will prevent it and neither would doing a prior read  - plus the read adds unnecessary overhead.",
+      "revId": "6423d2787dc60ca909b0c21082275bb2f0ac6529",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
