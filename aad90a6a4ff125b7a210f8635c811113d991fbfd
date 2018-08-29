@@ -34,6 +34,24 @@
       "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f62656f8_24ae5fde",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-08-29T14:10:51Z",
+      "side": 1,
+      "message": "Then how will this work, in a cluster? if we make the listener non-clustered?",
+      "parentUuid": "e2bee4cd_aaa8f869",
+      "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
