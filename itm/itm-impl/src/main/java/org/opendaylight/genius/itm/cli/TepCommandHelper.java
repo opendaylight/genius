@@ -29,9 +29,9 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
-import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
@@ -543,6 +543,7 @@ public class TepCommandHelper {
                     break;
                 case ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME:
                     cacheContent = unprocessedTunnelsStateCache.getAllUnprocessedTunnels();
+                    break;
                 case ITMConstants.UNPROCESSED_NODE_CONNECTOR_CACHE:
                     showAllUnprocessedNCCaches();
                     break;
