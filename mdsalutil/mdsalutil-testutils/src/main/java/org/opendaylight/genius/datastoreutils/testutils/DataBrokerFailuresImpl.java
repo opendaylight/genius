@@ -7,11 +7,15 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ForwardingDataBroker;
@@ -19,8 +23,12 @@ import org.opendaylight.controller.md.sal.binding.api.ForwardingReadWriteTransac
 import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.yangtools.yang.binding.DataObject;
+import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +45,9 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     private static final Logger LOG = LoggerFactory.getLogger(DataBrokerFailuresImpl.class);
 
     private final DataBroker delegate;
+    private volatile @Nullable ReadFailedException readException;
     private volatile @Nullable TransactionCommitFailedException submitException;
+    private final AtomicInteger howManyFailingReads = new AtomicInteger();
     private final AtomicInteger howManyFailingSubmits = new AtomicInteger();
     private boolean submitAndThrowException = false;
 
@@ -51,6 +61,19 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     }
 
     @Override
+    public void failReads(ReadFailedException exception) {
+        unfailReads();
+        readException = Objects.requireNonNull(exception, "exception == null");
+    }
+
+    @Override
+    public void failReads(int howManyTimes, ReadFailedException exception) {
+        unfailReads();
+        howManyFailingReads.set(howManyTimes);
+        readException = Objects.requireNonNull(exception, "exception == null");
+    }
+
+    @Override
     public void failSubmits(TransactionCommitFailedException exception) {
         unfailSubmits();
         this.submitException = Objects.requireNonNull(exception, "exception == null");
@@ -60,6 +83,12 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     public void failSubmits(int howManyTimes, TransactionCommitFailedException exception) {
         howManyFailingSubmits.set(howManyTimes);
         this.submitException = Objects.requireNonNull(exception, "exception == null");
+    }
+
+    @Override
+    public void unfailReads() {
+        readException = null;
+        howManyFailingReads.set(-1);
     }
 
     @Override
@@ -76,9 +105,35 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         this.submitAndThrowException = true;
     }
 
-    private void update() {
+    private FluentFuture<? extends CommitInfo> handleCommit(Supplier<FluentFuture<? extends CommitInfo>> commitMethod) {
         if (howManyFailingSubmits.decrementAndGet() == -1) {
-            this.submitException = null;
+            submitException = null;
+        }
+        if (submitException == null) {
+            return commitMethod.get();
+        } else {
+            if (submitAndThrowException) {
+                try {
+                    commitMethod.get().get();
+                } catch (InterruptedException | ExecutionException e) {
+                    LOG.warn("Exception while waiting for submitted transaction", e);
+                }
+            }
+            return FluentFuture.from(Futures.immediateFailedFuture(submitException));
+        }
+    }
+
+    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> handleRead(
+            BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, CheckedFuture<Optional<T>, ReadFailedException>>
+                readMethod,
+            LogicalDatastoreType store, InstanceIdentifier<T> path) {
+        if (howManyFailingReads.decrementAndGet() == -1) {
+            readException = null;
+        }
+        if (readException == null) {
+            return readMethod.apply(store, path);
+        } else {
+            return Futures.immediateFailedCheckedFuture(readException);
         }
     }
 
@@ -86,20 +141,14 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     public ReadWriteTransaction newReadWriteTransaction() {
         return new ForwardingReadWriteTransaction(delegate.newReadWriteTransaction()) {
             @Override
+            public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(
+                    LogicalDatastoreType store, InstanceIdentifier<T> path) {
+                return handleRead(super::read, store, path);
+            }
+
+            @Override
             public FluentFuture<? extends CommitInfo> commit() {
-                update();
-                if (submitException == null) {
-                    return super.commit();
-                } else {
-                    if (submitAndThrowException) {
-                        try {
-                            super.commit().get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            LOG.warn("Exception while waiting for submitted transaction", e);
-                        }
-                    }
-                    return FluentFuture.from(Futures.immediateFailedFuture(submitException));
-                }
+                return handleCommit(super::commit);
             }
         };
     }
@@ -109,19 +158,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         return new ForwardingWriteTransaction(delegate.newWriteOnlyTransaction()) {
             @Override
             public FluentFuture<? extends CommitInfo> commit() {
-                update();
-                if (submitException == null) {
-                    return super.commit();
-                } else {
-                    if (submitAndThrowException) {
-                        try {
-                            super.commit().get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            LOG.warn("Exception while waiting for submitted transaction", e);
-                        }
-                    }
-                    return FluentFuture.from(Futures.immediateFailedFuture(submitException));
-                }
+                return handleCommit(super::commit);
             }
         };
     }
