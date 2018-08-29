@@ -10,9 +10,11 @@ package org.opendaylight.genius.infra.tests;
 import static org.junit.Assert.assertEquals;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 
+import org.junit.Test;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
@@ -86,6 +88,43 @@ public class RetryingManagedNewTransactionRunnerTest extends ManagedNewTransacti
             writeTx -> {
                 writeTx.put(TEST_PATH, data);
                 return 1;
+            }).get());
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Test
+    public void testCallWithNewReadWriteTransactionReadFailedException() throws Exception {
+        testableDataBroker.failReads(2, new ReadFailedException("bada boum bam!"));
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
+            tx -> {
+                tx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, data);
+                assertEquals(data, tx.read(LogicalDatastoreType.OPERATIONAL, TEST_PATH).get().get());
+            }).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Test
+    public void testCallWithNewTypedReadWriteTransactionReadFailedException() throws Exception {
+        testableDataBroker.failReads(2, new ReadFailedException("bada boum bam!"));
+        TopLevelList data = newTestDataObject();
+        managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+            tx -> {
+                tx.put(TEST_PATH, data);
+                assertEquals(data, tx.read(TEST_PATH).get().get());
+            }).get();
+        assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
+    }
+
+    @Test
+    public void testApplyWithNewReadWriteTransactionReadFailedException() throws Exception {
+        testableDataBroker.failReads(2, new ReadFailedException("bada boum bam!"));
+        TopLevelList data = newTestDataObject();
+        assertEquals(data, managedNewTransactionRunner.applyWithNewReadWriteTransactionAndSubmit(
+            Datastore.OPERATIONAL,
+            tx -> {
+                tx.put(TEST_PATH, data);
+                return tx.read(TEST_PATH).get().get();
             }).get());
         assertEquals(data, singleTransactionDataBroker.syncRead(OPERATIONAL, TEST_PATH));
     }
