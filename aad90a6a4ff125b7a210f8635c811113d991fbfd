@@ -52,6 +52,24 @@
       "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad754aa8_c8681792",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-29T14:33:52Z",
+      "side": 1,
+      "message": "I see your point - we\u0027re caching state so need to be notified of changes on every node. This class also rolls the isUpgradeInProgress flag in the Config model to the same flag in the UpgradeConfig model - on a side note, why is this flag represented and duplicated in 2 yang models? In any event, to avoid OLFE, either eliminate the cache and read from the DS in isUpgradeInProgress() so you can use non-clustered DTCL or use EOS or CSS to ensure only one writer in the cluster.",
+      "parentUuid": "f62656f8_24ae5fde",
+      "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
