@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7003c5f4_d878b52a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-30T13:40:59Z",
+      "side": 1,
+      "message": "as per suggestion in https://git.opendaylight.org/gerrit/#/c/75348/2/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java@73 to add JavaDoc for this, how about just adding \"... for both OptimisticLockFailedException on write and ReadFailedException on read.\" here?",
+      "revId": "121946ba6e8fafd8aa1bfbc6251ae90556d7fc11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
