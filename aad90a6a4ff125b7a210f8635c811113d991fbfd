@@ -106,6 +106,24 @@
       "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "172a5fcf_201f1323",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-30T13:09:57Z",
+      "side": 1,
+      "message": "\u003e On thinking this over more (funnny how such a \"simple\" thing is\n \u003e surprisingly complicated in clustering!), isn\u0027t the real underlying\n \u003e problem here that 2 things are mixed up?  The cached\n \u003e isUpgradeInProgress is one thing - and that needs a distributed\n \u003e listener.  Shouldn\u0027t we just use that DataStoreCache util thing,\n \u003e which internally uses a clustered listener, for that?  But applying\n \u003e that same flag to another model (i.e. writing) is another - but\n \u003e that part doesn\u0027t need to be clustered - or does it?\n\nYou\u0027re exactly right. Use a clustered DTCL for the cache, ie DataObjectCache, and a non-clustered DTCL for updating the other model.",
+      "parentUuid": "99270abc_29c07210",
+      "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
