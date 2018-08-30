@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "44fc939e_d59eed14",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-30T11:21:50Z",
+      "side": 1,
+      "message": "cool.  Can I be a PITA though?  Don\u0027t LOG.warn \u0026\u0026 return null, but instead just throw new IllegalArgumentException() ... because the callers don\u0027t handle null.",
+      "parentUuid": "a33eade1_72fb1d66",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "856fc6db_711d4663",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 3
