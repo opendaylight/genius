@@ -70,6 +70,24 @@
       "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99270abc_29c07210",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-30T10:40:46Z",
+      "side": 1,
+      "message": "\u003e side note, why is this flag represented and duplicated \n\nsee https://jira.opendaylight.org/browse/GENIUS-190\n\n\u003e eliminate the cache and read from the DS in \n\nNOK for perf\n\n\u003e or use EOS or CSS to ensure only one writer in the cluster\n\nI dunno EOS but perhaps this would be the opportunity to learn it? ;-)\n\nWhat CSS - YOU are removing that, so shouldn\u0027t use, right?\n\nOn thinking this over more (funnny how such a \"simple\" thing is surprisingly complicated in clustering!), isn\u0027t the real underlying problem here that 2 things are mixed up?  The cached isUpgradeInProgress is one thing - and that needs a distributed listener.  Shouldn\u0027t we just use that DataStoreCache util thing, which internally uses a clustered listener, for that?  But applying that same flag to another model (i.e. writing) is another - but that part doesn\u0027t need to be clustered - or does it?",
+      "parentUuid": "ad754aa8_c8681792",
+      "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
