@@ -144,6 +144,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         }
     }
 
+    @Override
     public <R> R applyWithNewTransactionChainAndClose(Function<ManagedTransactionChain, R> chainConsumer) {
         try (BindingTransactionChain realTxChain = broker.createTransactionChain(new TransactionChainListener() {
             @Override
