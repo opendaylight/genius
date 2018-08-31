@@ -124,6 +124,16 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <!-- Testing Dependencies -->
     <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-binding-adapter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-eos-dom-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>testutils</artifactId>
       <version>${project.version}</version>
