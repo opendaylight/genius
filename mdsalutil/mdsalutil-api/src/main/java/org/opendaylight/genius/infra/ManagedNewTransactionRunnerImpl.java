@@ -56,7 +56,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         WriteTransaction wrappedTx = new NonSubmitCancelableWriteTransaction(realTx);
         try {
             txConsumer.accept(wrappedTx);
-            return realTx.submit();
+            return realTx.commit().transform(v -> null, MoreExecutors.directExecutor());
         // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -76,7 +76,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
             txConsumer.accept(wrappedTx);
             if (wrappedTx.isWritten()) {
                 // The transaction contains changes, commit it
-                return realTx.submit();
+                return realTx.commit().transform(v -> null, MoreExecutors.directExecutor());
             } else {
                 // The transaction only handled reads, cancel it
                 realTx.cancel();
