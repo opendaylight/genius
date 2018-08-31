@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1af64fcb_0b076a16",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-31T19:06:46Z",
+      "side": 1,
+      "message": "Done in https://git.opendaylight.org/gerrit/#/c/75644/",
+      "parentUuid": "17094fea_fdc54633",
+      "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "009bcd21_0df129a9",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "8897b76b_b8150b2a",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-31T19:06:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "009bcd21_0df129a9",
+      "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0d6ded70_c5e03278",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2018-08-31T13:28:57Z",
       "side": 1,
       "message": "I\u0027m wary of throwing an undocumented, unchecked ex - would callers be prepared for this? Also technically I don\u0027t think ISE is appropriate here - a failed read is really not a state violation.",
+      "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "466b41ef_043baef2",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-31T19:06:46Z",
+      "side": 1,
+      "message": "it\u0027s not trivial to \"just\" add \"throws ReadFailedException\" to the signature of isUpgradeInProgress() in interface UpgradeState ... this would have ripple effects in several modules in netvirt and openflowplugin - let me just LOG and return false instead here.",
+      "parentUuid": "0d6ded70_c5e03278",
       "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
