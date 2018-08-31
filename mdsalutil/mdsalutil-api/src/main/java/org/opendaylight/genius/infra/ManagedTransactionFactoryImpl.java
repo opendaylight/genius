@@ -11,11 +11,13 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.Callable;
 import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.AsyncWriteTransaction;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.slf4j.Logger;
@@ -45,21 +47,12 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
 
     @Override
     @CheckReturnValue
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception, R>
         FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         ReadWriteTransaction realTx = transactionFactory.newReadWriteTransaction();
         TypedReadWriteTransaction<D> wrappedTx = new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
-        try {
-            return commit(realTx, txFunction.apply(wrappedTx));
-        } catch (Exception e) {
-            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
-            if (!realTx.cancel()) {
-                LOG.error("Transaction.cancel() returned false, which should never happen here");
-            }
-            return FluentFuture.from(immediateFailedFuture(e));
-        }
+        return tryCatchCancel(() -> commit(realTx, txFunction.apply(wrappedTx)), realTx);
     }
 
     @Override
@@ -74,37 +67,36 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
 
     @Override
     @CheckReturnValue
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception>
         FluentFuture<Void> callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
         ReadWriteTransaction realTx = transactionFactory.newReadWriteTransaction();
         TypedReadWriteTransaction<D> wrappedTx = new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
-        try {
+        return tryCatchCancel(() -> {
             txConsumer.accept(wrappedTx);
             return commit(realTx, null);
-            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
-        } catch (Exception e) {
-            if (!realTx.cancel()) {
-                LOG.error("Transaction.cancel() returned false, which should never happen here");
-            }
-            return FluentFuture.from(immediateFailedFuture(e));
-        }
+        }, realTx);
     }
 
     @Override
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception> FluentFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
         WriteTransaction realTx = transactionFactory.newWriteOnlyTransaction();
         TypedWriteTransaction<D> wrappedTx =
             new TypedWriteTransactionImpl<>(datastoreType, realTx);
-        try {
+        return tryCatchCancel(() -> {
             txConsumer.accept(wrappedTx);
             return commit(realTx, null);
+        }, realTx);
+    }
+
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    protected <R> FluentFuture<R> tryCatchCancel(Callable<FluentFuture<R>> callable, AsyncWriteTransaction cancelable) {
+        try {
+            return callable.call();
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
-            if (!realTx.cancel()) {
+            if (!cancelable.cancel()) {
                 LOG.error("Transaction.cancel() return false - this should never happen (here)");
             }
             return FluentFuture.from(immediateFailedFuture(e));
