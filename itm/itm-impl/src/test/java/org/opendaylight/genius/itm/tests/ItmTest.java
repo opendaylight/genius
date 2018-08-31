@@ -7,12 +7,15 @@
  */
 package org.opendaylight.genius.itm.tests;
 
+import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
+import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.itm.impl.ItmTestUtils;
 import org.opendaylight.genius.utils.cache.CacheTestUtil;
 import org.opendaylight.infrautils.caches.testutils.CacheModule;
@@ -27,8 +30,10 @@ public class ItmTest {
 
     public @Rule LogRule logRule = new LogRule();
     public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class,
-            CacheModule.class);
+    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, TestableDataTreeChangeListenerModule.class,
+            JobCoordinatorTestModule.class, CacheModule.class);
+
+    private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
 
     @Before
     public void before() {
@@ -39,6 +44,8 @@ public class ItmTest {
 
     @After
     public void after() {
+        // wait for default-TZ creation task (which runs on start-up) to get completed
+        coordinatorEventsWaiter.awaitEventsConsumption();
         // so that any other *Test which will run after us has a clean slate again
         clearCaches();
     }
