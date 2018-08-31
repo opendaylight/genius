@@ -124,6 +124,24 @@
       "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4baf8f56_5c2f088c",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-08-31T12:31:34Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "172a5fcf_201f1323",
+      "revId": "aad90a6a4ff125b7a210f8635c811113d991fbfd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
