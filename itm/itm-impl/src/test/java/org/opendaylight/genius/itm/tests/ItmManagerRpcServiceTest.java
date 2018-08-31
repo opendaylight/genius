@@ -278,6 +278,7 @@ public class ItmManagerRpcServiceTest {
         ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
             dpnEndpoints, dataBroker);
 
+        Thread.sleep(1000);
         // commit TZ into config DS
         ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, transportZonesIdentifier,
             transportZones, dataBroker);
