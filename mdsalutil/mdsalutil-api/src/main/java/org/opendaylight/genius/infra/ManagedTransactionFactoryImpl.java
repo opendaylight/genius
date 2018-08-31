@@ -52,8 +52,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
         ReadWriteTransaction realTx = transactionFactory.newReadWriteTransaction();
         TypedReadWriteTransaction<D> wrappedTx = new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
         try {
-            R result = txFunction.apply(wrappedTx);
-            return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
+            return commit(realTx, txFunction.apply(wrappedTx));
         } catch (Exception e) {
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
             if (!realTx.cancel()) {
@@ -83,7 +82,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
         TypedReadWriteTransaction<D> wrappedTx = new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
         try {
             txConsumer.accept(wrappedTx);
-            return realTx.commit().transform(commitInfo -> null, MoreExecutors.directExecutor());
+            return commit(realTx, null);
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -102,7 +101,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
             new TypedWriteTransactionImpl<>(datastoreType, realTx);
         try {
             txConsumer.accept(wrappedTx);
-            return realTx.commit().transform(commitInfo -> null, MoreExecutors.directExecutor());
+            return commit(realTx, null);
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -110,5 +109,9 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
             }
             return FluentFuture.from(immediateFailedFuture(e));
         }
+    }
+
+    private <R> FluentFuture<R> commit(WriteTransaction realTx, R result) {
+        return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
     }
 }
