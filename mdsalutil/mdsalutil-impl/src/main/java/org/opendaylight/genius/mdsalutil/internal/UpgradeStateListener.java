@@ -11,42 +11,40 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.mdsalutil.UpgradeState;
-import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
-import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.ConfigBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Data Tree Change Listener which sets the initial value of the UpgradeConfig
+ * model (in serviceutils) to the value from the (genius!) configuration file (see
+ * blueprint), and keeps the (serviceutils) UpgradeConfig model up-to-date in
+ * case of changes to the (genius) Config model in the datastore via RESTCONF.
+ *
+ * @see UpgradeStateImpl
+ */
 @Singleton
-@Named("geniusUpgradeStateListener") // to distinguish the <bean id=".."> from serviceutils' UpgradeStateListener
-@OsgiServiceProvider(classes = UpgradeState.class)
-public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Config> implements UpgradeState {
+public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Config> {
+    // GENIUS-207: intentionally not using a clustered DTCL here, due to OptimisticLockFailedException
 
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateListener.class);
 
-    private static final InstanceIdentifier<Config> CONFIG_IID = InstanceIdentifier.create(Config.class);
-    private static final Config NO_UPGRADE_CONFIG_DEFAULT = new ConfigBuilder().setUpgradeInProgress(false).build();
+    public static final InstanceIdentifier<Config> CONFIG_IID = InstanceIdentifier.create(Config.class);
 
-    private final InstanceIdDataObjectCache<Config> configCache;
     private final UpgradeUtils upgradeUtils;
 
     @Inject
     public UpgradeStateListener(@OsgiService final DataBroker dataBroker, final Config config,
-                                final UpgradeUtils upgradeStateUtils, @OsgiService CacheProvider caches) {
+                                final UpgradeUtils upgradeStateUtils) {
         super(dataBroker, new DataTreeIdentifier<>(CONFIGURATION, CONFIG_IID));
         this.upgradeUtils = upgradeStateUtils;
 
@@ -57,21 +55,6 @@ public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Con
             SingleTransactionDataBroker.syncWrite(dataBroker, CONFIGURATION, CONFIG_IID, config);
         } catch (TransactionCommitFailedException e) {
             LOG.error("Failed to write mdsalutil config", e);
-        }
-
-        configCache = new InstanceIdDataObjectCache<>(Config.class, dataBroker, CONFIGURATION, CONFIG_IID, caches);
-    }
-
-    @Override
-    public boolean isUpgradeInProgress() {
-        try {
-            return configCache.get(CONFIG_IID).toJavaUtil()
-                    .orElse(NO_UPGRADE_CONFIG_DEFAULT)
-                    .isUpgradeInProgress();
-        } catch (ReadFailedException e) {
-            // TODO remove catch and propagate to caller; but needs to be caught in netvirt users
-            LOG.error("isUpgradeInProgress() read failed, return false, may be wrong!", e);
-            return false;
         }
     }
 
