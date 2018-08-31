@@ -25,7 +25,9 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
+import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
@@ -104,8 +106,8 @@ public class ItmManagerRpcServiceTest {
 
     public @Rule LogRule logRule = new LogRule();
     // TODO public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class,
-            CacheModule.class);
+    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class,  TestableDataTreeChangeListenerModule.class,
+            JobCoordinatorTestModule.class, CacheModule.class);
 
     String trunkInterfaceName;
 
@@ -168,6 +170,7 @@ public class ItmManagerRpcServiceTest {
             .child(DeviceVteps.class, deviceVtep2Key).build();
 
     @Inject DataBroker dataBroker;
+    private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     @Inject ItmManagerRpcService itmManagerRpcService ;
 
     @Before
@@ -284,6 +287,8 @@ public class ItmManagerRpcServiceTest {
         ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
             dpnEndpoints, dataBroker);
 
+        // wait for completion of ITM config DS default-TZ creation task of DJC
+        coordinatorEventsWaiter.awaitEventsConsumption();
         // commit TZ into config DS
         ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, transportZonesIdentifier,
             transportZones, dataBroker);
