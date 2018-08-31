@@ -8,7 +8,6 @@
 package org.opendaylight.genius.infra;
 
 import com.google.common.util.concurrent.FluentFuture;
-import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 
@@ -18,9 +17,8 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
  *
  * @author Michael Vorburger.ch
  */
-@SuppressWarnings("deprecation")
 // intentionally package local, for now
-class NonSubmitCancelableWriteTransaction extends ForwardingWriteTransaction {
+class NonSubmitCancelableWriteTransaction extends WriteTrackingWriteTransaction {
 
     // TODO if we could finally reach consensus on https://git.opendaylight.org/gerrit/#/c/46684/, then this could probably be removed?
     // see also https://git.opendaylight.org/gerrit/#/c/46335/ for the earlier take on it - controller, mdsal, controller, mdsal... ;-)
