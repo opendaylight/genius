@@ -23,7 +23,7 @@ import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 
 /**
  * Managed transaction factories provide managed transactions, <em>i.e.</em> transactions which are automatically
- * submitted or cancelled.
+ * submitted or cancelled (write) or closed (read).
  */
 public interface ManagedTransactionFactory {
     /**
