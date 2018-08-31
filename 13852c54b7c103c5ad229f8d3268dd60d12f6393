@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "17094fea_fdc54633",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-31T13:28:57Z",
+      "side": 1,
+      "message": "This DTCL migrates Config -\u003e UpgradeConfig so I assume that Config is deprecated in lieu of UpgradeConfig? If so are there users of UpgradeConfig at this point? If so then those users and users of this class could see an inconsistent view of the isUpgradeInProgress flag since they\u0027re obtaining it from different sources. How about basing this cache on UpgradeConfig?",
+      "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "009bcd21_0df129a9",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-31T13:28:57Z",
+      "side": 1,
+      "message": "I don\u0027t think we should throw an exception if not present - previously it would just return false.",
+      "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0d6ded70_c5e03278",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-08-31T13:28:57Z",
+      "side": 1,
+      "message": "I\u0027m wary of throwing an undocumented, unchecked ex - would callers be prepared for this? Also technically I don\u0027t think ISE is appropriate here - a failed read is really not a state violation.",
+      "revId": "13852c54b7c103c5ad229f8d3268dd60d12f6393",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
