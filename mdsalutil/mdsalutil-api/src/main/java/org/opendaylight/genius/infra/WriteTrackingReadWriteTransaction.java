@@ -7,57 +7,26 @@
  */
 package org.opendaylight.genius.infra;
 
-import org.opendaylight.controller.md.sal.binding.api.ForwardingReadWriteTransaction;
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.CheckedFuture;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Read-write transaction which keeps track of writes.
  */
-class WriteTrackingReadWriteTransaction extends ForwardingReadWriteTransaction {
-    // This is volatile to ensure we get the latest value; transactions aren't supposed to be used in multiple threads,
-    // but the cost here is tiny (one read penalty at the end of a transaction) so we play it safe
-    private volatile boolean written;
+class WriteTrackingReadWriteTransaction extends WriteTrackingWriteTransaction implements ReadWriteTransaction {
 
     WriteTrackingReadWriteTransaction(ReadWriteTransaction delegate) {
         super(delegate);
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
-        super.put(store, path, data);
-        written = true;
-    }
-
-    @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-        boolean createMissingParents) {
-        super.put(store, path, data, createMissingParents);
-        written = true;
-    }
-
-    @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
-        super.merge(store, path, data);
-        written = true;
-    }
-
-    @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-        boolean createMissingParents) {
-        super.merge(store, path, data, createMissingParents);
-        written = true;
-    }
-
-    @Override
-    public void delete(LogicalDatastoreType store, InstanceIdentifier<?> path) {
-        super.delete(store, path);
-        written = true;
-    }
-
-    boolean isWritten() {
-        return written;
+    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
+            InstanceIdentifier<T> path) {
+        return ((ReadWriteTransaction) delegate()).read(store, path);
     }
 }
