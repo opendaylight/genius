@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "47ff9495_a53f2010",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-08-31T12:43:01Z",
+      "side": 0,
+      "message": "No, see the extended javadoc in this class — operations which wrap read-write transactions are overridden to handle cancelling transactions instead. That behaviour is not generalisable so we only keep it here.",
+      "parentUuid": "aa10714d_66950efa",
+      "revId": "046a097fa6db2622be0c3d8cb67cf07be9707752",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "83f6853f_606dcad6",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
         "patchSetId": 1
