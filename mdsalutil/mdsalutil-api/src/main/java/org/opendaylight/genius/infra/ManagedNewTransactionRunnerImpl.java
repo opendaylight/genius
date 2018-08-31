@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner}. This is based on {@link ManagedTransactionFactoryImpl} but
- * re-implements operations based on read-write transactions to cancel transactions which don't end up making any
+ * re-implements operations based on (read-)write transactions to cancel transactions which don't end up making any
  * changes to the datastore.
  */
 @Beta
@@ -51,10 +51,10 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     public <E extends Exception> ListenableFuture<Void>
             callWithNewWriteOnlyTransactionAndSubmit(InterruptibleCheckedConsumer<WriteTransaction, E> txConsumer) {
         WriteTransaction realTx = broker.newWriteOnlyTransaction();
-        WriteTransaction wrappedTx = new NonSubmitCancelableWriteTransaction(realTx);
+        WriteTrackingWriteTransaction wrappedTx = new NonSubmitCancelableWriteTransaction(realTx);
         return tryCatchCancel(() -> {
             txConsumer.accept(wrappedTx);
-            return realTx.commit().transform(v -> null, MoreExecutors.directExecutor());
+            return commit(realTx, null, wrappedTx);
         }, realTx);
     }
 
@@ -109,7 +109,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         }
     }
 
-    private <R> FluentFuture<R> commit(ReadWriteTransaction realTx, R result, WriteTrackingTransaction wrappedTx) {
+    private <R> FluentFuture<R> commit(WriteTransaction realTx, R result, WriteTrackingTransaction wrappedTx) {
         if (wrappedTx.isWritten()) {
             // The transaction contains changes, commit it
             return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
