@@ -14,7 +14,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 /**
  * Read-write typed transaction which keeps track of writes.
  */
-class WriteTrackingTypedReadWriteTransactionImpl<D extends Datastore> extends TypedReadWriteTransactionImpl<D> {
+class WriteTrackingTypedReadWriteTransactionImpl<D extends Datastore> extends TypedReadWriteTransactionImpl<D>
+        implements WriteTrackingTransaction {
+
     // This is volatile to ensure we get the latest value; transactions aren't supposed to be used in multiple threads,
     // but the cost here is tiny (one read penalty at the end of a transaction) so we play it safe
     private volatile boolean written;
@@ -53,7 +55,8 @@ class WriteTrackingTypedReadWriteTransactionImpl<D extends Datastore> extends Ty
         written = true;
     }
 
-    boolean isWritten() {
+    @Override
+    public boolean isWritten() {
         return written;
     }
 }
