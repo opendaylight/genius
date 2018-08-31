@@ -59,13 +59,13 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
      * @param dataObjectClass the DataObject class to cache
      * @param dataBroker the DataBroker
      * @param datastoreType the LogicalDatastoreType
-     * @param listetenerRegistrationPath the yang path for which register the listener
+     * @param listenerRegistrationPath the yang path for which register the listener
      * @param cacheProvider the CacheProvider used to instantiate the Cache
      * @param keyFunction the function used to convert or extract the key instance on change notification
      * @param instanceIdFunction the function used to convert a key instance to an InstanceIdentifier on read
      */
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
-            InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider,
+            InstanceIdentifier<V> listenerRegistrationPath, CacheProvider cacheProvider,
             BiFunction<InstanceIdentifier<V>, V, K> keyFunction,
             Function<K, InstanceIdentifier<V>> instanceIdFunction) {
         Objects.requireNonNull(keyFunction);
@@ -103,7 +103,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
         };
 
         listenerRegistration = dataBroker.registerDataTreeChangeListener(new DataTreeIdentifier<>(
-                datastoreType, listetenerRegistrationPath), dataObjectListener);
+                datastoreType, listenerRegistrationPath), dataObjectListener);
     }
 
     @Override
