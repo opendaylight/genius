@@ -74,14 +74,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         WriteTrackingReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
         try {
             txConsumer.accept(wrappedTx);
-            if (wrappedTx.isWritten()) {
-                // The transaction contains changes, commit it
-                return realTx.submit();
-            } else {
-                // The transaction only handled reads, cancel it
-                realTx.cancel();
-                return Futures.immediateCheckedFuture(null);
-            }
+            return commit(realTx, null, wrappedTx);
         // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -101,14 +94,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
             new WriteTrackingTypedReadWriteTransactionImpl<>(datastoreType, realTx);
         try {
             txConsumer.accept(wrappedTx);
-            if (wrappedTx.isWritten()) {
-                // The transaction contains changes, commit it
-                return realTx.commit().transform(v -> null, MoreExecutors.directExecutor());
-            } else {
-                // The transaction only handled reads, cancel it
-                realTx.cancel();
-                return FluentFuture.from(Futures.immediateFuture(null));
-            }
+            return commit(realTx, null, wrappedTx);
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -127,14 +113,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
                 new WriteTrackingTypedReadWriteTransactionImpl<>(datastoreType, realTx);
         try {
             R result = txFunction.apply(wrappedTx);
-            if (wrappedTx.isWritten()) {
-                // The transaction contains changes, commit it
-                return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
-            } else {
-                // The transaction only handled reads, cancel it
-                realTx.cancel();
-                return FluentFuture.from(Futures.immediateFuture(result));
-            }
+            return commit(realTx, result, wrappedTx);
             // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
         } catch (Exception e) {
             if (!realTx.cancel()) {
@@ -159,6 +138,17 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
             }
         })) {
             return chainConsumer.apply(new ManagedTransactionChainImpl(realTxChain));
+        }
+    }
+
+    private <R> FluentFuture<R> commit(ReadWriteTransaction realTx, R result, WriteTrackingTransaction wrappedTx) {
+        if (wrappedTx.isWritten()) {
+            // The transaction contains changes, commit it
+            return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
+        } else {
+            // The transaction only handled reads, cancel it
+            realTx.cancel();
+            return FluentFuture.from(Futures.immediateFuture(result));
         }
     }
 }
