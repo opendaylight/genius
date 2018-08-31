@@ -38,7 +38,7 @@ public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Con
 
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateListener.class);
 
-    public static final InstanceIdentifier<Config> CONFIG_IID = InstanceIdentifier.create(Config.class);
+    private static final InstanceIdentifier<Config> CONFIG_IID = InstanceIdentifier.create(Config.class);
 
     private final UpgradeUtils upgradeUtils;
 
