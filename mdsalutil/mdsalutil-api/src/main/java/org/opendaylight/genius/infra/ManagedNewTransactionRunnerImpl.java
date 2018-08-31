@@ -54,6 +54,8 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
             callWithNewWriteOnlyTransactionAndSubmit(InterruptibleCheckedConsumer<WriteTransaction, E> txConsumer) {
         WriteTransaction realTx = broker.newWriteOnlyTransaction();
         WriteTransaction wrappedTx = new NonSubmitCancelableWriteTransaction(realTx);
+        // TODO use tryCatchCancel() here, like below, when switching from submit() to commit()
+        // This will probably (have to) happen as part of controller to mdsal API migration.
         try {
             txConsumer.accept(wrappedTx);
             return realTx.submit();
@@ -67,60 +69,36 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public <E extends Exception> ListenableFuture<Void>
             callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txConsumer) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         WriteTrackingReadWriteTransaction wrappedTx = new NonSubmitCancelableReadWriteTransaction(realTx);
-        try {
+        return tryCatchCancel(() -> {
             txConsumer.accept(wrappedTx);
             return commit(realTx, null, wrappedTx);
-        // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
-        } catch (Exception e) {
-            if (!realTx.cancel()) {
-                LOG.error("Transaction.cancel() returned false, which should never happen here");
-            }
-            return immediateFailedFuture(e);
-        }
+        }, realTx);
     }
 
     @Override
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         WriteTrackingTypedReadWriteTransactionImpl<D> wrappedTx =
             new WriteTrackingTypedReadWriteTransactionImpl<>(datastoreType, realTx);
-        try {
+        return tryCatchCancel(() -> {
             txConsumer.accept(wrappedTx);
             return commit(realTx, null, wrappedTx);
-            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
-        } catch (Exception e) {
-            if (!realTx.cancel()) {
-                LOG.error("Transaction.cancel() returned false, which should never happen here");
-            }
-            return FluentFuture.from(immediateFailedFuture(e));
-        }
+        }, realTx);
     }
 
     @Override
-    @SuppressWarnings("checkstyle:IllegalCatch")
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         ReadWriteTransaction realTx = broker.newReadWriteTransaction();
         WriteTrackingTypedReadWriteTransactionImpl<D> wrappedTx =
                 new WriteTrackingTypedReadWriteTransactionImpl<>(datastoreType, realTx);
-        try {
-            R result = txFunction.apply(wrappedTx);
-            return commit(realTx, result, wrappedTx);
-            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
-        } catch (Exception e) {
-            if (!realTx.cancel()) {
-                LOG.error("Transaction.cancel() returned false, which should never happen here");
-            }
-            return FluentFuture.from(immediateFailedFuture(e));
-        }
+        return tryCatchCancel(() -> commit(realTx, txFunction.apply(wrappedTx), wrappedTx), realTx);
     }
 
     @Override
