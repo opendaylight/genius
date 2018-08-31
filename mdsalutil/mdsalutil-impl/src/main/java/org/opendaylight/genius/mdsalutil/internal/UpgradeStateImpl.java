@@ -17,7 +17,8 @@ import org.opendaylight.genius.mdsalutil.UpgradeState;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.ConfigBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.upgrade.rev180702.UpgradeConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.upgrade.rev180702.UpgradeConfigBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.ops4j.pax.cdi.api.OsgiService;
 import org.ops4j.pax.cdi.api.OsgiServiceProvider;
@@ -25,10 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link UpgradeState} (genius) API implementation which makes the (genius)
- * Config model in the datastore available as a service, with caching.
+ * {@link UpgradeState} (genius) API implementation which makes the
+ * UpgradeConfig model (from serviceutils) in the datastore available as a
+ * service, with caching.
  *
- * @see UpgradeStateListener
+ * <p>Note that the {@link UpgradeStateListener} (in genius) keeps the
+ * UpgradeConfig model (from serviceutils) up-to-date with the {@link Config}
+ * model (from genius).
  */
 @Singleton
 @Named("geniusUpgradeStateListener") // to distinguish the <bean id=".."> from serviceutils' UpgradeStateListener
@@ -37,22 +41,22 @@ public class UpgradeStateImpl implements UpgradeState {
 
     private static final Logger LOG = LoggerFactory.getLogger(UpgradeStateImpl.class);
 
-    private static final InstanceIdentifier<Config> CONFIG_IID = UpgradeStateListener.CONFIG_IID;
-    private static final Config NO_UPGRADE_CONFIG_DEFAULT = new ConfigBuilder().setUpgradeInProgress(false).build();
+    private static final InstanceIdentifier<UpgradeConfig> CONFIG_IID = InstanceIdentifier.create(UpgradeConfig.class);
+    private static final UpgradeConfig CONFIG_DEFAULT = new UpgradeConfigBuilder().setUpgradeInProgress(false).build();
 
-    private final InstanceIdDataObjectCache<Config> configCache;
+    private final InstanceIdDataObjectCache<UpgradeConfig> configCache;
 
     public UpgradeStateImpl(@OsgiService final DataBroker dataBroker, @OsgiService CacheProvider caches) {
-        configCache = new InstanceIdDataObjectCache<>(Config.class, dataBroker, CONFIGURATION, CONFIG_IID, caches);
+        configCache = new InstanceIdDataObjectCache<>(UpgradeConfig.class, dataBroker, CONFIGURATION, CONFIG_IID,
+                caches);
     }
 
     @Override
     public boolean isUpgradeInProgress() { // TODO throws ReadFailedException
         try {
-            return configCache.get(null).toJavaUtil().orElse(NO_UPGRADE_CONFIG_DEFAULT).isUpgradeInProgress();
+            return configCache.get(CONFIG_IID).toJavaUtil().orElse(CONFIG_DEFAULT).isUpgradeInProgress();
         } catch (ReadFailedException e) {
-            // TODO remove catch and propagate to caller; but needs to be caught in netvirt
-            // users
+            // TODO remove catch and propagate to caller; but needs to be caught in netvirt users
             LOG.error("isUpgradeInProgress() read failed, return false, may be wrong!", e);
             return false;
         }
