@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f295cad6_ac90ccab",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/UpgradeState.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-01T01:54:21Z",
+      "side": 1,
+      "message": "Can you remove the TODO comment?",
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "394166a0_389cd025",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-01T01:54:21Z",
+      "side": 1,
+      "message": "Please remove TODO here",
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca89b4c4_7d1d2e39",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-01T01:54:21Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this be CONFIG_IID and not null? DataObjectCache requires @Nonnull - surprised FB didn\u0027t flag this.",
+      "range": {
+        "startLine": 68,
+        "startChar": 35,
+        "endLine": 68,
+        "endChar": 39
+      },
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
