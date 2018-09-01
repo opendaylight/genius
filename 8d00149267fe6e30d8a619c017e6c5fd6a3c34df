@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "57a125cc_18e3c0ba",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-09-01T04:16:31Z",
+      "side": 1,
+      "message": "can we do all additional refactoring in serviceutils? instead of doing it in genius? This utility is all migrated.. I think better to add @Deprecated, and then do all enhancements in serviceutils",
+      "revId": "8d00149267fe6e30d8a619c017e6c5fd6a3c34df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
