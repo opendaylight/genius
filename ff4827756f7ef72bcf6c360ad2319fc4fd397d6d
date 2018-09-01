@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "217040cb_9f5e0fd2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-09-01T04:39:24Z",
+      "side": 1,
+      "message": "node connector removed event for",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc28df49_d6a4f325",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-09-01T04:39:24Z",
+      "side": 1,
+      "message": "update event",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
