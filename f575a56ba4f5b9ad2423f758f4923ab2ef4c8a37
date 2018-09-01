@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "59a04d54_424557ca",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-09-01T04:12:40Z",
+      "side": 1,
+      "message": "why not remove all these?",
+      "revId": "f575a56ba4f5b9ad2423f758f4923ab2ef4c8a37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
