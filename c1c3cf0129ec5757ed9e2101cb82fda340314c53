@@ -56,6 +56,47 @@
       "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c75fe87b_deb28755",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-09-01T03:04:58Z",
+      "side": 1,
+      "message": "yeah, even I have the same doubt. Also Michael, there is an upgrade related CSIT in netvirt, could you please check with Sam, on how to run this agaist that, (only if it is easy to do).",
+      "parentUuid": "ca89b4c4_7d1d2e39",
+      "range": {
+        "startLine": 68,
+        "startChar": 35,
+        "endLine": 68,
+        "endChar": 39
+      },
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "64b91a3e_d30e418e",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-09-01T03:04:58Z",
+      "side": 1,
+      "message": "Assuming the cache is clustered, and it reads from DS in case of cache miss, the new proposal looks okay to me.",
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
