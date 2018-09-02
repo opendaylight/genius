@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "37295474_27295808",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2018-09-02T12:29:35Z",
+      "side": 1,
+      "message": "It\u0027s not an IllegalArgument. Also, the consumers of this *do* handle null because there is, to date, one consumer of this.",
+      "parentUuid": "44fc939e_d59eed14",
+      "revId": "d58ecaf8b129d37d8e711eec78cfc3198681f10a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "856fc6db_711d4663",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 3
