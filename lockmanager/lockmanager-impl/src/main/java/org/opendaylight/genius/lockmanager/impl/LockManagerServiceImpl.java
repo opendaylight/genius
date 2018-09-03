@@ -16,6 +16,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,11 +24,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.DataStoreUnavailableException;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.utils.JvmGlobalLocks;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -58,13 +61,16 @@ public class LockManagerServiceImpl implements LockManagerService {
             RpcResultBuilder.success(new TryLockOutputBuilder().build()).buildFuture();
 
     private static final int DEFAULT_NUMBER_LOCKING_ATTEMPS = 30;
-    private static final int DEFAULT_RETRY_COUNT = 3;
+    private static final int DEFAULT_RETRY_COUNT = 10;
     private static final int DEFAULT_WAIT_TIME_IN_MILLIS = 1000;
 
     private final ConcurrentHashMap<String, CompletableFuture<Void>> lockSynchronizerMap =
             new ConcurrentHashMap<>();
 
     private static final Logger LOG = LoggerFactory.getLogger(LockManagerServiceImpl.class);
+    //TODO: replace with shared executor service once that is available
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(25,
+            "LockManagerService", LOG);
 
     private final RetryingManagedNewTransactionRunner txRunner;
     private final LockManagerUtils lockManagerUtils;
@@ -116,16 +122,32 @@ public class LockManagerServiceImpl implements LockManagerService {
     public ListenableFuture<RpcResult<UnlockOutput>> unlock(UnlockInput input) {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
+        InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
         return FutureRpcResults.fromListenableFuture(LOG, input,
-            () -> Futures.transform(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
-                Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
-                if (!result.isPresent()) {
-                    LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
-                } else {
-                    tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
-                }
-            }), unused -> UNLOCK_OUTPUT, MoreExecutors.directExecutor())).build();
+            () -> Futures.transform(unlock(lockName, lockInstanceIdentifier, DEFAULT_RETRY_COUNT),
+                unused -> UNLOCK_OUTPUT, MoreExecutors.directExecutor())).build();
+    }
+
+    private ListenableFuture<Void> unlock(final String lockName,
+        final InstanceIdentifier<Lock> lockInstanceIdentifier, final int retry) {
+        ListenableFuture<Void> future = txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+            if (!result.isPresent()) {
+                LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
+            } else {
+                tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+            }
+        });
+        return Futures.catchingAsync(future, Exception.class, exception -> {
+            LOG.error("in unlock unable to unlock {} due to {}, try {} of {}", lockName,
+                exception.getMessage(), DEFAULT_RETRY_COUNT - retry + 1, DEFAULT_RETRY_COUNT);
+            if (retry - 1 > 0) {
+                Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
+                return unlock(lockName, lockInstanceIdentifier, retry - 1);
+            } else {
+                throw exception;
+            }
+        }, EXECUTOR_SERVICE);
     }
 
     void removeLock(final Lock removedLock) {
@@ -164,7 +186,8 @@ public class LockManagerServiceImpl implements LockManagerService {
                 }
             } catch (ExecutionException e) {
                 logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
-                if (!(e.getCause() instanceof OptimisticLockFailedException)) {
+                if (!(e.getCause() instanceof OptimisticLockFailedException
+                    || e.getCause() instanceof DataStoreUnavailableException)) {
                     return Futures.immediateFailedFuture(e.getCause());
                 }
             }
