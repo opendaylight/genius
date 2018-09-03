@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * model (from genius).
  */
 @Singleton
+@Deprecated // see UpgradeState API
 @Named("geniusUpgradeStateListener") // to distinguish the <bean id=".."> from serviceutils' UpgradeStateListener
 @OsgiServiceProvider(classes = UpgradeState.class)
 public class UpgradeStateImpl implements UpgradeState {
@@ -52,7 +53,7 @@ public class UpgradeStateImpl implements UpgradeState {
     }
 
     @Override
-    public boolean isUpgradeInProgress() { // TODO throws ReadFailedException
+    public boolean isUpgradeInProgress() {
         try {
             return configCache.get(CONFIG_IID).toJavaUtil().orElse(CONFIG_DEFAULT).isUpgradeInProgress();
         } catch (ReadFailedException e) {
