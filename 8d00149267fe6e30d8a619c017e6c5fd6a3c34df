@@ -16,6 +16,24 @@
       "revId": "8d00149267fe6e30d8a619c017e6c5fd6a3c34df",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a484f117_9ba8dfcc",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-03T14:12:15Z",
+      "side": 1,
+      "message": "Nope, we cannot, because the https://github.com/opendaylight/serviceutils/blob/master/upgrade/src/main/java/org/opendaylight/serviceutils/upgrade/impl/UpgradeStateListener.java does only half of the 2 things which this in genius does (evidenced by this split).   I\n\nI don\u0027t think there is anything to do in serviceutils to replicate change (more comments on other changes; let\u0027s take this step by step).\n\nBut I\u0027m all for adding @Deprecated to the UpgradeState API in genius (but not the listener), and propose to do that in https://git.opendaylight.org/gerrit/#/c/75685/.",
+      "parentUuid": "57a125cc_18e3c0ba",
+      "revId": "8d00149267fe6e30d8a619c017e6c5fd6a3c34df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
