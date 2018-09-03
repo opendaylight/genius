@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2b609211_e6591ecf",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-03T14:45:41Z",
+      "side": 1,
+      "message": "they haven\u0027t yet, actually; but I\u0027m hoping to in https://git.opendaylight.org/gerrit/#/c/75689/ ..  Before un-drafting this, need to recheck https://github.com/search?p\u003d2\u0026q\u003dorg%3Aopendaylight+org.opendaylight.genius.mdsalutil.UpgradeState\u0026type\u003dCode",
+      "revId": "e3b47f1124a1253333b7b469e38325d0ddf755c7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
