@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  * model (from genius).
  */
 @Singleton
+@Deprecated // see UpgradeState API
 @Named("geniusUpgradeStateListener") // to distinguish the <bean id=".."> from serviceutils' UpgradeStateListener
 @OsgiServiceProvider(classes = UpgradeState.class)
 public class UpgradeStateImpl implements UpgradeState {
