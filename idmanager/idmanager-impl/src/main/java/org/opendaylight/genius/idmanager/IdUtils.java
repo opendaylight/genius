@@ -43,10 +43,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntriesBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
+<<<<<<< HEAD
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockOutput;
+=======
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInputBuilder;
+>>>>>>> 1e324506... TR: HW99473 Retry for Unlock() & IdManager calls tryLock()
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockOutput;
@@ -241,8 +244,13 @@ public class IdUtils {
     }
 
     public void lock(LockManagerService lockManager, String poolName) throws IdManagerException {
+<<<<<<< HEAD
         LockInput input = new LockInputBuilder().setLockName(poolName).build();
         Future<RpcResult<LockOutput>> result = lockManager.lock(input);
+=======
+        TryLockInput input = new TryLockInputBuilder().setLockName(poolName).build();
+        Future<RpcResult<Void>> result = lockManager.tryLock(input);
+>>>>>>> 1e324506... TR: HW99473 Retry for Unlock() & IdManager calls tryLock()
         try {
             if (result != null && result.get().isSuccessful()) {
                 if (LOG.isDebugEnabled()) {

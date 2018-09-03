@@ -11,11 +11,21 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+<<<<<<< HEAD
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+=======
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+>>>>>>> 1e324506... TR: HW99473 Retry for Unlock() & IdManager calls tryLock()
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,12 +33,22 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+<<<<<<< HEAD
+=======
+import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.controller.md.sal.common.api.data.DataStoreUnavailableException;
+>>>>>>> 1e324506... TR: HW99473 Retry for Unlock() & IdManager calls tryLock()
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+<<<<<<< HEAD
 import org.opendaylight.genius.utils.JvmGlobalLocks;
 import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults;
+=======
+import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
+import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
+>>>>>>> 1e324506... TR: HW99473 Retry for Unlock() & IdManager calls tryLock()
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockOutput;
@@ -58,13 +78,16 @@ public class LockManagerServiceImpl implements LockManagerService {
             RpcResultBuilder.success(new TryLockOutputBuilder().build()).buildFuture();
 
     private static final int DEFAULT_NUMBER_LOCKING_ATTEMPS = 30;
-    private static final int DEFAULT_RETRY_COUNT = 3;
+    private static final int DEFAULT_RETRY_COUNT = 10;
     private static final int DEFAULT_WAIT_TIME_IN_MILLIS = 1000;
 
     private final ConcurrentHashMap<String, CompletableFuture<Void>> lockSynchronizerMap =
             new ConcurrentHashMap<>();
 
     private static final Logger LOG = LoggerFactory.getLogger(LockManagerServiceImpl.class);
+    //TODO: replace with shared executor service once that is available
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(25,
+        ThreadFactoryProvider.builder().namePrefix("LockManagerService").logger(LOG).build().get());
 
     private final RetryingManagedNewTransactionRunner txRunner;
     private final LockManagerUtils lockManagerUtils;
@@ -116,6 +139,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     public ListenableFuture<RpcResult<UnlockOutput>> unlock(UnlockInput input) {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
+<<<<<<< HEAD
         return FutureRpcResults.fromListenableFuture(LOG, input,
             () -> Futures.transform(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                 InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
@@ -126,6 +150,33 @@ public class LockManagerServiceImpl implements LockManagerService {
                     tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
                 }
             }), unused -> UNLOCK_OUTPUT, MoreExecutors.directExecutor())).build();
+=======
+        InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
+        return FutureRpcResults.fromListenableFuture(LOG, input,
+            () -> unlock(lockName, lockInstanceIdentifier, DEFAULT_RETRY_COUNT)).build();
+    }
+
+    private ListenableFuture<Void> unlock(final String lockName,
+        final InstanceIdentifier<Lock> lockInstanceIdentifier, final int retry) {
+        ListenableFuture<Void> future = txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+            if (!result.isPresent()) {
+                LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
+            } else {
+                tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+            }
+        });
+        return Futures.catchingAsync(future, Exception.class, exception -> {
+            LOG.error("in unlock unable to unlock {} due to {}, try {} of {}", lockName,
+                exception.getMessage(), DEFAULT_RETRY_COUNT - retry + 1, DEFAULT_RETRY_COUNT);
+            if (retry - 1 > 0) {
+                Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
+                return unlock(lockName, lockInstanceIdentifier, retry - 1);
+            } else {
+                throw exception;
+            }
+        }, EXECUTOR_SERVICE);
+>>>>>>> 1e324506... TR: HW99473 Retry for Unlock() & IdManager calls tryLock()
     }
 
     void removeLock(final Lock removedLock) {
@@ -164,7 +215,8 @@ public class LockManagerServiceImpl implements LockManagerService {
                 }
             } catch (ExecutionException e) {
                 logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
-                if (!(e.getCause() instanceof OptimisticLockFailedException)) {
+                if (!(e.getCause() instanceof OptimisticLockFailedException
+                    || e.getCause() instanceof DataStoreUnavailableException)) {
                     return Futures.immediateFailedFuture(e.getCause());
                 }
             }
