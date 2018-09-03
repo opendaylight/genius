@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
  * model (in serviceutils) to the value from the (genius!) configuration file (see
  * blueprint), and keeps the (serviceutils) UpgradeConfig model up-to-date in
  * case of changes to the (genius) Config model in the datastore via RESTCONF.
- *
- * @see UpgradeStateImpl
  */
 @Singleton
 // GENIUS-190: This is NOT @Deprecated (unlike UpgradeStateImpl) and stays until external (not internal) users migrate
