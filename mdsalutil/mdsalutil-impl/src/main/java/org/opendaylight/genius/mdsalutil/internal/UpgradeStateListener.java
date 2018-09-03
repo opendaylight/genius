@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * @see UpgradeStateImpl
  */
 @Singleton
+// GENIUS-190: This is NOT @Deprecated (unlike UpgradeStateImpl) and stays until external (not internal) users migrate
 public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Config> {
     // GENIUS-207: intentionally not using a clustered DTCL here, due to OptimisticLockFailedException
 
