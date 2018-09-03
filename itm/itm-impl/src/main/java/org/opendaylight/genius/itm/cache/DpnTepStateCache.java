@@ -65,6 +65,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
+            LOG.error("added tunnel: {}", remoteDpns.getTunnelName());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                     .setTunnelName(remoteDpns.getTunnelName())
                     .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
