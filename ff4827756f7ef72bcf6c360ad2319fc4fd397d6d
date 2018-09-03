@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "ea584551_3225765b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 898,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-03T12:27:46Z",
+      "side": 1,
+      "message": "This is actually a Law of Demeter violation. Why not just pass the InternalTunnelIgnoreCache directly into callers?",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a48279d_544471da",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-03T12:27:46Z",
+      "side": 1,
+      "message": "This can be combined with previous line...",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "217040cb_9f5e0fd2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -19,6 +53,23 @@
     },
     {
       "key": {
+        "uuid": "3de5f41e_94b322d5",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-03T12:27:46Z",
+      "side": 1,
+      "message": "...same here...",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bc28df49_d6a4f325",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -30,6 +81,57 @@
       "writtenOn": "2018-09-01T04:39:24Z",
       "side": 1,
       "message": "update event",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f841392_b661adbe",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-03T12:27:46Z",
+      "side": 1,
+      "message": "...and here",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f72f11e_1997dacc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-03T12:27:46Z",
+      "side": 1,
+      "message": "combine with previous line...",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2f54cc19_d2003533",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2018-09-03T12:27:46Z",
+      "side": 1,
+      "message": "...same here",
       "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
