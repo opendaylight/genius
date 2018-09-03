@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f7efb226_f2423c59",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/UpgradeState.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-03T13:57:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f295cad6_ac90ccab",
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "394166a0_389cd025",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2018-09-01T01:54:21Z",
       "side": 1,
       "message": "Please remove TODO here",
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e2d6b2d_a5d0fe8f",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-03T13:57:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "394166a0_389cd025",
       "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -83,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "48318ad3_5aa5218a",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-03T13:57:14Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c75fe87b_deb28755",
+      "range": {
+        "startLine": 68,
+        "startChar": 35,
+        "endLine": 68,
+        "endChar": 39
+      },
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "64b91a3e_d30e418e",
         "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
         "patchSetId": 5
@@ -94,6 +154,24 @@
       "writtenOn": "2018-09-01T03:04:58Z",
       "side": 1,
       "message": "Assuming the cache is clustered, and it reads from DS in case of cache miss, the new proposal looks okay to me.",
+      "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a22c8c1c_9a06c573",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/UpgradeStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-03T13:57:14Z",
+      "side": 1,
+      "message": "Yes, InstanceIdDataObjectCache (really DataObjectCache) uses a clustered data tree change listener.",
+      "parentUuid": "64b91a3e_d30e418e",
       "revId": "c1c3cf0129ec5757ed9e2101cb82fda340314c53",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
