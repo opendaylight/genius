@@ -28,25 +28,26 @@ public class IdManagerCacheCli extends OsgiCommandSupport {
         this.idManagerMonitor = idManagerMonitor;
     }
 
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     @Override
     protected Object doExecute() {
         if (idManagerMonitor == null) {
-            session.getConsole().println("No IdManagerMonitor service available");
+            System.out.println("No IdManagerMonitor service available");
             return null;
         }
         Map<String, String> cache = idManagerMonitor.getLocalPoolsDetails();
-        session.getConsole().println("No of pools in cluster " + cache.keySet().size());
-        session.getConsole().println(DEMARCATION);
+        System.out.println("No of pools in cluster " + cache.keySet().size());
+        System.out.println(DEMARCATION);
         if (poolName == null) {
             cache.keySet().stream().forEach(idPoolName -> {
                 print(idPoolName, cache.get(idPoolName));
-                session.getConsole().println(DEMARCATION);
-                session.getConsole().println(DEMARCATION);
+                System.out.println(DEMARCATION);
+                System.out.println(DEMARCATION);
             });
         } else {
             Object idPool = cache.get(poolName);
             if (idPool == null) {
-                session.getConsole().println("Local Id pool not found for " + poolName);
+                System.out.println("Local Id pool not found for " + poolName);
             } else {
                 print(poolName, idPool);
             }
@@ -54,8 +55,9 @@ public class IdManagerCacheCli extends OsgiCommandSupport {
         return null;
     }
 
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     private void print(String idPoolName, Object idPool) {
-        session.getConsole().println("Pool name: " + idPoolName);
-        session.getConsole().println("IdPool: " + idPool);
+        System.out.println("Pool name: " + idPoolName);
+        System.out.println("IdPool: " + idPool);
     }
 }
