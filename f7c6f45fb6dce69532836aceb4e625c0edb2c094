@@ -16,6 +16,24 @@
       "revId": "f7c6f45fb6dce69532836aceb4e625c0edb2c094",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "332640cf_dbd2e8da",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-04T12:53:49Z",
+      "side": 1,
+      "message": "will do in a follow-up commmit - let\u0027s get a first batch of this stuff in now... ;-)",
+      "parentUuid": "35840c76_00e40020",
+      "revId": "f7c6f45fb6dce69532836aceb4e625c0edb2c094",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
