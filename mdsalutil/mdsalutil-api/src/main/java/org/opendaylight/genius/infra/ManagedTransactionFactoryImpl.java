@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.Callable;
 import javax.annotation.CheckReturnValue;
+import javax.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
@@ -103,7 +104,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
         }
     }
 
-    private <R> FluentFuture<R> commit(WriteTransaction realTx, R result) {
+    private <R> FluentFuture<R> commit(WriteTransaction realTx, @Nullable R result) {
         return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
     }
 }

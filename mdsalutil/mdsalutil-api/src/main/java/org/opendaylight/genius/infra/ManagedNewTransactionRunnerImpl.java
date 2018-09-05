@@ -13,6 +13,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.BindingTransactionChain;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -108,7 +109,8 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         }
     }
 
-    private <R> FluentFuture<R> commit(WriteTransaction realTx, R result, WriteTrackingTransaction wrappedTx) {
+    private <R> FluentFuture<R> commit(WriteTransaction realTx, @Nullable R result,
+            WriteTrackingTransaction wrappedTx) {
         if (wrappedTx.isWritten()) {
             // The transaction contains changes, commit it
             return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
