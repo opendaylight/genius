@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71905d47_13ba417a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-09-07T15:03:26Z",
+      "side": 1,
+      "message": "This ends up being a bit weird, but it\u0027s for a deprecated method (same for the next one) so it will be going away soon.",
+      "revId": "6baf62ef04d2ad231965f22311cfe03dbe868321",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "320c5066_9cefe5be",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/ManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-09-07T15:03:26Z",
+      "side": 1,
+      "message": "txConsumer::accept is odd but we need to refer to the method, rather than the method reference, for type coercion to work.",
+      "revId": "6baf62ef04d2ad231965f22311cfe03dbe868321",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
