@@ -7,10 +7,12 @@
  */
 package org.opendaylight.genius.itm.tests;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -102,9 +104,8 @@ public class ItmTepAutoConfigTest {
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(false).build();
 
         // write into config DS
-        CheckedFuture<Void, TransactionCommitFailedException> futures =
-            ItmTepAutoConfigTestUtil.writeItmConfig(iid, itmConfigObj, dataBroker);
-        futures.get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(iid, itmConfigObj, true));
+        Thread.sleep(1000);
 
         // read from config DS
         boolean defTzEnabled = SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
@@ -119,10 +120,8 @@ public class ItmTepAutoConfigTest {
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true).build();
 
         // write into config DS
-        CheckedFuture<Void, TransactionCommitFailedException> futures =
-            ItmTepAutoConfigTestUtil.writeItmConfig(iid, itmConfigObj, dataBroker);
-        futures.get();
-
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(iid, itmConfigObj, true));
+        Thread.sleep(1000);
         // read from config DS
         boolean defTzEnabled = SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
             dataBroker, LogicalDatastoreType.CONFIGURATION, iid).get().isDefTzEnabled();
@@ -248,10 +247,10 @@ public class ItmTepAutoConfigTest {
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
 
         // add TEP into default-TZ
-        CheckedFuture<Void, TransactionCommitFailedException> futures =
+        ListenableFuture<Void> futures =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.DEF_TZ_TEP_IP,
             ItmTestConstants.DEF_BR_DPID,
-            ITMConstants.DEFAULT_TRANSPORT_ZONE, false, dataBroker);
+            ITMConstants.DEFAULT_TRANSPORT_ZONE, false, dataBroker, txRunner);
         futures.get();
 
         InstanceIdentifier<Vteps> vtepPath = ItmTepAutoConfigTestUtil.getTepIid(subnetMaskObj,
@@ -264,8 +263,8 @@ public class ItmTepAutoConfigTest {
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
         // remove tep from default-TZ
-        futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.DEF_TZ_TEP_IP,
-            ItmTestConstants.DEF_BR_DPID, ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
+        futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.DEF_TZ_TEP_IP, ItmTestConstants.DEF_BR_DPID,
+            ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker, txRunner);
         futures.get();
 
         // check TEP is deleted from default-TZ
@@ -292,9 +291,8 @@ public class ItmTepAutoConfigTest {
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get().getZoneName());
 
         // add tep
-        CheckedFuture<Void, TransactionCommitFailedException> futures =
-            ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
-                ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker);
+        ListenableFuture<Void> futures = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
+            ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker, txRunner);
         futures.get();
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -309,8 +307,8 @@ public class ItmTepAutoConfigTest {
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
         // remove tep
-        futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NB_TZ_TEP_IP,
-                ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, dataBroker);
+        futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NB_TZ_TEP_IP, ItmTestConstants.DEF_BR_DPID,
+            ItmTestConstants.TZ_NAME, dataBroker, txRunner);
         futures.get();
 
         // check TEP is deleted
@@ -607,9 +605,8 @@ public class ItmTepAutoConfigTest {
     @Test
     public void tepAddIntoTepsNotHostedListTest() throws Exception {
         // add into not hosted list
-        CheckedFuture<Void, TransactionCommitFailedException> future =
-            ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker);
+        ListenableFuture<Void> future = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker, txRunner);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -623,9 +620,8 @@ public class ItmTepAutoConfigTest {
     @Test
     public void tepDeleteFromTepsNotHostedListTest() throws Exception {
         // add into not hosted list
-        CheckedFuture<Void, TransactionCommitFailedException> future =
-            ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker);
+        ListenableFuture<Void> future = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker, txRunner);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -637,7 +633,7 @@ public class ItmTepAutoConfigTest {
 
         //delete from not hosted list
         future = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, dataBroker);
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, dataBroker, txRunner);
         future.get();
 
         Assert.assertEquals(Optional.absent(),
@@ -648,10 +644,8 @@ public class ItmTepAutoConfigTest {
     @Test
     public void tepMoveFromTepsNotHostedListToTzTest() throws Exception {
         // add into not hosted list
-        CheckedFuture<Void, TransactionCommitFailedException> future =
-            ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-                ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
-                dataBroker);
+        ListenableFuture<Void> future = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker, txRunner);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -667,8 +661,8 @@ public class ItmTepAutoConfigTest {
             .withKey(new TransportZoneKey(ItmTestConstants.NOT_HOSTED_TZ_NAME)).build();
         Assert.assertNotNull(transportZoneNorth);
 
-        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, ItmTepAutoConfigTestUtil
-            .getTzIid(ItmTestConstants.NOT_HOSTED_TZ_NAME), transportZoneNorth, dataBroker);
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(ItmTepAutoConfigTestUtil
+                .getTzIid(ItmTestConstants.NOT_HOSTED_TZ_NAME), transportZoneNorth, true)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction

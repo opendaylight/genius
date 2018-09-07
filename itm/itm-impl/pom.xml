@@ -212,6 +212,38 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   </dependencies>
   <!--Build Dependencies-->
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.opendaylight.genius</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${project.version}</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>check-databroker</id>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <phase>process-sources</phase>
+              <configuration>
+                <configLocation>databroker-checks.xml</configLocation>
+                <includeResources>false</includeResources>
+                <includeTestSourceDirectory>false</includeTestSourceDirectory>
+                <includeTestResources>false</includeTestResources>
+                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                <failsOnError>true</failsOnError>
+                <consoleOutput>true</consoleOutput>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
