@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c986d1dd_45821ab2",
+        "filename": "alivenessmonitor/alivenessmonitor-api/src/main/yang/aliveness-monitor.yang",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 5871
+      },
+      "writtenOn": "2018-09-07T05:34:50Z",
+      "side": 1,
+      "message": "Why comment, might as well rename. Refactoring will be easy",
+      "range": {
+        "startLine": 19,
+        "startChar": 11,
+        "endLine": 19,
+        "endChar": 27
+      },
+      "revId": "e966bd62498fa13413a77e68571e8c0873601556",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
