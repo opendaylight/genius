@@ -14,9 +14,12 @@ import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 
 /**
- * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
+ * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries on transaction failure
+ * ({@link OptimisticLockFailedException} on write transactions and {@link ReadFailedException} on read transactions
+ * will cause the operation constructing the transaction to be re-run).
  *
  * <h3>Details about the threading model used by this class</h3>
  *
@@ -36,7 +39,7 @@ import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedEx
  * <p>If this default is not suitable (e.g. for particularly slow try/retry code), then you can specify
  * another {@link Executor} to be used for the retries by using the alternative constructor.
  *
- * @author Michael Vorburger.ch
+ * @author Michael Vorburger.ch &amp; Stephen Kitt
  */
 @Beta
 // Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
