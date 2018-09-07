@@ -695,13 +695,21 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return newIdValuesList;
     }
 
-    private IdLocalPool getOrCreateLocalIdPool(String parentPoolName, String localPoolName) throws IdManagerException {
+    private IdLocalPool getOrCreateLocalIdPool(String parentPoolName, String localPoolName)
+        throws IdManagerException, ReadFailedException {
         IdLocalPool localIdPool = localPool.get(parentPoolName);
         if (localIdPool == null) {
             idUtils.lock(lockManager, parentPoolName);
             try {
                 // Check if a previous thread that got the cluster-wide lock
                 // first, has created the localPool
+                InstanceIdentifier<IdPool> childIdPoolInstanceIdentifier = idUtils
+                        .getIdPoolInstance(localPoolName);
+                IdPool childIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION,
+                    childIdPoolInstanceIdentifier);
+                if (childIdPool != null) {
+                    updateLocalIdPoolCache(childIdPool, parentPoolName);
+                }
                 if (localPool.get(parentPoolName) == null) {
                     try {
                         return txRunner.applyWithNewReadWriteTransactionAndSubmit(CONFIGURATION, confTx -> {
