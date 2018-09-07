@@ -16,6 +16,24 @@
       "revId": "121946ba6e8fafd8aa1bfbc6251ae90556d7fc11",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fbe8f26b_c6f9f897",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/infra/RetryingManagedNewTransactionRunnerImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-09-07T11:32:52Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7003c5f4_d878b52a",
+      "revId": "121946ba6e8fafd8aa1bfbc6251ae90556d7fc11",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
