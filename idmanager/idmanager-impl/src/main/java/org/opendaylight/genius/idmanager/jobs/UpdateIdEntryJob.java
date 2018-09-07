@@ -8,16 +8,23 @@
 
 package org.opendaylight.genius.idmanager.jobs;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+
+import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.annotation.Nullable;
 import org.opendaylight.genius.idmanager.IdUtils;
-import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
@@ -26,6 +33,11 @@ import org.slf4j.LoggerFactory;
 public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(UpdateIdEntryJob.class);
+
+    // static to have total threads globally, not per UpdateIdEntryJob (of which there are many)
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(5,
+            ThreadFactoryProvider.builder().namePrefix("UpdateIdEntryJob").logger(LOG).build().get());
+
     private final String parentPoolName;
     private final String localPoolName;
     private final String idKey;
@@ -50,29 +62,37 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
 
     @Override
     public List<ListenableFuture<Void>> call() {
-        String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
-        try {
-            txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
-                idUtils.updateChildPool(tx, parentPoolName, localPoolName);
-                if (!newIdValues.isEmpty()) {
-                    IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
-                    tx.merge(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
-                } else {
-                    tx.delete(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
-                }
-            }).get();
-            LOG.debug("Updated id entry with idValues {}, idKey {}, pool {}", newIdValues, idKey, localPoolName);
-        } catch (InterruptedException | ExecutionException e) {
-            LOG.error("Error updating id entry job", e);
-        } finally {
-            CountDownLatch latch = idUtils.getReleaseIdLatch(uniqueIdKey);
-            if (latch != null) {
-                latch.countDown();
+        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+            idUtils.updateChildPool(tx, parentPoolName, localPoolName);
+            if (!newIdValues.isEmpty()) {
+                IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
+                tx.merge(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey), newIdEntry);
+            } else {
+                tx.delete(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
             }
-            // Once the id is written to DS, removing the id value from map.
-            idUtils.removeAllocatedIds(uniqueIdKey);
-            idUtils.unlock(lockManager, uniqueIdKey);
+        });
+        future.addCallback(new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(@Nullable Void result) {
+                cleanUp();
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                cleanUp();
+            }
+        }, EXECUTOR_SERVICE);
+        return Collections.singletonList(future);
+    }
+
+    private void cleanUp() {
+        String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
+        CountDownLatch latch = idUtils.getReleaseIdLatch(uniqueIdKey);
+        if (latch != null) {
+            latch.countDown();
         }
-        return Collections.emptyList();
+        // Once the id is written to DS, removing the id value from map.
+        idUtils.removeAllocatedIds(uniqueIdKey);
+        idUtils.unlock(lockManager, uniqueIdKey);
     }
 }
