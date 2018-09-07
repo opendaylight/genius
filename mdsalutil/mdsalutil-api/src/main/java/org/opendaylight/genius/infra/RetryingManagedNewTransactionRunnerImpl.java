@@ -21,15 +21,10 @@ import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedEx
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries on transaction failure
- * ({@link OptimisticLockFailedException} on write transactions and {@link ReadFailedException} on read transactions
- * will cause the operation constructing the transaction to be re-run).
+ * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
  * This is a package local private internal class; end-users use the {@link RetryingManagedNewTransactionRunner}.
- * @see RetryingManagedNewTransactionRunner
  *
  * @author Michael Vorburger.ch &amp; Stephen Kitt, with input from Tom Pantelis re. catchingAsync &amp; direct Executor
  */
@@ -39,8 +34,6 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     // NB: The RetryingManagedNewTransactionRunnerTest is in mdsalutil-testutils's src/test, not this project's
 
     private static final int DEFAULT_RETRIES = 3; // duplicated in SingleTransactionDataBroker
-
-    private static final Logger LOG = LoggerFactory.getLogger(RetryingManagedNewTransactionRunnerImpl.class);
 
     private final int maxRetries;
 
@@ -224,7 +217,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
     }
 
     private boolean isRetriableException(Throwable throwable) {
-        return throwable instanceof OptimisticLockFailedException || throwable instanceof ReadFailedException || (
-            throwable instanceof ExecutionException && isRetriableException(throwable.getCause()));
+        return throwable instanceof OptimisticLockFailedException || throwable instanceof ReadFailedException
+                || throwable instanceof ExecutionException && isRetriableException(throwable.getCause());
     }
 }
