@@ -11,13 +11,12 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import javax.annotation.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncWriteTransaction;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.slf4j.Logger;
@@ -50,9 +49,8 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     public <D extends Datastore, E extends Exception, R>
         FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
-        ReadWriteTransaction realTx = transactionFactory.newReadWriteTransaction();
-        TypedReadWriteTransaction<D> wrappedTx = new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
-        return tryCatchCancel(() -> commit(realTx, txFunction.apply(wrappedTx)), realTx);
+        return applyWithNewTransactionAndSubmit(datastoreType, transactionFactory::newReadWriteTransaction,
+            TypedReadWriteTransactionImpl::new, txFunction, (realTx, wrappedTx) -> realTx.commit());
     }
 
     @Override
@@ -70,40 +68,45 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     public <D extends Datastore, E extends Exception>
         FluentFuture<Void> callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
-        ReadWriteTransaction realTx = transactionFactory.newReadWriteTransaction();
-        TypedReadWriteTransaction<D> wrappedTx = new TypedReadWriteTransactionImpl<>(datastoreType, realTx);
-        return tryCatchCancel(() -> {
-            txConsumer.accept(wrappedTx);
-            return commit(realTx, null);
-        }, realTx);
+        return callWithNewTransactionAndSubmit(datastoreType, transactionFactory::newReadWriteTransaction,
+            TypedReadWriteTransactionImpl::new, txConsumer, (realTx, wrappedTx) -> realTx.commit());
     }
 
     @Override
     public <D extends Datastore, E extends Exception> FluentFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
-        WriteTransaction realTx = transactionFactory.newWriteOnlyTransaction();
-        TypedWriteTransaction<D> wrappedTx =
-            new TypedWriteTransactionImpl<>(datastoreType, realTx);
-        return tryCatchCancel(() -> {
-            txConsumer.accept(wrappedTx);
-            return commit(realTx, null);
-        }, realTx);
+        return callWithNewTransactionAndSubmit(datastoreType, transactionFactory::newWriteOnlyTransaction,
+            TypedWriteTransactionImpl::new, txConsumer, (realTx, wrappedTx) -> realTx.commit());
+    }
+
+    <D extends Datastore, T extends WriteTransaction, W, E extends Exception> FluentFuture<Void>
+        callWithNewTransactionAndSubmit(
+            Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
+            InterruptibleCheckedConsumer<W, E> txConsumer, BiFunction<T, W, FluentFuture<?>> txSubmitter) {
+        return applyWithNewTransactionAndSubmit(datastoreType, txSupplier, txWrapper, tx -> {
+            txConsumer.accept(tx);
+            return null;
+        }, txSubmitter);
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    protected <R> FluentFuture<R> tryCatchCancel(Callable<FluentFuture<R>> callable, AsyncWriteTransaction cancelable) {
+    <D extends Datastore, T extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
+        applyWithNewTransactionAndSubmit(
+            Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
+            InterruptibleCheckedFunction<W, R, E> txFunction, BiFunction<T, W, FluentFuture<?>> txSubmitter) {
+        T realTx = txSupplier.get();
+        W wrappedTx = txWrapper.apply(datastoreType, realTx);
         try {
-            return callable.call();
-            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
+            // We must store the result before submitting the transaction; if we inline the next line in the
+            // transform lambda, that's not guaranteed
+            R result = txFunction.apply(wrappedTx);
+            return txSubmitter.apply(realTx, wrappedTx).transform(v -> result, MoreExecutors.directExecutor());
         } catch (Exception e) {
-            if (!cancelable.cancel()) {
+            // catch Exception for both the <E extends Exception> thrown by accept() as well as any RuntimeException
+            if (!realTx.cancel()) {
                 LOG.error("Transaction.cancel() return false - this should never happen (here)");
             }
             return FluentFuture.from(immediateFailedFuture(e));
         }
-    }
-
-    private <R> FluentFuture<R> commit(WriteTransaction realTx, R result) {
-        return realTx.commit().transform(v -> result, MoreExecutors.directExecutor());
     }
 }
