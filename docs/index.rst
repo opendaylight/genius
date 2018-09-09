@@ -18,3 +18,4 @@ Contents:
    genius-design-doc
    specs/index
    testplans/index
+   user-guide
