@@ -666,10 +666,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         localPool.put(parentPoolName, localPoolCache);
     }
 
-    public java.util.Optional<IdLocalPool> getIdLocalPool(String parentPoolName) {
-        return java.util.Optional.ofNullable(localPool.get(parentPoolName)).map(IdLocalPool::deepCopyOf);
-    }
-
     private List<Long> checkForIdInIdEntries(String parentPoolName, String idKey, String uniqueIdKey,
             CompletableFuture<List<Long>> futureIdValues, boolean hasExistingFutureIdValues)
             throws IdManagerException, ReadFailedException {

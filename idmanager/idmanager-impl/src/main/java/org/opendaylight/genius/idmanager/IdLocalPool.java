@@ -10,20 +10,16 @@ package org.opendaylight.genius.idmanager;
 public class IdLocalPool {
 
     private final String poolName;
-    private final IdUtils idUtils;
     private volatile IdHolder availableIds; // List of available IDs
     private volatile IdHolder releasedIds; // List of released IDs
 
     public IdLocalPool(IdUtils idUtils, String poolName, long low, long high) {
-        this.poolName = poolName;
-        this.idUtils = idUtils;
+        this(idUtils, poolName);
         this.availableIds = new AvailableIdHolder(idUtils, low, high);
-        this.releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
     }
 
     public IdLocalPool(IdUtils idUtils, String poolName) {
         this.poolName = poolName;
-        this.idUtils = idUtils;
         this.releasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME);
     }
 
@@ -97,23 +93,5 @@ public class IdLocalPool {
 
     public void setReleasedIds(IdHolder releasedIds) {
         this.releasedIds = releasedIds;
-    }
-
-    public IdLocalPool deepCopyOf() {
-        AvailableIdHolder tempAvailableIdHolder = (AvailableIdHolder) getAvailableIds();
-        ReleasedIdHolder tempReleaseIdHolder = (ReleasedIdHolder) getReleasedIds();
-        IdLocalPool clonedIdPool = new IdLocalPool(idUtils, getPoolName());
-
-        AvailableIdHolder newAvailableIds = new AvailableIdHolder(idUtils, tempAvailableIdHolder.getLow(),
-                tempAvailableIdHolder.getHigh());
-        newAvailableIds.setCur(tempAvailableIdHolder.getCur().longValue());
-        clonedIdPool.setAvailableIds(newAvailableIds);
-
-        ReleasedIdHolder newReleasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME,
-                tempReleaseIdHolder.getDelayedEntries());
-        newReleasedIds.setAvailableIdCount(tempReleaseIdHolder.getAvailableIdCount());
-        clonedIdPool.setReleasedIds(newReleasedIds);
-
-        return clonedIdPool;
     }
 }
