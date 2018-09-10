@@ -13,16 +13,16 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
@@ -33,7 +33,9 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     private static final Logger LOG = LoggerFactory.getLogger(UpdateIdEntryJob.class);
 
     // static to have total threads globally, not per UpdateIdEntryJob (of which there are many)
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(5, "UpdateIdEntryJob", LOG);
+    private static final Executor EXECUTOR_SERVICE =
+            // Executors.newFixedThreadPool(5, "UpdateIdEntryJob", LOG);
+            MoreExecutors.directExecutor();
 
     private final String parentPoolName;
     private final String localPoolName;
