@@ -79,7 +79,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
             TypedWriteTransactionImpl::new, txConsumer, (realTx, wrappedTx) -> realTx.commit());
     }
 
-    <D extends Datastore, T extends WriteTransaction, W, E extends Exception> FluentFuture<Void>
+    protected <D extends Datastore, T extends WriteTransaction, W, E extends Exception> FluentFuture<Void>
         callWithNewTransactionAndSubmit(
             Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
             InterruptibleCheckedConsumer<W, E> txConsumer, BiFunction<T, W, FluentFuture<?>> txSubmitter) {
@@ -90,7 +90,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    <D extends Datastore, T extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
+    protected <D extends Datastore, T extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
         applyWithNewTransactionAndSubmit(
             Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
             InterruptibleCheckedFunction<W, R, E> txFunction, BiFunction<T, W, FluentFuture<?>> txSubmitter) {
