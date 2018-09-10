@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df345a4c_3c45ed38",
+        "filename": "docs/user-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-09-10T09:45:47Z",
+      "side": 1,
+      "message": "Trailing space",
+      "range": {
+        "startLine": 61,
+        "startChar": 68,
+        "endLine": 61,
+        "endChar": 69
+      },
+      "revId": "4028eec7b05dec81f17b3ddfb3acfb49e964f31a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e2d9f17_9d12a7d5",
+        "filename": "docs/user-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 5861
+      },
+      "writtenOn": "2018-09-10T09:45:47Z",
+      "side": 1,
+      "message": "Trailing space",
+      "range": {
+        "startLine": 310,
+        "startChar": 34,
+        "endLine": 310,
+        "endChar": 35
+      },
+      "revId": "4028eec7b05dec81f17b3ddfb3acfb49e964f31a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
