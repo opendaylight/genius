@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "42e7604d_bc60156e",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-09-10T12:10:40Z",
+      "side": 0,
+      "message": "Please remove this method as well.",
+      "range": {
+        "startLine": 670,
+        "startChar": 80,
+        "endLine": 670,
+        "endChar": 103
+      },
+      "revId": "2986a37a1a55ecf852cecb7a56f9a7bd6f2ad3dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
