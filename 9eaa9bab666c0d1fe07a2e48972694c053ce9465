@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e6a3bbfa_6386f405",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/UpdateIdEntryJob.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-10T11:50:07Z",
+      "side": 1,
+      "message": "I\u0027ll push a minor update to just move this up, and add a comment re. the static",
+      "revId": "9eaa9bab666c0d1fe07a2e48972694c053ce9465",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
