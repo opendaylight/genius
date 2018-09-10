@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.function.Function;
+import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.BindingTransactionChain;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -55,6 +56,14 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
+    @CheckReturnValue
+    public <D extends Datastore, E extends Exception> FluentFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
+        Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
+        return callWithNewTransactionAndSubmit(datastoreType, broker::newWriteOnlyTransaction,
+            WriteTrackingTypedWriteTransactionImpl::new, txConsumer::accept, this::commit);
+    }
+
+    @Override
     public <E extends Exception> ListenableFuture<Void>
             callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txConsumer) {
         return callWithNewTransactionAndSubmit(Datastore.class, broker::newReadWriteTransaction,
@@ -67,14 +76,14 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
         return callWithNewTransactionAndSubmit(datastoreType, broker::newReadWriteTransaction,
-            WriteTrackingTypedReadWriteTransactionImpl<D>::new, txConsumer::accept, this::commit);
+            WriteTrackingTypedReadWriteTransactionImpl::new, txConsumer::accept, this::commit);
     }
 
     @Override
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         return super.applyWithNewTransactionAndSubmit(datastoreType, broker::newReadWriteTransaction,
-            WriteTrackingTypedReadWriteTransactionImpl<D>::new, txFunction::apply, this::commit);
+            WriteTrackingTypedReadWriteTransactionImpl::new, txFunction::apply, this::commit);
     }
 
     @Override
