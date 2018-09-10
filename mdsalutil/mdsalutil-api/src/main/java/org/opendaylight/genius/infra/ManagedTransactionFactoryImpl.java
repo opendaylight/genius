@@ -73,12 +73,14 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     }
 
     @Override
+    @CheckReturnValue
     public <D extends Datastore, E extends Exception> FluentFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
         return callWithNewTransactionAndSubmit(datastoreType, transactionFactory::newWriteOnlyTransaction,
             TypedWriteTransactionImpl::new, txConsumer, (realTx, wrappedTx) -> realTx.commit());
     }
 
+    @CheckReturnValue
     protected <D extends Datastore, T extends WriteTransaction, W, E extends Exception> FluentFuture<Void>
         callWithNewTransactionAndSubmit(
             Class<D> datastoreType, Supplier<T> txSupplier, BiFunction<Class<D>, T, W> txWrapper,
@@ -89,6 +91,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
         }, txSubmitter);
     }
 
+    @CheckReturnValue
     @SuppressWarnings("checkstyle:IllegalCatch")
     protected <D extends Datastore, T extends WriteTransaction, W, R, E extends Exception> FluentFuture<R>
         applyWithNewTransactionAndSubmit(
