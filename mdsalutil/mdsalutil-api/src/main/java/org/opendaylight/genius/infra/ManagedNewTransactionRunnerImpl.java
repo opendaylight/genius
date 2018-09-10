@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.function.Function;
+import javax.annotation.CheckReturnValue;
 import javax.inject.Inject;
 import org.opendaylight.controller.md.sal.binding.api.BindingTransactionChain;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -47,6 +48,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
+    @CheckReturnValue
     public <E extends Exception> ListenableFuture<Void>
             callWithNewWriteOnlyTransactionAndSubmit(InterruptibleCheckedConsumer<WriteTransaction, E> txConsumer) {
         return callWithNewTransactionAndSubmit(Datastore.class, broker::newWriteOnlyTransaction,
@@ -55,6 +57,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
+    @CheckReturnValue
     public <E extends Exception> ListenableFuture<Void>
             callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txConsumer) {
         return callWithNewTransactionAndSubmit(Datastore.class, broker::newReadWriteTransaction,
@@ -63,6 +66,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
+    @CheckReturnValue
     public <D extends Datastore, E extends Exception> FluentFuture<Void>
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
@@ -71,6 +75,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     }
 
     @Override
+    @CheckReturnValue
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         return super.applyWithNewTransactionAndSubmit(datastoreType, broker::newReadWriteTransaction,
@@ -95,6 +100,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         }
     }
 
+    @CheckReturnValue
     private FluentFuture<? extends CommitInfo> commit(WriteTransaction realTx, WriteTrackingTransaction wrappedTx) {
         if (wrappedTx.isWritten()) {
             // The transaction contains changes, commit it
