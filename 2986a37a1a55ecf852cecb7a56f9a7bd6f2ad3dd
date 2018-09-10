@@ -22,6 +22,30 @@
       "revId": "2986a37a1a55ecf852cecb7a56f9a7bd6f2ad3dd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8516639e_e5682264",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 670,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-10T13:36:26Z",
+      "side": 0,
+      "message": "Done (well spotted)",
+      "parentUuid": "42e7604d_bc60156e",
+      "range": {
+        "startLine": 670,
+        "startChar": 80,
+        "endLine": 670,
+        "endChar": 103
+      },
+      "revId": "2986a37a1a55ecf852cecb7a56f9a7bd6f2ad3dd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
