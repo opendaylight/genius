@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "95e544c3_b8e7d157",
+        "filename": "docs/user-guide.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 2759
+      },
+      "writtenOn": "2018-09-10T15:48:54Z",
+      "side": 1,
+      "message": "Odd, my editor automatically strips trailing whitespace but it didn\u0027t catch this specific instance. I wonder if it\u0027s a non-printable character or something.",
+      "parentUuid": "df345a4c_3c45ed38",
+      "range": {
+        "startLine": 61,
+        "startChar": 68,
+        "endLine": 61,
+        "endChar": 69
+      },
+      "revId": "4028eec7b05dec81f17b3ddfb3acfb49e964f31a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1e2d9f17_9d12a7d5",
         "filename": "docs/user-guide.rst",
         "patchSetId": 1
