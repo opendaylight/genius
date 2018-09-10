@@ -98,22 +98,4 @@ public class IdLocalPool {
     public void setReleasedIds(IdHolder releasedIds) {
         this.releasedIds = releasedIds;
     }
-
-    public IdLocalPool deepCopyOf() {
-        AvailableIdHolder tempAvailableIdHolder = (AvailableIdHolder) getAvailableIds();
-        ReleasedIdHolder tempReleaseIdHolder = (ReleasedIdHolder) getReleasedIds();
-        IdLocalPool clonedIdPool = new IdLocalPool(idUtils, getPoolName());
-
-        AvailableIdHolder newAvailableIds = new AvailableIdHolder(idUtils, tempAvailableIdHolder.getLow(),
-                tempAvailableIdHolder.getHigh());
-        newAvailableIds.setCur(tempAvailableIdHolder.getCur().longValue());
-        clonedIdPool.setAvailableIds(newAvailableIds);
-
-        ReleasedIdHolder newReleasedIds = new ReleasedIdHolder(idUtils, IdUtils.DEFAULT_DELAY_TIME,
-                tempReleaseIdHolder.getDelayedEntries());
-        newReleasedIds.setAvailableIdCount(tempReleaseIdHolder.getAvailableIdCount());
-        clonedIdPool.setReleasedIds(newReleasedIds);
-
-        return clonedIdPool;
-    }
 }
