@@ -58,6 +58,14 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
 
     @Override
     @CheckReturnValue
+    public <D extends Datastore, E extends Exception> FluentFuture<Void> callWithNewWriteOnlyTransactionAndSubmit(
+        Class<D> datastoreType, InterruptibleCheckedConsumer<TypedWriteTransaction<D>, E> txConsumer) {
+        return callWithNewTransactionAndSubmit(datastoreType, broker::newWriteOnlyTransaction,
+            WriteTrackingTypedWriteTransactionImpl::new, txConsumer::accept, this::commit);
+    }
+
+    @Override
+    @CheckReturnValue
     public <E extends Exception> ListenableFuture<Void>
             callWithNewReadWriteTransactionAndSubmit(InterruptibleCheckedConsumer<ReadWriteTransaction, E> txConsumer) {
         return callWithNewTransactionAndSubmit(Datastore.class, broker::newReadWriteTransaction,
@@ -71,7 +79,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
         callWithNewReadWriteTransactionAndSubmit(Class<D> datastoreType,
             InterruptibleCheckedConsumer<TypedReadWriteTransaction<D>, E> txConsumer) {
         return callWithNewTransactionAndSubmit(datastoreType, broker::newReadWriteTransaction,
-            WriteTrackingTypedReadWriteTransactionImpl<D>::new, txConsumer::accept, this::commit);
+            WriteTrackingTypedReadWriteTransactionImpl::new, txConsumer::accept, this::commit);
     }
 
     @Override
@@ -79,7 +87,7 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
     public <D extends Datastore, E extends Exception, R> FluentFuture<R> applyWithNewReadWriteTransactionAndSubmit(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadWriteTransaction<D>, R, E> txFunction) {
         return super.applyWithNewTransactionAndSubmit(datastoreType, broker::newReadWriteTransaction,
-            WriteTrackingTypedReadWriteTransactionImpl<D>::new, txFunction::apply, this::commit);
+            WriteTrackingTypedReadWriteTransactionImpl::new, txFunction::apply, this::commit);
     }
 
     @Override
