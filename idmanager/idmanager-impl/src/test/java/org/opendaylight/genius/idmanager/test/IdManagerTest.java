@@ -10,13 +10,13 @@ package org.opendaylight.genius.idmanager.test;
 import static java.util.Comparator.comparing;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,6 +78,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class IdManagerTest {
 
@@ -195,8 +196,8 @@ public class IdManagerTest {
         Optional<IdPool> actualIdPoolChild = singleTxdataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(IdPools.class)
                         .child(IdPool.class, new IdPoolKey(idUtils.getLocalPoolName(ID_POOL_NAME))).build());
-        assertEquals(false, actualIdPoolParent.isPresent());
-        assertEquals(false, actualIdPoolChild.isPresent());
+        assertFalse(actualIdPoolParent.isPresent());
+        assertFalse(actualIdPoolChild.isPresent());
     }
 
     @Test
@@ -356,8 +357,7 @@ public class IdManagerTest {
     private InstanceIdentifier<IdPool> getIdPoolIdentifier(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idBuilder =
                 InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName));
-        InstanceIdentifier<IdPool> id = idBuilder.build();
-        return id;
+        return idBuilder.build();
     }
 
     private ReleasedIdsHolder createReleaseIdHolder(List<Long> delayedIds) {
@@ -416,7 +416,6 @@ public class IdManagerTest {
                     .collect(Collectors.toList());
             idPoolBuilder.setIdEntries(sortedIdEntries);
         }
-        IdPool actualIdPoolParent = idPoolBuilder.setChildPools(updatedChildPool).build();
-        return actualIdPoolParent;
+        return idPoolBuilder.setChildPools(updatedChildPool).build();
     }
 }

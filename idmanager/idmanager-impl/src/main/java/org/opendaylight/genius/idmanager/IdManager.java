@@ -413,7 +413,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private long allocateIdBlockFromParentPool(IdLocalPool localPoolCache, IdPool parentIdPool,
             TypedWriteTransaction<Configuration> confTx)
             throws OperationFailedException, IdManagerException {
-        long idCount = -1;
+        long idCount;
         ReleasedIdsHolderBuilder releasedIdsBuilderParent = IdUtils.getReleaseIdsHolderBuilder(parentIdPool);
         while (true) {
             idCount = allocateIdBlockFromAvailableIdsHolder(localPoolCache, parentIdPool, confTx);
@@ -563,7 +563,6 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         IdPool parentIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, parentIdPoolInstanceIdentifier);
         List<IdEntries> idEntries = parentIdPool.getIdEntries();
-        List<IdEntries> newIdEntries = idEntries;
         if (idEntries == null) {
             throw new IdDoesNotExistException(parentPoolName, idKey);
         }
@@ -578,7 +577,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         IdEntries existingIdEntry = existingIdEntryObject.get();
         List<Long> idValuesList = existingIdEntry.getIdValue();
         IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
-        boolean isRemoved = newIdEntries.remove(existingIdEntry);
+        boolean isRemoved = idEntries.remove(existingIdEntry);
         LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
         updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
         IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), txRunner,
