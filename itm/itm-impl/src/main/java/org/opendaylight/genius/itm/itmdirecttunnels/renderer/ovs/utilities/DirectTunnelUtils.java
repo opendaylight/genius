@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -39,6 +38,7 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -169,11 +169,14 @@ public final class DirectTunnelUtils {
 
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalApiManager;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-    public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager) {
+    public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager,
+                             final EntityOwnershipUtils entityOwnershipUtils) {
         this.idManagerService = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
+        this.entityOwnershipUtils = entityOwnershipUtils;
     }
 
     public KeyedLocks<String> getTunnelLocks() {
@@ -521,5 +524,9 @@ public final class DirectTunnelUtils {
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         ITMBatchingUtils.update(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
+    public boolean isEntityOwner() {
+        return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
     }
 }
