@@ -29,8 +29,6 @@ public class TunnelListenerCreator implements AutoCloseable {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelListenerCreator.class);
 
-    private final DpnTepStateListener dpnTepStateListener;
-    private final DpnTepsInfoListener dpnTepsInfoListener;
     private final TunnelTopologyStateListener tunnelTopologyStateListener;
     private final TunnelInventoryStateListener tunnelInventoryStateListener;
     private final TerminationPointStateListener terminationPointStateListener;
@@ -50,29 +48,20 @@ public class TunnelListenerCreator implements AutoCloseable {
                                  final TunnelStateCache tunnelStateCache,
                                  final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
                                  final UnprocessedNodeConnectorEndPointCache
-                                 unprocessedNodeConnectorEndPointCache) {
+                                    unprocessedNodeConnectorEndPointCache) {
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
-            LOG.trace("ITM Direct Tunnels is enabled. Initializing the listeners");
-            this.dpnTepStateListener = new DpnTepStateListener(dataBroker, coordinator, entityOwnershipUtils,
-                    dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
-                    unprocessedNodeConnectorEndPointCache, directTunnelUtils);
-            this.dpnTepsInfoListener = new DpnTepsInfoListener(dataBroker, coordinator, entityOwnershipUtils,
-                    dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
-                    unprocessedNodeConnectorEndPointCache, interfaceManager, directTunnelUtils);
+            LOG.info("ITM Direct Tunnels is enabled. Initializing the listeners");
             this.tunnelTopologyStateListener = new TunnelTopologyStateListener(dataBroker, coordinator,
-                    entityOwnershipUtils, directTunnelUtils, dpnTepStateCache, dpntePsInfoCache, ovsBridgeEntryCache,
-                    unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
+                directTunnelUtils, dpnTepStateCache, ovsBridgeEntryCache);
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
-                    entityOwnershipUtils, tunnelStateCache, dpnTepStateCache, dpntePsInfoCache,
-                    unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache, directTunnelUtils);
+                tunnelStateCache, dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
+                unprocessedNodeConnectorEndPointCache, directTunnelUtils);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
-                    coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
+                coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
             this.interfaceConfigListener = new InterfaceConfigListener(dataBroker, coordinator);
             this.internalTunnelListener = new InternalTunnelListener(dataBroker, coordinator);
         } else {
-            LOG.trace("ITM Direct Tunnels is disabled. Listeners are not registered");
-            this.dpnTepStateListener = null;
-            this.dpnTepsInfoListener = null;
+            LOG.info("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
             this.tunnelInventoryStateListener = null;
             this.terminationPointStateListener = null;
@@ -83,9 +72,6 @@ public class TunnelListenerCreator implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
-        if (dpnTepStateListener != null) {
-            this.dpnTepStateListener.close();
-        }
         if (tunnelTopologyStateListener != null) {
             this.tunnelTopologyStateListener.close();
         }
