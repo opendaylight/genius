@@ -25,7 +25,6 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -36,6 +35,7 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -165,11 +165,14 @@ public final class DirectTunnelUtils {
 
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalApiManager;
+    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-    public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager) {
+    public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager,
+                             EntityOwnershipUtils entityOwnershipUtils) {
         this.idManagerService = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
+        this.entityOwnershipUtils = entityOwnershipUtils;
     }
 
     public KeyedLocks<String> getTunnelLocks() {
@@ -341,7 +344,7 @@ public final class DirectTunnelUtils {
         ITMBatchingUtils.write(bridgeTunnelEntryIid, entryBuilder.build(), ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    public void makeTunnelIngressFlow(DpnTepInterfaceInfo dpnTepConfigInfo, BigInteger dpnId, long portNo,
+    public void makeTunnelIngressFlow(BigInteger dpnId, long portNo,
                                          String interfaceName, int ifIndex, int addOrRemoveFlow) {
         LOG.debug("make tunnel ingress flow for {}", interfaceName);
         String flowRef =
@@ -522,5 +525,9 @@ public final class DirectTunnelUtils {
         tpBuilder.setKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         ITMBatchingUtils.update(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
+    public boolean entityOwner() {
+        return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
     }
 }

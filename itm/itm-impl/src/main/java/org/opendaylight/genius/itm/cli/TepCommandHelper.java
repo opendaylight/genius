@@ -34,7 +34,8 @@ import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
+
+import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 import org.opendaylight.genius.mdsalutil.MDSALDataStoreUtils;
 import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -537,9 +538,9 @@ public class TepCommandHelper {
                 default:
                     cacheContent = null;
             }
-            System.out.println("Number of data in cache " + cacheContent.size());
             if (cacheContent != null && !cacheContent.isEmpty()
                     && !cacheName.equals(ITMConstants.UNPROCESSED_NODE_CONNECTOR_CACHE)) {
+                System.out.println("Number of data in cache " + cacheContent.size());
                 for (String key : cacheContent) {
                     System.out.println(key + " ");
                 }
@@ -560,33 +561,34 @@ public class TepCommandHelper {
 
     @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     public void showAllUnprocessedNCCaches() {
-        Map<String, NodeConnectorInfo> cacheContent = unprocessedNodeConnectorCache.getAllPresent();
-
+        Map<String, TunnelStateInfo> cacheContent = unprocessedNodeConnectorCache.getAllPresent();
+        System.out.println("Show Unprocessed Cache - Version Oct. 1st");
         if (!cacheContent.isEmpty()) {
             System.out.println("Unprocessed Node Connector Cache");
             Set<String> keys = cacheContent.keySet();
             for (String key : keys) {
-                NodeConnectorInfo nc = cacheContent.get(key);
-                System.out.println(" KEY:  " + key + " Value: " + nc);
+                TunnelStateInfo tunnelStateInfo = cacheContent.get(key);
+                System.out.println(" TunnelName:  " + key + " TunnelStateInfo: "
+                        + tunnelStateInfo);
             }
         } else {
-            System.out.println("No data in cache for " + cacheContent);
+            System.out.println("No data in UnprocessedNodeConnector Cache for " + cacheContent);
         }
 
-        Map<String, Set<NodeConnectorInfo>> ncEndPtCacheContent = unprocessedNodeConnectorEndPointCache.getAllPresent();
+        Map<String, Set<TunnelStateInfo>> ncEndPtCacheContent = unprocessedNodeConnectorEndPointCache.getAllPresent();
 
         if (!ncEndPtCacheContent.isEmpty()) {
             System.out.println("Unprocessed Node Connector End Point Cache");
             Set<String> ncKeys = ncEndPtCacheContent.keySet();
             for (String key : ncKeys) {
-                Set<NodeConnectorInfo> ncInfos = ncEndPtCacheContent.get(key);
-                System.out.println(" KEY: " + key);
-                if (!ncInfos.isEmpty()) {
-                    ncInfos.forEach(ncInfo -> System.out.println("  --  VALUE: " + ncInfo));
+                Set<TunnelStateInfo> tunnelStateInfos = ncEndPtCacheContent.get(key);
+                System.out.println(" DPN Id: " + key);
+                if (!tunnelStateInfos.isEmpty()) {
+                    tunnelStateInfos.forEach(tsInfo -> System.out.println("  --  TunnelStateInfo: " + tsInfo));
                 }
             }
         } else {
-            System.out.println("No data in cache for " + ncEndPtCacheContent);
+            System.out.println("No data in NodeConnector EndPoint Cache for " + ncEndPtCacheContent);
         }
     }
 

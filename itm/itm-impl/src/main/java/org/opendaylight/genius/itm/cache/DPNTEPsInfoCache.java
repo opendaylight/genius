@@ -12,15 +12,27 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorker;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorkerForNodeConnector;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
+import org.opendaylight.genius.itm.utils.TunnelStateInfo;
+import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Caches DPNTEPsInfo objects.
@@ -31,10 +43,107 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 @Singleton
 public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DPNTEPsInfoCache.class);
+
+    private final DirectTunnelUtils directTunnelUtils;
+    private final JobCoordinator coordinator;
+    private UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
+
     @Inject
-    public DPNTEPsInfoCache(DataBroker dataBroker, CacheProvider cacheProvider) {
+    public DPNTEPsInfoCache(DataBroker dataBroker, CacheProvider cacheProvider,
+                            DirectTunnelUtils directTunnelUtils, JobCoordinator coordinator,
+                            UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
         super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class).build(), cacheProvider);
+        this.directTunnelUtils = directTunnelUtils;
+        this.coordinator = coordinator;
+        this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
+    }
+
+    @Override
+    protected void added(InstanceIdentifier<DPNTEPsInfo> path, DPNTEPsInfo dpnTepsInfo) {
+        LOG.debug("DPNTepsInfo Add Received for {}", dpnTepsInfo.getDPNID());
+        String dpnId = dpnTepsInfo.getDPNID().toString();
+        directTunnelUtils.getTunnelLocks().lock(dpnId);
+        Set<TunnelStateInfo> tunnelStateInfoList = (Set<TunnelStateInfo>) unprocessedNodeConnectorEndPointCache.remove(
+                dpnId);
+        directTunnelUtils.getTunnelLocks().unlock(dpnId);
+
+        if (tunnelStateInfoList != null) {
+            for (TunnelStateInfo tsInfo : tunnelStateInfoList) {
+                String interfaceName = tsInfo.getDpnTepInterfaceInfo().getTunnelName();
+                DPNTEPsInfo srcDpnTepsInfo = null;
+                DPNTEPsInfo dstDpnTepsInfo = null;
+                LOG.debug("Processing the Unprocessed NodeConnector EndPoint Cache for DPN {}", dpnTepsInfo.getDPNID());
+                TunnelEndPointInfo tunnelEndPointInfo = tsInfo.getTunnelEndPointInfo();
+                if (dpnId.equals(tunnelEndPointInfo.getSrcEndPointInfo())) {
+                    srcDpnTepsInfo = dpnTepsInfo;
+                    dstDpnTepsInfo = tsInfo.getDstDpnTepsInfo();
+                    if (dstDpnTepsInfo == null) {
+                        // Check if the destination End Point has come
+                        try {
+                            directTunnelUtils.getTunnelLocks().lock(tunnelEndPointInfo.getDstEndPointInfo());
+                            Optional<DPNTEPsInfo> dstInfoOpt = getDPNTepFromDPNId(
+                                    new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
+                            if (dstInfoOpt.isPresent()) {
+                                dstDpnTepsInfo = dstInfoOpt.get();
+                            } else {
+                                TunnelStateInfo tunnelStateInfoNew = new TunnelStateInfoBuilder().setNodeConnectorInfo(
+                                        tsInfo.getNodeConnectorInfo())
+                                        .setDpnTepInterfaceInfo(tsInfo.getDpnTepInterfaceInfo())
+                                        .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
+                                        .setSrcDpnTepsInfo(srcDpnTepsInfo).setDstDpnTepsInfo(dstDpnTepsInfo).build();
+                                LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                                        interfaceName, tunnelEndPointInfo.getDstEndPointInfo());
+                                unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo
+                                        .getDstEndPointInfo(), tunnelStateInfoNew);
+                            }
+                        } finally {
+                            directTunnelUtils.getTunnelLocks().unlock(tunnelEndPointInfo.getDstEndPointInfo());
+                        }
+                    }
+                } else if (dpnId.equals(tunnelEndPointInfo.getDstEndPointInfo())) {
+                    dstDpnTepsInfo = dpnTepsInfo;
+                    srcDpnTepsInfo = tsInfo.getSrcDpnTepsInfo();
+                    // Check if the destination End Point has come
+                    if (srcDpnTepsInfo == null) {
+                        try {
+                            directTunnelUtils.getTunnelLocks().lock(tunnelEndPointInfo.getSrcEndPointInfo());
+                            Optional<DPNTEPsInfo> srcInfoOpt = getDPNTepFromDPNId(
+                                    new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()));
+                            if (srcInfoOpt.isPresent()) {
+                                srcDpnTepsInfo = srcInfoOpt.get();
+                            } else {
+                                TunnelStateInfo tunnelStateInfoNew = new TunnelStateInfoBuilder().setNodeConnectorInfo(
+                                        tsInfo.getNodeConnectorInfo())
+                                        .setDpnTepInterfaceInfo(tsInfo.getDpnTepInterfaceInfo())
+                                        .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
+                                        .setSrcDpnTepsInfo(srcDpnTepsInfo).setDstDpnTepsInfo(dstDpnTepsInfo).build();
+                                LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                                        interfaceName,
+                                        tsInfo.getTunnelEndPointInfo().getSrcEndPointInfo());
+                                unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(),
+                                        tunnelStateInfoNew);
+                            }
+                        } finally {
+                            directTunnelUtils.getTunnelLocks().unlock(tunnelEndPointInfo.getSrcEndPointInfo());
+                        }
+                    }
+                }
+
+                if (srcDpnTepsInfo != null && dstDpnTepsInfo != null && directTunnelUtils.entityOwner()) {
+                    TunnelStateInfo tunnelStateInfoNew = new TunnelStateInfoBuilder().setNodeConnectorInfo(
+                            tsInfo.getNodeConnectorInfo()).setDpnTepInterfaceInfo(tsInfo.getDpnTepInterfaceInfo())
+                            .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
+                            .setSrcDpnTepsInfo(srcDpnTepsInfo).setDstDpnTepsInfo(dstDpnTepsInfo).build();
+                    LOG.debug("Queueing TunnelStateAddWorker to DJC for tunnel {}", interfaceName);
+                    TunnelStateAddWorkerForNodeConnector ifStateAddWorker =
+                            new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils),
+                                    tunnelStateInfoNew);
+                    coordinator.enqueueJob(interfaceName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+                }
+            }
+        }
     }
 
     public List<DPNTEPsInfo> getDPNTepListFromDPNId(List<BigInteger> dpnIds) {

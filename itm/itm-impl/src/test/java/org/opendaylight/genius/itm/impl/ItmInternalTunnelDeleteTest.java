@@ -32,9 +32,12 @@ import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -117,9 +120,13 @@ public class ItmInternalTunnelDeleteTest {
     @Mock JobCoordinator jobCoordinator;
     @Mock IInterfaceManager interfaceManager;
     DirectTunnelUtils directTunnelUtils;
+    EntityOwnershipUtils entityOwnershipUtils;
     @Mock ItmConfig itmConfig;
     @Mock TunnelMonitoringConfig tunnelMonitoringConfig;
     ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
+    UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
+    UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
+
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional ;
@@ -142,12 +149,17 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
+        DPNTEPsInfoCache dpntePsInfoCache =
+                new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+                        directTunnelUtils, jobCoordinator, unprocessedNodeConnectorEndPointCache);
+
         itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
                 interfaceManager,
-                new DpnTepStateCache(dataBroker,new GuavaCacheProvider(new CacheManagersRegistryImpl()),
-                        new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
-                        interfaceManager),
+                new DpnTepStateCache(dataBroker, jobCoordinator, new GuavaCacheProvider(
+                        new CacheManagersRegistryImpl()), directTunnelUtils, dpntePsInfoCache, interfaceManager,
+                        unprocessedNodeConnectorCache,
+                        unprocessedNodeConnectorEndPointCache),
                 new OvsBridgeEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
                 new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
                 new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
