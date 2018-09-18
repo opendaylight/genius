@@ -15,10 +15,19 @@ module ipv6-nd-util {
         prefix yang;
     }
 
+    import yang-ext {
+        prefix ext;
+        revision-date "2013-07-09";
+    }
+
+    import ipv6-neighbor-discovery {
+        prefix nd;
+        revision-date "2016-06-20";
+    }
+
     revision "2017-02-10" {
         description "IPv6 Neighbor Discovery Util module";
     }
-
 
     grouping interfaces {
         list interface-address {
@@ -37,6 +46,24 @@ module ipv6-nd-util {
         }
     }
 
+    grouping packet-metadata-info {
+        leaf of-table-id {
+            type uint32;
+        }
+        leaf metadata {
+            type uint64;
+        }
+        leaf interface {
+            type leafref {
+                path "/if:interfaces/if:interface/if:name";
+            }
+        }
+    }
+
+    augment "/nd:neighbor-advertise-packet" {
+        ext:augment-identifier "packet-metadata";
+        uses packet-metadata-info;
+    }
 
     rpc send-neighbor-solicitation {
         input {
@@ -69,38 +96,6 @@ module ipv6-nd-util {
                type uint32;
                mandatory "true";
                description "NS will be sent to the specified OpenFlow group ID.";
-            }
-        }
-    }
-
-    notification na-received {
-        leaf source-mac {
-            type yang:mac-address;
-        }
-        leaf destination-mac {
-            type yang:mac-address;
-        }
-        leaf source-ipv6 {
-            type inet:ipv6-address;
-        }
-        leaf destination-ipv6 {
-            type inet:ipv6-address;
-        }
-        leaf target-address {
-            type inet:ipv6-address;
-        }
-        leaf target-ll-address {
-            type yang:mac-address;
-        }
-        leaf of-table-id {
-            type uint32;
-        }
-        leaf metadata {
-            type uint64;
-        }
-        leaf interface {
-            type leafref {
-                path "/if:interfaces/if:interface/if:name";
             }
         }
     }
