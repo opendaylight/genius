@@ -42,6 +42,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>ietf-yang-types-20130715</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.mdsal.model</groupId>
+      <artifactId>yang-ext</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
