@@ -131,7 +131,7 @@ public class TerminationPointStateListener
             if (stateTnl.isPresent() && stateTnl.get().getOperState() != TunnelOperStatus.Unknown
                     && stateTnl.get().getOperState() != tunnelState) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName,
-                        stateTnl.get().getOperState());
+                        tunnelState);
                 return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> updateOpState(tx, interfaceName, tunnelState)));
             }
