@@ -26,8 +26,15 @@ import java.util.List;
 import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
+import org.opendaylight.genius.mdsalutil.GroupEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * of it using it's static {@link #newInstance()} method.
  *
  * @author Michael Vorburger
- * @autor Faseela K
+ * @author Faseela K
  */
 public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
@@ -52,6 +59,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     private List<FlowEntity> flows;
     private List<Group> groups;
+    private List<Bucket> buckets;
 
     public static TestIMdsalApiManager newInstance() {
         return Mockito.mock(TestIMdsalApiManager.class, realOrException());
@@ -78,6 +86,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             groups = new ArrayList<>();
         }
         return groups;
+    }
+
+    private synchronized List<Bucket> getOrNewBuckets() {
+        if (buckets == null) {
+            buckets = new ArrayList<>();
+        }
+        return buckets;
     }
 
     public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
@@ -163,6 +178,73 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
                 .compare(flow1.getFlowId(), flow2.getFlowId())
                 .result());
         return sortedFlows;
+    }
+
+    @Override
+    public void addFlow(TypedWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
+        getOrNewFlows().add(flowEntity);
+    }
+
+    @Override
+    public void addFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
+        throw new UnsupportedOperationException("addFlow(..., BigInteger, Flow) isn't supported yet");
+    }
+
+    @Override
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
+        removeFlow(tx, dpId, flow.key(), flow.getTableId());
+
+    }
+
+    @Override
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
+        getOrNewFlows().remove(flowEntity);
+    }
+
+    @Override
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey,
+            short tableId) {
+        removeFlow(tx, dpId, flowKey.getId().getValue(), tableId);
+    }
+
+    @Override
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId,
+        short tableId) {
+        getOrNewFlows().removeIf(
+            flowEntity -> dpId.equals(flowEntity.getDpnId()) && flowId.equals(flowEntity.getFlowId())
+                && tableId == flowEntity.getTableId());
+    }
+
+    @Override
+    public void addGroup(TypedWriteTransaction<Configuration> tx, GroupEntity groupEntity) {
+        getOrNewGroups().add(groupEntity.getGroupBuilder().build());
+    }
+
+    @Override
+    public void addGroup(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+        getOrNewGroups().add(group);
+    }
+
+    @Override
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+        getOrNewGroups().remove(group);
+    }
+
+    @Override
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId) {
+        getOrNewGroups().removeIf(group -> groupId == group.getGroupId().getValue());
+    }
+
+    @Override
+    public void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
+            Bucket bucket) {
+        getOrNewBuckets().add(bucket);
+    }
+
+    @Override
+    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
+            long bucketId) {
+        getOrNewBuckets().removeIf(bucket -> bucketId == bucket.getBucketId().getValue());
     }
 
     @Override
