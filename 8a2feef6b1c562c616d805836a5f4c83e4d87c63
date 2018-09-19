@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "3655a45d_75254cdb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-09-19T13:38:58Z",
+      "side": 1,
+      "message": "ITM can work without default-TZ too and even any TZ can be created later through northbound too, so, failure if this method should not stop ITM to report as operational.",
+      "parentUuid": "9062e7f4_17fbbe77",
+      "revId": "8a2feef6b1c562c616d805836a5f4c83e4d87c63",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0abf0c61_4b71a7e8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2018-09-19T13:28:01Z",
       "side": 1,
       "message": "Why is this function logging as \"ItmProvider Started\" when its not entity owner is misleading. Anyways, the start() method, you are already calling this method after logging that ITM has started. Is this required here ?",
+      "revId": "8a2feef6b1c562c616d805836a5f4c83e4d87c63",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2422d303_bd163372",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-09-19T13:38:58Z",
+      "side": 1,
+      "message": "May be, we can keep first part to indicate if this entity is not owner. later part can be removed from log message.",
+      "parentUuid": "0abf0c61_4b71a7e8",
       "revId": "8a2feef6b1c562c616d805836a5f4c83e4d87c63",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
