@@ -53,7 +53,6 @@ import org.opendaylight.genius.alivenessmonitor.protocols.impl.AlivenessProtocol
 import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerARP;
 import org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerLLDP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorPauseInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateInput;
@@ -62,6 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileDeleteOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutput;
@@ -210,7 +210,7 @@ public class AlivenessMonitorTest {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
                 .setProfile(new ProfileBuilder().setFailureThreshold(10L)
                         .setMonitorInterval(10000L).setMonitorWindow(10L)
-                        .setProtocolType(EtherTypes.Arp).build())
+                        .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(Futures.immediateCheckedFuture(Optional.absent()))
                 .when(readWriteTx).read(eq(LogicalDatastoreType.OPERATIONAL),
@@ -230,7 +230,7 @@ public class AlivenessMonitorTest {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
                 .setProfile(new ProfileBuilder().setFailureThreshold(10L)
                         .setMonitorInterval(10000L).setMonitorWindow(10L)
-                        .setProtocolType(EtherTypes.Arp).build())
+                        .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         @SuppressWarnings("unchecked")
         Optional<MonitorProfile> optionalProfile = mock(Optional.class);
@@ -411,7 +411,7 @@ public class AlivenessMonitorTest {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
                 .setProfile(new ProfileBuilder().setFailureThreshold(10L)
                         .setMonitorInterval(10000L).setMonitorWindow(10L)
-                        .setProtocolType(EtherTypes.Arp).build())
+                        .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(Futures.immediateCheckedFuture(Optional.absent()))
                 .when(readWriteTx).read(eq(LogicalDatastoreType.OPERATIONAL),
@@ -426,7 +426,7 @@ public class AlivenessMonitorTest {
     private MonitorProfile getTestMonitorProfile() {
         return new MonitorProfileBuilder().setFailureThreshold(10L)
                 .setMonitorInterval(10000L).setMonitorWindow(10L)
-                .setProtocolType(EtherTypes.Arp).build();
+                .setProtocolType(MonitorProtocolType.Arp).build();
     }
 
     private InterfaceMonitorEntry getInterfaceMonitorEntry() {

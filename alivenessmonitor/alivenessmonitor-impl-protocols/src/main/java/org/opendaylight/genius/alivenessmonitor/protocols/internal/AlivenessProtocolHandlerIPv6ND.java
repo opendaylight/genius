@@ -33,7 +33,7 @@ import org.opendaylight.openflowplugin.libraries.liblldp.BufferException;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetInterfaceFromIfIndexInput;
@@ -62,7 +62,7 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
     public AlivenessProtocolHandlerIPv6ND(final DataBroker dataBroker, final OdlInterfaceRpcService interfaceManager,
             final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final Ipv6NdUtilService ndService) {
-        super(dataBroker, alivenessProtocolHandlerRegistry, EtherTypes.Ipv6Nd);
+        super(dataBroker, alivenessProtocolHandlerRegistry, MonitorProtocolType.Ipv6Nd);
         this.interfaceManager = interfaceManager;
         this.ndService = ndService;
         LOG.trace("AlivenessProtocolHandlerIPv6ND constructor called.");
@@ -183,7 +183,7 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
     }
 
     private String getMonitoringKey(String interfaceName, String sourceIp, String targetIp) {
-        return interfaceName + SEPERATOR + sourceIp + SEPERATOR + targetIp + SEPERATOR + EtherTypes.Ipv6Nd;
+        return interfaceName + SEPERATOR + sourceIp + SEPERATOR + targetIp + SEPERATOR + MonitorProtocolType.Ipv6Nd;
     }
 }
 
