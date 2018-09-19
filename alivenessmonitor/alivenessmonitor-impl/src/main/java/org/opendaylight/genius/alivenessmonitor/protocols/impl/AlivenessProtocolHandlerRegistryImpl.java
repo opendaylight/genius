@@ -15,7 +15,7 @@ import javax.inject.Singleton;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,20 +30,21 @@ public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHa
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerRegistryImpl.class);
 
-    private final Map<EtherTypes, AlivenessProtocolHandler<?>> ethTypeToProtocolHandler =
-            new EnumMap<>(EtherTypes.class);
+    private final Map<MonitorProtocolType, AlivenessProtocolHandler<?>> protocolTypeToProtocolHandler =
+            new EnumMap<>(MonitorProtocolType.class);
     private final Map<Class<?>, AlivenessProtocolHandler<?>> packetTypeToProtocolHandler = new HashMap<>();
 
     @Override
-    public synchronized void register(EtherTypes etherType, AlivenessProtocolHandler<?> protocolHandler) {
-        ethTypeToProtocolHandler.put(etherType, protocolHandler);
+    public synchronized void register(MonitorProtocolType protocolType, AlivenessProtocolHandler<?> protocolHandler) {
+        protocolTypeToProtocolHandler.put(protocolType, protocolHandler);
         packetTypeToProtocolHandler.put(protocolHandler.getPacketClass(), protocolHandler);
-        LOG.trace("Registered AlivenessProtocolHandler etherType={}, protocolHandler={}", etherType, protocolHandler);
+        LOG.trace("Registered AlivenessProtocolHandler protocolType={}, protocolHandler={}", protocolType,
+                protocolHandler);
     }
 
     @Override
-    public synchronized AlivenessProtocolHandler<?> getOpt(EtherTypes etherType) {
-        return ethTypeToProtocolHandler.get(etherType);
+    public synchronized AlivenessProtocolHandler<?> getOpt(MonitorProtocolType protocolType) {
+        return protocolTypeToProtocolHandler.get(protocolType);
     }
 
     @SuppressWarnings("unchecked")
@@ -53,10 +54,10 @@ public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHa
     }
 
     @Override
-    public AlivenessProtocolHandler<?> get(EtherTypes etherType) {
-        AlivenessProtocolHandler<?> handler = getOpt(etherType);
+    public AlivenessProtocolHandler<?> get(MonitorProtocolType protocolType) {
+        AlivenessProtocolHandler<?> handler = getOpt(protocolType);
         if (handler == null) {
-            throw new IllegalStateException("No handler registered for etherType: " + etherType);
+            throw new IllegalStateException("No handler registered for protocolType: " + protocolType);
         }
         return handler;
     }
