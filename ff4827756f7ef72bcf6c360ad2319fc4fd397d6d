@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "dbb5a037_2f49526c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 898,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "If InternalTunnelIgnoreCache is to be passed directly to ITM then ITM has to dependent on interfacemanager-impl. Thats the reason an API was exposed by interface manager and used by ITM to avoid this implementation dependency.",
+      "parentUuid": "ea584551_3225765b",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a48279d_544471da",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-09-03T12:27:46Z",
       "side": 1,
       "message": "This can be combined with previous line...",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a84fc0a2_b4de9b80",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a48279d_544471da",
       "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "11c984a1_e93c9152",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "217040cb_9f5e0fd2",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3de5f41e_94b322d5",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -64,6 +118,24 @@
       "writtenOn": "2018-09-03T12:27:46Z",
       "side": 1,
       "message": "...same here...",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc1fa310_6895f325",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3de5f41e_94b322d5",
       "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "4c4081eb_ea825c22",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bc28df49_d6a4f325",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4f841392_b661adbe",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -98,6 +188,24 @@
       "writtenOn": "2018-09-03T12:27:46Z",
       "side": 1,
       "message": "...and here",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33b113f5_080d1009",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 213,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f841392_b661adbe",
       "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "692d83c6_6e6d9e39",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "8f72f11e_1997dacc",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2f54cc19_d2003533",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
         "patchSetId": 2
@@ -132,6 +258,24 @@
       "writtenOn": "2018-09-03T12:27:46Z",
       "side": 1,
       "message": "...same here",
+      "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "06f24129_2bfe7c1f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-19T05:18:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2f54cc19_d2003533",
       "revId": "ff4827756f7ef72bcf6c360ad2319fc4fd397d6d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
