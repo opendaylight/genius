@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6d42fd79_f9085a94",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-09-19T05:38:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c420f4ab_512e126a",
+      "revId": "2afc69e74a7197af1ec9fe521c285fa591808721",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9fb1923b_4bc9b588",
         "filename": "itm/itm-impl/pom.xml",
         "patchSetId": 2
@@ -30,6 +48,30 @@
       "writtenOn": "2018-09-18T10:51:37Z",
       "side": 1,
       "message": "\u003cscope\u003etest ?",
+      "range": {
+        "startLine": 131,
+        "startChar": 18,
+        "endLine": 131,
+        "endChar": 19
+      },
+      "revId": "2afc69e74a7197af1ec9fe521c285fa591808721",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ea39147_8d1fa1fd",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-09-19T05:38:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9fb1923b_4bc9b588",
       "range": {
         "startLine": 131,
         "startChar": 18,
