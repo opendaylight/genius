@@ -26,7 +26,6 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateOutput;
@@ -36,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutput;
@@ -89,7 +89,7 @@ public final class AlivenessMonitorUtils {
                                     .build())
                             .setMode(MonitoringMode.OneOne)
                             .setProfileId(allocateProfile(FAILURE_THRESHOLD,
-                                    ifTunnel.getMonitorInterval(), MONITORING_WINDOW, EtherTypes.Lldp))
+                                    ifTunnel.getMonitorInterval(), MONITORING_WINDOW, MonitorProtocolType.Lldp))
                             .build())
                     .build();
             try {
@@ -199,7 +199,7 @@ public final class AlivenessMonitorUtils {
             if (!ifTunnelNew.getMonitorInterval().equals(ifTunnelOld.getMonitorInterval())) {
                 LOG.debug("deleting older monitor profile for interface {}", interfaceName);
                 long profileId = allocateProfile(FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW,
-                        EtherTypes.Lldp);
+                        MonitorProtocolType.Lldp);
                 MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder()
                         .setProfileId(profileId).build();
 
@@ -303,7 +303,7 @@ public final class AlivenessMonitorUtils {
     }
 
     private static MonitorProfileGetInput buildMonitorGetProfile(long monitorInterval, long monitorWindow,
-            long failureThreshold, EtherTypes protocolType) {
+            long failureThreshold, MonitorProtocolType protocolType) {
         org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor
             .rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder =
             new org.opendaylight.yang.gen.v1.urn.opendaylight
@@ -319,10 +319,10 @@ public final class AlivenessMonitorUtils {
     }
 
     public long allocateProfile(long failureThreshold, long monitoringInterval, long monitoringWindow,
-            EtherTypes etherTypes) {
+            MonitorProtocolType protoType) {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder().setProfile(
                 new ProfileBuilder().setFailureThreshold(failureThreshold).setMonitorInterval(monitoringInterval)
-                        .setMonitorWindow(monitoringWindow).setProtocolType(etherTypes).build())
+                        .setMonitorWindow(monitoringWindow).setProtocolType(protoType).build())
                 .build();
         return createMonitorProfile(input);
     }

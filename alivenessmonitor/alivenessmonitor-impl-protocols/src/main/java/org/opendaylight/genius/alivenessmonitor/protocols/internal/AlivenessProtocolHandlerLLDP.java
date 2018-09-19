@@ -38,6 +38,7 @@ import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
@@ -62,8 +63,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
             final DataBroker dataBroker,
             final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final PacketProcessingService packetProcessingService) {
-        super(dataBroker, alivenessProtocolHandlerRegistry,
-                org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes.Lldp);
+        super(dataBroker, alivenessProtocolHandlerRegistry, MonitorProtocolType.Lldp);
         this.packetProcessingService = packetProcessingService;
     }
 
