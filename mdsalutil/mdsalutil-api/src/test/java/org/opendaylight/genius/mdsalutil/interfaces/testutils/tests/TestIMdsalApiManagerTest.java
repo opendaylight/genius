@@ -38,7 +38,7 @@ public class TestIMdsalApiManagerTest {
     public void testAssertFlowsInAnyOrder() {
         mdsalApiManager.installFlow(getNewFlow1());
         mdsalApiManager.installFlow(getNewFlow2());
-        mdsalApiManager.assertFlows(ImmutableList.of(getNewFlow1(), getNewFlow2()));
+        mdsalApiManager.assertFlows(ImmutableList.of(getNewFlow2(), getNewFlow1()));
         mdsalApiManager.assertFlowsInAnyOrder(ImmutableList.of(getNewFlow2(), getNewFlow1()));
     }
 
