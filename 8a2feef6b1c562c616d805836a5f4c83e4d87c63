@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34d801ca_6e078c7c",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-09-19T09:23:41Z",
+      "side": 1,
+      "message": "still a Thread.sleep() here, could this also be replaced with JobCoordinatorEventsWaiter ?",
+      "revId": "8a2feef6b1c562c616d805836a5f4c83e4d87c63",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
