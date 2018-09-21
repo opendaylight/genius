@@ -57,28 +57,21 @@ public final class IfmCLIUtil {
         fmt.close();
     }
 
-    static void showVlanOutput(InterfaceInfo ifaceInfo, Interface iface, CommandSession session) {
-        StringBuilder sb = new StringBuilder();
-        Formatter fmt = new Formatter(sb);
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
+    static void showVlanOutput(InterfaceInfo ifaceInfo, Interface iface) {
         IfL2vlan l2vlan = iface.getAugmentation(IfL2vlan.class);
         int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue() : 0 : 0;
-        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1,
-                iface.getName()));
-        sb.setLength(0);
-        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT,
-                "", ifaceInfo == null ? UNSET : ifaceInfo.getDpId(),
-                ifaceInfo == null ? UNSET : ifaceInfo.getPortName(), vlanId));
-        sb.setLength(0);
-        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT,
-                ifaceInfo == null ? UNSET : ifaceInfo.getInterfaceTag(),
-                ifaceInfo == null ? UNSET  : ifaceInfo.getPortNo(),
-                ifaceInfo == null ? UNSET : ifaceInfo.getAdminState(),
-                ifaceInfo == null ? UNSET : ifaceInfo.getOpState()));
-        sb.setLength(0);
-        session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT + "%n",
-                iface.getDescription(), "", "", ""));
-        sb.setLength(0);
-        fmt.close();
+        System.out.println(String.format("%-55s", iface.getName()));
+        System.out.println(String.format("%-24s %-20s %-15s %-24s", "",
+            ifaceInfo == null ? UNSET : ifaceInfo.getDpId(),
+            ifaceInfo == null ? UNSET : ifaceInfo.getPortName(), vlanId));
+        System.out.println(String.format("%-24s %-20s %-15s %-24s",
+            ifaceInfo == null ? UNSET : ifaceInfo.getInterfaceTag(),
+            ifaceInfo == null ? UNSET : ifaceInfo.getPortNo(),
+            ifaceInfo == null ? UNSET : ifaceInfo.getAdminState(),
+            ifaceInfo == null ? UNSET : ifaceInfo.getOpState()));
+        System.out.println(String.format("%-24s %-20s %-15s %-24s", iface.getDescription(), "", "", ""));
+        System.out.println();
     }
 
     static void showVxlanHeaderOutput(CommandSession session) {
