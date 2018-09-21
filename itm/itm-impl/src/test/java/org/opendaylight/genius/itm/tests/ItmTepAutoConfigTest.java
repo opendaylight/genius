@@ -327,13 +327,6 @@ public class ItmTepAutoConfigTest {
         // wait for start-up default-TZ creation task to get over
         coordinatorEventsWaiter.awaitEventsConsumption();
 
-        // create default-TZ first by setting def-tz-enabled flag to true
-        ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
-                .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
-
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
-
         String tepIp = ItmTestConstants.DEF_TZ_TEP_IP;
         // create Network topology node with tep-ip set into ExternalIds list
         // OvsdbNodeListener would be automatically listen on Node to add TEP
@@ -468,16 +461,54 @@ public class ItmTepAutoConfigTest {
     }
 
     @Test
-    public void tepUpdateForTzTest() throws Exception {
+    public void tepUpdateForTepIpTest() throws Exception {
         // wait for start-up default-TZ creation task to get over
         coordinatorEventsWaiter.awaitEventsConsumption();
 
-        // create default-TZ first by setting def-tz-enabled flag to true
-        ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
-                .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
+        String tepIp = ItmTestConstants.DEF_TZ_TEP_IP;
+        // create Network topology node with tep-ip set into ExternalIds list
+        // OvsdbNodeListener would be automatically listen on Node to add TEP
+        ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
+                ItmTestConstants.LOCALHOST_IP);
+        CheckedFuture<Void, TransactionCommitFailedException> future = OvsdbTestUtil.createNode(
+                connInfo, tepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
+        future.get();
 
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
+        // add bridge into node
+        future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
+                ItmTestConstants.DEF_BR_DPID, dataBroker);
+        future.get();
+        // wait for OvsdbNodeListener to perform config DS update through transaction
+        coordinatorEventsWaiter.awaitEventsConsumption();
+
+        // iid for default-TZ
+        InstanceIdentifier<TransportZone> defTzonePath = ItmTepAutoConfigTestUtil.getTzIid(
+                ITMConstants.DEFAULT_TRANSPORT_ZONE);
+        Assert.assertNotNull(defTzonePath);
+
+        // check TEP is added into default-TZ
+        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithTep(),
+                dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, defTzonePath)
+                        .checkedGet().get());
+
+        // update OVSDB node with tep-ip in local_ip list
+        tepIp = ItmTestConstants.NB_TZ_TEP_IP;
+        OvsdbTestUtil.updateNode(connInfo, tepIp, null, null, dataBroker);
+        future.get();
+        // wait for OvsdbNodeListener to perform config DS update through transaction
+        Thread.sleep(1000);
+
+        // check TEP is updated and now it is added with updated tep-ip
+        // when local_ip is updated from southbound
+        assertEqualBeans(ExpectedDefTransportZoneObjects.defTzWithUpdatedTepIp(),
+                dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION,defTzonePath)
+                        .checkedGet().get());
+    }
+
+    @Test
+    public void tepUpdateForTzTest() throws Exception {
+        // wait for start-up default-TZ creation task to get over
+        coordinatorEventsWaiter.awaitEventsConsumption();
 
         String tepIp = ItmTestConstants.DEF_TZ_TEP_IP;
         // create Network topology node with tep-ip set into ExternalIds list

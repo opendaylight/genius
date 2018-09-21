@@ -180,6 +180,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 isTepInfoUpdated, isTepInfoDeleted, isLocalIpRemoved, isLocalIpAdded, isLocalIpUpdated,
                 isTzChanged, isDpnBrChanged);
 
+        String jobKey = oldLocalIp;
         // handle TEP-remove in remove case, TZ change case, Bridge change case
         if (isTepInfoDeleted || isLocalIpRemoved || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
             // TBD: Move this time taking operations into DataStoreJobCoordinator
@@ -188,7 +189,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.error("TEP {} cannot be deleted. DPID for bridge {} is NULL.", oldLocalIp, oldDpnBridgeName);
                 return;
             }
-            addOrRemoveTep(oldTzName, strOldDpnId, oldLocalIp, oldDpnBridgeName, false, false);
+            addOrRemoveTep(oldTzName, strOldDpnId, jobKey, oldLocalIp, oldDpnBridgeName, false, false);
         }
         // handle TEP-add in add case, TZ change case, Bridge change case
         if (isLocalIpAdded || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
@@ -198,12 +199,12 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.error("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
                 return;
             }
-            String localIp = isLocalIpUpdated ? oldLocalIp : newLocalIp;
-            addOrRemoveTep(tzName, strNewDpnId, localIp, newDpnBridgeName,  newOfTunnel, true);
+            jobKey = isLocalIpUpdated ? oldLocalIp : newLocalIp;
+            addOrRemoveTep(tzName, strNewDpnId, jobKey, newLocalIp, newDpnBridgeName,  newOfTunnel, true);
         }
     }
 
-    private void addOrRemoveTep(String tzName, String strDpnId, String localIp, String  bridgeName,
+    private void addOrRemoveTep(String tzName, String strDpnId, String jobKey, String localIp, String  bridgeName,
                                 boolean newOfTunnel, boolean isTepAdd) {
         // check if defTzEnabled flag is false in config file,
         // if flag is OFF, then no need to add TEP into ITM config DS.
@@ -228,7 +229,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                     localIp, tzName, bridgeName, strDpnId, newOfTunnel);
 
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
-            jobCoordinator.enqueueJob(localIp,
+            jobCoordinator.enqueueJob(jobKey,
                     new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker));
         } else {
             // remove TEP
@@ -236,7 +237,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                     tzName, bridgeName, strDpnId);
 
             // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
-            jobCoordinator.enqueueJob(localIp, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker));
+            jobCoordinator.enqueueJob(jobKey, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker));
         }
     }
 
@@ -388,8 +389,9 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 // if it is br-int, then add TEP into Config DS
                 if (newBridgeName.equals(bridgeName)) {
                     LOG.trace("processBridgeUpdate for bridge {} that is configured with Local IP.", bridgeName);
+                    String jobKey = newLocalIp;
                     // add or remove tep based on bridge (br-int) is added or removed
-                    addOrRemoveTep(tzName, strDpnId, newLocalIp, newBridgeName,  ofTunnel, isBridgeAdd);
+                    addOrRemoveTep(tzName, strDpnId, jobKey, newLocalIp, newBridgeName,  ofTunnel, isBridgeAdd);
                 } else {
                     LOG.trace("processBridgeUpdate invoked for bridge {}, nothing to do.", bridgeName);
                 }
