@@ -60,4 +60,27 @@ class ExpectedDefTransportZoneObjects {
             ]
         ]
     }
+
+    static def defTzWithUpdatedTepIp() {
+        new TransportZoneBuilder >> [
+            zoneName = ITMConstants.DEFAULT_TRANSPORT_ZONE
+            tunnelType = TunnelTypeVxlan
+            subnets = #[
+                new SubnetsBuilder >> [
+                gatewayIp = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP)
+                prefix = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX)
+                vlanId = ITMConstants.DUMMY_VLANID
+
+                vteps = #[
+                        new VtepsBuilder >> [
+                            dpnId = ItmTestConstants.INT_DEF_BR_DPID
+                            ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NB_TZ_TEP_IP)
+                            portname = ITMConstants.DUMMY_PORT
+                            weight = 1
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    }
 }
