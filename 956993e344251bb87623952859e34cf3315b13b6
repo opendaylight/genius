@@ -16,6 +16,24 @@
       "revId": "956993e344251bb87623952859e34cf3315b13b6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f92d8315_7acd23d8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/AbstractTunnelListenerBase.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-09-21T10:55:48Z",
+      "side": 0,
+      "message": "This was synchronized to have a thread safe add/remove operation on UnprocessedNCCache. As this ConcurrentHashMap, thread safe operations should be taken care automatically. Hence this is being removed.",
+      "parentUuid": "e18bac35_9a17f63d",
+      "revId": "956993e344251bb87623952859e34cf3315b13b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
