@@ -65,4 +65,9 @@ public class NxMatchTunnelDestinationIp extends NxMatchInfoHelper<NxmNxTunIpv4Ds
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchTunnelDestinationIp[" + address + "]";
+    }
 }

@@ -71,4 +71,9 @@ public class NxMatchCtMark extends NxMatchInfoHelper<NxmNxCtMark, NxmNxCtMarkBui
         result = 31 * result + (int) (mask ^ (mask >>> 32));
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchCtMark[" + ctMark + "/" + mask + "]";
+    }
 }

@@ -60,4 +60,9 @@ public class NxMatchCtZone extends NxMatchInfoHelper<NxmNxCtZone, NxmNxCtZoneBui
         result = 31 * result + zone;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchCtZone[" + zone + "]";
+    }
 }

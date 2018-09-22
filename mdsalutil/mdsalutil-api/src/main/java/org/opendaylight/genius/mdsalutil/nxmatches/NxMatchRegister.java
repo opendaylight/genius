@@ -116,4 +116,9 @@ public class NxMatchRegister extends NxMatchInfoHelper<NxmNxReg, NxmNxRegBuilder
         result = 31 * result + (mask != null ? mask.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchRegister[" + register + ", " + value + (mask != null ? "/" + mask : "") + "]";
+    }
 }
