@@ -109,4 +109,7 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
         result = 31 * result + (keyClass != null ? keyClass.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public abstract String toString();
 }

@@ -71,4 +71,9 @@ public class NxMatchCtState extends NxMatchInfoHelper<NxmNxCtState, NxmNxCtState
         result = 31 * result + (int) (mask ^ (mask >>> 32));
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchCtState[" + state + "/" + mask + "]";
+    }
 }

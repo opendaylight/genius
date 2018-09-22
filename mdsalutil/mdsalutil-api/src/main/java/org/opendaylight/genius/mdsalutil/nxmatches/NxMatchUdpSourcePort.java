@@ -72,4 +72,9 @@ public class NxMatchUdpSourcePort extends NxMatchInfoHelper<NxmOfUdpSrc, NxmOfUd
         result = 31 * result + mask;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchUdpSourcePort[" + port + "/" + mask + "]";
+    }
 }
