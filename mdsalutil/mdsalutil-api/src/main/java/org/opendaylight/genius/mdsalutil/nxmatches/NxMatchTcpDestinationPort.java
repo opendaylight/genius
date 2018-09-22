@@ -72,4 +72,9 @@ public class NxMatchTcpDestinationPort extends NxMatchInfoHelper<NxmOfTcpDst, Nx
         result = 31 * result + mask;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchTcpDestinationPort[" + port + "/" + mask + "]";
+    }
 }

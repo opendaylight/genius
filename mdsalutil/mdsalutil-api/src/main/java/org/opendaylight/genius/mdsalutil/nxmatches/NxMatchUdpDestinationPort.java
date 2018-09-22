@@ -72,4 +72,9 @@ public class NxMatchUdpDestinationPort extends NxMatchInfoHelper<NxmOfUdpDst, Nx
         result = 31 * result + mask;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchUdpDestinationPort[" + port + "/" + mask + "]";
+    }
 }

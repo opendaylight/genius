@@ -72,4 +72,9 @@ public class NxMatchTcpSourcePort extends NxMatchInfoHelper<NxmOfTcpSrc, NxmOfTc
         result = 31 * result + mask;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "NxMatchTcpSourcePort[" + port + "/" + mask + "]";
+    }
 }
