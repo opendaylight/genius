@@ -74,7 +74,7 @@ public class EntityOwnershipUtils {
      */
     public boolean isEntityOwner(Entity entity, long sleepBetweenRetries, int tries) {
         while (true) {
-            Optional<EntityOwnershipState> entityState = entityOwnershipService.getOwnershipState(entity);
+            java.util.Optional<EntityOwnershipState> entityState = entityOwnershipService.getOwnershipState(entity);
             if (entityState.isPresent()) {
                 EntityOwnershipState entityOwnershipState = entityState.get();
                 return entityOwnershipState == EntityOwnershipState.IS_OWNER;

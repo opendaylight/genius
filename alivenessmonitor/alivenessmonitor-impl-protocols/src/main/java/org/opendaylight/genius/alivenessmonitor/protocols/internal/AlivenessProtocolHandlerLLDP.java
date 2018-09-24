@@ -35,7 +35,7 @@ import org.opendaylight.openflowplugin.libraries.liblldp.LLDP;
 import org.opendaylight.openflowplugin.libraries.liblldp.LLDPTLV;
 import org.opendaylight.openflowplugin.libraries.liblldp.LLDPTLV.TLVType;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.Tunnel;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;

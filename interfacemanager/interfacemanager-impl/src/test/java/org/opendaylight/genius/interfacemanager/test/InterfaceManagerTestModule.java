@@ -56,7 +56,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
-import org.ops4j.pax.cdi.api.OsgiService;
 
 /**
  * Dependency Injection Wiring for {@link InterfaceManagerConfigurationTest}.
@@ -78,10 +77,9 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
-        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
         bind(DataTreeEventCallbackRegistrar.class).toInstance(mock(DataTreeEventCallbackRegistrar.class));
         bind(ManagedNewTransactionRunner.class).toInstance(mock(ManagedNewTransactionRunner.class));
-        bind(DataImportBootReady.class).annotatedWith(OsgiService.class).toInstance(new DataImportBootReady() {});
+        bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
 
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
