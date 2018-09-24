@@ -21,6 +21,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -64,12 +65,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@OsgiServiceProvider
+@Service
 public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);

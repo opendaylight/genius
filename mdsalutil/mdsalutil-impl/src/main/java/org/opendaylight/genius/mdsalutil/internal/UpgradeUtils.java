@@ -13,12 +13,12 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.upgrade.rev180702.UpgradeConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.upgrade.rev180702.UpgradeConfigBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class UpgradeUtils {
     private final RetryingManagedNewTransactionRunner txRunner;
 
     @Inject
-    public UpgradeUtils(@OsgiService final DataBroker dataBroker) {
+    public UpgradeUtils(@Reference final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
     }

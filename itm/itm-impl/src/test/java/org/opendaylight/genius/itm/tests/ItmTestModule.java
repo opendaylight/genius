@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.tests;
 
 import static org.mockito.Mockito.mock;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
@@ -44,7 +45,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
-import org.ops4j.pax.cdi.api.OsgiService;
 
 /**
  * Dependency Injection Wiring for {@link ItmTest}.
@@ -81,7 +81,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
-        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
+        bind(DataBroker.class).annotatedWith(Reference.class).toInstance(dataBroker);
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
@@ -92,7 +92,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
         bind(IMdsalApiManager.class).toInstance(mdsalManager);
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
-        bind(DataImportBootReady.class).annotatedWith(OsgiService.class).toInstance(new DataImportBootReady() {});
+        bind(DataImportBootReady.class).annotatedWith(Reference.class).toInstance(new DataImportBootReady() {});
         bind(DiagStatusService.class).toInstance(mock(DiagStatusService.class));
     }
 
