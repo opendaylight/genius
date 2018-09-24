@@ -47,7 +47,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <reference id="dataTreeEventCallbackRegistrar"
                interface="org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar"/>
-    
+
     <odl:clustered-app-config id="itmConfig"
                               binding-class="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig"
                               default-config-file-name="genius-itm-config.xml"
