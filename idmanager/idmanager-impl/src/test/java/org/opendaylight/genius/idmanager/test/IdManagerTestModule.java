@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.idmanager.test;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
@@ -21,14 +22,13 @@ import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManag
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
-import org.ops4j.pax.cdi.api.OsgiService;
 
 
 public class IdManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
     protected void configureBindings() {
-        bind(DataImportBootReady.class).annotatedWith(OsgiService.class).toInstance(new DataImportBootReady() {});
+        bind(DataImportBootReady.class).annotatedWith(Reference.class).toInstance(new DataImportBootReady() {});
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
@@ -39,6 +39,6 @@ public class IdManagerTestModule extends AbstractGuiceJsr250Module {
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
         DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
-        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(dataBroker);
+        bind(DataBroker.class).annotatedWith(Reference.class).toInstance(dataBroker);
     }
 }
