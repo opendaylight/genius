@@ -14,6 +14,8 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.MalformedObjectNameException;
+import org.apache.aries.blueprint.annotation.service.Reference;
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.cluster.datastore.jmx.mbeans.shard.ShardStatsMXBean;
 import org.opendaylight.controller.cluster.datastore.shardmanager.ShardManagerInfoMBean;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -22,13 +24,11 @@ import org.opendaylight.infrautils.diagstatus.MBeanUtils;
 import org.opendaylight.infrautils.diagstatus.ServiceDescriptor;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.diagstatus.ServiceStatusProvider;
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@OsgiServiceProvider(classes = ServiceStatusProvider.class)
+@Service(classes = ServiceStatusProvider.class)
 public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreServiceStatusProvider.class);
@@ -41,8 +41,8 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
     private final List<ShardStatsMXBean> allShardStats;
 
     @Inject
-    public DatastoreServiceStatusProvider(@OsgiService DiagStatusService diagStatusService,
-            @OsgiService DataBroker dataBroker) throws MalformedObjectNameException {
+    public DatastoreServiceStatusProvider(@Reference DiagStatusService diagStatusService,
+            @Reference DataBroker dataBroker) throws MalformedObjectNameException {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(DATASTORE_SERVICE_NAME);
 
