@@ -450,7 +450,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void remove(InstanceIdentifier<Group> identifier, Group del) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, del);
         }
 
@@ -465,13 +465,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void update(InstanceIdentifier<Group> identifier, Group original, Group update) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, update);
         }
 
         @Override
         protected void add(InstanceIdentifier<Group> identifier, Group add) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, add);
         }
 
@@ -495,7 +495,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             notifyTaskIfRequired(dpId, del);
         }
 
@@ -514,7 +514,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             notifyTaskIfRequired(dpId, add);
         }
 
@@ -539,7 +539,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             flowLog.trace("FlowId {} deleted from Table {} on DPN {}",
                 del.getId().getValue(), del.getTableId(), dpId);
         }
@@ -550,7 +550,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class, NodeKey.class).getId().getValue());
+            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             flowLog.debug("FlowId {} added to Table {} on DPN {}",
                 add.getId().getValue(), add.getTableId(), dpId);
         }

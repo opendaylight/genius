@@ -10,6 +10,7 @@ package org.opendaylight.genius.itm.cache;
 import com.google.common.base.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -21,7 +22,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 
 /**
  * Caches StateTunnelList objects.
@@ -29,7 +29,7 @@ import org.ops4j.pax.cdi.api.OsgiServiceProvider;
  * @author Thomas Pantelis
  */
 @Singleton
-@OsgiServiceProvider(classes = TunnelStateCache.class) // only because TepShowState needs a @Reference to this
+@Service(classes = TunnelStateCache.class) // only because TepShowState needs a @Reference to this
 public class TunnelStateCache extends InstanceIdDataObjectCache<StateTunnelList> {
 
     @Inject
