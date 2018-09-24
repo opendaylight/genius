@@ -40,8 +40,6 @@ class ExpectedReleaseIdObjects {
                 availableIdCount = 0L
                 delayedTimeSec = 0L
             ]
-            idEntries = #[
-            ]
         ]
     }
 
