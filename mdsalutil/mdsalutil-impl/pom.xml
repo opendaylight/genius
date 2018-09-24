@@ -70,8 +70,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>0.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.ops4j.pax.cdi</groupId>
-      <artifactId>pax-cdi-api</artifactId>
+      <groupId>org.apache.aries.blueprint</groupId>
+      <artifactId>blueprint-maven-plugin-annotation</artifactId>
       <optional>true</optional>
     </dependency>
     <!--  TEST Dependencies -->
@@ -94,13 +94,45 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
+      <version>1.6.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito</artifactId>
+      <version>1.6.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+     <groupId>org.powermock</groupId>
+     <artifactId>powermock-api-support</artifactId>
+     <version>1.6.4</version>
+     <scope>test</scope>
+   </dependency>
+   <dependency>
+     <groupId>org.powermock</groupId>
+     <artifactId>powermock-reflect</artifactId>
+     <version>1.6.4</version>
+     <scope>test</scope>
+   </dependency>
+   <dependency>
+     <groupId>org.powermock</groupId>
+     <artifactId>powermock-core</artifactId>
+     <version>1.6.4</version>
+     <scope>test</scope>
+   </dependency>
+    <dependency>
+     <groupId>org.javassist</groupId>
+     <artifactId>javassist</artifactId>
+     <version>3.21.0-GA</version>
+     <scope>test</scope>
+   </dependency>
+   <dependency>
+     <groupId>org.mockito</groupId>
+     <artifactId>mockito-core</artifactId>
+     <version>1.10.19</version>
+     <scope>test</scope>
+   </dependency>
     <dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>sal-binding-broker-impl</artifactId>
@@ -124,6 +156,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
   </dependencies>
   <build>
+<!--
     <pluginManagement>
       <plugins>
         <plugin>
@@ -156,6 +189,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         </plugin>
       </plugins>
     </pluginManagement>
+-->
     <plugins>
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>

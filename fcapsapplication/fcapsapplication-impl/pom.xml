@@ -90,7 +90,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                 <includeResources>false</includeResources>
                 <includeTestSourceDirectory>false</includeTestSourceDirectory>
                 <includeTestResources>false</includeTestResources>
-                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                <sourceDirectories>
+                  <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                </sourceDirectories>
                 <failsOnError>true</failsOnError>
                 <consoleOutput>true</consoleOutput>
               </configuration>
