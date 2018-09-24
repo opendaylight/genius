@@ -25,6 +25,8 @@ import javax.annotation.concurrent.GuardedBy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -36,8 +38,6 @@ import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.ops4j.pax.cdi.api.OsgiService;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 @Singleton
-@OsgiServiceProvider(classes = DataTreeEventCallbackRegistrar.class)
+@Service(classes = DataTreeEventCallbackRegistrar.class)
 public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallbackRegistrar {
 
     // This implementation is, intentionally, kept very simple and thin.  If during usage we see
@@ -65,7 +65,7 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
     private final ScheduledExecutorService scheduledExecutorService;
 
     @Inject
-    public DataTreeEventCallbackRegistrarImpl(@OsgiService DataBroker dataBroker) {
+    public DataTreeEventCallbackRegistrarImpl(@Reference DataBroker dataBroker) {
         this(dataBroker, Executors.newSingleThreadScheduledExecutor("DataTreeEventCallbackRegistrar-Timeouter", LOG));
     }
 
