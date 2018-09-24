@@ -17,6 +17,7 @@ target
 target-ide
 .tox
 .DS_Store
+.apt_generated_tests
 .checkstyle
 .fbExcludeFilterFile
 .factorypath
