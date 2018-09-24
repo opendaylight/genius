@@ -1324,7 +1324,8 @@ public final class ItmUtils {
     private static Class<? extends TepTypeBase> getDeviceType(String device) {
         if (device.startsWith("hwvtep")) {
             return TepTypeHwvtep.class;
-        } else if (device.contains("IpAddress")) {
+        } else if (InetAddresses.isInetAddress(device)) {
+            // In case of external tunnel, destination-device will be of IP address type.
             return TepTypeExternal.class;
         } else {
             return TepTypeInternal.class;
