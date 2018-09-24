@@ -17,7 +17,7 @@ class ExpectedInterfaceListFromDpn {
         def static checkDpnToInterfaceList() {
         (new InterfacesBuilder => [
             interfaceName = "23701c04-7e58-4c65-9425-78a80d49a218"
-            interfaceType = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev140508.L2vlan
+            interfaceType = org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan
         ]).build()
     }
 }
