@@ -29,7 +29,7 @@ import org.ops4j.pax.cdi.api.OsgiServiceProvider;
  * @author Thomas Pantelis
  */
 @Singleton
-@OsgiServiceProvider(classes = TunnelStateCache.class) // only because TepShowState needs a @Reference to this
+@Service(classes = TunnelStateCache.class) // only because TepShowState needs a @Reference to this
 public class TunnelStateCache extends InstanceIdDataObjectCache<StateTunnelList> {
 
     @Inject

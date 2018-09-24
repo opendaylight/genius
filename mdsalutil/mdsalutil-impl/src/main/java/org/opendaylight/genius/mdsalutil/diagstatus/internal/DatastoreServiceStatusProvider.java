@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-@OsgiServiceProvider(classes = ServiceStatusProvider.class)
+@Service(classes = ServiceStatusProvider.class)
 public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreServiceStatusProvider.class);
@@ -41,8 +41,8 @@ public class DatastoreServiceStatusProvider implements ServiceStatusProvider {
     private final List<ShardStatsMXBean> allShardStats;
 
     @Inject
-    public DatastoreServiceStatusProvider(@OsgiService DiagStatusService diagStatusService,
-            @OsgiService DataBroker dataBroker) throws MalformedObjectNameException {
+    public DatastoreServiceStatusProvider(@Reference DiagStatusService diagStatusService,
+            @Reference DataBroker dataBroker) throws MalformedObjectNameException {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(DATASTORE_SERVICE_NAME);
 

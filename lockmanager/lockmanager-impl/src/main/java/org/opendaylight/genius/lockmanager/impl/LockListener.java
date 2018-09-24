@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -31,7 +32,7 @@ public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<L
     private final LockManagerServiceImpl lockManager;
 
     @Inject
-    public LockListener(@OsgiService DataBroker dataBroker, LockManagerServiceImpl lockManager) {
+    public LockListener(@Reference DataBroker dataBroker, LockManagerServiceImpl lockManager) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Locks.class).child(Lock.class),
               Executors.newSingleThreadExecutor("LockListener", LOG));
         this.lockManager = lockManager;

@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
@@ -57,7 +58,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     private final LockManagerUtils lockManagerUtils;
 
     @Inject
-    public LockManagerServiceImpl(final @OsgiService DataBroker dataBroker, final LockManagerUtils lockManagerUtils) {
+    public LockManagerServiceImpl(final @Reference DataBroker dataBroker, final LockManagerUtils lockManagerUtils) {
         this.lockManagerUtils = lockManagerUtils;
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
     }

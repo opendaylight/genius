@@ -30,7 +30,7 @@ public class UpgradeUtils {
     private final RetryingManagedNewTransactionRunner txRunner;
 
     @Inject
-    public UpgradeUtils(@OsgiService final DataBroker dataBroker) {
+    public UpgradeUtils(@Reference final DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
     }
