@@ -76,8 +76,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>model-flow-base</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.mdsal.model</groupId>
-      <artifactId>ietf-interfaces</artifactId>
+      <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
+      <artifactId>rfc7223</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
@@ -135,8 +135,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.ops4j.pax.cdi</groupId>
-      <artifactId>pax-cdi-api</artifactId>
+      <groupId>org.apache.aries.blueprint</groupId>
+      <artifactId>blueprint-maven-plugin-annotation</artifactId>
       <optional>true</optional>
     </dependency>
     <!-- for infrautils metrics APIs -->
@@ -206,7 +206,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                 <includeResources>false</includeResources>
                 <includeTestSourceDirectory>false</includeTestSourceDirectory>
                 <includeTestResources>false</includeTestResources>
-                <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                <sourceDirectories>
+                  <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                </sourceDirectories>
                 <failsOnError>true</failsOnError>
                 <consoleOutput>true</consoleOutput>
               </configuration>
