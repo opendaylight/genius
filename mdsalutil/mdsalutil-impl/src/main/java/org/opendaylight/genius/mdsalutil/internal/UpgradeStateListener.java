@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -20,7 +21,6 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Con
     private final UpgradeUtils upgradeUtils;
 
     @Inject
-    public UpgradeStateListener(@OsgiService final DataBroker dataBroker, final Config config,
+    public UpgradeStateListener(@Reference final DataBroker dataBroker, final Config config,
                                 final UpgradeUtils upgradeStateUtils) {
         super(dataBroker, new DataTreeIdentifier<>(CONFIGURATION, CONFIG_IID));
         this.upgradeUtils = upgradeStateUtils;
