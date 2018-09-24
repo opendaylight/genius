@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  */
 @Beta
 @Singleton
-@OsgiServiceProvider(classes = DataTreeEventCallbackRegistrar.class)
+@Service(classes = DataTreeEventCallbackRegistrar.class)
 public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallbackRegistrar {
 
     // This implementation is, intentionally, kept very simple and thin.  If during usage we see
@@ -65,7 +65,7 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
     private final ScheduledExecutorService scheduledExecutorService;
 
     @Inject
-    public DataTreeEventCallbackRegistrarImpl(@OsgiService DataBroker dataBroker) {
+    public DataTreeEventCallbackRegistrarImpl(@Reference DataBroker dataBroker) {
         this(dataBroker, Executors.newSingleThreadScheduledExecutor("DataTreeEventCallbackRegistrar-Timeouter", LOG));
     }
 
