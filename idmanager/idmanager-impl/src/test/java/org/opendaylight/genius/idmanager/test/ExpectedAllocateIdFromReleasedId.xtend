@@ -53,7 +53,6 @@ class ExpectedAllocateIdFromReleasedId {
             poolName = "test-pool"
             releasedIdsHolder = new ReleasedIdsHolderBuilder >> [
                 availableIdCount = 0L
-                delayedIdEntries = #[]
                 delayedTimeSec = 0L
             ]
         ]

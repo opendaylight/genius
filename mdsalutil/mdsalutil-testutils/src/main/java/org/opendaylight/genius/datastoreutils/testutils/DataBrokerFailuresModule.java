@@ -10,7 +10,6 @@ package org.opendaylight.genius.datastoreutils.testutils;
 import com.google.inject.AbstractModule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
-import org.ops4j.pax.cdi.api.OsgiService;
 
 /**
  * Guice Module which correctly binds the {@link DataBrokerFailures}.
@@ -33,7 +32,7 @@ public class DataBrokerFailuresModule extends AbstractModule {
     protected void configure() {
         DataBrokerFailuresImpl testableDataBroker = new DataBrokerFailuresImpl(realDataBroker);
         bind(DataBroker.class).toInstance(testableDataBroker);
-        bind(DataBroker.class).annotatedWith(OsgiService.class).toInstance(testableDataBroker);
+        // bind(DataBroker.class).annotatedWith(Reference.class).toInstance(testableDataBroker);
         bind(DataBrokerFailures.class).toInstance(testableDataBroker);
     }
 }

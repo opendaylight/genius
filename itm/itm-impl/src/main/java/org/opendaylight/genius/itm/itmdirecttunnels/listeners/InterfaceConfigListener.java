@@ -37,8 +37,7 @@ public class InterfaceConfigListener extends AbstractSyncDataTreeChangeListener<
     private final JobCoordinator coordinator;
 
     public InterfaceConfigListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
-        super(dataBroker, LogicalDatastoreType.CONFIGURATION,
-        InstanceIdentifier.create(Interface.class));
+        super(dataBroker, LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Interface.class));
         this.dataBroker = dataBroker;
         this.coordinator = coordinator;
     }

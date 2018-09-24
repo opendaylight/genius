@@ -17,6 +17,6 @@ public class TepException extends Exception {
      * @param message the error message text, which must include the Tep Exceptions
      */
     public TepException(String message) {
-      super(message);
+        super(message);
     }
 }
