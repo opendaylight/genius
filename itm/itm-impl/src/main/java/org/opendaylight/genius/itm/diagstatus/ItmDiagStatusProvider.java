@@ -11,15 +11,15 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.diagstatus.ServiceDescriptor;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.diagstatus.ServiceStatusProvider;
-import org.ops4j.pax.cdi.api.OsgiServiceProvider;
 
 @Singleton
-@OsgiServiceProvider(classes = ServiceStatusProvider.class)
+@Service(classes = ServiceStatusProvider.class)
 public class ItmDiagStatusProvider implements ServiceStatusProvider {
 
     private final DiagStatusService diagStatusService;
