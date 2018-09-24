@@ -35,6 +35,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -84,7 +85,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
-import org.ops4j.pax.cdi.api.OsgiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +106,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Inject
     public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils,
-            @OsgiService DataImportBootReady dataImportBootReady, JobCoordinator jobCoordinator)
+                     @Reference DataImportBootReady dataImportBootReady, JobCoordinator jobCoordinator)
                     throws ReadFailedException {
         this.broker = db;
         this.txRunner = new ManagedNewTransactionRunnerImpl(db);

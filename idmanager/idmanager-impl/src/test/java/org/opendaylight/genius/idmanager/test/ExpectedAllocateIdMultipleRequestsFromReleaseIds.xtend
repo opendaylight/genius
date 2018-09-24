@@ -64,7 +64,6 @@ class ExpectedAllocateIdMultipleRequestsFromReleaseIds {
             poolName = "test-pool"
             releasedIdsHolder = new ReleasedIdsHolderBuilder >> [
                 availableIdCount = 0L
-                delayedIdEntries = #[]
                 delayedTimeSec = 0L
             ]
         ]
@@ -82,7 +81,6 @@ class ExpectedAllocateIdMultipleRequestsFromReleaseIds {
             poolName = localPoolName
             releasedIdsHolder = new ReleasedIdsHolderBuilder >> [
                 availableIdCount = 0L
-                delayedIdEntries = #[]
                 delayedTimeSec = 30L
             ]
         ]

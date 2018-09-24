@@ -25,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -434,9 +434,9 @@ public class InterfaceInventoryStateListener
                     }
                     return Optional.empty();
                 }).transform(new Function<Optional<?>, Void>() {
-                    @NullableDecl
+                    @Nullable
                     @Override
-                    public Void apply(@NullableDecl Optional<?> optionalJob) {
+                    public Void apply(@Nullable Optional<?> optionalJob) {
                         if (optionalJob != null && optionalJob.isPresent()) {
                             txChain.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
                                 (InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>, ?
