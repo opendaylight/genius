@@ -121,7 +121,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
                     new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
         }
         if (tunnelEndPointInfo == null || dpnTepConfigInfo == null) {
-            LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+            LOG.info("Unable to process the NodeConnector ADD event for {} as Config not available."
                     + "Hence parking it", interfaceName);
             unprocessedNCCache.add(interfaceName, nodeConnectorInfo);
             return Collections.emptyList();
@@ -165,7 +165,7 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         srcDpnTepsInfo = dpntePsInfoCache
                 .getDPNTepFromDPNId(new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()));
         if (!srcDpnTepsInfo.isPresent()) {
-            LOG.debug("Unable to add State for tunnel {}. Hence Parking with key {}",
+            LOG.info("SrcDpnTepsInfo not available. Unable to add State for tunnel {}. Hence Parking with key {}",
                     interfaceName, tunnelEndPointInfo.getSrcEndPointInfo());
             unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(), nodeConnectorInfo);
         }
@@ -174,9 +174,9 @@ abstract class AbstractTunnelListenerBase<T extends DataObject> extends Abstract
         dstDpnTePsInfo = dpntePsInfoCache
                 .getDPNTepFromDPNId(new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
         if (!dstDpnTePsInfo.isPresent()) {
-            LOG.debug("Unable to add State for tunnel {}. Hence Parking with key {}",
+            LOG.debug("DstDpnTepsInfo not available. Unable to add State for tunnel {}. Hence Parking with key {}",
                     interfaceName, tunnelEndPointInfo.getDstEndPointInfo());
-            unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(), nodeConnectorInfo);
+            unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getDstEndPointInfo(), nodeConnectorInfo);
         }
 
         if (!(srcDpnTepsInfo.isPresent() && dstDpnTePsInfo.isPresent())) {

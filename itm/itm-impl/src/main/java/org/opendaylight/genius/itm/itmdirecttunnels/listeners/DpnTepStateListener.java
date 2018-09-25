@@ -59,7 +59,7 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
             NodeConnectorInfo nodeConnectorInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
             if (nodeConnectorInfo != null) {
-                LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+                LOG.info("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
                 // Queue the IntefaceAddWorkerForUnprocessNC in DJC
                 String portName = nodeConnectorInfo.getNodeConnector().getName();
                 InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
