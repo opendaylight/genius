@@ -221,6 +221,7 @@ public final class InterfaceManagerCommonUtils {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
             ifState = getInterfaceStateFromCache(interfaceName);
         if (ifState != null) {
+            LOG.debug("InterfaceState for {} fetched from cache", interfaceName);
             return ifState;
         }
         ifState = getInterfaceStateFromOperDS(interfaceName);
