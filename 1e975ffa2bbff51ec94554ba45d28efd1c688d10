@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "03551e27_89404b9f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1392,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-09-27T06:48:49Z",
+      "side": 1,
+      "message": "Earlier, parameter \"device\" was of toString() format \"IpAddress{_ipv4Address\u003dIpv4Address{_value\u003d192.168.56.215}}\" whereas now it is \"192.168.56.215\".\nLooks like it has been broken by some recent commits. Hence the fix.",
+      "range": {
+        "startLine": 1392,
+        "startChar": 19,
+        "endLine": 1392,
+        "endChar": 54
+      },
+      "revId": "1e975ffa2bbff51ec94554ba45d28efd1c688d10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
