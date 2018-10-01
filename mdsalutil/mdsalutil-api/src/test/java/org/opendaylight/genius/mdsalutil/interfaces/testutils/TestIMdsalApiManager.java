@@ -66,14 +66,10 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     public static TestIMdsalApiManager newInstance() {
         TestIMdsalApiManager instance = Mockito.mock(TestIMdsalApiManager.class, realOrException());
-        instance.init();
+        instance.flows = new HashMap<>();
+        instance.groups = new HashMap<>();
+        instance.buckets = new HashMap<>();
         return instance;
-    }
-
-    private void init() {
-        this.flows = new HashMap<>();
-        this.groups = new HashMap<>();
-        this.buckets = new HashMap<>();
     }
 
     /**
@@ -330,7 +326,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         deleteGroup(dpId, groupEntity.getGroupId().getValue());
     }
 
-    private final class InternalFlowKey {
+    private static final class InternalFlowKey {
         private final BigInteger dpnId;
         private final String flowId;
         private final short tableId;
@@ -359,7 +355,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         }
     }
 
-    private final class InternalGroupKey {
+    private static final class InternalGroupKey {
         private final BigInteger dpnId;
         private final long groupId;
 
@@ -386,7 +382,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         }
     }
 
-    private final class InternalBucketKey {
+    private static final class InternalBucketKey {
         private final BigInteger dpnId;
         private final long groupId;
         private final long bucketId;
