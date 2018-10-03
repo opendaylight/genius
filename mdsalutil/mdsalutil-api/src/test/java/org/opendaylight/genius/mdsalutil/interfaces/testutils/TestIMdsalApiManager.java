@@ -254,13 +254,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
-            FlowEntity flowEntity) {
-        deleteFlow(dpnId, flowEntity.getFlowId(), flowEntity.getTableId());
-        return Futures.immediateCheckedFuture(null);
-    }
-
-    @Override
     public void addGroup(TypedWriteTransaction<Configuration> tx, GroupEntity groupEntity) {
         storeGroup(groupEntity.getDpnId(), groupEntity.getGroupBuilder().build());
     }
@@ -303,31 +296,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             FlowEntity flowEntity) {
         // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         return installFlow(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
-        storeFlow(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
-        deleteFlow(dpId, flowEntity.getFlowId(), flowEntity.getTableId());
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group, long delayTime) {
-        storeGroup(dpId, group);
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group) {
-        storeGroup(dpId, group);
-    }
-
-    @Override
-    public void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
-        deleteGroup(dpId, groupEntity.getGroupId().getValue());
     }
 
     private final class InternalFlowKey {
