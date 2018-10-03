@@ -22,6 +22,30 @@
       "revId": "1e975ffa2bbff51ec94554ba45d28efd1c688d10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4da879c0_15042f2e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 1392,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2018-10-03T08:47:00Z",
+      "side": 1,
+      "message": "Som,\nWe had this inkling on something like this to have happened which broke a lot of things.\nThanks for taking care of this.\nThere is already a TR opened for the same in downstream in Ericsson which Nidhi was looking into. This fixes it all.",
+      "parentUuid": "03551e27_89404b9f",
+      "range": {
+        "startLine": 1392,
+        "startChar": 19,
+        "endLine": 1392,
+        "endChar": 54
+      },
+      "revId": "1e975ffa2bbff51ec94554ba45d28efd1c688d10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
