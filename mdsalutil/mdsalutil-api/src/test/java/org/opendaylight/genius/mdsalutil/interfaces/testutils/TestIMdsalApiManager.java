@@ -198,20 +198,12 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         groups.put(new InternalGroupKey(dpnId, group.key().getGroupId().getValue()), group);
     }
 
-    private Collection<Group> retrieveGroups() {
-        return groups.values();
-    }
-
     private void deleteGroup(BigInteger dpnId, long groupId) {
         groups.remove(new InternalGroupKey(dpnId, groupId));
     }
 
     private void storeBucket(BigInteger dpnId, long groupId, Bucket bucket) {
         buckets.put(new InternalBucketKey(dpnId, groupId, bucket.getBucketId().getValue()), bucket);
-    }
-
-    private Collection<Bucket> retrieveBuckets() {
-        return buckets.values();
     }
 
     private void deleteBucket(BigInteger dpnId, long groupId, long bucketId) {
@@ -248,13 +240,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId,
             short tableId) {
         deleteFlow(dpId, flowId, tableId);
-    }
-
-    @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpnId,
-            FlowEntity flowEntity) {
-        deleteFlow(dpnId, flowEntity.getFlowId(), flowEntity.getTableId());
-        return Futures.immediateCheckedFuture(null);
     }
 
     @Override
@@ -300,31 +285,6 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
             FlowEntity flowEntity) {
         // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         return installFlow(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedAddFlow(BigInteger dpId, FlowEntity flowEntity) {
-        storeFlow(flowEntity);
-    }
-
-    @Override
-    public synchronized void batchedRemoveFlow(BigInteger dpId, FlowEntity flowEntity) {
-        deleteFlow(dpId, flowEntity.getFlowId(), flowEntity.getTableId());
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group, long delayTime) {
-        storeGroup(dpId, group);
-    }
-
-    @Override
-    public void syncInstallGroup(BigInteger dpId, Group group) {
-        storeGroup(dpId, group);
-    }
-
-    @Override
-    public void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
-        deleteGroup(dpId, groupEntity.getGroupId().getValue());
     }
 
     private static final class InternalFlowKey {
