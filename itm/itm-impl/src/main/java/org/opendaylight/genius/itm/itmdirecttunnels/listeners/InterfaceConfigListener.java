@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -37,8 +36,7 @@ public class InterfaceConfigListener extends AbstractSyncDataTreeChangeListener<
     private final JobCoordinator coordinator;
 
     public InterfaceConfigListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
-        super(dataBroker, LogicalDatastoreType.CONFIGURATION,
-        InstanceIdentifier.create(Interface.class));
+        super(dataBroker, LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Interface.class));
         this.dataBroker = dataBroker;
         this.coordinator = coordinator;
     }
