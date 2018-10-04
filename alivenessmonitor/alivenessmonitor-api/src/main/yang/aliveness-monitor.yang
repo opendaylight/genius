@@ -16,7 +16,8 @@ module aliveness-monitor {
         description "YANG model describes methods for monitoring endpoints.";
     }
 
-    typedef monitor-protocol-type {
+    // TODO: Need to rename
+    typedef ether-types {
         type enumeration {
              enum arp;
              enum lldp;
@@ -51,7 +52,7 @@ module aliveness-monitor {
         leaf monitor-interval { type uint32; } //Monitoring interval in milli-seconds
         leaf monitor-window { type uint32; } //Number M of consecutive intervals to consider for monitoring
         leaf failure-threshold { type uint32; } //Number N of missing messages in window to detect failure ("N out of M")
-        leaf protocol-type { type monitor-protocol-type; }
+        leaf protocol-type { type ether-types; }
         uses bfd-params;
     }
 

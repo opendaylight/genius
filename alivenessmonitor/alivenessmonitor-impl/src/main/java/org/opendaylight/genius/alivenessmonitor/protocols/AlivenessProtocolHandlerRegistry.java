@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 
 /**
  * Registry of {@link AlivenessProtocolHandler}s.
@@ -21,11 +21,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 @ThreadSafe
 public interface AlivenessProtocolHandlerRegistry {
 
-    void register(MonitorProtocolType protocolType, AlivenessProtocolHandler<?> protocolHandler);
+    void register(EtherTypes etherType, AlivenessProtocolHandler<?> protocolHandler);
 
-    @Nullable AlivenessProtocolHandler<?> getOpt(MonitorProtocolType protocolType);
+    @Nullable AlivenessProtocolHandler<?> getOpt(EtherTypes etherType);
 
     @Nullable <T extends Packet> AlivenessProtocolHandler<T> getOpt(Class<T> packetClass);
 
-    @Nonnull AlivenessProtocolHandler<?> get(MonitorProtocolType protocolType);
+    @Nonnull AlivenessProtocolHandler<?> get(EtherTypes etherType);
 }

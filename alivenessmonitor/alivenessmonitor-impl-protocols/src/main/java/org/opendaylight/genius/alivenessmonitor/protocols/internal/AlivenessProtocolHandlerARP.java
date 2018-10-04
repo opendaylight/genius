@@ -29,7 +29,7 @@ import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.genius.mdsalutil.packet.ARP;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
@@ -60,7 +60,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             final OdlInterfaceRpcService interfaceManager,
             final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final OdlArputilService arpService) {
-        super(dataBroker, alivenessProtocolHandlerRegistry, MonitorProtocolType.Arp);
+        super(dataBroker, alivenessProtocolHandlerRegistry, EtherTypes.Arp);
         this.interfaceManager = interfaceManager;
         this.arpService = arpService;
     }
@@ -178,7 +178,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     }
 
     private String getMonitoringKey(String interfaceName, String sourceIp, String targetIp) {
-        return interfaceName + SEPERATOR + sourceIp + SEPERATOR + targetIp + SEPERATOR + MonitorProtocolType.Arp;
+        return interfaceName + SEPERATOR + sourceIp + SEPERATOR + targetIp + SEPERATOR + EtherTypes.Arp;
     }
 
     private Optional<PhysAddress> getMacAddress(EndpointType source) {
