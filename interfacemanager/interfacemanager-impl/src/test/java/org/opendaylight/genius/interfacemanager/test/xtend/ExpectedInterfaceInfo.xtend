@@ -7,13 +7,11 @@
  */
 package org.opendaylight.genius.interfacemanager.test.xtend
 
-import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
-import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
-import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceOpState;
-import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType;
-import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo;
-
-import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
+import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo
+import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState
+import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceOpState
+import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType
+import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo
 
 class ExpectedInterfaceInfo {
     static def newInterfaceInfo(Integer lportTag, String ifaceName, String parentInterface,
