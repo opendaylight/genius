@@ -16,6 +16,24 @@
       "revId": "cbacf2731fd6c58d0b3bb1da5b0ea4643db9c7d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a233e365_2a64117b",
+        "filename": "idmanager/idmanager-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-10-04T15:24:59Z",
+      "side": 1,
+      "message": "I don’t know what version of odlparent will have the bump, that depends on how downstreams react to these patches.\n\nIf we wait for odlparent to do this, we’ll have to wait for odlparent 5, because with the Equinox overrides, this is a breaking change. (Bumping to Xtend 2.15 in odlparent causes downstream projects with Equinox overrides to break.) That’s why I’m trying to prepare things by pushing the appropriate patches to the three projects which are affected.\n\nAlternatively, https://git.opendaylight.org/gerrit/76651 might be more palatable.",
+      "parentUuid": "e78a0ecb_c0696509",
+      "revId": "cbacf2731fd6c58d0b3bb1da5b0ea4643db9c7d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
