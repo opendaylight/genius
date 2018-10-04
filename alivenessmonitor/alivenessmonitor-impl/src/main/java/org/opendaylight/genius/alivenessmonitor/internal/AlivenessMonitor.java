@@ -61,6 +61,7 @@ import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEventBuilder;
@@ -74,7 +75,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileGetOutputBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorStartOutputBuilder;
@@ -275,6 +275,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onPacketReceived(PacketReceived packetReceived) {
         Class<? extends PacketInReason> pktInReason = packetReceived.getPacketInReason();
@@ -311,10 +312,12 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             if (LOG.isTraceEnabled()) {
                 LOG.trace("onPacketReceived packet: {}, packet class: {}", packetReceived, protocolPacket.getClass());
             }
-            livenessProtocolHandler = getAlivenessProtocolHandler(protocolPacket.getClass());
+            livenessProtocolHandler = (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry
+                    .getOpt(protocolPacket.getClass());
 
         } else if (PacketUtil.isIpv6NaPacket(data)) {
-            livenessProtocolHandler = getAlivenessProtocolHandler(MonitorProtocolType.Ipv6Nd);
+            livenessProtocolHandler =
+                    (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.get(EtherTypes.Ipv6Nd);
         }
         if (livenessProtocolHandler == null) {
             return;
@@ -326,16 +329,6 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         } else {
             LOG.debug("No monitorkey associated with received packet");
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private AlivenessProtocolHandler<Packet> getAlivenessProtocolHandler(Class<? extends Packet> protocolHandlerClass) {
-        return (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.getOpt(protocolHandlerClass);
-    }
-
-    @SuppressWarnings("unchecked")
-    private AlivenessProtocolHandler<Packet> getAlivenessProtocolHandler(MonitorProtocolType protocolType) {
-        return (AlivenessProtocolHandler<Packet>) alivenessProtocolHandlerRegistry.get(protocolType);
     }
 
     private void processReceivedMonitorKey(final String monitorKey) {
@@ -424,10 +417,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }, callbackExecutorService);
     }
 
-    private String getUniqueKey(String interfaceName, String protocolType, EndpointType source,
-            EndpointType destination) {
-        StringBuilder builder = new StringBuilder().append(interfaceName).append(AlivenessMonitorConstants.SEPERATOR)
-                .append(protocolType);
+    private String getUniqueKey(String interfaceName, String ethType, EndpointType source, EndpointType destination) {
+        StringBuilder builder =
+                new StringBuilder().append(interfaceName).append(AlivenessMonitorConstants.SEPERATOR).append(ethType);
         if (source != null) {
             builder.append(AlivenessMonitorConstants.SEPERATOR).append(AlivenessMonitorUtil.getIpAddress(source));
         }
@@ -463,7 +455,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 profile = optProfile.get();
             }
 
-            final MonitorProtocolType protocolType = profile.getProtocolType();
+            final EtherTypes ethType = profile.getProtocolType();
 
             String interfaceName = null;
             EndpointType srcEndpointType = in.getSource().getEndpointType();
@@ -487,7 +479,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             if (in.getDestination() != null) {
                 destEndpointType = in.getDestination().getEndpointType();
             }
-            String idKey = getUniqueKey(interfaceName, protocolType.toString(), srcEndpointType, destEndpointType);
+            String idKey = getUniqueKey(interfaceName, ethType.toString(), srcEndpointType, destEndpointType);
             final long monitorId = getUniqueId(idKey);
             Optional<MonitoringInfo> optKey =
                     SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
@@ -508,13 +500,13 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 final MonitoringInfo monitoringInfo = new MonitoringInfoBuilder().setId(monitorId).setMode(in.getMode())
                         .setProfileId(profileId).setDestination(in.getDestination()).setSource(in.getSource()).build();
                 // Construct the initial monitor state
-                handler = alivenessProtocolHandlerRegistry.get(protocolType);
+                handler = alivenessProtocolHandlerRegistry.get(ethType);
                 final String monitoringKey = handler.getUniqueMonitoringKey(monitoringInfo);
 
                 MonitoringStateBuilder monitoringStateBuilder =
                         new MonitoringStateBuilder().setMonitorKey(monitoringKey).setMonitorId(monitorId)
                                 .setState(LivenessState.Unknown).setStatus(MonitorStatus.Started);
-                if (protocolType != MonitorProtocolType.Bfd) {
+                if (ethType != EtherTypes.Bfd) {
                     monitoringStateBuilder.setRequestCount(INITIAL_COUNT).setResponsePendingCount(INITIAL_COUNT);
                 }
                 MonitoringState monitoringState = monitoringStateBuilder.build();
@@ -542,7 +534,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     @Override
                     public void onSuccess(Void ignored) {
                         lockMap.put(monitoringKey, new Semaphore(1, true));
-                        if (protocolType == MonitorProtocolType.Bfd) {
+                        if (ethType == EtherTypes.Bfd) {
                             handler.startMonitoringTask(monitoringInfo);
                             return;
                         }
@@ -675,8 +667,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                                                 || currentStatus == MonitorStatus.Stopped));
                                 MonitorProfile profile = optProfile.get();
                                 LOG.debug("Monitor Resume - Scheduling monitoring task with Id: {}", monitorId);
-                                MonitorProtocolType protocolType = profile.getProtocolType();
-                                if (protocolType == MonitorProtocolType.Bfd) {
+                                EtherTypes protocolType = profile.getProtocolType();
+                                if (protocolType == EtherTypes.Bfd) {
                                     LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
                                     ((HwVtepTunnelsStateHandler) alivenessProtocolHandlerRegistry.get(protocolType))
                                             .resetMonitoringTask(true);
@@ -723,8 +715,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         Optional<MonitorProfile> optProfile =
                 SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
                         LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(monitoringInfo.getProfileId()));
-        MonitorProtocolType protocolType = optProfile.get().getProtocolType();
-        if (protocolType == MonitorProtocolType.Bfd) {
+        EtherTypes protocolType = optProfile.get().getProtocolType();
+        if (protocolType == EtherTypes.Bfd) {
             LOG.debug("disabling bfd for hwvtep tunnel montior id {}", monitorId);
             ((HwVtepTunnelsStateHandler) alivenessProtocolHandlerRegistry.get(protocolType))
                     .resetMonitoringTask(false);
@@ -900,8 +892,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         final Long failureThreshold = profile.getFailureThreshold();
         final Long monitorInterval = profile.getMonitorInterval();
         final Long monitorWindow = profile.getMonitorWindow();
-        final MonitorProtocolType protocolType = profile.getProtocolType();
-        String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, protocolType);
+        final EtherTypes ethType = profile.getProtocolType();
+        String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, ethType);
         final Long profileId = (long) getUniqueId(idKey);
 
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
@@ -920,7 +912,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 } else {
                     final MonitorProfile monitorProfile = new MonitorProfileBuilder().setId(profileId)
                                 .setFailureThreshold(failureThreshold).setMonitorInterval(monitorInterval)
-                                .setMonitorWindow(monitorWindow).setProtocolType(protocolType).build();
+                                .setMonitorWindow(monitorWindow).setProtocolType(ethType).build();
                     tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId), monitorProfile,
                           CREATE_MISSING_PARENT);
                     Futures.addCallback(tx.submit(), new FutureCallback<Void>() {
@@ -981,18 +973,18 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         final Long failureThreshold = profile.getFailureThreshold();
         final Long monitorInterval = profile.getMonitorInterval();
         final Long monitorWindow = profile.getMonitorWindow();
-        final MonitorProtocolType protocolType = profile.getProtocolType();
+        final EtherTypes ethType = profile.getProtocolType();
         LOG.debug("getExistingProfileId for profile : {}", input.getProfile());
-        String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, protocolType);
+        String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, ethType);
         LOG.debug("Obtained existing profile ID for profile : {}", input.getProfile());
         return (long) getUniqueId(idKey);
     }
 
     private String getUniqueProfileKey(Long failureThreshold, Long monitorInterval, Long monitorWindow,
-            MonitorProtocolType protocolType) {
+            EtherTypes ethType) {
         return String.valueOf(failureThreshold) + AlivenessMonitorConstants.SEPERATOR + monitorInterval
-                + AlivenessMonitorConstants.SEPERATOR + monitorWindow + AlivenessMonitorConstants.SEPERATOR
-                + protocolType + AlivenessMonitorConstants.SEPERATOR;
+                + AlivenessMonitorConstants.SEPERATOR + monitorWindow + AlivenessMonitorConstants.SEPERATOR + ethType
+                + AlivenessMonitorConstants.SEPERATOR;
     }
 
     @Override
@@ -1146,10 +1138,10 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
                             LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(info.getProfileId()));
             if (optProfile.isPresent()) {
-                MonitorProtocolType protocolType = optProfile.get().getProtocolType();
+                EtherTypes ethType = optProfile.get().getProtocolType();
                 EndpointType destination = info.getDestination() != null ? info.getDestination().getEndpointType()
                         : null;
-                String idKey = getUniqueKey(interfaceName, protocolType.toString(), source, destination);
+                String idKey = getUniqueKey(interfaceName, ethType.toString(), source, destination);
                 releaseId(idKey);
             } else {
                 LOG.warn("Could not release monitorId {}. No profile associated with it", monitorId);

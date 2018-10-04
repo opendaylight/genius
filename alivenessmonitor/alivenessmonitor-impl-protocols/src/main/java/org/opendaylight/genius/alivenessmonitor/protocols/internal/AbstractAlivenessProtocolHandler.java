@@ -20,7 +20,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements AlivenessProtocolHandler<P> {
@@ -32,9 +32,9 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
     AbstractAlivenessProtocolHandler(
             final DataBroker dataBroker,
             final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
-            final MonitorProtocolType protocolType) {
+            final EtherTypes etherType) {
         this.singleTxDataBroker = new SingleTransactionDataBroker(dataBroker);
-        alivenessProtocolHandlerRegistry.register(protocolType, this);
+        alivenessProtocolHandlerRegistry.register(etherType, this);
     }
 
     // @formatter:off
