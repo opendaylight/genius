@@ -31,8 +31,8 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.EtherTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
@@ -82,7 +82,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
                       .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class));
         this.dataBroker = dataBroker;
         this.alivenessMonitor = alivenessMonitor;
-        alivenessProtocolHandlerRegistry.register(EtherTypes.Bfd, this);
+        alivenessProtocolHandlerRegistry.register(MonitorProtocolType.Bfd, this);
     }
 
     @Override
