@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5511f830_62673fe6",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-10-05T06:14:21Z",
+      "side": 1,
+      "message": "Please remove internal TR number here.",
+      "revId": "ff4d5e5267385c0731d99c0f587d42701362377f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11c09cb5_673bf97a",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7781
+      },
+      "writtenOn": "2018-10-05T06:14:21Z",
+      "side": 1,
+      "message": "Is this commit is needed to only oxygen?",
+      "revId": "ff4d5e5267385c0731d99c0f587d42701362377f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
