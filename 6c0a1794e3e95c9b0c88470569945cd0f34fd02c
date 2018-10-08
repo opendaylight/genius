@@ -16,6 +16,24 @@
       "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b80df001_44883b78",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-10-08T07:13:02Z",
+      "side": 1,
+      "message": "In this case of updateNode() where ovsdb node update happens, eventsWaiter was not helping that is why sleep is retained.",
+      "parentUuid": "a149d032_48985d60",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
