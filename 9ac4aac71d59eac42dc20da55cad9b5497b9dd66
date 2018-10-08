@@ -16,6 +16,24 @@
       "revId": "9ac4aac71d59eac42dc20da55cad9b5497b9dd66",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "840fe66b_0ddaaee0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 1437,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-10-08T07:15:06Z",
+      "side": 1,
+      "message": "Yes, we will have discussion to have TZ DS cache for Neon branch.",
+      "parentUuid": "7c905ae5_a1209a6c",
+      "revId": "9ac4aac71d59eac42dc20da55cad9b5497b9dd66",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
