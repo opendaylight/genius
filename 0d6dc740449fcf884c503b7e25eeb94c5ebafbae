@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0d9d35a2_be25a6f8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-10-11T08:26:33Z",
+      "side": 1,
+      "message": "You can remove this comment as Ignore Cache is not being used",
+      "revId": "0d6dc740449fcf884c503b7e25eeb94c5ebafbae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
