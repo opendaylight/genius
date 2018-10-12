@@ -29,6 +29,8 @@ public final class MetaDataUtil {
     public static final BigInteger METADATA_MASK_ACL_DROP = new BigInteger("0000000000000004", 16);
     public static final BigInteger REG6_MASK_REMOTE_DPN =     new BigInteger("0FFFFF0000000000", 16);
 
+    public static final int METADATA_LPORT_TAG_OFFSET = 40;
+    public static final int METADATA_LPORT_TAG_BITLEN = 20;
     public static final int METADATA_ELAN_TAG_OFFSET = 24;
     public static final int METADATA_ELAN_TAG_BITLEN = 16;
     public static final int METADATA_VPN_ID_OFFSET = 1;
@@ -64,7 +66,7 @@ public final class MetaDataUtil {
     }
 
     public static BigInteger getLportTagMetaData(int lportTag) {
-        return new BigInteger("FFFFF", 16).and(BigInteger.valueOf(lportTag)).shiftLeft(40);
+        return new BigInteger("FFFFF", 16).and(BigInteger.valueOf(lportTag)).shiftLeft(METADATA_LPORT_TAG_OFFSET);
     }
 
     public static BigInteger getMetaDataMaskForLPortDispatcher() {
@@ -81,11 +83,11 @@ public final class MetaDataUtil {
     }
 
     public static BigInteger getMetadataLPort(int portTag) {
-        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portTag)).shiftLeft(40);
+        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portTag)).shiftLeft(METADATA_LPORT_TAG_OFFSET);
     }
 
     public static BigInteger getLportFromMetadata(BigInteger metadata) {
-        return metadata.and(METADATA_MASK_LPORT_TAG).shiftRight(40);
+        return metadata.and(METADATA_MASK_LPORT_TAG).shiftRight(METADATA_LPORT_TAG_OFFSET);
     }
 
     public static int getElanTagFromMetadata(BigInteger metadata) {
