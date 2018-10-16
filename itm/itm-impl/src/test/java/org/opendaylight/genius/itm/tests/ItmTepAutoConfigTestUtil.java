@@ -45,11 +45,11 @@ public final class ItmTepAutoConfigTestUtil {
     }
 
     public static CheckedFuture<Void, TransactionCommitFailedException> deleteTep(String tepIp,
-        String strDpnId, String tzName, DataBroker dataBroker) {
+        String strDpnId, String tzName, DataBroker dataBroker, OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper) {
         WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         // remove TEP received from southbound OVSDB from ITM config DS.
-        OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, wrTx);
+        ovsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, wrTx);
         return wrTx.submit();
     }
 

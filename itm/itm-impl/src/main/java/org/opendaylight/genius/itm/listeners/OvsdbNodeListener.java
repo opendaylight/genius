@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -45,6 +46,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
     private final ItmConfig itmConfig;
+    private final OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper;
 
     @Inject
     public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator) {
@@ -53,6 +55,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         this.itmConfig = itmConfig;
+        ovsdbTepRemoveConfigHelper = new OvsdbTepRemoveConfigHelper();
     }
 
     @Override
@@ -236,7 +239,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                     tzName, bridgeName, strDpnId);
 
             // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
-            jobCoordinator.enqueueJob(localIp, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker));
+            jobCoordinator.enqueueJob(localIp, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker,
+                    ovsdbTepRemoveConfigHelper));
         }
     }
 
