@@ -26,6 +26,7 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -58,6 +59,7 @@ public class ItmTepAutoConfigTest {
 
     TransportZone transportZone;
     RetryingManagedNewTransactionRunner txRunner;
+    private OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper;
 
     private @Inject DataBroker dataBroker;
     private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
@@ -69,6 +71,7 @@ public class ItmTepAutoConfigTest {
             .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME))
             .build();
         this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
+        ovsdbTepRemoveConfigHelper = new OvsdbTepRemoveConfigHelper();
     }
 
     // Common method created for code-reuse
@@ -265,7 +268,7 @@ public class ItmTepAutoConfigTest {
 
         // remove tep from default-TZ
         futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.DEF_TZ_TEP_IP,
-            ItmTestConstants.DEF_BR_DPID, ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
+            ItmTestConstants.DEF_BR_DPID, ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker, ovsdbTepRemoveConfigHelper);
         futures.get();
 
         // check TEP is deleted from default-TZ
@@ -310,7 +313,7 @@ public class ItmTepAutoConfigTest {
 
         // remove tep
         futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NB_TZ_TEP_IP,
-                ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, dataBroker);
+                ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, dataBroker, ovsdbTepRemoveConfigHelper);
         futures.get();
 
         // check TEP is deleted
@@ -637,7 +640,8 @@ public class ItmTepAutoConfigTest {
 
         //delete from not hosted list
         future = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, dataBroker);
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, dataBroker,
+                ovsdbTepRemoveConfigHelper);
         future.get();
 
         Assert.assertEquals(Optional.absent(),

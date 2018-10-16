@@ -26,12 +26,15 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
     private final String tzName;
     private final BigInteger dpnId;
     private final DataBroker dataBroker;
+    private final OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper;
 
-    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId, DataBroker broker) {
+    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId, DataBroker broker,
+                                        OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper) {
         this.tepIpAddress = tepIpAddress;
         this.tzName = tzName;
         this.dpnId = dpnId;
         this.dataBroker = broker ;
+        this.ovsdbTepRemoveConfigHelper = ovsdbTepRemoveConfigHelper;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
         LOG.trace("Remove TEP from TepsNotHosted list task is picked from DataStoreJobCoordinator for execution.");
 
         // Remove TEP from TepsNotHosted list.
-        OvsdbTepRemoveConfigHelper.removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, wrTx);
+        ovsdbTepRemoveConfigHelper.removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, wrTx);
 
         return Collections.singletonList(wrTx.submit());
     }

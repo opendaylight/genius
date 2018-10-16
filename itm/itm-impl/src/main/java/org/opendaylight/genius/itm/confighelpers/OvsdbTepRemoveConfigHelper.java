@@ -38,7 +38,7 @@ public final class OvsdbTepRemoveConfigHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepRemoveConfigHelper.class);
 
-    private OvsdbTepRemoveConfigHelper() { }
+    public OvsdbTepRemoveConfigHelper() { }
 
     /**
      * Removes the TEP from ITM configuration/operational Datastore in one of the following cases.
@@ -54,7 +54,7 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param wrTx WriteTransaction object
      */
 
-    public static void removeTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
+    public void removeTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
                                                   DataBroker dataBroker, WriteTransaction wrTx) {
         BigInteger dpnId = BigInteger.valueOf(0);
 
@@ -153,7 +153,7 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param portName port name as a part of VtepsKey
      * @param wrTx WriteTransaction object
      */
-    private static void removeVtepFromTZConfig(IpPrefix subnetMaskObj, String tzName, BigInteger dpnId,
+    private void removeVtepFromTZConfig(IpPrefix subnetMaskObj, String tzName, BigInteger dpnId,
         String portName, WriteTransaction wrTx) {
         SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
         VtepsKey vtepkey = new VtepsKey(dpnId, portName);
@@ -178,7 +178,7 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param dataBroker data broker handle to perform operations on operational datastore
      * @param wrTx WriteTransaction object
      */
-    public static void removeUnknownTzTepFromTepsNotHosted(String tzName, IpAddress tepIpAddress,
+    public void removeUnknownTzTepFromTepsNotHosted(String tzName, IpAddress tepIpAddress,
                                                            BigInteger dpnId, DataBroker dataBroker,
                                                            WriteTransaction wrTx) {
         List<UnknownVteps> vtepList = null;
@@ -229,7 +229,7 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param dpnId bridge datapath ID in BigInteger
      * @param wrTx WriteTransaction object
      */
-    private static void removeVtepFromTepsNotHosted(String tzName, BigInteger dpnId,
+    private void removeVtepFromTepsNotHosted(String tzName, BigInteger dpnId,
                                                       WriteTransaction wrTx) {
 
         UnknownVtepsKey unknownVtepkey = new UnknownVtepsKey(dpnId);
@@ -250,7 +250,7 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param tzName transport zone name in string
      * @param wrTx WriteTransaction object
      */
-    private static void removeTzFromTepsNotHosted(String tzName, WriteTransaction wrTx) {
+    private void removeTzFromTepsNotHosted(String tzName, WriteTransaction wrTx) {
         InstanceIdentifier<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneIid =
                 InstanceIdentifier.builder(NotHostedTransportZones.class)
                 .child(TepsInNotHostedTransportZone.class,

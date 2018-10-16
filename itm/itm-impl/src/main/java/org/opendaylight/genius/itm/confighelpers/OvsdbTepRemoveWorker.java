@@ -24,12 +24,15 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
     private final String strDpid;
     private final String tzName;
     private final DataBroker dataBroker;
+    private final OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper;
 
-    public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName, DataBroker broker) {
+    public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName, DataBroker broker,
+                                OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper) {
         this.tepIp = tepIp;
         this.strDpid = strDpid;
         this.tzName = tzName;
         this.dataBroker = broker ;
+        this.ovsdbTepRemoveConfigHelper = ovsdbTepRemoveConfigHelper;
     }
 
     @Override
@@ -39,7 +42,7 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
         LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
 
         // remove TEP received from southbound OVSDB from ITM config DS.
-        OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, wrTx);
+        ovsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, wrTx);
 
         return Collections.singletonList(wrTx.submit());
     }

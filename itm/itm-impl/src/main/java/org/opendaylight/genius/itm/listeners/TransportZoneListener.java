@@ -38,6 +38,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedMoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedRemoveWorker;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
@@ -91,6 +92,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
+    private final OvsdbTepRemoveConfigHelper ovsdbTepRemoveConfigHelper;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
@@ -119,6 +121,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
         serviceRecoveryRegistry.addRecoverableListener(ItmServiceRecoveryHandler.getServiceRegistryKey(), this);
+        this.ovsdbTepRemoveConfigHelper = new OvsdbTepRemoveConfigHelper();
     }
 
     @Override
@@ -322,7 +325,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 // Enqueue 'remove TEP from TepsNotHosted list' operation
                 // into DataStoreJobCoordinator
                 ItmTepsNotHostedRemoveWorker
-                    removeWorker = new ItmTepsNotHostedRemoveWorker(newZoneName, ipAddress, dpnID, dataBroker);
+                    removeWorker = new ItmTepsNotHostedRemoveWorker(newZoneName, ipAddress, dpnID, dataBroker,
+                        ovsdbTepRemoveConfigHelper);
                 jobCoordinator.enqueueJob(newZoneName, removeWorker);
             }
         }
