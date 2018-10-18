@@ -163,9 +163,12 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     public void createDefaultTransportZone(ItmConfig itmConfigObj) {
         if (!entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY)) {
+            LOG.error("EntityOwner is not ACTIVE. Default-Transport-Zone creation is skipped.");
             return;
         }
         jobCoordinator.enqueueJob(ITMConstants.DEFAULT_TRANSPORT_ZONE, () -> {
+            LOG.info("Default-Transport-Zone creation job is picked.");
+            LOG.info("itmConfig obj: {}", itmConfigObj);
             boolean defTzEnabled = itmConfigObj.isDefTzEnabled();
             if (defTzEnabled) {
                 String tunnelType = itmConfigObj.getDefTzTunnelType();
