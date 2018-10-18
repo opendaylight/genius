@@ -106,6 +106,7 @@ public class TepCommandHelper {
 
     @PostConstruct
     public void start() throws ExecutionException, InterruptedException {
+        LOG.info("TepCommandHelper Started and itmConfig: {}", itmConfig);
         boolean defTzEnabled = itmConfig.isDefTzEnabled();
         if (defTzEnabled) {
             String tunnelType = itmConfig.getDefTzTunnelType();
