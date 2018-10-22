@@ -11,6 +11,8 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,16 +20,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
-import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
+import org.opendaylight.genius.itm.cli.TepCommandHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
-import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDefTransportZoneObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedTepNotHostedTransportZoneObjects;
@@ -38,6 +37,8 @@ import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
@@ -53,28 +54,36 @@ public class ItmTepAutoConfigTest {
 
     public @Rule LogRule logRule = new LogRule();
     // TODO public @Rule LogCaptureRule logCaptureRule = new LogCaptureRule();
-    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, TestableDataTreeChangeListenerModule.class,
-            JobCoordinatorTestModule.class, CacheModule.class);
+    public @Rule MethodRule guice = new GuiceRule(ItmTestModule.class, JobCoordinatorTestModule.class,
+            CacheModule.class);
 
     TransportZone transportZone;
-    RetryingManagedNewTransactionRunner txRunner;
+    TransportZones transportZones;
 
-    private @Inject DataBroker dataBroker;
-    private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
-    private @Inject ItmProvider itmProvider;
+    // list objects
+    List<TransportZone> transportZoneList = new ArrayList<>();
+
+    // InstanceIdentifier objects building
+
+    // TransportZones Iid
+    InstanceIdentifier<TransportZones> tzonesPath = InstanceIdentifier.builder(TransportZones.class).build();
+
+    @Inject DataBroker dataBroker;
+    private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     @Before
     public void start() throws InterruptedException {
         transportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
             .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME))
             .build();
-        this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
+        transportZoneList.add(transportZone);
+        transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
+        unprocessedTunnelsStateCache = new UnprocessedTunnelsStateCache();
     }
 
     // Common method created for code-reuse
     private InstanceIdentifier<TransportZone> processDefTzOnItmConfig(boolean defTzEnabledFlag,
         String defTzTunnelType) throws Exception {
-
         ItmConfig itmConfigObj = null;
         if (defTzTunnelType != null) {
             // set def-tz-enabled flag and def-tz-tunnel-type
@@ -84,9 +93,11 @@ public class ItmTepAutoConfigTest {
             // set def-tz-enabled flag only
             itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(defTzEnabledFlag).build();
         }
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        // Create TepCommandHelper object which creates/deletes default-TZ based
+        // on def-tz-enabled flag
+        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
+                unprocessedTunnelsStateCache);
+        tepCmdHelper.start();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ITMConstants.DEFAULT_TRANSPORT_ZONE);
@@ -115,8 +126,10 @@ public class ItmTepAutoConfigTest {
     @Test
     public void defTzEnabledTrueConfigTest() throws Exception {
         InstanceIdentifier<ItmConfig> iid = InstanceIdentifier.create(ItmConfig.class);
+
         // set def-tz-enabled flag to true
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true).build();
+
 
         // write into config DS
         CheckedFuture<Void, TransactionCommitFailedException> futures =
@@ -206,17 +219,15 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void defTzDeletionTest() throws Exception {
-        // wait for start-up default-TZ creation task to get over
-        coordinatorEventsWaiter.awaitEventsConsumption();
-
         // create default-TZ first by setting def-tz-enabled flag to true
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
             .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_GRE).build();
 
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
+                unprocessedTunnelsStateCache);
+        tepCmdHelper.start();
 
+        // Create TepCommandHelper object which creates/deletes default-TZ based on def-tz-enabled flag
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ITMConstants.DEFAULT_TRANSPORT_ZONE);
         Assert.assertNotNull(tzonePath);
@@ -228,9 +239,9 @@ public class ItmTepAutoConfigTest {
         // now delete default-TZ first by setting def-tz-enabled flag to false
         itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(false).build();
 
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        // Create TepCommandHelper object which creates/deletes default-TZ based on def-tz-enabled flag
+        tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj, unprocessedTunnelsStateCache);
+        tepCmdHelper.start();
 
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).get());
@@ -238,8 +249,13 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void testAddDeleteTepForDefTz() throws Exception {
-        // wait for start-up default-TZ creation task to get over
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        // create default-TZ first by setting def-tz-enabled flag to true
+        ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
+            .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
+
+        TepCommandHelper tepCmdHelper = new TepCommandHelper(dataBroker, itmConfigObj,
+                unprocessedTunnelsStateCache);
+        tepCmdHelper.start();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ITMConstants.DEFAULT_TRANSPORT_ZONE);
@@ -275,19 +291,14 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void testAddDeleteTepForTz() throws Exception {
-        // wait for start-up default-TZ creation task to get over
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        // create TZ
+        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, tzonesPath, transportZones, dataBroker);
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ItmTestConstants.TZ_NAME);
         Assert.assertNotNull(tzonePath);
 
-        // create TZA
-        InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
-        // check TZ is created with correct TZ name
+        // check TZ is created
         Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get().getZoneName());
 
@@ -324,16 +335,6 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void tepAddDeleteFromDefTzViaSouthboundTest() throws Exception  {
-        // wait for start-up default-TZ creation task to get over
-        coordinatorEventsWaiter.awaitEventsConsumption();
-
-        // create default-TZ first by setting def-tz-enabled flag to true
-        ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
-                .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
-
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
-
         String tepIp = ItmTestConstants.DEF_TZ_TEP_IP;
         // create Network topology node with tep-ip set into ExternalIds list
         // OvsdbNodeListener would be automatically listen on Node to add TEP
@@ -348,7 +349,7 @@ public class ItmTepAutoConfigTest {
                 ItmTestConstants.DEF_BR_DPID, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ITMConstants.DEFAULT_TRANSPORT_ZONE);
@@ -366,7 +367,7 @@ public class ItmTepAutoConfigTest {
             null, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
 
@@ -382,6 +383,10 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void tepAddDeleteFromNbTzViaSouthboundTest() throws Exception  {
+        // create Transport-zone in advance
+        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, tzonesPath, transportZones,
+            dataBroker);
+
         String tepIp = ItmTestConstants.NB_TZ_TEP_IP;
         // create Network topology node with tep-ip set into ExternalIds list
         // OvsdbNodeListener would be automatically listen on Node to add TEP
@@ -391,17 +396,12 @@ public class ItmTepAutoConfigTest {
             connInfo, tepIp, ItmTestConstants.TZ_NAME, dataBroker);
         future.get();
 
-        // create Transport-zone in advance
-        InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
                 ItmTestConstants.DEF_BR_DPID, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ItmTestConstants.TZ_NAME);
@@ -424,7 +424,7 @@ public class ItmTepAutoConfigTest {
         future = OvsdbTestUtil.updateNode(connInfo, tepIp, ItmTestConstants.TZ_NAME, null, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         // check TEP is deleted from default-TZ when TEP-Ip is removed from southbound
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
@@ -446,7 +446,7 @@ public class ItmTepAutoConfigTest {
                 ItmTestConstants.NOT_HOSTED_DEF_BR_DPID, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedtzPath = ItmTepAutoConfigTestUtil
             .getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -461,7 +461,7 @@ public class ItmTepAutoConfigTest {
             ItmTestConstants.DEF_BR_NAME, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         Assert.assertEquals(Optional.absent(),dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.OPERATIONAL, notHostedtzPath).get());
@@ -469,16 +469,6 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void tepUpdateForTzTest() throws Exception {
-        // wait for start-up default-TZ creation task to get over
-        coordinatorEventsWaiter.awaitEventsConsumption();
-
-        // create default-TZ first by setting def-tz-enabled flag to true
-        ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true)
-                .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN).build();
-
-        // creates/deletes default-TZ based on def-tz-enabled flag
-        itmProvider.createDefaultTransportZone(itmConfigObj);
-
         String tepIp = ItmTestConstants.DEF_TZ_TEP_IP;
         // create Network topology node with tep-ip set into ExternalIds list
         // OvsdbNodeListener would be automatically listen on Node to add TEP
@@ -493,7 +483,7 @@ public class ItmTepAutoConfigTest {
                 ItmTestConstants.DEF_BR_DPID, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         // iid for default-TZ
         InstanceIdentifier<TransportZone> defTzonePath = ItmTepAutoConfigTestUtil.getTzIid(
@@ -512,9 +502,9 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(oldVTepPath);
 
         // create Transport-zone TZA
-        InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, tzonesPath, transportZones,
+            dataBroker);
+
         // iid for TZA configured from NB
         InstanceIdentifier<TransportZone> tzaTzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ItmTestConstants.TZ_NAME);
@@ -540,6 +530,9 @@ public class ItmTepAutoConfigTest {
 
     @Test
     public void tepUpdateForBrNameTest() throws Exception {
+        // create Transport-zone in advance
+        ItmUtils.syncWrite(LogicalDatastoreType.CONFIGURATION, tzonesPath, transportZones, dataBroker);
+
         String tepIp = ItmTestConstants.NB_TZ_TEP_IP;
         // prepare OVSDB node with tep-ip set into ExternalIds list
         // OvsdbNodeListener would be automatically listen on Node to add TEP
@@ -549,18 +542,12 @@ public class ItmTepAutoConfigTest {
             connInfo, tepIp, ItmTestConstants.TZ_NAME, dataBroker);
         future.get();
 
-        // create Transport-zone in advance
-        InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
-
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
                 ItmTestConstants.DEF_BR_DPID, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
             ItmTestConstants.TZ_NAME);
@@ -581,7 +568,7 @@ public class ItmTepAutoConfigTest {
                 ItmTestConstants.BR2_DPID, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         // update OVSDB node with br-name=br2 in ExternalIds column
         String brName = ItmTestConstants.BR2_NAME;
@@ -589,7 +576,7 @@ public class ItmTepAutoConfigTest {
             ItmTestConstants.TZ_NAME, brName, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         InstanceIdentifier<Vteps> newVTepPath = ItmTepAutoConfigTestUtil.getTepIid(subnetMaskObj,
             ItmTestConstants.TZ_NAME, ItmTestConstants.INT_BR2_DPID, ITMConstants.DUMMY_PORT);
@@ -672,7 +659,7 @@ public class ItmTepAutoConfigTest {
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
-        coordinatorEventsWaiter.awaitEventsConsumption();
+        Thread.sleep(1000);
 
         InstanceIdentifier<TransportZone> tzPath = ItmTepAutoConfigTestUtil.getTzIid(
             ItmTestConstants.NOT_HOSTED_TZ_NAME);

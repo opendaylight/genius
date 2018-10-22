@@ -78,10 +78,7 @@ public final class OvsdbTepAddConfigHelper {
             // add TEP into default-TZ
             tzone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
             if (tzone == null) {
-                // Case: default-TZ is not yet created, then add TEP into "teps-in-not-hosted-transport-zone"
-                LOG.trace("Adding TEP with default TZ into teps-in-not-hosted-transport-zone.");
-                addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, dpnId, ofTunnel,
-                        dataBroker, wrTx);
+                LOG.error("Error: default-transport-zone is not yet created.");
                 return;
             }
             LOG.trace("Add TEP into default-transport-zone.");

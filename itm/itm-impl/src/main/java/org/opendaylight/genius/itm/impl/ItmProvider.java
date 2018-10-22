@@ -12,7 +12,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -43,9 +42,7 @@ import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
-import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
@@ -58,7 +55,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
@@ -97,9 +93,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private EntityOwnershipCandidateRegistration registryCandidate;
     private final DpnTepStateCache dpnTepStateCache;
     private final TunnelStateCache tunnelStateCache;
-    private final ItmConfig itmConfig;
-    private final JobCoordinator jobCoordinator;
-    private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -117,10 +110,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        EntityOwnershipService entityOwnershipService,
                        DpnTepStateCache dpnTepStateCache,
                        final ItmDiagStatusProvider itmDiagStatusProvider,
-                       final TunnelStateCache tunnelStateCache,
-                       final ItmConfig itmConfig,
-                       final JobCoordinator jobCoordinator,
-                       final EntityOwnershipUtils entityOwnershipUtils) {
+                       final TunnelStateCache tunnelStateCache) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -139,10 +129,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.itmStatusProvider = itmDiagStatusProvider;
         this.tunnelStateCache = tunnelStateCache;
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
-
-        this.itmConfig = itmConfig;
-        this.jobCoordinator = jobCoordinator;
-        this.entityOwnershipUtils = entityOwnershipUtils;
     }
 
     @PostConstruct
@@ -156,33 +142,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         } catch (Exception ex) {
             itmStatusProvider.reportStatus(ex);
             LOG.info("ItmProvider failed to start", ex);
-            return;
         }
-        createDefaultTransportZone(itmConfig);
-    }
-
-    public void createDefaultTransportZone(ItmConfig itmConfigObj) {
-        if (!entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY)) {
-            return;
-        }
-        jobCoordinator.enqueueJob(ITMConstants.DEFAULT_TRANSPORT_ZONE, () -> {
-            boolean defTzEnabled = itmConfigObj.isDefTzEnabled();
-            if (defTzEnabled) {
-                String tunnelType = itmConfigObj.getDefTzTunnelType();
-                if (tunnelType == null || tunnelType.isEmpty()) {
-                    tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
-                }
-                // validate tunnel-type and based on tunnel-type,
-                // create default-TZ or update default-TZ if tunnel-type is changed during ODL restart
-                configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
-                LOG.info("{} is created with {} tunnel-type.", ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
-            } else {
-                LOG.info("Removing {} on start-up, def-tz-enabled is false.", ITMConstants.DEFAULT_TRANSPORT_ZONE);
-                // check if default-TZ already exists, then delete it because flag is OFF now.
-                ItmUtils.deleteTransportZoneFromConfigDS(ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
-            }
-            return Collections.emptyList();
-        });
     }
 
     private void registerEntityForOwnership() {
