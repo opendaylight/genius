@@ -106,6 +106,19 @@ public class TepCommandHelper {
 
     @PostConstruct
     public void start() throws ExecutionException, InterruptedException {
+        boolean defTzEnabled = itmConfig.isDefTzEnabled();
+        if (defTzEnabled) {
+            String tunnelType = itmConfig.getDefTzTunnelType();
+            if (tunnelType == null || tunnelType.isEmpty()) {
+                tunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
+            }
+            configureTunnelType(ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
+            LOG.debug("{} is created with {} tunnel-type.", ITMConstants.DEFAULT_TRANSPORT_ZONE, tunnelType);
+        } else {
+            LOG.debug("Removing {} on start-up, def-tz-enabled is false.", ITMConstants.DEFAULT_TRANSPORT_ZONE);
+            // check if default-TZ already exists, then delete it because flag is OFF now.
+            ItmUtils.deleteTransportZoneFromConfigDS(ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
+        }
         LOG.info("TepCommandHelper Started");
     }
 
