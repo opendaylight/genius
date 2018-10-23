@@ -50,6 +50,9 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -100,6 +103,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final ItmConfig itmConfig;
     private final JobCoordinator jobCoordinator;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private ItmProvider.ItmProviderEOSListener itmProviderEOSListener;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -151,6 +155,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         try {
             createIdPool();
             registerEntityForOwnership();
+            this.itmProviderEOSListener = new ItmProvider.ItmProviderEOSListener(this, this.entityOwnershipService);
             itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
             LOG.info("ItmProvider Started");
         } catch (Exception ex) {
@@ -158,7 +163,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             LOG.info("ItmProvider failed to start", ex);
             return;
         }
-        createDefaultTransportZone(itmConfig);
     }
 
     public void createDefaultTransportZone(ItmConfig itmConfigObj) {
@@ -213,6 +217,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             registryCandidate.close();
         }
         itmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
+        this.itmProviderEOSListener.close();
         LOG.info("ItmProvider Closed");
     }
 
@@ -425,5 +430,37 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public Optional<StateTunnelList> getTunnelState(String interfaceName) throws ReadFailedException {
         return tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
+    }
+
+    public void handleOwnershipChange(EntityOwnershipChange ownershipChange,
+                                      EntityOwnershipListenerRegistration listenerRegistration) {
+        if (ownershipChange.getState().isOwner()) {
+            LOG.debug("*This* instance of provider is set as a MASTER instance");
+            createDefaultTransportZone(itmConfig);
+        } else {
+            LOG.debug("*This* instance of provider is set as a SLAVE instance");
+        }
+        if (listenerRegistration != null) {
+            listenerRegistration.close();
+        }
+    }
+
+    private static class ItmProviderEOSListener implements EntityOwnershipListener {
+        private final ItmProvider itmProviderObj;
+        private final EntityOwnershipListenerRegistration listenerRegistration;
+
+        ItmProviderEOSListener(ItmProvider itmProviderObj, EntityOwnershipService entityOwnershipService) {
+            this.itmProviderObj = itmProviderObj;
+            this.listenerRegistration = entityOwnershipService.registerListener(ITMConstants.ITM_CONFIG_ENTITY, this);
+        }
+
+        public void close() {
+            listenerRegistration.close();
+        }
+
+        @Override
+        public void ownershipChanged(EntityOwnershipChange ownershipChange) {
+            itmProviderObj.handleOwnershipChange(ownershipChange, listenerRegistration);
+        }
     }
 }
