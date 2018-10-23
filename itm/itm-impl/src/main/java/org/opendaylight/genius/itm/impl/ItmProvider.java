@@ -45,12 +45,14 @@ import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
-import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipChange;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListener;
+import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipListenerRegistration;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -100,7 +102,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final TunnelStateCache tunnelStateCache;
     private final ItmConfig itmConfig;
     private final JobCoordinator jobCoordinator;
-    private final EntityOwnershipUtils entityOwnershipUtils;
+    private final ItmProvider.ItmProviderEOSListener itmProviderEOSListener;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -120,8 +122,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        final ItmDiagStatusProvider itmDiagStatusProvider,
                        final TunnelStateCache tunnelStateCache,
                        final ItmConfig itmConfig,
-                       final JobCoordinator jobCoordinator,
-                       final EntityOwnershipUtils entityOwnershipUtils) {
+                       final JobCoordinator jobCoordinator) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -143,7 +144,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
         this.itmConfig = itmConfig;
         this.jobCoordinator = jobCoordinator;
-        this.entityOwnershipUtils = entityOwnershipUtils;
+        this.itmProviderEOSListener = new ItmProvider.ItmProviderEOSListener(this, this.entityOwnershipService);
     }
 
     @PostConstruct
@@ -152,20 +153,15 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         try {
             createIdPool();
             registerEntityForOwnership();
-            itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
             LOG.info("ItmProvider Started");
         } catch (Exception ex) {
             itmStatusProvider.reportStatus(ex);
             LOG.info("ItmProvider failed to start", ex);
             return;
         }
-        createDefaultTransportZone(itmConfig);
     }
 
     public void createDefaultTransportZone(ItmConfig itmConfigObj) {
-        if (!entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY)) {
-            return;
-        }
         jobCoordinator.enqueueJob(ITMConstants.DEFAULT_TRANSPORT_ZONE, () -> {
             boolean defTzEnabled = itmConfigObj.isDefTzEnabled();
             if (defTzEnabled) {
@@ -214,6 +210,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             registryCandidate.close();
         }
         itmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
+        this.itmProviderEOSListener.close();
         LOG.info("ItmProvider Closed");
     }
 
@@ -424,5 +421,38 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public Optional<StateTunnelList> getTunnelState(String interfaceName) throws ReadFailedException {
         return tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
+    }
+
+    public void handleOwnershipChange(EntityOwnershipChange ownershipChange,
+                                      EntityOwnershipListenerRegistration listenerRegistration) {
+        if (ownershipChange.getState().isOwner()) {
+            LOG.info("*This* instance of provider is set as a MASTER instance");
+            createDefaultTransportZone(itmConfig);
+        } else {
+            LOG.info("*This* instance of provider is set as a SLAVE instance");
+        }
+        itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
+        if (listenerRegistration != null) {
+            listenerRegistration.close();
+        }
+    }
+
+    private static class ItmProviderEOSListener implements EntityOwnershipListener {
+        private final ItmProvider itmProviderObj;
+        private final EntityOwnershipListenerRegistration listenerRegistration;
+
+        ItmProviderEOSListener(ItmProvider itmProviderObj, EntityOwnershipService entityOwnershipService) {
+            this.itmProviderObj = itmProviderObj;
+            this.listenerRegistration = entityOwnershipService.registerListener(ITMConstants.ITM_CONFIG_ENTITY, this);
+        }
+
+        public void close() {
+            listenerRegistration.close();
+        }
+
+        @Override
+        public void ownershipChanged(EntityOwnershipChange ownershipChange) {
+            itmProviderObj.handleOwnershipChange(ownershipChange, listenerRegistration);
+        }
     }
 }
