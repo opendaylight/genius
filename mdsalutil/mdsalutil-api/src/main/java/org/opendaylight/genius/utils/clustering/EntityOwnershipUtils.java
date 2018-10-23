@@ -82,15 +82,18 @@ public class EntityOwnershipUtils {
 
             tries--;
 
-            LOG.debug("EntityOwnershipState for {} is not yet available. {} tries left", entity, tries);
+            LOG.info("EntityOwnershipState for {} is not yet available. sleepBetweenRetries: {}  tries: {} left",
+                     entity, sleepBetweenRetries, tries);
 
             if (tries > 0) {
                 try {
                     Thread.sleep(sleepBetweenRetries);
                 } catch (InterruptedException e) {
-                    break;
+                    LOG.info("Sleep exception: {}. {} tries left", e, tries);
+                    continue;
                 }
             } else {
+                LOG.info("Retry over. {} tries left", tries);
                 break;
             }
         }
