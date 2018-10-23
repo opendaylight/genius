@@ -11,7 +11,6 @@ package org.opendaylight.genius.itm.listeners;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
@@ -37,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * This class listens for OvsdbNode creation/removal/update in Network Topology Operational DS.
  * This is used to handle add/update/remove of TEPs of switches into/from ITM.
  */
-@Singleton
 public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbNodeListener.class);
