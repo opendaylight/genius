@@ -88,7 +88,7 @@ public class EntityOwnershipUtils {
                 try {
                     Thread.sleep(sleepBetweenRetries);
                 } catch (InterruptedException e) {
-                    break;
+                    continue;
                 }
             } else {
                 break;
