@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+import javax.annotation.Nullable;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -70,7 +70,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
         });
         future.addCallback(new FutureCallback<Void>() {
             @Override
-            public void onSuccess(@NullableDecl Void result) {
+            public void onSuccess(@Nullable Void result) {
                 cleanUp();
             }
 
