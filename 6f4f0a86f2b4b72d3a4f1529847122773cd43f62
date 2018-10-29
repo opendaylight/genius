@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "eb8240e2_b06ad337",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-10-29T10:08:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "063aa910_bad56d3e",
+      "range": {
+        "startLine": 106,
+        "startChar": 24,
+        "endLine": 106,
+        "endChar": 58
+      },
+      "revId": "6f4f0a86f2b4b72d3a4f1529847122773cd43f62",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "57a7434e_b1439dee",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2018-10-26T10:49:39Z",
       "side": 1,
       "message": "After DEF-TZ is created, can we do this.itmProviderEntityOwnershipListener.close(); to avoid listeners to get notifications all the time.",
+      "range": {
+        "startLine": 439,
+        "startChar": 12,
+        "endLine": 439,
+        "endChar": 50
+      },
+      "revId": "6f4f0a86f2b4b72d3a4f1529847122773cd43f62",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7048e8ce_e936476f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-10-29T10:08:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "57a7434e_b1439dee",
       "range": {
         "startLine": 439,
         "startChar": 12,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "53340a38_e07680af",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-10-29T10:08:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4ab33113_9fc8804f",
+      "range": {
+        "startLine": 456,
+        "startChar": 12,
+        "endLine": 456,
+        "endChar": 16
+      },
+      "revId": "6f4f0a86f2b4b72d3a4f1529847122773cd43f62",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4f783024_033d7fbb",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 5
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "4cf86ac8_06f44c72",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 459,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-10-29T10:08:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "4f783024_033d7fbb",
+      "range": {
+        "startLine": 459,
+        "startChar": 20,
+        "endLine": 459,
+        "endChar": 36
+      },
+      "revId": "6f4f0a86f2b4b72d3a4f1529847122773cd43f62",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "47c7926f_1296b13d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 5
@@ -105,6 +201,30 @@
       "writtenOn": "2018-10-26T10:49:39Z",
       "side": 1,
       "message": "\"this\" is not required.",
+      "range": {
+        "startLine": 460,
+        "startChar": 12,
+        "endLine": 460,
+        "endChar": 16
+      },
+      "revId": "6f4f0a86f2b4b72d3a4f1529847122773cd43f62",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25d1bf77_9bddc99c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 460,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-10-29T10:08:27Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47c7926f_1296b13d",
       "range": {
         "startLine": 460,
         "startChar": 12,
