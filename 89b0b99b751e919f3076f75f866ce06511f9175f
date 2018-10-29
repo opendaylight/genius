@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b3743690_3db3966f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-10-29T06:16:45Z",
+      "side": 1,
+      "message": "this patch is intermittently failing, as all 3 nodes are saying \"I am not the owner\", probably during the boot up time..",
+      "revId": "89b0b99b751e919f3076f75f866ce06511f9175f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
