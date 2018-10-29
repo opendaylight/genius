@@ -34,6 +34,24 @@
       "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "43f6800f_b72e1e5e",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-10-29T08:45:38Z",
+      "side": 1,
+      "message": "I do not understand why eventsWaiter wasn\u0027t helping here. I trust you have a valid reason for this. Otherwise this patch seems fine. Please check why the CSIT is failing",
+      "parentUuid": "b80df001_44883b78",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
