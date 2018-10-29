@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "87f2ab79_488d1df0",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-10-29T21:32:34Z",
+      "side": 1,
+      "message": "This looks very curious, and likely wrong... you already did a get() in line 480 for the future you obtained in line 478 - doing another get() here won\u0027t do anything, no?",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a149d032_48985d60",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 1
@@ -49,6 +66,41 @@
       "side": 1,
       "message": "I do not understand why eventsWaiter wasn\u0027t helping here. I trust you have a valid reason for this. Otherwise this patch seems fine. Please check why the CSIT is failing",
       "parentUuid": "b80df001_44883b78",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fbb7f6dc_f8322ad2",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-10-29T21:32:34Z",
+      "side": 1,
+      "message": "I\u0027m quite strongly against more Thread.sleep() - this makes this test slower than it has to be, and brittle (and it will fail on Jenkins sometimes when it\u0027s loaded).  Can we try to find a solution to avoid this?",
+      "parentUuid": "43f6800f_b72e1e5e",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7d975b0c_ad633690",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-10-29T21:32:34Z",
+      "side": 1,
+      "message": "giventhat this test (at least currently) only tests the wiring and does not \"do\" anything real, i.e. it does not write data in async listeners, adding the TestableDataTreeChangeListenerModule \u0026 JobCoordinatorTestModule and using the JobCoordinatorEventsWaiter, in this test, seems pointless, no?  Do you want to remove this from this change, just to keep it simple and clear, or am I missing something why this is useful/required?",
       "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
