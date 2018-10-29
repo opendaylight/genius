@@ -451,10 +451,8 @@ public class InterfaceInventoryStateListener
         private void handleTunnelMonitoringRemoval(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId,
             String removedInterfaceName, IfTunnel ifTunnel) throws ExecutionException, InterruptedException {
             interfaceManagerCommonUtils.removeTunnelIngressFlow(tx, ifTunnel, dpId, removedInterfaceName);
-
-            IfmUtil.unbindService(txRunner, coordinator, removedInterfaceName,
-                    FlowBasedServicesUtils.buildDefaultServiceId(removedInterfaceName));
-
+            IfmUtil.unbindService(tx,
+                removedInterfaceName, FlowBasedServicesUtils.buildDefaultServiceId(removedInterfaceName));
             alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, removedInterfaceName);
         }
 
