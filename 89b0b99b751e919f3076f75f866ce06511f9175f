@@ -16,6 +16,24 @@
       "revId": "89b0b99b751e919f3076f75f866ce06511f9175f",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d8197ef_fc323632",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-10-29T06:19:17Z",
+      "side": 1,
+      "message": "Either remove this check and do it the previous way with retries, so that the issue is resolved. Or else, check if there is a proper event that will be delivered when the entity owner is elected. Make sure that we don\u0027t end up doing for each entity ownership change event, should be done only for the first time during the boot-up",
+      "parentUuid": "b3743690_3db3966f",
+      "revId": "89b0b99b751e919f3076f75f866ce06511f9175f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
