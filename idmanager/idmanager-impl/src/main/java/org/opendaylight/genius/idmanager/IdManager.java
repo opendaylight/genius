@@ -691,7 +691,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     private IdLocalPool getOrCreateLocalIdPool(String parentPoolName, String localPoolName)
-        throws IdManagerException, ReadFailedException {
+        throws IdManagerException {
         IdLocalPool localIdPool = localPool.get(parentPoolName);
         if (localIdPool == null) {
             idUtils.lock(lockManager, parentPoolName);
@@ -700,10 +700,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 // first, has created the localPool
                 InstanceIdentifier<IdPool> childIdPoolInstanceIdentifier = idUtils
                         .getIdPoolInstance(localPoolName);
-                IdPool childIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION,
-                    childIdPoolInstanceIdentifier);
-                if (childIdPool != null) {
-                    updateLocalIdPoolCache(childIdPool, parentPoolName);
+                try {
+                    IdPool childIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION,
+                            childIdPoolInstanceIdentifier);
+                    if (childIdPool != null) {
+                        updateLocalIdPoolCache(childIdPool, parentPoolName);
+                    }
+                } catch (ReadFailedException ex) {
+                    LOG.debug("Failed to read id pool {} due to {}", localPoolName, ex.getMessage());
                 }
                 if (localPool.get(parentPoolName) == null) {
                     try {
