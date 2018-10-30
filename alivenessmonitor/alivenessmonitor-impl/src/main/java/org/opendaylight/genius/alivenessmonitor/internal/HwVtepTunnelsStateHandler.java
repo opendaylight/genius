@@ -8,31 +8,37 @@
 package org.opendaylight.genius.alivenessmonitor.internal;
 
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorStateId;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.InterruptibleCheckedConsumer;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
-import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.serviceutils.tools.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
@@ -73,16 +79,17 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
 
     private static final Logger LOG = LoggerFactory.getLogger(HwVtepTunnelsStateHandler.class);
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final AlivenessMonitor alivenessMonitor;
 
     @Inject
-    public HwVtepTunnelsStateHandler(@Reference final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
+    public HwVtepTunnelsStateHandler(@Reference final DataBroker dataBroker,
+                                     final AlivenessMonitor alivenessMonitor,
                                      final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
                       .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class));
-        this.dataBroker = dataBroker;
+        this.txRunner = new RetryingManagedNewTransactionRunner(dataBroker);
         this.alivenessMonitor = alivenessMonitor;
         alivenessProtocolHandlerRegistry.register(MonitorProtocolType.Bfd, this);
     }
@@ -114,66 +121,42 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         LOG.debug("Acquiring lock for monitor key : {} to process monitor DCN", monitorKey);
         alivenessMonitor.acquireLock(lock);
 
-        final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
-
-        ListenableFuture<Optional<MonitoringState>> stateResult = tx.read(LogicalDatastoreType.OPERATIONAL,
-                getMonitorStateId(monitorKey));
-        Futures.addCallback(stateResult, new FutureCallback<Optional<MonitoringState>>() {
-
+        AtomicBoolean stateChanged = new AtomicBoolean();
+        AtomicReference<MonitoringState> currentState = new AtomicReference<>();
+        txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
+            Optional<MonitoringState> optState = tx.read(getMonitorStateId(monitorKey)).get();
+            if (optState.isPresent()) {
+                currentState.set(optState.get());
+                if (currentState.get().getState() == newTunnelOpState) {
+                    return;
+                }
+                stateChanged.set(true);
+                final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey)
+                    .setState(newTunnelOpState).build();
+                tx.merge(getMonitorStateId(monitorKey), state);
+            } else {
+                LOG.warn("Monitoring State not available for key: {} to process the Packet received", monitorKey);
+            }
+        }).addCallback(new FutureCallback<Object>() {
             @Override
-            public void onSuccess(@Nonnull Optional<MonitoringState> optState) {
-                if (optState.isPresent()) {
-                    final MonitoringState currentState = optState.get();
-                    if (currentState.getState() == newTunnelOpState) {
-                        return;
-                    }
-                    final boolean stateChanged = true;
-                    final MonitoringState state = new MonitoringStateBuilder().setMonitorKey(monitorKey)
-                            .setState(newTunnelOpState).build();
-                    tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), state);
-                    ListenableFuture<Void> writeResult = tx.submit();
-                    // WRITE Callback
-                    Futures.addCallback(writeResult, new FutureCallback<Void>() {
-
-                        @Override
-                        public void onSuccess(Void arg0) {
-                            alivenessMonitor.releaseLock(lock);
-                            if (stateChanged) {
-                                // send notifications
-                                LOG.info("Sending notification for monitor Id : {} with Current State: {}",
-                                        currentState.getMonitorId(), newTunnelOpState);
-                                alivenessMonitor.publishNotification(currentState.getMonitorId(), newTunnelOpState);
-                            } else {
-                                if (LOG.isTraceEnabled()) {
-                                    LOG.trace("Successful in writing monitoring state {} to ODS", state);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@Nonnull Throwable error) {
-                            alivenessMonitor.releaseLock(lock);
-                            LOG.warn("Error in writing monitoring state : {} to Datastore", monitorKey, error);
-                            if (LOG.isTraceEnabled()) {
-                                LOG.trace("Error in writing monitoring state: {} to Datastore", state);
-                            }
-                        }
-                    }, MoreExecutors.directExecutor());
+            public void onSuccess(@Nullable Object result) {
+                alivenessMonitor.releaseLock(lock);
+                if (stateChanged.get()) {
+                    // send notifications
+                    LOG.info("Sending notification for monitor Id : {} with Current State: {}",
+                        currentState.get().getMonitorId(), newTunnelOpState);
+                    alivenessMonitor.publishNotification(currentState.get().getMonitorId(), newTunnelOpState);
                 } else {
-                    LOG.warn("Monitoring State not available for key: {} to process the Packet received", monitorKey);
-                    // Complete the transaction
-                    tx.submit();
-                    alivenessMonitor.releaseLock(lock);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Successful in writing monitoring state {} to ODS", newTunnelOpState);
+                    }
                 }
             }
 
             @Override
             public void onFailure(@Nonnull Throwable error) {
-                LOG.error("Error when reading Monitoring State for key: {} to process the Packet received", monitorKey,
-                        error);
-                // FIXME: Not sure if the transaction status is valid to cancel
-                tx.cancel();
                 alivenessMonitor.releaseLock(lock);
+                LOG.warn("Error in writing monitoring state for {} to Datastore", monitorKey, error);
             }
         }, MoreExecutors.directExecutor());
     }
@@ -213,44 +196,52 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         return null;
     }
 
-    // tunnelKey, nodeId, topologyId are initialized to null and immediately passed to getTunnelIdentifier which
-    // FindBugs as a "Load of known null value" violation. Not sure sure what the intent...
-    @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
     void resetMonitoringTask(boolean isEnable) {
         // TODO: get the corresponding hwvtep tunnel from the sourceInterface
         // once InterfaceMgr implements renderer for HWVTEP VXLAN tunnels
 
-        // tunnelKey, nodeId, topologyId are initialized to null and immediately passed to getTunnelIdentifier which
-        // FindBugs flags as a "Load of known null value" violation. Not sure sure what the intent...
-        TunnelsKey tunnelKey = null;
-        String nodeId = null;
-        String topologyId = null;
-        Optional<Tunnels> tunnelsOptional =
-                SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(dataBroker,
-                        LogicalDatastoreType.CONFIGURATION, getTunnelIdentifier(topologyId, nodeId, tunnelKey));
-        if (!tunnelsOptional.isPresent()) {
-            LOG.warn("Tunnel {} is not present on the Node {}. So not disabling the BFD monitoring", tunnelKey, nodeId);
-            return;
-        }
-        Tunnels tunnel = tunnelsOptional.get();
-        List<BfdParams> tunnelBfdParams = tunnel.getBfdParams();
-        if (tunnelBfdParams == null || tunnelBfdParams.isEmpty()) {
-            LOG.debug("there is no bfd params available for the tunnel {}", tunnel);
-            return;
-        }
+        LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+            new InterruptibleCheckedConsumer<TypedReadWriteTransaction<Datastore.Configuration>, ExecutionException>() {
+                @Override
+                // tunnelKey, nodeId, topologyId are initialized to null and immediately passed to
+                // getTunnelIdentifier which FindBugs as a "Load of known null value" violation. Not sure sure what
+                // the intent...
+                @SuppressFBWarnings("NP_LOAD_OF_KNOWN_NULL_VALUE")
+                public void accept(TypedReadWriteTransaction<Datastore.Configuration> tx)
+                    throws ExecutionException, InterruptedException {
+                    TunnelsKey tunnelKey = null;
+                    String nodeId = null;
+                    String topologyId = null;
+                    Optional<Tunnels> tunnelsOptional =
+                        tx.read(getTunnelIdentifier(topologyId, nodeId, tunnelKey)).get();
+                    if (!tunnelsOptional.isPresent()) {
+                        LOG.warn("Tunnel {} is not present on the Node {}. So not disabling the BFD monitoring",
+                            tunnelKey,
+                            nodeId);
+                        return;
+                    }
+                    Tunnels tunnel = tunnelsOptional.get();
+                    List<BfdParams> tunnelBfdParams = tunnel.getBfdParams();
+                    if (tunnelBfdParams == null || tunnelBfdParams.isEmpty()) {
+                        LOG.debug("there is no bfd params available for the tunnel {}", tunnel);
+                        return;
+                    }
 
-        Iterator<BfdParams> tunnelBfdParamsIterator = tunnelBfdParams.iterator();
-        while (tunnelBfdParamsIterator.hasNext()) {
-            BfdParams bfdParam = tunnelBfdParamsIterator.next();
-            if (AlivenessMonitorConstants.BFD_PARAM_ENABLE.equals(bfdParam.getBfdParamKey())) {
-                tunnelBfdParamsIterator.remove();
-                break;
-            }
-        }
-        setBfdParamForEnable(tunnelBfdParams, isEnable);
-        Tunnels tunnelWithBfdReset = new TunnelsBuilder().withKey(tunnelKey).setBfdParams(tunnelBfdParams).build();
-        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
-                getTunnelIdentifier(topologyId, nodeId, tunnelKey), tunnelWithBfdReset);
+                    Iterator<BfdParams> tunnelBfdParamsIterator = tunnelBfdParams.iterator();
+                    while (tunnelBfdParamsIterator.hasNext()) {
+                        BfdParams bfdParam = tunnelBfdParamsIterator.next();
+                        if (AlivenessMonitorConstants.BFD_PARAM_ENABLE.equals(bfdParam.getBfdParamKey())) {
+                            tunnelBfdParamsIterator.remove();
+                            break;
+                        }
+                    }
+                    HwVtepTunnelsStateHandler.this.setBfdParamForEnable(tunnelBfdParams, isEnable);
+                    Tunnels tunnelWithBfdReset =
+                        new TunnelsBuilder().withKey(tunnelKey).setBfdParams(tunnelBfdParams).build();
+                    tx.mergeParentStructureMerge(
+                        getTunnelIdentifier(topologyId, nodeId, tunnelKey), tunnelWithBfdReset);
+                }
+            }), LOG, "Error resetting monitoring task");
     }
 
     @Override
@@ -265,7 +256,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         }
         MonitorProfile profile;
         long profileId = monitorInfo.getProfileId();
-        Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
+        java.util.Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
         if (optProfile.isPresent()) {
             profile = optProfile.get();
         } else {
@@ -299,9 +290,10 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         // be done as part of tunnel add DCN handling.
         String topologyId = "";
         String nodeId = "";
-        MDSALUtil.syncUpdate(dataBroker, LogicalDatastoreType.CONFIGURATION,
+        LoggingFutures.addErrorLogging(
+            txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.mergeParentStructureMerge(
                 getTunnelIdentifier(topologyId, nodeId, new TunnelsKey(/*localRef*/ null, /*remoteRef*/ null)),
-                tunnelWithBfd);
+                tunnelWithBfd)), LOG, "Error starting a monitoring task");
     }
 
     private void fillBfdRemoteConfigs(List<BfdRemoteConfigs> bfdRemoteConfigs, String tunnelRemoteMacAddress) {
