@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c70f9fa1_460e1e45",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 497,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-10-30T07:03:38Z",
+      "side": 1,
+      "message": "Oh thanks for this catch. I missed \u0027future\u0027 object at LHS. Updated it now, this will help below to avoid sleep. Thanks.",
+      "parentUuid": "87f2ab79_488d1df0",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a149d032_48985d60",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 1
@@ -90,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "d03e175b_8976a8dd",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 499,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-10-30T07:03:38Z",
+      "side": 1,
+      "message": "Above mistake correction helped avoiding sleep and eventsWaiter to work properly.",
+      "parentUuid": "fbb7f6dc_f8322ad2",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7d975b0c_ad633690",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTest.java",
         "patchSetId": 1
@@ -101,6 +137,24 @@
       "writtenOn": "2018-10-29T21:32:34Z",
       "side": 1,
       "message": "giventhat this test (at least currently) only tests the wiring and does not \"do\" anything real, i.e. it does not write data in async listeners, adding the TestableDataTreeChangeListenerModule \u0026 JobCoordinatorTestModule and using the JobCoordinatorEventsWaiter, in this test, seems pointless, no?  Do you want to remove this from this change, just to keep it simple and clear, or am I missing something why this is useful/required?",
+      "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b414c07_4751f3c5",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-10-30T07:03:38Z",
+      "side": 1,
+      "message": "It is needed here because if it is not kept then default-transport-zone creation was failing and causing log errors which in turn, was failing ItmTest\u0027s testWiring test case which does not expect any log error.\n\nHence, awaitEventsConsumption() is added to wait for default-TZ creation task (which runs on start-up) to get completed.",
+      "parentUuid": "7d975b0c_ad633690",
       "revId": "6c0a1794e3e95c9b0c88470569945cd0f34fd02c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
