@@ -263,7 +263,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         }
         MonitorProfile profile;
         long profileId = monitorInfo.getProfileId();
-        Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
+        java.util.Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
         if (optProfile.isPresent()) {
             profile = optProfile.get();
         } else {
