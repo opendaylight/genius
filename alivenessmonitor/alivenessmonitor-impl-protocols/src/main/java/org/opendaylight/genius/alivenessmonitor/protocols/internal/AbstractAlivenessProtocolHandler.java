@@ -8,15 +8,18 @@
 
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.primitives.UnsignedBytes;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -27,13 +30,13 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
 
     // private static final Logger LOG = LoggerFactory.getLogger(AbstractAlivenessProtocolHandler.class);
 
-    private final SingleTransactionDataBroker singleTxDataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     AbstractAlivenessProtocolHandler(
             final DataBroker dataBroker,
             final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final MonitorProtocolType protocolType) {
-        this.singleTxDataBroker = new SingleTransactionDataBroker(dataBroker);
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         alivenessProtocolHandlerRegistry.register(protocolType, this);
     }
 
@@ -50,7 +53,20 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
             .state.Interface> id = idBuilder.build();
 
-        return singleTxDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, id);
+        try {
+            return txRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+                input -> input.read(id).get().orElse(null)).get();
+        } catch (ExecutionException | InterruptedException e) {
+            throw new ReadFailedException("Error", e);
+        }
+/*
+        return txRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL,
+            input -> input.read(id).get().orElse(null)).get();
+
+        return txRunner.applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
+            (InterruptibleCheckedFunction<TypedReadTransaction<Operational>, java.util.Optional<Interface>,
+                ExecutionException>) tx -> tx.read(id).get());
+*/
     }
     // @formatter:on
 

@@ -58,7 +58,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.opendaylight.serviceutils</groupId>
-      <artifactId>tools-api</artifactId>
+      <artifactId>listener-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
@@ -78,6 +78,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>model-inventory</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-binding-util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
       <artifactId>rfc7223</artifactId>
     </dependency>
@@ -90,10 +94,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>ipv6util-api</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>sal-binding-broker-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>

@@ -77,7 +77,8 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     private final AlivenessMonitor alivenessMonitor;
 
     @Inject
-    public HwVtepTunnelsStateHandler(@Reference final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
+    public HwVtepTunnelsStateHandler(@Reference(componentName = "legacyDataBroker") final DataBroker dataBroker,
+                                     final AlivenessMonitor alivenessMonitor,
                                      final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
@@ -265,7 +266,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         }
         MonitorProfile profile;
         long profileId = monitorInfo.getProfileId();
-        Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
+        java.util.Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
         if (optProfile.isPresent()) {
             profile = optProfile.get();
         } else {
