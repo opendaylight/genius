@@ -85,8 +85,8 @@ import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.infrautils.testutils.concurrent.TestableQueues;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.InterfaceType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.Table;
@@ -261,7 +261,7 @@ public class InterfaceManagerConfigurationTest {
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the vlan interface
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
             .interfaces.state.Interface ifaceState =
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
@@ -439,7 +439,7 @@ public class InterfaceManagerConfigurationTest {
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the tunnel interface
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
             .interfaces.state.Interface ifaceState =
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
@@ -571,7 +571,7 @@ public class InterfaceManagerConfigurationTest {
         Assert.assertEquals(PORT_NO_1, portNo);
 
         // 2. fetch interface config from datastore API
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface
             interfaceInfo = interfaceManager.getInterfaceInfoFromConfigDataStore(INTERFACE_NAME);
         // FIXME change this once augmentation sorting fix lands
         assertEqualBeans(INTERFACE_NAME, interfaceInfo.getName());
@@ -861,7 +861,7 @@ public class InterfaceManagerConfigurationTest {
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the vlan interface
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
             .interfaces.state.Interface ifaceState =
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
                 IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();

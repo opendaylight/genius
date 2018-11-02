@@ -45,8 +45,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
@@ -117,9 +117,9 @@ public class TepCommandHelperTest {
     private Subnets subnetsTest = null;
     private Vteps vteps = null;
     private Vteps vtepsTest = null;
-    private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+    private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state
             .Interface interfaceTest = null;
-    private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
+    private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface
             interfaceTestNew = null;
     private final List<Subnets> subnetsList = new ArrayList<>() ;
     private final List<DeviceVteps> deviceVtepsList = new ArrayList<>();
@@ -154,10 +154,10 @@ public class TepCommandHelperTest {
                     .child(TransportZone.class, new TransportZoneKey(transportZone1))
                     .child(Subnets.class, new SubnetsKey(ipPrefixTest)).build();
     private final InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
-            .rev140508.interfaces.state.Interface>
+            .rev180220.interfaces.state.Interface>
             interfaceIdentifier = ItmUtils.buildStateInterfaceId(tunnelInterfaceName);
     private final InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces
-            .rev140508.interfaces.Interface>
+            .rev180220.interfaces.Interface>
             interfaceIdentifierNew = ItmUtils.buildId(tunnelInterfaceName);
 
     @Mock
@@ -186,7 +186,7 @@ public class TepCommandHelperTest {
         Optional<Vteps> optionalVteps = Optional.of(vteps);
         Optional<Subnets> optionalSubnets = Optional.of(subnetsTest);
         Optional<Interface> ifStateOptional = Optional.of(interfaceTest);
-        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+        Optional<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces
                 .Interface>
                 ifStateOptionalNew = Optional.of(interfaceTestNew);
 
@@ -252,7 +252,7 @@ public class TepCommandHelperTest {
         stateTunnelList.add(stateTunnelListTest);
         lowerLayerIfList.add(dpId1.toString());
         interfaceTest = new InterfaceBuilder().setOperStatus(Interface.OperStatus.Up)
-                .setAdminStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                .setAdminStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
                         .interfaces.state.Interface.AdminStatus.Up)
                 .setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715
                         .PhysAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA"))

@@ -222,7 +222,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
             for (OvsBridgeTunnelEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
                 String portName = bridgeInterfaceEntry.getTunnelName();
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                        .ietf.interfaces.rev140508.interfaces.Interface iface =
+                        .ietf.interfaces.rev180220.interfaces.Interface iface =
                         dpnTepStateCache.getInterfaceFromCache(portName);
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);

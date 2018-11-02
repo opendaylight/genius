@@ -43,11 +43,11 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.AdminStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.InterfaceChildInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
@@ -111,7 +111,7 @@ public class ItmTunnelAggregationHelper {
 
     public void updateLogicalTunnelSelectGroup(InterfaceParentEntry entry, DataBroker broker) {
         String logicTunnelName = entry.getParentInterface();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
                     .interfaces.Interface ifaceConfig = ItmUtils.getInterface(logicTunnelName, interfaceManager);
         if (ifaceConfig == null || !ifaceConfig.getType().isAssignableFrom(Tunnel.class)) {
             return;
@@ -138,7 +138,7 @@ public class ItmTunnelAggregationHelper {
             return;
         }
         String ifName = ifStateUpdated.getName();
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface iface =
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface iface =
                 ItmUtils.getInterface(ifName, interfaceManager);
         IfTunnel ifTunnel = iface != null ? iface.augmentation(IfTunnel.class) : null;
         if (iface == null || ifTunnel == null) {
@@ -216,7 +216,7 @@ public class ItmTunnelAggregationHelper {
         }
         for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
             String curChildName = interfaceChildEntry.getChildInterface();
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface
                         childIface = ItmUtils.getInterface(curChildName, interfaceManager);
             IfTunnel ifTunnel = childIface != null ? childIface.augmentation(IfTunnel.class) : null;
             if (ifTunnel == null || !ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
@@ -399,12 +399,12 @@ public class ItmTunnelAggregationHelper {
         private final Interface ifStateUpdated;
         private final ManagedNewTransactionRunner txRunner;
         private final org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                                                    .interfaces.rev140508.interfaces.Interface ifaceConfig;
+                                                    .interfaces.rev180220.interfaces.Interface ifaceConfig;
         private final int ifaceAction;
         private final InterfaceParentEntry parentEntry;
 
         TunnelAggregationUpdateWorker(Interface ifStateOrig, Interface ifStateUpdated,
-                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
                 .interfaces.Interface iface, InterfaceParentEntry entry, int action, DataBroker broker) {
             this.ifStateOrigin = ifStateOrig;
             this.ifStateUpdated = ifStateUpdated;

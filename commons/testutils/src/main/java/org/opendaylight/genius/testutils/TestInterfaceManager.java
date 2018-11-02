@@ -23,7 +23,7 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.testutils.interfacemanager.InterfaceHelper;
 import org.opendaylight.genius.testutils.interfacemanager.InterfaceStateHelper;
 import org.opendaylight.genius.testutils.interfacemanager.TunnelInterfaceDetails;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
 
 /**
  * IInterfaceManager implementation for tests.
