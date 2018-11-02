@@ -21,6 +21,7 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -89,7 +90,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         }
         // TODO Support Iterable <-> List directly within XtendBeanGenerator
         List<FlowEntity> expectedFlowsAsNewArrayList = Lists.newArrayList(expectedFlows);
-        assertEqualBeans(expectedFlowsAsNewArrayList, nonNullFlows);
+        assertEqualBeans(expectedFlowsAsNewArrayList, new ArrayList<>(nonNullFlows));
     }
 
 
