@@ -411,7 +411,7 @@ public class InterfaceInventoryStateListener
                             operTx);
                     } else {
                         InterfaceManagerCommonUtils.deleteStateEntry(operTx, interfaceName);
-                        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces
                             .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
 
                         if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {

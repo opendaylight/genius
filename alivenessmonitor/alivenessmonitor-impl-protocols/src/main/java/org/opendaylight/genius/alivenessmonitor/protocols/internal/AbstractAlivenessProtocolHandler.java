@@ -18,8 +18,8 @@ import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandl
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.InterfacesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -38,16 +38,15 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
     }
 
     // @formatter:off
-    protected org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+    protected org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces
         .state.Interface getInterfaceFromOperDS(String interfaceName) throws ReadFailedException {
-        InstanceIdentifier.InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.state.Interface> idBuilder = InstanceIdentifier
+        InstanceIdentifier.InstanceIdentifierBuilder<Interface> idBuilder = InstanceIdentifier
                 .builder(InterfacesState.class)
-                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                .child(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces
                         .state.Interface.class,
-                            new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+                            new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
                             .interfaces.state.InterfaceKey(interfaceName));
-        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+        InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces
             .state.Interface> id = idBuilder.build();
 
         return singleTxDataBroker.syncRead(LogicalDatastoreType.OPERATIONAL, id);

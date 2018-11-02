@@ -30,8 +30,8 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUt
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -85,7 +85,7 @@ public class OvsInterfaceConfigUpdateHelper {
         // If there is no operational state entry for the interface, treat it as
         // create
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceNew.getName());
         if (ifState == null) {
             futures.addAll(ovsInterfaceConfigAddHelper.addConfiguration(interfaceNew.augmentation(ParentRefs.class),
@@ -162,7 +162,7 @@ public class OvsInterfaceConfigUpdateHelper {
     private void handleInterfaceAdminStateUpdates(TypedWriteTransaction<Operational> transaction,
             Interface interfaceNew,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState) {
         IfL2vlan ifL2vlan = interfaceNew.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {

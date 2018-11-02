@@ -29,8 +29,8 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -99,7 +99,7 @@ public final class OvsInterfaceStateAddHelper {
         // Fetch the interface from config DS if exists
         InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
+            .interfaces.rev180220.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceKey);
 
         if (InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
@@ -122,7 +122,7 @@ public final class OvsInterfaceStateAddHelper {
             // install ingress flow if this is an l2vlan interface
             if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
                     .getOperStatus() == org.opendaylight.yang.gen.v1.urn
-                    .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
+                    .ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.OperStatus.Up) {
                 BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, txRunner,
                         ifState.getIfIndex());
@@ -137,7 +137,7 @@ public final class OvsInterfaceStateAddHelper {
     public void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, NodeConnectorId nodeConnectorId,
             Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                    .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
+                    .ietf.interfaces.rev180220.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(
@@ -161,7 +161,7 @@ public final class OvsInterfaceStateAddHelper {
 
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface) {
+                .ietf.interfaces.rev180220.interfaces.Interface iface) {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
             ParentRefs parentRefs = iface.augmentation(ParentRefs.class);

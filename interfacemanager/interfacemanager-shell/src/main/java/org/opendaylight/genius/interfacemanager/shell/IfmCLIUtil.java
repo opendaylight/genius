@@ -14,7 +14,7 @@ import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceOpState;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
@@ -159,7 +159,7 @@ public final class IfmCLIUtil {
     }
 
     static void printBfdCachesOutput(String ifName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.state.Interface.OperStatus st,
+            .interfaces.rev180220.interfaces.state.Interface.OperStatus st,
                                        CommandSession session) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);

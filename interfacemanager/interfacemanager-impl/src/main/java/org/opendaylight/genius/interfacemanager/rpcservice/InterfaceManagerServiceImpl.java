@@ -27,8 +27,8 @@ import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.interfacemanager.listeners.IfIndexInterfaceCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.DpnToInterfaceList;
@@ -114,7 +114,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
             dpId = parentRefs.getDatapathNodeIdentifier();
         } else {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                     .getInterfaceState(interfaceName);
             if (ifState != null) {
                 String lowerLayerIf = ifState.getLowerLayerIf().get(0);
@@ -206,7 +206,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
         BigInteger dpId = null;
         long portNo = 0;
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
         if (ifState != null) {
             String lowerLayerIf = ifState.getLowerLayerIf().get(0);
@@ -229,7 +229,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
             GetNodeconnectorIdFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
         String lowerLayerIf = ifState.getLowerLayerIf().get(0);
         NodeConnectorId nodeConnectorId = new NodeConnectorId(lowerLayerIf);

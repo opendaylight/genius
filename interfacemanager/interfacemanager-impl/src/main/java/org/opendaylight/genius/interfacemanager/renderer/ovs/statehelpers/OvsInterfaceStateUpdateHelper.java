@@ -22,9 +22,9 @@ import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -69,7 +69,7 @@ public class OvsInterfaceStateUpdateHelper {
         }
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
+            .interfaces.rev180220.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceName);
 
         // For monitoring enabled tunnels, skip opstate update
@@ -116,7 +116,7 @@ public class OvsInterfaceStateUpdateHelper {
 
         InterfaceBuilder ifaceBuilder = new InterfaceBuilder();
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(interfaceName);
         handleInterfaceStateUpdates(iface, tx, ifaceBuilder, true, interfaceName,
                 flowCapableNodeConnector.getName(), Interface.OperStatus.Unknown);
@@ -128,7 +128,7 @@ public class OvsInterfaceStateUpdateHelper {
 
     private void handleInterfaceStateUpdates(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface,
+                .ietf.interfaces.rev180220.interfaces.Interface iface,
             TypedWriteTransaction<Operational> tx, InterfaceBuilder ifaceBuilder, boolean opStateModified,
             String interfaceName, String portName, Interface.OperStatus opState) {
         // if interface config DS is null, do the update only for the
@@ -167,20 +167,20 @@ public class OvsInterfaceStateUpdateHelper {
 
     public static boolean modifyOpState(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                .interfaces.rev140508.interfaces.Interface iface,
+                .interfaces.rev180220.interfaces.Interface iface,
             boolean opStateModified) {
         return opStateModified && (iface == null || iface.isEnabled());
     }
 
     public static boolean isTunnelInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface) {
+                .ietf.interfaces.rev180220.interfaces.Interface iface) {
         return iface != null && iface.augmentation(IfTunnel.class) != null;
     }
 
     public static boolean modifyTunnelOpState(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface,
+                .ietf.interfaces.rev180220.interfaces.Interface iface,
             boolean opStateModified) {
         if (!iface.augmentation(IfTunnel.class).isMonitorEnabled()) {
             return modifyOpState(iface, opStateModified);

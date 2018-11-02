@@ -34,7 +34,7 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.Southboun
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
@@ -105,7 +105,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceName, tx);
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
 
         if (ifState == null) {
@@ -215,14 +215,14 @@ public final class OvsInterfaceConfigRemoveHelper {
     // if the node is shutdown, there will be stale interface state entries,
     // with unknown op-state, clear them.
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-        .ietf.interfaces.rev140508.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
+        .ietf.interfaces.rev180220.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
             String interfaceName, ParentRefs parentRefs, IfTunnel ifTunnel,
             TypedWriteTransaction<Operational> transaction) {
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
             .interfaces.state.Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
         if (ifState != null && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown) {
+                .ietf.interfaces.rev180220.interfaces.state.Interface.OperStatus.Unknown) {
             String staleInterface = ifTunnel != null ? interfaceName : parentRefs.getParentInterface();
             LOG.debug("cleaning up parent-interface for {}, since the oper-status is UNKNOWN", interfaceName);
             interfaceManagerCommonUtils.deleteInterfaceStateInformation(staleInterface, transaction);

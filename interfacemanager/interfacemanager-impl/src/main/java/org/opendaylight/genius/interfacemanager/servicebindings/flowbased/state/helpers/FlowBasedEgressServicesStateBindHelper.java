@@ -20,7 +20,7 @@ import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.slf4j.Logger;
@@ -51,7 +51,7 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
         short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
                 : highestPriority.getServicePriority() + 1);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
+                .ietf.interfaces.rev180220.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName());
         FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, highestPriority, ifState.getName(), tx,
                 ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex, iface);

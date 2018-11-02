@@ -42,7 +42,7 @@ import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -372,7 +372,7 @@ public final class DirectTunnelUtils {
 
     public void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid,
                                       org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                                              .interfaces.rev140508.interfaces.Interface iface, String portName) {
+                                              .interfaces.rev180220.interfaces.Interface iface, String portName) {
         LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
 
         Class<? extends InterfaceTypeBase> type =

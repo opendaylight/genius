@@ -32,10 +32,10 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.re
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.InterfaceType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -100,20 +100,20 @@ public final class InterfaceManagerTestUtil {
 
     private InterfaceManagerTestUtil() { }
 
-    static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+    static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface
         buildStateInterface(String ifName, String dpnId, String portNo, String phyAddress,
                             Class<? extends InterfaceType> ifType) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder ifaceBuilder =
+                .ietf.interfaces.rev180220.interfaces.state.InterfaceBuilder ifaceBuilder =
                 new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                        .ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder();
+                        .ietf.interfaces.rev180220.interfaces.state.InterfaceBuilder();
         if (ifType != null) {
             ifaceBuilder.setType(ifType);
         }
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(ifName));
         ifaceBuilder.setOperStatus(
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                        .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up);
+                        .ietf.interfaces.rev180220.interfaces.state.Interface.OperStatus.Up);
         ifaceBuilder.setLowerLayerIf(Arrays.asList("openflow:" + dpnId + ":" + portNo));
         if (phyAddress != null) {
             ifaceBuilder.setPhysAddress(

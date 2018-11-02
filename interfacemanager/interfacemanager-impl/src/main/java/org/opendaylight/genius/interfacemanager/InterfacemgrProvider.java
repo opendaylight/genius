@@ -54,11 +54,11 @@ import org.opendaylight.mdsal.eos.common.api.CandidateAlreadyRegisteredException
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.AdminStatus;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceBuilder;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.AdminStatus;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolInputBuilder;
@@ -225,7 +225,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public InterfaceInfo getInterfaceInfo(String interfaceName) {
 
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
 
         if (ifState == null) {
@@ -278,7 +278,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             InterfaceInfo.InterfaceType interfaceType) {
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         org.opendaylight.yang.gen.v1.urn
-            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface ifState =
                 interfaceManagerCommonUtils.getInterfaceState(interfaceName);
         if (ifState == null) {
             LOG.debug("Interface {} is not present", interfaceName);
@@ -307,7 +307,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDataStore(String interfaceName) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
         if (ifState == null) {
             LOG.debug("Interface {} is not present", interfaceName);
@@ -319,7 +319,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     public InterfaceInfo populateInterfaceInfo(String interfaceName,
             org.opendaylight.yang.gen.v1.urn
-                .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                .ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface ifState) {
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
         NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
@@ -353,7 +353,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public InterfaceInfo getInterfaceInfoFromOperationalDSCache(String interfaceName) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceStateFromCache(interfaceName);
         if (ifState == null) {
             LOG.warn("Interface {} is not present", interfaceName);

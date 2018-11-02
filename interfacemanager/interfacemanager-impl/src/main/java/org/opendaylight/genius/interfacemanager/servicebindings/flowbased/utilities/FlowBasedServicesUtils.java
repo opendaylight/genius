@@ -48,7 +48,7 @@ import org.opendaylight.genius.mdsalutil.matches.MatchMetadata;
 import org.opendaylight.genius.mdsalutil.matches.MatchVlanVid;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.utils.ServiceIndex;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
@@ -123,7 +123,7 @@ public final class FlowBasedServicesUtils {
     public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(interfaceName);
         if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
@@ -134,7 +134,7 @@ public final class FlowBasedServicesUtils {
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState) {
         if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
             return new NodeConnectorId(ofportIds.get(0));
@@ -145,7 +145,7 @@ public final class FlowBasedServicesUtils {
     @Nullable
     public static BigInteger getDpnIdFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState) {
         if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
             NodeConnectorId nodeConnectorId = new NodeConnectorId(ofportIds.get(0));
@@ -698,7 +698,7 @@ public final class FlowBasedServicesUtils {
     }
 
     public static BoundServicesState buildBoundServicesState(
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface
             interfaceState, Class<? extends ServiceModeBase> serviceMode) {
         NodeConnectorId nodeConnectorId = IfmUtil.getNodeConnectorIdFromInterface(interfaceState);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);

@@ -37,7 +37,7 @@ import org.opendaylight.openflowplugin.libraries.liblldp.LLDPTLV.TLVType;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.EndpointType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.endpoint.endpoint.type.Interface;
@@ -124,7 +124,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         }
 
         // Get Mac Address for the source interface
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220
             .interfaces.state.Interface interfaceState;
         try {
             interfaceState = getInterfaceFromOperDS(sourceInterface);
@@ -179,7 +179,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
     }
 
     private List<ActionInfo> getInterfaceActions(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-            .interfaces.rev140508.interfaces.state.Interface interfaceState, long portNum)
+            .interfaces.rev180220.interfaces.state.Interface interfaceState, long portNum)
                     throws InterruptedException, ExecutionException {
         Class<? extends InterfaceType> intfType;
         if (interfaceState != null) {

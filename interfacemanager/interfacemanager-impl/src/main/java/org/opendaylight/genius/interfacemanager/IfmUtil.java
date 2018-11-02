@@ -53,10 +53,10 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.Interfaces;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.InterfacesState;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -130,7 +130,7 @@ public final class IfmUtil {
 
     public static BigInteger getDpnFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState) {
         NodeConnectorId ncId = getNodeConnectorIdFromInterface(ifState);
         if (ncId != null) {
             return getDpnFromNodeConnectorId(ncId);
@@ -169,25 +169,25 @@ public final class IfmUtil {
     }
 
     public static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn
-        .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface> buildStateInterfaceId(
+        .ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface> buildStateInterfaceId(
             String interfaceName) {
         InstanceIdentifierBuilder<org.opendaylight.yang.gen.v1.urn
-            .ietf.params.xml.ns.yang.ietf.interfaces.rev140508
+            .ietf.params.xml.ns.yang.ietf.interfaces.rev180220
                 .interfaces.state.Interface> idBuilder = InstanceIdentifier
                 .builder(InterfacesState.class)
                 .child(org.opendaylight.yang.gen.v1.urn
-                        .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.class,
+                        .ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state.Interface.class,
                         new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                            .ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
+                            .ietf.interfaces.rev180220.interfaces.state.InterfaceKey(
                                 interfaceName));
         return idBuilder.build();
     }
 
     public static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-        .ietf.interfaces.rev140508.interfaces.state.InterfaceKey getStateInterfaceKeyFromName(
+        .ietf.interfaces.rev180220.interfaces.state.InterfaceKey getStateInterfaceKeyFromName(
             String name) {
         return new org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.InterfaceKey(
+                .ietf.interfaces.rev180220.interfaces.state.InterfaceKey(
                 name);
     }
 
@@ -278,7 +278,7 @@ public final class IfmUtil {
             throw new NullPointerException("Interface information not present in config DS for " + interfaceName);
         }
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState =
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState =
             interfaceUtils.getInterfaceState(interfaceName);
         if (ifState == null) {
             throw new NullPointerException("Interface information not present in oper DS for " + interfaceName);
@@ -449,7 +449,7 @@ public final class IfmUtil {
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState) {
         if (ifState != null) {
             List<String> ofportIds = ifState.getLowerLayerIf();
             return new NodeConnectorId(ofportIds.get(0));
@@ -461,7 +461,7 @@ public final class IfmUtil {
         InterfaceInfo.InterfaceType interfaceType = org.opendaylight
                 .genius.interfacemanager.globals.InterfaceInfo.InterfaceType.UNKNOWN_INTERFACE;
         Class<? extends org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.InterfaceType> ifType = iface
+                .ietf.interfaces.rev180220.InterfaceType> ifType = iface
                 .getType();
 
         if (ifType.isAssignableFrom(L2vlan.class)) {

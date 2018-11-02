@@ -28,7 +28,7 @@ import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;

@@ -39,7 +39,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -114,7 +114,7 @@ public final class OvsInterfaceConfigAddHelper {
         }
         LOG.info("adding vlan configuration for interface {}", interfaceNew.getName());
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-            .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+            .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                 .getInterfaceState(parentRefs.getParentInterface());
 
         interfaceManagerCommonUtils.addStateEntry(operTx, interfaceNew.getName(), futures, ifState);
@@ -153,7 +153,7 @@ public final class OvsInterfaceConfigAddHelper {
                     || bridgeEntry.getBridgeInterfaceEntry().isEmpty();
             tunnelName = SouthboundUtils.generateOfTunnelName(dpId, ifTunnel);
             interfaceManagerCommonUtils.createInterfaceChildEntry(confTx, tunnelName, interfaceNew.getName());
-            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state
                     .Interface
                     interfaceState = interfaceManagerCommonUtils.getInterfaceState(tunnelName);
             if (interfaceState != null) {
@@ -188,7 +188,7 @@ public final class OvsInterfaceConfigAddHelper {
             // if TEP is already configured on switch, start LLDP monitoring and
             // program tunnel ingress flow
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
+                .ietf.interfaces.rev180220.interfaces.state.Interface ifState = interfaceManagerCommonUtils
                     .getInterfaceState(interfaceNew.getName());
             if (ifState != null) {
                 NodeConnectorId ncId = IfmUtil.getNodeConnectorIdFromInterface(ifState);
@@ -232,12 +232,12 @@ public final class OvsInterfaceConfigAddHelper {
         TypedWriteTransaction<Configuration> confTx) {
         String ifaceName = itfNew.getName();
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
-        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev180220.interfaces.state
             .Interface ifState = interfaceManagerCommonUtils.addStateEntry(itfNew, ifaceName, operTx,
                     null /*physAddress*/, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                    .interfaces.rev140508.interfaces.state.Interface.OperStatus.Up,
+                    .interfaces.rev180220.interfaces.state.Interface.OperStatus.Up,
                     org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
-                    .interfaces.rev140508.interfaces.state.Interface.AdminStatus.Up,
+                    .interfaces.rev180220.interfaces.state.Interface.AdminStatus.Up,
                     null /*nodeConnectorId*/);
         long groupId = createLogicalTunnelSelectGroup(confTx, IfmUtil.getDpnFromInterface(ifState),
                                                       itfNew.getName(), ifState.getIfIndex());
