@@ -12,6 +12,7 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -61,7 +62,7 @@ public class OvsInterfaceStateUpdateHelper {
         MacAddress macAddressOld = flowCapableNodeConnectorOld.getHardwareAddress();
 
         boolean opstateModified = !operStatusNew.equals(operStatusOld);
-        boolean hardwareAddressModified = !macAddressNew.equals(macAddressOld);
+        boolean hardwareAddressModified = !Objects.equals(macAddressNew, macAddressOld);
 
         if (!opstateModified && !hardwareAddressModified) {
             LOG.debug("If State entry for port: {} Not Modified.", interfaceName);

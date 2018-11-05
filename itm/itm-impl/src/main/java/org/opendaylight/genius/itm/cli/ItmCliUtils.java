@@ -33,11 +33,9 @@ public final class ItmCliUtils {
         if (StringUtils.isNotBlank(dpnIds)) {
             final String[] arrDpnIds = StringUtils.split(dpnIds, ',');
             for (String dpn : arrDpnIds) {
-                if (StringUtils.isNumeric(StringUtils.trim(dpn))) {
-                    lstDpnIds.add(new BigInteger(StringUtils.trim(dpn)));
-                } else {
-                    Preconditions.checkArgument(false, String.format("DPN ID [%s] is not a numeric value.", dpn));
-                }
+                Preconditions.checkArgument(StringUtils.isNumeric(StringUtils.trim(dpn)),
+                    "DPN ID [" + dpn + "] is not a numeric value.");
+                lstDpnIds.add(new BigInteger(StringUtils.trim(dpn)));
             }
         }
         return lstDpnIds;

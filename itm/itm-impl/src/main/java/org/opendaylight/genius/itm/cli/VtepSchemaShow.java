@@ -123,7 +123,7 @@ public class VtepSchemaShow extends OsgiCommandSupport {
 
         Class<? extends TunnelTypeBase> tunType = schema.getTunnelType();
 
-        if (tunType.equals(TunnelTypeGre.class)) {
+        if (TunnelTypeGre.class.equals(tunType)) {
             strTunnelType = ITMConstants.TUNNEL_TYPE_GRE;
         } else {
             strTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;

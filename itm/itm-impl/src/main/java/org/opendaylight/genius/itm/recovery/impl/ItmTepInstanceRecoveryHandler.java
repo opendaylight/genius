@@ -7,9 +7,12 @@
  */
 package org.opendaylight.genius.itm.recovery.impl;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -146,9 +149,9 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 jobCoordinator.enqueueJob(tzName, tepRemoveWorker);
                 AtomicInteger eventCallbackCount = new AtomicInteger(0);
                 AtomicInteger eventRegistrationCount = new AtomicInteger(0);
-                tunnelList.stream().filter(internalTunnel -> internalTunnel
-                        .getDestinationDPN().equals(dpnTepsToRecover.getDPNID()) || internalTunnel.getSourceDPN()
-                        .equals(dpnTepsToRecover.getDPNID())).forEach(internalTunnel -> {
+                tunnelList.stream().filter(internalTunnel -> Objects.equals(internalTunnel
+                        .getDestinationDPN(), dpnTepsToRecover.getDPNID()) || Objects.equals(
+                        internalTunnel.getSourceDPN(), dpnTepsToRecover.getDPNID())).forEach(internalTunnel -> {
                             eventRegistrationCount.incrementAndGet();
                             interfaceListToRecover.add(String.valueOf(internalTunnel.getTunnelInterfaceNames())); });
 
@@ -196,7 +199,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             return null;
         }
 
-        for (Subnets sub : transportZone.getSubnets()) {
+        for (Subnets sub : nullToEmpty(transportZone.getSubnets())) {
             if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
                 LOG.error("Transport Zone {} subnet {} has no vteps", transportZone.getZoneName(), sub.getPrefix());
             }

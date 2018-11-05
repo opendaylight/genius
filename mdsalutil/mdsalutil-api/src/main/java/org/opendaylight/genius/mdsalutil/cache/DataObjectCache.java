@@ -88,7 +88,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
                     case WRITE:
                     case SUBTREE_MODIFIED:
                         V dataAfter = rootNode.getDataAfter();
-                        cache.put(keyFunction.apply(path, dataAfter), Optional.of(dataAfter));
+                        cache.put(keyFunction.apply(path, dataAfter), Optional.fromNullable(dataAfter));
                         added(path, dataAfter);
                         break;
                     case DELETE:

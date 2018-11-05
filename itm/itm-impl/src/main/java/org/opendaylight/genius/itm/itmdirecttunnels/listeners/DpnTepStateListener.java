@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -54,7 +56,7 @@ public class DpnTepStateListener extends AbstractTunnelListenerBase<DpnsTeps> {
         if (!entityOwner()) {
             return;
         }
-        for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
+        for (RemoteDpns remoteDpns : nullToEmpty(dpnsTeps.getRemoteDpns())) {
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
             String tunnelName = remoteDpns.getTunnelName();

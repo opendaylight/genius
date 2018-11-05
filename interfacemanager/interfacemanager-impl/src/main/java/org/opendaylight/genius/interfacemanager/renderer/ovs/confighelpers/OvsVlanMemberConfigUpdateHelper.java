@@ -84,7 +84,7 @@ public class OvsVlanMemberConfigUpdateHelper {
         }
 
         if (vlanIdModified(ifL2vlanOld.getVlanId(), ifL2vlanNew.getVlanId())
-                || !parentRefsOld.getParentInterface().equals(parentRefsNew.getParentInterface())) {
+                || !Objects.equals(parentRefsOld.getParentInterface(), parentRefsNew.getParentInterface())) {
             LOG.info("vlan-id modified for interface {}", interfaceNew.getName());
             futures.addAll(ovsVlanMemberConfigRemoveHelper.removeConfiguration(parentRefsOld, interfaceOld));
             futures.addAll(ovsVlanMemberConfigAddHelper.addConfiguration(parentRefsNew, interfaceNew));

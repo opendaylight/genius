@@ -127,7 +127,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
         Optional<StateTunnelList> tunnelsState = tunnelStateCache.get(stListId);
         StateTunnelListBuilder stlBuilder;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = updated.getOperStatus().equals(Interface.OperStatus.Up);
+        boolean tunnelState = OperStatus.Up.equals(updated.getOperStatus());
         switch (updated.getOperStatus()) {
             case Up:
                 tunnelOperStatus = TunnelOperStatus.Up;

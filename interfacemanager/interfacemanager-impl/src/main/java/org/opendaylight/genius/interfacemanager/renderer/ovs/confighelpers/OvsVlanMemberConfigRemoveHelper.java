@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.IfmUtil.nullToEmpty;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -69,7 +70,8 @@ public class OvsVlanMemberConfigRemoveHelper {
             // Configuration changes
             futures.add(txChain.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
                 // Delete the interface child information
-                List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
+                List<InterfaceChildEntry> interfaceChildEntries =
+                    nullToEmpty(interfaceParentEntry.getInterfaceChildEntry());
                 InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
                 InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
                     .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);

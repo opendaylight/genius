@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.impl;
 
+import static java.util.Collections.emptyList;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
@@ -23,9 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -542,10 +546,13 @@ public final class ItmUtils {
                                                                   List<VtepConfigSchema> existingSchemas) {
         VtepConfigSchema validSchema = validateVtepConfigSchema(schema);
         for (VtepConfigSchema existingSchema : emptyIfNull(existingSchemas)) {
-            if (!StringUtils.equalsIgnoreCase(schema.getSchemaName(), existingSchema.getSchemaName())
-                    && schema.getSubnet().equals(existingSchema.getSubnet())) {
+            if (!(!StringUtils.equalsIgnoreCase(schema.getSchemaName(), existingSchema.getSchemaName())
+                    && Objects.equals(schema.getSubnet(), existingSchema.getSubnet()))) {
                 String subnetCidr = getSubnetCidrAsString(schema.getSubnet());
-                Preconditions.checkArgument(false, "VTEP schema with subnet [" + subnetCidr
+                Preconditions.checkArgument(
+                    !(!StringUtils.equalsIgnoreCase(schema.getSchemaName(), existingSchema.getSchemaName())
+                        && Objects.equals(schema.getSubnet(), existingSchema.getSubnet())),
+                    "VTEP schema with subnet [" + subnetCidr
                         + "] already exists. Multiple VTEP schemas with same subnet is not allowed.");
             }
         }
@@ -553,11 +560,10 @@ public final class ItmUtils {
             String tzone = validSchema.getTransportZoneName();
             List<BigInteger> lstDpns = getConflictingDpnsAlreadyConfiguredWithTz(validSchema.getSchemaName(), tzone,
                     getDpnIdList(validSchema.getDpnIds()), existingSchemas);
-            if (!lstDpns.isEmpty()) {
-                Preconditions.checkArgument(false, "DPN's " + lstDpns + " already configured for transport zone "
-                                + tzone + ". Only one end point per transport Zone per Dpn is allowed.");
-            }
-            if (schema.getTunnelType().equals(TunnelTypeGre.class)) {
+            Preconditions.checkArgument(lstDpns.isEmpty(),
+                "DPN's " + lstDpns + " already configured for transport zone "
+                    + tzone + ". Only one end point per transport Zone per Dpn is allowed.");
+            if (TunnelTypeGre.class.equals(schema.getTunnelType())) {
                 validateForSingleGreTep(validSchema.getSchemaName(), getDpnIdList(validSchema.getDpnIds()),
                         existingSchemas);
             }
@@ -572,11 +578,8 @@ public final class ItmUtils {
                     && !StringUtils.equalsIgnoreCase(schemaName, existingSchema.getSchemaName())) {
                 List<BigInteger> lstConflictingDpns = new ArrayList<>(getDpnIdList(existingSchema.getDpnIds()));
                 lstConflictingDpns.retainAll(emptyIfNull(lstDpnsForAdd));
-                if (!lstConflictingDpns.isEmpty()) {
-                    String errMsg = "DPN's " + lstConflictingDpns
-                            + " already configured with GRE TEP. Mutiple GRE TEP's on a single DPN are not allowed.";
-                    Preconditions.checkArgument(false, errMsg);
-                }
+                Preconditions.checkArgument(lstConflictingDpns.isEmpty(), "DPN's " + lstConflictingDpns
+                    + " already configured with GRE TEP. Mutiple GRE TEP's on a single DPN are not allowed.");
             }
         }
     }
@@ -594,10 +597,9 @@ public final class ItmUtils {
         IpAddress gatewayIp = schema.getGatewayIp();
         if (gatewayIp != null) {
             String strGatewayIp = gatewayIp.stringValue();
-            if (!strGatewayIp.equals(ITMConstants.DUMMY_IP_ADDRESS) && !subnetUtils.getInfo().isInRange(strGatewayIp)) {
-                Preconditions.checkArgument(false, "Gateway IP address " + strGatewayIp
-                        + " is not in subnet range " + subnetCidr);
-            }
+            Preconditions.checkArgument(
+                ITMConstants.DUMMY_IP_ADDRESS.equals(strGatewayIp) || subnetUtils.getInfo().isInRange(strGatewayIp),
+                "Gateway IP address " + strGatewayIp + " is not in subnet range " + subnetCidr);
         }
         ItmUtils.getExcludeIpAddresses(schema.getExcludeIpFilter(), subnetUtils.getInfo());
         return new VtepConfigSchemaBuilder(schema).setTunnelType(schema.getTunnelType()).build();
@@ -623,7 +625,7 @@ public final class ItmUtils {
         for (VtepConfigSchema schema : emptyIfNull(existingSchemas)) {
             if (!StringUtils.equalsIgnoreCase(schemaName, schema.getSchemaName())
                     && StringUtils.equals(schema.getTransportZoneName(), tzone)) {
-                lstConflictingDpns = new ArrayList<>(getDpnIdList(schema.getDpnIds()));
+                lstConflictingDpns = new ArrayList<>(getDpnIdList(nullToEmpty(schema.getDpnIds())));
                 lstConflictingDpns.retainAll(lstDpns);
                 if (!lstConflictingDpns.isEmpty()) {
                     break;
@@ -723,40 +725,32 @@ public final class ItmUtils {
                                                                List<BigInteger> lstDpnsForDelete,
                                                                IITMProvider itmProvider) {
         Preconditions.checkArgument(StringUtils.isNotBlank(schemaName));
-        if ((lstDpnsForAdd == null || lstDpnsForAdd.isEmpty())
-                && (lstDpnsForDelete == null || lstDpnsForDelete.isEmpty())) {
-            Preconditions.checkArgument(false,
-                    "DPN ID list for add | delete is null or empty in schema " + schemaName);
-        }
+        Preconditions.checkArgument(lstDpnsForAdd != null && !lstDpnsForAdd.isEmpty() && lstDpnsForDelete != null
+                && !lstDpnsForDelete.isEmpty(),
+            "DPN ID list for add | delete is null or empty in schema " + schemaName);
         VtepConfigSchema schema = itmProvider.getVtepConfigSchema(schemaName);
-        if (schema == null) {
-            Preconditions.checkArgument(false, "Specified VTEP Schema [" + schemaName
-                    + "] doesn't exists!");
-        }
-        List<BigInteger> existingDpnIds = getDpnIdList(schema.getDpnIds());
+        Preconditions.checkArgument(schema != null, "Specified VTEP Schema [" + schemaName + "] doesn't exist!");
+        List<BigInteger> existingDpnIds = getDpnIdList(nullToEmpty(schema.getDpnIds()));
         if (isNotEmpty(lstDpnsForAdd)) {
             List<BigInteger> lstAlreadyExistingDpns = new ArrayList<>(existingDpnIds);
             lstAlreadyExistingDpns.retainAll(lstDpnsForAdd);
             Preconditions.checkArgument(lstAlreadyExistingDpns.isEmpty(),
                     "DPN ID's " + lstAlreadyExistingDpns
                             + " already exists in VTEP schema [" + schemaName + "]");
-            if (schema.getTunnelType().equals(TunnelTypeGre.class)) {
+            if (TunnelTypeGre.class.equals(schema.getTunnelType())) {
                 validateForSingleGreTep(schema.getSchemaName(), lstDpnsForAdd, itmProvider.getAllVtepConfigSchemas());
             }
         }
         if (isNotEmpty(lstDpnsForDelete)) {
-            if (existingDpnIds.isEmpty()) {
-                String builder = "DPN ID's " + lstDpnsForDelete
-                        + " specified for delete from VTEP schema [" + schemaName
-                        + "] are not configured in the schema.";
-                Preconditions.checkArgument(false, builder);
-            } else if (!existingDpnIds.containsAll(lstDpnsForDelete)) {
+            Preconditions.checkArgument(!existingDpnIds.isEmpty(), "DPN ID's " + lstDpnsForDelete
+                + " specified for delete from VTEP schema [" + schemaName
+                + "] are not configured in the schema.");
+            if (!existingDpnIds.containsAll(lstDpnsForDelete)) {
                 List<BigInteger> lstConflictingDpns = new ArrayList<>(lstDpnsForDelete);
                 lstConflictingDpns.removeAll(existingDpnIds);
-                String builder = "DPN ID's " + lstConflictingDpns
-                        + " specified for delete from VTEP schema [" + schemaName
-                        + "] are not configured in the schema.";
-                Preconditions.checkArgument(false, builder);
+                throw new IllegalArgumentException("DPN ID's " + lstConflictingDpns
+                    + " specified for delete from VTEP schema [" + schemaName
+                    + "] are not configured in the schema.");
             }
         }
         return schema;
@@ -767,7 +761,7 @@ public final class ItmUtils {
     }
 
     public static <T> List<T> emptyIfNull(List<T> list) {
-        return list == null ? Collections.emptyList() : list;
+        return list == null ? emptyList() : list;
     }
 
     public static <T> boolean isEmpty(Collection<T> collection) {
@@ -921,8 +915,8 @@ public final class ItmUtils {
                 }
             }
             if (hwVtepsExist) {
-                for (HwVtep hwVtep : hwVteps) {
-                    for (HwVtep hwVtepOther : hwVteps) {
+                for (HwVtep hwVtep : nullToEmpty(hwVteps)) {
+                    for (HwVtep hwVtepOther : nullToEmpty(hwVteps)) {
                         if (!hwVtep.getHwIp().equals(hwVtepOther.getHwIp())) {
                             tunnels.add(getExtTunnel(hwVtep.getNodeId(), hwVtepOther.getNodeId(),
                                     tunType, dataBroker));
@@ -1009,11 +1003,9 @@ public final class ItmUtils {
     }
 
     public static List<TunnelEndPoints> getTEPsForDpn(BigInteger srcDpn, Collection<DPNTEPsInfo> dpnList) {
-        List<TunnelEndPoints> tunnelEndPoints = new ArrayList<>();
         for (DPNTEPsInfo dpn : dpnList) {
-            if (dpn.getDPNID().equals(srcDpn)) {
-                tunnelEndPoints.addAll(dpn.getTunnelEndPoints());
-                return tunnelEndPoints ;
+            if (Objects.equals(dpn.getDPNID(), srcDpn)) {
+                return new ArrayList<>(nullToEmpty(dpn.getTunnelEndPoints()));
             }
         }
         return null;
@@ -1028,7 +1020,7 @@ public final class ItmUtils {
             result = tunnelList.get().getInternalTunnel();
         }
         if (result == null) {
-            result = Collections.emptyList();
+            result = emptyList();
         }
         return result;
     }
@@ -1059,7 +1051,7 @@ public final class ItmUtils {
             result = tunnelList.get().getExternalTunnel();
         }
         if (result == null) {
-            result = Collections.emptyList();
+            result = emptyList();
         }
         return result;
     }
@@ -1075,7 +1067,7 @@ public final class ItmUtils {
         } else if (tunType.equals(TunnelTypeLogicalGroup.class)) {
             tunnelType = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         }
-        return tunnelType ;
+        return tunnelType;
     }
 
 
@@ -1317,7 +1309,7 @@ public final class ItmUtils {
 
     public static List<TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts, List<TzMembership> zones) {
         LOG.trace(" RemoveTransportZoneMembership TEPs {}, Membership to be removed {} ", endPts, zones);
-        List<TzMembership> existingTzList = new ArrayList<>(endPts.getTzMembership()) ;
+        List<TzMembership> existingTzList = new ArrayList<>(nullToEmpty(endPts.getTzMembership())) ;
         for (TzMembership membership : zones) {
             existingTzList.remove(new TzMembershipBuilder().setZoneName(membership.getZoneName()).build());
         }
@@ -1325,21 +1317,23 @@ public final class ItmUtils {
         return existingTzList;
     }
 
+    @Nonnull
     public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, BigInteger dpnId,
                                                              Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
         for (DPNTEPsInfo dstDpn : meshedDpnList) {
             if (dpnId.equals(dstDpn.getDPNID())) {
                 List<TunnelEndPoints> endPts = dstDpn.getTunnelEndPoints();
-                for (TunnelEndPoints tep : endPts) {
-                    if (tep.getIpAddress().equals(srcTep.getIpAddress())) {
-                        LOG.debug("Original Membership size {}", tep.getTzMembership().size()) ;
-                        return tep.getTzMembership();
+                for (TunnelEndPoints tep : nullToEmpty(endPts)) {
+                    if (Objects.equals(tep.getIpAddress(), srcTep.getIpAddress())) {
+                        List<TzMembership> tzMemberships = nullToEmpty(tep.getTzMembership());
+                        LOG.debug("Original Membership size {}", tzMemberships.size()) ;
+                        return tzMemberships;
                     }
                 }
             }
         }
-        return null ;
+        return emptyList();
     }
 
     public static StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state,
@@ -1497,5 +1491,11 @@ public final class ItmUtils {
             tunType = STRING_CLASS_IMMUTABLE_BI_MAP.get(tunnelType);
         }
         return tunType ;
+    }
+
+    // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
+    @Nonnull
+    public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
+        return input != null ? input : new ArrayList<>(0);
     }
 }

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,7 +65,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
         if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
             List<DPNTEPsInfo>  dpnDeleteList = new ArrayList<>();
             for (DPNTEPsInfo dpnTEPInfo : delDpnList) {
-                List<TunnelEndPoints> tunnelEndPointsList = dpnTEPInfo.getTunnelEndPoints();
+                List<TunnelEndPoints> tunnelEndPointsList = nullToEmpty(dpnTEPInfo.getTunnelEndPoints());
                 if (tunnelEndPointsList.size() == 1) {
                     dpnDeleteList.add(dpnTEPInfo);
                 } else {

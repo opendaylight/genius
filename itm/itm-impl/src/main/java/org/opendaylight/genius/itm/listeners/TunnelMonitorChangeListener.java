@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.listeners;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -71,8 +73,7 @@ public class TunnelMonitorChangeListener
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         }
         if (transportZonesOptional.isPresent()) {
-            TransportZones transportZones = transportZonesOptional.get();
-            for (TransportZone tzone : transportZones.getTransportZone()) {
+            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
                 LOG.debug("Remove - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -116,8 +117,7 @@ public class TunnelMonitorChangeListener
 
         }
         if (transportZonesOptional.isPresent()) {
-            TransportZones tzones = transportZonesOptional.get();
-            for (TransportZone tzone : tzones.getTransportZone()) {
+            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
                 LOG.debug("Update - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModificationAfter.isEnabled(), monitorProtocol);
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -148,8 +148,7 @@ public class TunnelMonitorChangeListener
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         }
         if (transportZonesOptional.isPresent()) {
-            TransportZones tzones = transportZonesOptional.get();
-            for (TransportZone tzone : tzones.getTransportZone()) {
+            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
                 LOG.debug("Add: TunnelMonitorToggleWorker with tzone = {} monitoringEnabled {} and "
                         + "monitoringProtocol {}",tzone.getZoneName(),dataObjectModification.isEnabled(),
                         dataObjectModification.getMonitorProtocol());
