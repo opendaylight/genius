@@ -63,7 +63,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
                 boundServicesState.getInterfaceName());
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             BigInteger dpId = boundServicesState.getDpid();
-            if (boundServices.isEmpty()) {
+            if (boundServices == null || boundServices.isEmpty()) {
                 // Remove default entry from Lport Dispatcher Table.
                 FlowBasedServicesUtils.removeLPortDispatcherFlow(dpId, boundServicesState.getInterfaceName(),
                         boundServiceOld, tx, NwConstants.DEFAULT_SERVICE_INDEX);

@@ -299,7 +299,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                             boundServicesNew.getServiceName(), boundServicesNew.getServicePriority());
                     return;
                 }
-                if (boundServicesList.isEmpty()) {
+                if (boundServicesList == null || boundServicesList.isEmpty()) {
                     FlowBasedServicesUtils.removeBoundServicesState(tx, interfaceName, serviceMode);
                 }
                 flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
