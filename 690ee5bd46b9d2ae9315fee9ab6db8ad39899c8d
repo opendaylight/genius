@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8bbf10e6_197bb37d",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-05T09:17:16Z",
+      "side": 1,
+      "message": "is this JIRA reference right?  TSC-176 \u003d \"Milestone: Fluorine SR1\" whereas this is probably for TSC-132 (specifically GENIUS-210; or GENIUS-222 or GENIUS-223 or GENIUS-224 or GENIUS-225 ?) ... or does this fix TSC-179 ?",
+      "revId": "690ee5bd46b9d2ae9315fee9ab6db8ad39899c8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
