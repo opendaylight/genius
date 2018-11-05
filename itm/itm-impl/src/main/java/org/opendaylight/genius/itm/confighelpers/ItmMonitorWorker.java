@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -119,12 +121,11 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
         }
     }
 
-    private void toggleForDirectEnabled(DpnsTeps dpnTeps, WriteTransaction transaction) throws ReadFailedException,
-        InterruptedException, ExecutionException {
+    private void toggleForDirectEnabled(DpnsTeps dpnTeps, WriteTransaction transaction) throws ReadFailedException {
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());
-        for (RemoteDpns remoteDpn : dpnTeps.getRemoteDpns()) {
+        for (RemoteDpns remoteDpn : nullToEmpty(dpnTeps.getRemoteDpns())) {
             if (enabled != null) {
                 LOG.debug("toggleMonitoring: tunnelInterfaceName: {}, monitorEnable = {} ",
                     remoteDpn.getTunnelName(), enabled);
@@ -144,7 +145,7 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
 
     public void updateMonitoringDS(BigInteger sourceDpnId,List<RemoteDpns> remoteDpnTepNewList,
                                    WriteTransaction transaction) {
-        InstanceIdentifier<DpnsTeps> iid = directTunnelUtils.createDpnTepsInstanceIdentifier(sourceDpnId);
+        InstanceIdentifier<DpnsTeps> iid = DirectTunnelUtils.createDpnTepsInstanceIdentifier(sourceDpnId);
         DpnsTepsBuilder builder = new DpnsTepsBuilder().withKey(new DpnsTepsKey(sourceDpnId))
             .setRemoteDpns(remoteDpnTepNewList);
         LOG.debug("DirectTunnelUtils - Builder remoteDPNs: {}", builder.getRemoteDpns());

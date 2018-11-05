@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -123,7 +124,7 @@ public final class OvsdbTepRemoveConfigHelper {
                 Vteps oldVtep = null;
 
                 for (Vteps vtep : vtepList) {
-                    if (vtep.getDpnId().equals(dpnId)) {
+                    if (Objects.equals(vtep.getDpnId(), dpnId)) {
                         vtepFound = true;
                         oldVtep = vtep;
                         break;
@@ -199,7 +200,7 @@ public final class OvsdbTepRemoveConfigHelper {
                 UnknownVteps foundVtep = null;
 
                 for (UnknownVteps vtep : vtepList) {
-                    if (vtep.getDpnId().equals(dpnId)) {
+                    if (Objects.equals(vtep.getDpnId(), dpnId)) {
                         vtepFound = true;
                         foundVtep = vtep;
                         break;

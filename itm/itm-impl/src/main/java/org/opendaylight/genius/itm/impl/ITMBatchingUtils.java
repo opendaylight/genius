@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
@@ -87,15 +88,15 @@ public final class ITMBatchingUtils {
         getQueue(entityType).add(actResource);
     }
 
+    @Nonnull
     public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
         switch (entityType) {
             case DEFAULT_OPERATIONAL : return DEFAULT_OPERATIONAL_SHARD_BUFFER_Q;
             case DEFAULT_CONFIG : return DEFAULT_CONFIG_SHARD_BUFFER_Q;
             case TOPOLOGY_CONFIG: return TOPOLOGY_CONFIG_SHARD_BUFFER_Q;
-            default : {
-                LOG.debug("entity type is neither operational or config, getQueue operation failed");
-                return null;
-            }
+            default:
+                throw new IllegalArgumentException(
+                    "Entity type " + entityType + " is neither operational or config, getQueue operation failed");
         }
     }
 

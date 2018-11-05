@@ -120,8 +120,8 @@ public class OvsInterfaceConfigUpdateHelper {
         IfTunnel ifTunnelOld = interfaceOld.augmentation(IfTunnel.class);
         IfTunnel ifTunnelNew = interfaceNew.augmentation(IfTunnel.class);
         if (checkAugmentations(ifTunnelOld, ifTunnelNew)) {
-            if (!ifTunnelNew.getTunnelDestination().equals(ifTunnelOld.getTunnelDestination())
-                    || !ifTunnelNew.getTunnelSource().equals(ifTunnelOld.getTunnelSource())
+            if (!Objects.equals(ifTunnelNew.getTunnelDestination(), ifTunnelOld.getTunnelDestination())
+                    || !Objects.equals(ifTunnelNew.getTunnelSource(), ifTunnelOld.getTunnelSource())
                     || ifTunnelNew.getTunnelGateway() != null && ifTunnelOld.getTunnelGateway() != null
                             && !ifTunnelNew.getTunnelGateway().equals(ifTunnelOld.getTunnelGateway())) {
                 return true;

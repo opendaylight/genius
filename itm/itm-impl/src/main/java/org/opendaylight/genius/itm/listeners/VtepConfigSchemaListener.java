@@ -8,6 +8,8 @@
 
 package org.opendaylight.genius.itm.listeners;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -92,7 +94,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     public void remove(@Nonnull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
                        @Nonnull VtepConfigSchema vtepConfigSchema) {
         LOG.trace("Received notification for VTEP config schema [{}] deleted.", vtepConfigSchema.getSchemaName());
-        List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(vtepConfigSchema.getDpnIds());
+        List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(nullToEmpty(vtepConfigSchema.getDpnIds()));
         if (!lstDpnIds.isEmpty()) {
             deleteVteps(vtepConfigSchema, lstDpnIds);
         }
@@ -178,7 +180,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             delnAddRequired = true;
         } else if (!StringUtils.equalsIgnoreCase(original.getTransportZoneName(), updated.getTransportZoneName())) {
             delnAddRequired = true;
-        } else if (!original.getTunnelType().equals(updated.getTunnelType())) {
+        } else if (!Objects.equals(original.getTunnelType(), updated.getTunnelType())) {
             delnAddRequired = true;
         }
         return delnAddRequired;
@@ -271,7 +273,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
         // Check this later
         String tunType ;
         Class<? extends TunnelTypeBase> tunnelType = schema.getTunnelType() ;
-        if (tunnelType.equals(TunnelTypeVxlan.class)) {
+        if (TunnelTypeVxlan.class.equals(tunnelType)) {
             tunType = ITMConstants.TUNNEL_TYPE_VXLAN;
         } else {
             tunType = ITMConstants.TUNNEL_TYPE_GRE;

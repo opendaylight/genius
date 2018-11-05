@@ -11,6 +11,7 @@ package org.opendaylight.genius.itm.confighelpers;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -19,6 +20,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
@@ -186,8 +188,8 @@ public class ItmTunnelAggregationHelper {
     }
 
     private Bucket createBucket(String interfaceName, IfTunnel ifTunnel, int bucketId, int portNumber) {
-        List<ActionInfo> listActionInfo = interfaceManager.getInterfaceEgressActions(interfaceName);
-        if (listActionInfo == null || listActionInfo.isEmpty()) {
+        List<ActionInfo> listActionInfo = nullToEmpty(interfaceManager.getInterfaceEgressActions(interfaceName));
+        if (listActionInfo.isEmpty()) {
             LOG.warn("MULTIPLE_VxLAN_TUNNELS: could not build Egress bucket for {}", interfaceName);
         }
         Integer portWeight = ifTunnel.getWeight() != null ? ifTunnel.getWeight() : DEFAULT_WEIGHT;
@@ -324,7 +326,7 @@ public class ItmTunnelAggregationHelper {
 
     private OperStatus getAggregatedOperStatus(Interface ifaceState, InterfaceParentEntry parentEntry) {
         String logicalTunnelName = parentEntry.getParentInterface();
-        if (!logicalTunnelName.equals(ifaceState.getName()) && ifaceState.getOperStatus() == OperStatus.Up) {
+        if (!Objects.equals(logicalTunnelName, ifaceState.getName()) && ifaceState.getOperStatus() == OperStatus.Up) {
             return OperStatus.Up;
         }
 
@@ -336,7 +338,7 @@ public class ItmTunnelAggregationHelper {
         }
         for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
             String curChildInterface = interfaceChildEntry.getChildInterface();
-            if (!curChildInterface.equals(ifaceState.getName())) {
+            if (!Objects.equals(curChildInterface, ifaceState.getName())) {
                 InterfaceInfo ifInfo = interfaceManager.getInterfaceInfoFromOperationalDataStore(curChildInterface);
                 if (ifInfo != null && InterfaceInfo.InterfaceOpState.UP.equals(ifInfo.getOpState())) {
                     return OperStatus.Up;

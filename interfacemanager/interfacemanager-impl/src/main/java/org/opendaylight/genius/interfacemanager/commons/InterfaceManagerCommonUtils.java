@@ -756,7 +756,7 @@ public final class InterfaceManagerCommonUtils {
                 .build();
         tx.delete(intfid);
 
-        if (interfaceNameEntries.size() <= 1) {
+        if (interfaceNameEntries != null && interfaceNameEntries.size() <= 1) {
             tx.delete(dpnToInterfaceId);
         }
     }

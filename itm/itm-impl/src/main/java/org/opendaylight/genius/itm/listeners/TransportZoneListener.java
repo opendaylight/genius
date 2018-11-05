@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -161,11 +162,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         // do not entertain request and skip tunnels remove operation
         // if def-tz removal request is due to def-tz-enabled flag is disabled or
         // due to change in def-tz-tunnel-type, then allow def-tz tunnels deletion
-        if (transportZone.getZoneName().equalsIgnoreCase(ITMConstants.DEFAULT_TRANSPORT_ZONE)) {
+        if (ITMConstants.DEFAULT_TRANSPORT_ZONE.equalsIgnoreCase(transportZone.getZoneName())) {
             // Get TunnelTypeBase object for tunnel-type configured in config file
             Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(itmConfig.getDefTzTunnelType());
 
-            if (!itmConfig.isDefTzEnabled() || !transportZone.getTunnelType().equals(tunType)) {
+            if (!itmConfig.isDefTzEnabled() || !Objects.equals(transportZone.getTunnelType(), tunType)) {
                 allowTunnelDeletion = true;
             } else {
                 // this is case when def-tz removal request is from Northbound.

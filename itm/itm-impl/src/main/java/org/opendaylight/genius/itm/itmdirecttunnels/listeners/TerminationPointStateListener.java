@@ -147,7 +147,7 @@ public class TerminationPointStateListener
         List<InterfaceBfdStatus> tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus();
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
             for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
-                if (bfdState.getBfdStatusKey().equalsIgnoreCase(DirectTunnelUtils.BFD_OP_STATE)) {
+                if (DirectTunnelUtils.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                     String bfdOpState = bfdState.getBfdStatusValue();
                     return DirectTunnelUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState)
                             ? Interface.OperStatus.Up : Interface.OperStatus.Down;

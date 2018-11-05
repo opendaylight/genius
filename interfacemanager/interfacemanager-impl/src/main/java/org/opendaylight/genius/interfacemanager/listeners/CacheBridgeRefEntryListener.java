@@ -68,7 +68,9 @@ public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListe
                      * Removing for now, can consider this as future optimization.
                      *
                      */
-                    interfaceMetaUtils.removeFromBridgeRefEntryCache(mod.getDataBefore());
+                    if (mod.getDataBefore() != null) {
+                        interfaceMetaUtils.removeFromBridgeRefEntryCache(mod.getDataBefore());
+                    }
                     break;
                 case SUBTREE_MODIFIED:
                 case WRITE:

@@ -14,6 +14,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -198,7 +199,7 @@ public final class AlivenessMonitorUtils {
 
             // Delete old profile from Aliveness Manager
             IfTunnel ifTunnelOld = interfaceOld.augmentation(IfTunnel.class);
-            if (!ifTunnelNew.getMonitorInterval().equals(ifTunnelOld.getMonitorInterval())) {
+            if (!Objects.equals(ifTunnelNew.getMonitorInterval(), ifTunnelOld.getMonitorInterval())) {
                 LOG.debug("deleting older monitor profile for interface {}", interfaceName);
                 long profileId = allocateProfile(FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW,
                         MonitorProtocolType.Lldp);
@@ -252,7 +253,7 @@ public final class AlivenessMonitorUtils {
         if (monitorIdInterfaceMap.isPresent()) {
             monitorIdInterfaceInstance = monitorIdInterfaceMap.get();
             existinginterfaceName = monitorIdInterfaceInstance.getInterfaceName();
-            if (!existinginterfaceName.equals(infName)) {
+            if (!Objects.equals(existinginterfaceName, infName)) {
                 monitorIdInterfaceInstance = monitorIdInterfaceBuilder.withKey(new MonitorIdInterfaceKey(monitorId))
                         .setInterfaceName(infName).build();
                 tx.merge(id, monitorIdInterfaceInstance, CREATE_MISSING_PARENTS);

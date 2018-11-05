@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.net.util.SubnetUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -165,7 +166,7 @@ public class ItmExternalTunnelAddWorker {
                     if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
                         for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
                             //dont mesh if hwVteps and OVS-tep have same ip-address
-                            if (hwVtepDS.getIpAddress().equals(tep.getIpAddress())) {
+                            if (Objects.equals(hwVtepDS.getIpAddress(), tep.getIpAddress())) {
                                 continue;
                             }
                             final String cssID = dpn.getDPNID().toString();
@@ -212,7 +213,7 @@ public class ItmExternalTunnelAddWorker {
                     for (Subnets sub : tzone.getSubnets()) {
                         if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
                             for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                                if (hwVtepDS.getIpAddress().equals(hwTep.getHwIp())) {
+                                if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
                                     continue;//dont mesh with self
                                 }
                                 LOG.trace("wire up {} and {}",hwTep, hwVtepDS);
@@ -236,7 +237,7 @@ public class ItmExternalTunnelAddWorker {
                         }
                         if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
                             for (Vteps vtep : sub.getVteps()) {
-                                if (vtep.getIpAddress().equals(hwTep.getHwIp())) {
+                                if (Objects.equals(vtep.getIpAddress(), hwTep.getHwIp())) {
                                     continue;
                                 }
                                 //TOR-OVS
