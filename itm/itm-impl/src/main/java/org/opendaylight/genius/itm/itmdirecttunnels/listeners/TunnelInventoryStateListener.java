@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -190,7 +191,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         if (!operStatusNew.equals(operStatusOld)) {
             opstateModified = true;
         }
-        if (!macAddressNew.equals(macAddressOld)) {
+        if (!Objects.equals(macAddressNew, macAddressOld)) {
             hardwareAddressModified = true;
         }
 

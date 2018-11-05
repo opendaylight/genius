@@ -182,9 +182,9 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
             return livenessState;
         }
         for (BfdStatus bfdState : tunnelBfdStatus) {
-            if (bfdState.getBfdStatusKey().equalsIgnoreCase(AlivenessMonitorConstants.BFD_OP_STATE)) {
+            if (AlivenessMonitorConstants.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                 String bfdOpState = bfdState.getBfdStatusValue();
-                if (bfdOpState.equalsIgnoreCase(AlivenessMonitorConstants.BFD_STATE_UP)) {
+                if (AlivenessMonitorConstants.BFD_STATE_UP.equalsIgnoreCase(bfdOpState)) {
                     livenessState = LivenessState.Up;
                 } else {
                     livenessState = LivenessState.Down;
@@ -240,7 +240,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         Iterator<BfdParams> tunnelBfdParamsIterator = tunnelBfdParams.iterator();
         while (tunnelBfdParamsIterator.hasNext()) {
             BfdParams bfdParam = tunnelBfdParamsIterator.next();
-            if (bfdParam.getBfdParamKey().equals(AlivenessMonitorConstants.BFD_PARAM_ENABLE)) {
+            if (AlivenessMonitorConstants.BFD_PARAM_ENABLE.equals(bfdParam.getBfdParamKey())) {
                 tunnelBfdParamsIterator.remove();
                 break;
             }

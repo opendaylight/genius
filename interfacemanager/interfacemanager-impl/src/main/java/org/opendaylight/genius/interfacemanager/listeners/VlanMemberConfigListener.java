@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -76,7 +77,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
         }
 
         String lowerLayerIf = parentRefs.getParentInterface();
-        if (lowerLayerIf.equals(removedInterface.getName())) {
+        if (Objects.equals(lowerLayerIf, removedInterface.getName())) {
             LOG.error("Attempt to remove Vlan Trunk-Member {} with same parent interface name.", removedInterface);
             return;
         }
@@ -115,7 +116,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
         }
 
         String lowerLayerIf = parentRefsNew.getParentInterface();
-        if (lowerLayerIf.equals(updatedInterface.getName())) {
+        if (Objects.equals(lowerLayerIf, updatedInterface.getName())) {
             LOG.error(
                     "Configuration Error. Attempt to update Vlan Trunk-Member {} with same parent " + "interface name.",
                     updatedInterface);
@@ -144,7 +145,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
         }
 
         String lowerLayerIf = parentRefs.getParentInterface();
-        if (lowerLayerIf.equals(added.getName())) {
+        if (Objects.equals(lowerLayerIf, added.getName())) {
             LOG.error("Attempt to add Vlan Trunk-Member {} with same parent interface name.", added);
             return;
         }

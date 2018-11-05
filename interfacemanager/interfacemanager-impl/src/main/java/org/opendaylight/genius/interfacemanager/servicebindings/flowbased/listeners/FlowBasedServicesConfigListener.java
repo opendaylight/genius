@@ -11,17 +11,16 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.liste
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -141,35 +140,41 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     private synchronized void onBoundServicesChanged(final DataObjectModification<BoundServices> dataObjectModification,
                                                      final InstanceIdentifier<ServicesInfo> rootIdentifier,
                                                      final DataObjectModification<ServicesInfo> rootNode) {
-        final List<BoundServices> boundServices = rootNode.getDataAfter().getBoundServices();
-        final ServicesInfoKey servicesInfoKey = rootNode.getDataAfter().key();
-        final BoundServices boundServicesBefore = dataObjectModification.getDataBefore();
-        final BoundServices boundServicesAfter =  dataObjectModification.getDataAfter();
+        if (rootNode.getDataAfter() != null) {
+            final List<BoundServices> boundServices = rootNode.getDataAfter().getBoundServices();
+            final ServicesInfoKey servicesInfoKey = rootNode.getDataAfter().key();
+            final BoundServices boundServicesBefore = dataObjectModification.getDataBefore();
+            final BoundServices boundServicesAfter =  dataObjectModification.getDataAfter();
 
-        switch (dataObjectModification.getModificationType()) {
-            case DELETE:
-                remove(servicesInfoKey, boundServicesBefore, boundServices);
-                break;
-            case SUBTREE_MODIFIED:
-                update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
-                        boundServicesBefore.key()), boundServicesBefore, boundServicesAfter, boundServices);
-                break;
-            case WRITE:
-                if (boundServicesBefore == null) {
-                    add(servicesInfoKey, boundServicesAfter, boundServices);
-                } else {
-                    update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
+            switch (dataObjectModification.getModificationType()) {
+                case DELETE:
+                    if (boundServicesBefore != null) {
+                        remove(servicesInfoKey, boundServicesBefore, boundServices);
+                    }
+                    break;
+                case SUBTREE_MODIFIED:
+                    if (boundServicesBefore != null) {
+                        update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
                             boundServicesBefore.key()), boundServicesBefore, boundServicesAfter, boundServices);
-                }
-                break;
-            default:
-                LOG.error("Unhandled Modificiation Type{} for {}", dataObjectModification.getModificationType(),
-                    rootIdentifier);
+                    }
+                    break;
+                case WRITE:
+                    if (boundServicesBefore == null) {
+                        add(servicesInfoKey, boundServicesAfter, boundServices);
+                    } else {
+                        update(servicesInfoKey, getBoundServicesInstanceIdentifier(rootIdentifier,
+                            boundServicesBefore.key()), boundServicesBefore, boundServicesAfter, boundServices);
+                    }
+                    break;
+                default:
+                    LOG.error("Unhandled Modificiation Type{} for {}", dataObjectModification.getModificationType(),
+                        rootIdentifier);
 
+            }
         }
     }
 
-    protected void remove(final ServicesInfoKey serviceKey, final BoundServices boundServiceOld,
+    protected void remove(@Nonnull final ServicesInfoKey serviceKey, @Nonnull  final BoundServices boundServiceOld,
                           final List<BoundServices> boundServicesList) {
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                 IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
@@ -191,12 +196,13 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                           BoundServices boundServiceOld, BoundServices boundServiceNew,
                           List<BoundServices> boundServicesList) {
         if (!Objects.equals(boundServiceOld, boundServiceNew)) {
-            /**
+            /*
              * In some cases ACL needs to change metadata passed from dispatcher tables to ACL tables dynamically.
              * For this update operation has been enhanced to support same. This is only supported for ACL for now
              * and the functionality will remain same for all other applications as it was earlier.
              */
-            if ((boundServiceNew.getServicePriority() == NwConstants.ACL_SERVICE_INDEX
+            if (boundServiceNew.getServicePriority() != null && (
+                boundServiceNew.getServicePriority() == NwConstants.ACL_SERVICE_INDEX
                     || boundServiceNew.getServicePriority() == NwConstants.EGRESS_ACL_SERVICE_INDEX)
                     && !Objects.equals(boundServiceOld, boundServiceNew)) {
                 LOG.info("Bound services flow update for service {}", boundServiceNew.getServiceName());
@@ -274,11 +280,11 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         Class<? extends ServiceModeBase> serviceMode;
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable;
         BoundServices boundServicesNew;
-        List<BoundServices> boundServicesList;
+        @Nullable List<BoundServices> boundServicesList;
 
         RendererConfigRemoveWorker(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
                                    FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable,
-                                   BoundServices boundServicesNew, List<BoundServices> boundServicesList) {
+                                   BoundServices boundServicesNew, @Nullable List<BoundServices> boundServicesList) {
             this.interfaceName = interfaceName;
             this.serviceMode = serviceMode;
             this.flowBasedServicesConfigRemovable = flowBasedServicesConfigRemovable;

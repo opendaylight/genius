@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -228,7 +230,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
 
         int localErrorCount = 0;
-        for (InterfaceAddress interfaceAddress : arpReqInput.getInterfaceAddress()) {
+        for (InterfaceAddress interfaceAddress : nullToEmpty(arpReqInput.getInterfaceAddress())) {
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
@@ -560,5 +562,11 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
 
         return new BigInteger(nodeKeyString.substring(OPENFLOW_PFX.length()));
+    }
+
+    // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
+    @Nonnull
+    public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
+        return input != null ? input : new ArrayList<>(0);
     }
 }

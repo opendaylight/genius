@@ -231,7 +231,7 @@ public class SouthboundUtils {
             options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.stringValue());
         }
         // Specific options for each type of tunnel
-        if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeMplsOverGre.class)) {
+        if (TunnelTypeMplsOverGre.class.equals(ifTunnel.getTunnelInterfaceType())) {
             String switchVersion = getSwitchVersion((InstanceIdentifier<Node>) bridgeIid);
             LOG.debug("Switch OVS Version: {}", switchVersion);
             if (org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils.compareDbVersionToMinVersion(
@@ -414,7 +414,7 @@ public class SouthboundUtils {
             return false;
         }
         for (InterfaceBfd interfaceBfd : interfaceBfds) {
-            if (interfaceBfd.getBfdKey().equalsIgnoreCase(SouthboundUtils.BFD_ENABLE_KEY)) {
+            if (SouthboundUtils.BFD_ENABLE_KEY.equalsIgnoreCase(interfaceBfd.getBfdKey())) {
                 return SouthboundUtils.BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());//checkBfdEnabled
             }
         }

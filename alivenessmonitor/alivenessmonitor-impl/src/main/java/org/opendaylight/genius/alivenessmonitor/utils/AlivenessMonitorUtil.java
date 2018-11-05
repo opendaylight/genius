@@ -7,7 +7,11 @@
  */
 package org.opendaylight.genius.alivenessmonitor.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.genius.ipv6util.api.Ipv6Util;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
@@ -93,5 +97,11 @@ public final class AlivenessMonitorUtil {
             errorText.append(",").append(error.getErrorType()).append("-").append(error.getMessage());
         }
         return errorText.toString();
+    }
+
+    // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
+    @Nonnull
+    public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
+        return input != null ? input : new ArrayList<>(0);
     }
 }

@@ -401,7 +401,7 @@ public final class DirectTunnelUtils {
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
         // Specific options for each type of tunnel
-        if (ifTunnel.getTunnelInterfaceType().equals(TunnelTypeVxlanGpe.class)) {
+        if (TunnelTypeVxlanGpe.class.equals(ifTunnel.getTunnelInterfaceType())) {
             options.put(DirectTunnelUtils.TUNNEL_OPTIONS_EXTS, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_GPE);
             options.put(DirectTunnelUtils.TUNNEL_OPTIONS_NSI, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
             options.put(DirectTunnelUtils.TUNNEL_OPTIONS_NSP, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);

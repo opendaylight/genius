@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -219,7 +220,7 @@ public class LockManagerServiceImpl implements LockManagerService {
                 } else {
                     String lockDataOwner = result.get().getLockOwner();
                     String currentOwner = lockData.getLockOwner();
-                    if (currentOwner.equals(lockDataOwner)) {
+                    if (Objects.equals(currentOwner, lockDataOwner)) {
                         return true;
                     }
                 }

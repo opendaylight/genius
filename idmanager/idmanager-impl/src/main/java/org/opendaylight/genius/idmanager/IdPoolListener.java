@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.idmanager;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -55,11 +56,11 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     @Override
     public void update(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool originalIdPool,
                        @Nonnull IdPool updatedIdPool) {
-        if (!updatedIdPool.getAvailableIdsHolder().equals(originalIdPool.getAvailableIdsHolder()) || !updatedIdPool
-                .getReleasedIdsHolder().equals(originalIdPool.getReleasedIdsHolder())) {
+        if (!Objects.equals(updatedIdPool.getAvailableIdsHolder(), originalIdPool.getAvailableIdsHolder())
+                || !Objects.equals(updatedIdPool.getReleasedIdsHolder(), originalIdPool.getReleasedIdsHolder())) {
             String parentPoolName = updatedIdPool.getParentPoolName();
             String poolName = updatedIdPool.getPoolName();
-            if (parentPoolName != null && !parentPoolName.isEmpty()) {
+            if (poolName != null && parentPoolName != null && !parentPoolName.isEmpty()) {
                 if (!idUtils.getPoolUpdatedMap(poolName) && poolName.equals(idUtils.getLocalPoolName(parentPoolName))) {
                     LOG.info("Received update for pool {} : {} - {}", updatedIdPool.getPoolName(), originalIdPool,
                              updatedIdPool);

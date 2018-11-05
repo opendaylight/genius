@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+import static org.opendaylight.genius.ipv6util.api.Ipv6Util.nullToEmpty;
+
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
 import com.google.common.primitives.Ints;
@@ -167,9 +169,7 @@ public final class NWUtil {
         if (!nodesOptional.isPresent()) {
             return result;
         }
-        Nodes nodes = nodesOptional.get();
-        List<Node> nodeList = nodes.getNode();
-        for (Node node : nodeList) {
+        for (Node node : nullToEmpty(nodesOptional.get().getNode())) {
             NodeId nodeId = node.getId();
             if (nodeId != null) {
                 BigInteger dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);

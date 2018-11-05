@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.listeners;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -64,8 +66,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         Optional<TransportZones> transportZonesOptional = ItmUtils
                 .read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (transportZonesOptional.isPresent()) {
-            TransportZones tzones = transportZonesOptional.get();
-            for (TransportZone tzone : tzones.getTransportZone()) {
+            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
                 //if you remove configuration, the last configured interval is only set i.e no change
                 LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModification.getInterval());
@@ -92,8 +93,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         Optional<TransportZones> transportZonesOptional = ItmUtils
                 .read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (transportZonesOptional.isPresent()) {
-            TransportZones tzones = transportZonesOptional.get();
-            for (TransportZone tzone : tzones.getTransportZone()) {
+            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModificationAfter.getInterval());
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -118,8 +118,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         Optional<TransportZones> transportZonesOptional = ItmUtils
                 .read(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (transportZonesOptional.isPresent()) {
-            TransportZones tzones = transportZonesOptional.get();
-            for (TransportZone tzone : tzones.getTransportZone()) {
+            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
                 LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModification.getInterval());
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {

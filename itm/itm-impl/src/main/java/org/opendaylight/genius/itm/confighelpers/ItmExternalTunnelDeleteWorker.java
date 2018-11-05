@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -132,7 +135,7 @@ public final class ItmExternalTunnelDeleteWorker {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 if (dpn.getTunnelEndPoints() != null) {
                     for (TunnelEndPoints srcTep : dpn.getTunnelEndPoints()) {
-                        for (TzMembership zone : srcTep.getTzMembership()) {
+                        for (TzMembership zone : nullToEmpty(srcTep.getTzMembership())) {
                             deleteTunnelsInTransportZone(zone.getZoneName(), dpn, srcTep, cfgdhwVteps, dataBroker,
                                     writeTransaction);
                         }
@@ -161,7 +164,7 @@ public final class ItmExternalTunnelDeleteWorker {
                                 LOG.trace("hwtepDS exists {}", hwVtepDS);
                                 // do i need to check node-id?
                                 // for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
-                                if (hwVtepDS.getIpAddress().equals(hwTep.getHwIp())) {
+                                if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
                                     continue;// dont delete tunnels with self
                                 }
                                 // TOR-TOR

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
+import static org.opendaylight.genius.interfacemanager.IfmUtil.nullToEmpty;
+
 import java.math.BigInteger;
 import java.util.Formatter;
 
@@ -213,7 +215,7 @@ public final class IfmCLIUtil {
             String remoteIp = UNSET;
             String localIp = UNSET;
             String key = UNSET;
-            for (Options portOption: port.getOptions()) {
+            for (Options portOption: nullToEmpty(port.getOptions())) {
                 switch (portOption.getOption()) {
                     case "local_ip":
                         localIp = portOption.getValue();
