@@ -10,6 +10,7 @@ package org.opendaylight.genius.itm.confighelpers;
 import static java.util.Collections.singletonList;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -157,11 +159,12 @@ public final class ItmInternalTunnelAddWorker {
         List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
         List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
 
-        for (TunnelEndPoints srcte : srcEndPts) {
-            for (TunnelEndPoints dstte : dstEndPts) {
+        for (TunnelEndPoints srcte : nullToEmpty(srcEndPts)) {
+            for (TunnelEndPoints dstte : nullToEmpty(dstEndPts)) {
                 // Compare the Transport zones
-                if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
-                    if (!ItmUtils.getIntersection(srcte.getTzMembership(), dstte.getTzMembership()).isEmpty()) {
+                if (!Objects.equals(srcDpn.getDPNID(), dstDpn.getDPNID())) {
+                    if (!ItmUtils.getIntersection(nullToEmpty(srcte.getTzMembership()),
+                            nullToEmpty(dstte.getTzMembership())).isEmpty()) {
                         // wire them up
                         wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
                                 mdsalManager);
@@ -228,7 +231,7 @@ public final class ItmInternalTunnelAddWorker {
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance(gateway);
         IpAddress gwyIpAddress =
-                srcte.getSubnetMask().equals(dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress() ;
+                Objects.equals(srcte.getSubnetMask(), dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress();
         LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}",
                 trunkInterfaceName, srcte.getInterfaceName(), srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress);
@@ -318,7 +321,7 @@ public final class ItmInternalTunnelAddWorker {
             String trunkInterfaceName, String parentInterfaceName) throws ExecutionException, InterruptedException,
             OperationFailedException {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-        IpAddress gwyIpAddress = srcte.getSubnetMask().equals(dstte.getSubnetMask())
+        IpAddress gwyIpAddress = Objects.equals(srcte.getSubnetMask(), dstte.getSubnetMask())
                 ? gatewayIpObj : srcte.getGwIpAddress() ;
         LOG.debug("Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {},"
                         + " destination IP - {} gateway IP - {}", trunkInterfaceName, parentInterfaceName,

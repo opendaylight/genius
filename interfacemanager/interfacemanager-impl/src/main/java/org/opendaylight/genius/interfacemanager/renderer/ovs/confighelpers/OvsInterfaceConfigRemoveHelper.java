@@ -9,6 +9,7 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.genius.interfacemanager.IfmUtil.nullToEmpty;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -253,7 +254,8 @@ public final class OvsInterfaceConfigRemoveHelper {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // FIXME: If the no. of child entries exceeds 100, perform txn
                 // updates in batches of 100.
-                for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.getInterfaceChildEntry()) {
+                for (InterfaceChildEntry interfaceChildEntry : nullToEmpty(
+                        interfaceParentEntry.getInterfaceChildEntry())) {
                     LOG.debug("removing interface state for vlan trunk member {}",
                             interfaceChildEntry.getChildInterface());
                     interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),

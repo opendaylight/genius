@@ -7,11 +7,14 @@
  */
 package org.opendaylight.genius.itm.cache;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.inject.Inject;
@@ -63,7 +66,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
+        for (RemoteDpns remoteDpns : nullToEmpty(dpnsTeps.getRemoteDpns())) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                     .setTunnelName(remoteDpns.getTunnelName())
@@ -78,7 +81,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void removed(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
+        for (RemoteDpns remoteDpns : nullToEmpty(dpnsTeps.getRemoteDpns())) {
             dpnTepInterfaceMap.remove(getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId()));
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
         }
@@ -95,7 +98,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
                 if (dpnsTeps.isPresent()) {
                     DpnsTeps teps = dpnsTeps.get();
-                    teps.getRemoteDpns().forEach(remoteDpns -> {
+                    nullToEmpty(teps.getRemoteDpns()).forEach(remoteDpns -> {
                         DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                                 .setTunnelName(remoteDpns.getTunnelName())
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
@@ -117,16 +120,15 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     public void removeTepFromDpnTepInterfaceConfigDS(BigInteger srcDpnId) throws TransactionCommitFailedException {
         Collection<DpnsTeps> dpnsTeps = this.getAllPresent();
         for (DpnsTeps dpnTep : dpnsTeps) {
-            if (!dpnTep.getSourceDpnId().equals(srcDpnId)) {
-                List<RemoteDpns> remoteDpns = dpnTep.getRemoteDpns();
-                for (RemoteDpns remoteDpn : remoteDpns) {
-                    if (remoteDpn.getDestinationDpnId().equals(srcDpnId)) {
+            if (!Objects.equals(dpnTep.getSourceDpnId(), srcDpnId)) {
+                for (RemoteDpns remoteDpns : nullToEmpty(dpnTep.getRemoteDpns())) {
+                    if (Objects.equals(remoteDpns.getDestinationDpnId(), srcDpnId)) {
                         // Remote the SrcDpnId from the remote List. Remove it from COnfig DS. 4
                         // This will be reflected in cache by the ClusteredDTCN. Not removing it here !
                         //Caution :- Batching Delete !!
                         InstanceIdentifier<RemoteDpns> remoteDpnII =
                                 buildRemoteDpnsInstanceIdentifier(dpnTep.getSourceDpnId(),
-                                        remoteDpn.getDestinationDpnId());
+                                        remoteDpns.getDestinationDpnId());
                         SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION,
                                 remoteDpnII);
                         break;

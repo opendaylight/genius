@@ -54,9 +54,9 @@ public final class HwVTEPInterfaceStateUpdateHelper {
         OperStatus livenessState = OperStatus.Down;
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
             for (BfdStatus bfdState : tunnelBfdStatus) {
-                if (bfdState.getBfdStatusKey().equalsIgnoreCase(SouthboundUtils.BFD_OP_STATE)) {
+                if (SouthboundUtils.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                     String bfdOpState = bfdState.getBfdStatusValue();
-                    if (bfdOpState.equalsIgnoreCase(SouthboundUtils.BFD_STATE_UP)) {
+                    if (SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState)) {
                         livenessState = OperStatus.Up;
                     } else {
                         livenessState = OperStatus.Down;

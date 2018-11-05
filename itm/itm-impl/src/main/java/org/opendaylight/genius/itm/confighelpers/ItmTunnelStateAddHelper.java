@@ -38,7 +38,7 @@ public final class ItmTunnelStateAddHelper {
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
         StateTunnelList tunnelStateList;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = iface.getOperStatus().equals(Interface.OperStatus.Up);
+        boolean tunnelState = Interface.OperStatus.Up.equals(iface.getOperStatus());
         switch (iface.getOperStatus()) {
             case Up:
                 tunnelOperStatus = TunnelOperStatus.Up;

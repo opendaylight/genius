@@ -683,7 +683,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 for (TransportZone tzone : transportZones.getTransportZone()) {
-                    if (!tzone.getTunnelType().equals(TunnelTypeVxlan.class)) {
+                    if (!TunnelTypeVxlan.class.equals(tzone.getTunnelType())) {
                         continue;
                     }
                     foundVxlanTzone = true;
@@ -763,7 +763,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 for (TransportZone tzone : transportZones.getTransportZone()) {
-                    if (!tzone.getTunnelType().equals(TunnelTypeVxlan.class)) {
+                    if (!TunnelTypeVxlan.class.equals(tzone.getTunnelType())) {
                         continue;
                     }
                     String transportZone = tzone.getZoneName();

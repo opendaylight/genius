@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.pmcounters;
 
+import static org.opendaylight.genius.interfacemanager.IfmUtil.nullToEmpty;
 import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningScheduledThreadPool;
 
 import com.google.common.base.Optional;
@@ -259,7 +260,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         List<NodeConnectorStatisticsAndPortNumberMap> ncStatsAndPortMapList = nodeConnectorStatisticsOutput
                         .getNodeConnectorStatisticsAndPortNumberMap();
         // Parse NodeConnectorStatistics and create/update counters for them
-        for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : ncStatsAndPortMapList) {
+        for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : nullToEmpty(ncStatsAndPortMapList)) {
             NodeConnectorId nodeConnector = ncStatsAndPortMap.getNodeConnectorId();
             LOG.trace("Create/update metric counter for NodeConnector: {} of node: {}", nodeConnector, dpid);
             port = nodeConnector.getValue();
@@ -327,7 +328,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         Map<Short, AtomicInteger> flowTableMap = new HashMap<>();
         // Get all flows for node from RPC result
         List<FlowAndStatisticsMapList> flowTableAndStatisticsMapList = flowStatsOutput.getFlowAndStatisticsMapList();
-        for (FlowAndStatisticsMapList flowAndStatisticsMap : flowTableAndStatisticsMapList) {
+        for (FlowAndStatisticsMapList flowAndStatisticsMap : nullToEmpty(flowTableAndStatisticsMapList)) {
             short tableId = flowAndStatisticsMap.getTableId();
             // populate map to maintain flow count per table
             flowTableMap.computeIfAbsent(tableId, key -> new AtomicInteger(0)).incrementAndGet();

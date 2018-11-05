@@ -61,7 +61,9 @@ public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeLi
             final DataObjectModification<BridgeEntry> mod = change.getRootNode();
             switch (mod.getModificationType()) {
                 case DELETE:
-                    interfaceMetaUtils.removeFromBridgeEntryCache(mod.getDataBefore());
+                    if (mod.getDataBefore() != null) {
+                        interfaceMetaUtils.removeFromBridgeEntryCache(mod.getDataBefore());
+                    }
                     break;
                 case SUBTREE_MODIFIED:
                 case WRITE:

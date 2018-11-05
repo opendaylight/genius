@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,6 +17,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -127,9 +129,9 @@ public class ItmInternalTunnelDeleteWorker {
                     continue;
                 }
                 LOG.debug("Entries in meshEndPointCache {} for DPN Id{} ", meshedEndPtCache.size(), srcDpn.getDPNID());
-                for (TunnelEndPoints srcTep : srcDpn.getTunnelEndPoints()) {
+                for (TunnelEndPoints srcTep : nullToEmpty(srcDpn.getTunnelEndPoints())) {
                     LOG.trace("Processing srcTep {}", srcTep);
-                    List<TzMembership> srcTZones = srcTep.getTzMembership();
+                    List<TzMembership> srcTZones = nullToEmpty(srcTep.getTzMembership());
                     boolean tepDeleteFlag = false;
                     // First, take care of tunnel removal, so run through all other DPNS other than srcDpn
                     // In the tep received from Delete DCN, the membership list will always be 1
@@ -137,9 +139,10 @@ public class ItmInternalTunnelDeleteWorker {
                     // Hence if a tunnel is shared across TZs, compare the original membership list between end points
                     // to decide if tunnel to be deleted.
                     for (DPNTEPsInfo dstDpn : meshedDpnList) {
-                        if (!srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
-                            for (TunnelEndPoints dstTep : dstDpn.getTunnelEndPoints()) {
-                                if (!ItmUtils.getIntersection(dstTep.getTzMembership(), srcTZones).isEmpty()) {
+                        if (!Objects.equals(srcDpn.getDPNID(), dstDpn.getDPNID())) {
+                            for (TunnelEndPoints dstTep : nullToEmpty(dstDpn.getTunnelEndPoints())) {
+                                if (!ItmUtils.getIntersection(nullToEmpty(dstTep.getTzMembership()),
+                                        srcTZones).isEmpty()) {
                                     List<TzMembership> originalTzMembership =
                                             ItmUtils.getOriginalTzMembership(srcTep, srcDpn.getDPNID(), meshedDpnList);
                                     if (ItmUtils.getIntersection(dstTep.getTzMembership(),
@@ -171,10 +174,10 @@ public class ItmInternalTunnelDeleteWorker {
                     }
                     for (DPNTEPsInfo dstDpn : meshedDpnList) {
                         // Second, take care of Tep TZ membership and identify if tep can be removed
-                        if (srcDpn.getDPNID().equals(dstDpn.getDPNID())) {
+                        if (Objects.equals(srcDpn.getDPNID(), dstDpn.getDPNID())) {
                             // Same DPN, so remove the TZ membership
-                            for (TunnelEndPoints dstTep : dstDpn.getTunnelEndPoints()) {
-                                if (dstTep.getIpAddress().equals(srcTep.getIpAddress())) {
+                            for (TunnelEndPoints dstTep : nullToEmpty(dstDpn.getTunnelEndPoints())) {
+                                if (Objects.equals(dstTep.getIpAddress(), srcTep.getIpAddress())) {
                                     // Remove the deleted TZ membership from the TEP
                                     LOG.debug("Removing TZ list {} from Existing TZ list {} ", srcTZones,
                                             dstTep.getTzMembership());
@@ -336,12 +339,15 @@ public class ItmInternalTunnelDeleteWorker {
             boolean emptyTunnelGroup = true;
             boolean foundLogicGroupIface = false;
             for (InternalTunnel tunl : tunnels) {
-                if (tunl.getSourceDPN().equals(srcDpnId) && tunl.getDestinationDPN().equals(dstDpnId)) {
-                    if (tunl.getTransportType().isAssignableFrom(TunnelTypeVxlan.class)
+                if (Objects.equals(tunl.getSourceDPN(), srcDpnId) && Objects.equals(tunl.getDestinationDPN(),
+                        dstDpnId)) {
+                    if (tunl.getTransportType() != null && tunl.getTransportType().isAssignableFrom(
+                            TunnelTypeVxlan.class)
                             && tunl.getTunnelInterfaceNames() != null && !tunl.getTunnelInterfaceNames().isEmpty()) {
                         emptyTunnelGroup = false;
                         break;
-                    } else if (tunl.getTransportType().isAssignableFrom(TunnelTypeLogicalGroup.class)) {
+                    } else if (tunl.getTransportType() != null && tunl.getTransportType().isAssignableFrom(
+                            TunnelTypeLogicalGroup.class)) {
                         foundLogicGroupIface = true;
                     }
                 }
@@ -457,7 +463,8 @@ public class ItmInternalTunnelDeleteWorker {
 
         ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
         if (ovsBridgeEntryOptional.isPresent()) {
-            List<OvsBridgeTunnelEntry> bridgeTunnelEntries = ovsBridgeEntryOptional.get().getOvsBridgeTunnelEntry();
+            List<OvsBridgeTunnelEntry> bridgeTunnelEntries =
+                nullToEmpty(ovsBridgeEntryOptional.get().getOvsBridgeTunnelEntry());
             deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
             // IfIndex needs to be removed only during State Clean up not Config
             // TunnelMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);

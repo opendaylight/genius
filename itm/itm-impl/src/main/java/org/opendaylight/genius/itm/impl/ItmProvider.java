@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.impl;
 
+import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -21,7 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -332,9 +333,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
         String schemaName = validatedSchema.getSchemaName();
         VtepConfigSchema existingSchema = getVtepConfigSchema(schemaName);
-        if (existingSchema != null) {
-            Preconditions.checkArgument(false, String.format("VtepConfigSchema [%s] already exists!", schemaName));
-        }
+        Preconditions.checkArgument(existingSchema == null, "VtepConfigSchema [" + schemaName + "] already exists!");
         MDSALUtil.syncWrite(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
                 ItmUtils.getVtepConfigSchemaIdentifier(schemaName), validatedSchema);
         LOG.debug("Vtep config schema {} added to config DS", schemaName);
@@ -364,12 +363,12 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             builder.setDpnIds(schema.getDpnIds());
         } else {*/
         if (lstDpnsForAdd != null && !lstDpnsForAdd.isEmpty()) {
-            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.getDpnIds());
+            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(nullToEmpty(schema.getDpnIds()));
             originalDpnList.addAll(lstDpnsForAdd) ;
             builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList));
         }
         if (lstDpnsForDelete != null && !lstDpnsForDelete.isEmpty()) {
-            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.getDpnIds());
+            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(nullToEmpty(schema.getDpnIds()));
             originalDpnList.removeAll(lstDpnsForDelete) ;
             builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList));
             // schema.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(ItmUtils.getDpnIdList(schema.getDpnIds())
