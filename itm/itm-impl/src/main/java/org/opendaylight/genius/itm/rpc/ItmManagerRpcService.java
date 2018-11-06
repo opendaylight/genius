@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
@@ -349,32 +350,44 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     @Override
-    public ListenableFuture<RpcResult<SetBfdParamOnTunnelOutput>> setBfdParamOnTunnel(
-            SetBfdParamOnTunnelInput input) {
-        BigInteger srcDpnId = new BigInteger(input.getSourceNode());
-        BigInteger destDpnId = new BigInteger(input.getDestinationNode());
+    public Future<RpcResult<Void>> setBfdParamOnTunnel(final SetBfdParamOnTunnelInput input) {
+        final BigInteger srcDpnId = new BigInteger(input.getSourceNode());
+        final BigInteger destDpnId = new BigInteger(input.getDestinationNode());
+        LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
+        return fromListenableFuture(LOG,  input, () -> enableBfdOnSrcDest(srcDpnId, destDpnId,
+                input.isMonitoringEnabled(), input.getMonitoringInterval())).withRpcErrorMessage(e -> String.format(
+                "Failed to update BFD configuration for the DPN Id {%d} due to %s",
+                srcDpnId, e.getMessage())).onFailureLogLevel(ERROR).build();
+    }
+
+    private ListenableFuture<Void> enableBfdOnSrcDest(BigInteger srcDpnId, BigInteger destDpnId, final Boolean enabled,
+                                                      final Integer interval) {
+        return txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+            enableBFD(tx, srcDpnId, destDpnId, enabled, interval);
+            enableBFD(tx, destDpnId, srcDpnId, enabled, interval);
+        });
+    }
+
+    private void enableBFD(WriteTransaction tx, BigInteger srcDpnId, BigInteger destDpnId, final Boolean enabled,
+                           final Integer interval) throws ReadFailedException {
         DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
-        return fromListenableFuture(LOG, input,
-            () -> Futures.transform(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                java.util.Objects.requireNonNull(dpnTepInterfaceInfo, "dpnTepInterfaceInfo");
-                RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
-                remoteDpnsBuilder.withKey(new RemoteDpnsKey(destDpnId));
-                remoteDpnsBuilder.setDestinationDpnId(destDpnId);
-                remoteDpnsBuilder.setTunnelName(dpnTepInterfaceInfo.getTunnelName());
-                remoteDpnsBuilder.setInternal(dpnTepInterfaceInfo.isInternal());
-                if (input.isMonitoringEnabled() && input.getMonitoringInterval() != null) {
-                    remoteDpnsBuilder.setMonitoringInterval(input.getMonitoringInterval());
-                }
-                remoteDpnsBuilder.setMonitoringEnabled(input.isMonitoringEnabled());
-                RemoteDpns remoteDpn = remoteDpnsBuilder.build();
-                Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(srcDpnId);
-                directTunnelUtils.updateBfdConfiguration(srcDpnId, remoteDpn, ovsBridgeRefEntry);
-                InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class)
-                    .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
-                    .child(RemoteDpns.class,
+        RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
+        remoteDpnsBuilder.setKey(new RemoteDpnsKey(destDpnId)).setDestinationDpnId(destDpnId)
+                .setTunnelName(dpnTepInterfaceInfo.getTunnelName()).setInternal(dpnTepInterfaceInfo.isInternal())
+                .setMonitoringEnabled(enabled);
+        if (enabled && interval != null) {
+            remoteDpnsBuilder.setMonitoringInterval(interval);
+        }
+        RemoteDpns remoteDpn = remoteDpnsBuilder.build();
+        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(srcDpnId);
+        LOG.debug("setBfdParamOnTunnel TunnelName: {}, ovsBridgeRefEntry: {}", dpnTepInterfaceInfo.getTunnelName(),
+                ovsBridgeRefEntry);
+        directTunnelUtils.updateBfdConfiguration(srcDpnId, remoteDpn, ovsBridgeRefEntry);
+        InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class)
+                .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
+                .child(RemoteDpns.class,
                         new RemoteDpnsKey(destDpnId)).build();
-                tx.merge(LogicalDatastoreType.CONFIGURATION, iid, remoteDpn);
-            }), unused -> new SetBfdParamOnTunnelOutputBuilder().build(), MoreExecutors.directExecutor())).build();
+        tx.merge(LogicalDatastoreType.CONFIGURATION, iid, remoteDpn);
     }
 
     @Override
