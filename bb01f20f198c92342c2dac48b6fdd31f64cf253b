@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3004b6a6_7540b4a3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-06T14:54:27Z",
+      "side": 1,
+      "message": "this also can be null?? even if the last item is getting deleted, DataBefore should have some content right?",
+      "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "20e3f511_ddd3d829",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-06T14:54:27Z",
+      "side": 1,
+      "message": "service priority is key for boundServices, in which case can that come as null?",
+      "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
