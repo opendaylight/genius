@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2885eed3_d65db983",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-06T15:35:28Z",
+      "side": 1,
+      "message": "Right; this patch is only based on static null analysis, so since getDataBefore() is declared as @Nullable, I added handling for a potential null value. I can remove it if you prefer.",
+      "parentUuid": "3004b6a6_7540b4a3",
+      "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "20e3f511_ddd3d829",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2018-11-06T14:54:27Z",
       "side": 1,
       "message": "service priority is key for boundServices, in which case can that come as null?",
+      "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6e7e5aea_5b13633b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-06T15:35:28Z",
+      "side": 1,
+      "message": "According to the generated code, it can, which indeed doesn’t make sense.",
+      "parentUuid": "20e3f511_ddd3d829",
       "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
