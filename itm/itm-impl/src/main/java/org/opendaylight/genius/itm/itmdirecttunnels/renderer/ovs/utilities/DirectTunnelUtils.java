@@ -499,8 +499,10 @@ public final class DirectTunnelUtils {
 
     public void updateBfdConfiguration(BigInteger srcDpnId, RemoteDpns remoteDpn,
                                        @Nonnull com.google.common.base.Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
+        LOG.debug("updateBfdConfiguration: OvsBridgeRefEntry {}, TunnelName: {}", ovsBridgeRefEntry,
+                remoteDpn.getTunnelName());
         if (ovsBridgeRefEntry.isPresent()) {
-            LOG.debug("creating bridge interface on dpn {}", srcDpnId);
+            LOG.debug("updateBfdConfiguration: Creating bridge interface on dpn {}", srcDpnId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
                 (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
                     .getOvsBridgeReference().getValue();
@@ -513,13 +515,16 @@ public final class DirectTunnelUtils {
             InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(
                 org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang
                     .network.topology.rev131021.network.topology.topology.Node.class)), remoteDpn.getTunnelName());
+        LOG.debug("updateBfdParamtersForTerminationPoint - Tunnel: {}", remoteDpn.getTunnelName());
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
         List<InterfaceBfd> bfdParams = getBfdParams(remoteDpn);
         tpAugmentationBuilder.setInterfaceBfd(bfdParams);
-        LOG.debug("OvsdbTerminationPointAugmentation: {}", tpAugmentationBuilder);
+        LOG.debug("updateBfdParamtersForTerminationPoint - bfdParams: {}, OvsdbTerminationPointAugmentation: {}",
+                bfdParams, tpAugmentationBuilder);
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        LOG.debug("updateBfdParamtersForTerminationPoint - Before updating Topology config {}", tpBuilder);
         ITMBatchingUtils.update(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 }
