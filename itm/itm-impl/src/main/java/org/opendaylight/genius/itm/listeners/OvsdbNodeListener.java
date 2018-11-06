@@ -8,15 +8,19 @@
 
 package org.opendaylight.genius.itm.listeners;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
+import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
-import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
-import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
+import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -397,6 +401,52 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.trace("processBridgeUpdate for bridge {} without Local IP set for ovs node. Nothing to do.",
                           bridgeName);
             }
+        }
+    }
+
+    private static final class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
+        private final String tepIp;
+        private final String dpId;
+        private final String tzName;
+        private final boolean ofTunnel;
+        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
+
+        private OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel, DataBroker broker) {
+            this.tepIp = tepIp;
+            this.dpId = strDpnId;
+            this.tzName = tzName;
+            this.ofTunnel = ofTunnel;
+            this.dataBroker = broker;
+            this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            LOG.trace("Add TEP task is picked from DataStoreJobCoordinator for execution.");
+            return OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, dpId, tzName, ofTunnel, dataBroker, txRunner);
+        }
+    }
+
+    private static final class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+        private final String tepIp;
+        private final String dpId;
+        private final String tzName;
+        private final DataBroker dataBroker;
+        private final ManagedNewTransactionRunner txRunner;
+
+        private OvsdbTepRemoveWorker(String tepIp, String dpId, String tzName, DataBroker broker) {
+            this.tepIp = tepIp;
+            this.dpId = dpId;
+            this.tzName = tzName;
+            this.dataBroker = broker;
+            this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
+            return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, dpId, tzName, dataBroker, txRunner);
         }
     }
 }
