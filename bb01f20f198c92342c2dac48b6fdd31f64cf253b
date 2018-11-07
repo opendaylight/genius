@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "5209eff6_71f8ff9d",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T13:51:42Z",
+      "side": 1,
+      "message": "FTR: This new ArrayList\u003c\u003e is because the List which nullToEmpty() returns from the Data Object getter could in the future in theory be immutable/unmodifiable/read-only (although it currently isn\u0027t) ... and the emptyList() in case it\u0027s null already today is so.\n\nAn alternative, at least for the very short term as a first step, that would perhaps be \"safer\", would be  to simply make nullToEmpty() return a new new ArrayList\u003c\u003e(0) instead of an emptyList (and drop the new ArrayList\u003c\u003e(nullToEmpty(...))); just a thought.",
+      "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c0511c4_22ee545a",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/utils/AlivenessMonitorUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T13:51:42Z",
+      "side": 1,
+      "message": "could rename nullToEmpty to nullToImmutableEmpty ?  \n\nHere and everywhere else where it\u0027s copy/pasted to.\n\nsame feedback for mdsal\u0027s DataObjectUtils.nullToEmpty",
+      "revId": "bb01f20f198c92342c2dac48b6fdd31f64cf253b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3004b6a6_7540b4a3",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
         "patchSetId": 1
