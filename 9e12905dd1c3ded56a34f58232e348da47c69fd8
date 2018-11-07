@@ -16,6 +16,159 @@
       "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "311d52ad_b3808b3b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "just curious that the getDataBefore() is null checked but mod.getDataAfter() is not?",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96213f8f_c18263ac",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "but here, contrary to the previous comment, rootNode.getDataAfter() is null checked",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ced527a_fd8816ba",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "Strictly speaking may be not necessary?  If it\u0027s null then the \u003d\u003d to constant will be false, no?  But never mind, this shouldn\u0027t really hurt, either?",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00be0286_9250ad72",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "seems OK, as the for loop variable got renamed from remoteDpn to remoteDpns in line 124",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2ac8cee1_4efe4339",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/ItmCliUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "extract the StringUtils.trim(dpn) to a local var to save a few micro seconds and avoid doing it twice?  (Or is the JVM *THAT* smart and able to optimize this by itself??)",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "05da189c_59324037",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "+1 (but strictly speakining this could be changing behaviour, but -hopefully- is there were really happening anywhere, the new IllegalArgumentException would show up in the logs somewhere and be seen...",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2e1a697e_a6220ded",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 600,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "LGTM",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5c6d8ac_df87d9da",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 729,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "LGTM, I think - but I\u0027m starting to see that we really should be getting a successful CSIT to pass on this change before merging it... ;-)",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c98ca3aa_3d347f9a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1008,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T15:08:46Z",
+      "side": 1,
+      "message": "could probably remove new ArrayList\u003c\u003e here as well, to save an extra allocation?",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
