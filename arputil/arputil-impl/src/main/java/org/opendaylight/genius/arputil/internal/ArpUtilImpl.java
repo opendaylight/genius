@@ -10,6 +10,7 @@ package org.opendaylight.genius.arputil.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.emptyList;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -567,6 +568,6 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
     @Nonnull
     public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : new ArrayList<>(0);
+        return input != null ? input : emptyList();
     }
 }

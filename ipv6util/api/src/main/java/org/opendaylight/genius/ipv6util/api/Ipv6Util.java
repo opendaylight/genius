@@ -8,12 +8,13 @@
 
 package org.opendaylight.genius.ipv6util.api;
 
+import static java.util.Collections.emptyList;
+
 import com.google.common.base.Preconditions;
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -290,6 +291,6 @@ public final class Ipv6Util {
     // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
     @Nonnull
     public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : new ArrayList<>(0);
+        return input != null ? input : emptyList();
     }
 }

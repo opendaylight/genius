@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 
+import static java.util.Collections.emptyList;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import java.util.ArrayList;
@@ -55,6 +56,6 @@ public class FlowAssertTestUtils {
     // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
     @Nonnull
     public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : new ArrayList<>(0);
+        return input != null ? input : emptyList();
     }
 }
