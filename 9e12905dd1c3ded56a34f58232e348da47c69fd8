@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a0ac743_fae46b87",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-07T14:21:52Z",
+      "side": 1,
+      "message": "so now (PS #2) you\u0027re doing double new ArrayList\u003c\u003e( new ArrayList\u003c\u003e(entry.getMonitorIds()) no? It would work, but we\u0027re wasting an extra ArrayList allocation, agreed? Did you want to remove that?",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
