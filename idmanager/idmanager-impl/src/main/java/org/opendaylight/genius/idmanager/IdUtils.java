@@ -8,6 +8,7 @@
 
 package org.opendaylight.genius.idmanager;
 
+import static java.util.Collections.emptyList;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.base.Optional;
@@ -342,6 +343,6 @@ public class IdUtils {
     // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
     @Nonnull
     public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : new ArrayList<>(0);
+        return input != null ? input : emptyList();
     }
 }
