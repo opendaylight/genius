@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
+import static java.util.Collections.emptyList;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
@@ -578,6 +579,6 @@ public final class IfmUtil {
     // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
     @Nonnull
     public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : new ArrayList<>(0);
+        return input != null ? input : emptyList();
     }
 }
