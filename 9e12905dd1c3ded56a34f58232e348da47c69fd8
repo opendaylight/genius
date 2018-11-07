@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1ccb28d8_2e306623",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/AlivenessMonitor.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T15:40:48Z",
+      "side": 1,
+      "message": "I checked with Robert Varga who confirmed that manipulating a YANG-obtained list directly is unsafe, and liable to fail in some cases (DOM-obtained lists are immutable). So we do still need to keep this. I suggest we leave the list-handling as-is now since the current patch minimises the risk of *adding* exceptions, and follow up with a patch which switches nullToEmpty back to emptyList().",
+      "parentUuid": "1a0ac743_fae46b87",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "311d52ad_b3808b3b",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2018-11-07T15:08:46Z",
       "side": 1,
       "message": "just curious that the getDataBefore() is null checked but mod.getDataAfter() is not?",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "68a0dee2_0f94a8c2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/CacheBridgeEntryConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T15:40:48Z",
+      "side": 1,
+      "message": "Null analysis didn’t flag this because InterfaceMetaUtils::addBridgeEntryToCache() handles nulls.",
+      "parentUuid": "311d52ad_b3808b3b",
       "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +106,24 @@
     },
     {
       "key": {
+        "uuid": "0e82097e_71728851",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T15:40:48Z",
+      "side": 1,
+      "message": "The \u003d\u003d test involves unboxing which will NPE instead of returning false.",
+      "parentUuid": "6ced527a_fd8816ba",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "00be0286_9250ad72",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
         "patchSetId": 2
@@ -104,6 +158,24 @@
     },
     {
       "key": {
+        "uuid": "08868ce1_81c9c8c1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/ItmCliUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T15:40:48Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2ac8cee1_4efe4339",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "05da189c_59324037",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
         "patchSetId": 2
@@ -115,6 +187,24 @@
       "writtenOn": "2018-11-07T15:08:46Z",
       "side": 1,
       "message": "+1 (but strictly speakining this could be changing behaviour, but -hopefully- is there were really happening anywhere, the new IllegalArgumentException would show up in the logs somewhere and be seen...",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8ed5db7_9257890f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ITMBatchingUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T15:40:48Z",
+      "side": 1,
+      "message": "Yes, and this should really be a separate patch ;-).",
+      "parentUuid": "05da189c_59324037",
       "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -166,6 +256,24 @@
       "writtenOn": "2018-11-07T15:08:46Z",
       "side": 1,
       "message": "could probably remove new ArrayList\u003c\u003e here as well, to save an extra allocation?",
+      "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27a8588a_e81f047e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 1008,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-07T15:40:48Z",
+      "side": 1,
+      "message": "The existing code always returns a new list, this preserves that behaviour. I haven’t analysed the callers to see whether they need this but it’s safer to keep it this way IMO.",
+      "parentUuid": "c98ca3aa_3d347f9a",
       "revId": "9e12905dd1c3ded56a34f58232e348da47c69fd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
