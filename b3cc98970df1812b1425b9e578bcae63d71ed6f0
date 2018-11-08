@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1bc7ee78_035088bc",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/listeners/FlowBasedServicesConfigListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-08T09:36:17Z",
+      "side": 1,
+      "message": "I do see that this was the problem in karaf log for the previous run, but can you explain what will be the case where boundServiceBefore can be null in a DELETE case?",
+      "revId": "b3cc98970df1812b1425b9e578bcae63d71ed6f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
