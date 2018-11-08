@@ -20,3 +20,4 @@ Contents:
    service-binding-on-tunnels
    service-recovery
    arputil-dpn-id-in-notifications
+   itm-yang-cleanup
