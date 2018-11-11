@@ -21,6 +21,7 @@ public interface Ipv6Constants {
 
     int ICMPV6_RA_LENGTH_WO_OPTIONS = 16;
     int ICMPV6_OPTION_SOURCE_LLA_LENGTH = 8;
+    int ICMPV6_OPTION_MTU_LENGTH = 8;
     int ICMPV6_OPTION_PREFIX_LENGTH = 32;
 
     int ICMPV6_NA_LENGTH_WO_OPTIONS = 24;
@@ -36,6 +37,9 @@ public interface Ipv6Constants {
 
     short ICMP_V6_OPTION_SOURCE_LLA = 1;
     short ICMP_V6_OPTION_TARGET_LLA = 2;
+    short ICMP_V6_OPTION_PREFIX_INFO = 3;
+    short ICMP_V6_OPTION_REDIRECTED_HEADER = 4;
+    short ICMP_V6_OPTION_MTU = 5;
 
     String ALL_NODES_MCAST_MAC = "33:33:00:00:00:01";
     String ALL_ROUTERS_MCAST_MAC = "33:33:00:00:00:02";
