@@ -161,7 +161,7 @@ module ipv6-neighbor-discovery {
             type uint8;
         }
         leaf mtu {
-            type yang:mac-address;
+            type uint32;
         }
         list prefix-list {
             key "prefix";
