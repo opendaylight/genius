@@ -2,4 +2,5 @@
     <ifm-stats-poll-enabled>false</ifm-stats-poll-enabled>
     <ifm-stats-def-poll-interval>15</ifm-stats-def-poll-interval>
     <itm-direct-tunnels>false</itm-direct-tunnels>
+    <use-of-tunnels>false</use-of-tunnels>
 </interfacemanager-config>
