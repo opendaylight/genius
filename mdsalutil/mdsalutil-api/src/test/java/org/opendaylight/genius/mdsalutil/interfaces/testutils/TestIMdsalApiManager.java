@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
@@ -325,6 +326,16 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     @Override
     public void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
         deleteGroup(dpId, groupEntity.getGroupId().getValue());
+    }
+
+    @Override
+    public void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+        storeFlow(flowEntity);
+    }
+
+    @Override
+    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+        deleteFlow(flowEntity.getDpnId(), flowEntity.getFlowId(), flowEntity.getTableId());
     }
 
     private static final class InternalFlowKey {
