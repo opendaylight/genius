@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "807c105c_7e34b855",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 416,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-13T08:42:50Z",
+      "side": 1,
+      "message": "why should we create transport zone on each entity ownership change? shouldn\u0027t it be just one time?",
+      "revId": "7df17ffb9d5d20066c76a61510656f7ad987a3a9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
