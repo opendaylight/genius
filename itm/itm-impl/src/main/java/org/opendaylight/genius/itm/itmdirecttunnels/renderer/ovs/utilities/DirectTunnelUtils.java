@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -395,12 +397,18 @@ public final class DirectTunnelUtils {
 
         // Options common to any kind of tunnel
         options.put(TUNNEL_OPTIONS_KEY, TUNNEL_OPTIONS_VALUE_FLOW);
-        IpAddress localIp = ifTunnel.getTunnelSource();
-        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
-
-        IpAddress remoteIp = ifTunnel.getTunnelDestination();
-        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
-
+        if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
+            options.put(TUNNEL_OPTIONS_LOCAL_IP, TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress localIp = ifTunnel.getTunnelSource();
+            options.put(TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
+        }
+        if (BooleanUtils.isTrue(ifTunnel.isTunnelRemoteIpFlow())) {
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress remoteIp = ifTunnel.getTunnelDestination();
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        }
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
         // Specific options for each type of tunnel
@@ -453,8 +461,12 @@ public final class DirectTunnelUtils {
 
         if (ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) { //checkBfdMonEnabled
-            List<InterfaceBfd> bfdParams = DirectTunnelUtils.getBfdParams(ifTunnel);
-            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+            if (isOfTunnel(ifTunnel)) {
+                LOG.warn("BFD Monitoring not supported for OFTunnels");
+            } else {
+                List<InterfaceBfd> bfdParams = DirectTunnelUtils.getBfdParams(ifTunnel);
+                tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+            }
         }
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
@@ -529,4 +541,10 @@ public final class DirectTunnelUtils {
     public boolean isEntityOwner() {
         return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
     }
+
+    public static boolean isOfTunnel(IfTunnel ifTunnel) {
+        return Boolean.TRUE.equals(ifTunnel.isTunnelRemoteIpFlow())
+                || Boolean.TRUE.equals(ifTunnel.isTunnelSourceIpFlow());
+    }
 }
+
