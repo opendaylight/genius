@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "5e9e457a_3747be12",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-13T18:00:21Z",
+      "side": 1,
+      "message": "if you keep listening for EOS changes and save the last result, you will never need to call this method, which reads from DS. Might be better to use that approach.",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "398ecafa_82b39204",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-13T18:00:21Z",
+      "side": 1,
+      "message": "log msg is misleading. In fact should never hit this code if you\u0027re not leader.",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0173882a_387f9e7c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-13T18:00:21Z",
+      "side": 1,
+      "message": "should be debug, though not really needed. better remove this.",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "cb3bb4bf_aaa968a0",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 8
@@ -13,6 +64,24 @@
       "writtenOn": "2018-11-13T17:27:45Z",
       "side": 1,
       "message": "why should we create tz on every entity ownership change?",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0571fb7e_b1c7d727",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-13T18:00:21Z",
+      "side": 1,
+      "message": "If we close registration, we will only get notification once, so not called on every change.",
+      "parentUuid": "cb3bb4bf_aaa968a0",
       "revId": "2f380322c18d585dd9e6a442397028c04768f355",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
