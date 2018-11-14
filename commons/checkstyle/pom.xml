@@ -20,6 +20,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL
 
     <groupId>org.opendaylight.genius</groupId>
     <artifactId>checkstyle</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
+    <version>0.5.1</version>
     <name>ODL :: genius :: ${project.artifactId}</name>
 </project>
