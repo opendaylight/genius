@@ -2,6 +2,40 @@
   "comments": [
     {
       "key": {
+        "uuid": "7dab5791_d2f3ed06",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-14T11:47:42Z",
+      "side": 1,
+      "message": "do you mind making this final and moving its initialiation into the constructor instead of the @PostConstruct start() method? (We IMHO overuse those.)  This may mean that you have to move that registerEntityForOwnership(); as well, I\u0027m not sure.",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9dcc61b5_9cd6f22f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-14T11:47:42Z",
+      "side": 1,
+      "message": "careful, this is not thread safe - but, from what little I understand of what you are doing here, you are modifying (setting, writing) and then checking (getting, reading) it from what is likely going to run under different threads?  Probably better use an AtomicBoolean...",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ff24d22f_6f75c890",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 9
@@ -13,6 +47,30 @@
       "writtenOn": "2018-11-14T07:57:47Z",
       "side": 1,
       "message": "can probably remove this now",
+      "range": {
+        "startLine": 129,
+        "startChar": 23,
+        "endLine": 129,
+        "endChar": 70
+      },
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fe47b024_d04877c3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-14T11:47:42Z",
+      "side": 1,
+      "message": "yeah, seems to be un-used; please remove to avoid future confusion",
+      "parentUuid": "ff24d22f_6f75c890",
       "range": {
         "startLine": 129,
         "startChar": 23,
