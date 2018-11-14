@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c9ac7180_9768b16c",
+        "filename": "mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 97,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-14T16:03:28Z",
+      "side": 0,
+      "message": "record of IRC chat with skitt re. if it\u0027s safe to drop this:\n\n    (04:57:26  CET) vorburger: skitt: what\u0027s it with that PacketProcessingService in https://git.opendaylight.org/gerrit/#/c/76607/3/mdsalutil/mdsalutil-impl/src/main/java/org/opendaylight/genius/mdsalutil/internal/MDSALManager.java ?\n    (04:57:50  CET) vorburger: skitt: was that already un-used today? Or becomes un-used as you remove those methods without transactions? Curious.\n    (04:58:19  CET) skitt: vorburger, it was effectively unused (since nothing calls the methods which used it)\n    (04:58:29  CET) skitt: vorburger, my patch drops all the obsolete methods which referenced it",
+      "revId": "b3cc98970df1812b1425b9e578bcae63d71ed6f0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
