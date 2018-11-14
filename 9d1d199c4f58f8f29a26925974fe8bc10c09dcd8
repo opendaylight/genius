@@ -25,6 +25,23 @@
     },
     {
       "key": {
+        "uuid": "8ab4fc6e_31b8b91e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T08:03:38Z",
+      "side": 1,
+      "message": "this is already checked in the caller method right?",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a75548a1_3d78674b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 9
@@ -36,6 +53,24 @@
       "writtenOn": "2018-11-14T07:57:47Z",
       "side": 1,
       "message": "Now this method will be called everytime ownership changes. You don\u0027t want to recreate transport zone if it already exists. So add a check for it",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c1d549b_90acc026",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T08:03:38Z",
+      "side": 1,
+      "message": "since the listener gets closed after the first trial, why should we check if tz is already created? it can cause issues in scale, as we will be reading a root node if we end up calling it on each ownership change, but i supposed it will be called only once on your previous explanaation",
+      "parentUuid": "a75548a1_3d78674b",
       "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
