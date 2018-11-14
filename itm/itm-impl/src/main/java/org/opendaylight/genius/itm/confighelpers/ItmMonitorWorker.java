@@ -11,21 +11,18 @@ import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
@@ -48,7 +45,6 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorWorker.class);
 
-    private final DataBroker dataBroker;
     private final String tzone;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
     private final DirectTunnelUtils directTunnelUtils;
@@ -63,7 +59,6 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
                                 DirectTunnelUtils directTunnelUtils,
                                 DpnTepStateCache dpnTepStateCache,
                                 OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
-        this.dataBroker = dataBroker;
         this.tzone = tzone;
         this.monitorProtocol = monitorProtocol;
         this.directTunnelUtils = directTunnelUtils;
@@ -84,44 +79,50 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
 
     @Override public List<ListenableFuture<Void>> call() {
         LOG.debug("ItmMonitorWorker invoked with tzone = {} enabled {}", tzone, enabled);
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(transaction -> {
-            toggleTunnelMonitoring(transaction);
-        }));
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        return toggleTunnelMonitoring(futures);
     }
 
-    private void toggleTunnelMonitoring(WriteTransaction transaction) throws ReadFailedException,
-        InterruptedException, ExecutionException {
-        updateOperationalDS(transaction);
+    private List<ListenableFuture<Void>> toggleTunnelMonitoring(List<ListenableFuture<Void>> futures) {
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+            tx -> updateOperationalDS(tx)));
         Collection<DpnsTeps> dpnsTeps = dpnTepStateCache.getAllPresent();
         LOG.debug("toggleTunnelMonitoring: DpnsTepsList size {}", dpnsTeps.size());
         if (dpnsTeps.isEmpty()) {
             LOG.info("There are no teps configured");
         }
         else {
-            for (DpnsTeps dpnTeps : dpnsTeps) {
-                toggleForDirectEnabled(dpnTeps, transaction);
-            }
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+                tx -> {
+                    for (DpnsTeps dpnTeps : dpnsTeps) {
+                        toggleForDirectEnabled(dpnTeps, tx);
+                    }
+                }
+            ));
         }
+        return futures;
     }
 
-    private void updateOperationalDS(WriteTransaction transaction) {
+    private void updateOperationalDS(TypedWriteTransaction<Datastore.Operational> transaction) {
         LOG.debug("toggleTunnelMonitoring: Updating Operational DS");
         if (enabled != null) {
             InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
             TunnelMonitorParams monitorBuilder = new TunnelMonitorParamsBuilder()
                 .setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
             LOG.debug("toggleTunnelMonitoring: TunnelMonitorParams {}", monitorBuilder);
-            transaction.merge(LogicalDatastoreType.OPERATIONAL, iid, monitorBuilder);
+            transaction.merge(iid, monitorBuilder);
         } else if (interval != null) {
             InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.builder(TunnelMonitorInterval.class)
                                                                 .build();
             TunnelMonitorInterval intervalBuilder = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             LOG.debug("updateTunnelMonitorInterval: TunnelMonitorInterval {}", intervalBuilder);
-            transaction.merge(LogicalDatastoreType.OPERATIONAL, iid, intervalBuilder);
+            transaction.merge(iid, intervalBuilder);
         }
     }
 
-    private void toggleForDirectEnabled(DpnsTeps dpnTeps, WriteTransaction transaction) throws ReadFailedException {
+
+    private void toggleForDirectEnabled(DpnsTeps dpnTeps, TypedWriteTransaction<Datastore.Configuration> tx)
+            throws ReadFailedException, InterruptedException, ExecutionException {
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());
@@ -140,16 +141,16 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
             LOG.debug("toggleMonitoring: RemoteDpnNew {}", remoteDpnNew);
             directTunnelUtils.updateBfdConfiguration(dpnTeps.getSourceDpnId(), remoteDpnNew, ovsBridgeRefEntry);
         }
-        updateMonitoringDS(dpnTeps.getSourceDpnId(), remoteDpnTepNewList, transaction);
+        updateMonitoringDS(dpnTeps.getSourceDpnId(), remoteDpnTepNewList, tx);
     }
 
     public void updateMonitoringDS(BigInteger sourceDpnId,List<RemoteDpns> remoteDpnTepNewList,
-                                   WriteTransaction transaction) {
+                                   TypedWriteTransaction<Datastore.Configuration> tx) {
         InstanceIdentifier<DpnsTeps> iid = DirectTunnelUtils.createDpnTepsInstanceIdentifier(sourceDpnId);
         DpnsTepsBuilder builder = new DpnsTepsBuilder().withKey(new DpnsTepsKey(sourceDpnId))
             .setRemoteDpns(remoteDpnTepNewList);
         LOG.debug("DirectTunnelUtils - Builder remoteDPNs: {}", builder.getRemoteDpns());
-        transaction.merge(LogicalDatastoreType.CONFIGURATION, iid, builder.build());
+        tx.merge(iid, builder.build());
     }
 
 }
