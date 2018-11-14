@@ -273,6 +273,24 @@
       "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03315b6f_9238fe54",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T16:31:27Z",
+      "side": 1,
+      "message": "yes",
+      "parentUuid": "18d3a562_ca93f3c7",
+      "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
