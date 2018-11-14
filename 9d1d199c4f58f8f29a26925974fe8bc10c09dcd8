@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c5a484f1_34a1ba6e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7dab5791_d2f3ed06",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9dcc61b5_9cd6f22f",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 9
@@ -30,6 +48,24 @@
       "writtenOn": "2018-11-14T11:47:42Z",
       "side": 1,
       "message": "careful, this is not thread safe - but, from what little I understand of what you are doing here, you are modifying (setting, writing) and then checking (getting, reading) it from what is likely going to run under different threads?  Probably better use an AtomicBoolean...",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6b668012_18d14856",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "variable removed.",
+      "parentUuid": "9dcc61b5_9cd6f22f",
       "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -83,6 +119,54 @@
     },
     {
       "key": {
+        "uuid": "97c5e39f_c0094ee1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "fe47b024_d04877c3",
+      "range": {
+        "startLine": 129,
+        "startChar": 23,
+        "endLine": 129,
+        "endChar": 70
+      },
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac4b21d7_7799eeb6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "Removed.",
+      "parentUuid": "ff24d22f_6f75c890",
+      "range": {
+        "startLine": 129,
+        "startChar": 23,
+        "endLine": 129,
+        "endChar": 70
+      },
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8ab4fc6e_31b8b91e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 9
@@ -94,6 +178,24 @@
       "writtenOn": "2018-11-14T08:03:38Z",
       "side": 1,
       "message": "this is already checked in the caller method right?",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a56386c_3f036245",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "check removed.",
+      "parentUuid": "8ab4fc6e_31b8b91e",
       "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -129,6 +231,42 @@
       "side": 1,
       "message": "since the listener gets closed after the first trial, why should we check if tz is already created? it can cause issues in scale, as we will be reading a root node if we end up calling it on each ownership change, but i supposed it will be called only once on your previous explanaation",
       "parentUuid": "a75548a1_3d78674b",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6da8aca0_ac7c2f0d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "This method will be called only once not on every ownership change.",
+      "parentUuid": "a75548a1_3d78674b",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73aede42_83295eb0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "This method is called once and then registration closes.",
+      "parentUuid": "4c1d549b_90acc026",
       "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -206,6 +344,42 @@
     },
     {
       "key": {
+        "uuid": "2406dd0e_c3271764",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "Yes there is a chance of missing.\nWe are delaying the ovsdbnodelistener registaration till default tz creation.",
+      "parentUuid": "be993592_24df67bc",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2028af37_4d0086dc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "yes delaying the registartion.",
+      "parentUuid": "57241e98_76ac9f12",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6500cda5_2c04a974",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
         "patchSetId": 9
@@ -217,6 +391,24 @@
       "writtenOn": "2018-11-14T07:18:10Z",
       "side": 1,
       "message": "is this needed?",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f7da6e2_3029934f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T13:59:40Z",
+      "side": 1,
+      "message": "Firstly this change is not because of my current patch changes.\nI found this during my investigation for this issue.\nAs per my understanding, this loop is there for completing given number of tries but if any Interrupted Exception comes it will break and come out without completing the tries. Considering that for completion of tries i modified this.",
+      "parentUuid": "6500cda5_2c04a974",
       "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
