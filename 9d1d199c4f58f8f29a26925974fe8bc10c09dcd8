@@ -2,6 +2,46 @@
   "comments": [
     {
       "key": {
+        "uuid": "ff24d22f_6f75c890",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-14T07:57:47Z",
+      "side": 1,
+      "message": "can probably remove this now",
+      "range": {
+        "startLine": 129,
+        "startChar": 23,
+        "endLine": 129,
+        "endChar": 70
+      },
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a75548a1_3d78674b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-14T07:57:47Z",
+      "side": 1,
+      "message": "Now this method will be called everytime ownership changes. You don\u0027t want to recreate transport zone if it already exists. So add a check for it",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "be993592_24df67bc",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 9
@@ -31,6 +71,42 @@
       "side": 1,
       "message": "why can\u0027t we delay the ovsdbnodelistener registration till default tz creation is completed?",
       "parentUuid": "be993592_24df67bc",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99534b76_fed891b2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-14T07:57:47Z",
+      "side": 1,
+      "message": "Would be good to not report ready status till default zone is created to avoid this race to some extent.",
+      "parentUuid": "be993592_24df67bc",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "443ef208_224b509f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-14T07:57:47Z",
+      "side": 1,
+      "message": "that too will help.",
+      "parentUuid": "57241e98_76ac9f12",
       "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
