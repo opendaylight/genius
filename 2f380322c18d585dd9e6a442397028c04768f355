@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "cc694e0a_be41cefc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T04:05:15Z",
+      "side": 1,
+      "message": "result saved in a boolean value and using it.",
+      "parentUuid": "5e9e457a_3747be12",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "398ecafa_82b39204",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1c88bf94_b388bbe3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T04:05:15Z",
+      "side": 1,
+      "message": "log removed.",
+      "parentUuid": "398ecafa_82b39204",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0173882a_387f9e7c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 8
@@ -47,6 +83,24 @@
       "writtenOn": "2018-11-13T18:00:21Z",
       "side": 1,
       "message": "should be debug, though not really needed. better remove this.",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ea6f2508_dc81cd38",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T04:05:15Z",
+      "side": 1,
+      "message": "logs removed.",
+      "parentUuid": "0173882a_387f9e7c",
       "revId": "2f380322c18d585dd9e6a442397028c04768f355",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -81,6 +135,42 @@
       "writtenOn": "2018-11-13T18:00:21Z",
       "side": 1,
       "message": "If we close registration, we will only get notification once, so not called on every change.",
+      "parentUuid": "cb3bb4bf_aaa968a0",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "333736ab_c85ff757",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T04:05:15Z",
+      "side": 1,
+      "message": "In the end of this method we are closing the registration, only once it will be called.",
+      "parentUuid": "0571fb7e_b1c7d727",
+      "revId": "2f380322c18d585dd9e6a442397028c04768f355",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "439556db_735c4bf8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 442,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-14T04:05:15Z",
+      "side": 1,
+      "message": "In the end of this method we are closing the registration, in both the situations whether its a master or slave.\nSo this will not get called every time, only once it will be called.",
       "parentUuid": "cb3bb4bf_aaa968a0",
       "revId": "2f380322c18d585dd9e6a442397028c04768f355",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
