@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "57241e98_76ac9f12",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T07:52:43Z",
+      "side": 1,
+      "message": "why can\u0027t we delay the ovsdbnodelistener registration till default tz creation is completed?",
+      "parentUuid": "be993592_24df67bc",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6500cda5_2c04a974",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
         "patchSetId": 9
