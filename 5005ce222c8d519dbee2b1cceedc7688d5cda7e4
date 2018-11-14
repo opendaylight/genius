@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e83778ae_889de86b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T14:09:05Z",
+      "side": 1,
+      "message": "what is the point in adding this listener dependency here, how does it help?",
+      "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ac57e1d_a3bc0ee2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/DefaultTZCreationListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T14:09:05Z",
+      "side": 1,
+      "message": "can\u0027t we listen at the specific transport zone name level?",
+      "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a5c1846_d0eb2325",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/DefaultTZCreationListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T14:09:05Z",
+      "side": 1,
+      "message": "where is this initialized???",
+      "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f330178b_a39726ea",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/DefaultTZCreationListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T14:09:05Z",
+      "side": 1,
+      "message": "if you listen at the spcific tz level, this check can be avoided",
+      "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b19f6acb_a9ad53e7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T14:09:05Z",
+      "side": 1,
+      "message": "you have not removed the registration of the listener here right?",
+      "revId": "5005ce222c8d519dbee2b1cceedc7688d5cda7e4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
