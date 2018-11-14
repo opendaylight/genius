@@ -7,10 +7,12 @@
  */
 package org.opendaylight.genius.itm.cli;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +34,7 @@ import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -367,7 +370,6 @@ public class TepCommandHelper {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public void buildTeps() {
-        TransportZones transportZonesBuilt = null;
         TransportZone transportZone = null;
         try {
             LOG.debug("no of teps added {}", CHECK);
@@ -418,12 +420,13 @@ public class TepCommandHelper {
                     LOG.debug("tzone object {}", transportZone);
                     transportZoneArrayList.add(transportZone);
                 }
-                transportZonesBuilt = new TransportZonesBuilder().setTransportZone(transportZoneArrayList).build();
+                TransportZones transportZones =
+                    new TransportZonesBuilder().setTransportZone(transportZoneArrayList).build();
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
                 LOG.debug("InstanceIdentifier {}", path);
-                ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, transportZonesBuilt, dataBroker,
-                        ItmUtils.DEFAULT_CALLBACK);
-                LOG.debug("wrote to Config DS {}", transportZonesBuilt);
+                Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                    tx -> tx.merge(path, transportZones, true)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+                LOG.debug("wrote to Config DS {}", transportZones);
                 transportZonesHashMap.clear();
                 transportZoneArrayList.clear();
                 subnetList.clear();
@@ -697,8 +700,8 @@ public class TepCommandHelper {
                     allPaths.addAll(vtepPaths);
                     allPaths.addAll(subnetPaths);
                     allPaths.addAll(tzPaths);
-                    ItmUtils.asyncBulkRemove(dataBroker, LogicalDatastoreType.CONFIGURATION, allPaths,
-                            ItmUtils.DEFAULT_CALLBACK);
+                    Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+                        tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK);
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -898,9 +901,8 @@ public class TepCommandHelper {
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().isEnabled() != monitorEnabled) {
             TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled)
                     .setMonitorProtocol(monitorType).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                    ItmUtils.DEFAULT_CALLBACK);
-
+            Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK);
         }
     }
 
@@ -911,8 +913,8 @@ public class TepCommandHelper {
                 dataBroker);
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-            ItmUtils.asyncUpdate(LogicalDatastoreType.CONFIGURATION, path, tunnelMonitor, dataBroker,
-                    ItmUtils.DEFAULT_CALLBACK);
+            Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK);
         }
     }
 

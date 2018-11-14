@@ -15,6 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
@@ -42,6 +44,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
     private final IInterfaceManager interfaceManager;
     private final DpnTepStateCache dpnTepStateCache;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+    private final ManagedNewTransactionRunner txRunner;
 
     @Inject
     public TunnelMonitorIntervalListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
@@ -56,6 +59,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         this.dpnTepStateCache = dpnTepStateCache;
         this.interfaceManager = interfaceManager;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @Override
@@ -71,10 +75,9 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                 LOG.debug("Remove:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
                           dataObjectModification.getInterval());
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
-                    ItmMonitorWorker monitorWorker = new ItmMonitorWorker(tzone.getZoneName(),
-                        dataObjectModification.getInterval(),null, broker, directTunnelUtils,
-                        dpnTepStateCache, ovsBridgeRefEntryCache);
-                    jobCoordinator.enqueueJob(tzone.getZoneName(), monitorWorker);
+                    jobCoordinator.enqueueJob(tzone.getZoneName(), new ItmMonitorWorker(tzone.getZoneName(),
+                        dataObjectModification.getInterval(), null, broker, directTunnelUtils, dpnTepStateCache,
+                        ovsBridgeRefEntryCache));
                 } else {
                     ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
                         dataObjectModification.getInterval(), broker);
