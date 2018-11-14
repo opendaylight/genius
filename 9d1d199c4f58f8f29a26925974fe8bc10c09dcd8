@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "be993592_24df67bc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T07:18:10Z",
+      "side": 1,
+      "message": "what will happen if southbound event for ovsdb node comes exactly at the same time as the default tz is getting created? isn\u0027t there a race condition, when you read teps-not-hosted-in-tz? isn\u0027t there a chance that some of the teps will be missed during the read?",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6500cda5_2c04a974",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-14T07:18:10Z",
+      "side": 1,
+      "message": "is this needed?",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
