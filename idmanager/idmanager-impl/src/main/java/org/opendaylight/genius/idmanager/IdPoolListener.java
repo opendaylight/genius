@@ -55,8 +55,9 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     @Override
     public void update(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool originalIdPool,
                        @Nonnull IdPool updatedIdPool) {
-        if (!updatedIdPool.getAvailableIdsHolder().equals(originalIdPool.getAvailableIdsHolder()) || !updatedIdPool
-                .getReleasedIdsHolder().equals(originalIdPool.getReleasedIdsHolder())) {
+        if (!updatedIdPool.getAvailableIdsHolder().equals(originalIdPool.getAvailableIdsHolder()) 
+        		|| !updatedIdPool.getReleasedIdsHolder().getAvailableIdCount()
+        		.equals(originalIdPool.getReleasedIdsHolder().getAvailableIdCount())) {
             String parentPoolName = updatedIdPool.getParentPoolName();
             String poolName = updatedIdPool.getPoolName();
             if (parentPoolName != null && !parentPoolName.isEmpty()) {
