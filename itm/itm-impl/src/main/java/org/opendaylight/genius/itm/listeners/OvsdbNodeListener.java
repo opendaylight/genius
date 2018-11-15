@@ -170,7 +170,9 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             }
 
             if (!isTepInfoUpdated) {
-                LOG.trace("No updates in the TEP Info parameters. Nothing to do.");
+                LOG.trace("Old TEP (local-ip: {}, tz-name: {}) and New TEP (local-ip: {}, tz-name: {}). "
+                        + "No updates in the TEP Info parameters. Nothing to do.", oldLocalIp, oldTzName,
+                        newLocalIp, tzName);
                 return;
             }
         }
@@ -329,8 +331,6 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 }
             }
         }
-
-        LOG.trace("ovsdbTepInfo retrieved {}", ovsdbTepInfoObj);
         return ovsdbTepInfoObj;
     }
 
