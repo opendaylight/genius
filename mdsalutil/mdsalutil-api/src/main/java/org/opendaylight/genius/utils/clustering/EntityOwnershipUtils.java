@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.utils.clustering;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
@@ -110,7 +109,7 @@ public class EntityOwnershipUtils {
     public void runOnlyInOwnerNode(String entityType, String entityName, JobCoordinator coordinator, String jobDesc,
             Runnable job) {
         final Entity entity = new Entity(entityType, entityName);
-        coordinator.enqueueJob(entity.toString(), () -> {
+        coordinator.enqueueJob(getEntityIdentifierString(entityType, entityName), () -> {
             if (isEntityOwner(entity)) {
                 LOG.debug("Running job {} for {}", jobDesc, entity);
                 job.run();
@@ -135,7 +134,7 @@ public class EntityOwnershipUtils {
     public void runOnlyInOwnerNode(String entityType, String entityName, JobCoordinator coordinator,
             String jobKey, String jobDesc, Callable<List<ListenableFuture<Void>>> job) {
         final Entity entity = new Entity(entityType, entityName);
-        coordinator.enqueueJob(entity.toString(), () -> {
+        coordinator.enqueueJob(getEntityIdentifierString(entityType, entityName), () -> {
             if (isEntityOwner(entity)) {
                 LOG.debug("Scheduling job {} for {}", jobDesc, entity);
                 coordinator.enqueueJob(jobKey, job, SystemPropertyReader.getDataStoreJobCoordinatorMaxRetries());
@@ -145,5 +144,10 @@ public class EntityOwnershipUtils {
 
             return Collections.singletonList(Futures.immediateFuture(null));
         });
+    }
+
+    // see GENIUS-237 why we do this optimization instead of using Entity.toString()
+    private String getEntityIdentifierString(String entityType, String entityName) {
+        return new StringBuilder(entityType.length() + entityName.length()).append(entityType).append(entityName).toString();
     }
 }
