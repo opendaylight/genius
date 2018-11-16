@@ -16,6 +16,24 @@
       "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "350b3ad4_13e9ee8c",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-11-16T08:30:16Z",
+      "side": 1,
+      "message": "This can not be null as this object is created at the time of Id Pool creation and never set to null thereafter.",
+      "parentUuid": "c578a2ac_75a96aa8",
+      "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
