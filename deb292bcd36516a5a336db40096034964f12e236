@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "eafc3f56_26506c99",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 434,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-11-16T05:56:13Z",
+      "side": 1,
+      "message": "Why should you declare the ITM bundle to be OPERATIONAL only if default TZ is created ? Default TZ should be treated like any other TZ. What if some error occurred in default TZ creation, then ITM bundle will not be OPERATIONAL ? ITM can still mesh switches belonging to other Transport Zones ? Please move the status above.",
+      "revId": "deb292bcd36516a5a336db40096034964f12e236",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
