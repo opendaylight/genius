@@ -98,8 +98,6 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Update.", originalOvsdbNode.getNodeId().getValue());
 
-        LOG.trace("Update: originalOvsdbNode: {}  updatedOvsdbNode: {}", originalOvsdbNode, updatedOvsdbNode);
-
         // If this is a bridge update, see if dpid was added. If so, need to
         // addTep, as TEP would not be added in node add case above
         if (isBridgeDpIdAdded(originalOvsdbNode, updatedOvsdbNode)) {
