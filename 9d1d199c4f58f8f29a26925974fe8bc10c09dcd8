@@ -380,6 +380,24 @@
     },
     {
       "key": {
+        "uuid": "0cfaaa0c_6b507edb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 440,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-11-16T05:56:13Z",
+      "side": 1,
+      "message": "There is a chance of missing some teps between south bound teps addition and north bound TZ creation -- better solution will be to \"synchronize\" them and not delay the listener registration. This issue however is not caused by this patch. Lets discuss on how to solve it.",
+      "parentUuid": "2406dd0e_c3271764",
+      "revId": "9d1d199c4f58f8f29a26925974fe8bc10c09dcd8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "6500cda5_2c04a974",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/clustering/EntityOwnershipUtils.java",
         "patchSetId": 9
