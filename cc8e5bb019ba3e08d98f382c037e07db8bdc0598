@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "509ce976_7bb57bc9",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-16T13:13:37Z",
+      "side": 1,
+      "message": "We\u0027ll have to trust you on this - I\u0027m not clear enough about the IdManager to be able to safely say this is correct, but you seem to know what you are talking about... ;-)",
+      "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c578a2ac_75a96aa8",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
         "patchSetId": 2
@@ -31,6 +48,24 @@
       "side": 1,
       "message": "This can not be null as this object is created at the time of Id Pool creation and never set to null thereafter.",
       "parentUuid": "c578a2ac_75a96aa8",
+      "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88dfaf18_8ecb85dc",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-16T13:13:37Z",
+      "side": 1,
+      "message": "Ankit, are you 100% sure that the expensive equals() which in  GENIUS-240 is from comparing the two ReleasedIdsHolder and not the AvailableIdsHolder in the line just above?  \n\nThe stack trace in GENIUS-240 does not prove that.  If your understanding of the problem makes you fairly certain that\u0027s right, then I\u0027ll blindly trust you and accept this as the fix for that problem... ;-) Just thought it was worth to double check this.",
+      "parentUuid": "350b3ad4_13e9ee8c",
       "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
