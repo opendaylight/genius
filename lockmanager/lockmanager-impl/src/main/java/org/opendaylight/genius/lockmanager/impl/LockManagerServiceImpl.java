@@ -17,15 +17,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.genius.lockmanager.util.JvmGlobalLocks;
 import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -191,7 +192,8 @@ public class LockManagerServiceImpl implements LockManagerService {
         return false;
     }
 
-    private void logUnlessCauseIsOptimisticLockFailedException(String name, int retry, ExecutionException exception) {
+    private static void logUnlessCauseIsOptimisticLockFailedException(String name, int retry,
+            ExecutionException exception) {
         // Log anything else than OptimisticLockFailedException with level error.
         // Bug 8059: We do not log OptimisticLockFailedException, as those are "normal" in the current design,
         //           and this class is explicitly designed to retry obtaining a lock in case of an
@@ -209,23 +211,25 @@ public class LockManagerServiceImpl implements LockManagerService {
      */
     private boolean readWriteLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
             throws InterruptedException, ExecutionException {
-        String lockName = lockData.getLockName();
-        synchronized (lockName.intern()) {
+        // FIXME: Since netvirt is currently also locking on strings, we need to ensure those places do not synchronize
+        //        with us before switching to .getLockFor()
+        final ReentrantLock lock = JvmGlobalLocks.getLockForString(lockData.getLockName());
+        lock.lock();
+        try {
             return txRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, tx -> {
                 Optional<Lock> result = tx.read(lockInstanceIdentifier).get();
                 if (!result.isPresent()) {
                     LOG.debug("Writing lock lockData {}", lockData);
                     tx.put(lockInstanceIdentifier, lockData, true);
                     return true;
-                } else {
-                    String lockDataOwner = result.get().getLockOwner();
-                    String currentOwner = lockData.getLockOwner();
-                    if (Objects.equals(currentOwner, lockDataOwner)) {
-                        return true;
-                    }
                 }
-                return false;
+
+                String lockDataOwner = result.get().getLockOwner();
+                String currentOwner = lockData.getLockOwner();
+                return Objects.equals(currentOwner, lockDataOwner);
             }).get();
+        } finally {
+            lock.unlock();
         }
     }
 }
