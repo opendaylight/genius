@@ -66,12 +66,9 @@ public class LockManagerServiceImpl implements LockManagerService {
 
     @Override
     public ListenableFuture<RpcResult<LockOutput>> lock(LockInput input) {
-        String lockName = input.getLockName();
-        String owner = lockManagerUtils.getUniqueID();
+        final Lock lockData = lockManagerUtils.buildLock(input.getLockName(), lockManagerUtils.getUniqueID());
         return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
-            InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
-            Lock lockData = lockManagerUtils.buildLock(lockName, owner);
-            return getLock(lockInstanceIdentifier, lockData);
+            return getLock(lockData);
         }).build();
     }
 
@@ -85,12 +82,11 @@ public class LockManagerServiceImpl implements LockManagerService {
                 : lockManagerUtils.convertToTimeUnit(input.getTimeUnit());
         waitTime = timeUnit.toMillis(waitTime);
         long retryCount = waitTime / DEFAULT_WAIT_TIME_IN_MILLIS;
-        InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
         Lock lockData = lockManagerUtils.buildLock(lockName, owner);
 
         RpcResultBuilder<TryLockOutput> lockRpcBuilder;
         try {
-            if (getLock(lockInstanceIdentifier, lockData, retryCount)) {
+            if (getLock(lockData, retryCount)) {
                 lockRpcBuilder = RpcResultBuilder.success();
                 LOG.debug("Acquired lock {} by owner {}", lockName, owner);
             } else {
@@ -108,9 +104,9 @@ public class LockManagerServiceImpl implements LockManagerService {
     public ListenableFuture<RpcResult<UnlockOutput>> unlock(UnlockInput input) {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
-        InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
         return FutureRpcResults.fromListenableFuture(LOG, input,
             () -> Futures.transform(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
                 Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
                 if (!result.isPresent()) {
                     LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
@@ -136,15 +132,14 @@ public class LockManagerServiceImpl implements LockManagerService {
     /**
      * Try to acquire lock indefinitely until it is successful.
      */
-    private ListenableFuture<LockOutput> getLock(final InstanceIdentifier<Lock> lockInstanceIdentifier,
-                                                 final Lock lockData)
+    private ListenableFuture<LockOutput> getLock(final Lock lockData)
             throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
         String lockName = lockData.getLockName();
         for (int retry = 1;; retry++) {
             try {
                 lockSynchronizerMap.putIfAbsent(lockName, new CompletableFuture<>());
-                if (readWriteLock(lockInstanceIdentifier, lockData)) {
+                if (readWriteLock(lockData)) {
                     return Futures.immediateFuture(null);
                 } else {
                     if (retry < DEFAULT_NUMBER_LOCKING_ATTEMPS) {
@@ -181,13 +176,12 @@ public class LockManagerServiceImpl implements LockManagerService {
      * Try to acquire lock for mentioned retryCount. Returns true if
      * successfully acquired lock.
      */
-    private boolean getLock(InstanceIdentifier<Lock> lockInstanceIdentifier, Lock lockData, long retryCount)
-            throws InterruptedException {
+    private boolean getLock(Lock lockData, long retryCount) throws InterruptedException {
         // Count from 1 to provide human-comprehensible messages
         String lockName = lockData.getLockName();
         for (int retry = 1; retry <= retryCount; retry++) {
             try {
-                if (readWriteLock(lockInstanceIdentifier, lockData)) {
+                if (readWriteLock(lockData)) {
                     return true;
                 } else {
                     LOG.debug("Already locked for {} after waiting {}ms, try {} of {}", lockName,
@@ -218,13 +212,15 @@ public class LockManagerServiceImpl implements LockManagerService {
      * Read and write the lock immediately if available. Returns true if
      * successfully locked.
      */
-    private boolean readWriteLock(final InstanceIdentifier<Lock> lockInstanceIdentifier, final Lock lockData)
+    private boolean readWriteLock(final Lock lockData)
             throws InterruptedException, ExecutionException {
         // FIXME: Since netvirt is currently also locking on strings, we need to ensure those places do not synchronize
         //        with us before switching to .getLockFor()
         final ReentrantLock lock = JvmGlobalLocks.getLockForString(lockData.getLockName());
         lock.lock();
         try {
+            final InstanceIdentifier<Lock> lockInstanceIdentifier =
+                    LockManagerUtils.getLockInstanceIdentifier(lockData.key());
             return txRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, tx -> {
                 Optional<Lock> result = tx.read(lockInstanceIdentifier).get();
                 if (!result.isPresent()) {
