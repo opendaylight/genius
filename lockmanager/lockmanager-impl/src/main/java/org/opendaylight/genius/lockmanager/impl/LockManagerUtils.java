@@ -9,24 +9,22 @@
 package org.opendaylight.genius.lockmanager.impl;
 
 import com.google.common.net.InetAddresses;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.inject.Singleton;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.Locks;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TimeUnits;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.LockBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.LockKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.binding.KeyedInstanceIdentifier;
 
 @Singleton
 public class LockManagerUtils {
-
+    private static final InstanceIdentifier<Locks> LOCKS_IID = InstanceIdentifier.create(Locks.class);
     private static final String SEPARATOR = ":";
 
     private final AtomicInteger counter;
@@ -58,7 +56,11 @@ public class LockManagerUtils {
     }
 
     public InstanceIdentifier<Lock> getLockInstanceIdentifier(String lockName) {
-        return InstanceIdentifier.builder(Locks.class).child(Lock.class, new LockKey(lockName)).build();
+        return getLockInstanceIdentifier(new LockKey(lockName));
+    }
+
+    public static KeyedInstanceIdentifier<Lock, LockKey> getLockInstanceIdentifier(LockKey lockKey) {
+        return LOCKS_IID.child(Lock.class, lockKey);
     }
 
     public Lock buildLock(String lockName, String owner) {
