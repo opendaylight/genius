@@ -178,6 +178,24 @@
     },
     {
       "key": {
+        "uuid": "b77cbbae_dc542790",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T20:37:06Z",
+      "side": 1,
+      "message": "But this utility appears to be intended to be used, and proposed usage in this patch and related netvirt patches illutrate, using it locally, not for the ReentrantLock it returns to be shared... most likely, few people who are going to start using this class by virtue of copy/paste, will actually know what a ReentrantLock lock is, and how to use it.  IMHO this utility would be safer it it treated the ReentrantLock as an implementation detail, and returned an opaque AutoCloseable. But anyway, whatever; I won\u0027t -1 again.",
+      "parentUuid": "07e4a929_766dc1b0",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ec11c8c_deef5dbe",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
         "patchSetId": 2
@@ -225,6 +243,24 @@
       "side": 1,
       "message": "if you do:\n\ngetLockForString(\"foo\").lock();\ntry {\n    // ..\n} finally {\n    getLockForString(\"foo\").unlock();\n}\n\nit will break down, but that is definitely not how ReentrantLock is meant to be used.\n\nYes, a lot of belt-and-suspenders could be baked into this class, but the goal is to identify JVM-global locks, understand their semantics and replace them with localized locks. Certainly the lockmanager (which is why this class is in genius and not netvirt) looks like could very much work with explicitly-managed locks.",
       "parentUuid": "b8422253_4a8ac2e5",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e126b72b_0d2eeed6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T20:37:06Z",
+      "side": 1,
+      "message": "k, TX.",
+      "parentUuid": "2b966f8f_157572e7",
       "revId": "235c973d2532c1a462704768cb12146e544c2169",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
