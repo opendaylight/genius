@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "6434cfdc_8dae5112",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-19T12:00:17Z",
+      "side": 1,
+      "message": "I can tone it down sure, but people should be aware why this class even exists and that we should never ever go back -- so as long as getLockForString() is here, I think this level is appropriate :)",
+      "parentUuid": "b9e64dc5_f3cc17c6",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bd31d79b_93c8340d",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "b52ff3c5_a6238e02",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-19T12:00:17Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bd31d79b_93c8340d",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b92389b5_00e51eb4",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2018-11-19T10:19:23Z",
       "side": 1,
       "message": "given that all currently known usages of this utility will obtain (get()) and then immediately lock() IMHO it would be convenient to offer, in addition to getLockFor() direct lock() methods, which get and implicitly lock.",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e2fc1873_3e5d352a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-19T12:00:17Z",
+      "side": 1,
+      "message": "I thought about it, but then it prevents usages where you actually hold on to the lock. Note this is primarily a migration class, I do not want it to grow into a full-blown thing in the first iteration.",
+      "parentUuid": "b92389b5_00e51eb4",
       "revId": "235c973d2532c1a462704768cb12146e544c2169",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -88,6 +142,24 @@
     },
     {
       "key": {
+        "uuid": "39a221dd_1491afec",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-19T12:00:17Z",
+      "side": 1,
+      "message": "This deals with getting rid of the \u0027String.intern()\u0027 part, i.e. getting hold of a global ReentrantLock. How it is then used is outside of scope of this class.",
+      "parentUuid": "c58ea8d2_407521d1",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ec11c8c_deef5dbe",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
         "patchSetId": 2
@@ -117,6 +189,24 @@
       "side": 1,
       "message": "If all references to a lock are lost, outside the cache, then it’s either not locked, or we’re in trouble. So a weak reference here is fine.",
       "parentUuid": "1ec11c8c_deef5dbe",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b966f8f_157572e7",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-19T12:00:17Z",
+      "side": 1,
+      "message": "if you do:\n\ngetLockForString(\"foo\").lock();\ntry {\n    // ..\n} finally {\n    getLockForString(\"foo\").unlock();\n}\n\nit will break down, but that is definitely not how ReentrantLock is meant to be used.\n\nYes, a lot of belt-and-suspenders could be baked into this class, but the goal is to identify JVM-global locks, understand their semantics and replace them with localized locks. Certainly the lockmanager (which is why this class is in genius and not netvirt) looks like could very much work with explicitly-managed locks.",
+      "parentUuid": "b8422253_4a8ac2e5",
       "revId": "235c973d2532c1a462704768cb12146e544c2169",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
