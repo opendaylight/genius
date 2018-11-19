@@ -225,7 +225,7 @@ public class LockManagerServiceImpl implements LockManagerService {
                 Optional<Lock> result = tx.read(lockInstanceIdentifier).get();
                 if (!result.isPresent()) {
                     LOG.debug("Writing lock lockData {}", lockData);
-                    tx.put(lockInstanceIdentifier, lockData, true);
+                    tx.put(lockInstanceIdentifier, lockData);
                     return true;
                 }
 
