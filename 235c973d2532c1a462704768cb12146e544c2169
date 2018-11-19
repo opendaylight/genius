@@ -70,6 +70,24 @@
     },
     {
       "key": {
+        "uuid": "c58ea8d2_407521d1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-19T10:36:32Z",
+      "side": 1,
+      "message": "If you do that, you should acquire the lock on creation. But the whole point of ReentrantLock is to be shared (which is why it isn’t AutoCloseable) — otherwise there’s no need for it to be re-entrant.",
+      "parentUuid": "78b4ea9e_377854ae",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ec11c8c_deef5dbe",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
         "patchSetId": 2
@@ -81,6 +99,24 @@
       "writtenOn": "2018-11-19T10:19:23Z",
       "side": 1,
       "message": "I was wondering if, hypothetically, a GC at the wrong moment could clear out a NamedReentrantLock and a subsequent use would return another one and so they wouldn\u0027t be the same ReentrantLock (subclassed) object.. doesn\u0027t that defeat the purpose of this?  Wouldn\u0027t some sort of data structure keeping tabs on (counting) the number of concurrently open locks, and remove from map when none left, be more appropriate here?",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8422253_4a8ac2e5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-19T10:36:32Z",
+      "side": 1,
+      "message": "If all references to a lock are lost, outside the cache, then it’s either not locked, or we’re in trouble. So a weak reference here is fine.",
+      "parentUuid": "1ec11c8c_deef5dbe",
       "revId": "235c973d2532c1a462704768cb12146e544c2169",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
