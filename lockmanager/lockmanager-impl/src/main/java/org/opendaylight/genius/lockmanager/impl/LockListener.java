@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.lockmanager.impl;
 
-import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -39,16 +38,7 @@ public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<L
 
     @Override
     public void remove(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock removedLock) {
-        String lockName = removedLock.getLockName();
-        LOG.debug("Received remove for lock {} : {}", lockName, removedLock);
-        CompletableFuture<Void> lock = lockManager.getSynchronizerForLock(lockName);
-        if (lock != null) {
-            // FindBugs flags a false violation here - "passes a null value as the parameter of a method which must be
-            // non-null. Either this parameter has been explicitly marked as @Nonnull, or analysis has determined that
-            // this parameter is always dereferenced.". However neither is true. The type param is Void so you have to
-            // pas null.
-            lock.complete(null);
-        }
+        lockManager.removeLock(removedLock);
     }
 
     @Override
