@@ -8,6 +8,7 @@
 package org.opendaylight.genius.lockmanager.impl;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -31,12 +32,15 @@ import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.locks.Lock;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -45,6 +49,13 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class LockManagerServiceImpl implements LockManagerService {
+    private static final FluentFuture<LockOutput> IMMEDIATE_LOCK = FluentFutures.immediateFluentFuture(
+        new LockOutputBuilder().build());
+    private static final UnlockOutput UNLOCK_OUTPUT = new UnlockOutputBuilder().build();
+    private static final ListenableFuture<RpcResult<TryLockOutput>> FAILED_TRYLOCK =
+            RpcResultBuilder.<TryLockOutput>failed().buildFuture();
+    private static final ListenableFuture<RpcResult<TryLockOutput>> SUCCESSFUL_TRYLOCK =
+            RpcResultBuilder.success(new TryLockOutputBuilder().build()).buildFuture();
 
     private static final int DEFAULT_NUMBER_LOCKING_ATTEMPS = 30;
     private static final int DEFAULT_RETRY_COUNT = 3;
@@ -84,20 +95,21 @@ public class LockManagerServiceImpl implements LockManagerService {
         long retryCount = waitTime / DEFAULT_WAIT_TIME_IN_MILLIS;
         Lock lockData = lockManagerUtils.buildLock(lockName, owner);
 
-        RpcResultBuilder<TryLockOutput> lockRpcBuilder;
+        final boolean success;
         try {
-            if (getLock(lockData, retryCount)) {
-                lockRpcBuilder = RpcResultBuilder.success();
-                LOG.debug("Acquired lock {} by owner {}", lockName, owner);
-            } else {
-                lockRpcBuilder = RpcResultBuilder.failed();
-                LOG.error("Failed to get lock {} owner {} after {} retries", lockName, owner, retryCount);
-            }
+            success = getLock(lockData, retryCount);
         } catch (InterruptedException e) {
-            lockRpcBuilder = RpcResultBuilder.failed();
             LOG.error("Failed to get lock {} owner {}", lockName, owner, e);
+            return FAILED_TRYLOCK;
         }
-        return Futures.immediateFuture(lockRpcBuilder.build());
+
+        if (success) {
+            LOG.debug("Acquired lock {} by owner {}", lockName, owner);
+            return SUCCESSFUL_TRYLOCK;
+        }
+
+        LOG.error("Failed to get lock {} owner {} after {} retries", lockName, owner, retryCount);
+        return FAILED_TRYLOCK;
     }
 
     @Override
@@ -113,7 +125,7 @@ public class LockManagerServiceImpl implements LockManagerService {
                 } else {
                     tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
                 }
-            }), unused -> new UnlockOutputBuilder().build(), MoreExecutors.directExecutor())).build();
+            }), unused -> UNLOCK_OUTPUT, MoreExecutors.directExecutor())).build();
     }
 
     void removeLock(final Lock removedLock) {
@@ -140,15 +152,15 @@ public class LockManagerServiceImpl implements LockManagerService {
             try {
                 lockSynchronizerMap.putIfAbsent(lockName, new CompletableFuture<>());
                 if (readWriteLock(lockData)) {
-                    return Futures.immediateFuture(null);
+                    return IMMEDIATE_LOCK;
+                }
+
+                if (retry < DEFAULT_NUMBER_LOCKING_ATTEMPS) {
+                    LOG.debug("Already locked for {} after waiting {}ms, try {}",
+                        lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
                 } else {
-                    if (retry < DEFAULT_NUMBER_LOCKING_ATTEMPS) {
-                        LOG.debug("Already locked for {} after waiting {}ms, try {}",
-                                lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
-                    } else {
-                        LOG.warn("Already locked for {} after waiting {}ms, try {}",
-                                lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
-                    }
+                    LOG.warn("Already locked for {} after waiting {}ms, try {}",
+                        lockName, DEFAULT_WAIT_TIME_IN_MILLIS, retry);
                 }
             } catch (ExecutionException e) {
                 logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
@@ -183,10 +195,10 @@ public class LockManagerServiceImpl implements LockManagerService {
             try {
                 if (readWriteLock(lockData)) {
                     return true;
-                } else {
-                    LOG.debug("Already locked for {} after waiting {}ms, try {} of {}", lockName,
-                            DEFAULT_WAIT_TIME_IN_MILLIS, retry, retryCount);
                 }
+
+                LOG.debug("Already locked for {} after waiting {}ms, try {} of {}", lockName,
+                    DEFAULT_WAIT_TIME_IN_MILLIS, retry, retryCount);
             } catch (ExecutionException e) {
                 logUnlessCauseIsOptimisticLockFailedException(lockName, retry, e);
             }
