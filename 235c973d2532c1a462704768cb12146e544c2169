@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b9e64dc5_f3cc17c6",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T10:19:23Z",
+      "side": 1,
+      "message": "perhaps we could \"tone this down\" a bit?  I\u0027m OK with it in a JIRA (actually make me LOL), but for a JavaDoc it seems a little... you know.  Tom, thoughts?",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd31d79b_93c8340d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T10:19:23Z",
+      "side": 1,
+      "message": "looking at your diff in LockManagerServiceImpl in this change, and the equivalent in the netvirt changes you\u0027ve raised under NETVIRT-1510, it seems to me this should be:\n\n    ReentrantLock lock \u003d JvnGlobalLocks.getLockForString(foo);",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b92389b5_00e51eb4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T10:19:23Z",
+      "side": 1,
+      "message": "given that all currently known usages of this utility will obtain (get()) and then immediately lock() IMHO it would be convenient to offer, in addition to getLockFor() direct lock() methods, which get and implicitly lock.",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "78b4ea9e_377854ae",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T10:19:23Z",
+      "side": 1,
+      "message": "real shame that ReentrantLock (@since 1.5) does not implements AutoCloseable (cauz that\u0027s @since 1.7).  How about we offer a CloseableReentrantLock and make the methods here return that?  That way, one can do this - and most importantly we can detect with static analysis tools when people forget to:\n\n    String foo;\n    try (ReentrantLock lock \u003d JvnGlobalLocks.getLockForString(foo)) {\n        lock.lock();\n        // ...\n    }",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ec11c8c_deef5dbe",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-19T10:19:23Z",
+      "side": 1,
+      "message": "I was wondering if, hypothetically, a GC at the wrong moment could clear out a NamedReentrantLock and a subsequent use would return another one and so they wouldn\u0027t be the same ReentrantLock (subclassed) object.. doesn\u0027t that defeat the purpose of this?  Wouldn\u0027t some sort of data structure keeping tabs on (counting) the number of concurrently open locks, and remove from map when none left, be more appropriate here?",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
