@@ -160,6 +160,24 @@
     },
     {
       "key": {
+        "uuid": "07e4a929_766dc1b0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-19T12:42:26Z",
+      "side": 1,
+      "message": "To be clear, my comment was in reply to Michael’s, not a comment on the code itself.",
+      "parentUuid": "39a221dd_1491afec",
+      "revId": "235c973d2532c1a462704768cb12146e544c2169",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1ec11c8c_deef5dbe",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/JvmGlobalLocks.java",
         "patchSetId": 2
