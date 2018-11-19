@@ -69,6 +69,24 @@
       "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ff7432d_5afa60a3",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdPoolListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-11-19T05:59:21Z",
+      "side": 1,
+      "message": "Michael, AvailableIdsHolder has three attributes, all having the type \"long\". I don\u0027t thing equals() of two AvailableIdsHolder objects would be expensive. However equals() of two ReleasedIdsHolder objects can be expensive as it has one \"List\" attribute which keeps on incriminating for each release of id.",
+      "parentUuid": "88dfaf18_8ecb85dc",
+      "revId": "cc8e5bb019ba3e08d98f382c037e07db8bdc0598",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
