@@ -10,30 +10,30 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>0.13.1-SNAPSHOT</version>
+    <version>0.13.2-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>binding-parent</artifactId>
-  <version>0.5.1-SNAPSHOT</version>
+  <version>0.5.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
   <name>ODL :: genius :: ${project.artifactId}</name>
 
   <properties>
-    <ietf.inet.types.version>2010.09.24.13.1-SNAPSHOT</ietf.inet.types.version>
-    <ietf.yang.types.version>2010.09.24.13.1-SNAPSHOT</ietf.yang.types.version>
-    <ietf.interfaces.version>2014.05.08.13.1-SNAPSHOT</ietf.interfaces.version>
-    <iana.if.type.version>2014.05.08.13.1-SNAPSHOT</iana.if.type.version>
-    <yang.ext.version>2013.09.07.13.1-SNAPSHOT</yang.ext.version>
-    <controller.mdsal.version>1.8.1-SNAPSHOT</controller.mdsal.version>
-    <model.bgp.version>2013.07.15.13.1-SNAPSHOT</model.bgp.version>
-    <openflowplugin.version>0.7.1-SNAPSHOT</openflowplugin.version>
-    <genius.ovsdb.version>1.7.1-SNAPSHOT</genius.ovsdb.version>
-    <genius.infrautils.version>1.4.1-SNAPSHOT</genius.infrautils.version>
+    <ietf.inet.types.version>2010.09.24.13.2-SNAPSHOT</ietf.inet.types.version>
+    <ietf.yang.types.version>2010.09.24.13.2-SNAPSHOT</ietf.yang.types.version>
+    <ietf.interfaces.version>2014.05.08.13.2-SNAPSHOT</ietf.interfaces.version>
+    <iana.if.type.version>2014.05.08.13.2-SNAPSHOT</iana.if.type.version>
+    <yang.ext.version>2013.09.07.13.2-SNAPSHOT</yang.ext.version>
+    <controller.mdsal.version>1.8.2-SNAPSHOT</controller.mdsal.version>
+    <model.bgp.version>2013.07.15.13.2-SNAPSHOT</model.bgp.version>
+    <openflowplugin.version>0.7.2-SNAPSHOT</openflowplugin.version>
+    <genius.ovsdb.version>1.7.2-SNAPSHOT</genius.ovsdb.version>
+    <genius.infrautils.version>1.4.2-SNAPSHOT</genius.infrautils.version>
   </properties>
 
   <dependencyManagement>
