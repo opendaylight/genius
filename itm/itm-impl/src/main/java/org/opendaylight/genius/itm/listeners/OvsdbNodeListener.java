@@ -57,9 +57,6 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
     @Override
     public void add(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node ovsdbNodeNew) {
-        String bridgeName = null;
-        String strDpnId = "";
-        OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
 
         LOG.trace("OvsdbNodeListener called for Ovsdb Node ({}) Add.", ovsdbNodeNew.getNodeId().getValue());
 
@@ -180,10 +177,11 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 isTepInfoUpdated, isTepInfoDeleted, isLocalIpRemoved, isLocalIpAdded, isLocalIpUpdated,
                 isTzChanged, isDpnBrChanged);
 
+        // TBD: Move this time taking operations into DataStoreJobCoordinator
+        String strOldDpnId = ItmUtils.getBridgeDpid(originalOvsdbNode, oldDpnBridgeName, dataBroker);
+
         // handle TEP-remove in remove case, TZ change case, Bridge change case
         if (isTepInfoDeleted || isLocalIpRemoved || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
-            // TBD: Move this time taking operations into DataStoreJobCoordinator
-            String strOldDpnId = ItmUtils.getBridgeDpid(originalOvsdbNode, oldDpnBridgeName, dataBroker);
             if (strOldDpnId == null || strOldDpnId.isEmpty()) {
                 LOG.error("TEP {} cannot be deleted. DPID for bridge {} is NULL.", oldLocalIp, oldDpnBridgeName);
                 return;
@@ -192,8 +190,14 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
         }
         // handle TEP-add in add case, TZ change case, Bridge change case
         if (isLocalIpAdded || isTzChanged || isDpnBrChanged || isLocalIpUpdated) {
-            // TBD: Move this time taking operations into DataStoreJobCoordinator
-            String strNewDpnId = ItmUtils.getBridgeDpid(updatedOvsdbNode, newDpnBridgeName, dataBroker);
+            String strNewDpnId;
+            //old dpn id will only change in case of Bridge update, other cases olddpn id will not change.
+            if (isDpnBrChanged) {
+                // TBD: Move this time taking operations into DataStoreJobCoordinator
+                strNewDpnId = ItmUtils.getBridgeDpid(updatedOvsdbNode, newDpnBridgeName, dataBroker);
+            } else {
+                strNewDpnId = strOldDpnId;
+            }
             if (strNewDpnId == null || strNewDpnId.isEmpty()) {
                 LOG.error("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
                 return;
@@ -282,7 +286,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             oldDpId = ItmUtils.getStrDatapathId(ovsdbOldBridgeAugmentation);
         }
         if (oldDpId == null && newDpId != null) {
-            LOG.trace("DpId changed to {} for bridge {}", newDpId, oldBridgeName);
+            LOG.trace("DpId set to {} during bridge {} update notification.", newDpId, oldBridgeName);
             return true;
         }
         return false;
