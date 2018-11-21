@@ -839,7 +839,9 @@ public class TepCommandHelper {
         }
         tzList.add(tzone);
         TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(LogicalDatastoreType.CONFIGURATION,
+        //If there is a delay in creation of DefaultTZ, it should not impact the already present TZ.
+        //Considering that delay put is replaced with merge.
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
                 path, transportZones, WriteTransaction.CREATE_MISSING_PARENTS)).get();
 
     }
