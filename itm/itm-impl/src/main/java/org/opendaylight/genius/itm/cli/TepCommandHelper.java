@@ -839,7 +839,7 @@ public class TepCommandHelper {
         }
         tzList.add(tzone);
         TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(LogicalDatastoreType.CONFIGURATION,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
                 path, transportZones, WriteTransaction.CREATE_MISSING_PARENTS)).get();
 
     }
