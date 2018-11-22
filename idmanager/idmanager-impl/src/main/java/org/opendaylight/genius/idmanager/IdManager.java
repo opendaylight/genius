@@ -547,8 +547,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return idCount;
     }
 
-    private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
-            throws ReadFailedException, IdManagerException {
+    private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey) throws Exception {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
         LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
         CountDownLatch latch = idUtils.getReleaseIdLatch(idLatchKey);
@@ -563,36 +562,37 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 idUtils.removeReleaseIdLatch(idLatchKey);
             }
         }
-        localPoolName = localPoolName.intern();
+        final String internedLocalPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
-        IdPool parentIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, parentIdPoolInstanceIdentifier);
-        List<IdEntries> idEntries = parentIdPool.getIdEntries();
-        if (idEntries == null) {
-            throw new IdDoesNotExistException(parentPoolName, idKey);
-        }
-        InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
-        Optional<IdEntries> existingIdEntryObject =
-                singleTxDB.syncReadOptional(LogicalDatastoreType.CONFIGURATION, existingId);
-        if (!existingIdEntryObject.isPresent()) {
-            LOG.info("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
-            idUtils.unlock(lockManager, idLatchKey);
-            return;
-        }
-        IdEntries existingIdEntry = existingIdEntryObject.get();
-        List<Long> idValuesList = nullToEmpty(existingIdEntry.getIdValue());
-        IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
-        boolean isRemoved = idEntries.remove(existingIdEntry);
-        LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
-        updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
-        IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), txRunner,
-                idUtils);
-        jobCoordinator.enqueueJob(localPoolName, poolSyncJob, IdUtils.RETRY_COUNT);
-        scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize());
-        LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
-        // Updating id entries in the parent pool. This will be used for restart scenario
-        UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, txRunner, idUtils,
-                        lockManager);
-        jobCoordinator.enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
+        txRunner.callWithNewReadOnlyTransactionAndClose(Datastore.CONFIGURATION, tx -> {
+            IdPool parentIdPool = tx.read(parentIdPoolInstanceIdentifier).get().get();
+            List<IdEntries> idEntries = parentIdPool.getIdEntries();
+            if (idEntries == null) {
+                throw new IdDoesNotExistException(parentPoolName, idKey);
+            }
+            InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
+            Optional<IdEntries> existingIdEntryObject = tx.read(existingId).get();
+            if (!existingIdEntryObject.isPresent()) {
+                LOG.info("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
+                idUtils.unlock(lockManager, idLatchKey);
+                return;
+            }
+            IdEntries existingIdEntry = existingIdEntryObject.get();
+            List<Long> idValuesList = nullToEmpty(existingIdEntry.getIdValue());
+            IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
+            boolean isRemoved = idEntries.remove(existingIdEntry);
+            LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
+            updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
+            IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(internedLocalPoolName, localIdPoolCache.getReleasedIds(), txRunner,
+                    idUtils);
+            jobCoordinator.enqueueJob(internedLocalPoolName, poolSyncJob, IdUtils.RETRY_COUNT);
+            scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize());
+            LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, internedLocalPoolName);
+            // Updating id entries in the parent pool. This will be used for restart scenario
+            UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, internedLocalPoolName, idKey, null, txRunner, idUtils,
+                            lockManager);
+            jobCoordinator.enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
+        });
     }
 
     private void scheduleCleanUpTask(final IdLocalPool localIdPoolCache,
