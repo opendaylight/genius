@@ -414,7 +414,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private long allocateIdBlockFromParentPool(IdLocalPool localPoolCache, IdPool parentIdPool,
             TypedWriteTransaction<Configuration> confTx)
-            throws OperationFailedException, IdManagerException {
+            throws OperationFailedException, IdManagerException, InterruptedException, ExecutionException {
         long idCount;
         ReleasedIdsHolderBuilder releasedIdsBuilderParent = IdUtils.getReleaseIdsHolderBuilder(parentIdPool);
         while (true) {
@@ -438,7 +438,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     private long getIdsFromOtherChildPools(ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool)
-            throws OperationFailedException {
+            throws OperationFailedException, InterruptedException, ExecutionException {
         List<ChildPools> childPoolsList = nullToEmpty(parentIdPool.getChildPools());
         // Sorting the child pools on last accessed time so that the pool that
         // was not accessed for a long time comes first.
@@ -451,34 +451,36 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             if (!Objects.equals(childPools.getChildPoolName(), idUtils.getLocalPoolName(parentIdPool.getPoolName()))) {
                 InstanceIdentifier<IdPool> idPoolInstanceIdentifier = idUtils
                         .getIdPoolInstance(childPools.getChildPoolName());
-                IdPool otherChildPool =
-                        singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier);
-                ReleasedIdsHolderBuilder releasedIds = IdUtils.getReleaseIdsHolderBuilder(otherChildPool);
+                return retryingTxRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
+                    IdPool otherChildPool = tx.read(idPoolInstanceIdentifier).get().get();
+                    ReleasedIdsHolderBuilder releasedIds = IdUtils.getReleaseIdsHolderBuilder(otherChildPool);
 
-                List<DelayedIdEntries> delayedIdEntriesChild = releasedIds.getDelayedIdEntries();
-                List<DelayedIdEntries> delayedIdEntriesParent = releasedIdsBuilderParent.getDelayedIdEntries();
-                if (delayedIdEntriesParent == null) {
-                    delayedIdEntriesParent = new LinkedList<>();
-                }
-                delayedIdEntriesParent.addAll(delayedIdEntriesChild);
-                delayedIdEntriesChild.clear();
+                    List<DelayedIdEntries> delayedIdEntriesChild = releasedIds.getDelayedIdEntries();
+                    List<DelayedIdEntries> delayedIdEntriesParent = releasedIdsBuilderParent.getDelayedIdEntries();
+                    if (delayedIdEntriesParent == null) {
+                        delayedIdEntriesParent = new LinkedList<>();
+                    }
+                    delayedIdEntriesParent.addAll(delayedIdEntriesChild);
+                    delayedIdEntriesChild.clear();
 
-                AvailableIdsHolderBuilder availableIds = idUtils.getAvailableIdsHolderBuilder(otherChildPool);
-                while (idUtils.isIdAvailable(availableIds)) {
-                    long cursor = availableIds.getCursor() + 1;
-                    delayedIdEntriesParent.add(idUtils.createDelayedIdEntry(cursor, currentTime));
-                    availableIds.setCursor(cursor);
-                }
+                    AvailableIdsHolderBuilder availableIds = idUtils.getAvailableIdsHolderBuilder(otherChildPool);
+                    while (idUtils.isIdAvailable(availableIds)) {
+                        long cursor = availableIds.getCursor() + 1;
+                        delayedIdEntriesParent.add(idUtils.createDelayedIdEntry(cursor, currentTime));
+                        availableIds.setCursor(cursor);
+                    }
 
-                long totalAvailableIdCount = releasedIds.getDelayedIdEntries().size()
-                        + idUtils.getAvailableIdsCount(availableIds);
-                long count = releasedIdsBuilderParent.getAvailableIdCount() + totalAvailableIdCount;
-                releasedIdsBuilderParent.setDelayedIdEntries(delayedIdEntriesParent).setAvailableIdCount(count);
-                singleTxDB.syncUpdate(LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier,
-                        new IdPoolBuilder().withKey(new IdPoolKey(otherChildPool.getPoolName()))
-                                .setAvailableIdsHolder(availableIds.build()).setReleasedIdsHolder(releasedIds.build())
-                                .build());
-                return totalAvailableIdCount;
+                    long totalAvailableIdCount = releasedIds.getDelayedIdEntries().size()
+                            + idUtils.getAvailableIdsCount(availableIds);
+                    long count = releasedIdsBuilderParent.getAvailableIdCount() + totalAvailableIdCount;
+                    releasedIdsBuilderParent.setDelayedIdEntries(delayedIdEntriesParent).setAvailableIdCount(count);
+                    tx.merge(idPoolInstanceIdentifier,
+                            new IdPoolBuilder().withKey(new IdPoolKey(otherChildPool.getPoolName()))
+                                    .setAvailableIdsHolder(availableIds.build())
+                                    .setReleasedIdsHolder(releasedIds.build()).build(),
+                            true);
+                    return totalAvailableIdCount;
+                }).get();
             }
         }
         return 0;
@@ -632,7 +634,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private IdLocalPool createLocalPool(TypedWriteTransaction<Configuration> confTx, String localPoolName,
             IdPool idPool)
-            throws OperationFailedException, IdManagerException {
+            throws OperationFailedException, IdManagerException, InterruptedException, ExecutionException {
         localPoolName = localPoolName.intern();
         IdLocalPool idLocalPool = new IdLocalPool(idUtils, localPoolName);
         allocateIdBlockFromParentPool(idLocalPool, idPool, confTx);
