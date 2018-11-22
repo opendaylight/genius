@@ -54,6 +54,7 @@ import org.opendaylight.genius.idmanager.jobs.UpdateIdEntryJob;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -96,8 +97,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private static final Logger LOG = LoggerFactory.getLogger(IdManager.class);
     private static final long DEFAULT_IDLE_TIME = 24 * 60 * 60;
 
-    private final DataBroker broker;
     private final ManagedNewTransactionRunner txRunner;
+    private final RetryingManagedNewTransactionRunner retryingTxRunner;
     private final SingleTransactionDataBroker singleTxDB;
     private final LockManagerService lockManager;
     private final IdUtils idUtils;
@@ -110,8 +111,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils,
                      @Reference DataImportBootReady dataImportBootReady, JobCoordinator jobCoordinator)
                     throws ReadFailedException {
-        this.broker = db;
         this.txRunner = new ManagedNewTransactionRunnerImpl(db);
+        this.retryingTxRunner = new RetryingManagedNewTransactionRunner(db);
         this.singleTxDB = new SingleTransactionDataBroker(db);
         this.lockManager = lockManager;
         this.idUtils = idUtils;
@@ -595,9 +596,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         TimerTask scheduledTask = new TimerTask() {
             @Override
             public void run() {
-                CleanUpJob job =
-                        new CleanUpJob(localIdPoolCache, txRunner, broker, parentPoolName, blockSize, lockManager,
-                                idUtils, jobCoordinator);
+                CleanUpJob job = new CleanUpJob(localIdPoolCache, txRunner, retryingTxRunner, parentPoolName, blockSize,
+                        lockManager, idUtils, jobCoordinator);
                 jobCoordinator.enqueueJob(localIdPoolCache.getPoolName(), job, IdUtils.RETRY_COUNT);
             }
         };
