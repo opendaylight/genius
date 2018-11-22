@@ -52,6 +52,7 @@ import org.opendaylight.genius.idmanager.jobs.LocalPoolCreateJob;
 import org.opendaylight.genius.idmanager.jobs.LocalPoolDeleteJob;
 import org.opendaylight.genius.idmanager.jobs.UpdateIdEntryJob;
 import org.opendaylight.genius.infra.Datastore.Configuration;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
@@ -261,12 +262,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             String poolName = input.getPoolName().intern();
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
             synchronized (poolName) {
-                IdPool idPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
-                List<ChildPools> childPoolList = idPool.getChildPools();
-                if (childPoolList != null) {
-                    childPoolList.forEach(childPool -> deletePool(childPool.getChildPoolName()));
-                }
-                singleTxDB.syncDelete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
+                retryingTxRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
+                    IdPool idPool = tx.read(idPoolToBeDeleted).get().get();
+                    List<ChildPools> childPoolList = idPool.getChildPools();
+                    if (childPoolList != null) {
+                        childPoolList.forEach(childPool -> deletePool(childPool.getChildPoolName()));
+                    }
+                    tx.delete(idPoolToBeDeleted);
+                });
             }
             // TODO return the Future from a TBD asyncDelete instead.. BUT check that all callers @CheckReturnValue
             return Futures.immediateFuture((DeleteIdPoolOutput) null);
