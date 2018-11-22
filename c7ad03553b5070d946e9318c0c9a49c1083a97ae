@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "116b660a_5cea5f2b",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-11-22T09:50:11Z",
+      "side": 1,
+      "message": "Please update the section to indicate what section in genius CSIT will need a change, after talking to Karthika",
+      "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
