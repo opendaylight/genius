@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ef0e9faa_977322e6",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-22T16:27:31Z",
+      "side": 1,
+      "message": "as for SUCCESSFUL_TRYLOCK; technically it used to be just Futures.immediateFuture(null) ...",
+      "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "545c85ef_adfd8cff",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-22T16:27:31Z",
+      "side": 1,
+      "message": "Strictly speaking this is not a mechanical change anymore, because before we returned just RpcResultBuilder.success() whereas now it\u0027s success(new TryLockOutputBuilder().build()) - which seems more correct, I would have to agree.  If a client relied on null this would be a breaking change, but I think that\u0027s unlikely, so I\u0027m OK with this - just thought it would be worth pointing it out.",
+      "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e7f46167_e2b01380",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-22T16:27:31Z",
+      "side": 1,
+      "message": "I never understood how this style is supposedly clearer than } else { ... that, to me, is much MORE readable.",
+      "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
