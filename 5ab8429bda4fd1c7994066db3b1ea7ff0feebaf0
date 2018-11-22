@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b220f9aa_ed5bf9b0",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-22T16:00:03Z",
+      "side": 1,
+      "message": "huh?  So we just completely ignore the ReadFailedException?? That seems ... curious, wrong. Tom?",
+      "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e921ce72_484d021f",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 710,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-22T16:00:03Z",
+      "side": 1,
+      "message": "wrong logging, you would have to use:\n\n    LOG.debug(\"Failed to read id pool {}\", localPoolName, ex);",
+      "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
