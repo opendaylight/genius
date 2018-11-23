@@ -59,27 +59,21 @@ public class DpnTepsInfoListener extends AbstractTunnelListenerBase<DPNTEPsInfo>
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorEndPtCache
             // This may run in all node as its ClusteredDTCN but cache will be populated in only the Entity owner
-            try {
-                directTunnelUtils.getTunnelLocks().lock(dpnTepsInfo.getDPNID().toString());
-                Collection<NodeConnectorInfo> nodeConnectorInfoList = unprocessedNodeConnectorEndPointCache.get(
-                        dpnTepsInfo.getDPNID().toString());
-                if (nodeConnectorInfoList != null) {
-                    for (NodeConnectorInfo ncInfo : nodeConnectorInfoList) {
-                        LOG.info("Processing the Unprocessed NodeConnector for Tunnel {}", ncInfo
-                                .getNodeConnector().getName());
-                        // Queue the InterfaceStateAddWorker in DJC
-
-                        String portName = ncInfo.getNodeConnector().getName();
-                        InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
-                                new InterfaceStateAddWorkerForUnprocessedNC(ncInfo.getNodeConnectorId(),
-                                        ncInfo.getNodeConnector(), portName);
-                        coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
-                        // Remove the NodeConnector Entry from UnprocessedNodeConnectorEndPt Map
-                        unprocessedNodeConnectorEndPointCache.remove(dpnTepsInfo.getDPNID().toString(), ncInfo);
-                    }
+            Collection<NodeConnectorInfo> nodeConnectorInfoList = unprocessedNodeConnectorEndPointCache.get(
+                    dpnTepsInfo.getDPNID().toString());
+            if (nodeConnectorInfoList != null) {
+                for (NodeConnectorInfo ncInfo : nodeConnectorInfoList) {
+                    LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", ncInfo
+                            .getNodeConnector().getName());
+                    // Queue the InterfaceStateAddWorker in DJC
+                    String portName = ncInfo.getNodeConnector().getName();
+                    InterfaceStateAddWorkerForUnprocessedNC ifStateAddWorker =
+                            new InterfaceStateAddWorkerForUnprocessedNC(ncInfo.getNodeConnectorId(),
+                                    ncInfo.getNodeConnector(), portName);
+                    coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+                    // Remove the NodeConnector Entry from UnprocessedNodeConnectorEndPt Map
+                    unprocessedNodeConnectorEndPointCache.remove(dpnTepsInfo.getDPNID().toString(), ncInfo);
                 }
-            } finally {
-                directTunnelUtils.getTunnelLocks().unlock(dpnTepsInfo.getDPNID().toString());
             }
         }
     }
