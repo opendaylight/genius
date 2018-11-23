@@ -68,6 +68,24 @@
       "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5db7ff32_a45083e9",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-23T11:17:47Z",
+      "side": 1,
+      "message": "Never seen that warning in Eclipse, and personally don\u0027t like that style.  It\u0027s too minor to further discuss this though, so I\u0027ll just merge this one as is anyway.",
+      "parentUuid": "1ad0c5ae_79a29e9e",
+      "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }

@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "90c4237b_75014d96",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-23T11:17:47Z",
+      "side": 0,
+      "message": "Yes I get that and this part if great; I meant ditching the else",
+      "parentUuid": "30cef702_d1b78d6b",
+      "revId": "de88dfb496f89efe611b366d9210685aa5e5e3ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a633b238_d338380d",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
         "patchSetId": 4
