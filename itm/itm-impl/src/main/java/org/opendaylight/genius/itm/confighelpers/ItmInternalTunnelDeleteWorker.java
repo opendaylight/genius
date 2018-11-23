@@ -458,16 +458,9 @@ public class ItmInternalTunnelDeleteWorker {
 
         // delete bridge to tunnel interface mappings
         OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
-        InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid =
-                DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
-
         ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
         if (ovsBridgeEntryOptional.isPresent()) {
-            List<OvsBridgeTunnelEntry> bridgeTunnelEntries =
-                nullToEmpty(ovsBridgeEntryOptional.get().getOvsBridgeTunnelEntry());
-            deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
-            // IfIndex needs to be removed only during State Clean up not Config
-            // TunnelMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);
+            deleteBridgeInterfaceEntry(bridgeEntryKey, interfaceName);
             cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
             directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
         }
@@ -498,16 +491,10 @@ public class ItmInternalTunnelDeleteWorker {
         }
     }
 
-    private void deleteBridgeInterfaceEntry(OvsBridgeEntryKey bridgeEntryKey,
-                                            List<OvsBridgeTunnelEntry> bridgeTunnelEntries,
-                                            InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid,
-                                            String interfaceName) {
+    private void deleteBridgeInterfaceEntry(OvsBridgeEntryKey bridgeEntryKey, String interfaceName) {
         OvsBridgeTunnelEntryKey bridgeTunnelEntryKey = new OvsBridgeTunnelEntryKey(interfaceName);
         InstanceIdentifier<OvsBridgeTunnelEntry> bridgeTunnelEntryIid =
                 DirectTunnelUtils.getBridgeTunnelEntryIdentifier(bridgeEntryKey, bridgeTunnelEntryKey);
         ITMBatchingUtils.delete(bridgeTunnelEntryIid, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        if (bridgeTunnelEntries.size() <= 1) {
-            ITMBatchingUtils.delete(bridgeEntryIid, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        }
     }
 }

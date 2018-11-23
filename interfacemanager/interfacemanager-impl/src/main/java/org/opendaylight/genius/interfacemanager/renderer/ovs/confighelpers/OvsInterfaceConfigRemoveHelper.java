@@ -179,8 +179,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         removeTunnelIngressFlow(confTx, interfaceName, ifTunnel, dpId);
 
         // delete bridge to tunnel interface mappings
-        interfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
-                interfaceName);
+        interfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, interfaceName);
         int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, operTx);
         // stop LLDP monitoring for the tunnel interface
