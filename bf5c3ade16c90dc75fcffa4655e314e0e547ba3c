@@ -22,6 +22,30 @@
       "revId": "bf5c3ade16c90dc75fcffa4655e314e0e547ba3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "43de018b_1c2e8d1c",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Constants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5197
+      },
+      "writtenOn": "2018-11-23T17:19:55Z",
+      "side": 1,
+      "message": "Sure @Som.",
+      "parentUuid": "0e4b3db3_01074721",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 33
+      },
+      "revId": "bf5c3ade16c90dc75fcffa4655e314e0e547ba3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
