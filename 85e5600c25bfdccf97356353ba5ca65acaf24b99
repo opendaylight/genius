@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "23c20a85_61a37d70",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 693,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-23T11:34:03Z",
+      "side": 0,
+      "message": "curious that we can drop the ReadFailedException ... singleTxDB.syncReadOptional() still throws that?",
+      "revId": "85e5600c25bfdccf97356353ba5ca65acaf24b99",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
