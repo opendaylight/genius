@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d96beda6_327034ab",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 224,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-23T11:30:42Z",
+      "side": 1,
+      "message": "is lockData.key() always the same as TryLockInput/UnlockInput/LockInput.getLockName() which it replaces, see above?",
+      "revId": "87fac5916f81514595af94b0587f667f56adea48",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
