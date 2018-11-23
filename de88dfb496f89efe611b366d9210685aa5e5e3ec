@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "30cef702_d1b78d6b",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-23T02:05:44Z",
+      "side": 0,
+      "message": "a) object allocation\nb) gets rid of a source of nulls in the system",
+      "parentUuid": "5c6834af_3b892e45",
+      "revId": "de88dfb496f89efe611b366d9210685aa5e5e3ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a633b238_d338380d",
         "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2018-11-22T16:27:31Z",
       "side": 0,
       "message": "yeah, not a huge fan of this.  Revert this, x3 ?",
+      "revId": "de88dfb496f89efe611b366d9210685aa5e5e3ec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a9ef7640_d2df622c",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-23T02:05:44Z",
+      "side": 0,
+      "message": "actually, the return of readWriteLock() should be stored in a local, which will shorten the try { } block, moving that LOG.debug() just above Thread.sleep() --\u003e hence making the code flow more readable.",
+      "parentUuid": "a633b238_d338380d",
       "revId": "de88dfb496f89efe611b366d9210685aa5e5e3ec",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false

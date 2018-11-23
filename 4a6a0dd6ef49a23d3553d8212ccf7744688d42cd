@@ -50,6 +50,24 @@
       "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ad0c5ae_79a29e9e",
+        "filename": "lockmanager/lockmanager-impl/src/main/java/org/opendaylight/genius/lockmanager/impl/LockManagerServiceImpl.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-23T02:05:44Z",
+      "side": 1,
+      "message": "Eclipse warns about blocks which are unnecessarily in else blocks, typically after throw or return.\n\nFor reading code, when scanning top-to-bottom, you do not have to track two branches (important when non-trival).\n\nFor writing code, it saves columns, as you do not get indentation -- hence you can more easily evade multi-line statements (logs, etc).",
+      "parentUuid": "e7f46167_e2b01380",
+      "revId": "4a6a0dd6ef49a23d3553d8212ccf7744688d42cd",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
