@@ -365,24 +365,13 @@ public final class InterfaceMetaUtils {
         return tx.read(id).get().toJavaUtil().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
-    public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
-            List<BridgeInterfaceEntry> bridgeInterfaceEntries, InstanceIdentifier<BridgeEntry> bridgeEntryIid,
-            String interfaceName) {
+    public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey, String interfaceName) {
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
                 new BridgeInterfaceEntryKey(interfaceName);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
                 InterfaceMetaUtils.getBridgeInterfaceEntryIdentifier(bridgeEntryKey,
                         bridgeInterfaceEntryKey);
-
-        if (bridgeInterfaceEntries.size() <= 1) {
-            LOG.debug("{} is last bridge-interface entry for DPN : {}", interfaceName, bridgeEntryKey.getDpid());
-            batchingUtils.delete(bridgeEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
-        } else {
-            // No point deleting interface individually if bridge entry is being deleted
-            // Note: Will this cause issue in listener code? Does it expect separate notifications for two?
-            LOG.debug("deleting bridge-interface entry {} for DPN : {}", interfaceName, bridgeEntryKey.getDpid());
-            batchingUtils.delete(bridgeInterfaceEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
-        }
+        batchingUtils.delete(bridgeInterfaceEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     public List<TerminationPoint> getTerminationPointsOnBridge(BigInteger dpnId) {
