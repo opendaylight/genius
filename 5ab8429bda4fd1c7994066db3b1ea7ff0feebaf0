@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "f7d362f7_749faccb",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-11-23T06:32:35Z",
+      "side": 1,
+      "message": "SyncRead throws \"ExpectedDataObjectNotFoundException\" if no data exists at the specified path. This catch block is introduced to handle that exception. So that program doesn\u0027t terminate abnormally and child pool can be created later (line#719).",
+      "parentUuid": "b220f9aa_ed5bf9b0",
+      "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e921ce72_484d021f",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 3
@@ -30,6 +48,24 @@
       "writtenOn": "2018-11-22T16:00:03Z",
       "side": 1,
       "message": "wrong logging, you would have to use:\n\n    LOG.debug(\"Failed to read id pool {}\", localPoolName, ex);",
+      "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bb6249f0_57ace0f1",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 710,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-11-23T06:32:35Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e921ce72_484d021f",
       "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
