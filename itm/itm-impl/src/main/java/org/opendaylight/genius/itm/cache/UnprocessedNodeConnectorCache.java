@@ -10,22 +10,22 @@ package org.opendaylight.genius.itm.cache;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.inject.Singleton;
-import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
+import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 
 @Singleton
 public class UnprocessedNodeConnectorCache {
 
-    private final ConcurrentMap<String, NodeConnectorInfo> unprocessedNodeConnectorMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, TunnelStateInfo> unprocessedNodeConnectorMap = new ConcurrentHashMap<>();
 
-    public void add(String tunnelName, NodeConnectorInfo ncInfo) {
-        unprocessedNodeConnectorMap.put(tunnelName, ncInfo);
+    public void add(String tunnelName, TunnelStateInfo tunnelStateInfo) {
+        unprocessedNodeConnectorMap.put(tunnelName, tunnelStateInfo);
     }
 
-    public NodeConnectorInfo get(String tunnelName) {
+    public TunnelStateInfo get(String tunnelName) {
         return unprocessedNodeConnectorMap.get(tunnelName);
     }
 
-    public NodeConnectorInfo remove(String tunnelName) {
+    public TunnelStateInfo remove(String tunnelName) {
         return unprocessedNodeConnectorMap.remove(tunnelName);
     }
 }
