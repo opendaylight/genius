@@ -35,6 +35,8 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -172,6 +174,8 @@ public class TepCommandHelperTest {
 
     private TepCommandHelper tepCommandHelper ;
     private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
+    private UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
+    private UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
 
     @Before
     public void setUp() {
@@ -207,7 +211,7 @@ public class TepCommandHelperTest {
 
         unprocessedTunnelsStateCache = new UnprocessedTunnelsStateCache();
         tepCommandHelper = new TepCommandHelper(dataBroker, itmConfig,
-                unprocessedTunnelsStateCache);
+                unprocessedTunnelsStateCache,unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
 
     }
 
