@@ -33,11 +33,16 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
+import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -175,14 +180,19 @@ public class ItmManagerRpcServiceTest {
             .child(Subnets.class, new SubnetsKey(ipPrefixTest)).child(DeviceVteps.class, deviceVtepKey).build();
 
     @Mock DataBroker dataBroker;
+    @Mock JobCoordinator jobCoordinator;
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock ItmConfig itmConfig;
     @Mock IInterfaceManager interfaceManager;
     @Mock InterfaceManagerService interfaceManagerService;
+    @Mock EntityOwnershipUtils entityOwnershipUtils;
 
     ItmManagerRpcService itmManagerRpcService ;
+    DirectTunnelUtils directTunnelUtils;
+    UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
+    UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
 
     Optional<ExternalTunnel> externalTunnelOptional ;
     Optional<InternalTunnel> internalTunnelOptional;
@@ -212,10 +222,11 @@ public class ItmManagerRpcServiceTest {
                 .CONFIGURATION,transportZonesIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
-                new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
+            new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+            directTunnelUtils, jobCoordinator, unprocessedNodeConnectorEndPointCache);
         DpnTepStateCache dpnTepStateCache =
-                new DpnTepStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
-                        dpntePsInfoCache);
+            new DpnTepStateCache(dataBroker, jobCoordinator, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+            directTunnelUtils, dpntePsInfoCache, unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
         TunnelStateCache tunnelStateCache =
                 new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
         OvsBridgeRefEntryCache ovsBridgeRefEntryCache =
@@ -223,7 +234,7 @@ public class ItmManagerRpcServiceTest {
 
         itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
             dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService,
-            ovsBridgeRefEntryCache, null);
+            ovsBridgeRefEntryCache, directTunnelUtils);
     }
 
     @After
