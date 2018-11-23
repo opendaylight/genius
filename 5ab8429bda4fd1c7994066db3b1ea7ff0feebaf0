@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "d5f35315_97b63cd8",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-23T10:28:49Z",
+      "side": 1,
+      "message": "Oh! But, no no no... ;-) sorry.  First of all, if you had used \"catch (ExpectedDataObjectNotFoundException e)\" instead ReadFailedException then I would have understood it faster.  Second of all, by this you propose to treat an exception as \"normal\".  Don\u0027t EVER do that, this is VERY BAD for performance - I\u0027m currently chasing things like this (see https://bugzilla.redhat.com/show_bug.cgi?id\u003d1651668) so let\u0027s not introduce new problems like this as I\u0027m in parallel trying to root out this problem elsewhere?  What you really want to do here instead should become obvious by reading the respective JavaDoc... simply use syncReadOptional() instead!",
+      "parentUuid": "f7d362f7_749faccb",
+      "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e921ce72_484d021f",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 3
