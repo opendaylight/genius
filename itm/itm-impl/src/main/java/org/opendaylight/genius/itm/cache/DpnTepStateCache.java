@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.itm.cache;
 
-import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,13 +20,22 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorker;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfoBuilder;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfoBuilder;
+import org.opendaylight.genius.itm.utils.TunnelStateInfo;
+import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
@@ -46,19 +54,33 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private static final Logger LOG = LoggerFactory.getLogger(DpnTepStateCache.class);
 
     private final DataBroker dataBroker;
+    private final JobCoordinator coordinator;
+    private final DirectTunnelUtils directTunnelUtils;
     private final DPNTEPsInfoCache dpnTepsInfoCache;
+    private final UnprocessedNodeConnectorCache unprocessedNCCache;
+    private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
+    private final ManagedNewTransactionRunner txRunner;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
 
     @Inject
-    public DpnTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider, DPNTEPsInfoCache dpnTepsInfoCache) {
+    public DpnTepStateCache(DataBroker dataBroker, JobCoordinator coordinator,
+                            CacheProvider cacheProvider, DirectTunnelUtils directTunnelUtils,
+                            DPNTEPsInfoCache dpnTepsInfoCache,
+                            UnprocessedNodeConnectorCache unprocessedNCCache,
+                            UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
         super(DpnsTeps.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class).build(), cacheProvider,
             (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId(),
             sourceDpnId -> InstanceIdentifier.builder(DpnTepsState.class)
                     .child(DpnsTeps.class, new DpnsTepsKey(sourceDpnId)).build());
         this.dataBroker = dataBroker;
+        this.coordinator = coordinator;
+        this.directTunnelUtils = directTunnelUtils;
         this.dpnTepsInfoCache = dpnTepsInfoCache;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.unprocessedNCCache = unprocessedNCCache;
+        this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
     }
 
     @Override
@@ -66,13 +88,62 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         for (RemoteDpns remoteDpns : dpnsTeps.getRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
-                    .setTunnelName(remoteDpns.getTunnelName())
-                    .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
-                    .setIsInternal(remoteDpns.isInternal())
-                    .setTunnelType(dpnsTeps.getTunnelType()).build();
+                .setTunnelName(remoteDpns.getTunnelName())
+                .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
+                .setIsInternal(remoteDpns.isInternal())
+                .setTunnelType(dpnsTeps.getTunnelType()).build();
             dpnTepInterfaceMap.put(dpn, value);
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                     dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+
+            //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
+
+            TunnelStateInfo tunnelStateInfoNew = null;
+
+            directTunnelUtils.getTunnelLocks().lock(remoteDpns.getTunnelName());
+            TunnelStateInfo tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+            directTunnelUtils.getTunnelLocks().unlock(remoteDpns.getTunnelName());
+
+            if (tunnelStateInfo != null) {
+                LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+
+                TunnelEndPointInfo tunnelEndPtInfo = getTunnelEndPointInfo(dpnsTeps.getSourceDpnId().toString(),
+                        remoteDpns.getDestinationDpnId().toString());
+                TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder()
+                    .setNodeConnectorInfo(tunnelStateInfo.getNodeConnectorInfo()).setDpnTepInterfaceInfo(value)
+                    .setTunnelEndPointInfo(tunnelEndPtInfo);
+
+                dpnTepsInfoCache.getDPNTepFromDPNId(dpnsTeps.getSourceDpnId()).ifPresent(builder::setSrcDpnTepsInfo);
+                dpnTepsInfoCache.getDPNTepFromDPNId(remoteDpns.getDestinationDpnId())
+                    .ifPresent(builder::setDstDpnTepsInfo);
+
+                tunnelStateInfoNew = builder.build();
+                if (tunnelStateInfoNew.getSrcDpnTepsInfo() == null) {
+                    String srcDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getSrcEndPointInfo();
+                    directTunnelUtils.getTunnelLocks().lock(srcDpnId);
+                    LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                        remoteDpns.getTunnelName(), srcDpnId);
+                    unprocessedNodeConnectorEndPointCache.add(srcDpnId, tunnelStateInfoNew);
+                    directTunnelUtils.getTunnelLocks().unlock(srcDpnId);
+                }
+
+                if (tunnelStateInfoNew.getDstDpnTepsInfo() == null) {
+                    String dstDpnId = tunnelStateInfo.getTunnelEndPointInfo().getDstEndPointInfo();
+                    directTunnelUtils.getTunnelLocks().lock(dstDpnId);
+                    LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                        remoteDpns.getTunnelName(), dstDpnId);
+                    unprocessedNodeConnectorEndPointCache.add(dstDpnId, tunnelStateInfoNew);
+                    directTunnelUtils.getTunnelLocks().unlock(dstDpnId);
+                }
+            }
+
+            if (tunnelStateInfoNew != null && tunnelStateInfoNew.getSrcDpnTepsInfo() != null
+                && tunnelStateInfoNew.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
+                TunnelStateAddWorkerForNodeConnector ifStateAddWorker =
+                    new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
+                        tunnelStateInfoNew);
+                coordinator.enqueueJob(remoteDpns.getTunnelName(), ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+            }
         }
     }
 
@@ -92,7 +163,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         DpnTepInterfaceInfo  dpnTepInterfaceInfo = dpnTepInterfaceMap.get(getDpnId(srcDpnId, dstDpnId));
         if (dpnTepInterfaceInfo == null) {
             try {
-                Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
+                com.google.common.base.Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
                 if (dpnsTeps.isPresent()) {
                     DpnsTeps teps = dpnsTeps.get();
                     teps.getRemoteDpns().forEach(remoteDpns -> {
@@ -208,9 +279,12 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     //Start: TunnelEndPoint Cache accessors
     private void addTunnelEndPointInfoToCache(String tunnelName, String srcEndPtInfo, String dstEndPtInfo) {
-        TunnelEndPointInfo tunnelEndPointInfo = new TunnelEndPointInfoBuilder().setSrcEndPointInfo(srcEndPtInfo)
-                .setDstEndPointInfo(dstEndPtInfo).build();
-        tunnelEndpointMap.put(tunnelName, tunnelEndPointInfo);
+        tunnelEndpointMap.put(tunnelName, getTunnelEndPointInfo(srcEndPtInfo,dstEndPtInfo));
+    }
+
+    private TunnelEndPointInfo getTunnelEndPointInfo(String srcEndPtInfo, String dstEndPtInfo) {
+        return
+            new TunnelEndPointInfoBuilder().setSrcEndPointInfo(srcEndPtInfo).setDstEndPointInfo(dstEndPtInfo).build();
     }
 
     public TunnelEndPointInfo getTunnelEndPointInfoFromCache(String tunnelName) {
