@@ -28,12 +28,17 @@ import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorker;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfo;
 import org.opendaylight.genius.itm.utils.NodeConnectorInfoBuilder;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
+import org.opendaylight.genius.itm.utils.TunnelStateInfo;
+import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -53,31 +58,39 @@ import org.slf4j.LoggerFactory;
  * This Class is a Data Change Listener for FlowCapableNodeConnector updates.
  * This creates an entry in the tunnels-state OperDS for every node-connector used.
  */
-public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<FlowCapableNodeConnector> {
+public class TunnelInventoryStateListener extends
+    AbstractClusteredSyncDataTreeChangeListener<FlowCapableNodeConnector> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelInventoryStateListener.class);
 
     private final JobCoordinator coordinator;
     private final ManagedNewTransactionRunner txRunner;
     private final TunnelStateCache tunnelStateCache;
+    private final DpnTepStateCache dpnTepStateCache;
+    private final DPNTEPsInfoCache dpntePsInfoCache;
+    private final UnprocessedNodeConnectorCache unprocessedNCCache;
+    private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
+    private final DirectTunnelUtils directTunnelUtils;
 
     public TunnelInventoryStateListener(final DataBroker dataBroker,
                                         final JobCoordinator coordinator,
-                                        final EntityOwnershipUtils entityOwnershipUtils,
                                         final TunnelStateCache tunnelStateCache,
                                         final DpnTepStateCache dpnTepStateCache,
                                         final DPNTEPsInfoCache dpntePsInfoCache,
                                         final UnprocessedNodeConnectorCache unprocessedNCCache,
                                         final UnprocessedNodeConnectorEndPointCache
-                                                unprocessedNodeConnectorEndPointCache,
+                                            unprocessedNodeConnectorEndPointCache,
                                         final DirectTunnelUtils directTunnelUtils) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class)
-                .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class), dpnTepStateCache,
-                dpntePsInfoCache, unprocessedNCCache,
-                unprocessedNodeConnectorEndPointCache, entityOwnershipUtils, directTunnelUtils);
+            .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class));
         this.coordinator = coordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.tunnelStateCache = tunnelStateCache;
+        this.dpnTepStateCache = dpnTepStateCache;
+        this.dpntePsInfoCache = dpntePsInfoCache;
+        this.unprocessedNCCache = unprocessedNCCache;
+        this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
+        this.directTunnelUtils = directTunnelUtils;
         super.register();
     }
 
@@ -101,7 +114,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                 return;
             }
         }
-        if (!entityOwner()) {
+        if (!directTunnelUtils.isEntityOwner()) {
             return;
         }
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
@@ -129,46 +142,77 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
             LOG.debug("Node Connector Update {} Interface is not a internal tunnel I/f, so no-op", portName);
             return;
         }
-        if (fcNodeConnectorNew.getReason() == PortReason.Delete || !entityOwner()) {
+        if (fcNodeConnectorNew.getReason() == PortReason.Delete || !directTunnelUtils.isEntityOwner()) {
             return;
         }
         LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
 
-        InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
-                fcNodeConnectorNew, portName);
+        TunnelInterfaceStateUpdateWorker portStateUpdateWorker = new TunnelInterfaceStateUpdateWorker(key,
+            fcNodeConnectorOld, fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, portStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
     @Override
     public void add(@Nonnull InstanceIdentifier<FlowCapableNodeConnector> key,
                     @Nonnull FlowCapableNodeConnector fcNodeConnectorNew) {
+        LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         String portName = fcNodeConnectorNew.getName();
-        LOG.debug("InterfaceInventoryState ADD for {}", portName);
         // Return if its not tunnel port and if its not Internal
         if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Add {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         }
-        if (!dpnTepStateCache.isConfigAvailable(portName)) {
-            // Park the notification
-            LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+        NodeConnectorInfo nodeConnectorInfo =
+            new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
+        TunnelStateInfo tunnelStateInfo = null;
+        TunnelEndPointInfo tunnelEndPtInfo = null;
+        try {
+            directTunnelUtils.getTunnelLocks().lock(portName);
+            if (!dpnTepStateCache.isConfigAvailable(portName)) {
+                // Park the notification
+                LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
                     + "Hence parking it", portName);
-            NodeConnectorInfo nodeConnectorInfo = new NodeConnectorInfoBuilder().setNodeConnectorId(key)
-                    .setNodeConnector(fcNodeConnectorNew).build();
-            unprocessedNCCache.add(portName, nodeConnectorInfo);
-            return;
-        } else if (!dpnTepStateCache.isInternal(portName)) {
-            LOG.debug("{} Interface is not a internal tunnel I/f, so no-op", portName);
-            return;
+                unprocessedNCCache.add(portName,
+                    new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo).build());
+                return;
+            } else if (!dpnTepStateCache.isInternal(portName)) {
+                LOG.debug("{} Interface is not a internal tunnel I/f, so no-op", portName);
+                return;
+            }
+        } finally {
+            directTunnelUtils.getTunnelLocks().unlock(portName);
         }
 
-        LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
-            //NodeConnectorId nodeConnectorId =
-            // InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-            InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(key,
-                    fcNodeConnectorNew, portName);
-            coordinator.enqueueJob(portName, ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+            tunnelEndPtInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(portName);
+            TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo);
+            dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getSrcEndPointInfo()))
+                .ifPresent(builder::setSrcDpnTepsInfo);
+            dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getDstEndPointInfo()))
+                .ifPresent(builder::setDstDpnTepsInfo);
+            tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
+                .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
+            if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
+                directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getSrcEndPointInfo());
+                LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                        portName, tunnelEndPtInfo.getSrcEndPointInfo());
+                unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getSrcEndPointInfo(), tunnelStateInfo);
+                directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getSrcEndPointInfo());
+            }
+            if (tunnelStateInfo.getDstDpnTepsInfo() == null) {
+                directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getDstEndPointInfo());
+                LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                        portName, tunnelEndPtInfo.getDstEndPointInfo());
+                unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getDstEndPointInfo(), tunnelStateInfo);
+                directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getDstEndPointInfo());
+            }
+        }
+
+        if (tunnelEndPtInfo != null && tunnelStateInfo.getSrcDpnTepsInfo() != null
+            && tunnelStateInfo.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
+            coordinator.enqueueJob(portName,
+                new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
+                    tunnelStateInfo), ITMConstants.JOB_MAX_RETRIES);
         }
     }
 
@@ -300,8 +344,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
                     //SF 419 This will only be tunnel interface
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
-                    directTunnelUtils.makeTunnelIngressFlow(dpnTepInfo, dpId, portNo, interfaceName, -1,
-                            NwConstants.DEL_FLOW);
+                    directTunnelUtils.makeTunnelIngressFlow(dpId, portNo, interfaceName, -1, NwConstants.DEL_FLOW);
                 } else {
                     LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
                 }
@@ -310,41 +353,16 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
         return futures;
     }
 
-    private class InterfaceStateAddWorker implements Callable {
-        private final InstanceIdentifier<FlowCapableNodeConnector> key;
-        private final FlowCapableNodeConnector fcNodeConnectorNew;
-        private final String interfaceName;
 
-        InterfaceStateAddWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
-            this.key = key;
-            this.fcNodeConnectorNew = fcNodeConnectorNew;
-            this.interfaceName = portName;
-        }
-
-        @Override
-        public Object call() throws Exception {
-            // If another renderer(for eg : OVS) needs to be supported, check can be performed here
-            // to call the respective helpers.
-            return addState(key, interfaceName, fcNodeConnectorNew);
-        }
-
-        @Override
-        public String toString() {
-            return "InterfaceStateAddWorker{fcNodeConnectorIdentifier=" + key + ", fcNodeConnectorNew="
-                    + fcNodeConnectorNew + ", interfaceName='" + interfaceName + '\'' + '}';
-        }
-    }
-
-    private class InterfaceStateUpdateWorker implements Callable {
+    private class TunnelInterfaceStateUpdateWorker implements Callable {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
 
-        InterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
-                                   FlowCapableNodeConnector fcNodeConnectorOld,
-                                   FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
+        TunnelInterfaceStateUpdateWorker(InstanceIdentifier<FlowCapableNodeConnector> key,
+                                         FlowCapableNodeConnector fcNodeConnectorOld,
+                                         FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
             this.key = key;
             this.fcNodeConnectorOld = fcNodeConnectorOld;
             this.fcNodeConnectorNew = fcNodeConnectorNew;

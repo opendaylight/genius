@@ -480,7 +480,7 @@ public class ItmInternalTunnelDeleteWorker {
     private void removeTunnelIngressFlow(String interfaceName, BigInteger dpId) throws ReadFailedException {
         long portNo = tunnelStateCache.getNodeConnectorIdFromInterface(interfaceName);
         DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
-        directTunnelUtils.makeTunnelIngressFlow(dpnTepInfo, dpId, portNo,interfaceName , -1, NwConstants.DEL_FLOW);
+        directTunnelUtils.makeTunnelIngressFlow(dpId, portNo, interfaceName, -1, NwConstants.DEL_FLOW);
     }
 
     // if the node is shutdown, there will be stale interface state entries,
