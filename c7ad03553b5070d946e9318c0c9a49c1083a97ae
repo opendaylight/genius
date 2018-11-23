@@ -2,6 +2,57 @@
   "comments": [
     {
       "key": {
+        "uuid": "8cddf3c7_39539c44",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-23T11:12:49Z",
+      "side": 1,
+      "message": "Take a look at generated document, formatting of some sections is incorrect.",
+      "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7e1715b_6af03588",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-23T11:12:49Z",
+      "side": 1,
+      "message": "Why is this empty?",
+      "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01cd437b_a21f3b69",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-23T11:12:49Z",
+      "side": 1,
+      "message": "Mention other projects that will be impacted by this.",
+      "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "116b660a_5cea5f2b",
         "filename": "docs/specs/itm-yang-cleanup.rst",
         "patchSetId": 7
@@ -13,6 +64,40 @@
       "writtenOn": "2018-11-22T09:50:11Z",
       "side": 1,
       "message": "Please update the section to indicate what section in genius CSIT will need a change, after talking to Karthika",
+      "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "993c9f59_4ea314ba",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-23T11:12:49Z",
+      "side": 1,
+      "message": "There are existing user and developer guides for Genius. They will need to be updated. Add references to those calling out exact existing documentation that will need to be modified.",
+      "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c048c59e_05db12d5",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2018-11-23T11:12:49Z",
+      "side": 1,
+      "message": "Add a section called Troubleshooting in which capture changes required to ODLTools for this. Raise a JIRA in ODLTOOLS for corresponding change. ODLTOOLS is used in netvirt and genius csit and this change will break it.",
       "revId": "c7ad03553b5070d946e9318c0c9a49c1083a97ae",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
