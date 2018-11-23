@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e4b3db3_01074721",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Constants.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 5346
+      },
+      "writtenOn": "2018-11-23T06:10:55Z",
+      "side": 1,
+      "message": "Could you please add missing \"ICMP_V6_OPTION_REDIRECTED_HEADER \u003d 4\" as well to make it complete?",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 41,
+        "endChar": 33
+      },
+      "revId": "bf5c3ade16c90dc75fcffa4655e314e0e547ba3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
