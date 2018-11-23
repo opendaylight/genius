@@ -375,10 +375,12 @@ public final class InterfaceMetaUtils {
                         bridgeInterfaceEntryKey);
 
         if (bridgeInterfaceEntries.size() <= 1) {
+            LOG.debug("{} is last bridge-interface entry for DPN : {}", interfaceName, bridgeEntryKey.getDpid());
             batchingUtils.delete(bridgeEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
         } else {
             // No point deleting interface individually if bridge entry is being deleted
             // Note: Will this cause issue in listener code? Does it expect separate notifications for two?
+            LOG.debug("deleting bridge-interface entry {} for DPN : {}", interfaceName, bridgeEntryKey.getDpid());
             batchingUtils.delete(bridgeInterfaceEntryIid, BatchingUtils.EntityType.DEFAULT_CONFIG);
         }
     }
