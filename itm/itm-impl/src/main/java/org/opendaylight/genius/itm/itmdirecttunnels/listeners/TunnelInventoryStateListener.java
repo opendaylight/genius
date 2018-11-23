@@ -294,7 +294,7 @@ public class TunnelInventoryStateListener extends AbstractTunnelListenerBase<Flo
             DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
             if (dpnTepInfo != null) {
                 futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
-                    //SF 419 This will only be tunnel interface
+                    // Do if-index and ingress flow clean-up only for tunnel-interfaces
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
                 }));
