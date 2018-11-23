@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "596840b5_4dac781f",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-11-23T09:59:10Z",
+      "side": 1,
+      "message": "Why is this named group-id ? We only need unique Id for each destination DPN - how about destination id.",
+      "revId": "120a1c77e51276fe74da32e1a992bac156f0fb6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a980b93_e4072852",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-11-23T09:59:10Z",
+      "side": 1,
+      "message": "Maybe you can remove SF 419 :-)",
+      "revId": "120a1c77e51276fe74da32e1a992bac156f0fb6f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
