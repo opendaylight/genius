@@ -89,7 +89,7 @@ public class SingleTransactionDataBroker {
      * an Exception for that.
      *
      * <p>If calling code can more sensibly handle non-present data, then use
-     * {@link #syncRead(LogicalDatastoreType, InstanceIdentifier)} instead of this.
+     * {@link #syncReadOptional(LogicalDatastoreType, InstanceIdentifier)} instead of this.
      *
      * <p>See {@link ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)}.
      *
