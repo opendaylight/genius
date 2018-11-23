@@ -55,6 +55,24 @@
     },
     {
       "key": {
+        "uuid": "115c7536_0d62258a",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-11-23T11:02:26Z",
+      "side": 1,
+      "message": "Made changes to use syncReadOptional().",
+      "parentUuid": "d5f35315_97b63cd8",
+      "revId": "5ab8429bda4fd1c7994066db3b1ea7ff0feebaf0",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e921ce72_484d021f",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 3
