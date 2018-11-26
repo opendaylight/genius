@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf9c8ab9_b74ccb55",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-11-26T06:12:15Z",
+      "side": 1,
+      "message": "replace with Entry.",
+      "range": {
+        "startLine": 578,
+        "startChar": 12,
+        "endLine": 578,
+        "endChar": 21
+      },
+      "revId": "ea529a646391c45eff2db7a2ddc7c5ef8ef7f386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c0f6a8e_cb16e94b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 586,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-11-26T06:12:15Z",
+      "side": 1,
+      "message": "please use,\ncacheContent.forEach(ncInfo -\u003e",
+      "range": {
+        "startLine": 582,
+        "startChar": 12,
+        "endLine": 586,
+        "endChar": 13
+      },
+      "revId": "ea529a646391c45eff2db7a2ddc7c5ef8ef7f386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29f6adcc_471f459a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-11-26T06:12:15Z",
+      "side": 1,
+      "message": "this output statement looks counterintuitive. \nperhaps put it as an else block, after checking for isEmpty()?",
+      "range": {
+        "startLine": 587,
+        "startChar": 12,
+        "endLine": 587,
+        "endChar": 71
+      },
+      "revId": "ea529a646391c45eff2db7a2ddc7c5ef8ef7f386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c79de85e_8271e8fd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 590,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-11-26T06:12:15Z",
+      "side": 1,
+      "message": "replace with Entry.",
+      "range": {
+        "startLine": 590,
+        "startChar": 14,
+        "endLine": 590,
+        "endChar": 20
+      },
+      "revId": "ea529a646391c45eff2db7a2ddc7c5ef8ef7f386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d72a55df_1cb32091",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 597,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-11-26T06:12:15Z",
+      "side": 1,
+      "message": "please use, \ncacheContent.forEach(ncInfo -\u003e",
+      "range": {
+        "startLine": 595,
+        "startChar": 0,
+        "endLine": 597,
+        "endChar": 13
+      },
+      "revId": "ea529a646391c45eff2db7a2ddc7c5ef8ef7f386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88d7cceb_945caa4e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 599,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-11-26T06:12:15Z",
+      "side": 1,
+      "message": "this output statement looks counterintuitive. \nperhaps put it as an else block, after checking for isEmpty()?",
+      "range": {
+        "startLine": 598,
+        "startChar": 12,
+        "endLine": 599,
+        "endChar": 9
+      },
+      "revId": "ea529a646391c45eff2db7a2ddc7c5ef8ef7f386",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
