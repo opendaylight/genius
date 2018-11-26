@@ -20,7 +20,7 @@ class ExpectedInterfaceInfo {
             adminState = InterfaceAdminState.ENABLED
             interfaceName = ifaceName
             interfaceTag = 1
-            if (ifaceType != null)
+            if (ifaceType !== null)
                 interfaceType = ifaceType
             macAddress = "AA:AA:AA:AA:AA:AA"
             opState = InterfaceOpState.UP
