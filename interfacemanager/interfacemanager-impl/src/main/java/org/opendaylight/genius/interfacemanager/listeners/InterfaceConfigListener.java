@@ -73,7 +73,6 @@ public class InterfaceConfigListener
         this.ovsInterfaceConfigRemoveHelper = ovsInterfaceConfigRemoveHelper;
         this.ovsInterfaceConfigAddHelper = ovsInterfaceConfigAddHelper;
         this.ovsInterfaceConfigUpdateHelper = ovsInterfaceConfigUpdateHelper;
-        registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
     }
