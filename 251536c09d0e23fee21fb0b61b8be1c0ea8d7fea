@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "09432308_f04f5734",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-27T12:43:56Z",
+      "side": 1,
+      "message": "This seems like the ideal opportunity to deal with this TODO ;-).",
+      "revId": "251536c09d0e23fee21fb0b61b8be1c0ea8d7fea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
