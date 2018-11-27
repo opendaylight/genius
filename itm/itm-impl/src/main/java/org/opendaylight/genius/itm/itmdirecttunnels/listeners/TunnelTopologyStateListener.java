@@ -20,15 +20,12 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
-import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
-import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
-import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryBuilder;
@@ -47,7 +44,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<OvsdbBridgeAugmentation> {
+public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeChangeListener<OvsdbBridgeAugmentation> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelTopologyStateListener.class);
 
@@ -55,23 +52,18 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
     private final ManagedNewTransactionRunner txRunner;
     private final DirectTunnelUtils directTunnelUtils;
     private final OvsBridgeEntryCache ovsBridgeEntryCache;
+    protected final DpnTepStateCache dpnTepStateCache;
 
     public TunnelTopologyStateListener(final DataBroker dataBroker,
                                        final JobCoordinator coordinator,
-                                       final EntityOwnershipUtils entityOwnershipUtils,
                                        final DirectTunnelUtils directTunnelUtils,
                                        final DpnTepStateCache dpnTepStateCache,
-                                       final DPNTEPsInfoCache dpntePsInfoCache,
-                                       final OvsBridgeEntryCache ovsBridgeEntryCache,
-                                       final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
-                                       final UnprocessedNodeConnectorEndPointCache
-                                               unprocessedNodeConnectorEndPointCache)  {
+                                       final OvsBridgeEntryCache ovsBridgeEntryCache)  {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
-                        .augmentation(OvsdbBridgeAugmentation.class), dpnTepStateCache, dpntePsInfoCache,
-                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache,
-                entityOwnershipUtils, directTunnelUtils);
+                        .augmentation(OvsdbBridgeAugmentation.class));
         this.coordinator = coordinator;
+        this.dpnTepStateCache = dpnTepStateCache;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.directTunnelUtils = directTunnelUtils;
         this.ovsBridgeEntryCache = ovsBridgeEntryCache;
@@ -81,7 +73,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
     @Override
     public void remove(@Nonnull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                        @Nonnull OvsdbBridgeAugmentation bridgeOld) {
-        if (entityOwner()) {
+        if (directTunnelUtils.isEntityOwner()) {
             LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeOld);
             RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(identifier, bridgeOld);
@@ -94,7 +86,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
     public void update(@Nonnull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                        @Nonnull OvsdbBridgeAugmentation bridgeOld, @Nonnull OvsdbBridgeAugmentation bridgeNew) {
 
-        if (!entityOwner()) {
+        if (!directTunnelUtils.isEntityOwner()) {
             return;
         }
         LOG.debug("Received Update DataChange Notification for identifier: {}, + ovsdbBridgeAugmentation old: {},"
@@ -117,7 +109,7 @@ public class TunnelTopologyStateListener extends AbstractTunnelListenerBase<Ovsd
     @Override
     public void add(@Nonnull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                     @Nonnull OvsdbBridgeAugmentation bridgeNew) {
-        if (entityOwner()) {
+        if (directTunnelUtils.isEntityOwner()) {
             LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeNew);
             RendererStateAddWorker rendererStateAddWorker = new RendererStateAddWorker(identifier, bridgeNew);
