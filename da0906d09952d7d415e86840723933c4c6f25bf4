@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2beb3f73_3c7489ec",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 842,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-11-28T08:33:07Z",
+      "side": 1,
+      "message": "Better is to write some documentation for this change above this line.",
+      "range": {
+        "startLine": 842,
+        "startChar": 8,
+        "endLine": 842,
+        "endChar": 73
+      },
+      "revId": "da0906d09952d7d415e86840723933c4c6f25bf4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
