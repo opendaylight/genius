@@ -16,6 +16,24 @@
       "revId": "8e38878186a12e7c6ff4f96011f04d287ee780f7",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "92e0a7c8_cf08672b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2018-11-28T09:30:52Z",
+      "side": 1,
+      "message": "I am not clear. are you talking about movement of configureTunnelType method?",
+      "parentUuid": "7d43f35e_65062d9a",
+      "revId": "8e38878186a12e7c6ff4f96011f04d287ee780f7",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
