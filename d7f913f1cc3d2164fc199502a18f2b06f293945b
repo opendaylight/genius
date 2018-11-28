@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2183716f_e73b0573",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceInfo.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-28T23:23:55Z",
+      "side": 1,
+      "message": "so according to https://www.eclipse.org/xtend/documentation/203_xtend_expressions.html this what in Java would be (ifaceType !\u003d null) wheras (ifaceType !\u003d null) in Xtend in Java is like Objects.equals(ifaceType, null) ... which is perfectly fine as well.  This seems like \"hair splitting\", changing this adds no real value, that I can see.  If anything it makes it harder for people used to Java to read, you wonder \"how is !\u003d\u003d different from !\u003d\" when using !\u003d actually works just fine here, and typically would even if it wasn\u0027t null, for object literal style code like this.",
+      "revId": "d7f913f1cc3d2164fc199502a18f2b06f293945b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
