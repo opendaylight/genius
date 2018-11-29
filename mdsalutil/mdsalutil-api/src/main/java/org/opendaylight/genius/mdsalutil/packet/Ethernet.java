@@ -17,7 +17,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
 import org.opendaylight.openflowplugin.libraries.liblldp.EtherTypes;
 import org.opendaylight.openflowplugin.libraries.liblldp.LLDP;
-import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 
 /**
@@ -95,14 +94,6 @@ public class Ethernet extends Packet {
 
     public short getEtherType() {
         return BitBufferHelper.getShort(fieldValues.get(ETHT));
-    }
-
-    public boolean isBroadcast() {
-        return NetUtils.isBroadcastMACAddr(getDestinationMACAddress());
-    }
-
-    public boolean isMulticast() {
-        return NetUtils.isMulticastMACAddr(getDestinationMACAddress());
     }
 
     public Ethernet setDestinationMACAddress(byte[] destinationMACAddress) {
