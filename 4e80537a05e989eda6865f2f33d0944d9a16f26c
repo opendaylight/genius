@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "94dcf318_767efbff",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-11-29T21:42:20Z",
+      "side": 1,
+      "message": "EVENT_LOG? WE use LOG so stay consistent.",
+      "range": {
+        "startLine": 81,
+        "startChar": 32,
+        "endLine": 81,
+        "endChar": 44
+      },
+      "revId": "4e80537a05e989eda6865f2f33d0944d9a16f26c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e7a8cd1f_6a10b526",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-11-29T21:42:20Z",
+      "side": 1,
+      "message": "reason for extra space at end?",
+      "revId": "4e80537a05e989eda6865f2f33d0944d9a16f26c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c5f51aef_9e139dce",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/TerminationPointStateListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2018-11-29T21:42:20Z",
+      "side": 1,
+      "message": "should this be a constant somewhere?",
+      "range": {
+        "startLine": 44,
+        "startChar": 72,
+        "endLine": 44,
+        "endChar": 89
+      },
+      "revId": "4e80537a05e989eda6865f2f33d0944d9a16f26c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
