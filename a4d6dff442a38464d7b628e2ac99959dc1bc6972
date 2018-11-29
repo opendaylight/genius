@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d608f946_d441a837",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-11-29T07:28:39Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be .get()? I think this should be .get() as this will make sure lock is not released until the data is written to the data store, and other thread waiting for the same lock object will see the updated data.",
+      "range": {
+        "startLine": 99,
+        "startChar": 14,
+        "endLine": 99,
+        "endChar": 19
+      },
+      "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
