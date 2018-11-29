@@ -16,6 +16,24 @@
       "revId": "d7f913f1cc3d2164fc199502a18f2b06f293945b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "76815cdd_cf425c5b",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceInfo.xtend",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2018-11-29T13:44:49Z",
+      "side": 1,
+      "message": "Sure it works fine, but unlike \u0027!\u003d\u003d null\u0027 it causes xtend-maven-plugin to emit a warning:\n\nhttps://logs.opendaylight.org/releng/vex-yul-odl-jenkins-1/genius-merge-neon/187/console.log.gz\n\n[WARNING] \nWARNING: \tExpectedInterfaceInfo.xtend - /w/workspace/genius-merge-neon/interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/xtend/ExpectedInterfaceInfo.xtend\n23: The operator \u0027!\u003d\u0027 should be replaced by \u0027!\u003d\u003d\u0027 when null is one of the arguments.",
+      "parentUuid": "2183716f_e73b0573",
+      "revId": "d7f913f1cc3d2164fc199502a18f2b06f293945b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
