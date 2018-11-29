@@ -70,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.CreateIdPoolOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.DeleteIdPoolInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.DeleteIdPoolOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.DeleteIdPoolOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
@@ -261,16 +262,15 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             String poolName = input.getPoolName().intern();
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
             synchronized (poolName) {
-                retryingTxRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
+                return retryingTxRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
                     IdPool idPool = tx.read(idPoolToBeDeleted).get().get();
                     List<ChildPools> childPoolList = idPool.getChildPools();
                     if (childPoolList != null) {
                         childPoolList.forEach(childPool -> deletePool(childPool.getChildPoolName()));
                     }
                     tx.delete(idPoolToBeDeleted);
-                });
+                }).transform(result -> new DeleteIdPoolOutputBuilder().build(), MoreExecutors.directExecutor());
             }
-            return Futures.immediateFuture((DeleteIdPoolOutput) null);
         }).build();
     }
 
