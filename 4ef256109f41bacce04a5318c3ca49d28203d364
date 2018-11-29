@@ -16,6 +16,24 @@
       "revId": "4ef256109f41bacce04a5318c3ca49d28203d364",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30f4f35d_791f7c95",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-11-29T13:04:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "c9a74a73_06139756",
+      "revId": "4ef256109f41bacce04a5318c3ca49d28203d364",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
