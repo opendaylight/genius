@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c9a74a73_06139756",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 271,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-11-29T12:53:43Z",
+      "side": 1,
+      "message": "instead of \"(DeleteIdPoolOutput) null\" let\u0027s use this opportunity to do new DeleteIdPoolOutputBuilder().build() while we\u0027re at it?",
+      "revId": "4ef256109f41bacce04a5318c3ca49d28203d364",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
