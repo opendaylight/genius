@@ -44,7 +44,6 @@ import org.opendaylight.infrautils.inject.AbstractLifecycle;
 import org.opendaylight.infrautils.metrics.Meter;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.openflowplugin.libraries.liblldp.HexEncode;
-import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
@@ -386,7 +385,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 byte[] data = packetReceived.getPayload();
                 Ethernet ethernet = new Ethernet();
 
-                ethernet.deserialize(data, 0, data.length * NetUtils.NUM_BITS_IN_A_BYTE);
+                ethernet.deserialize(data, 0, data.length * Byte.SIZE);
                 if (ethernet.getEtherType() != ArpConstants.ETH_TYPE_ARP) {
                     return;
                 }
