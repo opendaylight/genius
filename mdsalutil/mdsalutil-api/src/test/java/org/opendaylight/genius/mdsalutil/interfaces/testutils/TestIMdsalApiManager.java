@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -67,9 +68,9 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     public static TestIMdsalApiManager newInstance() {
         TestIMdsalApiManager instance = Mockito.mock(TestIMdsalApiManager.class, realOrException());
-        instance.flows = new HashMap<>();
-        instance.groups = new HashMap<>();
-        instance.buckets = new HashMap<>();
+        instance.flows = new ConcurrentHashMap<>();
+        instance.groups = new ConcurrentHashMap<>();
+        instance.buckets = new ConcurrentHashMap<>();
         return instance;
     }
 
@@ -211,65 +212,65 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void addFlow(TypedWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
+    public synchronized void addFlow(TypedWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
         storeFlow(flowEntity);
     }
 
     @Override
-    public void addFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
+    public synchronized void addFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
         throw new UnsupportedOperationException("addFlow(..., BigInteger, Flow) isn't supported yet");
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
+    public synchronized void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
         removeFlow(tx, dpId, flow.key(), flow.getTableId());
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
+    public synchronized void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity) {
         deleteFlow(flowEntity.getDpnId(), flowEntity.getFlowId(), flowEntity.getTableId());
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey,
+    public synchronized void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey,
             short tableId) {
         deleteFlow(dpId, flowKey.getId().getValue(), tableId);
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId,
+    public synchronized void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId,
             short tableId) {
         deleteFlow(dpId, flowId, tableId);
     }
 
     @Override
-    public void addGroup(TypedWriteTransaction<Configuration> tx, GroupEntity groupEntity) {
+    public synchronized void addGroup(TypedWriteTransaction<Configuration> tx, GroupEntity groupEntity) {
         storeGroup(groupEntity.getDpnId(), groupEntity.getGroupBuilder().build());
     }
 
     @Override
-    public void addGroup(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+    public synchronized void addGroup(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
         storeGroup(dpId, group);
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+    public synchronized void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
         deleteGroup(dpId, group.getGroupId().getValue());
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId) {
+    public synchronized void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId) {
         deleteGroup(dpId, groupId);
     }
 
     @Override
-    public void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
+    public synchronized void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
             Bucket bucket) {
         storeBucket(dpId, groupId, bucket);
     }
 
     @Override
-    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
+    public synchronized void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
             long bucketId) {
         deleteBucket(dpId, groupId, bucketId);
     }
