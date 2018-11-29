@@ -15,7 +15,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
 import org.opendaylight.openflowplugin.libraries.liblldp.BufferException;
-import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 
@@ -182,11 +181,11 @@ public class ICMP extends Packet {
     short computeChecksum(byte[] data, int start) {
         int sum = 0;
         int wordData;
-        int end = start + this.getHeaderSize() / NetUtils.NUM_BITS_IN_A_BYTE;
+        int end = start + this.getHeaderSize() / Byte.SIZE;
         if (rawPayload != null) {
             end += rawPayload.length;
         }
-        int checksumStartByte = start + getfieldOffset(CHECKSUM) / NetUtils.NUM_BITS_IN_A_BYTE;
+        int checksumStartByte = start + getfieldOffset(CHECKSUM) / Byte.SIZE;
         int even = end & ~1;
 
         for (int i = start; i < even; i = i + 2) {
@@ -223,7 +222,7 @@ public class ICMP extends Packet {
 
     @Override
     protected void postDeserializeCustomOperation(byte[] data, int endBitOffset) {
-        short computedChecksum = computeChecksum(data, endBitOffset / NetUtils.NUM_BITS_IN_A_BYTE);
+        short computedChecksum = computeChecksum(data, endBitOffset / Byte.SIZE);
         short actualChecksum = BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
 
         if (computedChecksum != actualChecksum) {

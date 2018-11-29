@@ -57,7 +57,6 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.mdsalutil.packet.Ethernet;
 import org.opendaylight.genius.mdsalutil.packet.utils.PacketUtil;
 import org.opendaylight.infrautils.utils.concurrent.ThreadFactoryProvider;
-import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
@@ -295,7 +294,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             Packet packetInFormatted;
             Ethernet res = new Ethernet();
             try {
-                packetInFormatted = res.deserialize(data, 0, data.length * NetUtils.NUM_BITS_IN_A_BYTE);
+                packetInFormatted = res.deserialize(data, 0, data.length * Byte.SIZE);
             } catch (PacketException e) {
                 LOG.warn("Failed to decode packet: ", e);
                 return;
