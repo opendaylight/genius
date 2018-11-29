@@ -261,16 +261,15 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             String poolName = input.getPoolName().intern();
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
             synchronized (poolName) {
-                retryingTxRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
+                return retryingTxRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
                     IdPool idPool = tx.read(idPoolToBeDeleted).get().get();
                     List<ChildPools> childPoolList = idPool.getChildPools();
                     if (childPoolList != null) {
                         childPoolList.forEach(childPool -> deletePool(childPool.getChildPoolName()));
                     }
                     tx.delete(idPoolToBeDeleted);
-                });
+                }).transform(result -> (DeleteIdPoolOutput) null, MoreExecutors.directExecutor());
             }
-            return Futures.immediateFuture((DeleteIdPoolOutput) null);
         }).build();
     }
 
