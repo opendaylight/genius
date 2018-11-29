@@ -20,7 +20,6 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
 import org.opendaylight.openflowplugin.libraries.liblldp.BufferException;
-import org.opendaylight.openflowplugin.libraries.liblldp.NetUtils;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.slf4j.Logger;
@@ -154,7 +153,7 @@ public class IPv4 extends Packet {
             headerLen = MIN_HEADER_SIZE;
         }
 
-        return headerLen * NetUtils.NUM_BITS_IN_A_BYTE;
+        return headerLen * Byte.SIZE;
     }
 
     /**
@@ -479,17 +478,16 @@ public class IPv4 extends Packet {
      *
      * @param data
      *            The byte stream
-     * @param offset
+     * @param start
      *            The byte offset from where the IPv4 packet starts
      * @return The computed checksum
      */
     short computeChecksum(byte[] data, int start) {
         int end = start + getHeaderLen();
-        short checkSum = (short) 0;
+        short checkSum;
         int sum = 0;
         int wordData;
-        int checksumStart = start
-                + getfieldOffset(CHECKSUM) / NetUtils.NUM_BITS_IN_A_BYTE;
+        int checksumStart = start + getfieldOffset(CHECKSUM) / Byte.SIZE;
 
         for (int i = start; i <= end - 1; i = i + 2) {
             // Skip, if the current bytes are checkSum bytes
@@ -515,7 +513,7 @@ public class IPv4 extends Packet {
      */
     public int getfieldnumBits(String fieldName) {
         if (fieldName.equals(OPTIONS)) {
-            return (getHeaderLen() - MIN_HEADER_SIZE) * NetUtils.NUM_BITS_IN_A_BYTE;
+            return (getHeaderLen() - MIN_HEADER_SIZE) * Byte.SIZE;
         }
         return hdrFieldCoordMap.get(fieldName).getRight();
     }
@@ -584,7 +582,7 @@ public class IPv4 extends Packet {
      */
     @Override
     protected void postDeserializeCustomOperation(byte[] data, int startBitOffset) {
-        int start = startBitOffset / NetUtils.NUM_BITS_IN_A_BYTE;
+        int start = startBitOffset / Byte.SIZE;
         short computedChecksum = computeChecksum(data, start);
         short actualChecksum = BitBufferHelper.getShort(fieldValues.get(CHECKSUM));
         if (computedChecksum != actualChecksum) {
