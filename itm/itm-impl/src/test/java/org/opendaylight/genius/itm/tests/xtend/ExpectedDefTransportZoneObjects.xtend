@@ -77,6 +77,7 @@ class ExpectedDefTransportZoneObjects {
                             ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NB_TZ_TEP_IP)
                             portname = ITMConstants.DUMMY_PORT
                             weight = 1
+                            optionOfTunnel = false
                         ]
                     ]
                 ]
