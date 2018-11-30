@@ -1,0 +1,21 @@
+module network-config {
+    yang-version 1;
+    namespace "urn:opendaylight:genius:networkutils:config";
+    prefix "network-config";
+    description
+        "Configuration for network parameters";
+
+    revision "2018-11-29" {
+        description
+                "Initial revision.";
+    }
+
+    container network-config {
+        config true;
+
+        leaf opendaylight-vni-ranges {
+            type string;
+            default "70000:99999";
+        }
+    }
+}
