@@ -1,0 +1,3 @@
+<neutronvpn-config xmlns="urn:opendaylight:genius:networkutils:config">
+  <opendaylight-vni-ranges>70000:99999</opendaylight-vni-ranges>
+</neutronvpn-config>

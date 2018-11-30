@@ -192,6 +192,11 @@ public interface NwConstants {
     short EGRESS_ACL_COMMITTER_TABLE = 247;
     short EGRESS_COUNTERS_TABLE = 249;
 
+    // Id Pool Details
+    String ODL_VNI_POOL_NAME = "opendaylight-vni-ranges";
+    long VNI_DEFAULT_LOW_VALUE = 70000L;
+    long VNI_DEFAULT_HIGH_VALUE = 99999L;
+
     enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
         NXM_OF_ETH_DST(0x0000, 1, 6, 48),
