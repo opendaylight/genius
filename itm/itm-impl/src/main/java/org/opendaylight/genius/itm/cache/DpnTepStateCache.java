@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.itm.cache;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,7 +86,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        for (RemoteDpns remoteDpns : nullToEmpty(dpnsTeps.getRemoteDpns())) {
+        for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                 .setTunnelName(remoteDpns.getTunnelName())
@@ -152,7 +150,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void removed(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        for (RemoteDpns remoteDpns : nullToEmpty(dpnsTeps.getRemoteDpns())) {
+        for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             dpnTepInterfaceMap.remove(getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId()));
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
         }
@@ -169,7 +167,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 com.google.common.base.Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
                 if (dpnsTeps.isPresent()) {
                     DpnsTeps teps = dpnsTeps.get();
-                    nullToEmpty(teps.getRemoteDpns()).forEach(remoteDpns -> {
+                    teps.nonnullRemoteDpns().forEach(remoteDpns -> {
                         DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                                 .setTunnelName(remoteDpns.getTunnelName())
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
@@ -192,7 +190,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         Collection<DpnsTeps> dpnsTeps = this.getAllPresent();
         for (DpnsTeps dpnTep : dpnsTeps) {
             if (!Objects.equals(dpnTep.getSourceDpnId(), srcDpnId)) {
-                for (RemoteDpns remoteDpns : nullToEmpty(dpnTep.getRemoteDpns())) {
+                for (RemoteDpns remoteDpns : dpnTep.nonnullRemoteDpns()) {
                     if (Objects.equals(remoteDpns.getDestinationDpnId(), srcDpnId)) {
                         // Remote the SrcDpnId from the remote List. Remove it from COnfig DS. 4
                         // This will be reflected in cache by the ClusteredDTCN. Not removing it here !

@@ -7,14 +7,10 @@
  */
 package org.opendaylight.genius.mdsalutil.interfaces.testutils;
 
-import static java.util.Collections.emptyList;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.InstructionsBuilder;
@@ -45,17 +41,11 @@ public class FlowAssertTestUtils {
         InstructionsBuilder instructionsBuilder = new InstructionsBuilder();
         if (flow.getInstructions() != null) {
             ArrayList<Instruction> instructionList =
-                new ArrayList<>(nullToEmpty(flow.getInstructions().getInstruction()));
+                new ArrayList<>(flow.getInstructions().nonnullInstruction());
             instructionList.sort(Comparator.comparing(o -> o.key().toString()));
             instructionsBuilder.setInstruction(instructionList);
             flowBuilder.setInstructions(instructionsBuilder.build());
         }
         return flowBuilder.build();
-    }
-
-    // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
-    @Nonnull
-    public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : emptyList();
     }
 }

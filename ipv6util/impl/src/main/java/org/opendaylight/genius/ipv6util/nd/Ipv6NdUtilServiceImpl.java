@@ -9,7 +9,6 @@ package org.opendaylight.genius.ipv6util.nd;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.opendaylight.genius.ipv6util.api.Ipv6Util.nullToEmpty;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -68,7 +67,7 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
         int localErrorCount = 0;
 
         targetIpv6Address = ndInput.getTargetIpAddress();
-        for (InterfaceAddress interfaceAddress : nullToEmpty(ndInput.getInterfaceAddress())) {
+        for (InterfaceAddress interfaceAddress : ndInput.nonnullInterfaceAddress()) {
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpv6Address = interfaceAddress.getSrcIpAddress();
