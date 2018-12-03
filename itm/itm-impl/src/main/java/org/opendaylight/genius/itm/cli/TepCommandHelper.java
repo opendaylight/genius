@@ -69,6 +69,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -754,6 +755,13 @@ public class TepCommandHelper {
                         tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
+    }
+
+    // show bridges for given dpnID
+    public void showBridges(BigInteger dpnId, Collection<OvsdbBridgeRef> bridges) {
+        bridges.forEach(ovsdbBridgeRef -> {
+            System.out.println(ovsdbBridgeRef);
+        });
     }
 
     // deletes from ADD-cache if it exists.
