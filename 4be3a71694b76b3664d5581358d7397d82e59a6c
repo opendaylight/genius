@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2edf6707_ddd645f4",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/VniUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-03T11:07:41Z",
+      "side": 1,
+      "message": "I think IdManagerService \u0026 DataBroker (but not NetworkConfig) are missing a @Reference here?  The SFT should normally catch this, and I wonder why it hasn\u0027t... I guess because you have not added this new bundle to the existing odl-genius feature as a dependency; why not do that as part of this change as well?",
+      "revId": "4be3a71694b76b3664d5581358d7397d82e59a6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff646f21_0472c2f6",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/VniUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-03T11:07:41Z",
+      "side": 1,
+      "message": "we are trying to move away from using null; if this is \"expected\", perhaps this should return an Optional\u003cIdPool\u003e ?  If it \"should never happen\" then perhaps it should throw an Exception instead?",
+      "revId": "4be3a71694b76b3664d5581358d7397d82e59a6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
