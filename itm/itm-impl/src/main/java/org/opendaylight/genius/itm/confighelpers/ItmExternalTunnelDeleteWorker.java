@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -135,7 +133,7 @@ public final class ItmExternalTunnelDeleteWorker {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 if (dpn.getTunnelEndPoints() != null) {
                     for (TunnelEndPoints srcTep : dpn.getTunnelEndPoints()) {
-                        for (TzMembership zone : nullToEmpty(srcTep.getTzMembership())) {
+                        for (TzMembership zone : srcTep.nonnullTzMembership()) {
                             deleteTunnelsInTransportZone(zone.getZoneName(), dpn, srcTep, cfgdhwVteps, dataBroker,
                                     writeTransaction);
                         }

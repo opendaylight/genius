@@ -11,7 +11,7 @@ package org.opendaylight.genius.itm.confighelpers;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
+import static org.opendaylight.yangtools.yang.binding.CodeHelpers.nonnull;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -185,7 +185,7 @@ public class ItmTunnelAggregationHelper {
     }
 
     private Bucket createBucket(String interfaceName, IfTunnel ifTunnel, int bucketId, int portNumber) {
-        List<ActionInfo> listActionInfo = nullToEmpty(interfaceManager.getInterfaceEgressActions(interfaceName));
+        List<ActionInfo> listActionInfo = nonnull(interfaceManager.getInterfaceEgressActions(interfaceName));
         if (listActionInfo.isEmpty()) {
             LOG.warn("MULTIPLE_VxLAN_TUNNELS: could not build Egress bucket for {}", interfaceName);
         }

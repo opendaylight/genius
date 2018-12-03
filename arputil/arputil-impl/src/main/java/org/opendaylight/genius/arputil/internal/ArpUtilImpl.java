@@ -10,7 +10,6 @@ package org.opendaylight.genius.arputil.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Collections.emptyList;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -28,8 +27,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -230,7 +227,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
 
         int localErrorCount = 0;
-        for (InterfaceAddress interfaceAddress : nullToEmpty(arpReqInput.getInterfaceAddress())) {
+        for (InterfaceAddress interfaceAddress : arpReqInput.nonnullInterfaceAddress()) {
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
@@ -562,11 +559,5 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
 
         return new BigInteger(nodeKeyString.substring(OPENFLOW_PFX.length()));
-    }
-
-    // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
-    @Nonnull
-    public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : emptyList();
     }
 }
