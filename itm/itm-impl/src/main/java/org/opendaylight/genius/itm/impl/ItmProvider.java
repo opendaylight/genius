@@ -16,6 +16,8 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +73,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -294,6 +297,15 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             }
         } else {
             LOG.debug("No tunnels available");
+        }
+    }
+
+    @Override
+    public void showBridges(Map<BigInteger, Set<OvsdbBridgeRef>> dpnIdBridgeRefsMap) {
+        if (!dpnIdBridgeRefsMap.isEmpty()) {
+            tepCommandHelper.showBridges(dpnIdBridgeRefsMap);
+        } else {
+            LOG.trace("No bridges available");
         }
     }
 
