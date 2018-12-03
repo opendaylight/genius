@@ -10,7 +10,6 @@ package org.opendaylight.genius.itm.confighelpers;
 import static java.util.Collections.singletonList;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -156,15 +155,15 @@ public final class ItmInternalTunnelAddWorker {
         DPNTEPsInfo dstDpn, IMdsalApiManager mdsalManager)
         throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.trace("Wiring up within Transport Zone for Dpns {}, {} " , srcDpn, dstDpn);
-        List<TunnelEndPoints> srcEndPts = srcDpn.getTunnelEndPoints();
-        List<TunnelEndPoints> dstEndPts = dstDpn.getTunnelEndPoints();
+        List<TunnelEndPoints> srcEndPts = srcDpn.nonnullTunnelEndPoints();
+        List<TunnelEndPoints> dstEndPts = dstDpn.nonnullTunnelEndPoints();
 
-        for (TunnelEndPoints srcte : nullToEmpty(srcEndPts)) {
-            for (TunnelEndPoints dstte : nullToEmpty(dstEndPts)) {
+        for (TunnelEndPoints srcte : srcEndPts) {
+            for (TunnelEndPoints dstte : dstEndPts) {
                 // Compare the Transport zones
                 if (!Objects.equals(srcDpn.getDPNID(), dstDpn.getDPNID())) {
-                    if (!ItmUtils.getIntersection(nullToEmpty(srcte.getTzMembership()),
-                            nullToEmpty(dstte.getTzMembership())).isEmpty()) {
+                    if (!ItmUtils.getIntersection(srcte.nonnullTzMembership(),
+                            dstte.nonnullTzMembership()).isEmpty()) {
                         // wire them up
                         wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
                                 mdsalManager);

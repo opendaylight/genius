@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.interfacemanager.IfmUtil.nullToEmpty;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
@@ -500,8 +499,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             RpcResult<GetEndpointIpForDpnOutput> ipForDpnOutputRpcResult = output.get();
             if (ipForDpnOutputRpcResult.isSuccessful()) {
-                List<IpAddress> localIps = nullToEmpty(ipForDpnOutputRpcResult.getResult().getLocalIps());
-                if (!localIps.isEmpty()) {
+                List<IpAddress> localIps = ipForDpnOutputRpcResult.getResult().getLocalIps();
+                if (localIps != null && !localIps.isEmpty()) {
                     return localIps.get(0).getIpv4Address().getValue();
                 }
             }
