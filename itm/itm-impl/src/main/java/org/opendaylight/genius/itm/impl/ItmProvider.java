@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -292,6 +293,15 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             }
         } else {
             LOG.debug("No tunnels available");
+        }
+    }
+
+    @Override
+    public void showBridges(Map dpnIdBridgeRefsMap) {
+        if (!dpnIdBridgeRefsMap.isEmpty()) {
+            tepCommandHelper.showBridges(dpnIdBridgeRefsMap);
+        } else {
+            LOG.warn("tep:show-bridges => No bridges available");
         }
     }
 
