@@ -11,6 +11,7 @@ import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -31,6 +32,8 @@ public interface IITMProvider {
     List<String> showTeps();
 
     void showState(Collection<StateTunnelList> tunnels);
+
+    void showBridges(Map dpnIdBridgeRefMap);
 
     void showCache(String cacheName);
 

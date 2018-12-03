@@ -190,4 +190,6 @@ public interface IInterfaceManager {
     long getLogicalTunnelSelectGroupId(int lportTag);
 
     boolean isItmDirectTunnelsEnabled();
+
+    Map getBridgeRefEntryMap();
 }

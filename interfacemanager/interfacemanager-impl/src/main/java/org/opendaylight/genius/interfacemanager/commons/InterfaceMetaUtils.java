@@ -12,6 +12,7 @@ import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CR
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -448,5 +449,9 @@ public final class InterfaceMetaUtils {
 
     public BridgeRefEntry getBridgeRefEntryFromCache(BigInteger dpnId) {
         return bridgeRefEntryMap.get(dpnId);
+    }
+
+    public Map getBridgeRefEntryMap() {
+        return Collections.unmodifiableMap(bridgeRefEntryMap);
     }
 }
