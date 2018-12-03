@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
@@ -71,6 +72,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -756,6 +759,22 @@ public class TepCommandHelper {
                         tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
+    }
+
+    // Show DPN-ID and Bridge mapping
+    public void showBridges(Map<BigInteger, Set<OvsdbBridgeRef>> dpnIdBridgeRefsMap) {
+        System.out.println(String.format("%-16s  %-16s  %-36s%n", "DPN-ID", "Bridge-Name", "Bridge-UUID")
+                           + "------------------------------------------------------------------------");
+        dpnIdBridgeRefsMap.forEach((dpnId, ovsdbBridgeRefs) -> {
+            System.out.print(String.format("%-16s  ", dpnId));
+            ovsdbBridgeRefs.stream().forEach(ovsdbBridgeRef -> {
+                String szBridgeId = ovsdbBridgeRef.getValue().firstKeyOf(Node.class).getNodeId().getValue();
+                String bridgeUUID = szBridgeId.substring(13, 49);
+                String bridgeName = szBridgeId.substring(57);
+                System.out.print(String.format("%-16s  %-36s%n%-18s", bridgeName, bridgeUUID, ""));
+            });
+            System.out.println("------------------------------------------------------");
+        });
     }
 
     // deletes from ADD-cache if it exists.
