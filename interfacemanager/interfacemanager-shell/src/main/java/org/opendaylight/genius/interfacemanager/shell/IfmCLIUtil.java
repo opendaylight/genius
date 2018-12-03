@@ -7,11 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
-import static org.opendaylight.genius.interfacemanager.IfmUtil.nullToEmpty;
-
 import java.math.BigInteger;
 import java.util.Formatter;
-
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceOpState;
@@ -215,7 +212,7 @@ public final class IfmCLIUtil {
             String remoteIp = UNSET;
             String localIp = UNSET;
             String key = UNSET;
-            for (Options portOption: nullToEmpty(port.getOptions())) {
+            for (Options portOption: port.nonnullOptions()) {
                 switch (portOption.getOption()) {
                     case "local_ip":
                         localIp = portOption.getValue();

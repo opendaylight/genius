@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.opendaylight.genius.idmanager.IdUtils.nullToEmpty;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
@@ -407,7 +406,7 @@ public class IdManagerTest {
     private IdPool getUpdatedActualParentPool() throws ReadFailedException {
         IdPool idPoolParentFromDS = singleTxdataBroker.syncRead(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(ID_POOL_NAME)).build());
-        List<ChildPools> childPool = nullToEmpty(idPoolParentFromDS.getChildPools());
+        List<ChildPools> childPool = idPoolParentFromDS.nonnullChildPools();
         List<ChildPools> updatedChildPool = childPool.stream()
                 .map(child -> new ChildPoolsBuilder(child).setLastAccessTime(0L).build()).collect(Collectors.toList());
         List<IdEntries> idEntries = idPoolParentFromDS.getIdEntries();

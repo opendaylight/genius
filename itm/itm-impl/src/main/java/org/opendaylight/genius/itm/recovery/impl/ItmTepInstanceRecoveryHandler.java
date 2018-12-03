@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.itm.recovery.impl;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -199,7 +197,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             return null;
         }
 
-        for (Subnets sub : nullToEmpty(transportZone.getSubnets())) {
+        for (Subnets sub : transportZone.nonnullSubnets()) {
             if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
                 LOG.error("Transport Zone {} subnet {} has no vteps", transportZone.getZoneName(), sub.getPrefix());
             }

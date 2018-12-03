@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.impl;
 
 import static java.util.Collections.emptyList;
+import static org.opendaylight.yangtools.yang.binding.CodeHelpers.nonnull;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -29,7 +30,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
@@ -625,7 +625,7 @@ public final class ItmUtils {
         for (VtepConfigSchema schema : emptyIfNull(existingSchemas)) {
             if (!StringUtils.equalsIgnoreCase(schemaName, schema.getSchemaName())
                     && StringUtils.equals(schema.getTransportZoneName(), tzone)) {
-                lstConflictingDpns = new ArrayList<>(getDpnIdList(nullToEmpty(schema.getDpnIds())));
+                lstConflictingDpns = new ArrayList<>(getDpnIdList(schema.nonnullDpnIds()));
                 lstConflictingDpns.retainAll(lstDpns);
                 if (!lstConflictingDpns.isEmpty()) {
                     break;
@@ -730,7 +730,7 @@ public final class ItmUtils {
             "DPN ID list for add | delete is null or empty in schema " + schemaName);
         VtepConfigSchema schema = itmProvider.getVtepConfigSchema(schemaName);
         Preconditions.checkArgument(schema != null, "Specified VTEP Schema [" + schemaName + "] doesn't exist!");
-        List<BigInteger> existingDpnIds = getDpnIdList(nullToEmpty(schema.getDpnIds()));
+        List<BigInteger> existingDpnIds = getDpnIdList(schema.nonnullDpnIds());
         if (isNotEmpty(lstDpnsForAdd)) {
             List<BigInteger> lstAlreadyExistingDpns = new ArrayList<>(existingDpnIds);
             lstAlreadyExistingDpns.retainAll(lstDpnsForAdd);
@@ -915,8 +915,9 @@ public final class ItmUtils {
                 }
             }
             if (hwVtepsExist) {
-                for (HwVtep hwVtep : nullToEmpty(hwVteps)) {
-                    for (HwVtep hwVtepOther : nullToEmpty(hwVteps)) {
+                List<HwVtep> nonnullHwVteps = nonnull(hwVteps);
+                for (HwVtep hwVtep : nonnullHwVteps) {
+                    for (HwVtep hwVtepOther : nonnullHwVteps) {
                         if (!hwVtep.getHwIp().equals(hwVtepOther.getHwIp())) {
                             tunnels.add(getExtTunnel(hwVtep.getNodeId(), hwVtepOther.getNodeId(),
                                     tunType, dataBroker));
@@ -1005,7 +1006,7 @@ public final class ItmUtils {
     public static List<TunnelEndPoints> getTEPsForDpn(BigInteger srcDpn, Collection<DPNTEPsInfo> dpnList) {
         for (DPNTEPsInfo dpn : dpnList) {
             if (Objects.equals(dpn.getDPNID(), srcDpn)) {
-                return new ArrayList<>(nullToEmpty(dpn.getTunnelEndPoints()));
+                return new ArrayList<>(dpn.nonnullTunnelEndPoints());
             }
         }
         return null;
@@ -1310,7 +1311,7 @@ public final class ItmUtils {
 
     public static List<TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts, List<TzMembership> zones) {
         LOG.trace(" RemoveTransportZoneMembership TEPs {}, Membership to be removed {} ", endPts, zones);
-        List<TzMembership> existingTzList = new ArrayList<>(nullToEmpty(endPts.getTzMembership())) ;
+        List<TzMembership> existingTzList = new ArrayList<>(endPts.nonnullTzMembership()) ;
         for (TzMembership membership : zones) {
             existingTzList.remove(new TzMembershipBuilder().setZoneName(membership.getZoneName()).build());
         }
@@ -1324,10 +1325,9 @@ public final class ItmUtils {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
         for (DPNTEPsInfo dstDpn : meshedDpnList) {
             if (dpnId.equals(dstDpn.getDPNID())) {
-                List<TunnelEndPoints> endPts = dstDpn.getTunnelEndPoints();
-                for (TunnelEndPoints tep : nullToEmpty(endPts)) {
+                for (TunnelEndPoints tep : dstDpn.nonnullTunnelEndPoints()) {
                     if (Objects.equals(tep.getIpAddress(), srcTep.getIpAddress())) {
-                        List<TzMembership> tzMemberships = nullToEmpty(tep.getTzMembership());
+                        List<TzMembership> tzMemberships = tep.nonnullTzMembership();
                         LOG.debug("Original Membership size {}", tzMemberships.size()) ;
                         return tzMemberships;
                     }
@@ -1494,9 +1494,4 @@ public final class ItmUtils {
         return tunType ;
     }
 
-    // TODO Replace this with mdsal's DataObjectUtils.nullToEmpty when upgrading to mdsal 3.0.2
-    @Nonnull
-    public static <T> List<T> nullToEmpty(final @Nullable List<T> input) {
-        return input != null ? input : emptyList();
-    }
 }

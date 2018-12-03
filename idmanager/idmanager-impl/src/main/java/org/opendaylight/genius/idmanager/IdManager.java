@@ -10,8 +10,8 @@ package org.opendaylight.genius.idmanager;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-import static org.opendaylight.genius.idmanager.IdUtils.nullToEmpty;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.yangtools.yang.binding.CodeHelpers.nonnull;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
@@ -36,7 +36,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -156,7 +155,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (!idPoolsOptional.isPresent()) {
             return;
         }
-        nullToEmpty(idPoolsOptional.get().getIdPool())
+        idPoolsOptional.get().nonnullIdPool()
                 .stream()
                 .filter(idPool -> idPool.getParentPoolName() != null
                         && !idPool.getParentPoolName().isEmpty()
@@ -175,7 +174,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         ReleasedIdsHolder releasedIdsHolder = idPool.getReleasedIdsHolder();
         ReleasedIdHolder releasedIdHolder = new ReleasedIdHolder(idUtils, releasedIdsHolder.getDelayedTimeSec());
         releasedIdHolder.setAvailableIdCount(releasedIdsHolder.getAvailableIdCount());
-        List<DelayedIdEntry> delayedIdEntryInCache = nullToEmpty(releasedIdsHolder.getDelayedIdEntries())
+        List<DelayedIdEntry> delayedIdEntryInCache = releasedIdsHolder.nonnullDelayedIdEntries()
                 .stream()
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
                         .getId(), delayedIdEntry.getReadyTimeSec()))
@@ -436,7 +435,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private long getIdsFromOtherChildPools(ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool)
             throws OperationFailedException {
-        List<ChildPools> childPoolsList = nullToEmpty(parentIdPool.getChildPools());
+        List<ChildPools> childPoolsList = parentIdPool.nonnullChildPools();
         // Sorting the child pools on last accessed time so that the pool that
         // was not accessed for a long time comes first.
         childPoolsList.sort(comparing(ChildPools::getLastAccessTime));
@@ -574,7 +573,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             return;
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
-        List<Long> idValuesList = nullToEmpty(existingIdEntry.getIdValue());
+        List<Long> idValuesList = nonnull(existingIdEntry.getIdValue());
         IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
         boolean isRemoved = idEntries.remove(existingIdEntry);
         LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);

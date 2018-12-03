@@ -7,11 +7,8 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -125,7 +121,7 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());
-        for (RemoteDpns remoteDpn : nullToEmpty(dpnTeps.getRemoteDpns())) {
+        for (RemoteDpns remoteDpn : dpnTeps.nonnullRemoteDpns()) {
             if (enabled != null) {
                 LOG.debug("toggleMonitoring: tunnelInterfaceName: {}, monitorEnable = {} ",
                     remoteDpn.getTunnelName(), enabled);
