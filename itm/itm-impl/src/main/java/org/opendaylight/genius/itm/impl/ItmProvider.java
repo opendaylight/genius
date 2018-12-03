@@ -66,6 +66,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
@@ -294,6 +295,15 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             }
         } else {
             LOG.debug("No tunnels available");
+        }
+    }
+
+    @Override
+    public void filterAndShowBridges(BigInteger dpnId, Collection<OvsBridgeRefEntry> ovsBridgeRefEntries) {
+        if (!ovsBridgeRefEntries.isEmpty()) {
+            tepCommandHelper.filterAndShowBridges(dpnId, ovsBridgeRefEntries);
+        } else {
+            LOG.warn("No Bridges available");
         }
     }
 

@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 
 public interface IITMProvider {
@@ -32,6 +33,8 @@ public interface IITMProvider {
     void showTeps(CommandSession session);
 
     void showState(Collection<StateTunnelList> tunnels);
+
+    void filterAndShowBridges(BigInteger dpnId, Collection<OvsBridgeRefEntry> ovsBridgeRefEntries);
 
     void showCache(String cacheName);
 
