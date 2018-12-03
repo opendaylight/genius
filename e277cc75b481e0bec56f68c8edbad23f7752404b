@@ -1,0 +1,113 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "570275a8_c87d3181",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-03T17:41:19Z",
+      "side": 1,
+      "message": "Logger Log\u003d LoggerFactory.getLogger(TepShowBridges.class)",
+      "revId": "e277cc75b481e0bec56f68c8edbad23f7752404b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33c0d7c0_d0a0bd0f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-03T17:41:19Z",
+      "side": 1,
+      "message": "you can inject ITMProvader instead of referencing it",
+      "range": {
+        "startLine": 27,
+        "startChar": 13,
+        "endLine": 27,
+        "endChar": 22
+      },
+      "revId": "e277cc75b481e0bec56f68c8edbad23f7752404b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d90eafaa_3265f1f0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-03T17:41:19Z",
+      "side": 1,
+      "message": "same as above inject the cache here",
+      "range": {
+        "startLine": 28,
+        "startChar": 13,
+        "endLine": 28,
+        "endChar": 22
+      },
+      "revId": "e277cc75b481e0bec56f68c8edbad23f7752404b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8429c349_668db0fd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-03T17:41:19Z",
+      "side": 1,
+      "message": "Use Logger to log any error/info.\ni.e Log.info(\"No Bridges available\");",
+      "range": {
+        "startLine": 43,
+        "startChar": 12,
+        "endLine": 43,
+        "endChar": 55
+      },
+      "revId": "e277cc75b481e0bec56f68c8edbad23f7752404b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6823c44e_ce19748b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-03T17:41:19Z",
+      "side": 1,
+      "message": "make it trace",
+      "range": {
+        "startLine": 306,
+        "startChar": 16,
+        "endLine": 306,
+        "endChar": 21
+      },
+      "revId": "e277cc75b481e0bec56f68c8edbad23f7752404b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
