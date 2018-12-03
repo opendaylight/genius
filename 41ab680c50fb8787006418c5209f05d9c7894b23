@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8dd408c4_4910e47b",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-03T09:22:30Z",
+      "side": 1,
+      "message": "Can you please specify a topic name for all the reviews belonging to this clean up task",
+      "revId": "41ab680c50fb8787006418c5209f05d9c7894b23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "94d7136c_292097a7",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-03T09:22:30Z",
+      "side": 1,
+      "message": "this leaf is repeated.Please remove",
+      "revId": "41ab680c50fb8787006418c5209f05d9c7894b23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0f3d74c8_a707764c",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-03T09:22:30Z",
+      "side": 1,
+      "message": "This should come as a part of OFTunnel implementation and not as a part of this clean up activity",
+      "revId": "41ab680c50fb8787006418c5209f05d9c7894b23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "12aeedcd_8df0766c",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-03T09:22:30Z",
+      "side": 1,
+      "message": "Please mention that the user can configure DC gateway ips using the device vtep list. The DC gateway configuration is not removed but unified with device vtep configuration",
+      "revId": "41ab680c50fb8787006418c5209f05d9c7894b23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ee0b494e_7527bdc2",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-03T09:22:30Z",
+      "side": 1,
+      "message": "Configuration impact is certainly there. New JSON needs to be provided. If possible, provide sample JSONs",
+      "revId": "41ab680c50fb8787006418c5209f05d9c7894b23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e653983a_b91ea8e1",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 8
+      },
+      "lineNbr": 254,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-03T09:22:30Z",
+      "side": 1,
+      "message": "Not a seamless upgrade. The JSON from previous ODL version to this new one, needs to be adapted to the new ITM Yang model.",
+      "revId": "41ab680c50fb8787006418c5209f05d9c7894b23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
