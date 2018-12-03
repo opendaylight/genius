@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
@@ -67,6 +68,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -752,6 +760,44 @@ public class TepCommandHelper {
                         tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
+    }
+
+    // Show DPN-ID and Bridge mapping
+    public void showBridges(Map<BigInteger, Set<OvsdbBridgeRef>> dpnIdBridgeRefsMap) {
+        Optional<NetworkTopology> networkTopology =
+                ItmUtils.read(LogicalDatastoreType.OPERATIONAL,
+                        InstanceIdentifier.builder(NetworkTopology.class).build(),
+                        dataBroker);
+        if (!networkTopology.isPresent()) {
+            LOG.error("NetworkTopology not found!");
+            return;
+        }
+        System.out.printf("%-16s  %-16s  %-36s%n", "DPN-ID", "Bridge-Name", "Bridge-UUID");
+        System.out.printf("------------------------------------------------------------------------%n");
+        dpnIdBridgeRefsMap.forEach((dpnId, ovsdbBridgeRefs) -> {
+            System.out.printf("%-16s  ", dpnId);
+            ovsdbBridgeRefs.stream().forEach(ovsdbBridgeRef -> {
+                TopologyId topologyId = ovsdbBridgeRef.getValue().firstKeyOf(Topology.class).getTopologyId();
+                NodeId bridgeId = ovsdbBridgeRef.getValue().firstKeyOf(Node.class).getNodeId();
+                Node bridge = networkTopology.get().getTopology().stream()
+                        .filter(topology -> topology.getTopologyId().equals(topologyId))
+                        .findFirst().flatMap(topology -> topology.getNode().stream()
+                                .filter(node -> node.getNodeId().equals(bridgeId))
+                                .findFirst()).get();
+                if (bridge != null) {
+                    OvsdbBridgeAugmentation brAttr = bridge.augmentation(OvsdbBridgeAugmentation.class);
+                    System.out.printf("%-16s  %-36s%n",
+                            brAttr.getBridgeName().getValue(), brAttr.getBridgeUuid().getValue());
+                    System.out.printf("%-18s", "");
+                } else {
+                    System.out.printf("%-16s  %-36s%n",
+                            "N/A", "N/A");
+                    System.out.printf("%-18s", "");
+                    LOG.error("Invalid Bridge Reference: Bridge Attributes not found!");
+                }
+            });
+            System.out.printf("------------------------------------------------------%n");
+        });
     }
 
     // deletes from ADD-cache if it exists.
