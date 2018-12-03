@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.itm.listeners;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import com.google.common.base.Optional;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -73,7 +71,7 @@ public class TunnelMonitorChangeListener
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         }
         if (transportZonesOptional.isPresent()) {
-            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
+            for (TransportZone tzone : transportZonesOptional.get().nonnullTransportZone()) {
                 LOG.debug("Remove - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModification.isEnabled(), monitorProtocol);
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -117,7 +115,7 @@ public class TunnelMonitorChangeListener
 
         }
         if (transportZonesOptional.isPresent()) {
-            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
+            for (TransportZone tzone : transportZonesOptional.get().nonnullTransportZone()) {
                 LOG.debug("Update - TunnelMonitorToggleWorker with tzone = {}, Enable = {}, MonitorProtocol = {}",
                         tzone.getZoneName(),dataObjectModificationAfter.isEnabled(), monitorProtocol);
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -148,7 +146,7 @@ public class TunnelMonitorChangeListener
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         }
         if (transportZonesOptional.isPresent()) {
-            for (TransportZone tzone : nullToEmpty(transportZonesOptional.get().getTransportZone())) {
+            for (TransportZone tzone : transportZonesOptional.get().nonnullTransportZone()) {
                 LOG.debug("Add: TunnelMonitorToggleWorker with tzone = {} monitoringEnabled {} and "
                         + "monitoringProtocol {}",tzone.getZoneName(),dataObjectModification.isEnabled(),
                         dataObjectModification.getMonitorProtocol());
