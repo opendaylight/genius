@@ -10,6 +10,8 @@ package org.opendaylight.genius.itm.cache;
 import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
@@ -20,6 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.o
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 @Singleton
+@Service(classes = OvsBridgeRefEntryCache.class) // only because TepShowBridges needs a @Reference to this
 public class OvsBridgeRefEntryCache extends DataObjectCache<BigInteger, OvsBridgeRefEntry> {
 
     @Inject
