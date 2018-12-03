@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
@@ -69,6 +70,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -754,6 +757,32 @@ public class TepCommandHelper {
                         tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
+    }
+
+    // Show DPN-ID and Bridge mapping
+    public void showBridges(Map<BigInteger, Set<OvsdbBridgeRef>> dpnIdBridgeRefsMap) {
+        System.out.printf("%-16s  %-16s  %-36s%n", "DPN-ID", "Bridge-Name", "Bridge-UUID");
+        System.out.printf("------------------------------------------------------------------------%n");
+        dpnIdBridgeRefsMap.forEach((k, v) -> {
+            System.out.printf("%-16s  ", k);
+            v.stream().forEach(i -> {
+                Optional<OvsdbBridgeAugmentation> brAttr =
+                        ItmUtils.read(LogicalDatastoreType.OPERATIONAL,
+                                (InstanceIdentifier<OvsdbBridgeAugmentation>) i.getValue(),
+                                dataBroker);
+                if (brAttr.isPresent()) {
+                    System.out.printf("%-16s  %-36s%n",
+                            brAttr.get().getBridgeName().getValue(), brAttr.get().getBridgeUuid().getValue());
+                    System.out.printf("%-18s", "");
+                } else {
+                    System.out.printf("%-16s  %-36s%n",
+                            "N/A", "N/A");
+                    System.out.printf("%-18s", "");
+                    LOG.error("Invalid Bridge Reference: Bridge Attributes not found!");
+                }
+            });
+            System.out.printf("------------------------------------------------------%n");
+        });
     }
 
     // deletes from ADD-cache if it exists.
