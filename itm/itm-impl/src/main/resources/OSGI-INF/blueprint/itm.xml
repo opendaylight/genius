@@ -76,6 +76,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             </action>
         </command>
         <command>
+            <action class="org.opendaylight.genius.itm.cli.TepShowBridges">
+                <property name="itmProvider" ref="itmProvider" />
+                <property name="ovsBridgeRefEntryCache" ref="ovsBridgeRefEntryCache" />
+            </action>
+        </command>
+        <command>
             <action class="org.opendaylight.genius.itm.cli.TepCommit">
                 <property name="itmProvider" ref="itmProvider" />
             </action>

@@ -69,6 +69,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -754,6 +756,28 @@ public class TepCommandHelper {
                         tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
+    }
+
+    // Show bridges for given DPN-ID
+    public void showBridges(BigInteger dpnId, Collection<OvsdbBridgeRef> bridges) {
+        System.out.printf("%-16s  ", dpnId);
+        bridges.stream().forEach(i -> {
+            Optional<OvsdbBridgeAugmentation> brAttr =
+                    ItmUtils.read(LogicalDatastoreType.OPERATIONAL,
+                            (InstanceIdentifier<OvsdbBridgeAugmentation>) i.getValue(),
+                            dataBroker);
+            if (brAttr.isPresent()) {
+                System.out.printf("%-16s  %-36s%n",
+                        brAttr.get().getBridgeName().getValue(), brAttr.get().getBridgeUuid().getValue());
+                System.out.printf("%-18s", "");
+            } else {
+                System.out.printf("%-16s  %-36s%n",
+                        "N/A", "N/A");
+                System.out.printf("%-18s", "");
+                LOG.error("Invalid Bridge Reference: Bridge Attributes not found!");
+            }
+        });
+        System.out.printf("------------------------------------------------------%n");
     }
 
     // deletes from ADD-cache if it exists.
