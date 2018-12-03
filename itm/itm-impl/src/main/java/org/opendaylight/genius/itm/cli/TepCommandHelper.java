@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -55,6 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeInternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
@@ -69,6 +71,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -754,6 +758,52 @@ public class TepCommandHelper {
                         tunnelInst.getDstInfo().getTepIp().stringValue(), tunnelState, tunnelType));
             }
         }
+    }
+
+    // Filter and Show Bridges
+    public void filterAndShowBridges(BigInteger dpnId, Collection<OvsBridgeRefEntry> ovsBridgeRefEntries) {
+        if (!ovsBridgeRefEntries.isEmpty()) {
+            System.out.printf("%-16s  %-16s  %-36s%n", "DPN-ID", "Bridge-Name", "Bridge-UUID");
+            System.out.printf("------------------------------------------------------------------------%n");
+            if (dpnId == null) {
+                ovsBridgeRefEntries.stream()
+                        .collect(Collectors.groupingBy((x) ->
+                                        x.getDpid(),
+                                Collectors.mapping((x) ->
+                                                x.getOvsBridgeReference(),
+                                        Collectors.toSet())))
+                        .forEach((k, v) -> showBridges(k, v));
+            } else {
+                showBridges(dpnId, ovsBridgeRefEntries.stream()
+                        .filter(i -> i.getDpid().equals(dpnId))
+                        .map(i -> i.getOvsBridgeReference())
+                        .collect(Collectors.toList()));
+            }
+        } else {
+            LOG.info("No Bridges available");
+        }
+    }
+
+    // Show DPN-ID and Bridge mapping
+    public void showBridges(BigInteger dpnId, Collection<OvsdbBridgeRef> bridges) {
+        System.out.printf("%-16s  ", dpnId);
+        bridges.stream().forEach(i -> {
+            Optional<OvsdbBridgeAugmentation> brAttr =
+                    ItmUtils.read(LogicalDatastoreType.OPERATIONAL,
+                            (InstanceIdentifier<OvsdbBridgeAugmentation>) i.getValue(),
+                            dataBroker);
+            if (brAttr.isPresent()) {
+                System.out.printf("%-16s  %-36s%n",
+                        brAttr.get().getBridgeName().getValue(), brAttr.get().getBridgeUuid().getValue());
+                System.out.printf("%-18s", "");
+            } else {
+                System.out.printf("%-16s  %-36s%n",
+                        "N/A", "N/A");
+                System.out.printf("%-18s", "");
+                LOG.error("Invalid Bridge Reference: Bridge Attributes not found!");
+            }
+        });
+        System.out.printf("------------------------------------------------------%n");
     }
 
     // deletes from ADD-cache if it exists.
