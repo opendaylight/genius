@@ -8,8 +8,6 @@
 
 package org.opendaylight.genius.itm.listeners;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import com.google.common.base.Optional;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -94,7 +92,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     public void remove(@Nonnull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
                        @Nonnull VtepConfigSchema vtepConfigSchema) {
         LOG.trace("Received notification for VTEP config schema [{}] deleted.", vtepConfigSchema.getSchemaName());
-        List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(nullToEmpty(vtepConfigSchema.getDpnIds()));
+        List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(vtepConfigSchema.nonnullDpnIds());
         if (!lstDpnIds.isEmpty()) {
             deleteVteps(vtepConfigSchema, lstDpnIds);
         }

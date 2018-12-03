@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.itm.impl;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -360,12 +358,12 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
             builder.setDpnIds(schema.getDpnIds());
         } else {*/
         if (lstDpnsForAdd != null && !lstDpnsForAdd.isEmpty()) {
-            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(nullToEmpty(schema.getDpnIds()));
+            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.nonnullDpnIds());
             originalDpnList.addAll(lstDpnsForAdd) ;
             builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList));
         }
         if (lstDpnsForDelete != null && !lstDpnsForDelete.isEmpty()) {
-            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(nullToEmpty(schema.getDpnIds()));
+            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.nonnullDpnIds());
             originalDpnList.removeAll(lstDpnsForDelete) ;
             builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList));
             // schema.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(ItmUtils.getDpnIdList(schema.getDpnIds())

@@ -12,8 +12,8 @@ import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUti
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorProfileId;
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorStateId;
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitoringInfoId;
-import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.nullToEmpty;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.yangtools.yang.binding.CodeHelpers.nonnull;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -116,6 +116,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.SendToController;
+import org.opendaylight.yangtools.yang.binding.CodeHelpers;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -574,7 +575,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         ListenableFuture<Void> updateFuture = Futures.transformAsync(readFuture, optEntry -> {
             if (optEntry.isPresent()) {
                 InterfaceMonitorEntry entry = optEntry.get();
-                List<Long> monitorIds1 = new ArrayList<>(nullToEmpty(entry.getMonitorIds()));
+                List<Long> monitorIds1 = new ArrayList<>(nonnull(entry.getMonitorIds()));
                 monitorIds1.add(monitorId);
                 InterfaceMonitorEntry newEntry1 = new InterfaceMonitorEntryBuilder()
                          .withKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds1).build();
@@ -1114,7 +1115,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         ListenableFuture<Void> updateFuture = Futures.transformAsync(readFuture, optEntry -> {
             if (optEntry.isPresent()) {
                 InterfaceMonitorEntry entry = optEntry.get();
-                List<Long> monitorIds = new ArrayList<>(nullToEmpty(entry.getMonitorIds()));
+                List<Long> monitorIds = new ArrayList<>(nonnull(entry.getMonitorIds()));
                 monitorIds.remove(monitorId);
                 if (monitorIds.isEmpty()) {
                     tx.delete(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName));

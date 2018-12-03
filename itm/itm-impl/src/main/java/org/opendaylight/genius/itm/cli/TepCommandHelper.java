@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.itm.cli;
 
-import static org.opendaylight.genius.itm.impl.ItmUtils.nullToEmpty;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import java.math.BigInteger;
@@ -636,7 +634,7 @@ public class TepCommandHelper {
                 Optional<TransportZones> transportZonesOptional =
                         ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
                 if (transportZonesOptional.isPresent()) {
-                    List<TransportZone> transportZones = nullToEmpty(transportZonesOptional.get().getTransportZone());
+                    List<TransportZone> transportZones = transportZonesOptional.get().nonnullTransportZone();
                     for (TransportZone tz : transportZones) {
                         if (tz.getSubnets() == null || tz.getSubnets().isEmpty()) {
                             continue;
