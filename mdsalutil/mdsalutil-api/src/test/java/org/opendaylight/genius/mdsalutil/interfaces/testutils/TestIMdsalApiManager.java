@@ -205,22 +205,22 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void syncInstallGroup(BigInteger dpId, Group group) {
+    public synchronized void syncInstallGroup(BigInteger dpId, Group group) {
         getOrNewGroups().add(group);
     }
 
     @Override
-    public void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
+    public synchronized void syncRemoveGroup(BigInteger dpId, Group groupEntity) {
         getOrNewGroups().remove(groupEntity);
     }
 
     @Override
-    public void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+    public synchronized void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
         getOrNewFlows().add(flowEntity);
     }
 
     @Override
-    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+    public synchronized void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
         getOrNewFlows().remove(flowEntity);
     }
 }
