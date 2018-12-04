@@ -35,8 +35,6 @@ class ExpectedTransportZoneObjects {
                         new VtepsBuilder >> [
                             dpnId = ItmTestConstants.INT_DEF_BR_DPID
                             ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NB_TZ_TEP_IP)
-                            portname = ITMConstants.DUMMY_PORT
-                            weight = 1
                             optionOfTunnel = false
                         ]
                     ]
@@ -59,8 +57,6 @@ class ExpectedTransportZoneObjects {
                             new VtepsBuilder >> [
                                 dpnId = ItmTestConstants.INT_DEF_BR_DPID
                                 ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.DEF_TZ_TEP_IP)
-                                portname = ITMConstants.DUMMY_PORT
-                                weight = 1
                                 optionOfTunnel = false
                             ]
                     ]

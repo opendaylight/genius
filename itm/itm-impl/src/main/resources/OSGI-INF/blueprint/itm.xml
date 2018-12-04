@@ -96,26 +96,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             </action>
         </command>
         <command>
-            <action class="org.opendaylight.genius.itm.cli.VtepSchemaAdd">
-                <property name="itmProvider" ref="itmProvider" />
-            </action>
-        </command>
-        <command>
-            <action class="org.opendaylight.genius.itm.cli.VtepSchemaShow">
-                <property name="itmProvider" ref="itmProvider" />
-            </action>
-        </command>
-        <command>
-            <action class="org.opendaylight.genius.itm.cli.VtepSchemaUpdate">
-                <property name="itmProvider" ref="itmProvider" />
-            </action>
-        </command>
-        <command>
-            <action class="org.opendaylight.genius.itm.cli.VtepSchemaDelete">
-                <property name="itmProvider" ref="itmProvider" />
-            </action>
-        </command>
-        <command>
             <action class="org.opendaylight.genius.itm.cli.TepEnableTunnelMonitor">
                 <property name="itmProvider" ref="itmProvider" />
             </action>

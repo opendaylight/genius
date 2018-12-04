@@ -27,10 +27,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,26 +93,7 @@ public final class OvsdbTepRemoveConfigHelper {
 
         // Remove TEP from (default transport-zone) OR (transport-zone already configured by Northbound)
 
-        // Get subnet list of corresponding TZ created from Northbound.
-        List<Subnets> subnetList = transportZone.getSubnets();
-
-        if (subnetList == null || subnetList.isEmpty()) {
-            LOG.trace("No subnet list in transport-zone. Nothing to do.");
-        } else {
-            IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
-
-            List<Vteps> vtepList = null;
-
-            // subnet list already exists case; check for dummy-subnet
-            for (Subnets subnet : subnetList) {
-                if (subnet.key().getPrefix().equals(subnetMaskObj)) {
-                    LOG.trace("Subnet exists in the subnet list of transport-zone {}.", tzName);
-                    // get vtep list of existing subnet
-                    vtepList = subnet.getVteps();
-                    break;
-                }
-            }
-
+            List<Vteps> vtepList = transportZone.getVteps();
             if (vtepList == null || vtepList.isEmpty()) {
                 //  case: vtep list does not exist or it has no elements
                 LOG.trace("No vtep list in subnet list of transport-zone. Nothing to do.");
@@ -134,37 +113,32 @@ public final class OvsdbTepRemoveConfigHelper {
                     // vtep is found, update it with tep-ip
                     LOG.trace("Remove TEP from vtep list in subnet list of transport-zone.");
                     dpnId = oldVtep.getDpnId();
-                    String portName = oldVtep.getPortname();
-                    removeVtepFromTZConfig(subnetMaskObj, tzName, dpnId, portName, wrTx);
+                    removeVtepFromTZConfig(tzName, dpnId, wrTx);
                 } else {
                     LOG.trace(
                         "TEP is not found in the vtep list in subnet list of transport-zone. Nothing to do.");
                 }
             }
-        }
     }
 
     /**
      * Removes the TEP from subnet list in the transport zone list
      * from ITM configuration Datastore by delete operation with write transaction.
      *
-     * @param subnetMaskObj subnet mask in IpPrefix object
      * @param dpnId bridge datapath ID in BigInteger
      * @param tzName transport zone name in string
-     * @param portName port name as a part of VtepsKey
      * @param wrTx WriteTransaction object
      */
-    private static void removeVtepFromTZConfig(IpPrefix subnetMaskObj, String tzName, BigInteger dpnId,
-        String portName, WriteTransaction wrTx) {
-        SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
-        VtepsKey vtepkey = new VtepsKey(dpnId, portName);
+    private static void removeVtepFromTZConfig(String tzName, BigInteger dpnId,
+        WriteTransaction wrTx) {
+        VtepsKey vtepkey = new VtepsKey(dpnId);
 
         InstanceIdentifier<Vteps> vtepPath = InstanceIdentifier.builder(TransportZones.class)
             .child(TransportZone.class, new TransportZoneKey(tzName))
-            .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
+            .child(Vteps.class, vtepkey).build();
 
-        LOG.trace("Removing TEP from (TZ: {} Subnet: {} DPN-ID: {}) inside ITM Config DS.",
-                tzName, subnetMaskObj, dpnId);
+        LOG.trace("Removing TEP from (TZ: {} DPN-ID: {}) inside ITM Config DS.",
+                tzName, dpnId);
         // remove vtep
         wrTx.delete(LogicalDatastoreType.CONFIGURATION, vtepPath);
     }

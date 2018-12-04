@@ -48,8 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.srm.types.rev180626.GeniusItmTep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -199,11 +198,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             return null;
         }
 
-        for (Subnets sub : nullToEmpty(transportZone.getSubnets())) {
-            if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
-                LOG.error("Transport Zone {} subnet {} has no vteps", transportZone.getZoneName(), sub.getPrefix());
-            }
-            for (Vteps vtep : sub.getVteps()) {
+            for (Vteps vtep : transportZone.getVteps()) {
                 if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
 
                     List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);
@@ -212,8 +207,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
 
                     //OfTunnels is false byDefault
                     TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(vtep.getDpnId(),
-                        IpAddressBuilder.getDefaultInstance(ipAddress), vtep.getPortname(), false, sub.getVlanId(),
-                            sub.getPrefix(), sub.getGatewayIp(), zones,transportZone.getTunnelType(),
+                        IpAddressBuilder.getDefaultInstance(ipAddress), false,
+                            transportZone.getTunnelType(),
                             itmConfig.getDefaultTunnelTos());
 
                     List<TunnelEndPoints> teps = new ArrayList<>();
@@ -221,7 +216,6 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                     return ItmUtils.createDPNTepInfo(vtep.getDpnId(), teps);
                 }
             }
-        }
         return null;
     }
 }

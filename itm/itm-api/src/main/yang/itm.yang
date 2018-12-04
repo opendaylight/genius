@@ -40,26 +40,10 @@ module itm {
                 mandatory true;
             }
 
-            list subnets {
-                key "prefix";
-                leaf prefix {
-                    type inet:ip-prefix;
-                }
-                leaf gateway-ip {
-                    type inet:ip-address;
-                }
-                leaf vlan-id {
-                    type uint16 {
-                        range "0..4094";
-                    }
-                }
                 list vteps {
-                    key "dpn-id portname";
+                    key "dpn-id";
                     leaf dpn-id {
                         type uint64;
-                    }
-                    leaf portname {
-                        type string;
                     }
                     leaf ip-address {
                         type inet:ip-address;
@@ -68,11 +52,6 @@ module itm {
                         description "Use flow based tunnels for remote-ip";
                         type boolean;
                         default false;
-                    }
-                    leaf weight {
-                        type uint16;
-                        default 1;
-                        description "Bucket weight if tunnel belongs to OF select group";
                     }
                     leaf option-tunnel-tos {
                         description "Value of ToS bits to be set on the encapsulating
@@ -98,7 +77,6 @@ module itm {
                          type inet:ip-address;
                      }
                  }
-             }
          }
     }
 

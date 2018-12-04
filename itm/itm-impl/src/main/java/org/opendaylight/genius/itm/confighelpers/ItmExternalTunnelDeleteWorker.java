@@ -33,9 +33,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,12 +154,8 @@ public final class ItmExternalTunnelDeleteWorker {
                     }
                 }
                 // do we need to check tunnel type?
-                LOG.trace("subnets under tz {} are {}", originalTZone.getZoneName(), originalTZone.getSubnets());
-                if (originalTZone.getSubnets() != null && !originalTZone.getSubnets().isEmpty()) {
-
-                    for (Subnets sub : originalTZone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
+                        if (originalTZone.getDeviceVteps() != null) {
+                            for (DeviceVteps hwVtepDS : originalTZone.getDeviceVteps()) {
                                 LOG.trace("hwtepDS exists {}", hwVtepDS);
                                 // do i need to check node-id?
                                 // for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
@@ -174,20 +169,17 @@ public final class ItmExternalTunnelDeleteWorker {
                                         hwVtepDS.getIpAddress(), originalTZone.getTunnelType(), writeTransaction);
 
                             }
-                        }
-                        if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
-                            for (Vteps vtep : sub.getVteps()) {
-                                // TOR-OVS
-                                LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
-                                String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(),
-                                        sub.getVlanId());
-                                deleteTrunksOvsTor(dataBroker, vtep.getDpnId(), parentIf,
-                                        vtep.getIpAddress(), hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
-                                        originalTZone.getTunnelType(), writeTransaction);
+                            if (originalTZone.getVteps() != null) {
+                                for (Vteps vtep : originalTZone.getVteps()) {
+                                    // TOR-OVS
+                                    LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
+                                    String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId());
+                                    deleteTrunksOvsTor(dataBroker, vtep.getDpnId(), parentIf,
+                                            vtep.getIpAddress(), hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
+                                            originalTZone.getTunnelType(), writeTransaction);
+                                }
                             }
                         }
-                    }
-                }
             }
         }
     }
@@ -201,10 +193,8 @@ public final class ItmExternalTunnelDeleteWorker {
         if (transportZoneOptional.isPresent()) {
             TransportZone tzone = transportZoneOptional.get();
             // do we need to check tunnel type?
-            if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                for (Subnets sub : tzone.getSubnets()) {
-                    if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                        for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
+                    if (tzone.getDeviceVteps() != null) {
+                        for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
                             // OVS-TOR-OVS
                             deleteTrunksOvsTor(dataBroker, dpn.getDPNID(), srcTep.getInterfaceName(),
                                     srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
@@ -212,8 +202,7 @@ public final class ItmExternalTunnelDeleteWorker {
 
                         }
                     }
-                }
-            }
+
             if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
                 for (HwVtep hwVtep : cfgdhwVteps) {
                     deleteTrunksOvsTor(dataBroker, dpn.getDPNID(), srcTep.getInterfaceName(),

@@ -55,7 +55,7 @@ public interface ITMConstants {
     String TUNNEL_STATE_UNKNOWN = "UNKNOWN";
     String DUMMY_PREFIX = "255.255.255.255/32";
     String DUMMY_GATEWAY_IP = "0.0.0.0";
-    String DUMMY_PORT = "";
+//    String DUMMY_PORT = "";
     int DUMMY_VLANID = 0;
     String DEFAULT_BRIDGE_NAME = "br-int";
     String BRIDGE_URI_PREFIX = "bridge";
