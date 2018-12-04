@@ -215,12 +215,12 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+    public synchronized void addFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
         getOrNewFlows().add(flowEntity);
     }
 
     @Override
-    public void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
+    public synchronized void removeFlowToTx(FlowEntity flowEntity, WriteTransaction tx) {
         getOrNewFlows().remove(flowEntity);
     }
 }
