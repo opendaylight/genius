@@ -91,21 +91,9 @@ module itm-state {
           /* Minimum 1 port. We may for now support only two ports */
           list tunnel-end-points {
               ordered-by user;
-              key "portname VLAN-ID ip-address tunnel-type"; /* Multiple tunnels on the same physical port but on different VLAN can be supported */
+              key "ip-address tunnel-type"; /* Multiple tunnels on the same physical port but on different VLAN can be supported */
 
-              leaf portname {
-                  type string;
-              }
-              leaf VLAN-ID {
-                  type uint16;
-              }
               leaf ip-address {
-                  type inet:ip-address;
-              }
-              leaf subnet-mask {
-                  type inet:ip-prefix;
-              }
-              leaf gw-ip-address {
                   type inet:ip-address;
               }
               list tz-membership {

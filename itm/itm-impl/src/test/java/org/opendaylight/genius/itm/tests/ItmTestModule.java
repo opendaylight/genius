@@ -28,7 +28,6 @@ import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
-import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
@@ -75,7 +74,6 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(TransportZoneListener.class);
         bind(OvsdbNodeListener.class);
         bind(InterfaceStateListener.class);
-        bind(VtepConfigSchemaListener.class);
         bind(TunnelMonitorChangeListener.class);
         bind(ItmTunnelEventListener.class);
 

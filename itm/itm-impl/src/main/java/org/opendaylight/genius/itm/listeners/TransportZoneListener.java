@@ -65,11 +65,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -296,7 +295,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (unVtepsLst != null && !unVtepsLst.isEmpty()) {
             for (UnknownVteps vteps : unVtepsLst) {
                 BigInteger dpnID = vteps.getDpnId();
-                String port = ITMConstants.DUMMY_PORT;
+//                String port = ITMConstants.DUMMY_PORT;
                 int vlanID = ITMConstants.DUMMY_VLANID;
                 IpPrefix ipPrefix = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX);
                 IpAddress gatewayIP = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP);
@@ -307,8 +306,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                     tos = itmConfig.getDefaultTunnelTos();
                 }
                 TunnelEndPoints tunnelEndPoints =
-                        ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, useOfTunnel,vlanID, ipPrefix,
-                                gatewayIP, zones, tunnelType, tos);
+                        ItmUtils.createTunnelEndPoints(dpnID, ipAddress, useOfTunnel,
+                                tunnelType, tos);
                 List<TunnelEndPoints> tunnelEndPointsList = mapNotHostedDPNToTunnelEndpt.get(dpnID);
                 if (tunnelEndPointsList != null) {
                     tunnelEndPointsList.add(tunnelEndPoints);
@@ -317,7 +316,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                     tunnelEndPointsList.add(tunnelEndPoints);
                     mapNotHostedDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
                 }
-                Vteps newVtep = createVtepFromUnKnownVteps(dpnID,ipAddress,ITMConstants.DUMMY_PORT);
+                Vteps newVtep = createVtepFromUnKnownVteps(dpnID,ipAddress);
                 vtepsList.add(newVtep);
 
                 // Enqueue 'remove TEP from TepsNotHosted list' operation
@@ -344,10 +343,10 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     }
 
-    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
-        VtepsKey vtepkey = new VtepsKey(dpnID, port);
+    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress) {
+        VtepsKey vtepkey = new VtepsKey(dpnID);
         Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).withKey(vtepkey)
-                .setPortname(port).build();
+                .build();
         return vtepObj;
     }
 
@@ -375,27 +374,19 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(transportZone.getZoneName());
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
         LOG.trace("Transport Zone_name: {}", transportZone.getZoneName());
-        List<Subnets> subnetsList = transportZone.getSubnets();
-        if (subnetsList != null) {
-            for (Subnets subnet : subnetsList) {
-                IpPrefix ipPrefix = subnet.getPrefix();
-                IpAddress gatewayIP = subnet.getGatewayIp();
-                int vlanID = subnet.getVlanId();
-                LOG.trace("IpPrefix: {}, gatewayIP: {}, vlanID: {} ", ipPrefix, gatewayIP, vlanID);
-                List<Vteps> vtepsList = subnet.getVteps();
+                List<Vteps> vtepsList = transportZone.getVteps();
                 if (vtepsList != null && !vtepsList.isEmpty()) {
                     for (Vteps vteps : vtepsList) {
                         BigInteger dpnID = vteps.getDpnId();
-                        String port = vteps.getPortname();
                         IpAddress ipAddress = vteps.getIpAddress();
                         boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOptionOfTunnel());
                         String tos = vteps.getOptionTunnelTos();
                         if (tos == null) {
                             tos = itmConfig.getDefaultTunnelTos();
                         }
-                        LOG.trace("DpnID: {}, port: {}, ipAddress: {}", dpnID, port, ipAddress);
-                        TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port,
-                            useOfTunnel, vlanID,  ipPrefix, gatewayIP, zones, tunnelType, tos);
+                        LOG.trace("DpnID: {}, port: {}, ipAddress: {}", dpnID, ipAddress);
+                        TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress,
+                            useOfTunnel, tunnelType, tos);
                         List<TunnelEndPoints> tunnelEndPointsList = mapDPNToTunnelEndpt.get(dpnID);
                         if (tunnelEndPointsList != null) {
                             LOG.trace("Existing DPN info list in the Map: {} ", dpnID);
@@ -408,8 +399,6 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                         }
                     }
                 }
-            }
-        }
 
         if (!mapDPNToTunnelEndpt.isEmpty()) {
             LOG.trace("List of dpns in the Map: {} ", mapDPNToTunnelEndpt.keySet());
@@ -427,29 +416,20 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         String zoneName = transportZone.getZoneName();
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
         LOG.trace("Transport Zone_name: {}", zoneName);
-        List<Subnets> subnetsList = transportZone.getSubnets();
-        if (subnetsList != null) {
-            for (Subnets subnet : subnetsList) {
-                IpPrefix ipPrefix = subnet.getPrefix();
-                IpAddress gatewayIP = subnet.getGatewayIp();
-                int vlanID = subnet.getVlanId();
-                LOG.trace("IpPrefix: {}, gatewayIP: {}, vlanID: {} ", ipPrefix, gatewayIP, vlanID);
-                List<DeviceVteps> deviceVtepsList = subnet.getDeviceVteps();
+                List<DeviceVteps> deviceVtepsList = transportZone.getDeviceVteps();
                 if (deviceVtepsList != null) {
                     for (DeviceVteps vteps : deviceVtepsList) {
                         String topologyId = vteps.getTopologyId();
                         String nodeId = vteps.getNodeId();
                         IpAddress ipAddress = vteps.getIpAddress();
                         LOG.trace("topo-id: {}, node-id: {}, ipAddress: {}", topologyId, nodeId, ipAddress);
-                        HwVtep hwVtep = ItmUtils.createHwVtepObject(topologyId, nodeId, ipAddress, ipPrefix, gatewayIP,
-                                vlanID, tunnelType, transportZone);
+                        HwVtep hwVtep = ItmUtils.createHwVtepObject(topologyId, nodeId, ipAddress,
+                                tunnelType, transportZone);
 
                         LOG.trace("Adding new HwVtep {} info ", hwVtep.getHwIp());
                         hwVtepsList.add(hwVtep);
                     }
                 }
-            }
-        }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
     }
