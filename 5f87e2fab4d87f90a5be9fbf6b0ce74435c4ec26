@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71a99b4c_ef6495ad",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-12-04T14:16:15Z",
+      "side": 1,
+      "message": "Again, the synchronisation needs to go on the methods which directly touch the structures which need to be protected, not on the public methods which build upon them.",
+      "revId": "5f87e2fab4d87f90a5be9fbf6b0ce74435c4ec26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
