@@ -33,6 +33,24 @@
       "revId": "4be3a71694b76b3664d5581358d7397d82e59a6c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8c3e4d64_cb32f164",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/VniUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-06T11:53:00Z",
+      "side": 1,
+      "message": "?",
+      "parentUuid": "ff646f21_0472c2f6",
+      "revId": "4be3a71694b76b3664d5581358d7397d82e59a6c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
