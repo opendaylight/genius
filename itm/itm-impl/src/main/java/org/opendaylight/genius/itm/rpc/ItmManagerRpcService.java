@@ -1026,7 +1026,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = failed();
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
-                        new DPNTEPsInfoKey(srcDpn)).build();
+                        new DPNTEPsInfoKey(srcDpn, "")).build();
         Optional<DPNTEPsInfo> tunnelInfo = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tunnelInfoId, dataBroker);
         if (!tunnelInfo.isPresent()) {
             LOG.error("tunnelInfo is not present");
