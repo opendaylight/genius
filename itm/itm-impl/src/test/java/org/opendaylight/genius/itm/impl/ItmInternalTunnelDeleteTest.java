@@ -192,9 +192,11 @@ public class ItmInternalTunnelDeleteTest {
                 .setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlan))).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
-        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
+        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlanNew))).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlanNew).setTunnelEndPoints(tunnelEndPointsListVxlanNew)
                 .build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).setMonitorProtocol(monitorProtocol)

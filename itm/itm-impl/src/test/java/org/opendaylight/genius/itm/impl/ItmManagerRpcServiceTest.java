@@ -257,7 +257,8 @@ public class ItmManagerRpcServiceTest {
                 .setSubnetMask(ipPrefixTest)
                 .withKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlan))).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();

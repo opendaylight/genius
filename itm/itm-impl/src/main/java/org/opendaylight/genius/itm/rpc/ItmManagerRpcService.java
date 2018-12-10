@@ -1024,9 +1024,14 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
         BigInteger srcDpn = input.getSourceDpid() ;
         RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = failed();
+        java.util.Optional<DPNTEPsInfo> optDpnTepsInfo = dpnTEPsInfoCache.getDPNTepFromDPNId(srcDpn);
+        String transZones = "";
+        if (optDpnTepsInfo.isPresent()) {
+            transZones = optDpnTepsInfo.get().getTzones();
+        }
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
-                        new DPNTEPsInfoKey(srcDpn)).build();
+                        new DPNTEPsInfoKey(srcDpn, transZones)).build();
         Optional<DPNTEPsInfo> tunnelInfo = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tunnelInfoId, dataBroker);
         if (!tunnelInfo.isPresent()) {
             LOG.error("tunnelInfo is not present");

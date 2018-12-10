@@ -318,13 +318,16 @@ public final class ItmUtils {
         return IetfInetUtil.INSTANCE.inetAddressFor(ip);
     }
 
-    public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(BigInteger dpIdKey) {
-        return InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, new DPNTEPsInfoKey(dpIdKey))
-                .build();
+    public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(BigInteger dpIdKey, String transZones) {
+        return InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, new DPNTEPsInfoKey(dpIdKey,
+                transZones)).build();
     }
 
     public static DPNTEPsInfo createDPNTepInfo(BigInteger dpId, List<TunnelEndPoints> endpoints) {
-        return new DPNTEPsInfoBuilder().withKey(new DPNTEPsInfoKey(dpId)).setTunnelEndPoints(endpoints).build();
+        String transZones = getTZonesFromTunnelEndPointList(endpoints);
+
+        return new DPNTEPsInfoBuilder().withKey(new DPNTEPsInfoKey(dpId, transZones))
+                .setTunnelEndPoints(endpoints).build();
     }
 
     public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName,
@@ -1145,6 +1148,18 @@ public final class ItmUtils {
         zones.add(new TzMembershipBuilder().setZoneName(zoneName).build());
         return zones;
     }
+
+    public static String getTZonesFromTunnelEndPointList(List<TunnelEndPoints> tepsList) {
+        StringBuilder transZones = new StringBuilder();
+        for (TunnelEndPoints endPoints : tepsList) {
+            List<TzMembership> zones = endPoints.getTzMembership();
+            for (TzMembership zone: zones) {
+                transZones.append(zone);
+            }
+        }
+        return transZones.toString();
+    }
+
 
     /**
      * Gets the transport zone in TepsNotHosted list in the Operational Datastore, based on transport zone name.

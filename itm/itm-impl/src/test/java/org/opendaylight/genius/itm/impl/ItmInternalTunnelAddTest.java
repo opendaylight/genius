@@ -214,13 +214,17 @@ public class ItmInternalTunnelAddTest {
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
         tunnelEndPointsListGre.add(tunnelEndPointsGre);
         tunnelEndPointsListGreNew.add(tunnelEndPointsGreNew);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlan)))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
-        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
+        dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlanNew))).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlanNew).build();
-        dpntePsInfoGre = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
+        dpntePsInfoGre = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListGre)))
                 .setTunnelEndPoints(tunnelEndPointsListGre).build();
-        dpntePsInfoGreNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
+        dpntePsInfoGreNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListGreNew))).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListGreNew).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true)
                 .setMonitorProtocol(monitorProtocol).build();
@@ -237,6 +241,7 @@ public class ItmInternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
         doReturn(true).when(mockReadWriteTx).cancel();
     }
+
 
     @Test
     public void testBuild_all_tunnels_VXLANtype() {

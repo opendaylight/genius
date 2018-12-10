@@ -197,7 +197,8 @@ public class ItmManagerRpcServiceTest {
                         ItmTestConstants.TUNNEL_TYPE_VXLAN,ItmTestConstants.VLAN_ID)).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(ItmTestConstants.DP_ID_1)
-                .withKey(new DPNTEPsInfoKey(ItmTestConstants.DP_ID_1)).setUp(true)
+                .withKey(new DPNTEPsInfoKey(ItmTestConstants.DP_ID_1,
+                        ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlan))).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();

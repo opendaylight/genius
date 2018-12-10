@@ -233,7 +233,8 @@ public class ItmExternalTunnelDeleteTest {
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
                 .setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId2).setUp(true).withKey(new DPNTEPsInfoKey(dpId2))
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId2).setUp(true).withKey(new DPNTEPsInfoKey(dpId2,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlan)))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         dpnTepsList.add(dpntePsInfoVxlan);
         cfgdHwVtepsList.add(hwVtep1);
