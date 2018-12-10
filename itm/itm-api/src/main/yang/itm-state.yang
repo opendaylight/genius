@@ -78,10 +78,12 @@ module itm-state {
 
       container dpn-endpoints {
           list DPN-TEPs-info {
-          key "DPN-ID";
-
+          key "DPN-ID tzones";
           leaf DPN-ID {
               type uint64;
+          }
+          leaf tzones {
+              type string;
           }
           leaf up {
               type boolean;

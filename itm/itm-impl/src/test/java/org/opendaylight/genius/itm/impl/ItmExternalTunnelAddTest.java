@@ -212,7 +212,8 @@ public class ItmExternalTunnelAddTest {
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
                 .setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
-        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
+        dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1,
+                ItmUtils.getTZonesFromTunnelEndPointList(tunnelEndPointsListVxlan)))
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
         deviceVteps1 = new DeviceVtepsBuilder().setIpAddress(ipAddress1).withKey(new DeviceVtepsKey(ipAddress1,
                 source)).setNodeId(source).setTopologyId("hwvtep:1").build();
