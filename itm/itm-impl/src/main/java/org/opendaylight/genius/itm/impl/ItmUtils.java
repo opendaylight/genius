@@ -843,27 +843,31 @@ public final class ItmUtils {
 
     @Nonnull
     public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
-        List<String> tunnelList = new ArrayList<>();
         Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
+        List<String> tunnelList = new ArrayList<>();
         if (internalInterfaces.isEmpty()) {
-            updateTunnelsCache(dataBroker);
-            internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
+            tunnelList = getAllInternalTunnlInterfacesFromDS(dataBroker);
         }
-        LOG.debug("ItmUtils.getTunnelList Cache Internal Interfaces size: {} ", internalInterfaces.size());
-        tunnelList.addAll(internalInterfaces);
-        LOG.trace("ItmUtils.getTunnelList Internal: {}", tunnelList);
+        else {
+            LOG.debug("Internal Interfaces from Cache size: {}", internalInterfaces.size());
+            tunnelList.addAll(internalInterfaces);
+        }
+        LOG.trace("ItmUtils Internal TunnelList: {}", tunnelList);
         return tunnelList;
     }
 
     public static List<InternalTunnel> getInternalTunnelsFromCache(DataBroker dataBroker) {
-        List<InternalTunnel> tunnelList = new ArrayList<>();
         Collection<InternalTunnel> internalInterfaces = ITM_CACHE.getAllInternalTunnel();
+        LOG.trace("getInternalTunnelsFromCache - List of InternalTunnels in the Cache: {} ", internalInterfaces);
+        List<InternalTunnel> tunnelList = new ArrayList<>();
         if (internalInterfaces.isEmpty()) {
-            updateTunnelsCache(dataBroker);
-            internalInterfaces = ITM_CACHE.getAllInternalTunnel();
+            LOG.trace("ItmUtils.getInternalTunnelsFromCache invoking getAllInternalTunnlInterfacesFromDS");
+            tunnelList = getAllInternalTunnels(dataBroker);
         }
-        LOG.debug("Number of Internal Tunnel Interfaces in cache: {} ", internalInterfaces.size());
-        tunnelList.addAll(internalInterfaces);
+        else {
+            LOG.debug("No. of Internal Tunnel Interfaces in cache: {} ", internalInterfaces.size());
+            tunnelList.addAll(internalInterfaces);
+        }
         LOG.trace("List of Internal Tunnels: {}", tunnelList);
         return tunnelList;
     }
@@ -1027,19 +1031,50 @@ public final class ItmUtils {
 
     public static InternalTunnel getInternalTunnel(String interfaceName, DataBroker broker) {
         InternalTunnel internalTunnel = ITM_CACHE.getInternalTunnel(interfaceName);
+        LOG.trace("ItmUtils getInternalTunnel List of InternalTunnels in the Cache {} ", internalTunnel);
         if (internalTunnel == null) {
-            updateTunnelsCache(broker);
-            internalTunnel = ITM_CACHE.getInternalTunnel(interfaceName);
+            internalTunnel = getInternalTunnelFromDS(interfaceName, broker);
         }
         return internalTunnel;
+    }
+
+    private static List<String> getAllInternalTunnlInterfacesFromDS(DataBroker broker) {
+        List<String> tunnelList = new ArrayList<>();
+        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
+        if (internalTunnels != null) {
+            for (InternalTunnel tunnel : internalTunnels) {
+                List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
+                if (tunnelInterfaceNames != null) {
+                    for (String tunnelInterfaceName : tunnelInterfaceNames) {
+                        tunnelList.add(tunnelInterfaceName);
+                    }
+                }
+            }
+        }
+        LOG.debug("Internal Tunnel Interfaces list: {} ", tunnelList);
+        return tunnelList;
+    }
+
+    private static ExternalTunnel getExternalTunnelFromDS(String interfaceName, DataBroker broker) {
+        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
+        if (externalTunnels !=  null) {
+            for (ExternalTunnel tunnel : externalTunnels) {
+                String tunnelInterfaceName = tunnel.getTunnelInterfaceName();
+                if (tunnelInterfaceName != null && (tunnelInterfaceName.equalsIgnoreCase(interfaceName))) {
+                    LOG.trace("getExternalTunnelFromDS tunnelInterfaceName: {} ", tunnelInterfaceName);
+                    return tunnel;
+                }
+            }
+        }
+        return null;
     }
 
     public static ExternalTunnel getExternalTunnel(String interfaceName, DataBroker broker) {
         ExternalTunnel externalTunnel = ITM_CACHE.getExternalTunnel(interfaceName);
         if (externalTunnel == null) {
-            updateTunnelsCache(broker);
-            externalTunnel = ITM_CACHE.getExternalTunnel(interfaceName);
+            externalTunnel = getExternalTunnelFromDS(interfaceName, broker);
         }
+        LOG.trace("getExternalTunnel externalTunnel: {} ", externalTunnel);
         return externalTunnel;
     }
 
@@ -1082,18 +1117,6 @@ public final class ItmUtils {
             key = new StateTunnelListKey(iface.getName());
         }
         return key;
-    }
-
-    private static void updateTunnelsCache(DataBroker broker) {
-        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
-        for (InternalTunnel tunnel : internalTunnels) {
-            LOG.debug("Updating Internal Tunnel - {} to Cache ", tunnel.getTunnelInterfaceNames()) ;
-            ITM_CACHE.addInternalTunnel(tunnel);
-        }
-        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
-        for (ExternalTunnel tunnel : externalTunnels) {
-            ITM_CACHE.addExternalTunnel(tunnel);
-        }
     }
 
     public static Interface getInterface(
@@ -1357,9 +1380,8 @@ public final class ItmUtils {
         ExternalTunnel externalTunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
         if (internalTunnel == null && externalTunnel == null) {
             // both not present in cache. let us update and try again.
-            ItmUtils.updateTunnelsCache(broker);
-            internalTunnel = ItmUtils.ITM_CACHE.getInternalTunnel(name);
-            externalTunnel = ItmUtils.ITM_CACHE.getExternalTunnel(name);
+            internalTunnel = getInternalTunnel(name, broker);
+            externalTunnel = getExternalTunnel(name, broker);
         }
         if (internalTunnel != null) {
             srcInfoBuilder.setTepDeviceId(internalTunnel.getSourceDPN().toString())
@@ -1406,6 +1428,24 @@ public final class ItmUtils {
                         new InternalTunnelKey(destDpn, srcDpn, type));
         //TODO: need to be replaced by cached copy
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, pathLogicTunnel, dataBroker);
+    }
+
+    private static InternalTunnel getInternalTunnelFromDS(String interfaceName, DataBroker broker) {
+        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
+        if (internalTunnels != null) {
+            for (InternalTunnel tunnel : internalTunnels) {
+                List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
+                if (tunnelInterfaceNames != null) {
+                    for (String tunnelInterfaceName : tunnelInterfaceNames) {
+                        if (tunnelInterfaceName.equalsIgnoreCase(interfaceName)) {
+                            LOG.trace("ItmUtils getInternalTunnelFromDS {} ", tunnelInterfaceName);
+                            return tunnel;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public static boolean isTunnelAggregationUsed(Class<? extends TunnelTypeBase> tunType) {
