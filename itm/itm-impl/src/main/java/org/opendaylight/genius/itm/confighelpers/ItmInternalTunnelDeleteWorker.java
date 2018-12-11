@@ -249,6 +249,8 @@ public class ItmInternalTunnelDeleteWorker {
                     }
                 }
             }
+            List<String> tunnelListCache = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+            LOG.debug("List of tunnel interfaces in the cache after deletion: {}" , tunnelListCache);
         }));
     }
 
