@@ -1087,6 +1087,7 @@ public final class ItmUtils {
     private static void updateTunnelsCache(DataBroker broker) {
         List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
         for (InternalTunnel tunnel : internalTunnels) {
+            LOG.debug("Updating Internal Tunnel - {} to Cache ", tunnel.getTunnelInterfaceNames()) ;
             ITM_CACHE.addInternalTunnel(tunnel);
         }
         List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);

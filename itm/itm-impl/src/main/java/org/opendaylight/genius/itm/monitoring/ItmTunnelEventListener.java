@@ -78,7 +78,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     @Override
     public void remove(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
                        @Nonnull StateTunnelList stateTunnelList) {
-        LOG.trace("Tunnel Interface added: {}", stateTunnelList.getTunnelInterfaceName());
+        LOG.trace("Tunnel Interface remove: {}", stateTunnelList.getTunnelInterfaceName());
         ItmTunnelRemoveAlarmWorker itmTunnelRemoveAlarmWorker = new ItmTunnelRemoveAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
         jobCoordinator.enqueueJob(ITMConstants.ITM_ALARM, itmTunnelRemoveAlarmWorker);

@@ -68,6 +68,7 @@ public class ItmCache {
         List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
         if (tunnelInterfaceNames != null) {
             for (String tunnelInterfaceName : tunnelInterfaceNames) {
+                LOG.debug("Adding Internal Tunnel - {} to Cache ", tunnelInterfaceName) ;
                 this.internalTunnels.put(tunnelInterfaceName, tunnel);
             }
         }
