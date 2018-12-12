@@ -12,13 +12,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.genius</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>0.4.4-SNAPSHOT</version>
+    <version>0.4.5-SNAPSHOT</version>
     <relativePath>../../commons/binding-parent</relativePath>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>mdsalutil-api</artifactId>
-  <version>0.4.4-SNAPSHOT</version>
+  <version>0.4.5-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
@@ -75,7 +75,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.serviceutils</groupId>
       <artifactId>tools-api</artifactId>
-      <version>0.1.4-SNAPSHOT</version>
+      <version>0.1.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>

@@ -18,7 +18,7 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-rest</artifactId>
-  <version>0.4.4-SNAPSHOT</version>
+  <version>0.4.5-SNAPSHOT</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: REST</name>
 
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.opendaylight.netconf</groupId>
       <artifactId>odl-restconf</artifactId>
-      <version>1.7.4-SNAPSHOT</version>
+      <version>1.7.5-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
