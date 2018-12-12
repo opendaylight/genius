@@ -16,6 +16,24 @@
       "revId": "5f87e2fab4d87f90a5be9fbf6b0ce74435c4ec26",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb32e5f6_5cc774d1",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-12T13:17:15Z",
+      "side": 1,
+      "message": "But https://git.opendaylight.org/gerrit/#/c/78412/ from Kiran and https://lists.opendaylight.org/pipermail/netvirt-dev/2018-December/007662.html says this helps...\n\nIt is now (merged, by others) done it differently in oxygen https://git.opendaylight.org/gerrit/#/c/78412/ and fluorine https://git.opendaylight.org/gerrit/#/c/78413/ and IMHO the primary short term urgent goal here should be to align master to that.\n\nIf anyone wants to subsequently improve upon this, then go for it.",
+      "parentUuid": "71a99b4c_ef6495ad",
+      "revId": "5f87e2fab4d87f90a5be9fbf6b0ce74435c4ec26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
