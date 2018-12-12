@@ -303,7 +303,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                 }
 
                 long timetaken = System.currentTimeMillis() - start;
-                LOG.info("Total taken ##time = {}ms for resourceList of size {} for resourceType {}",
+                LOG.debug("Total taken ##time = {}ms for resourceList of size {} for resourceType {}",
                         timetaken, resList.size(), resourceType);
 
             } catch (InterruptedException e) {
