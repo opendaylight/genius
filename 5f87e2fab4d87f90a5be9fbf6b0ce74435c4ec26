@@ -34,6 +34,24 @@
       "revId": "5f87e2fab4d87f90a5be9fbf6b0ce74435c4ec26",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8aedf0b4_3ab72f5a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 214,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-12-12T13:41:32Z",
+      "side": 1,
+      "message": "I’m not disputing that this helps. I’m saying that the fix isn’t quite correct: as it currently stands, it fixes existing synchronisation issues at the edge, but not at the core, and makes it easy to re-introduce synchronisation issues in the future.",
+      "parentUuid": "cb32e5f6_5cc774d1",
+      "revId": "5f87e2fab4d87f90a5be9fbf6b0ce74435c4ec26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
