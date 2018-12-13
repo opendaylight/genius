@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f2b09a1f_30af0a3a",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 278,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-13T15:09:44Z",
+      "side": 1,
+      "message": "I\u0027m curious why you moved the \u0027synchronized\u0027 for getFlows() from public to the private method above, but here you kept it?  The storeFlow() is synchronized, so you could remove this, just for consistency with getFlows?",
+      "revId": "92ec716d7016741807b07563a9e4d6331441763b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b5238289_7e5c1e96",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/interfaces/testutils/TestIMdsalApiManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-13T15:09:44Z",
+      "side": 1,
+      "message": "and here, similar to above, this just delegates to installFlow() which delegates to storeFlow().",
+      "revId": "92ec716d7016741807b07563a9e4d6331441763b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
