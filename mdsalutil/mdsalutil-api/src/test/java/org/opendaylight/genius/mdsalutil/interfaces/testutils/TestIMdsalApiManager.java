@@ -78,11 +78,11 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
      * Prefer the {@link #assertFlows(Iterable)} instead of using this and checking yourself.
      * @return immutable copy of list of flows
      */
-    public synchronized List<FlowEntity> getFlows() {
-        return ImmutableList.copyOf(retrieveFlows());
+    public List<FlowEntity> getFlows() {
+        return retrieveFlows();
     }
 
-    public synchronized void assertFlows(Iterable<FlowEntity> expectedFlows) {
+    public void assertFlows(Iterable<FlowEntity> expectedFlows) {
         checkNonEmptyFlows(expectedFlows);
         Collection<FlowEntity> nonNullFlows = retrieveFlows();
         if (!Iterables.isEmpty(expectedFlows)) {
@@ -94,7 +94,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
 
-    private synchronized void checkNonEmptyFlows(Iterable<FlowEntity> expectedFlows) {
+    private void checkNonEmptyFlows(Iterable<FlowEntity> expectedFlows) {
         if (!Iterables.isEmpty(expectedFlows)) {
             assertTrue("No Flows created (bean wiring may be broken?)", !retrieveFlows().isEmpty());
         }
@@ -102,7 +102,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     // ComparisonException doesn’t allow us to keep the cause (which we don’t care about anyway)
     @SuppressWarnings("checkstyle:AvoidHidingCauseException")
-    public synchronized void assertFlowsInAnyOrder(Iterable<FlowEntity> expectedFlows) {
+    public void assertFlowsInAnyOrder(Iterable<FlowEntity> expectedFlows) {
         checkNonEmptyFlows(expectedFlows);
         // TODO Support Iterable <-> List directly within XtendBeanGenerator
 
@@ -181,32 +181,32 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         return sortedFlows;
     }
 
-    private void storeFlow(FlowEntity flowEntity) {
+    private synchronized void storeFlow(FlowEntity flowEntity) {
         flows.put(new InternalFlowKey(flowEntity.getDpnId(), flowEntity.getFlowId(), flowEntity.getTableId()),
             flowEntity);
     }
 
-    private Collection<FlowEntity> retrieveFlows() {
-        return flows.values();
+    private synchronized List<FlowEntity> retrieveFlows() {
+        return ImmutableList.copyOf(flows.values());
     }
 
-    private void deleteFlow(BigInteger dpId, String flowId, short tableId) {
+    private synchronized void deleteFlow(BigInteger dpId, String flowId, short tableId) {
         flows.remove(new InternalFlowKey(dpId, flowId, tableId));
     }
 
-    private void storeGroup(BigInteger dpnId, Group group) {
+    private synchronized void storeGroup(BigInteger dpnId, Group group) {
         groups.put(new InternalGroupKey(dpnId, group.key().getGroupId().getValue()), group);
     }
 
-    private void deleteGroup(BigInteger dpnId, long groupId) {
+    private synchronized void deleteGroup(BigInteger dpnId, long groupId) {
         groups.remove(new InternalGroupKey(dpnId, groupId));
     }
 
-    private void storeBucket(BigInteger dpnId, long groupId, Bucket bucket) {
+    private synchronized void storeBucket(BigInteger dpnId, long groupId, Bucket bucket) {
         buckets.put(new InternalBucketKey(dpnId, groupId, bucket.getBucketId().getValue()), bucket);
     }
 
-    private void deleteBucket(BigInteger dpnId, long groupId, long bucketId) {
+    private synchronized void deleteBucket(BigInteger dpnId, long groupId, long bucketId) {
         buckets.remove(new InternalBucketKey(dpnId, groupId, bucketId));
     }
 
@@ -275,13 +275,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
         storeFlow(flowEntity);
         return Futures.immediateCheckedFuture(null);
     }
 
     @Override
-    public synchronized CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
             FlowEntity flowEntity) {
         // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         return installFlow(flowEntity);
