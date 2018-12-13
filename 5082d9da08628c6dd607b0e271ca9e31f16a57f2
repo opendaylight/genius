@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1496bb8e_ef8318e9",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/impl/VniUtilsImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-13T11:00:40Z",
+      "side": 1,
+      "message": "I think you could simplify ;) this to just be:\n\n    return SingleTransactionDataBroker.syncReadOptional(...);",
+      "revId": "5082d9da08628c6dd607b0e271ca9e31f16a57f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a1771b00_6b2fa28a",
+        "filename": "networkutils/networkutils/src/main/resources/OSGI-INF/blueprint/networkutils.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-13T11:00:40Z",
+      "side": 1,
+      "message": "curious that you had to use \u003codl:rpc-service here; did @Reference not work?  The the IdManager is probably not registered as a @Service - but we easily could register it.  Anyway, it seems to work now, great!",
+      "revId": "5082d9da08628c6dd607b0e271ca9e31f16a57f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
