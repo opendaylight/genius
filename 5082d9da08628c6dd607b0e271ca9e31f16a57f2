@@ -33,6 +33,24 @@
       "revId": "5082d9da08628c6dd607b0e271ca9e31f16a57f2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c0ae9e84_a6df2af3",
+        "filename": "networkutils/networkutils/src/main/resources/OSGI-INF/blueprint/networkutils.xml",
+        "patchSetId": 7
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-12-13T11:07:42Z",
+      "side": 1,
+      "message": "@Reference did not work. can we do rpc-service also with @Reference? idmanager\u0027s blueprint xml says \u003codl:rpc-implementation ref\u003d\"idManager\" /\u003e , may be I have to do @service as you suggested, will take it up in separate patch?",
+      "parentUuid": "a1771b00_6b2fa28a",
+      "revId": "5082d9da08628c6dd607b0e271ca9e31f16a57f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
