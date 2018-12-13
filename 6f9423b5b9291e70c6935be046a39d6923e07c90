@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "58f2a60b_2ae74215",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-13T15:19:26Z",
+      "side": 1,
+      "message": "as this has some cost, perhaps you would like to do:\n\n    if (LOG.isDebugEnabled()) {\n        List\u003cString\u003e tunnelListCache \u003d ItmUtils.getInternalTunnelListFromCache(dataBroker);\n        LOG.debug(\"List of tunnel interfaces in the cache after deletion: {}\", tunnelListCache):",
+      "revId": "6f9423b5b9291e70c6935be046a39d6923e07c90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a737b04f_eff77272",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 853,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-13T15:19:26Z",
+      "side": 1,
+      "message": "why copy these internalInterfaces into this tunnelList? Can\u0027t you simply use and return the internalInterfaces directly?  Or does it have to be immutable? Then it\u0027s clearler to use Guava ImmutableList.  Or does it have to be mutable copy because the caller has to be able to change it?",
+      "revId": "6f9423b5b9291e70c6935be046a39d6923e07c90",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
