@@ -41,7 +41,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL -->
     <module>artifacts</module>
     <module>fcapsmanager</module>
     <module>fcapsapplication</module>
-    <module>resourcemanager</module>
     <module>ipv6util</module>
   </modules>
 
