@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "b8bb1c9f_0ea02ec9",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/impl/VniUtilsImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2018-12-13T11:14:04Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1496bb8e_ef8318e9",
+      "revId": "5082d9da08628c6dd607b0e271ca9e31f16a57f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a1771b00_6b2fa28a",
         "filename": "networkutils/networkutils/src/main/resources/OSGI-INF/blueprint/networkutils.xml",
         "patchSetId": 7
