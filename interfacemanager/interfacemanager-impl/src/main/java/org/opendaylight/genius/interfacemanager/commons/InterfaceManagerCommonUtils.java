@@ -206,7 +206,6 @@ public final class InterfaceManagerCommonUtils {
         Optional<Interface> interfaceOptional = tx.read(LogicalDatastoreType.CONFIGURATION, interfaceId).checkedGet();
         if (interfaceOptional.isPresent()) {
             iface = interfaceOptional.get();
-            interfaceConfigMap.put(iface.getName(), iface);
         }
         return iface;
     }
@@ -252,9 +251,6 @@ public final class InterfaceManagerCommonUtils {
             return ifState;
         }
         ifState = getInterfaceStateFromOperDS(tx, interfaceName);
-        if (ifState != null) {
-            interfaceStateMap.put(ifState.getName(), ifState);
-        }
         return ifState;
     }
 
