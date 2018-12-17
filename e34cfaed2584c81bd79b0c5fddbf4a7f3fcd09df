@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06aa5695_2192ee56",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/api/IITMProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-17T08:48:00Z",
+      "side": 1,
+      "message": "keep it showBridge",
+      "range": {
+        "startLine": 37,
+        "startChar": 9,
+        "endLine": 37,
+        "endChar": 29
+      },
+      "revId": "e34cfaed2584c81bd79b0c5fddbf4a7f3fcd09df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "185680f8_fa9dc6cd",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 779,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-17T08:48:00Z",
+      "side": 1,
+      "message": "use proper object name instead of i or j (i.e ovsdb)",
+      "range": {
+        "startLine": 779,
+        "startChar": 33,
+        "endLine": 779,
+        "endChar": 34
+      },
+      "revId": "e34cfaed2584c81bd79b0c5fddbf4a7f3fcd09df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "35f78ca9_a5fa65a1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-17T08:48:00Z",
+      "side": 1,
+      "message": "LOG.trace",
+      "range": {
+        "startLine": 70,
+        "startChar": 20,
+        "endLine": 70,
+        "endChar": 24
+      },
+      "revId": "e34cfaed2584c81bd79b0c5fddbf4a7f3fcd09df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "77bcc102_40c9f4da",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2018-12-17T08:48:00Z",
+      "side": 1,
+      "message": "LOG.trace",
+      "range": {
+        "startLine": 306,
+        "startChar": 16,
+        "endLine": 306,
+        "endChar": 20
+      },
+      "revId": "e34cfaed2584c81bd79b0c5fddbf4a7f3fcd09df",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
