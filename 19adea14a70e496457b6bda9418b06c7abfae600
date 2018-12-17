@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "68d370cf_dc72cb6e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 859,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2018-12-17T10:37:56Z",
+      "side": 1,
+      "message": "This API will be behave inconsistently. Here the API is specific to reading from cache. On a cache miss you are reading from DS and returning it as is but not updating the cache. So what is returned and what will be in the cache can be different.\n\nWhy not use the DataObject cache ?",
+      "revId": "19adea14a70e496457b6bda9418b06c7abfae600",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
