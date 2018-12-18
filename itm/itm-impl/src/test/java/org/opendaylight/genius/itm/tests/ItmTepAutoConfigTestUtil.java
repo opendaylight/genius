@@ -7,16 +7,13 @@
  */
 package org.opendaylight.genius.itm.tests;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
@@ -34,30 +31,15 @@ public final class ItmTepAutoConfigTestUtil {
     private ItmTepAutoConfigTestUtil() { }
 
     /* transaction methods */
-    public static CheckedFuture<Void, TransactionCommitFailedException> addTep(String tepIp,
-        String strDpnId, String tzName, boolean ofTunnel, DataBroker dataBroker) {
-        WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
-
-        // add TEP received from southbound OVSDB into ITM config DS.
-        OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel,
-            dataBroker, wrTx);
-        return wrTx.submit();
+    public static ListenableFuture<Void> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,
+                                                DataBroker dataBroker, ManagedNewTransactionRunner tx) {
+        return
+            OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel, dataBroker, tx).get(0);
     }
 
-    public static CheckedFuture<Void, TransactionCommitFailedException> deleteTep(String tepIp,
-        String strDpnId, String tzName, DataBroker dataBroker) {
-        WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
-
-        // remove TEP received from southbound OVSDB from ITM config DS.
-        OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, wrTx);
-        return wrTx.submit();
-    }
-
-    public static CheckedFuture<Void, TransactionCommitFailedException> writeItmConfig(
-        InstanceIdentifier<ItmConfig> iid, ItmConfig itmConfig, DataBroker dataBroker) {
-        WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.put(LogicalDatastoreType.CONFIGURATION, iid, itmConfig);
-        return tx.submit();
+    public static ListenableFuture<Void> deleteTep(String tepIp, String strDpnId, String tzName,
+                                                   DataBroker dataBroker, ManagedNewTransactionRunner tx) {
+        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, tx).get(0);
     }
 
     /* utility methods */
