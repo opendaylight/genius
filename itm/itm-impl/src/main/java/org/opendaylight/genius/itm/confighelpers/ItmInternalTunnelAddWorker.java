@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -316,10 +315,9 @@ public final class ItmInternalTunnelAddWorker {
         }
     }
 
-    private void createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte,
-            BigInteger srcDpnId, BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType,
-            String trunkInterfaceName, String parentInterfaceName) throws ExecutionException, InterruptedException,
-            OperationFailedException {
+    private void createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
+        BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
+        String parentInterfaceName) throws ExecutionException, InterruptedException, OperationFailedException {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         IpAddress gwyIpAddress = Objects.equals(srcte.getSubnetMask(), dstte.getSubnetMask())
                 ? gatewayIpObj : srcte.getGwIpAddress() ;
@@ -366,21 +364,20 @@ public final class ItmInternalTunnelAddWorker {
         ITMBatchingUtils.update(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    private List<ListenableFuture<Void>> addTunnelConfiguration(Interface iface) throws ReadFailedException {
+    private void addTunnelConfiguration(Interface iface) throws ReadFailedException {
         // ITM Direct Tunnels This transaction is not being used -- CHECK
-        final WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
         if (parentRefs == null) {
             LOG.warn("ParentRefs for interface: {} Not Found. Creation of Tunnel OF-Port not supported"
                     + " when dpid not provided.", iface.getName());
-            return Collections.emptyList();
+            return;
         }
 
         BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
         if (dpId == null) {
             LOG.warn("dpid for interface: {} Not Found. No DPID provided. Creation of OF-Port not supported.",
                     iface.getName());
-            return Collections.emptyList();
+            return;
         }
 
         LOG.info("adding tunnel configuration for {}", iface.getName());
@@ -397,7 +394,6 @@ public final class ItmInternalTunnelAddWorker {
                             .getOvsBridgeReference().getValue();
             addPortToBridge(bridgeIid, iface, iface.getName());
         }
-        return Collections.singletonList(transaction.submit());
     }
 
     private void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {

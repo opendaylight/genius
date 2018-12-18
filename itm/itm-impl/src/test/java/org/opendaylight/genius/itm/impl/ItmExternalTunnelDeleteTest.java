@@ -19,7 +19,9 @@ import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +31,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -142,6 +146,8 @@ public class ItmExternalTunnelDeleteTest {
     @Mock ReadOnlyTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
+    @Mock TypedWriteTransaction<Datastore.Configuration> typedWriteTransaction;
+    @Mock TypedReadWriteTransaction<Datastore.Configuration> typedReadWriteTransaction;
 
     @Before
     public void setUp() {
@@ -259,10 +265,9 @@ public class ItmExternalTunnelDeleteTest {
 
     @Test
     public void testDeleteTunnels() {
-        ItmExternalTunnelDeleteWorker.deleteTunnels(dataBroker, dpnTepsList,ipAddress1,tunnelType1);
-
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,path);
+        ItmExternalTunnelDeleteWorker.deleteTunnels(dpnTepsList, ipAddress1, tunnelType1, typedWriteTransaction);
+        verify(typedWriteTransaction).delete(trunkIdentifier);
+        verify(typedWriteTransaction).delete(path);
     }
 
     @Test
@@ -292,30 +297,32 @@ public class ItmExternalTunnelDeleteTest {
         Optional<TransportZone> optionalTransportZone = Optional.of(transportZone);
         Optional<ExternalTunnel> exTunnels = Optional.of(externalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,transportZoneIdentifier);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                externalTunnelIdentifier1);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                externalTunnelIdentifier2);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                externalTunnelIdentifier3);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                externalTunnelIdentifier4);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                externalTunnelIdentifier5);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,
-                externalTunnelIdentifier6);
-
-        ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(dataBroker, dpnTepsList, cfgdHwVtepsList,
-                transportZone);
-
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,trunkIdentifier);
-        verify(mockWriteTx, times(2)).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier1);
-        verify(mockWriteTx, times(2)).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier2);
-        verify(mockWriteTx, times(2)).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier3);
-        verify(mockWriteTx, times(2)).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier4);
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier5);
-        verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifier6);
+        doReturn(Futures.immediateCheckedFuture(optionalTransportZone))
+                .when(typedReadWriteTransaction).read(transportZoneIdentifier);
+        doReturn(Futures.immediateCheckedFuture(exTunnels))
+                .when(typedReadWriteTransaction).read(externalTunnelIdentifier1);
+        doReturn(Futures.immediateCheckedFuture(exTunnels))
+                .when(typedReadWriteTransaction).read(externalTunnelIdentifier2);
+        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+                .read(externalTunnelIdentifier3);
+        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+                .read(externalTunnelIdentifier4);
+        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+                .read(externalTunnelIdentifier5);
+        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+                .read(externalTunnelIdentifier6);
+        try {
+            ItmExternalTunnelDeleteWorker
+                    .deleteHwVtepsTunnels(dpnTepsList, cfgdHwVtepsList, transportZone, typedReadWriteTransaction);
+            verify(typedReadWriteTransaction).delete(trunkIdentifier);
+            verify(typedReadWriteTransaction, times(2)).delete(externalTunnelIdentifier1);
+            verify(typedReadWriteTransaction, times(2)).delete(externalTunnelIdentifier2);
+            verify(typedReadWriteTransaction, times(2)).delete(externalTunnelIdentifier3);
+            verify(typedReadWriteTransaction, times(2)).delete(externalTunnelIdentifier4);
+            verify(typedReadWriteTransaction).delete(externalTunnelIdentifier5);
+            verify(typedReadWriteTransaction).delete(externalTunnelIdentifier6);
+        } catch (ExecutionException | InterruptedException e) {
+            TestCase.fail();// Fail in case of an exception
+        }
     }
 }
