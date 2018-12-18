@@ -46,6 +46,30 @@
       "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2675e681_19d393c7",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-18T18:08:28Z",
+      "side": 1,
+      "message": "I finally looked into this now (sorry for the delay), so: \n\nWhile it\u0027s tempting to use get() here to replicate the original, it\u0027s important to note that this is a Job.  I believe the original idea of jobs was that this can (should) be async, and the JobCoordinator (JC) makes \"other thread waiting for the same lock object will see the updated data\", if there are other jobs for the same key.  The caller who enqueued the job anyway won\u0027t really wait for the data to be written even the way it currently is.  Therefore, instead of adding get() I\u0027ve make sure to return the future and make call() pass it back to the JC, which would log failures and, hopefully (not really verified), use this to sequence subsequent entries with the same key.\n\nAs for \" the lock needs to be handled inside the transaction lambda\", assuming this refers to the idUtils.lock in line 81 and the idUtils.unlock in line 101, I had a look, but... that opens a whole different can of worms - that LockManagerService is an RPC - that\u0027s the (old \u0026 unresolved) discussion re. how to propagate TXs accross RPCs.  My take on that is that perhaps something like LM simply does not have to be modeled as a YANG RPC, but can be a \"normal\" in-process Java service interface which we can @Reference from the OSGi Registry? Then we would add a TypedReadWriteTransaction argument to it, and be done.  However, that sounds more like something for a future follow-up change than anything to still mix in here... If anyone wants to have a go at doing something like that, I\u0027d be happy to review it! ;)",
+      "parentUuid": "be04e0dc_e1d0eb9f",
+      "range": {
+        "startLine": 99,
+        "startChar": 14,
+        "endLine": 99,
+        "endChar": 19
+      },
+      "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
