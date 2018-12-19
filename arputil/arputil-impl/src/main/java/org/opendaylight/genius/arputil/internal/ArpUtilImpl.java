@@ -32,6 +32,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
@@ -123,11 +125,12 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
 
     @Inject
-    public ArpUtilImpl(final DataBroker dataBroker, final PacketProcessingService packetProcessingService,
-                       final NotificationPublishService notificationPublishService,
-                       final NotificationService notificationService,
+    public ArpUtilImpl(@Reference final DataBroker dataBroker,
+                       final PacketProcessingService packetProcessingService,
+                       @Reference final NotificationPublishService notificationPublishService,
+                       @Reference final NotificationService notificationService,
                        final OdlInterfaceRpcService odlInterfaceRpcService,
-                       final MetricProvider metricProvider) {
+                       @Reference  final MetricProvider metricProvider) {
         this.dataBroker = dataBroker;
         this.packetProcessingService = packetProcessingService;
         this.notificationPublishService = notificationPublishService;
