@@ -176,8 +176,8 @@ public class AlivenessMonitorTest {
         AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry = new AlivenessProtocolHandlerRegistryImpl();
         alivenessMonitor = new AlivenessMonitor(dataBroker, idManager,
                 notificationPublishService, alivenessProtocolHandlerRegistry);
-        arpHandler = new AlivenessProtocolHandlerARP(dataBroker,
-                interfaceManager, alivenessProtocolHandlerRegistry, arpService);
+        arpHandler = new AlivenessProtocolHandlerARP(dataBroker, alivenessProtocolHandlerRegistry,
+                interfaceManager, arpService);
         lldpHandler = new AlivenessProtocolHandlerLLDP(dataBroker,
                 alivenessProtocolHandlerRegistry, packetProcessingService);
         mockId = 1L;

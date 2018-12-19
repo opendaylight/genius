@@ -20,6 +20,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -49,6 +53,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Tr
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandler<LLDP> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerLLDP.class);
@@ -59,9 +64,10 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
     private final PacketProcessingService packetProcessingService;
     private final AtomicInteger packetId = new AtomicInteger(0);
 
+    @Inject
     public AlivenessProtocolHandlerLLDP(
-            final DataBroker dataBroker,
-            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
+            @Reference final DataBroker dataBroker,
+            @Reference final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final PacketProcessingService packetProcessingService) {
         super(dataBroker, alivenessProtocolHandlerRegistry, MonitorProtocolType.Lldp);
         this.packetProcessingService = packetProcessingService;
