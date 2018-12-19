@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -134,7 +136,8 @@ public final class InterfaceManagerCommonUtils {
 
     @Inject
     public InterfaceManagerCommonUtils(DataBroker dataBroker, IMdsalApiManager mdsalApiManager,
-            IdManagerService idManager, InterfaceMetaUtils interfaceMetaUtils, BatchingUtils batchingUtils) {
+                                       @Reference IdManagerService idManager,
+                                       InterfaceMetaUtils interfaceMetaUtils, BatchingUtils batchingUtils) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.mdsalApiManager = mdsalApiManager;

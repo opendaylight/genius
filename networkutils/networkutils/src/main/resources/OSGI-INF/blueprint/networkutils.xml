@@ -7,6 +7,4 @@
                             default-config-file-name="genius-network-config.xml"
                             update-strategy="none">
   </odl:clustered-app-config>
-  <odl:rpc-service id="idManagerService"
-                   interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService" />
 </blueprint>

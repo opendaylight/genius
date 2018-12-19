@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -172,7 +174,8 @@ public final class DirectTunnelUtils {
     private final EntityOwnershipUtils entityOwnershipUtils;
 
     @Inject
-    public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager,
+    public DirectTunnelUtils(@Reference final IdManagerService idManagerService,
+                             final IMdsalApiManager mdsalApiManager,
                              final EntityOwnershipUtils entityOwnershipUtils) {
         this.idManagerService = idManagerService;
         this.mdsalApiManager = mdsalApiManager;

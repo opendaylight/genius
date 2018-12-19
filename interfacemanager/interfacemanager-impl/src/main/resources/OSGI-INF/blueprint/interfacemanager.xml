@@ -13,9 +13,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <odl:rpc-service id="alivenessMonitorService"
                      interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService" />
 
-    <odl:rpc-service id="idManagerService"
-                     interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService" />
-
     <odl:rpc-service id="opendaylightDirectStatisticsService"
                      interface="org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.OpendaylightDirectStatisticsService" />
 

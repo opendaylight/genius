@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -92,7 +93,8 @@ public class InterfaceInventoryStateListener
     private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
-    public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
+    public InterfaceInventoryStateListener(final DataBroker dataBroker,
+                                           @Reference final IdManagerService idManagerService,
                                            final EntityOwnershipUtils entityOwnershipUtils,
                                            final JobCoordinator coordinator,
                                            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,

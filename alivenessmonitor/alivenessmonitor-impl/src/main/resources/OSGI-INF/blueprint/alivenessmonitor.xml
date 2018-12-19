@@ -21,8 +21,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <service ref="alivenessProtocolHandlerRegistryImpl"
            interface="org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry" />
 
-  <odl:rpc-service id="idManagerService"
-                   interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService" />
   <odl:rpc-service id="packetProcessingService"
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService" />
 

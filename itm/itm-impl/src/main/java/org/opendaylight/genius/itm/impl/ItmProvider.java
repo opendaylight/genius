@@ -23,6 +23,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -106,7 +108,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
-                       IdManagerService idManagerService,
+                       @Reference IdManagerService idManagerService,
                        InterfaceStateListener interfaceStateListener,
                        ItmManagerRpcService itmManagerRpcService,
                        ItmTunnelEventListener itmTunnelEventListener,

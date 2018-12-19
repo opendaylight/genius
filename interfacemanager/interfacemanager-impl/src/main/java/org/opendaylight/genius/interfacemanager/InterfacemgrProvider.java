@@ -24,6 +24,8 @@ import java.util.concurrent.Future;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
@@ -121,10 +123,12 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Inject
     public InterfacemgrProvider(final DataBroker dataBroker, final EntityOwnershipService entityOwnershipService,
-            final IdManagerService idManager, final InterfaceManagerRpcService interfaceManagerRpcService,
-            final JobCoordinator coordinator, final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig,
-            final IfmDiagStatusProvider ifmStatusProvider) {
+                                @Reference final IdManagerService idManager,
+                                final InterfaceManagerRpcService interfaceManagerRpcService,
+                                final JobCoordinator coordinator,
+                                final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                final InterfaceMetaUtils interfaceMetaUtils, final IfmConfig ifmConfig,
+                                final IfmDiagStatusProvider ifmStatusProvider) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipService = entityOwnershipService;

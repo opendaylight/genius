@@ -43,6 +43,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
@@ -180,7 +182,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     private final ConcurrentMap<String, Semaphore> lockMap = new ConcurrentHashMap<>();
 
     @Inject
-    public AlivenessMonitor(final DataBroker dataBroker, final IdManagerService idManager,
+    public AlivenessMonitor(final DataBroker dataBroker, @Reference final IdManagerService idManager,
             final NotificationPublishService notificationPublishService,
             AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,

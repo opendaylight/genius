@@ -56,7 +56,7 @@ public class VniUtilsImpl implements VniUtils {
     private final NetworkConfig networkConfig;
 
     @Inject
-    public VniUtilsImpl(NetworkConfig networkConfig, IdManagerService idManagerService,
+    public VniUtilsImpl(NetworkConfig networkConfig, @Reference IdManagerService idManagerService,
                     @Reference DataBroker dataBroker) throws ReadFailedException {
         this.idManagerService = idManagerService;
         this.dataBroker = dataBroker;
