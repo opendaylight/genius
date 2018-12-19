@@ -22,6 +22,8 @@ import java.util.concurrent.Semaphore;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import jdk.nashorn.internal.ir.annotations.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -75,7 +77,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     private final AlivenessMonitor alivenessMonitor;
 
     @Inject
-    public HwVtepTunnelsStateHandler(final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
+    public HwVtepTunnelsStateHandler(@Reference final DataBroker dataBroker, final AlivenessMonitor alivenessMonitor,
                                      final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class)
