@@ -21,6 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil;
@@ -48,6 +52,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandler<ARP> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerARP.class);
@@ -55,10 +60,11 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     private final OdlArputilService arpService;
     private final OdlInterfaceRpcService interfaceManager;
 
+    @Inject
     public AlivenessProtocolHandlerARP(
-            final DataBroker dataBroker,
+            @Reference final DataBroker dataBroker,
+            @Reference final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final OdlInterfaceRpcService interfaceManager,
-            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
             final OdlArputilService arpService) {
         super(dataBroker, alivenessProtocolHandlerRegistry, MonitorProtocolType.Arp);
         this.interfaceManager = interfaceManager;

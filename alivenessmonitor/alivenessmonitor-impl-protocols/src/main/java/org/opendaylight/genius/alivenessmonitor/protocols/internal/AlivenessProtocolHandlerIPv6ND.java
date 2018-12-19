@@ -21,6 +21,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
@@ -52,6 +56,7 @@ import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHandler<Packet> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerIPv6ND.class);
@@ -59,9 +64,12 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
     private final Ipv6NdUtilService ndService;
     private final OdlInterfaceRpcService interfaceManager;
 
-    public AlivenessProtocolHandlerIPv6ND(final DataBroker dataBroker, final OdlInterfaceRpcService interfaceManager,
-            final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry,
-            final Ipv6NdUtilService ndService) {
+    @Inject
+    public AlivenessProtocolHandlerIPv6ND(@Reference final DataBroker dataBroker,
+                                          @Reference final AlivenessProtocolHandlerRegistry
+                                                      alivenessProtocolHandlerRegistry,
+                                          final OdlInterfaceRpcService interfaceManager,
+                                          final Ipv6NdUtilService ndService) {
         super(dataBroker, alivenessProtocolHandlerRegistry, MonitorProtocolType.Ipv6Nd);
         this.interfaceManager = interfaceManager;
         this.ndService = ndService;
