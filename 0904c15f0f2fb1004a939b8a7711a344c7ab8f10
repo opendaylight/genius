@@ -99,6 +99,23 @@
     },
     {
       "key": {
+        "uuid": "afb9e5ce_aad4127c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2018-12-19T09:56:49Z",
+      "side": 1,
+      "message": "introduce newline after this",
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3b61df40_e70ebf11",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
         "patchSetId": 10
