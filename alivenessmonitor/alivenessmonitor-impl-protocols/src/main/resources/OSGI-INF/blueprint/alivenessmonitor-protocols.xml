@@ -10,27 +10,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
            xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
            odl:use-default-for-reference-types="true">
 
-  <bean id="alivenessProtocolHandlerARP" class="org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerARP">
-      <argument ref="dataBroker"/>
-      <argument ref="odlInterfaceRpcService"/>
-      <argument ref="alivenessProtocolHandlerRegistry"/>
-      <argument ref="odlArputilService"/>
-  </bean>
-  <bean id="alivenessProtocolHandlerLLDP" class="org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerLLDP">
-      <argument ref="dataBroker"/>
-      <argument ref="alivenessProtocolHandlerRegistry"/>
-      <argument ref="packetProcessingService"/>
-  </bean>
-  <bean id="alivenessProtocolHandlerIPv6ND" class="org.opendaylight.genius.alivenessmonitor.protocols.internal.AlivenessProtocolHandlerIPv6ND">
-      <argument ref="dataBroker"/>
-      <argument ref="odlInterfaceRpcService"/>
-      <argument ref="alivenessProtocolHandlerRegistry"/>
-      <argument ref="ipv6NdUtilService"/>
-  </bean>
-
-  <reference id="alivenessProtocolHandlerRegistry" interface="org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry"/>
-  <reference id="dataBroker" interface="org.opendaylight.controller.md.sal.binding.api.DataBroker"/>
-
   <odl:rpc-service id="odlArputilService"
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService" />
   <odl:rpc-service id="odlInterfaceRpcService"

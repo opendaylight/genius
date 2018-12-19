@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @ThreadSafe
+@Service(classes = AlivenessProtocolHandlerRegistry.class)
 public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHandlerRegistry {
 
     private static final Logger LOG = LoggerFactory.getLogger(AlivenessProtocolHandlerRegistryImpl.class);
