@@ -70,6 +70,30 @@
       "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "61651ffb_05321852",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-12-19T10:45:42Z",
+      "side": 1,
+      "message": "\u003e As for \" the lock needs to be handled inside the transaction\n \u003e lambda\", assuming this refers to the idUtils.lock in line 81 and\n \u003e the idUtils.unlock in line 101, I had a look, but... that opens a\n \u003e whole different can of worms - that LockManagerService is an RPC -\n \u003e that\u0027s the (old \u0026 unresolved) discussion re. how to propagate TXs\n \u003e accross RPCs.  My take on that is that perhaps something like LM\n \u003e simply does not have to be modeled as a YANG RPC, but can be a\n \u003e \"normal\" in-process Java service interface which we can @Reference\n \u003e from the OSGi Registry? Then we would add a TypedReadWriteTransaction\n \u003e argument to it, and be done.  However, that sounds more like\n \u003e something for a future follow-up change than anything to still mix\n \u003e in here... If anyone wants to have a go at doing something like\n \u003e that, I\u0027d be happy to review it! ;)\n\nSo we might as well remove the lock then, because it’s not protecting\nanything here :-(. (At least, add a comment to that effect, otherwise\nthe current change will end up thoroughly confusing people a few\nmonths down the line.)",
+      "parentUuid": "2675e681_19d393c7",
+      "range": {
+        "startLine": 99,
+        "startChar": 14,
+        "endLine": 99,
+        "endChar": 19
+      },
+      "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
