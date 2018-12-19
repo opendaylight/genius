@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a158adc_ea8573d2",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/HwVtepTunnelsStateHandler.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 127,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-12-19T16:46:13Z",
+      "side": 1,
+      "message": "This needs changed too.",
+      "revId": "129bcaa555639dae08c6556a3f174967dc402e1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3679f17f_31be1b51",
+        "filename": "alivenessmonitor/alivenessmonitor-impl/src/main/java/org/opendaylight/genius/alivenessmonitor/internal/HwVtepTunnelsStateHandler.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2018-12-19T16:46:13Z",
+      "side": 1,
+      "message": "This can’t possibly work (guaranteed NPE), but fixing that is another problem...",
+      "revId": "129bcaa555639dae08c6556a3f174967dc402e1e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
