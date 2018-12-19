@@ -9,17 +9,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
            xmlns:odl="http://opendaylight.org/xmlns/blueprint/v1.0.0"
            odl:use-default-for-reference-types="true">
-
-  <reference id="dataBroker"
-             interface="org.opendaylight.controller.md.sal.binding.api.DataBroker"
-             odl:type="default" />
-  <reference id="notificationPublishService"
-             interface="org.opendaylight.controller.md.sal.binding.api.NotificationPublishService" />
-  <reference id="notificationService"
-             interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
-  <reference id="metricProvider"
-             interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
-
+  
   <odl:rpc-service id="packetProcessingService"
                    interface="org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService" />
   <odl:rpc-service id="odlInterfaceRpcService"
