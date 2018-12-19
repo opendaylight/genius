@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "928e4410_1673297b",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-19T11:35:13Z",
+      "side": 1,
+      "message": "I would probably combine this and the previous change to switch it all together and have EVERY user of IdmanagerService use it as BP instead of RPC Service, and remove exposing it as RPC service.  Of course then it\u0027s not available e.g. via RESTCONF anymore, which for an internal service like IdManager or LockManager is just fine, I think.  This may have impacts on netvirt as well?",
+      "revId": "979e86c2d8dbc6f588209432e7fc75449bb6da4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b3a456ea_a0c69da3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 1
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2018-12-19T11:35:13Z",
+      "side": 1,
+      "message": "strictly technically speaking the point here is NOT that you \"Use annotation based\" but really that you.. \"use IdManagerService as OSGi (BP) service instead of ODL YANG RPC\".  The fact that it\u0027s injected annotation based here doesn\u0027t matter so much - you could use \u003creference\u003e or programatically look it up in the OSGi Service Registry (instead of the ODL RPC Registry).  PS: Note typo IdManagerService not IdmanagerService.",
+      "revId": "979e86c2d8dbc6f588209432e7fc75449bb6da4e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
