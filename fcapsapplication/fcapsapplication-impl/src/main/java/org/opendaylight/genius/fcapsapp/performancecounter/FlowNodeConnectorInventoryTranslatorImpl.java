@@ -15,6 +15,8 @@ import com.google.common.collect.Multimaps;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -60,9 +62,9 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     @Inject
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,
-                                                    final EntityOwnershipUtils entityOwnershipUtils,
-                                                    MetricProvider metricProvider) {
+    public FlowNodeConnectorInventoryTranslatorImpl(@Reference final DataBroker dataBroker,
+                                                    @Reference final EntityOwnershipUtils entityOwnershipUtils,
+                                                    @Reference MetricProvider metricProvider) {
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.metricProvider = metricProvider;
