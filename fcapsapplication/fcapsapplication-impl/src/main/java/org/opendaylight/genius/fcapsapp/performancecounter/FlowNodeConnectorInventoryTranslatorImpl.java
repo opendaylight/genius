@@ -15,6 +15,7 @@ import com.google.common.collect.Multimaps;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.fcapsapp.FcapsConstants;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -43,11 +44,9 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     private static final int STARTUP_LOOP_MAX_RETRIES = 8;
 
     private final EntityOwnershipUtils entityOwnershipUtils;
-    private final DataBroker dataBroker;
     private ListenerRegistration<FlowNodeConnectorInventoryTranslatorImpl> dataTreeChangeListenerRegistration;
 
     private static final String SEPARATOR = ":";
-    private final MetricProvider metricProvider;
     private final Labeled<Labeled<Labeled<Counter>>> packetInCounter;
     private static final InstanceIdentifier<FlowCapableNodeConnector>
             II_TO_FLOW_CAPABLE_NODE_CONNECTOR = InstanceIdentifier
@@ -60,12 +59,11 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     @Inject
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public FlowNodeConnectorInventoryTranslatorImpl(final DataBroker dataBroker,
-                                                    final EntityOwnershipUtils entityOwnershipUtils,
-                                                    MetricProvider metricProvider) {
-        this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+    public FlowNodeConnectorInventoryTranslatorImpl(@Reference final DataBroker dataBroker,
+                                                    @Reference final EntityOwnershipUtils entityOwnershipUtils,
+                                                    @Reference MetricProvider metricProvider) {
+        Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
         this.entityOwnershipUtils = entityOwnershipUtils;
-        this.metricProvider = metricProvider;
         packetInCounter =  metricProvider.newCounter(MetricDescriptor.builder().anchor(this)
                 .project("genius").module("fcapsapplication")
                 .id("entitycounter").build(), "entitytype", "switchid","name");

@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.fcapsapp.performancecounter.PacketInCounterHandler;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -47,9 +48,10 @@ public class FcapsProvider implements AutoCloseable {
      *            instance of NodeEventListener
      */
     @Inject
-    public FcapsProvider(final DataBroker dataBroker, final NotificationService notificationService,
-            final PacketInCounterHandler packetInCounterHandler,
-            final NodeEventListener nodeEventListener) {
+    public FcapsProvider(@Reference final DataBroker dataBroker,
+                         @Reference final NotificationService notificationService,
+                         final PacketInCounterHandler packetInCounterHandler,
+                         final NodeEventListener nodeEventListener) {
         this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
         LOG.info("FcapsProvider dataBroker is set");
 
