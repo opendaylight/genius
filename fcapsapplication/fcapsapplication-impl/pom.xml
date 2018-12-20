@@ -57,6 +57,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>mdsalutil-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.aries.blueprint</groupId>
+      <artifactId>blueprint-maven-plugin-annotation</artifactId>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>
@@ -97,6 +102,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
+        <configuration>
+          <scanPaths>org.opendaylight.genius.fcapsapp</scanPaths>
+        </configuration>
       </plugin>
     </plugins>
   </build>
