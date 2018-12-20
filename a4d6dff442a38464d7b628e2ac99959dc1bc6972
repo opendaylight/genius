@@ -118,6 +118,30 @@
       "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a532ca71_8f9aba3f",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/jobs/CleanUpJob.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2018-12-20T07:23:13Z",
+      "side": 1,
+      "message": "I believe the idea of using Lock manager here is to protect global id pool so that other thread (either in the same node or in other node) calling IdManager.getIdBlockFromParentPool waits for lock acquisition on the same lock key (line# 388 in IdManager.java) until the lock acquired here is released. If the lock is released before data is written to datastore, the other thread may not see updated global pool(line# 398 in IdManager.java).\n\nIf we want this to be asynchronous then the lock can be released in the Future\u0027s callback, the way it is done in UpdateIdEntryJob.java.",
+      "parentUuid": "2675e681_19d393c7",
+      "range": {
+        "startLine": 99,
+        "startChar": 14,
+        "endLine": 99,
+        "endChar": 19
+      },
+      "revId": "a4d6dff442a38464d7b628e2ac99959dc1bc6972",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
