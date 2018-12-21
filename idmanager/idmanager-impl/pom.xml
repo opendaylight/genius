@@ -140,6 +140,9 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
+        <configuration>
+          <scanPaths>org.opendaylight.genius.idmanager</scanPaths>
+        </configuration>
       </plugin>
     </plugins>
   </build>
