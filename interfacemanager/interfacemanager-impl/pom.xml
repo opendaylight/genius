@@ -57,6 +57,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependencies>
   </dependencyManagement>
 
+  <properties>
+    <maven.test.skip>true</maven.test.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
