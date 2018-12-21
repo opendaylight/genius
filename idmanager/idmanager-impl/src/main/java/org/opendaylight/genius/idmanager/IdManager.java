@@ -107,7 +107,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Inject
     public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils,
-                     @Reference DataImportBootReady dataImportBootReady, JobCoordinator jobCoordinator)
+                     @Reference DataImportBootReady dataImportBootReady, @Reference JobCoordinator jobCoordinator)
                     throws ReadFailedException {
         this.broker = db;
         this.txRunner = new ManagedNewTransactionRunnerImpl(db);

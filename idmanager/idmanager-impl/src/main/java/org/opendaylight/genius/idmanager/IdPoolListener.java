@@ -12,6 +12,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -31,7 +33,7 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     private final IdUtils idUtils;
 
     @Inject
-    public IdPoolListener(DataBroker dataBroker, IdManager idManager, IdUtils idUtils) {
+    public IdPoolListener(@Reference DataBroker dataBroker, IdManager idManager, IdUtils idUtils) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(IdPools.class).child(IdPool.class), Executors
                       .newSingleThreadExecutor("IdPoolListener", LOG));
