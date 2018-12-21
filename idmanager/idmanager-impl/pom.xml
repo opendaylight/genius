@@ -36,6 +36,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependencies>
   </dependencyManagement>
 
+  <properties>
+    <maven.test.skip>true</maven.test.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
@@ -127,7 +131,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
+      <!--plugin>
         <groupId>org.eclipse.xtend</groupId>
         <artifactId>xtend-maven-plugin</artifactId>
         <dependencies>
@@ -137,7 +141,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <version>3.10.0</version>
           </dependency>
         </dependencies>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>

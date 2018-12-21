@@ -59,6 +59,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependencies>
   </dependencyManagement>
 
+  <properties>
+    <maven.test.skip>true</maven.test.skip>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -239,7 +243,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <groupId>org.apache.aries.blueprint</groupId>
         <artifactId>blueprint-maven-plugin</artifactId>
       </plugin>
-      <plugin>
+      <!--plugin>
         <groupId>org.eclipse.xtend</groupId>
         <artifactId>xtend-maven-plugin</artifactId>
         <dependencies>
@@ -249,7 +253,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
             <version>3.10.0</version>
           </dependency>
         </dependencies>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
