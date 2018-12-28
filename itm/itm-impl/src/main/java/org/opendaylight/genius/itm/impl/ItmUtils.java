@@ -138,6 +138,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -1530,6 +1532,23 @@ public final class ItmUtils {
             tunType = STRING_CLASS_IMMUTABLE_BI_MAP.get(tunnelType);
         }
         return tunType ;
+    }
+
+    public static Optional<TepsInNotHostedTransportZone> getNotHostedTransportZone(String transportZoneName,
+                                                                                   DataBroker dataBroker) {
+        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedTzPath = InstanceIdentifier
+                .builder(NotHostedTransportZones.class).child(TepsInNotHostedTransportZone.class,
+                        new TepsInNotHostedTransportZoneKey(transportZoneName)).build();
+        Optional<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneOptional =
+                ItmUtils.read(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
+        return tepsInNotHostedTransportZoneOptional;
+    }
+
+    public static Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
+        VtepsKey vtepkey = new VtepsKey(dpnID, port);
+        Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).withKey(vtepkey)
+                .setPortname(port).build();
+        return vtepObj;
     }
 
 }

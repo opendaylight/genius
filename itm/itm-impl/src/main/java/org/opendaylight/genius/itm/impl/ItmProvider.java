@@ -35,6 +35,7 @@ import org.opendaylight.genius.itm.cli.TepException;
 import org.opendaylight.genius.itm.diagstatus.ItmDiagStatusProvider;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.listeners.InterfaceStateListener;
+import org.opendaylight.genius.itm.listeners.NotHostedTransportZoneListener;
 import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
@@ -101,6 +102,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final ItmConfig itmConfig;
     private final JobCoordinator jobCoordinator;
     private final ItmProvider.ItmProviderEOSListener itmProviderEOSListener;
+    private final NotHostedTransportZoneListener notHostedTransportZoneListener;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -120,7 +122,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        final ItmDiagStatusProvider itmDiagStatusProvider,
                        final TunnelStateCache tunnelStateCache,
                        final ItmConfig itmConfig,
-                       final JobCoordinator jobCoordinator) {
+                       final JobCoordinator jobCoordinator,
+                       final NotHostedTransportZoneListener notHostedTransportZoneListener) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -143,6 +146,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.itmConfig = itmConfig;
         this.jobCoordinator = jobCoordinator;
         this.itmProviderEOSListener = new ItmProvider.ItmProviderEOSListener(this, this.entityOwnershipService);
+        this.notHostedTransportZoneListener = notHostedTransportZoneListener;
     }
 
     @PostConstruct
@@ -206,6 +210,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         }
         if (registryCandidate != null) {
             registryCandidate.close();
+        }
+        if (notHostedTransportZoneListener != null) {
+            notHostedTransportZoneListener.close();
         }
         itmStatusProvider.reportStatus(ServiceState.UNREGISTERED);
         this.itmProviderEOSListener.close();

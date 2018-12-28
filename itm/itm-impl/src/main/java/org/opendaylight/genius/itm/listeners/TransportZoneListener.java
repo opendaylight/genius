@@ -68,8 +68,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -287,7 +285,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
         Class<? extends TunnelTypeBase> tunnelType  = tzNew.getTunnelType();
 
-        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = getNotHostedTransportZone(newZoneName).get();
+        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = ItmUtils
+                .getNotHostedTransportZone(newZoneName, dataBroker).get();
         if (tepsInNotHostedTransportZone == null) {
             return notHostedDpnTepInfo;
         }
@@ -317,7 +316,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                     tunnelEndPointsList.add(tunnelEndPoints);
                     mapNotHostedDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
                 }
-                Vteps newVtep = createVtepFromUnKnownVteps(dpnID,ipAddress,ITMConstants.DUMMY_PORT);
+                Vteps newVtep = ItmUtils.createVtepFromUnKnownVteps(dpnID,ipAddress,ITMConstants.DUMMY_PORT);
                 vtepsList.add(newVtep);
 
                 // Enqueue 'remove TEP from TepsNotHosted list' operation
@@ -344,16 +343,16 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     }
 
-    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
+   /* private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress, String port) {
         VtepsKey vtepkey = new VtepsKey(dpnID, port);
         Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).withKey(vtepkey)
                 .setPortname(port).build();
         return vtepObj;
-    }
+    }*/
 
     private boolean isNewTZExistInNotHostedTZ(TransportZone tzNew) {
         boolean isPresent = false;
-        if (getNotHostedTransportZone(tzNew.getZoneName()).isPresent()) {
+        if (ItmUtils.getNotHostedTransportZone(tzNew.getZoneName(), dataBroker).isPresent()) {
             isPresent = true;
         }
         return isPresent;
