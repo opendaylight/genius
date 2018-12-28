@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "07ddf27e_7b48bffe",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/NotHostedTransportZoneListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-12-28T11:29:24Z",
+      "side": 1,
+      "message": "Should be 2018.",
+      "range": {
+        "startLine": 2,
+        "startChar": 23,
+        "endLine": 2,
+        "endChar": 27
+      },
+      "revId": "684c683d3b3c50b5624186480b5ce163df59516d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "973d187b_0e82c692",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/NotHostedTransportZoneListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-12-28T11:29:24Z",
+      "side": 1,
+      "message": "Just give brief about this listener as a documentation in comments.",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 43
+      },
+      "revId": "684c683d3b3c50b5624186480b5ce163df59516d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8a450b0_3b5621a0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/NotHostedTransportZoneListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 123,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-12-28T11:29:24Z",
+      "side": 1,
+      "message": "Should be trace?",
+      "range": {
+        "startLine": 123,
+        "startChar": 20,
+        "endLine": 123,
+        "endChar": 24
+      },
+      "revId": "684c683d3b3c50b5624186480b5ce163df59516d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00d00b52_af478df8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2018-12-28T11:29:24Z",
+      "side": 1,
+      "message": "I think checkedGet() should be used instead of get(), it may protect from null access.",
+      "range": {
+        "startLine": 289,
+        "startChar": 68,
+        "endLine": 289,
+        "endChar": 71
+      },
+      "revId": "684c683d3b3c50b5624186480b5ce163df59516d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
