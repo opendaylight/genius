@@ -33,5 +33,6 @@ public class NetworkUtilTestModule extends AbstractGuiceJsr250Module {
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(VniUtils.class).to(VniUtilsImpl.class);
+        bind(RDUtils.class).to(RDUtilsImpl.class);
     }
 }
