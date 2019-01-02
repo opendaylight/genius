@@ -40,6 +40,7 @@ public class NetworkUtilTest extends AbstractConcurrentDataBrokerTest {
     public @Rule MethodRule guice = new GuiceRule(NetworkUtilTestModule.class, JobCoordinatorTestModule.class);
 
     private @Inject VniUtils vniUtils;
+    private @Inject RDUtils  rdUtils;
 
     @Test
     public void testDefaultVniPoolCreated() throws ReadFailedException {
@@ -51,4 +52,17 @@ public class NetworkUtilTest extends AbstractConcurrentDataBrokerTest {
     public void testGetVNI() throws ExecutionException, InterruptedException {
         assertThat(vniUtils.getVNI("test").longValue()).isEqualTo(NwConstants.VNI_DEFAULT_LOW_VALUE);
     }
+
+    @Test
+    public void testDefaultRDPoolCreated() throws ReadFailedException {
+        IdPool idPool = rdUtils.getRDPool().get();
+        assertThat(idPool.getPoolName()).isEqualTo(NwConstants.ODL_RD_POOL_NAME);
+    }
+
+    @Test
+    public void testGetRD() throws ExecutionException, InterruptedException {
+        assertThat(rdUtils.getRD("testRD").equals(NwConstants.RD_DEFAULT_LOW_VALUE));
+    }
+
+
 }

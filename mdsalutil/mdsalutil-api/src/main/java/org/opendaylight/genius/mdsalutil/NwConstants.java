@@ -197,6 +197,11 @@ public interface NwConstants {
     long VNI_DEFAULT_LOW_VALUE = 70000L;
     long VNI_DEFAULT_HIGH_VALUE = 99999L;
 
+    String ODL_RD_POOL_NAME = "opendaylight-rd-ranges";
+    String RD_DEFAULT_LOW_VALUE = "100:1";
+    long RD_DEFAULT_COUNT = 65535L;
+    long RD_MAX_VALUE_FIELD = 65535L;
+
     enum NxmOfFieldType {
         NXM_OF_IN_PORT(0x0000, 0, 2, 16),
         NXM_OF_ETH_DST(0x0000, 1, 6, 48),
