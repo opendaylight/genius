@@ -14,7 +14,9 @@ import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
+import org.opendaylight.genius.networkutils.RDUtils;
 import org.opendaylight.genius.networkutils.VniUtils;
+import org.opendaylight.genius.networkutils.impl.RDUtilsImpl;
 import org.opendaylight.genius.networkutils.impl.VniUtilsImpl;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
@@ -33,5 +35,6 @@ public class NetworkUtilTestModule extends AbstractGuiceJsr250Module {
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(VniUtils.class).to(VniUtilsImpl.class);
+        bind(RDUtils.class).to(RDUtilsImpl.class);
     }
 }
