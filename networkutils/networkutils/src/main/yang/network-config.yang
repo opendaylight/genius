@@ -17,5 +17,17 @@ module network-config {
             type string;
             default "70000:99999";
         }
+
+        leaf opendaylight-rd-start-value {
+            type         string;
+            description  "start value of auto generated RD";
+            default      "100:1";
+        }
+
+        leaf opendaylight-rd-count {
+            type         uint32;
+            description  "number of RD values to be autogenarated";
+            default      65535;
+        }
     }
 }
