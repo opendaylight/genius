@@ -37,6 +37,12 @@
   <dependencies>
     <!-- Other Features -->
     <dependency>
+      <groupId>org.opendaylight.odlparent</groupId>
+      <artifactId>odl-apache-commons-net</artifactId>
+      <classifier>features</classifier>
+      <type>xml</type>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.mdsal.model</groupId>
       <artifactId>odl-mdsal-model-rfc7224</artifactId>
       <type>xml</type>
