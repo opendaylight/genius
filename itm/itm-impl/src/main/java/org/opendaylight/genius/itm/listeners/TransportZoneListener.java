@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -55,6 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
@@ -224,7 +226,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (!oldDpnTepsList.isEmpty()) {
             LOG.trace("Removing TEPs ");
             jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), originalTransportZone, dataBroker,
+                    new ItmTepRemoveWorker(getUnIgnoredDelDpnTepList(oldDpnTepsList, updatedTransportZone),
+                            Collections.emptyList(), originalTransportZone, dataBroker,
                             mdsalManager, itmInternalTunnelDeleteWorker, dpnTEPsInfoCache));
         }
         List<HwVtep> oldHwList = createhWVteps(originalTransportZone);
@@ -452,5 +455,45 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
+    }
+
+    //If teps are moving from one Tz to another Tz, then in update we see delete form old TZ.
+    //And, add to new TZ, as these events are not in sync it's possible that delete arrives after add.
+    //In this scenario, it is possible that, it will delete the newly added TZ entry, as the key for DPN-TEPs-info is
+    //dpn-id which anyways has not changes.
+    //So here we are checking first into the cache and then into db, that entry present with new TZ or old TZ.
+    //If it is present with new TZ don't delete, ignore it, this method will return the unignored dpn list.
+    private List<DPNTEPsInfo> getUnIgnoredDelDpnTepList(List<DPNTEPsInfo> oldDpnTepsList,
+                                                        TransportZone updatedTransportZone) {
+        List<DPNTEPsInfo> oldDpnTepsListCopy = oldDpnTepsList.stream().collect(Collectors.toList());
+
+        for (DPNTEPsInfo oldDpnTep : oldDpnTepsListCopy) {
+            // here we are checking the deleted dpn entry into the cache if entry present with new TZ ignore.
+            java.util.Optional<DPNTEPsInfo> dpntePsInfoOptional = dpnTEPsInfoCache
+                    .getDPNTepFromDPNId(oldDpnTep.getDPNID());
+            if (dpntePsInfoOptional.get() != null) {
+                String zoneName = dpntePsInfoOptional.get().getTunnelEndPoints().get(0)
+                        .getTzMembership().get(0).getZoneName();
+                if (zoneName != null && zoneName.equals(updatedTransportZone.getZoneName())) {
+                    oldDpnTepsList.remove(oldDpnTep);
+                }
+            } else {
+                // In entry is not present in cache reverify it in db, it is possible that cache might not have updated,
+                // by now.
+                InstanceIdentifier<DPNTEPsInfo> dpntePsInfoIdentifier = InstanceIdentifier.builder(DpnEndpoints.class)
+                        .child(DPNTEPsInfo.class, oldDpnTep.key()).build();
+                Optional<DPNTEPsInfo> dpnTEPsInfoOptional =
+                        ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dpntePsInfoIdentifier, dataBroker);
+                if (dpnTEPsInfoOptional.get() != null) {
+                    String zoneName = dpnTEPsInfoOptional.get().getTunnelEndPoints().get(0)
+                            .getTzMembership().get(0).getZoneName();
+                    if (zoneName != null && zoneName.equals(updatedTransportZone.getZoneName())) {
+                        oldDpnTepsList.remove(oldDpnTep);
+                    }
+                }
+            }
+        }
+
+        return oldDpnTepsList;
     }
 }
