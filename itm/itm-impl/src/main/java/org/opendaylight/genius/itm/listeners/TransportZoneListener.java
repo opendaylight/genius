@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -55,6 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefixBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
@@ -218,7 +220,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (!newDpnTepsList.isEmpty()) {
             LOG.trace("Adding TEPs ");
             jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager, itmConfig,
+                    new ItmTepAddWorker(getUnIgnoredDelDpnTepList(oldDpnTepsList, updatedTransportZone),
+                            Collections.emptyList(), dataBroker, mdsalManager, itmConfig,
                             itmInternalTunnelAddWorker, externalTunnelAddWorker, dpnTEPsInfoCache));
         }
         if (!oldDpnTepsList.isEmpty()) {
@@ -452,5 +455,39 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
+    }
+
+    private List<DPNTEPsInfo> getUnIgnoredDelDpnTepList(List<DPNTEPsInfo> oldDpnTepsList,
+                                                        TransportZone updatedTransportZone) {
+        List<DPNTEPsInfo> oldDpnTepsListCopy = oldDpnTepsList.stream().collect(Collectors.toList());
+
+        for (DPNTEPsInfo oldDpnTep : oldDpnTepsListCopy) {
+            java.util.Optional<DPNTEPsInfo> dpntePsInfoOptional = dpnTEPsInfoCache
+                    .getDPNTepFromDPNId(oldDpnTep.getDPNID());
+            if (dpntePsInfoOptional.get() != null) {
+                String zoneName = dpntePsInfoOptional.get().getTunnelEndPoints().get(0)
+                        .getTzMembership().get(0).getZoneName();
+                // doc
+                if (zoneName != null && !zoneName.equals(updatedTransportZone.getZoneName())) {
+                    oldDpnTepsList.remove(oldDpnTep);
+                }
+            } else {
+                // doc
+                InstanceIdentifier<DPNTEPsInfo> dpntePsInfoIdentifier = InstanceIdentifier.builder(DpnEndpoints.class)
+                        .child(DPNTEPsInfo.class, oldDpnTep.key()).build();
+                Optional<DPNTEPsInfo> dpnTEPsInfoOptional =
+                        ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dpntePsInfoIdentifier, dataBroker);
+                if (dpnTEPsInfoOptional.get() != null) {
+                    String zoneName = dpnTEPsInfoOptional.get().getTunnelEndPoints().get(0)
+                            .getTzMembership().get(0).getZoneName();
+                    // doc
+                    if (zoneName != null && !zoneName.equals(updatedTransportZone.getZoneName())) {
+                        oldDpnTepsList.remove(oldDpnTep);
+                    }
+                }
+            }
+        }
+
+        return oldDpnTepsList;
     }
 }
