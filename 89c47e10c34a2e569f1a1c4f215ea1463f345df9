@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "731b6b3a_95b5a29a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 270,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-01-07T09:45:08Z",
+      "side": 1,
+      "message": "Break this line as well",
+      "revId": "89c47e10c34a2e569f1a1c4f215ea1463f345df9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

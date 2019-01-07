@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1eabb0c8_fa1b9bd5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-01-07T09:45:08Z",
+      "side": 0,
+      "message": "Please keep the name of the variable consistent, wither transaction or tx. It is sometimes former and sometimes latter in this file.",
+      "revId": "ee51f7f42a0cb5fe0dc0d4fa4ccc13a934345998",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fed2f244_5425001a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelAddWorker.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-01-07T09:45:08Z",
+      "side": 0,
+      "message": "Please keep the for loop in here otherwise the same function is going to be called over and over again which will cause significant overhead in case of a large list of hwvteps.",
+      "revId": "ee51f7f42a0cb5fe0dc0d4fa4ccc13a934345998",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
