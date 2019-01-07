@@ -33,6 +33,23 @@
       "revId": "ee51f7f42a0cb5fe0dc0d4fa4ccc13a934345998",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7d58242b_fb32476b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepRemoveWorker.java",
+        "patchSetId": 22
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-01-07T09:47:42Z",
+      "side": 0,
+      "message": "Edwin, request to not have the cleanup code change into this review. This review ought to contain only the changes pertaining to the TxRunner mandated changes. \nRequest to get cleanup changes like these in a separate review so that the changes are easier to review and not confusing to the reviewers.",
+      "revId": "ee51f7f42a0cb5fe0dc0d4fa4ccc13a934345998",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
