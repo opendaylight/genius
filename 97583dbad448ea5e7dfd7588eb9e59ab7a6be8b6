@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "711e1063_e4db4928",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/impl/RDUtilsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-01-07T11:47:07Z",
+      "side": 1,
+      "message": "if this is exactly same as the vniutils logic, can we abstract out the common functionalities to a base class?",
+      "revId": "97583dbad448ea5e7dfd7588eb9e59ab7a6be8b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
