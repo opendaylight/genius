@@ -10,6 +10,7 @@ package org.opendaylight.genius.arputil.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -31,10 +32,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.arputil.api.ArpConstants;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
@@ -45,13 +42,21 @@ import org.opendaylight.infrautils.inject.AbstractLifecycle;
 import org.opendaylight.infrautils.metrics.Meter;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.binding.util.Datastore.Operational;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.openflowplugin.libraries.liblldp.HexEncode;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.openflowplugin.libraries.liblldp.PacketException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpRequestReceivedBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpResponseReceivedBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.GetMacInput;
@@ -103,7 +108,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     private static final String MODULENAME = "odl.genius.arputil.";
     private static final String OPENFLOW_PFX = "openflow:";
 
-    private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final PacketProcessingService packetProcessingService;
     private final NotificationPublishService notificationPublishService;
     private final NotificationService notificationService;
@@ -128,7 +133,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                        @Reference final NotificationService notificationService,
                        final OdlInterfaceRpcService odlInterfaceRpcService,
                        @Reference  final MetricProvider metricProvider) {
-        this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.packetProcessingService = packetProcessingService;
         this.notificationPublishService = notificationPublishService;
         this.notificationService = notificationService;
@@ -247,8 +252,14 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
                 LOG.trace("sendArpRequest received dpnId {} out interface {}", dpnId, interfaceName);
                 if (interfaceAddress.getMacaddress() == null) {
-                    srcMac = MDSALUtil.getMacAddressForNodeConnector(dataBroker,
-                            (InstanceIdentifier<NodeConnector>) ref.getValue());
+                    srcMac = txRunner.<Operational, ExecutionException, byte[]>
+                        applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
+                            tx -> tx.read((InstanceIdentifier<NodeConnector>) ref.getValue()).get()
+                                .map(nc -> nc.augmentation(FlowCapableNodeConnector.class))
+                                .map(FlowCapableNodeConnector::getHardwareAddress)
+                                .map(MacAddress::getValue)
+                                .map(HexEncode::bytesFromHexString)
+                                .orElse(null));
                 } else {
                     String macAddr = interfaceAddress.getMacaddress().getValue();
                     srcMac = HexEncode.bytesFromHexString(macAddr);
@@ -263,8 +274,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 sendPacketOutWithActions(dpnId, payload, ref, actions);
 
                 LOG.trace("sent arp request for {}", arpReqInput.getIpaddress());
-            } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException
-                    | ReadFailedException e) {
+            } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException e) {
                 LOG.trace("failed to send arp req for {} on interface {}", arpReqInput.getIpaddress(), interfaceName);
 
                 failureBuilder.withError(ErrorType.APPLICATION,
