@@ -10,14 +10,13 @@ package org.opendaylight.genius.arputil.test;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
-import java.net.UnknownHostException;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.arputil.internal.ArpUtilImpl;
+import org.opendaylight.genius.mdsal.testutils.DataBrokerTestWiring;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.infrautils.metrics.MetricProvider;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.NotificationPublishService;
+import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.OdlArputilService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
@@ -25,9 +24,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 public class ArpUtilTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws UnknownHostException {
+    protected void configureBindings() throws Exception {
 
-        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+        DataBroker dataBroker = DataBrokerTestWiring.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
 
         TestOdlInterfaceRpcService testOdlInterfaceRpcService = TestOdlInterfaceRpcService.newInstance();
