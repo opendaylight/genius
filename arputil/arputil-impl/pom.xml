@@ -37,8 +37,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>sal-binding-api</artifactId>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-binding-util</artifactId>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
@@ -90,21 +90,22 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <!-- Testing Dependencies -->
     <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-binding-dom-adapter</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>testutils</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>sal-binding-broker-impl</artifactId>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>mdsal-testutils</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>sal-binding-broker-impl</artifactId>
-      <scope>test</scope>
-      <type>test-jar</type>
     </dependency>
     <dependency>
       <groupId>org.apache.aries.blueprint</groupId>
