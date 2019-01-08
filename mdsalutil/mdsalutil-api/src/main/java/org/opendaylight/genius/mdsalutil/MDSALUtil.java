@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,9 +22,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
-import org.opendaylight.openflowplugin.libraries.liblldp.HexEncode;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.pop.vlan.action._case.PopVlanActionBuilder;
@@ -619,22 +616,6 @@ public class MDSALUtil {
             LOG.error("Error deleting from datastore (path) : ({})", path, e);
             throw new RuntimeException(e);
         }
-    }
-
-    // "Consider returning a zero length array rather than null" - too late to change behavior plus it's deprecated.
-    @Deprecated
-    @SuppressFBWarnings("PZLA_PREFER_ZERO_LENGTH_ARRAYS")
-    public static byte[] getMacAddressForNodeConnector(DataBroker broker,
-            InstanceIdentifier<NodeConnector> nodeConnectorId) throws ReadFailedException {
-        Optional<NodeConnector> optNc = SingleTransactionDataBroker.syncReadOptional(broker,
-                LogicalDatastoreType.OPERATIONAL, nodeConnectorId);
-        if (optNc.isPresent()) {
-            NodeConnector nc = optNc.get();
-            FlowCapableNodeConnector fcnc = nc.augmentation(FlowCapableNodeConnector.class);
-            MacAddress macAddress = fcnc.getHardwareAddress();
-            return HexEncode.bytesFromHexString(macAddress.getValue());
-        }
-        return null;
     }
 
     public static NodeId getNodeIdFromNodeConnectorId(NodeConnectorId ncId) {
