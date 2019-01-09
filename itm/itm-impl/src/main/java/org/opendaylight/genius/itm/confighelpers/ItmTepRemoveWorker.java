@@ -54,10 +54,8 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     public List<ListenableFuture<Void>> call() {
         List<ListenableFuture<Void>> futures = new ArrayList<>() ;
         this.meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(mdsalManager, delDpnList,
-                meshedDpnList));
-        LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",
-                delDpnList, meshedDpnList);
+        LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {}", delDpnList);
+        futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(mdsalManager, delDpnList));
         // IF EXTERNAL TUNNELS NEEDS TO BE DELETED, DO IT HERE, IT COULD BE TO DC GATEWAY OR TOR SWITCH
         List<DcGatewayIp> dcGatewayIpList = ItmUtils.getDcGatewayIpList(dataBroker);
         if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {

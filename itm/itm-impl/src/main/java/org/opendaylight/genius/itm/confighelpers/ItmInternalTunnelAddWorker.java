@@ -29,6 +29,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -85,12 +86,14 @@ public final class ItmInternalTunnelAddWorker {
     private final DirectTunnelUtils directTunnelUtils;
     private final IInterfaceManager interfaceManager;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+    private final DPNTEPsInfoCache dpnTEPsInfoCache;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                       TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
                                       DirectTunnelUtils directTunnelUtil,
                                       IInterfaceManager interfaceManager,
-                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
+                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                      DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
@@ -102,27 +105,32 @@ public final class ItmInternalTunnelAddWorker {
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
         monitorInterval = tunnelMonitoringConfig.getMonitorInterval();
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
     }
 
-    public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
-                                                        Collection<DPNTEPsInfo> meshedDpnList) {
+    public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList) {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             LOG.error(" Build Tunnels was invoked with empty list");
             return Collections.emptyList();
         }
-
-        return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
-            for (DPNTEPsInfo dpn : cfgdDpnList) {
-                //#####if dpn is not in meshedDpnList
-                buildTunnelFrom(tx, dpn, meshedDpnList, mdsalManager);
-                if (meshedDpnList != null) {
-                    meshedDpnList.add(dpn);
-                }
-                // Update the config datastore -- FIXME -- Error Handling
-                updateDpnTepInfoToConfig(tx, dpn);
-            }
-        }));
+        for (DPNTEPsInfo dpn : cfgdDpnList) {
+            jobCoordinator.enqueueJob(dpn.getDPNID().toString(), () -> {
+                return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,tx -> {
+                    List<DPNTEPsInfo> meshedDpnList = ItmUtils.getDpnTEPsInfos(dataBroker);
+                    //Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
+                    LOG.trace("Building tunnel for dpn {} with meshed DPN List {}", dpn, meshedDpnList);
+                    //#####if dpn is not in meshedDpnList
+                    buildTunnelFrom(tx, dpn, meshedDpnList, mdsalManager);
+                    if (meshedDpnList != null) {
+                        meshedDpnList.add(dpn);
+                    }
+                    // Update the config datastore -- FIXME -- Error Handling
+                    updateDpnTepInfoToConfig(tx, dpn);
+                })); // txrunner end block
+            }); // job-coordinator end block
+        }
+        return Collections.emptyList();
     }
 
     private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn) {
