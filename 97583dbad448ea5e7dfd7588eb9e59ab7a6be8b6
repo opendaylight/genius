@@ -16,6 +16,24 @@
       "revId": "97583dbad448ea5e7dfd7588eb9e59ab7a6be8b6",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "032f7f10_1e8b5263",
+        "filename": "networkutils/networkutils/src/main/java/org/opendaylight/genius/networkutils/impl/RDUtilsImpl.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6310
+      },
+      "writtenOn": "2019-01-09T04:42:25Z",
+      "side": 1,
+      "message": "the logic used to create RD, lowerlimit, upperlimit is completely different than VNI. also in future this would change too. so i think its better to keep it separate than vni",
+      "parentUuid": "711e1063_e4db4928",
+      "revId": "97583dbad448ea5e7dfd7588eb9e59ab7a6be8b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
