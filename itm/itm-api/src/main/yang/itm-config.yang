@@ -166,5 +166,10 @@ module itm-config {
             type boolean;
             default false;
        }
+       leaf dst-udp-port {
+          description "UDP Port for OF Tunnels";
+          type uint16;
+          default 2150;
+       }
     }
 }
