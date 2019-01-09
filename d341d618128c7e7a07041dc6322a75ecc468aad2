@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "107fc527_92807c41",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-09T19:17:07Z",
+      "side": 0,
+      "message": "OK for me, in this case, the Guice Module for the GuiceRule in Test wasn\u0027t really needed.. but, sooner or later, for other tests, we\u0027ll ahve to create a DataBrokerTestModule (which is a proper Guice module..) for mdsal.  May be I\u0027ll have a go at this, some time.",
+      "revId": "d341d618128c7e7a07041dc6322a75ecc468aad2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65e0d75f_a222c8c4",
+        "filename": "arputil/arputil-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-09T19:17:07Z",
+      "side": 1,
+      "message": "Is \u003cscope\u003etest is in the -artifacts BOM?  Just double checking - especially because controller\u0027s, apparently, wasn\u0027t (noticed this while compared left/right diff).  (So perhaps would be clearer to repeat it here even if not strictly required?)",
+      "revId": "261dcea7ad9be0b5db6aa2c954e59b3911c23bec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0f951096_8455b6f0",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-09T19:17:07Z",
+      "side": 1,
+      "message": "This is cool - how you transformed the code in MDSALUtil.getMacAddressForNodeConnector() to this - functional, not Gangnam, style!",
+      "revId": "261dcea7ad9be0b5db6aa2c954e59b3911c23bec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8b820c8_b601ae0c",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-09T19:17:07Z",
+      "side": 1,
+      "message": "this .orElse(new byte[0]) technically changes the behaviour compared to what it does today (return null here: https://git.opendaylight.org/gerrit/#/c/79373/1/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java) but I guess it\u0027s fine - other reviewers?",
+      "revId": "261dcea7ad9be0b5db6aa2c954e59b3911c23bec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
