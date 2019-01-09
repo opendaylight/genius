@@ -28,6 +28,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
@@ -85,6 +86,7 @@ public class ItmInternalTunnelDeleteWorker {
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final TunnelStateCache tunnelStateCache;
     private final DirectTunnelUtils directTunnelUtils;
+    private final DPNTEPsInfoCache dpnTEPsInfoCache;
 
     public ItmInternalTunnelDeleteWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                          TunnelMonitoringConfig tunnelMonitoringConfig,
@@ -92,7 +94,8 @@ public class ItmInternalTunnelDeleteWorker {
                                          OvsBridgeEntryCache ovsBridgeEntryCache,
                                          OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                          TunnelStateCache tunnelStateCache,
-                                         DirectTunnelUtils directTunnelUtils) {
+                                         DirectTunnelUtils directTunnelUtils,
+                                         DPNTEPsInfoCache dpnTEPsInfoCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
@@ -103,17 +106,21 @@ public class ItmInternalTunnelDeleteWorker {
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.tunnelStateCache = tunnelStateCache;
         this.directTunnelUtils = directTunnelUtils;
+        this.dpnTEPsInfoCache = dpnTEPsInfoCache;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public List<ListenableFuture<Void>> deleteTunnels(IMdsalApiManager mdsalManager,
-            Collection<DPNTEPsInfo> dpnTepsList, Collection<DPNTEPsInfo> meshedDpnList) {
+            Collection<DPNTEPsInfo> dpnTepsList, Collection<DPNTEPsInfo> meshedDpnListOld) {
         LOG.trace("TEPs to be deleted {} " , dpnTepsList);
         return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
             if (dpnTepsList == null || dpnTepsList.size() == 0) {
                 LOG.debug("no vtep to delete");
                 return;
             }
+            // get meshed dpn list
+            Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
+
 
             if (meshedDpnList == null || meshedDpnList.size() == 0) {
                 LOG.debug("No Meshed Vteps");
