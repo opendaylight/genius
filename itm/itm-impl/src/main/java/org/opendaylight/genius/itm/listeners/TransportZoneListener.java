@@ -115,7 +115,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
-                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils);
+                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, dpnTEPsInfoCache);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig, dpnTEPsInfoCache);
