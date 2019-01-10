@@ -22,6 +22,30 @@
       "revId": "285f6fcb79f54121ff6eed0a84ec66a51bde238b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28830863_be8f12d7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "207cc9e5_c6d9d6b0",
+      "range": {
+        "startLine": 306,
+        "startChar": 21,
+        "endLine": 306,
+        "endChar": 43
+      },
+      "revId": "285f6fcb79f54121ff6eed0a84ec66a51bde238b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
