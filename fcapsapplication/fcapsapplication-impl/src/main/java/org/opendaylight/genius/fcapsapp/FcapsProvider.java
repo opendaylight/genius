@@ -12,12 +12,12 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.binding.api.NotificationService;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.fcapsapp.performancecounter.PacketInCounterHandler;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.NotificationService;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
@@ -62,7 +62,7 @@ public class FcapsProvider implements AutoCloseable {
     }
 
     @PostConstruct
-    public void start() throws Exception {
+    public void start() {
         PortNameMapping.registerPortMappingBean();
         registerListener();
         notificationService.registerNotificationListener(packetInCounterHandler);
@@ -71,12 +71,12 @@ public class FcapsProvider implements AutoCloseable {
 
     @PreDestroy
     @Override
-    public void close() throws Exception {
+    public void close() {
         LOG.info("FcapsProvider closed");
     }
 
     private void registerListener() {
-        final DataTreeIdentifier<FlowCapableNode> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
+        final DataTreeIdentifier<FlowCapableNode> treeId = DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
                 getWildCardPath());
         dataBroker.registerDataTreeChangeListener(treeId, nodeEventListener);
     }

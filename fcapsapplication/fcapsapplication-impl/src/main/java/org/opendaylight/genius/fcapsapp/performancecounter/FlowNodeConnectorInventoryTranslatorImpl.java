@@ -15,9 +15,6 @@ import com.google.common.collect.Multimaps;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.fcapsapp.FcapsConstants;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -25,6 +22,9 @@ import org.opendaylight.infrautils.metrics.Counter;
 import org.opendaylight.infrautils.metrics.Labeled;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
 import org.opendaylight.infrautils.metrics.MetricProvider;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.openflowplugin.common.wait.SimpleTaskRetryLooper;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -69,7 +69,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
         packetInCounter =  metricProvider.newCounter(MetricDescriptor.builder().anchor(this)
                 .project("genius").module("fcapsapplication")
                 .id("entitycounter").build(), "entitytype", "switchid","name");
-        final DataTreeIdentifier<FlowCapableNodeConnector> treeId = new DataTreeIdentifier<>(
+        final DataTreeIdentifier<FlowCapableNodeConnector> treeId = DataTreeIdentifier.create(
                 LogicalDatastoreType.OPERATIONAL, getWildCardPath());
         try {
             SimpleTaskRetryLooper looper = new SimpleTaskRetryLooper(STARTUP_LOOP_TICK, STARTUP_LOOP_MAX_RETRIES);
