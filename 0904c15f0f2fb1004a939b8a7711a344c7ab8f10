@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d9d5119e_7e8f2959",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/api/IITMProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a137df15_77d90f77",
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "28655454_968c3683",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 10
@@ -30,6 +48,30 @@
       "writtenOn": "2018-12-19T09:56:07Z",
       "side": 1,
       "message": "accessive data read can slow the CLI down significantly, may not be apparent in CSIT.\nbut will show up in a 10 dpn setup or more, \navoid this if possible?",
+      "range": {
+        "startLine": 769,
+        "startChar": 16,
+        "endLine": 772,
+        "endChar": 44
+      },
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ccd35496_36c9c29b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "28655454_968c3683",
       "range": {
         "startLine": 769,
         "startChar": 16,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "9474bec2_f660a8df",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "26a3c0ec_f0bbed00",
+      "range": {
+        "startLine": 2,
+        "startChar": 16,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f0217d37_051a33d6",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
         "patchSetId": 10
@@ -76,6 +142,24 @@
       "writtenOn": "2018-12-19T09:56:07Z",
       "side": 1,
       "message": "avoid newline",
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8871e98_1cf30fca",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f0217d37_051a33d6",
       "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -99,6 +183,24 @@
     },
     {
       "key": {
+        "uuid": "3e9d2565_1b4b6ac5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6fa4594f_d788d163",
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "afb9e5ce_aad4127c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
         "patchSetId": 10
@@ -110,6 +212,24 @@
       "writtenOn": "2018-12-19T09:56:49Z",
       "side": 1,
       "message": "introduce newline after this",
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7af6449b_21c50005",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "afb9e5ce_aad4127c",
       "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -133,6 +253,24 @@
     },
     {
       "key": {
+        "uuid": "caf4d78f_fcee4f0a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3b61df40_e70ebf11",
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "392903b2_0a04e720",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
         "patchSetId": 10
@@ -144,6 +282,30 @@
       "writtenOn": "2018-12-19T09:56:07Z",
       "side": 1,
       "message": "can this and the other similar construct be put in a separate method? to avoid code duplication",
+      "range": {
+        "startLine": 62,
+        "startChar": 12,
+        "endLine": 69,
+        "endChar": 110
+      },
+      "revId": "0904c15f0f2fb1004a939b8a7711a344c7ab8f10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2d98947f_03025cd2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepShowBridges.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "392903b2_0a04e720",
       "range": {
         "startLine": 62,
         "startChar": 12,
