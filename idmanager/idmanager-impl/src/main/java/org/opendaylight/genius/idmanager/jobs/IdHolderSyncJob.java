@@ -7,16 +7,16 @@
  */
 package org.opendaylight.genius.idmanager.jobs;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.idmanager.IdHolder;
 import org.opendaylight.genius.idmanager.IdUtils;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
@@ -47,12 +47,12 @@ public class IdHolderSyncJob implements Callable<List<ListenableFuture<Void>>> {
         idHolder.refreshDataStore(idPool);
         InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            tx.merge(localPoolInstanceIdentifier, idPool.build(), CREATE_MISSING_PARENTS);
+            tx.mergeParentStructureMerge(localPoolInstanceIdentifier, idPool.build());
             idUtils.incrementPoolUpdatedMap(localPoolName);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("IdHolder synced {}", idHolder);
             }
-        }));
+        }).transform(result -> null, MoreExecutors.directExecutor()));
     }
 }
