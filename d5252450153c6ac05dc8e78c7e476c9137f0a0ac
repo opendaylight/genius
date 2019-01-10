@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "107bf3cf_3ac0499d",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 9
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-10T06:35:34Z",
+      "side": 1,
+      "message": "As discussed, add this new param to dpn-endpoints model.",
+      "revId": "d5252450153c6ac05dc8e78c7e476c9137f0a0ac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8efea1f7_17840559",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-10T06:35:34Z",
+      "side": 1,
+      "message": "What does groupId refer here ?",
+      "revId": "d5252450153c6ac05dc8e78c7e476c9137f0a0ac",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
