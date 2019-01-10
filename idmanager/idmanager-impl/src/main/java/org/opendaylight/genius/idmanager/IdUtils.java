@@ -8,15 +8,13 @@
 
 package org.opendaylight.genius.idmanager;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-
-import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -25,8 +23,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Singleton;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
@@ -306,7 +304,7 @@ public class IdUtils {
         ChildPools childPool = createChildPool(localPoolName);
         InstanceIdentifier<ChildPools> childPoolInstanceIdentifier =
                 getChildPoolsInstanceIdentifier(poolName, localPoolName);
-        tx.merge(childPoolInstanceIdentifier, childPool, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(childPoolInstanceIdentifier, childPool);
     }
 
     public void incrementPoolUpdatedMap(String localPoolName) {

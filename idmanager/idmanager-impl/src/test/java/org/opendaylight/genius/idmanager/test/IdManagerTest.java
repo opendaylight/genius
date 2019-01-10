@@ -14,13 +14,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -35,11 +36,6 @@ import org.junit.ComparisonFailure;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
@@ -49,7 +45,13 @@ import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.binding.testutils.AssertDataObjects;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -106,11 +108,11 @@ public class IdManagerTest {
     private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     private @Inject IdUtils idUtils;
 
-    private SingleTransactionDataBroker singleTxdataBroker;
+    private ManagedNewTransactionRunner txRunner;
 
     @Before
     public void before() {
-        singleTxdataBroker = new SingleTransactionDataBroker(dataBroker);
+        txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @Test
@@ -172,7 +174,7 @@ public class IdManagerTest {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(localPoolName), childPool);
-        tx.submit().get();
+        tx.commit().get();
 
         AllocateIdInput allocateIdInput2 = new AllocateIdInputBuilder().setIdKey(TEST_KEY1).setPoolName(ID_POOL_NAME)
                 .build();
@@ -191,13 +193,14 @@ public class IdManagerTest {
         DeleteIdPoolInput deleteIdPoolInput = new DeleteIdPoolInputBuilder().setPoolName(ID_POOL_NAME).build();
         assertTrue(idManagerService.deleteIdPool(deleteIdPoolInput).get().isSuccessful());
         coordinatorEventsWaiter.awaitEventsConsumption();
-        Optional<IdPool> actualIdPoolParent = singleTxdataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(ID_POOL_NAME)).build());
-        Optional<IdPool> actualIdPoolChild = singleTxdataBroker.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.builder(IdPools.class)
-                        .child(IdPool.class, new IdPoolKey(idUtils.getLocalPoolName(ID_POOL_NAME))).build());
-        assertFalse(actualIdPoolParent.isPresent());
-        assertFalse(actualIdPoolChild.isPresent());
+        txRunner.callWithNewReadOnlyTransactionAndClose(CONFIGURATION, tx -> {
+            Optional<IdPool> actualIdPoolParent = tx.read(InstanceIdentifier.builder(IdPools.class).child(IdPool.class,
+                new IdPoolKey(ID_POOL_NAME)).build()).get();
+            Optional<IdPool> actualIdPoolChild = tx.read(InstanceIdentifier.builder(IdPools.class)
+                    .child(IdPool.class, new IdPoolKey(idUtils.getLocalPoolName(ID_POOL_NAME))).build()).get();
+            assertFalse(actualIdPoolParent.isPresent());
+            assertFalse(actualIdPoolChild.isPresent());
+        });
     }
 
     @Test
@@ -240,7 +243,7 @@ public class IdManagerTest {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(localPoolName), childPool);
-        tx.submit().get();
+        tx.commit().get();
         // Wait for the changes to be available on the caches.
         asyncEventsWaiter.awaitEventsConsumption();
         requestIdsConcurrently(false);
@@ -292,7 +295,7 @@ public class IdManagerTest {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(localPoolName), childPool);
-        tx.submit().get();
+        tx.commit().get();
         requestIdsConcurrently(true);
         coordinatorEventsWaiter.awaitEventsConsumption();
 
@@ -374,7 +377,7 @@ public class IdManagerTest {
     }
 
     private void validateIdPools(IdPool expectedIdPoolParent, IdPool expectedIdPoolChild)
-            throws ReadFailedException, ComparisonFailure {
+            throws ComparisonFailure, ExecutionException, InterruptedException {
         IdPool actualIdPoolParent = getUpdatedActualParentPool();
         IdPool actualIdPoolChild = getUpdatedActualChildPool();
 
@@ -385,10 +388,12 @@ public class IdManagerTest {
 
     }
 
-    private IdPool getUpdatedActualChildPool() throws ReadFailedException {
+    private IdPool getUpdatedActualChildPool() throws ExecutionException, InterruptedException {
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
-        IdPool idPoolChildFromDS = singleTxdataBroker.syncRead(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(localPoolName)).build());
+        IdPool idPoolChildFromDS =
+            txRunner.<Configuration, ExecutionException, IdPool>applyInterruptiblyWithNewReadOnlyTransactionAndClose(
+                CONFIGURATION, tx -> tx.read(InstanceIdentifier.builder(IdPools.class).child(IdPool.class,
+                    new IdPoolKey(localPoolName)).build()).get().get());
         List<DelayedIdEntries> actualDelayedIdEntries = idPoolChildFromDS.getReleasedIdsHolder().getDelayedIdEntries();
         IdPool actualIdPoolChild = idPoolChildFromDS;
         if (actualDelayedIdEntries != null) {
@@ -403,9 +408,11 @@ public class IdManagerTest {
         return actualIdPoolChild;
     }
 
-    private IdPool getUpdatedActualParentPool() throws ReadFailedException {
-        IdPool idPoolParentFromDS = singleTxdataBroker.syncRead(LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(ID_POOL_NAME)).build());
+    private IdPool getUpdatedActualParentPool() throws ExecutionException, InterruptedException {
+        IdPool idPoolParentFromDS =
+            txRunner.<Configuration, ExecutionException, IdPool>applyInterruptiblyWithNewReadOnlyTransactionAndClose(
+                CONFIGURATION, tx -> tx.read(InstanceIdentifier.builder(IdPools.class).child(IdPool.class,
+                    new IdPoolKey(ID_POOL_NAME)).build()).get().get());
         List<ChildPools> childPool = idPoolParentFromDS.nonnullChildPools();
         List<ChildPools> updatedChildPool = childPool.stream()
                 .map(child -> new ChildPoolsBuilder(child).setLastAccessTime(0L).build()).collect(Collectors.toList());
