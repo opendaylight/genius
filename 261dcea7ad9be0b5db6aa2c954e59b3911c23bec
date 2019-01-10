@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "929aed2d_3e28baf7",
+        "filename": "arputil/arputil-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-10T10:13:16Z",
+      "side": 1,
+      "message": "Yes, the scope is in the BOM, but I’ll add it explicitly here too.",
+      "parentUuid": "65e0d75f_a222c8c4",
+      "revId": "261dcea7ad9be0b5db6aa2c954e59b3911c23bec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0f951096_8455b6f0",
         "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
         "patchSetId": 1
@@ -47,6 +65,24 @@
       "writtenOn": "2019-01-09T19:17:07Z",
       "side": 1,
       "message": "this .orElse(new byte[0]) technically changes the behaviour compared to what it does today (return null here: https://git.opendaylight.org/gerrit/#/c/79373/1/mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java) but I guess it\u0027s fine - other reviewers?",
+      "revId": "261dcea7ad9be0b5db6aa2c954e59b3911c23bec",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6451d8d1_45c4c604",
+        "filename": "arputil/arputil-impl/src/main/java/org/opendaylight/genius/arputil/internal/ArpUtilImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-10T10:13:16Z",
+      "side": 1,
+      "message": "Actually that\u0027s a good catch, I had changed that before merging the method and then forgot to check the impact. Changing to an empty array breaks the code since we rely on the checkNotNull() below.",
+      "parentUuid": "a8b820c8_b601ae0c",
       "revId": "261dcea7ad9be0b5db6aa2c954e59b3911c23bec",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false

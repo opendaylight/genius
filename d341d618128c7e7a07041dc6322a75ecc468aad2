@@ -16,6 +16,24 @@
       "revId": "d341d618128c7e7a07041dc6322a75ecc468aad2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ec099f1_3913be24",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-10T10:13:16Z",
+      "side": 0,
+      "message": "Exactly, I didn’t want to tie this to a new MD-SAL release with a DataBrokerTestModule!",
+      "parentUuid": "107fc527_92807c41",
+      "revId": "d341d618128c7e7a07041dc6322a75ecc468aad2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
