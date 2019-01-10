@@ -16,6 +16,24 @@
       "revId": "987cb051d2c2c3d0bc93cc689d5c9aa4db3fbe58",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0b1ce4be_accd3e6a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 791,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Since the CLI is mainly for debugging purpose, during debug, we may not want the whole output as given by session.getConsole(). System.out.printf() takes care of that. I can change it to ..println() if required to reduce the code fingerprint.",
+      "parentUuid": "aeb27ccc_5de88d15",
+      "revId": "987cb051d2c2c3d0bc93cc689d5c9aa4db3fbe58",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
