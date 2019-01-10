@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "81ba6cb8_3965852f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 795,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "95424933_2b075f0c",
+      "range": {
+        "startLine": 793,
+        "startChar": 20,
+        "endLine": 795,
+        "endChar": 51
+      },
+      "revId": "d09f8a06e5aa429079625159994e5a9b9a7235a6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5e0e6ee2_d9be665a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 12
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-02T05:17:14Z",
       "side": 1,
       "message": "probably warn? since the CLI is user-facing. \nalso, mention tep:show-bridges in the log statement.",
+      "range": {
+        "startLine": 306,
+        "startChar": 16,
+        "endLine": 306,
+        "endChar": 21
+      },
+      "revId": "d09f8a06e5aa429079625159994e5a9b9a7235a6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1fde1935_0dbedd5b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-01-10T06:48:44Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5e0e6ee2_d9be665a",
       "range": {
         "startLine": 306,
         "startChar": 16,
