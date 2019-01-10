@@ -7,11 +7,9 @@
  */
 package org.opendaylight.genius.idmanager.test;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
-import org.opendaylight.genius.datastoreutils.testutils.WrappingDataBrokerTestWiring;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.idmanager.IdPoolListener;
 import org.opendaylight.genius.lockmanager.impl.LockListener;
@@ -20,6 +18,7 @@ import org.opendaylight.genius.mdsal.testutils.DataBrokerTestWiring;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 
@@ -37,9 +36,6 @@ public class IdManagerTestModule extends AbstractGuiceJsr250Module {
         bind(LockListener.class);
         bind(IdPoolListener.class);
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
-        DataBrokerTestWiring wiring = new DataBrokerTestWiring();
-        WrappingDataBrokerTestWiring legacyWiring = new WrappingDataBrokerTestWiring(wiring.getDOMDataBroker());
-        bind(DataBroker.class).toInstance(legacyWiring.getDataBroker());
-        bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(wiring.getDataBroker());
+        bind(DataBroker.class).toInstance(DataBrokerTestWiring.dataBroker());
     }
 }
