@@ -8,11 +8,12 @@
 
 package org.opendaylight.genius.idmanager.jobs;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +22,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import javax.annotation.Nullable;
 import org.opendaylight.genius.idmanager.IdUtils;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
 
     @Override
     public List<ListenableFuture<Void>> call() {
-        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+        FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             idUtils.updateChildPool(tx, parentPoolName, localPoolName);
             if (!newIdValues.isEmpty()) {
                 IdEntries newIdEntry = idUtils.createIdEntries(idKey, newIdValues);
@@ -68,9 +69,9 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
                 tx.delete(idUtils.getIdEntriesInstanceIdentifier(parentPoolName, idKey));
             }
         });
-        future.addCallback(new FutureCallback<Void>() {
+        future.addCallback(new FutureCallback<Object>() {
             @Override
-            public void onSuccess(@Nullable Void result) {
+            public void onSuccess(@Nullable Object result) {
                 cleanUp();
             }
 
@@ -79,7 +80,7 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
                 cleanUp();
             }
         }, EXECUTOR_SERVICE);
-        return Collections.singletonList(future);
+        return Collections.singletonList(future.transform(result -> null, MoreExecutors.directExecutor()));
     }
 
     private void cleanUp() {
