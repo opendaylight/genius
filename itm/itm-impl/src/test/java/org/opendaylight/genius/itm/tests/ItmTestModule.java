@@ -59,7 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class ItmTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() {
+    protected void configureBindings() throws Exception {
         // Bindings for services from this project
         bind(ItmRpcService.class).to(ItmManagerRpcService.class);
         bind(ItmProvider.class);
@@ -86,6 +86,8 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+        bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(
+            org.opendaylight.genius.mdsal.testutils.DataBrokerTestWiring.dataBroker());
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
