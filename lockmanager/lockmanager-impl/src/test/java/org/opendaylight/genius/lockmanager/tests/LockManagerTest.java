@@ -19,16 +19,16 @@ import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailures;
-import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresModule;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.lockmanager.impl.LockManagerUtils;
+import org.opendaylight.genius.mdsal.testutils.DataBrokerFailuresModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
+import org.opendaylight.mdsal.binding.testutils.DataBrokerFailures;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -114,7 +114,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void test3sOptimisticLockFailedExceptionOnLock()
             throws InterruptedException, ExecutionException, TimeoutException {
-        dbFailureSimulator.failSubmits(new OptimisticLockFailedException("bada boum bam!"));
+        dbFailureSimulator.failCommits(new OptimisticLockFailedException("bada boum bam!"));
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
         runUnfailSubmitsTimerTask(3000); // see other tests above
         assertRpcSuccess(lockManager.lock(lockInput));
@@ -124,7 +124,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     public void testAskTimeOutException() throws InterruptedException, ExecutionException, TimeoutException {
         String lockName = "testLock";
         logCaptureRule.expectError("Unable to acquire lock for " + lockName + ", try 1", 1);
-        dbFailureSimulator.failButSubmitsAnyways();
+        dbFailureSimulator.failButCommitAnyway();
         LockInput lockInput = new LockInputBuilder().setLockName(lockName).build();
         assertRpcErrorCause(lockManager.lock(lockInput), TransactionCommitFailedException.class,
                 "caused by simulated AskTimeoutException");
@@ -134,7 +134,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     public void testEternalTransactionCommitFailedExceptionOnLock()
             throws InterruptedException, ExecutionException, TimeoutException {
         logCaptureRule.expectError("RPC lock() failed; input = LockInput{_lockName=testLock, augmentation=[]}");
-        dbFailureSimulator.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
+        dbFailureSimulator.failCommits(new TransactionCommitFailedException("bada boum bam!"));
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
         assertRpcErrorCause(lockManager.lock(lockInput), TransactionCommitFailedException.class, "bada boum bam!");
     }
@@ -170,7 +170,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                dbFailureSimulator.unfailSubmits();
+                dbFailureSimulator.unfailCommits();
             }
         }, delay);
     }

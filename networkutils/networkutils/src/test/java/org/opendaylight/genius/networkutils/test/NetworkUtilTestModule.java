@@ -28,6 +28,8 @@ public class NetworkUtilTestModule extends AbstractGuiceJsr250Module {
         DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+        bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(
+            org.opendaylight.genius.mdsal.testutils.DataBrokerTestModule.dataBroker());
         bind(NetworkConfig.class).toInstance(mock(NetworkConfig.class));
         bind(IdManagerService.class).to(IdManager.class);
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
