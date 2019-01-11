@@ -29,6 +29,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
@@ -56,6 +57,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsBuilder;
@@ -121,16 +123,18 @@ public final class ItmInternalTunnelAddWorker {
                     meshedDpnList.add(dpn);
                 }
                 // Update the config datastore -- FIXME -- Error Handling
-                updateDpnTepInfoToConfig(tx, dpn);
+                updateDpnTepInfoToConfig(tx, dpn, directTunnelUtils);
             }
         }));
     }
 
-    private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn) {
+    private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn,
+        DirectTunnelUtils directTunnelUtils) throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
-        dpnList.add(dpn) ;
+        dpnList.add(new DPNTEPsInfoBuilder(dpn)
+            .setDstId(directTunnelUtils.allocateId(IfmConstants.IFM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
         tx.merge(dep, tnlBuilder);
     }

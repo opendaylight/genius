@@ -32,7 +32,6 @@ import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerServi
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
-import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -227,14 +226,11 @@ public class ItmManagerRpcServiceTest {
         DpnTepStateCache dpnTepStateCache =
             new DpnTepStateCache(dataBroker, jobCoordinator, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
             directTunnelUtils, dpntePsInfoCache, unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
-        TunnelStateCache tunnelStateCache =
-                new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
         OvsBridgeRefEntryCache ovsBridgeRefEntryCache =
             new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
 
-        itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
-            dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService,
-            ovsBridgeRefEntryCache, directTunnelUtils);
+        itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig, dpntePsInfoCache,
+            interfaceManager, dpnTepStateCache, interfaceManagerService, ovsBridgeRefEntryCache, directTunnelUtils);
     }
 
     @After
