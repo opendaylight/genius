@@ -34,6 +34,24 @@
       "revId": "d341d618128c7e7a07041dc6322a75ecc468aad2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a830e34c_5887dd99",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilTestModule.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-11T10:16:02Z",
+      "side": 0,
+      "message": "https://git.opendaylight.org/gerrit/79464",
+      "parentUuid": "6ec099f1_3913be24",
+      "revId": "d341d618128c7e7a07041dc6322a75ecc468aad2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
