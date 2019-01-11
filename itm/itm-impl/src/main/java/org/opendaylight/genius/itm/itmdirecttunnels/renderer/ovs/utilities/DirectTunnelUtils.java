@@ -11,11 +11,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
@@ -23,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -60,9 +59,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.IfIndexesTunnelMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.InterfaceChildInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.OvsBridgeRefInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._if.indexes.tunnel.map.IfIndexTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._if.indexes.tunnel.map.IfIndexTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._interface.child.info.InterfaceParentEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._interface.child.info.InterfaceParentEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._interface.child.info._interface.parent.entry.InterfaceChildEntryBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntry;
@@ -107,6 +112,8 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 @Singleton
 public final class DirectTunnelUtils {
@@ -537,6 +544,48 @@ public final class DirectTunnelUtils {
     public static boolean isOfTunnel(IfTunnel ifTunnel) {
         return Boolean.TRUE.equals(ifTunnel.isTunnelRemoteIpFlow())
                 || Boolean.TRUE.equals(ifTunnel.isTunnelSourceIpFlow());
+    }
+
+    public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
+        String sourceKey = ifTunnel.getTunnelSource().stringValue();
+        String remoteKey = ifTunnel.getTunnelDestination().stringValue();
+        if (ifTunnel.isTunnelSourceIpFlow() != null) {
+            sourceKey = "flow";
+        }
+        if (ifTunnel.isTunnelRemoteIpFlow() != null) {
+            remoteKey = "flow";
+        }
+        String tunnelNameKey = dpId.toString() + sourceKey + remoteKey;
+        String uuidStr = UUID.nameUUIDFromBytes(tunnelNameKey.getBytes()).toString().substring(0, 12).replace("-", "");
+        return String.format("%s%s", "tun", uuidStr);
+    }
+
+    public void createInterfaceChildEntry(@Nonnull TypedWriteTransaction<Configuration> tx, String parentInterface,
+                                          String childInterface) {
+        createInterfaceChildEntry(parentInterface, childInterface,
+                pair -> tx.put(pair.getKey(), pair.getValue(), CREATE_MISSING_PARENTS));
+    }
+
+    private void createInterfaceChildEntry(String parentInterface, String childInterface,
+                                           Consumer<Pair<InstanceIdentifier<InterfaceChildEntry>, InterfaceChildEntry>> writer) {
+        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
+        InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
+        InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIdentifier =
+                getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);
+        InterfaceChildEntry interfaceChildEntry = new InterfaceChildEntryBuilder()
+                .withKey(interfaceChildEntryKey)
+                .setChildInterface(childInterface)
+                .build();
+        writer.accept(Pair.of(interfaceChildEntryIdentifier, interfaceChildEntry));
+    }
+
+    public static InstanceIdentifier<InterfaceChildEntry> getInterfaceChildEntryIdentifier(
+            InterfaceParentEntryKey interfaceParentEntryKey, InterfaceChildEntryKey interfaceChildEntryKey) {
+        InstanceIdentifier.InstanceIdentifierBuilder<InterfaceChildEntry> intfIdBuilder =
+                InstanceIdentifier.builder(InterfaceChildInfo.class)
+                        .child(InterfaceParentEntry.class, interfaceParentEntryKey)
+                        .child(InterfaceChildEntry.class, interfaceChildEntryKey);
+        return intfIdBuilder.build();
     }
 }
 
