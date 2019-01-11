@@ -86,6 +86,8 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+        bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(
+            org.opendaylight.genius.mdsal.testutils.DataBrokerTestModule.dataBroker());
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);

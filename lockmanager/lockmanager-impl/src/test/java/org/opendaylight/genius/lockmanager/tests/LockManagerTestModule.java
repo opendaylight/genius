@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.lockmanager.tests;
 
-import java.net.UnknownHostException;
 import org.opendaylight.genius.lockmanager.impl.LockListener;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
@@ -16,7 +15,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class LockManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws UnknownHostException {
+    protected void configureBindings() {
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
     }
