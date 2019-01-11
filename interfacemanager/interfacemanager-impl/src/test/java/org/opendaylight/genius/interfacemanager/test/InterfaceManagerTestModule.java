@@ -9,16 +9,14 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Mockito.mock;
 
-import java.net.UnknownHostException;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorCountedEventsWaiter;
+import org.opendaylight.genius.datastoreutils.testutils.WrappingDataBrokerTestWiring;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -41,6 +39,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listen
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners.FlowBasedServicesInterfaceStateListener;
 import org.opendaylight.genius.lockmanager.impl.LockListener;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
+import org.opendaylight.genius.mdsal.testutils.DataBrokerTestWiring;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -69,14 +68,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws UnknownHostException {
+    protected void configureBindings() throws Exception {
         // Bindings for services from this project
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
 
-        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
-        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
-        bind(DataBroker.class).toInstance(dataBroker);
+        DataBrokerTestWiring wiring = new DataBrokerTestWiring();
+        WrappingDataBrokerTestWiring legacyWiring = new WrappingDataBrokerTestWiring(wiring.getDOMDataBroker());
+        bind(DataBroker.class).toInstance(legacyWiring.getDataBroker());
+        bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(wiring.getDataBroker());
         bind(DataTreeEventCallbackRegistrar.class).toInstance(mock(DataTreeEventCallbackRegistrar.class));
         bind(ManagedNewTransactionRunner.class).toInstance(mock(ManagedNewTransactionRunner.class));
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
@@ -94,7 +94,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
-                new SimpleDOMEntityOwnershipService(), dataBrokerTestModule.getBindingToNormalizedNodeCodec());
+                new SimpleDOMEntityOwnershipService(), wiring.getBindingToNormalizedNodeCodec());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));

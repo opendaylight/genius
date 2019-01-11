@@ -7,12 +7,14 @@
  */
 package org.opendaylight.genius.lockmanager.impl;
 
-import com.google.common.base.Optional;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -22,12 +24,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.utils.JvmGlobalLocks;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
@@ -78,9 +78,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     @Override
     public ListenableFuture<RpcResult<LockOutput>> lock(LockInput input) {
         final Lock lockData = lockManagerUtils.buildLock(input.getLockName(), lockManagerUtils.getUniqueID());
-        return FutureRpcResults.fromListenableFuture(LOG, input, () -> {
-            return getLock(lockData);
-        }).build();
+        return FutureRpcResults.fromListenableFuture(LOG, input, () -> getLock(lockData)).build();
     }
 
     @Override
@@ -117,13 +115,13 @@ public class LockManagerServiceImpl implements LockManagerService {
         String lockName = input.getLockName();
         LOG.debug("Unlocking {}", lockName);
         return FutureRpcResults.fromListenableFuture(LOG, input,
-            () -> Futures.transform(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+            () -> Futures.transform(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 InstanceIdentifier<Lock> lockInstanceIdentifier = lockManagerUtils.getLockInstanceIdentifier(lockName);
-                Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+                Optional<Lock> result = tx.read(lockInstanceIdentifier).get();
                 if (!result.isPresent()) {
                     LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
                 } else {
-                    tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+                    tx.delete(lockInstanceIdentifier);
                 }
             }), unused -> UNLOCK_OUTPUT, MoreExecutors.directExecutor())).build();
     }
@@ -136,7 +134,7 @@ public class LockManagerServiceImpl implements LockManagerService {
             // FindBugs flags a false violation here - "passes a null value as the parameter of a method which must be
             // non-null. Either this parameter has been explicitly marked as @Nonnull, or analysis has determined that
             // this parameter is always dereferenced.". However neither is true. The type param is Void so you have to
-            // pas null.
+            // pass null.
             lock.complete(null);
         }
     }
@@ -231,7 +229,7 @@ public class LockManagerServiceImpl implements LockManagerService {
         final ReentrantLock lock = JvmGlobalLocks.getLockForString(lockData.getLockName());
         lock.lock();
         try {
-            return txRunner.applyWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, tx -> {
+            return txRunner.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 final InstanceIdentifier<Lock> lockInstanceIdentifier =
                         LockManagerUtils.getLockInstanceIdentifier(lockData.key());
                 Optional<Lock> result = tx.read(lockInstanceIdentifier).get();
