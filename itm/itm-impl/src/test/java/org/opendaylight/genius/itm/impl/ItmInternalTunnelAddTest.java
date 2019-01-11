@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.Futures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.Before;
@@ -26,12 +27,16 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -65,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.powermock.api.mockito.PowerMockito;
@@ -138,9 +144,13 @@ public class ItmInternalTunnelAddTest {
 
     AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
     AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("200")).build();
+    AllocateIdOutput expectedDstID1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("1")).build();
+    AllocateIdOutput expectedDstID2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("2")).build();
 
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1;
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2;
+    Future<RpcResult<AllocateIdOutput>> dstId1Output;
+    Future<RpcResult<AllocateIdOutput>> dstId2Output;
 
     @Mock DataBroker dataBroker;
     @Mock ReadOnlyTransaction mockReadTx;
@@ -151,6 +161,8 @@ public class ItmInternalTunnelAddTest {
     @Mock ItmConfig itmConfig;
     @Mock JobCoordinator jobCoordinator;
     @Mock IInterfaceManager interfaceManager;
+    @Mock EntityOwnershipUtils entityOwnershipUtils;
+    @Mock TypedReadWriteTransaction<Datastore.Configuration> typedReadWriteTransaction;
     ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     DirectTunnelUtils directTunnelUtils;
 
@@ -167,6 +179,8 @@ public class ItmInternalTunnelAddTest {
 
         idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
         idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
+        dstId1Output = RpcResultBuilder.success(expectedDstID1).buildFuture();
+        dstId2Output = RpcResultBuilder.success(expectedDstID2).buildFuture();
 
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
@@ -177,6 +191,7 @@ public class ItmInternalTunnelAddTest {
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
 
+        directTunnelUtils = new DirectTunnelUtils(idManagerService, mdsalApiManager, entityOwnershipUtils);
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
                 itmConfig, directTunnelUtils, interfaceManager, new OvsBridgeRefEntryCache(dataBroker,
@@ -215,13 +230,13 @@ public class ItmInternalTunnelAddTest {
         tunnelEndPointsListGre.add(tunnelEndPointsGre);
         tunnelEndPointsListGreNew.add(tunnelEndPointsGreNew);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
-                .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
+                .setTunnelEndPoints(tunnelEndPointsListVxlan).setDstId(dpId1.intValue()).build();
         dpntePsInfoVxlanNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
-                .setTunnelEndPoints(tunnelEndPointsListVxlanNew).build();
+                .setTunnelEndPoints(tunnelEndPointsListVxlanNew).setDstId(dpId2.intValue()).build();
         dpntePsInfoGre = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
-                .setTunnelEndPoints(tunnelEndPointsListGre).build();
+                .setTunnelEndPoints(tunnelEndPointsListGre).setDstId(dpId1.intValue()).build();
         dpntePsInfoGreNew = new DPNTEPsInfoBuilder().setDPNID(dpId2).withKey(new DPNTEPsInfoKey(dpId2)).setUp(true)
-                .setTunnelEndPoints(tunnelEndPointsListGreNew).build();
+                .setTunnelEndPoints(tunnelEndPointsListGreNew).setDstId(dpId2.intValue()).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true)
                 .setMonitorProtocol(monitorProtocol).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
@@ -236,10 +251,12 @@ public class ItmInternalTunnelAddTest {
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
         doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
         doReturn(true).when(mockReadWriteTx).cancel();
+
     }
 
     @Test
-    public void testBuild_all_tunnels_VXLANtype() {
+    public void testBuild_all_tunnels_VXLANtype() throws ExecutionException, InterruptedException,
+        OperationFailedException {
 
         AllocateIdInput getIdInput1 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
@@ -247,9 +264,15 @@ public class ItmInternalTunnelAddTest {
         AllocateIdInput getIdInput2 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.102:192.168.56.101:VXLAN").build();
+        AllocateIdInput dstDpID1 = new AllocateIdInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(dpId1.toString()).build();
+        AllocateIdInput dstDpID2 = new AllocateIdInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(dpId2.toString()).build();
 
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
+        doReturn(dstId1Output).when(idManagerService).allocateId(dstDpID1);
+        doReturn(dstId2Output).when(idManagerService).allocateId(dstDpID2);
 
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType1.getName());
@@ -258,19 +281,18 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListVxlan);
+        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListVxlan,
+            typedReadWriteTransaction);
 
         //Add some verifications
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
-                internalTunnel1,true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2,
-                internalTunnel2,true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
-                dpnEndpointsVxlan);
+        verify(typedReadWriteTransaction).merge(internalTunnelIdentifierVxlan1, internalTunnel1, true);
+        verify(typedReadWriteTransaction).merge(internalTunnelIdentifierVxlan2, internalTunnel2, true);
+        verify(typedReadWriteTransaction).merge(dpnEndpointsIdentifier, dpnEndpointsVxlan);
     }
 
     @Test
-    public void testBuild_all_tunnels_GREtype() {
+    public void testBuild_all_tunnels_GREtype() throws ExecutionException, InterruptedException,
+            OperationFailedException {
 
         AllocateIdInput getIdInput1 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
@@ -278,6 +300,12 @@ public class ItmInternalTunnelAddTest {
         AllocateIdInput getIdInput2 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.102:192.168.56.101:GRE").build();
+        AllocateIdInput dstDpID1 = new AllocateIdInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(dpId1.toString()).build();
+        AllocateIdInput dstDpID2 = new AllocateIdInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(dpId2.toString()).build();
+        doReturn(dstId1Output).when(idManagerService).allocateId(dstDpID1);
+        doReturn(dstId2Output).when(idManagerService).allocateId(dstDpID2);
 
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
@@ -289,18 +317,17 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListGre, meshDpnListGre);
+        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListGre, meshDpnListGre,
+            typedReadWriteTransaction);
 
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
-                internalTunnel1,true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
-                internalTunnel2,true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
-                dpnEndpointsGre);
+        verify(typedReadWriteTransaction).merge(internalTunnelIdentifierGre1, internalTunnel1, true);
+        verify(typedReadWriteTransaction).merge(internalTunnelIdentifierGre2, internalTunnel2, true);
+        verify(typedReadWriteTransaction).merge(dpnEndpointsIdentifier, dpnEndpointsGre);
     }
 
     @Test
-    public void testBuild_all_tunnels_Boyhtype() {
+    public void testBuild_all_tunnels_Boyhtype() throws ExecutionException, InterruptedException,
+            OperationFailedException {
 
         AllocateIdInput getIdInput1 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
@@ -308,9 +335,16 @@ public class ItmInternalTunnelAddTest {
         AllocateIdInput getIdInput2 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.102:192.168.56.101:GRE").build();
+        AllocateIdInput dstDpID1 = new AllocateIdInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(dpId1.toString()).build();
+        AllocateIdInput dstDpID2 = new AllocateIdInputBuilder().setPoolName(IfmConstants.IFM_IDPOOL_NAME)
+                .setIdKey(dpId2.toString()).build();
 
         doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
+        doReturn(dstId1Output).when(idManagerService).allocateId(dstDpID1);
+        doReturn(dstId2Output).when(idManagerService).allocateId(dstDpID2);
+
 
         trunkInterfaceName1 = ItmUtils.getTrunkInterfaceName(parentInterfaceName,tepIp1,tepIp2,
                 tunnelType1.getName());
@@ -319,13 +353,11 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre);
+        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre,
+            typedReadWriteTransaction);
 
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
-                internalTunnel1,true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
-                internalTunnel2,true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
-                dpnEndpointsVxlan);
+        verify(typedReadWriteTransaction).merge(internalTunnelIdentifierVxlan1, internalTunnel1, true);
+        verify(typedReadWriteTransaction).merge(internalTunnelIdentifierGre2, internalTunnel2, true);
+        verify(typedReadWriteTransaction).merge(dpnEndpointsIdentifier, dpnEndpointsVxlan);
     }
 }
