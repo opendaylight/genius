@@ -18,6 +18,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
@@ -65,10 +67,13 @@ public final class OvsInterfaceConfigRemoveHelper {
     private final SouthboundUtils southboundUtils;
 
     @Inject
-    public OvsInterfaceConfigRemoveHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
-            IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils, InterfaceMetaUtils interfaceMetaUtils,
-            SouthboundUtils southboundUtils) {
+    public OvsInterfaceConfigRemoveHelper(@Reference DataBroker dataBroker,
+                                          AlivenessMonitorUtils alivenessMonitorUtils,
+                                          @Reference IMdsalApiManager mdsalApiManager,
+                                          @Reference JobCoordinator coordinator,
+                                          InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                          InterfaceMetaUtils interfaceMetaUtils,
+                                          SouthboundUtils southboundUtils) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.mdsalApiManager = mdsalApiManager;

@@ -13,6 +13,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
@@ -44,7 +46,7 @@ public class BatchingUtils implements AutoCloseable {
     private final ResourceBatchingManager resourceBatchingManager = ResourceBatchingManager.getInstance();
 
     @Inject
-    public BatchingUtils(DataBroker dataBroker) {
+    public BatchingUtils(@Reference DataBroker dataBroker) {
         this.dataBroker = dataBroker;
     }
 

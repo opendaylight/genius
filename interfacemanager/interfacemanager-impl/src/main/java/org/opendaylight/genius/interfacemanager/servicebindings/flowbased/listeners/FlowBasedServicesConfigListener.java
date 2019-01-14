@@ -21,6 +21,8 @@ import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -69,14 +71,14 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public FlowBasedServicesConfigListener(final DataBroker dataBroker,
+    public FlowBasedServicesConfigListener(@Reference final DataBroker dataBroker,
                                            final EntityOwnershipUtils entityOwnershipUtils,
-                                           final JobCoordinator coordinator,
+                                           @Reference final JobCoordinator coordinator,
                                            final FlowBasedServicesRendererFactoryResolver
                                                        flowBasedServicesRendererFactoryResolver,
                                            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                           final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                           @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;

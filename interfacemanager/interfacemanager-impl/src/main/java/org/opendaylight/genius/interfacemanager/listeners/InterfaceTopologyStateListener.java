@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -64,16 +65,17 @@ public class InterfaceTopologyStateListener
     private final SouthboundUtils southboundUtils;
 
     @Inject
-    public InterfaceTopologyStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
+    public InterfaceTopologyStateListener(@Reference final DataBroker dataBroker,
+                                          final InterfacemgrProvider interfaceMgrProvider,
                                           final EntityOwnershipUtils entityOwnershipUtils,
-                                          final JobCoordinator coordinator,
+                                          @Reference final JobCoordinator coordinator,
                                           final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                           final OvsInterfaceTopologyStateUpdateHelper
                                                       ovsInterfaceTopologyStateUpdateHelper,
                                           final InterfaceMetaUtils interfaceMetaUtils,
                                           final SouthboundUtils southboundUtils,
                                           final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                          final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                          @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);

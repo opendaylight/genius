@@ -14,6 +14,7 @@ import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
@@ -45,12 +46,12 @@ public class InterfaceInstanceRecoveryHandler implements ServiceRecoveryInterfac
     private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     @Inject
-    public InterfaceInstanceRecoveryHandler(DataBroker dataBroker,
+    public InterfaceInstanceRecoveryHandler(@Reference DataBroker dataBroker,
                                             InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-                                            JobCoordinator jobCoordinator,
+                                            @Reference JobCoordinator jobCoordinator,
                                             ServiceRecoveryRegistry serviceRecoveryRegistry,
                                             EntityOwnershipUtils entityOwnershipUtils,
-                                            DataTreeEventCallbackRegistrar eventCallbacks) {
+                                            @Reference DataTreeEventCallbackRegistrar eventCallbacks) {
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.jobCoordinator = jobCoordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);

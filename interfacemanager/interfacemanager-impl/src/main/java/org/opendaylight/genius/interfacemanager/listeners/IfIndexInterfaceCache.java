@@ -11,6 +11,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
@@ -24,7 +25,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class IfIndexInterfaceCache extends DataObjectCache<Integer, IfIndexInterface> {
 
     @Inject
-    public IfIndexInterfaceCache(DataBroker dataBroker, CacheProvider cacheProvider) {
+    public IfIndexInterfaceCache(@Reference DataBroker dataBroker, @Reference CacheProvider cacheProvider) {
         super(IfIndexInterface.class, dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class).build(),
                 cacheProvider, (iid, ifIndexInterface) -> ifIndexInterface.key().getIfIndex(),
