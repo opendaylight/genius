@@ -11,6 +11,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
@@ -26,7 +27,7 @@ public class IfmDiagStatusProvider implements ServiceStatusProvider {
     private volatile ServiceDescriptor serviceDescriptor;
 
     @Inject
-    public IfmDiagStatusProvider(final DiagStatusService diagStatusService) {
+    public IfmDiagStatusProvider(@Reference final DiagStatusService diagStatusService) {
         this.diagStatusService = diagStatusService;
         diagStatusService.register(IfmConstants.INTERFACE_SERVICE_NAME);
         reportStatus(ServiceState.STARTING);

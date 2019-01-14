@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -40,7 +42,7 @@ public class FlowBasedIngressServicesConfigBindHelper extends AbstractFlowBasedS
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public FlowBasedIngressServicesConfigBindHelper(final DataBroker dataBroker,
+    public FlowBasedIngressServicesConfigBindHelper(@Reference final DataBroker dataBroker,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;

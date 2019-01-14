@@ -10,6 +10,8 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -42,11 +44,11 @@ public class HwVTEPTunnelsStateListener extends AbstractSyncDataTreeChangeListen
     private final JobCoordinator coordinator;
 
     @Inject
-    public HwVTEPTunnelsStateListener(DataBroker dataBroker,
-                                      JobCoordinator coordinator,
+    public HwVTEPTunnelsStateListener(@Reference DataBroker dataBroker,
+                                      @Reference JobCoordinator coordinator,
                                       InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                      ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                      HwvtepNodeHACache hwvtepNodeHACache) {
+                                      @Reference ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                      @Reference HwvtepNodeHACache hwvtepNodeHACache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
                       .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class).build());

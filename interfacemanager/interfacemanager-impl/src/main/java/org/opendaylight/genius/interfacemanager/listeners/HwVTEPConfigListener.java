@@ -13,6 +13,8 @@ import static org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -43,7 +45,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     private final JobCoordinator coordinator;
 
     @Inject
-    public HwVTEPConfigListener(final DataBroker dataBroker, final JobCoordinator coordinator) {
+    public HwVTEPConfigListener(@Reference final DataBroker dataBroker, @Reference final JobCoordinator coordinator) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(Interfaces.class).child(Interface.class));
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);

@@ -14,6 +14,8 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -35,7 +37,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public FlowBasedEgressServicesConfigUnbindHelper(final DataBroker dataBroker,
+    public FlowBasedEgressServicesConfigUnbindHelper(@Reference final DataBroker dataBroker,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;

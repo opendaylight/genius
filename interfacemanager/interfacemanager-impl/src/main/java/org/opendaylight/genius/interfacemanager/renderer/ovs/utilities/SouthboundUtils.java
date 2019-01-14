@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -143,9 +145,9 @@ public class SouthboundUtils {
     private final Cache<String, String> ovsVersionCache;
 
     @Inject
-    public SouthboundUtils(final DataBroker dataBroker,
+    public SouthboundUtils(@Reference final DataBroker dataBroker,
                            final BatchingUtils batchingUtils, InterfacemgrProvider interfacemgrProvider,
-                           final CacheProvider cacheProvider) {
+                           @Reference final CacheProvider cacheProvider) {
         this.batchingUtils = batchingUtils;
         this.interfacemgrProvider = interfacemgrProvider;
         this.singleTxDB = new SingleTransactionDataBroker(dataBroker);

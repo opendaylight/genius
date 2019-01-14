@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -50,14 +51,15 @@ public class TerminationPointStateListener extends
     private final OvsInterfaceTopologyStateUpdateHelper ovsInterfaceTopologyStateUpdateHelper;
 
     @Inject
-    public TerminationPointStateListener(final DataBroker dataBroker, final InterfacemgrProvider interfaceMgrProvider,
+    public TerminationPointStateListener(@Reference final DataBroker dataBroker,
+                                         final InterfacemgrProvider interfaceMgrProvider,
                                          final EntityOwnershipUtils entityOwnershipUtils,
-                                         final JobCoordinator coordinator,
+                                         @Reference final JobCoordinator coordinator,
                                          final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                          final OvsInterfaceTopologyStateUpdateHelper
                                                      ovsInterfaceTopologyStateUpdateHelper,
                                          final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                         final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                         @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
