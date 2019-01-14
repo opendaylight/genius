@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
@@ -69,11 +71,14 @@ public final class OvsInterfaceConfigAddHelper {
     private final SouthboundUtils southboundUtils;
 
     @Inject
-    public OvsInterfaceConfigAddHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
-            IMdsalApiManager mdsalApiManager, JobCoordinator coordinator,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-            OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
-            InterfaceMetaUtils interfaceMetaUtils, SouthboundUtils southboundUtils) {
+    public OvsInterfaceConfigAddHelper(@Reference DataBroker dataBroker,
+                                       AlivenessMonitorUtils alivenessMonitorUtils,
+                                       @Reference IMdsalApiManager mdsalApiManager,
+                                       @Reference JobCoordinator coordinator,
+                                       InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                       OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
+                                       InterfaceMetaUtils interfaceMetaUtils,
+                                       SouthboundUtils southboundUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.mdsalApiManager = mdsalApiManager;

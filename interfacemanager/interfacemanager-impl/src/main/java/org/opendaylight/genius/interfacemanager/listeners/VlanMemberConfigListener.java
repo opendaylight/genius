@@ -11,6 +11,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
@@ -44,12 +46,12 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     private final ManagedNewTransactionRunner txRunner;
 
     @Inject
-    public VlanMemberConfigListener(final DataBroker dataBroker,
-            final JobCoordinator coordinator,
+    public VlanMemberConfigListener(@Reference final DataBroker dataBroker,
+            @Reference final JobCoordinator coordinator,
             final OvsVlanMemberConfigAddHelper ovsVlanMemberConfigAddHelper,
             final OvsVlanMemberConfigRemoveHelper ovsVlanMemberConfigRemoveHelper,
             final OvsVlanMemberConfigUpdateHelper ovsVlanMemberConfigUpdateHelper,
-            final DataTreeEventCallbackRegistrar eventCallbacks) {
+            @Reference final DataTreeEventCallbackRegistrar eventCallbacks) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(Interfaces.class).child(Interface.class));
         this.coordinator = coordinator;

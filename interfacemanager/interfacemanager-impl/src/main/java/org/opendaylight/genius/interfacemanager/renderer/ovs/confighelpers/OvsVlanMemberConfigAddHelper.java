@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -33,7 +35,7 @@ public class OvsVlanMemberConfigAddHelper {
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public OvsVlanMemberConfigAddHelper(DataBroker dataBroker,
+    public OvsVlanMemberConfigAddHelper(@Reference DataBroker dataBroker,
             InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;

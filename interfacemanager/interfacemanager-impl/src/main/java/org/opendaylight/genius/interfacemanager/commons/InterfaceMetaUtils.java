@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -77,7 +79,9 @@ public final class InterfaceMetaUtils {
     private final ConcurrentMap<BigInteger, BridgeRefEntry> bridgeRefEntryMap = new ConcurrentHashMap<>();
 
     @Inject
-    public InterfaceMetaUtils(DataBroker dataBroker, IdManagerService idManager, BatchingUtils batchingUtils) {
+    public InterfaceMetaUtils(@Reference DataBroker dataBroker,
+                              IdManagerService idManager,
+                              BatchingUtils batchingUtils) {
         this.dataBroker = dataBroker;
         this.idManager = idManager;
         this.batchingUtils = batchingUtils;

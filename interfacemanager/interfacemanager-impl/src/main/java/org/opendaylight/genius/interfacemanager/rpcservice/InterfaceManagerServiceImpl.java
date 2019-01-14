@@ -18,6 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -90,7 +91,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     private final IfIndexInterfaceCache ifIndexInterfaceCache;
 
     @Inject
-    public InterfaceManagerServiceImpl(final DataBroker dataBroker,
+    public InterfaceManagerServiceImpl(@Reference final DataBroker dataBroker,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
             final InterfaceMetaUtils interfaceMetaUtils, final IfIndexInterfaceCache ifIndexInterfaceCache) {
         this.dataBroker = dataBroker;

@@ -19,38 +19,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <odl:rpc-service id="opendaylightDirectStatisticsService"
                      interface="org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.OpendaylightDirectStatisticsService" />
 
-    <reference id="dataBroker"
-               interface="org.opendaylight.controller.md.sal.binding.api.DataBroker" />
-
     <reference id="entityOwnershipService"
                interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService" />
-
-    <reference id="iMdsalApiManager"
-               interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
-
-    <reference id="diagStatusService"
-               interface="org.opendaylight.infrautils.diagstatus.DiagStatusService" />
-
-    <reference id="notificationService"
-               interface="org.opendaylight.controller.md.sal.binding.api.NotificationService" />
-
-    <reference id="jobCoordinator"
-             interface="org.opendaylight.infrautils.jobcoordinator.JobCoordinator"/>
-
-    <reference id="cacheProvider"
-               interface="org.opendaylight.infrautils.caches.CacheProvider"/>
-
-    <reference id="metricProvider"
-               interface="org.opendaylight.infrautils.metrics.MetricProvider"/>
-
-    <reference id="serviceRecoveryRegistry"
-               interface="org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry"/>
-
-    <reference id="dataTreeEventCallbackRegistrar"
-               interface="org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar"/>
-
-    <reference id="hwvtepNodeHACache"
-             interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
 
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 

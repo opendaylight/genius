@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -92,9 +93,10 @@ public class InterfaceInventoryStateListener
     private final InterfacemgrProvider interfacemgrProvider;
 
     @Inject
-    public InterfaceInventoryStateListener(final DataBroker dataBroker, final IdManagerService idManagerService,
+    public InterfaceInventoryStateListener(@Reference final DataBroker dataBroker,
+                                           final IdManagerService idManagerService,
                                            final EntityOwnershipUtils entityOwnershipUtils,
-                                           final JobCoordinator coordinator,
+                                           @Reference final JobCoordinator coordinator,
                                            final InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                            final OvsInterfaceStateAddHelper ovsInterfaceStateAddHelper,
                                            final OvsInterfaceStateUpdateHelper ovsInterfaceStateUpdateHelper,
@@ -102,7 +104,7 @@ public class InterfaceInventoryStateListener
                                            final InterfaceMetaUtils interfaceMetaUtils,
                                            final PortNameCache portNameCache,
                                            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                           final ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                           @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry,
                                            final InterfacemgrProvider interfacemgrProvider) {
         super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
         this.dataBroker = dataBroker;

@@ -12,6 +12,8 @@ import java.util.Collection;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -41,7 +43,7 @@ public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListe
             InstanceIdentifier.create(BridgeRefInfo.class).child(BridgeRefEntry.class));
 
     @Inject
-    public CacheBridgeRefEntryListener(DataBroker dataBroker, InterfaceMetaUtils interfaceMetaUtils) {
+    public CacheBridgeRefEntryListener(@Reference DataBroker dataBroker, InterfaceMetaUtils interfaceMetaUtils) {
         LOG.trace("Registering on path: {}", treeId);
         this.interfaceMetaUtils = interfaceMetaUtils;
         registration = dataBroker.registerDataTreeChangeListener(treeId, CacheBridgeRefEntryListener.this);

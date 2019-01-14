@@ -14,6 +14,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.NotificationService;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -39,7 +41,8 @@ public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
     private final ManagedNewTransactionRunner txRunner;
 
     @Inject
-    public AlivenessMonitorListenerImpl(final DataBroker dataBroker, final NotificationService notificationService) {
+    public AlivenessMonitorListenerImpl(@Reference final DataBroker dataBroker,
+                                        @Reference final NotificationService notificationService) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         notificationService.registerNotificationListener(this);
     }

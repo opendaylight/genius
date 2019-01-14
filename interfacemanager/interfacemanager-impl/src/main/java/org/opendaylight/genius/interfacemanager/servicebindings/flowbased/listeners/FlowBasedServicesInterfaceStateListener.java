@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -61,14 +62,14 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
-    public FlowBasedServicesInterfaceStateListener(final DataBroker dataBroker,
+    public FlowBasedServicesInterfaceStateListener(@Reference final DataBroker dataBroker,
                                                    final EntityOwnershipUtils entityOwnershipUtils,
-                                                   final JobCoordinator coordinator,
+                                                   @Reference final JobCoordinator coordinator,
                                                    final FlowBasedServicesStateRendererFactoryResolver
                                                            flowBasedServicesStateRendererFactoryResolver,
                                                    final InterfaceServiceRecoveryHandler
                                                            interfaceServiceRecoveryHandler,
-                                                   final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                                   @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);

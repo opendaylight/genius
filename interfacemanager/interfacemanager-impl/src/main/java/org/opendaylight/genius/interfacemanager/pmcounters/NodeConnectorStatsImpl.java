@@ -27,6 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -81,13 +83,13 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     private ScheduledFuture<?> scheduledResult;
 
     @Inject
-    public NodeConnectorStatsImpl(DataBroker dataBroker,
+    public NodeConnectorStatsImpl(@Reference DataBroker dataBroker,
                                   final OpendaylightDirectStatisticsService opendaylightDirectStatisticsService,
                                   final EntityOwnershipUtils entityOwnershipUtils,
                                   final PortNameCache portNameCache,
                                   final InterfaceChildCache interfaceChildCache,
                                   final IfmConfig ifmConfigObj,
-                                  final MetricProvider metricProvider) {
+                                  final @Reference  MetricProvider metricProvider) {
         super(Node.class, NodeConnectorStatsImpl.class);
         this.opendaylightDirectStatisticsService = opendaylightDirectStatisticsService;
         this.entityOwnershipUtils = entityOwnershipUtils;

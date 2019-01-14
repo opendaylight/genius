@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.recovery.impl;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryInterface;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
@@ -24,7 +25,7 @@ public class InterfaceServiceRecoveryHandler implements ServiceRecoveryInterface
     private final ServiceRecoveryRegistry serviceRecoveryRegistry;
 
     @Inject
-    public InterfaceServiceRecoveryHandler(final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+    public InterfaceServiceRecoveryHandler(@Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         LOG.info("registering IFM service recovery handlers");
         this.serviceRecoveryRegistry = serviceRecoveryRegistry;
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(buildServiceRegistryKey(), this);

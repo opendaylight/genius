@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -43,8 +45,9 @@ public class OvsInterfaceStateUpdateHelper {
     private final AlivenessMonitorUtils alivenessMonitorUtils;
 
     @Inject
-    public OvsInterfaceStateUpdateHelper(DataBroker dataBroker, AlivenessMonitorUtils alivenessMonitorUtils,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+    public OvsInterfaceStateUpdateHelper(@Reference DataBroker dataBroker,
+                                         AlivenessMonitorUtils alivenessMonitorUtils,
+                                         InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceManagerCommonUtils =  interfaceManagerCommonUtils;
         this.alivenessMonitorUtils = alivenessMonitorUtils;

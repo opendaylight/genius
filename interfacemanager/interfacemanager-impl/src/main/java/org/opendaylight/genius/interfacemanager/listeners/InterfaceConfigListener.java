@@ -11,6 +11,8 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -54,16 +56,16 @@ public class InterfaceConfigListener
     private final OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper;
 
     @Inject
-    public InterfaceConfigListener(DataBroker dataBroker,
+    public InterfaceConfigListener(@Reference DataBroker dataBroker,
                                    InterfacemgrProvider interfaceMgrProvider,
                                    EntityOwnershipUtils entityOwnershipUtils,
-                                   JobCoordinator coordinator,
+                                   @Reference JobCoordinator coordinator,
                                    InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                    OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
                                    OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
                                    OvsInterfaceConfigUpdateHelper ovsInterfaceConfigUpdateHelper,
                                    InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                   ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                   @Reference ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(Interfaces.class).child(Interface.class));
         this.interfaceMgrProvider = interfaceMgrProvider;

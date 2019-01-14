@@ -15,6 +15,8 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
@@ -38,7 +40,8 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
     private final FlowBasedServicesStateRendererFactoryResolver flowBasedServicesStateRendererFactoryResolver;
 
     @Inject
-    public FlowBasedServicesNodeStateListener(final DataBroker dataBroker, final JobCoordinator jobCoordinator,
+    public FlowBasedServicesNodeStateListener(@Reference final DataBroker dataBroker,
+                                              @Reference final JobCoordinator jobCoordinator,
                                               final FlowBasedServicesStateRendererFactoryResolver
                                                       flowBasedServicesStateRendererFactoryResolver) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class));

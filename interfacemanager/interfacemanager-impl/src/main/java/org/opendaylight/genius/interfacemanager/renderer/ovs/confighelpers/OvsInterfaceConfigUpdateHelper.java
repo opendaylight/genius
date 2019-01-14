@@ -18,6 +18,8 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
@@ -55,10 +57,13 @@ public class OvsInterfaceConfigUpdateHelper {
     private final InterfaceMetaUtils interfaceMetaUtils;
 
     @Inject
-    public OvsInterfaceConfigUpdateHelper(DataBroker dataBroker, JobCoordinator coordinator,
-            InterfaceManagerCommonUtils interfaceManagerCommonUtils, AlivenessMonitorUtils alivenessMonitorUtils,
-            OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
-            OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper, InterfaceMetaUtils interfaceMetaUtils) {
+    public OvsInterfaceConfigUpdateHelper(@Reference DataBroker dataBroker,
+                                          @Reference JobCoordinator coordinator,
+                                          InterfaceManagerCommonUtils interfaceManagerCommonUtils,
+                                          AlivenessMonitorUtils alivenessMonitorUtils,
+                                          OvsInterfaceConfigRemoveHelper ovsInterfaceConfigRemoveHelper,
+                                          OvsInterfaceConfigAddHelper ovsInterfaceConfigAddHelper,
+                                          InterfaceMetaUtils interfaceMetaUtils) {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;

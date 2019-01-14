@@ -13,6 +13,8 @@ import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
@@ -34,7 +36,7 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
 
     @Inject
-    public FlowBasedEgressServicesStateBindHelper(final DataBroker dataBroker,
+    public FlowBasedEgressServicesStateBindHelper(@Reference final DataBroker dataBroker,
             final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
         super(dataBroker);
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
