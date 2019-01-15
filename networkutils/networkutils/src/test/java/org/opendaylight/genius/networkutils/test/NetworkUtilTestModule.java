@@ -9,7 +9,6 @@ package org.opendaylight.genius.networkutils.test;
 
 import static org.mockito.Mockito.mock;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.testutils.WrappingDataBrokerTestWiring;
 import org.opendaylight.genius.idmanager.IdManager;
@@ -30,7 +29,7 @@ public class NetworkUtilTestModule extends AbstractGuiceJsr250Module {
     protected void configureBindings() throws Exception {
         DataBrokerTestWiring wiring = new DataBrokerTestWiring();
         WrappingDataBrokerTestWiring legacyWiring = new WrappingDataBrokerTestWiring(wiring.getDOMDataBroker());
-        bind(DataBroker.class).toInstance(legacyWiring.getDataBroker());
+        bind(org.opendaylight.controller.md.sal.binding.api.DataBroker.class).toInstance(legacyWiring.getDataBroker());
         bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(wiring.getDataBroker());
         bind(NetworkConfig.class).toInstance(mock(NetworkConfig.class));
         bind(IdManagerService.class).to(IdManager.class);

@@ -7,21 +7,22 @@
  */
 package org.opendaylight.genius.networkutils.impl;
 
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.networkutils.RDUtils;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -52,13 +53,15 @@ public class RDUtilsImpl implements RDUtils {
 
     private final IdManagerService idManagerService;
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
     private final NetworkConfig networkConfig;
 
     @Inject
     public RDUtilsImpl(NetworkConfig networkConfig, IdManagerService idManagerService,
-                       @Reference DataBroker dataBroker) throws ReadFailedException {
+                       @Reference DataBroker dataBroker) throws ExecutionException, InterruptedException {
         this.idManagerService = idManagerService;
         this.dataBroker = dataBroker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.networkConfig = networkConfig;
         validateAndCreateRDPool();
     }
@@ -109,20 +112,19 @@ public class RDUtilsImpl implements RDUtils {
         }
     }
 
-    public Optional<IdPool> getRDPool() throws ReadFailedException {
-        return SingleTransactionDataBroker.syncReadOptional(dataBroker,
-                LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
+    public Optional<IdPool> getRDPool() throws ExecutionException, InterruptedException {
+        return txRunner.<Configuration, ExecutionException, Optional<IdPool>>
+            applyInterruptiblyWithNewReadOnlyTransactionAndClose(CONFIGURATION,
+                tx -> tx.read(buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME)).get());
     }
 
-    private void validateAndCreateRDPool() throws ReadFailedException {
+    private void validateAndCreateRDPool() throws ExecutionException, InterruptedException {
         long lowLimit = 0L;
         long highLimit = networkConfig.getOpendaylightRdCount();
         if (highLimit == 0L) {
             highLimit = NwConstants.RD_DEFAULT_COUNT;
         }
-        Optional<IdPool> existingIdPool = SingleTransactionDataBroker.syncReadOptional(dataBroker,
-                LogicalDatastoreType.CONFIGURATION,
-                buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
+        Optional<IdPool> existingIdPool = getRDPool();
         if (existingIdPool.isPresent()) {
             IdPool odlRDPool = existingIdPool.get();
             long currentStartLimit = odlRDPool.getAvailableIdsHolder().getStart();
