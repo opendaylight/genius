@@ -9,14 +9,14 @@ package org.opendaylight.genius.networkutils.test;
 
 import static org.mockito.Mockito.mock;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
+import org.opendaylight.genius.mdsal.testutils.DataBrokerTestModule;
 import org.opendaylight.genius.networkutils.VniUtils;
 import org.opendaylight.genius.networkutils.impl.VniUtilsImpl;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.networkutils.config.rev181129.NetworkConfig;
@@ -25,7 +25,7 @@ public class NetworkUtilTestModule extends AbstractGuiceJsr250Module {
 
     @Override
     protected void configureBindings() {
-        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
+        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule();
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
         bind(org.opendaylight.mdsal.binding.api.DataBroker.class).toInstance(
