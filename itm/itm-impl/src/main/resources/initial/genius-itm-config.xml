@@ -7,4 +7,5 @@
     </tunnel-aggregation>
     <default-tunnel-tos>0</default-tunnel-tos>
     <gpe-extension-enabled>false</gpe-extension-enabled>
+    <of-dest-udp-port>2150</of-dest-udp-port>
 </itm-config>
