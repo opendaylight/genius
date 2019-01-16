@@ -40,10 +40,13 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.mdsalutil.matches.MatchIpv4Source;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Prefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
@@ -346,12 +349,13 @@ public final class DirectTunnelUtils {
     }
 
     public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpnId, long portNo,
-        String interfaceName, int ifIndex) {
+                                     String interfaceName, int ifIndex, Ipv4Address ipAddress) {
         LOG.debug("Adding tunnel ingress flow for {}", interfaceName);
         List<MatchInfoBase> matches = new ArrayList<>();
 
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         matches.add(new MatchInPort(dpnId, portNo));
+        matches.add(new MatchIpv4Source(new Ipv4Prefix(ipAddress.getValue())));
         mkInstructions.add(new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex)
             .or(BigInteger.ONE), MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
         short tableId = NwConstants.INTERNAL_TUNNEL_TABLE;
