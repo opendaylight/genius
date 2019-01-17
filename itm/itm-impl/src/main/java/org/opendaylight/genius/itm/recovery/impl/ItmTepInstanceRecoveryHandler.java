@@ -91,7 +91,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.eventCallbacks = eventCallbacks;
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
+                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeEntryCache,
+                ovsBridgeRefEntryCache);
         this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(dataBroker, itmConfig,
                 dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
