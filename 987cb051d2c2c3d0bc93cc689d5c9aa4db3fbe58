@@ -34,6 +34,24 @@
       "revId": "987cb051d2c2c3d0bc93cc689d5c9aa4db3fbe58",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "983f78f5_60c65747",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 791,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-17T10:00:05Z",
+      "side": 1,
+      "message": "I feel println is fine as session.getConsole() doesn\u0027t let you \"grep\" the output, which may be required for verification. This is a known limitation.",
+      "parentUuid": "0b1ce4be_accd3e6a",
+      "revId": "987cb051d2c2c3d0bc93cc689d5c9aa4db3fbe58",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
