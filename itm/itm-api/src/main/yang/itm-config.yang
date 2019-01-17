@@ -47,6 +47,7 @@ module itm-config {
     /* Configuration data */
 
     container vtep-config-schemas {
+      status deprecated;
       list vtep-config-schema {
         key schema-name;
      
@@ -111,6 +112,7 @@ module itm-config {
     
     /* Ip Address book keeping */
     container vtep-ip-pools {
+        status deprecated;
        config true;
        list vtep-ip-pool {
           key subnet-cidr;

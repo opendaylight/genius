@@ -84,6 +84,7 @@ module itm-state {
               type uint64;
           }
           leaf up {
+              status deprecated;
               type boolean;
               config false;
           }
@@ -94,18 +95,22 @@ module itm-state {
               key "portname VLAN-ID ip-address tunnel-type"; /* Multiple tunnels on the same physical port but on different VLAN can be supported */
 
               leaf portname {
+                  status deprecated;
                   type string;
               }
               leaf VLAN-ID {
+                  status deprecated;
                   type uint16;
               }
               leaf ip-address {
                   type inet:ip-address;
               }
               leaf subnet-mask {
+                  status deprecated;
                   type inet:ip-prefix;
               }
               leaf gw-ip-address {
+                  status deprecated;
                   type inet:ip-address;
               }
               list tz-membership {
