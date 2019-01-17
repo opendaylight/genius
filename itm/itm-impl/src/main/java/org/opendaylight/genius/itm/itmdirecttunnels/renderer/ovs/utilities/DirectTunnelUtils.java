@@ -61,6 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
@@ -542,8 +543,8 @@ public final class DirectTunnelUtils {
         return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
     }
 
-    public static String generateOfTunnelName(BigInteger dpId, String tunnelType) {
-        String trunkInterfaceName = String.format("%s:%s", dpId.toString(), tunnelType);
+    public static String generateOfTunnelName(BigInteger dpId, Class<? extends TunnelTypeBase> tunType) {
+        String trunkInterfaceName = String.format("%s:%s", dpId.toString(), getTunnelType(tunType));
         String uuidStr = UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
                 .substring(0, 12).replace("-", "");
         return String.format("%s%s", "tun", uuidStr);
@@ -576,5 +577,17 @@ public final class DirectTunnelUtils {
                         .child(InterfaceParentEntry.class, interfaceParentEntryKey)
                         .child(InterfaceChildEntry.class, interfaceChildEntryKey);
         return intfIdBuilder.build();
+    }
+
+    public static String getTunnelType(Class<? extends TunnelTypeBase> tunType) {
+        String tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
+        if (tunType == null || tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
+        } else if (tunType.isAssignableFrom(TunnelTypeGre.class)) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_GRE;
+        } else if (tunType.isAssignableFrom(TunnelTypeMplsOverGre.class)) {
+            tunnelTypeStr = ITMConstants.TUNNEL_TYPE_MPLSoGRE;
+        }
+        return tunnelTypeStr;
     }
 }
