@@ -128,7 +128,8 @@ public class TerminationPointStateListener extends
                 .SouthboundUtils.changeInBfdMonitoringDetected(tpOld, tpNew)
                 || org.opendaylight.genius.interfacemanager.renderer.ovs.utilities
                 .SouthboundUtils.ifBfdStatusNotEqual(tpOld, tpNew)) {
-            LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
+            LOG.info("Bfd Status changed for ovsdb termination point {}", tpNew.getName());
+            LOG.debug("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
                     identifier, tpOld, tpNew);
             RendererStateUpdateWorker rendererStateAddWorker = new RendererStateUpdateWorker(tpNew);
             coordinator.enqueueJob(tpNew.getName(), rendererStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
