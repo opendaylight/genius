@@ -41,6 +41,7 @@ module itm {
             }
 
             list subnets {
+                status deprecated;
                 key "prefix";
                 leaf prefix {
                     type inet:ip-prefix;
@@ -137,6 +138,7 @@ module itm {
     }
 
     container dc-gateway-ip-list{
+        status deprecated;
         list dc-gateway-ip{
             key "ip-address";
             leaf ip-address{

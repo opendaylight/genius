@@ -47,6 +47,7 @@ module itm-config {
     /* Configuration data */
 
     container vtep-config-schemas {
+      status deprecated;
       list vtep-config-schema {
         key schema-name;
      
