@@ -30,6 +30,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -86,11 +87,13 @@ public final class ItmInternalTunnelAddWorker {
     private final DirectTunnelUtils directTunnelUtils;
     private final IInterfaceManager interfaceManager;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+    private final OvsBridgeEntryCache ovsBridgeEntryCache;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                       TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
                                       DirectTunnelUtils directTunnelUtil,
                                       IInterfaceManager interfaceManager,
+                                      OvsBridgeEntryCache ovsBridgeEntryCache,
                                       OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -98,6 +101,7 @@ public final class ItmInternalTunnelAddWorker {
         this.itmCfg = itmCfg;
         this.directTunnelUtils = directTunnelUtil;
         this.interfaceManager = interfaceManager;
+        this.ovsBridgeEntryCache = ovsBridgeEntryCache;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
 
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
@@ -383,6 +387,25 @@ public final class ItmInternalTunnelAddWorker {
         }
 
         LOG.info("adding tunnel configuration for {}", iface.getName());
+
+        boolean createTunnelPort = true;
+        final String tunnelName;
+        Optional<OvsBridgeEntry> ovsBridgeEntryOptional = null;
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
+        if (directTunnelUtils.isOfTunnel(ifTunnel)) {
+            ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
+            createTunnelPort = ovsBridgeEntryOptional == null
+                    || ovsBridgeEntryOptional.get().getOvsBridgeTunnelEntry() == null
+                    || ovsBridgeEntryOptional.get().getOvsBridgeTunnelEntry().isEmpty();
+            tunnelName = directTunnelUtils.generateOfTunnelName(dpId, ifTunnel);
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, configTx -> {
+                directTunnelUtils.createInterfaceChildEntry(configTx, tunnelName, iface.getName());
+            }));
+        } else {
+            tunnelName = iface.getName();
+        }
+
         LOG.debug("creating bridge interfaceEntry in ConfigDS {}", dpId);
         DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
 
@@ -394,7 +417,9 @@ public final class ItmInternalTunnelAddWorker {
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
                             .getOvsBridgeReference().getValue();
-            addPortToBridge(bridgeIid, iface, iface.getName());
+            if (createTunnelPort) {
+                addPortToBridge(bridgeIid, iface, tunnelName);
+            }
         }
         return Collections.singletonList(transaction.submit());
     }
