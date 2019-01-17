@@ -76,6 +76,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.o
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ExternalTunnelList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.MonitoringRefCountBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
@@ -86,6 +87,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.monitoring.ref.count.MonitoredTunnels;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.monitoring.ref.count.MonitoredTunnelsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
@@ -354,6 +357,26 @@ public class ItmManagerRpcService implements ItmRpcService {
         BigInteger srcDpnId = new BigInteger(input.getSourceNode());
         BigInteger destDpnId = new BigInteger(input.getDestinationNode());
         DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
+        MonitoringRefCountBuilder monitoringRefCountBuilder = new MonitoringRefCountBuilder();
+        MonitoredTunnelsBuilder monitoredTunnelsBuilder = new MonitoredTunnelsBuilder();
+        List<MonitoredTunnels> monitoredTunnels = monitoringRefCountBuilder.getMonitoredTunnels();
+        for (MonitoredTunnels mn : monitoredTunnels) {
+            if (mn.getSourceDpn().equals(srcDpnId) && mn.getDestinationDpn().equals(destDpnId)) {
+                if (dpnTepInterfaceInfo == null) {
+                    //create p2p tunnels
+                }
+                if (input.isMonitoringEnabled()) {
+                    monitoredTunnelsBuilder.setReferenceCount(monitoredTunnelsBuilder.getReferenceCount() + 1);
+                } else {
+                    monitoredTunnelsBuilder.setReferenceCount(monitoredTunnelsBuilder.getReferenceCount() - 1);
+                }
+            }
+        }
+
+        if (monitoredTunnelsBuilder.getReferenceCount() == null) {
+            //delete p2p tunnels
+        }
+
         return fromListenableFuture(LOG, input,
             () -> Futures.transform(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
                 java.util.Objects.requireNonNull(dpnTepInterfaceInfo, "dpnTepInterfaceInfo");
