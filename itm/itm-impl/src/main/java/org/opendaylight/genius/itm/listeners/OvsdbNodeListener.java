@@ -236,6 +236,12 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             LOG.trace("Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}", localIp,
                     tzName, bridgeName, strDpnId);
 
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                LOG.error("Problem in waiting before tep remove {}", e);
+            }
+
             // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
             jobCoordinator.enqueueJob(jobKey, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker));
         }
