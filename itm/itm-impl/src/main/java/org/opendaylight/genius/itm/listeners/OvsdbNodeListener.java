@@ -199,7 +199,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.error("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
                 return;
             }
-            jobKey = isLocalIpUpdated ? oldLocalIp : newLocalIp;
+            //jobKey = isLocalIpUpdated ? oldLocalIp : newLocalIp;
             addOrRemoveTep(tzName, strNewDpnId, jobKey, newLocalIp, newDpnBridgeName,  newOfTunnel, true);
         }
     }
