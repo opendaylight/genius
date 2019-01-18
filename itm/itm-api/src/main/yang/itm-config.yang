@@ -168,5 +168,10 @@ module itm-config {
             type boolean;
             default false;
        }
+       leaf use-of-tunnels {
+          description "Enable OF tunnels on ITM Direct Tunnel.";
+          type boolean;
+          default false;
+       }
     }
 }
