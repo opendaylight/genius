@@ -228,6 +228,12 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             LOG.trace("Update case: Adding TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}, of-tunnel: {}",
                     localIp, tzName, bridgeName, strDpnId, newOfTunnel);
 
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                LOG.error("Problem in waiting before tep add {}", e);
+            }
+
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
             jobCoordinator.enqueueJob(jobKey,
                     new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker));
