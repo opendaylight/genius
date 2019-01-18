@@ -29,10 +29,5 @@ module ifm-config {
           type boolean;
           default false;
        }
-       leaf use-of-tunnels {
-          description "Enable the ITM to handle OF tunnels directly by-passing interface manager.";
-          type boolean;
-          default false;
-       }
     }
 }
