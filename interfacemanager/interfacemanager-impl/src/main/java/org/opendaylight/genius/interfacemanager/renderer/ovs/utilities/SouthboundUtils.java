@@ -315,14 +315,11 @@ public class SouthboundUtils {
             tpAugmentationBuilder.setVlanMode(OvsdbPortInterfaceAttributes.VlanMode.Access);
             tpAugmentationBuilder.setVlanTag(new VlanId(vlanId));
         }
-
-        if (bfdMonitoringEnabled(ifTunnel)) {
-            if (isOfTunnel(ifTunnel)) {
-                LOG.warn("BFD Monitoring not supported for OFTunnels");
-            } else {
-                List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
-                tpAugmentationBuilder.setInterfaceBfd(bfdParams);
-            }
+        if (isOfTunnel(ifTunnel)) {
+            LOG.warn("BFD Monitoring not supported for OFTunnels");
+        } else {
+            List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
+            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
         }
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
