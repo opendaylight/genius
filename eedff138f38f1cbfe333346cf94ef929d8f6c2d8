@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "9b5cb11c_8a205677",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-19T01:08:30Z",
+      "side": 1,
+      "message": "Why don\u0027t you initialize dataBrokerTest in the ctor? If someone created an instance and called getDOMDataBroker...boom...",
+      "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "621c9f9f_6f650217",
         "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
         "patchSetId": 2
@@ -47,6 +64,24 @@
       "writtenOn": "2019-01-19T00:50:13Z",
       "side": 1,
       "message": "we would want to just stick this into the existing mdsalutil-testutils instead of yet another ;) artifact, for these 2 classes?  (Actually we should ideally have it elsewhere anyway, see main comment...)",
+      "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bcc16a10_af91d59e",
+        "filename": "mdsalutil/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1842
+      },
+      "writtenOn": "2019-01-19T01:08:30Z",
+      "side": 1,
+      "message": "+1 - these should be temporary in here anyway",
+      "parentUuid": "b77d50dc_800bd065",
       "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
