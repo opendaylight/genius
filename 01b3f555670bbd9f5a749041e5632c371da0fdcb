@@ -16,6 +16,24 @@
       "revId": "01b3f555670bbd9f5a749041e5632c371da0fdcb",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a189f75_32bf6426",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T06:48:45Z",
+      "side": 0,
+      "message": "Earlier, BFDParams were only set if monitoring is enabled. If the user disables it, IFM was not configuring the BFD params. \nNow, irrespective of whether BFD is enabled/disabled, BFDParams will still be configured.",
+      "parentUuid": "df6e2b80_edf00ebf",
+      "revId": "01b3f555670bbd9f5a749041e5632c371da0fdcb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
