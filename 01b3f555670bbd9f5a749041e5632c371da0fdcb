@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df6e2b80_edf00ebf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/utilities/SouthboundUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 319,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T06:42:43Z",
+      "side": 0,
+      "message": "Why was this check removed ? Someone can always enable BFD.\nCan you please explain this.\n\nI understand that upgrade is affected by the change in default. Is that taken care ?",
+      "revId": "01b3f555670bbd9f5a749041e5632c371da0fdcb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
