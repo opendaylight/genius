@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7c779c74_10f325d5",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-21T14:25:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61143e43_1ca29834",
+      "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b5cb11c_8a205677",
         "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
         "patchSetId": 2
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "537485ba_2a4f108b",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-21T14:25:37Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9b5cb11c_8a205677",
+      "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "621c9f9f_6f650217",
         "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
         "patchSetId": 2
@@ -47,6 +83,24 @@
       "writtenOn": "2019-01-19T00:50:13Z",
       "side": 1,
       "message": "wouldn\u0027t it be clearer to throw an Exception here?  Or even simply:\n\n    return (SchemaContextProvider) dataBrokerTest.getDataBrokerTestCustomizer().getSchemaService();\n\nbecause failing early by ClassCastException here seems better than an NPE in some test later...\n\nThe \"original\" where this is inspired from, in https://github.com/opendaylight/controller/blob/master/opendaylight/md-sal/sal-binding-broker/src/test/java/org/opendaylight/controller/md/sal/binding/test/DataBrokerTestModule.java, also does that.",
+      "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f8e525c_2bad33dc",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestModule.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-21T14:25:37Z",
+      "side": 1,
+      "message": "SpotBugs doesn\u0027t like the original ;-). I\u0027ve updated it to throw an IllegalStateException is the schema service isn\u0027t what we expect.",
+      "parentUuid": "621c9f9f_6f650217",
       "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -82,6 +136,24 @@
       "side": 1,
       "message": "+1 - these should be temporary in here anyway",
       "parentUuid": "b77d50dc_800bd065",
+      "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3bc864fd_111abeec",
+        "filename": "mdsalutil/pom.xml",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-21T14:25:37Z",
+      "side": 1,
+      "message": "I added a new artifact to simplify the migration: when I migrate a Genius module, I rip out all the controller dependencies, add in mdsal and mdsal-testutils, and fix everything so the module builds and runs again.",
+      "parentUuid": "bcc16a10_af91d59e",
       "revId": "eedff138f38f1cbfe333346cf94ef929d8f6c2d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
