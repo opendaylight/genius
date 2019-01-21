@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2637ff8d_ed6ae15d",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T06:31:03Z",
+      "side": 1,
+      "message": "This should also be deprecated.",
+      "revId": "d9414519d8fbaeab6a918acae08c212386e967f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "040235e8_42117b5d",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T06:31:03Z",
+      "side": 1,
+      "message": "I think this also should be deprecated",
+      "revId": "d9414519d8fbaeab6a918acae08c212386e967f5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
