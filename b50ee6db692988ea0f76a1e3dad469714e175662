@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "bdba71a6_16fb947b",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "82697a08_5b5c28d7",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "361d89af_88deac5d",
         "filename": "docs/testplans/of-tunnels.rst",
         "patchSetId": 4
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "91cbd905_85e83d15",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "361d89af_88deac5d",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2838570e_1473b412",
         "filename": "docs/testplans/of-tunnels.rst",
         "patchSetId": 4
@@ -47,6 +83,24 @@
       "writtenOn": "2019-01-21T02:05:59Z",
       "side": 1,
       "message": "TC description states \"deletion of TZ\" but the steps state deletion of tep.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f58fbb2_8242e562",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2838570e_1473b412",
       "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +141,24 @@
     },
     {
       "key": {
+        "uuid": "9a0abc22_8e5d6a32",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ae750523_5f63fe70",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9664469e_ee9a92ba",
         "filename": "docs/testplans/of-tunnels.rst",
         "patchSetId": 4
@@ -98,6 +170,24 @@
       "writtenOn": "2019-01-21T02:05:59Z",
       "side": 1,
       "message": "OF Tunnel config flag is a global paameter which needs to be set initially or during upgrade; it cannot be changed after creation of mesh.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "64c7f8bb_a9f5445a",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9664469e_ee9a92ba",
       "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +211,24 @@
     },
     {
       "key": {
+        "uuid": "86e80feb_1c6fd07c",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "933e8351_4a99f24f",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "df3e5904_0569a5a1",
         "filename": "docs/testplans/of-tunnels.rst",
         "patchSetId": 4
@@ -132,6 +240,24 @@
       "writtenOn": "2019-01-21T02:05:59Z",
       "side": 1,
       "message": "For BFD test cases, need to verify the count and ensure that the parent-child mapping is created/deleted.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da8d3f25_b9a64cca",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 7976
+      },
+      "writtenOn": "2019-01-21T07:37:45Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "df3e5904_0569a5a1",
       "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
