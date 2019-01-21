@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "82697a08_5b5c28d7",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "There cannot be TEPs in a TZ with and without OF-Tunnels together i.e., all TEPs in TZ will be either with OF-Tunnels or non OF-Tunnels.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "361d89af_88deac5d",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "Same as previous comment.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2838570e_1473b412",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "TC description states \"deletion of TZ\" but the steps state deletion of tep.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "15de8be8_6faf089d",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "This is not a valid TC as TZ cannot support hybrid teps i.e., both OF and non OF Tunnels.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ae750523_5f63fe70",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "Same as earlier",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9664469e_ee9a92ba",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 141,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "OF Tunnel config flag is a global paameter which needs to be set initially or during upgrade; it cannot be changed after creation of mesh.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "933e8351_4a99f24f",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "Same as earlier.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "df3e5904_0569a5a1",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 4
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-21T02:05:59Z",
+      "side": 1,
+      "message": "For BFD test cases, need to verify the count and ensure that the parent-child mapping is created/deleted.",
+      "revId": "b50ee6db692988ea0f76a1e3dad469714e175662",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
