@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5267b6e9_63a1bbf7",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-21T16:43:09Z",
+      "side": 1,
+      "message": "I think this @Reference for EntityOwnershipUtils is wrong... EntityOwnershipUtils is *NOT* an OSGi Service, but a \"utility\" which you are creating through the \u003cbean\u003e tag in the XML, isn\u0027t it?  Remove (just) this @Reference and I think SFT will pass..",
+      "revId": "9fcf46cff68cc0d0f6b6740a566ec2573368838c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
