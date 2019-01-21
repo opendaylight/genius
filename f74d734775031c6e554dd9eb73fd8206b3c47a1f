@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d1b2e6e5_b80f8c4a",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T17:39:57Z",
+      "side": 1,
+      "message": "Switch version - OVS 2.6 or above",
+      "revId": "f74d734775031c6e554dd9eb73fd8206b3c47a1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3d4b6498_dc246921",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T17:39:57Z",
+      "side": 1,
+      "message": "Complete tunnel mesh creation can be verified in two parts.\na. Verify that only one tunnel port is created per switch.\nb. tep:show-state displays all the N*N-1 tunnels",
+      "revId": "f74d734775031c6e554dd9eb73fd8206b3c47a1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "08408b9c_4884ae5a",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T17:39:57Z",
+      "side": 1,
+      "message": "Please add one test case for single vtep addition after the initial tunnel creation. Similarly, please add a test case for single vtep deletion.",
+      "revId": "f74d734775031c6e554dd9eb73fd8206b3c47a1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "669bcb1f_9ffc097f",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 115,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T17:39:57Z",
+      "side": 1,
+      "message": "Please add test case to enable BFD monitoring and then bring the interface \"down\", this should result in the appropriate tunnel going down in the tep:show-state CLI.\nAnother test to bring the interface \"UP\" and verify the releavant tunnel status going to UP state",
+      "revId": "f74d734775031c6e554dd9eb73fd8206b3c47a1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a2753dac_13b716dd",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T17:39:57Z",
+      "side": 1,
+      "message": "Add a test case where the BFD count if non-zero and the vtep is deleted. Verify that the P2P tunnel is also cleaned up along with the OFTunnel. Make sure all the relevant datastores such as DPNTepsState, parent-child interface map, tunnel_State operational DS and BFD reference count map, flows are all cleaned up.",
+      "revId": "f74d734775031c6e554dd9eb73fd8206b3c47a1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "95656661_bccff726",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-21T17:39:57Z",
+      "side": 1,
+      "message": "Add test cases to invoke BFD enable rpc multiple times and check the eference count increases appropriately. Similarly verify reference count by invoking the delete BFD monitoring RPC.",
+      "revId": "f74d734775031c6e554dd9eb73fd8206b3c47a1f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
