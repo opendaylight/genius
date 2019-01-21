@@ -128,10 +128,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.DstInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.SrcInfoBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -174,7 +172,7 @@ public final class ItmUtils {
     private ItmUtils() {
     }
 
-    public static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
+    public static final FutureCallback<Void> DEFAULT_WRITE_CALLBACK = new FutureCallback<Void>() {
         @Override
         public void onSuccess(Void result) {
             LOG.debug("Success in Datastore write operation");
@@ -1130,20 +1128,6 @@ public final class ItmUtils {
         return result;
     }
 
-    public static List<DcGatewayIp> getDcGatewayIpList(DataBroker broker) {
-        InstanceIdentifier<DcGatewayIpList> dcGatewayIpListid =
-                InstanceIdentifier.builder(DcGatewayIpList.class).build();
-        Optional<DcGatewayIpList> dcGatewayIpListConfig =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, dcGatewayIpListid, broker);
-        if (dcGatewayIpListConfig.isPresent()) {
-            DcGatewayIpList containerList = dcGatewayIpListConfig.get();
-            if (containerList != null) {
-                return containerList.getDcGatewayIp();
-            }
-        }
-        return null;
-    }
-
     public static boolean falseIfNull(Boolean value) {
         return value == null ? false : value;
     }
@@ -1413,8 +1397,7 @@ public final class ItmUtils {
     }
 
     public static InstanceIdentifier<StateTunnelList> buildStateTunnelListId(StateTunnelListKey tlKey) {
-        return InstanceIdentifier.builder(TunnelsState.class)
-                .child(StateTunnelList.class, tlKey).build();
+        return InstanceIdentifier.builder(TunnelsState.class).child(StateTunnelList.class, tlKey).build();
     }
 
     @Nonnull

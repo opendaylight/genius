@@ -8,12 +8,14 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
@@ -32,6 +34,7 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
     private final String tzone;
     private final boolean enabled;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
+    private final ManagedNewTransactionRunner txRunner;
 
     public ItmMonitorToggleWorker(String tzone, boolean enabled,
             Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker) {
@@ -39,40 +42,39 @@ public class ItmMonitorToggleWorker implements Callable<List<ListenableFuture<Vo
         this.tzone = tzone;
         this.enabled = enabled;
         this.monitorProtocol = monitorProtocol;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and toggleBoolean {}",tzone,enabled);
         LOG.debug("TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
     }
 
     @Override public List<ListenableFuture<Void>> call() {
         LOG.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled);
-        WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        toggleTunnelMonitoring(transaction);
-        return Collections.singletonList(transaction.submit());
+        return toggleTunnelMonitoring();
     }
 
-    private void toggleTunnelMonitoring(WriteTransaction transaction) {
+    private List<ListenableFuture<Void>> toggleTunnelMonitoring() {
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
         LOG.debug("toggleTunnelMonitoring: TunnelList size {}", tunnelList.size());
         InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.builder(TunnelMonitorParams.class).build();
-        TunnelMonitorParams protocolBuilder = new TunnelMonitorParamsBuilder()
+        TunnelMonitorParams monitorParams = new TunnelMonitorParamsBuilder()
                 .setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
         LOG.debug("toggleTunnelMonitoring: Updating Operational DS");
-        ItmUtils.asyncUpdate(LogicalDatastoreType.OPERATIONAL,iid, protocolBuilder,
-                dataBroker, ItmUtils.DEFAULT_CALLBACK);
-
-        for (String tunnel : tunnelList) {
-            toggle(tunnel, transaction);
-        }
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+            tx -> tx.merge(iid, monitorParams, true)));
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+            tx -> tunnelList.forEach(tunnel -> toggle(tunnel, tx))));
+        return futures;
     }
 
-    private void toggle(String tunnelInterfaceName, WriteTransaction transaction) {
+    private void toggle(String tunnelInterfaceName, TypedWriteTransaction<Datastore.Configuration> tx) {
         if (tunnelInterfaceName != null) {
             InstanceIdentifier<IfTunnel> trunkIdentifier = ItmUtils.buildTunnelId(tunnelInterfaceName);
-            LOG.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {},  "
+            LOG.debug("TunnelMonitorToggleWorker: tunnelInterfaceName: {}, monitorProtocol = {}, "
                     + "monitorEnable = {} ",tunnelInterfaceName, monitorProtocol, enabled);
-            IfTunnel tunnel = new IfTunnelBuilder().setMonitorEnabled(enabled)
-                    .setMonitorProtocol(monitorProtocol).build();
-            transaction.merge(LogicalDatastoreType.CONFIGURATION, trunkIdentifier, tunnel);
+            IfTunnel tunnel =
+                    new IfTunnelBuilder().setMonitorEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
+            tx.merge(trunkIdentifier, tunnel);
         }
     }
 }
