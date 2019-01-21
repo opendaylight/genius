@@ -17,8 +17,8 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
@@ -87,7 +87,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
             jobCoordinator.enqueueJob(ITMConstants.ITM_PREFIX + iface.getName(),
-                () -> ItmTunnelStateRemoveHelper.removeTunnel(iface, dataBroker));
+                () -> ItmTunnelStateRemoveHelper.removeTunnel(iface));
             if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
                 tunnelAggregationHelper.updateLogicalTunnelState(iface, ItmTunnelAggregationHelper.DEL_TUNNEL,
                                                                  dataBroker);
@@ -119,40 +119,41 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
 
     private List<ListenableFuture<Void>> updateTunnel(Interface updated) throws Exception {
         LOG.debug("Invoking ItmTunnelStateUpdateHelper for Interface {} ", updated);
-        final WriteTransaction writeTransaction = dataBroker.newWriteOnlyTransaction();
-
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(updated);
         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, updated.getName());
-        InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
-        Optional<StateTunnelList> tunnelsState = tunnelStateCache.get(stListId);
         StateTunnelListBuilder stlBuilder;
         TunnelOperStatus tunnelOperStatus;
-        boolean tunnelState = OperStatus.Up.equals(updated.getOperStatus());
-        switch (updated.getOperStatus()) {
-            case Up:
-                tunnelOperStatus = TunnelOperStatus.Up;
-                break;
-            case Down:
-                tunnelOperStatus = TunnelOperStatus.Down;
-                break;
-            case Unknown:
-                tunnelOperStatus = TunnelOperStatus.Unknown;
-                break;
-            default:
-                tunnelOperStatus = TunnelOperStatus.Ignore;
+        try {
+            InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
+            Optional<StateTunnelList> tunnelsState = tunnelStateCache.get(stListId);
+            boolean tunnelState = OperStatus.Up.equals(updated.getOperStatus());
+            switch (updated.getOperStatus()) {
+                case Up:
+                    tunnelOperStatus = TunnelOperStatus.Up;
+                    break;
+                case Down:
+                    tunnelOperStatus = TunnelOperStatus.Down;
+                    break;
+                case Unknown:
+                    tunnelOperStatus = TunnelOperStatus.Unknown;
+                    break;
+                default:
+                    tunnelOperStatus = TunnelOperStatus.Ignore;
+            }
+            if (tunnelsState.isPresent()) {
+                stlBuilder = new StateTunnelListBuilder(tunnelsState.get());
+                stlBuilder.setTunnelState(tunnelState);
+                stlBuilder.setOperState(tunnelOperStatus);
+                StateTunnelList stList = stlBuilder.build();
+                LOG.trace("Batching the updation of tunnel_state: {} for Id: {}", stList, stListId);
+                ITMBatchingUtils.update(stListId, stList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
+            } else {
+                LOG.debug("Tunnel is not yet added but an update has come in for {},so cache it", updated.getName());
+                unprocessedTunnelsStateCache.add(updated.getName(), tunnelOperStatus);
+            }
+        } catch (ReadFailedException e) {
+            LOG.debug("TunnelState cache returned with error while processing {}", updated.getName());
         }
-        if (tunnelsState.isPresent()) {
-            stlBuilder = new StateTunnelListBuilder(tunnelsState.get());
-            stlBuilder.setTunnelState(tunnelState);
-            stlBuilder.setOperState(tunnelOperStatus);
-            StateTunnelList stList = stlBuilder.build();
-            LOG.trace("Batching the updation of tunnel_state: {} for Id: {}", stList, stListId);
-            ITMBatchingUtils.update(stListId, stList, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
-        } else {
-            LOG.debug("Tunnel is not yet added but an update has come in for {},so cache it",updated.getName());
-            unprocessedTunnelsStateCache.add(updated.getName(),tunnelOperStatus);
-        }
-
-        return Collections.singletonList(writeTransaction.submit());
+        return Collections.emptyList();
     }
 }

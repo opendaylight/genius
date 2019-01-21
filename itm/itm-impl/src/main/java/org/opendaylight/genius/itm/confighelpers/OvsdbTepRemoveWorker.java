@@ -8,11 +8,11 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,23 +24,22 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
     private final String strDpid;
     private final String tzName;
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
     public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName, DataBroker broker) {
         this.tepIp = tepIp;
         this.strDpid = strDpid;
         this.tzName = tzName;
-        this.dataBroker = broker ;
+        this.dataBroker = broker;
+        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
 
         LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
 
         // remove TEP received from southbound OVSDB from ITM config DS.
-        OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, wrTx);
-
-        return Collections.singletonList(wrTx.submit());
+        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, txRunner);
     }
 }

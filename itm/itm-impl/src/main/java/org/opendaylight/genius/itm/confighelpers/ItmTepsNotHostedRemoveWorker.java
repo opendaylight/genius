@@ -13,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
+import org.opendaylight.genius.infra.Datastore;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,23 +27,24 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
     private final String tzName;
     private final BigInteger dpnId;
     private final DataBroker dataBroker;
+    private final ManagedNewTransactionRunner txRunner;
 
-    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId, DataBroker broker) {
+    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId, DataBroker broker,
+                                        ManagedNewTransactionRunner txRunner) {
         this.tepIpAddress = tepIpAddress;
         this.tzName = tzName;
         this.dpnId = dpnId;
-        this.dataBroker = broker ;
+        this.dataBroker = broker;
+        this.txRunner = txRunner;
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
-        WriteTransaction wrTx = dataBroker.newWriteOnlyTransaction();
-
         LOG.trace("Remove TEP from TepsNotHosted list task is picked from DataStoreJobCoordinator for execution.");
 
         // Remove TEP from TepsNotHosted list.
-        OvsdbTepRemoveConfigHelper.removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, wrTx);
-
-        return Collections.singletonList(wrTx.submit());
+        return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
+            tx -> OvsdbTepRemoveConfigHelper
+                    .removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, tx)));
     }
 }
