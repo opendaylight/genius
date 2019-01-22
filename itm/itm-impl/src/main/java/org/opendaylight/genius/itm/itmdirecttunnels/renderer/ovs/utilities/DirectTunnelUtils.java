@@ -577,4 +577,31 @@ public final class DirectTunnelUtils {
                         .child(InterfaceChildEntry.class, interfaceChildEntryKey);
         return intfIdBuilder.build();
     }
+
+    public static InstanceIdentifier<InterfaceParentEntry> getInterfaceParentEntryIdentifier(
+            InterfaceParentEntryKey interfaceParentEntryKey) {
+        InstanceIdentifier.InstanceIdentifierBuilder<InterfaceParentEntry> intfIdBuilder =
+                InstanceIdentifier.builder(InterfaceChildInfo.class)
+                        .child(InterfaceParentEntry.class, interfaceParentEntryKey);
+        return intfIdBuilder.build();
+    }
+
+    public void deleteInterfaceChildEntry(String parentInterface, String childInterface) {
+        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
+        InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(childInterface);
+        InstanceIdentifier<InterfaceChildEntry> intfId = getInterfaceChildEntryIdentifier(interfaceParentEntryKey,
+                interfaceChildEntryKey);
+        ITMBatchingUtils.delete(intfId, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+    }
+
+    public boolean deleteParentInterfaceEntry(String parentInterface) {
+        if (parentInterface == null) {
+            return false;
+        }
+        InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentInterface);
+        InstanceIdentifier<InterfaceParentEntry> interfaceParentEntryIdentifier =
+                getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
+        ITMBatchingUtils.delete(interfaceParentEntryIdentifier, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        return true;
+    }
 }
