@@ -83,6 +83,13 @@ module itm-state {
           leaf DPN-ID {
               type uint64;
           }
+
+          leaf dst-id {
+              type int32 {
+                  range "1..2147483647";
+              }
+          }
+
           leaf up {
               status deprecated;
               type boolean;

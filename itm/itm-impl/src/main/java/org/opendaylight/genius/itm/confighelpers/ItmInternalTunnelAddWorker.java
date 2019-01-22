@@ -29,6 +29,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
@@ -56,6 +57,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsStateBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsBuilder;
@@ -81,7 +83,6 @@ public final class ItmInternalTunnelAddWorker {
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
 
     private final DataBroker dataBroker;
-    private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator jobCoordinator;
     private final DirectTunnelUtils directTunnelUtils;
     private final IInterfaceManager interfaceManager;
@@ -93,7 +94,6 @@ public final class ItmInternalTunnelAddWorker {
                                       IInterfaceManager interfaceManager,
                                       OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
         this.dataBroker = dataBroker;
-        this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
         this.itmCfg = itmCfg;
         this.directTunnelUtils = directTunnelUtil;
@@ -105,32 +105,33 @@ public final class ItmInternalTunnelAddWorker {
         monitorInterval = tunnelMonitoringConfig.getMonitorInterval();
     }
 
-    public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
-                                                        Collection<DPNTEPsInfo> meshedDpnList) {
+    public void buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
+        Collection<DPNTEPsInfo> meshedDpnList, TypedReadWriteTransaction<Configuration> tx)
+            throws ExecutionException, InterruptedException, OperationFailedException   {
         LOG.trace("Building tunnels with DPN List {} " , cfgdDpnList);
         if (null == cfgdDpnList || cfgdDpnList.isEmpty()) {
             LOG.error(" Build Tunnels was invoked with empty list");
-            return Collections.emptyList();
+            return;
         }
 
-        return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
-            for (DPNTEPsInfo dpn : cfgdDpnList) {
-                //#####if dpn is not in meshedDpnList
-                buildTunnelFrom(tx, dpn, meshedDpnList, mdsalManager);
-                if (meshedDpnList != null) {
-                    meshedDpnList.add(dpn);
-                }
-                // Update the config datastore -- FIXME -- Error Handling
-                updateDpnTepInfoToConfig(tx, dpn);
+        for (DPNTEPsInfo dpn : cfgdDpnList) {
+            //#####if dpn is not in meshedDpnList
+            buildTunnelFrom(tx, dpn, meshedDpnList, mdsalManager);
+            if (meshedDpnList != null) {
+                meshedDpnList.add(dpn);
             }
-        }));
+            // Update the config datastore -- FIXME -- Error Handling
+            updateDpnTepInfoToConfig(tx, dpn, directTunnelUtils);
+        }
     }
 
-    private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn) {
+    private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn,
+        DirectTunnelUtils directTunnelUtils) throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
-        dpnList.add(dpn) ;
+        dpnList.add(new DPNTEPsInfoBuilder(dpn)
+            .setDstId(directTunnelUtils.allocateId(IfmConstants.IFM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
         tx.merge(dep, tnlBuilder);
     }
