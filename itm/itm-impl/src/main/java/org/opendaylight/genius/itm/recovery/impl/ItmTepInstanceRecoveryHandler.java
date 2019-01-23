@@ -25,6 +25,7 @@ import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
+import org.opendaylight.genius.itm.cache.OfEndPointCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
@@ -85,6 +86,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                                          IInterfaceManager interfaceManager,
                                          ServiceRecoveryRegistry serviceRecoveryRegistry,
                                          EntityOwnershipUtils entityOwnershipUtils,
+                                         OfEndPointCache ofEndPointCache,
                                          DataTreeEventCallbackRegistrar eventCallbacks) {
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
@@ -95,8 +97,10 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         this.eventCallbacks = eventCallbacks;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
-        this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig, dpntePsInfoCache);
+                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager,
+                ovsBridgeRefEntryCache, ofEndPointCache);
+        this.itmExternalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig,
+                dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
                 ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils);

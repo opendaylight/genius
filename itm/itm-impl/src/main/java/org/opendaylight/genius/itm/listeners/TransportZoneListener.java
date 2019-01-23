@@ -29,6 +29,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OfEndPointCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -106,6 +107,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final DpnTepStateCache dpnTepStateCache, final OvsBridgeEntryCache ovsBridgeEntryCache,
                                  final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                  final IInterfaceManager interfaceManager,
+                                 final OfEndPointCache ofEndPointCache,
                                  final ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
@@ -120,7 +122,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
                 ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager, ovsBridgeRefEntryCache);
+                tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager,
+                ovsBridgeRefEntryCache, ofEndPointCache);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig, dpnTEPsInfoCache);
         serviceRecoveryRegistry.addRecoverableListener(ItmServiceRecoveryHandler.getServiceRegistryKey(), this);
     }
