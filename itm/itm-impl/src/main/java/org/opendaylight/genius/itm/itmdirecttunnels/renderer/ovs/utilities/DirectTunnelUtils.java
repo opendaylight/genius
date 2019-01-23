@@ -11,11 +11,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -497,7 +499,9 @@ public final class DirectTunnelUtils {
             tpAugmentationBuilder.setVlanTag(new VlanId(vlanId));
         }
 
-        if (ifTunnel.isMonitorEnabled()
+        if (itmConfig.isUseOfTunnels()) {
+            LOG.warn("BFD Monitoring not supported for OFTunnels");
+        } else if (ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) { //checkBfdMonEnabled
             List<InterfaceBfd> bfdParams = DirectTunnelUtils.getBfdParams(ifTunnel);
             tpAugmentationBuilder.setInterfaceBfd(bfdParams);
@@ -574,5 +578,12 @@ public final class DirectTunnelUtils {
 
     public boolean isEntityOwner() {
         return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
+    }
+
+    public static String generateOfPortName(BigInteger dpId, String tunnelType) {
+        String trunkInterfaceName = String.format("%s:%s", dpId.toString(), tunnelType);
+        String uuidStr = UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
+                .substring(0, 12).replace("-", "");
+        return String.format("%s%s", "of", uuidStr);
     }
 }
