@@ -11,10 +11,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
@@ -57,6 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.IfIndexesTunnelMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.OvsBridgeRefInfo;
@@ -170,13 +173,15 @@ public final class DirectTunnelUtils {
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalApiManager;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final ItmConfig itmConfig;
 
     @Inject
     public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager,
-                             final EntityOwnershipUtils entityOwnershipUtils) {
+                             final EntityOwnershipUtils entityOwnershipUtils, final ItmConfig itmConfig) {
         this.idManagerService = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.itmConfig = itmConfig;
     }
 
     public KeyedLocks<String> getTunnelLocks() {
@@ -398,8 +403,12 @@ public final class DirectTunnelUtils {
         IpAddress localIp = ifTunnel.getTunnelSource();
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
 
-        IpAddress remoteIp = ifTunnel.getTunnelDestination();
-        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        if (itmConfig.isUseOfTunnels()) {
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress remoteIp = ifTunnel.getTunnelDestination();
+            options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        }
 
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
@@ -451,7 +460,9 @@ public final class DirectTunnelUtils {
             tpAugmentationBuilder.setVlanTag(new VlanId(vlanId));
         }
 
-        if (ifTunnel.isMonitorEnabled()
+        if (itmConfig.isUseOfTunnels()) {
+            LOG.warn("BFD Monitoring not supported for OFTunnels");
+        } else if (ifTunnel.isMonitorEnabled()
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol())) { //checkBfdMonEnabled
             List<InterfaceBfd> bfdParams = DirectTunnelUtils.getBfdParams(ifTunnel);
             tpAugmentationBuilder.setInterfaceBfd(bfdParams);
@@ -528,5 +539,12 @@ public final class DirectTunnelUtils {
 
     public boolean isEntityOwner() {
         return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
+    }
+
+    public static String generateOfPortName(BigInteger dpId, String tunnelType) {
+        String trunkInterfaceName = String.format("%s:%s", dpId.toString(), tunnelType);
+        String uuidStr = UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
+                .substring(0, 12).replace("-", "");
+        return String.format("%s%s", "of", uuidStr);
     }
 }
