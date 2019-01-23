@@ -261,18 +261,17 @@ module itm-state {
                 mandatory true;
             }
 
+            leaf of-tunnel {
+                description "Specifies OFTunnel port name when OFTunnel is enabled on ITM Direct Tunnels";
+                type string;
+            }
+
             /* Remote DPNs to which this DPN-Tep has a tunnel */
             list remote-dpns {
                 key "destination-dpn-id";
                 leaf destination-dpn-id {
                     type uint64;
                     mandatory true;
-                }
-
-                leaf option-of-tunnel {
-                    description "Use flow based tunnels for remote-ip";
-                    type boolean;
-                    default false;
                 }
 
                 leaf tunnel-name {
@@ -284,14 +283,12 @@ module itm-state {
                 /* The monitor profile will contain monitoring related params */
                 leaf monitoring-enabled {
                     type boolean;
-                    mandatory true;
                 }
 
                 leaf monitoring-interval {
                     type uint16 {
                         range "1000..30000";
                     }
-                    mandatory true;
                 }
 
                 leaf internal {
