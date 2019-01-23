@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c835fe14_ce156cff",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-01-23T09:54:06Z",
+      "side": 1,
+      "message": "of-tunnel..put some description to clarify in which cases this will be populated",
+      "revId": "3f0b19e6b393a3fdb1781e65273e9d6ec9cbdf30",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
