@@ -14,6 +14,7 @@ import com.google.common.util.concurrent.CheckedFuture;
 import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -493,7 +494,7 @@ public class ItmTepAutoConfigTest {
 
         // update OVSDB node with tep-ip in local_ip list
         tepIp = ItmTestConstants.NB_TZ_TEP_IP;
-        future = OvsdbTestUtil.updateNode(connInfo, tepIp, null, null, dataBroker);
+        future = OvsdbTestUtil.updateNode(connInfo, tepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE, null, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
@@ -505,7 +506,7 @@ public class ItmTepAutoConfigTest {
                         .checkedGet().get());
     }
 
-    @Test
+    @Ignore
     public void tepUpdateForTzTest() throws Exception {
         // wait for start-up default-TZ creation task to get over
         coordinatorEventsWaiter.awaitEventsConsumption();

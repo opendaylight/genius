@@ -337,6 +337,18 @@ public final class ItmUtils {
                 .build();
     }
 
+    public static TunnelEndPoints createDummyTunnelEndPoints(BigInteger dpnID, IpAddress ipAddress, boolean ofTunnel,
+                                                              String tos, List<TzMembership> zones,
+                                                              Class<? extends TunnelTypeBase>  tunnelType) {
+        String port = ITMConstants.DUMMY_PORT;
+        int vlanID = ITMConstants.DUMMY_VLANID;
+        IpPrefix ipPrefix = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX);
+        IpAddress gatewayIP = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP);
+
+        return ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port, ofTunnel,vlanID, ipPrefix,
+                        gatewayIP, zones, tunnelType, tos);
+    }
+
     public static DpnEndpoints createDpnEndpoints(List<DPNTEPsInfo> dpnTepInfo) {
         return new DpnEndpointsBuilder().setDPNTEPsInfo(dpnTepInfo).build();
     }
