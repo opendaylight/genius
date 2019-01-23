@@ -12,6 +12,8 @@ import static org.mockito.Mockito.mock;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
+import org.opendaylight.genius.datastoreutils.listeners.internal.DataTreeEventCallbackRegistrarImpl;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
@@ -86,6 +88,9 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
         DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+        DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar =
+                new DataTreeEventCallbackRegistrarImpl(dataBroker);
+        bind(DataTreeEventCallbackRegistrar.class).toInstance(dataTreeEventCallbackRegistrar);
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);

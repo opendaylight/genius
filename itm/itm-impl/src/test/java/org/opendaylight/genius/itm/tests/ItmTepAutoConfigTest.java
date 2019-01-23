@@ -491,7 +491,7 @@ public class ItmTepAutoConfigTest {
 
         // update OVSDB node with tep-ip in local_ip list
         tepIp = ItmTestConstants.NB_TZ_TEP_IP;
-        future = OvsdbTestUtil.updateNode(connInfo, tepIp, null, null, dataBroker);
+        future = OvsdbTestUtil.updateNode(connInfo, tepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE, null, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
