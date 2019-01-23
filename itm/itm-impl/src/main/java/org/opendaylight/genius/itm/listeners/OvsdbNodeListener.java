@@ -8,20 +8,33 @@
 
 package org.opendaylight.genius.itm.listeners;
 
+import java.math.BigInteger;
+import java.time.Duration;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
@@ -45,14 +58,17 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
     private final ItmConfig itmConfig;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     @Inject
-    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator) {
+    public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator,
+                             DataTreeEventCallbackRegistrar eventCallbacks) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         this.itmConfig = itmConfig;
+        this.eventCallbacks = eventCallbacks;
     }
 
     @Override
@@ -199,8 +215,37 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 LOG.error("TEP {} cannot be added. DPID for bridge {} is NULL.", newLocalIp, newDpnBridgeName);
                 return;
             }
-            jobKey = isLocalIpUpdated ? oldLocalIp : newLocalIp;
-            addOrRemoveTep(tzName, strNewDpnId, jobKey, newLocalIp, newDpnBridgeName,  newOfTunnel, true);
+            if (isTzChanged) {
+                IpAddress tepIpAddress = IpAddressBuilder.getDefaultInstance(newLocalIp);
+                BigInteger dpnId = MDSALUtil.getDpnId(strNewDpnId);
+                String tos = itmConfig.getDefaultTunnelTos();
+                Class<? extends TunnelTypeBase> tunnelType  = TunnelTypeVxlan.class;
+                List<TzMembership> zones = ItmUtils.createTransportZoneMembership(oldTzName);
+                TunnelEndPoints tunnelEndPoints = ItmUtils.createDummyTunnelEndPoints(dpnId, tepIpAddress, newOfTunnel,
+                        tos, zones, tunnelType);
+                String finalTzName = tzName;
+                String finalJobKey = jobKey;
+                String finalLocalIp = newLocalIp;
+                String finalDpnBridgeName = newDpnBridgeName;
+                boolean finalOfTunnel = newOfTunnel;
+
+                InstanceIdentifier<TunnelEndPoints> tunnelEndPointsIdentifier =
+                        InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
+                                new DPNTEPsInfoKey(dpnId)).child(TunnelEndPoints.class, tunnelEndPoints.key()).build();
+                eventCallbacks.onRemove(LogicalDatastoreType.CONFIGURATION, tunnelEndPointsIdentifier, (unused) -> {
+                    LOG.info("callback event for a deletion of {} from DpnTepsInfo.", dpnId);
+                    addOrRemoveTep(finalTzName, strNewDpnId, finalJobKey, finalLocalIp,
+                                    finalDpnBridgeName, finalOfTunnel, true);
+                    return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+                }, Duration.ofMillis(5000), (id) -> {
+                        LOG.info("callback event timed out for {} deletion from DpnTepsInfo.", dpnId);
+                        addOrRemoveTep(finalTzName, strNewDpnId, finalJobKey, finalLocalIp,
+                            finalDpnBridgeName, finalOfTunnel, true);
+                    });
+            } else {
+                jobKey = isLocalIpUpdated ? oldLocalIp : newLocalIp;
+                addOrRemoveTep(tzName, strNewDpnId, jobKey, newLocalIp, newDpnBridgeName,  newOfTunnel, true);
+            }
         }
     }
 
