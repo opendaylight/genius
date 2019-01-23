@@ -22,6 +22,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
@@ -61,6 +62,7 @@ public class ItmTepAutoConfigTest {
 
     private @Inject DataBroker dataBroker;
     private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
+    private @Inject AsyncEventsWaiter asyncEventsWaiter;
     private @Inject ItmProvider itmProvider;
 
     @Before
@@ -493,7 +495,7 @@ public class ItmTepAutoConfigTest {
 
         // update OVSDB node with tep-ip in local_ip list
         tepIp = ItmTestConstants.NB_TZ_TEP_IP;
-        future = OvsdbTestUtil.updateNode(connInfo, tepIp, null, null, dataBroker);
+        future = OvsdbTestUtil.updateNode(connInfo, tepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE, null, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
@@ -556,7 +558,9 @@ public class ItmTepAutoConfigTest {
         future = OvsdbTestUtil.updateNode(connInfo, tepIp, tzName, null, dataBroker);
         future.get();
         // wait for OvsdbNodeListener to perform config DS update through transaction
+        asyncEventsWaiter.awaitEventsConsumption();
         coordinatorEventsWaiter.awaitEventsConsumption();
+        asyncEventsWaiter.awaitEventsConsumption();
 
         // check old TEP which was in default-TZ is deleted
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
