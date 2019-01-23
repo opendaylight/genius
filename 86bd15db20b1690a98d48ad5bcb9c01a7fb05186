@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "903f7e7a_88cb34f1",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestWiring.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2019-01-23T15:46:46Z",
+      "side": 1,
+      "message": "Stephen, looking at the JavaDoc in https://github.com/opendaylight/mdsal/blob/master/binding/mdsal-binding-dom-adapter/src/test/java/org/opendaylight/mdsal/binding/dom/adapter/test/AbstractDataBrokerTest.java I am wondering if perhaps we should AbstractConcurrentDataBrokerTest instead here... remind me, exactly which existing class (based on the controller instead of the mdsal API) are we replacing with this - which one does that use?",
+      "revId": "86bd15db20b1690a98d48ad5bcb9c01a7fb05186",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
