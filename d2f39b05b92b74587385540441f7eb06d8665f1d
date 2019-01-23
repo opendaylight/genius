@@ -16,6 +16,24 @@
       "revId": "d2f39b05b92b74587385540441f7eb06d8665f1d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb6a9253_b34e0c37",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 2
+      },
+      "lineNbr": 170,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-01-23T05:03:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b5408094_220b5f51",
+      "revId": "d2f39b05b92b74587385540441f7eb06d8665f1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
