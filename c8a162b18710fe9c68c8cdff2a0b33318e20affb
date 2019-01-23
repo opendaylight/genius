@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e7d70ed1_3c989888",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 550,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-23T05:29:23Z",
+      "side": 1,
+      "message": "You can make the parameter @NonNull.\nYou do want to make this for the above methods as well ?",
+      "revId": "c8a162b18710fe9c68c8cdff2a0b33318e20affb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
