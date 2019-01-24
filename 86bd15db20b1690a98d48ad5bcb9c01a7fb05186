@@ -34,6 +34,24 @@
       "revId": "86bd15db20b1690a98d48ad5bcb9c01a7fb05186",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cf475478_8381531f",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestWiring.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-24T08:53:01Z",
+      "side": 1,
+      "message": "I’d rather change that in this patch, if you don’t mind, because the current version is broken as-is.",
+      "parentUuid": "87840e22_f92301a6",
+      "revId": "86bd15db20b1690a98d48ad5bcb9c01a7fb05186",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
