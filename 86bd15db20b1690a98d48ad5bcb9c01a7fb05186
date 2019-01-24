@@ -52,6 +52,24 @@
       "revId": "86bd15db20b1690a98d48ad5bcb9c01a7fb05186",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eac15534_fafa8cdd",
+        "filename": "mdsalutil/mdsal-testutils/src/main/java/org/opendaylight/genius/mdsal/testutils/DataBrokerTestWiring.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-01-24T12:22:10Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cf475478_8381531f",
+      "revId": "86bd15db20b1690a98d48ad5bcb9c01a7fb05186",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
