@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "81bb7803_3108b96a",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-01-25T01:25:41Z",
+      "side": 1,
+      "message": "dataBroker is used in this constructor",
+      "parentUuid": "0713c890_4637394b",
+      "revId": "e1f86ea236e431fe8f8aab6da15a6e361ce59fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3f32e1e4_e1a262b8",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2019-01-24T18:14:33Z",
       "side": 1,
       "message": "as well as this MetricProvider",
+      "revId": "e1f86ea236e431fe8f8aab6da15a6e361ce59fb4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "33b1aa6c_a0933ffb",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-01-25T01:25:41Z",
+      "side": 1,
+      "message": "same with metricProvider",
+      "parentUuid": "3f32e1e4_e1a262b8",
       "revId": "e1f86ea236e431fe8f8aab6da15a6e361ce59fb4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
