@@ -163,11 +163,11 @@ public class ItmInternalTunnelDeleteTest {
             new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             interfaceManager, new DpnTepStateCache(dataBroker, jobCoordinator,
             new GuavaCacheProvider(new CacheManagersRegistryImpl()), directTunnelUtils, dpntePsInfoCache,
-                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache),
+                unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache, itmConfig),
             new OvsBridgeEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
-            directTunnelUtils);
+            directTunnelUtils, itmConfig);
     }
 
     @After

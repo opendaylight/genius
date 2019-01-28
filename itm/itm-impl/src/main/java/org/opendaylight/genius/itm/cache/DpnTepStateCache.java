@@ -39,6 +39,7 @@ import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
@@ -61,6 +62,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private final UnprocessedNodeConnectorCache unprocessedNCCache;
     private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
     private final ManagedNewTransactionRunner txRunner;
+    private final ItmConfig itmConfig;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
 
@@ -69,7 +71,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                             CacheProvider cacheProvider, DirectTunnelUtils directTunnelUtils,
                             DPNTEPsInfoCache dpnTepsInfoCache,
                             UnprocessedNodeConnectorCache unprocessedNCCache,
-                            UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
+                            UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache,
+                            ItmConfig itmConfig) {
         super(DpnsTeps.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class).build(), cacheProvider,
             (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId(),
@@ -82,17 +85,22 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.unprocessedNCCache = unprocessedNCCache;
         this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
+        this.itmConfig = itmConfig;
     }
 
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
-            DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
+            DpnTepInterfaceInfoBuilder dpnTepInterfaceInfoBuilder = new DpnTepInterfaceInfoBuilder()
                 .setTunnelName(remoteDpns.getTunnelName())
                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                 .setIsInternal(remoteDpns.isInternal())
-                .setTunnelType(dpnsTeps.getTunnelType()).build();
+                .setTunnelType(dpnsTeps.getTunnelType());
+            if (itmConfig.isUseOfTunnels()) {
+                dpnTepInterfaceInfoBuilder.setOFPort(dpnsTeps.getOfTunnel());
+            }
+            DpnTepInterfaceInfo value = dpnTepInterfaceInfoBuilder.build();
             dpnTepInterfaceMap.put(dpn, value);
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                     dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());

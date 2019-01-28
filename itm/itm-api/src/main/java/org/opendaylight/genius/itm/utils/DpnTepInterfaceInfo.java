@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.utils;
 
+import javax.annotation.Nullable;
 import org.immutables.value.Value;
 import org.opendaylight.genius.infra.OpenDaylightImmutableStyle;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -18,6 +19,9 @@ public interface DpnTepInterfaceInfo {
     Class<? extends TunnelTypeBase> getTunnelType();
 
     String getTunnelName();
+
+    @Nullable
+    String oFPort();
 
     boolean isMonitoringEnabled();
 
