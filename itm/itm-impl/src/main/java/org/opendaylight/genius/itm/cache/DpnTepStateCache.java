@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.cache;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -63,6 +64,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private final ManagedNewTransactionRunner txRunner;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, List<String>> ofTunnelChildMap = new ConcurrentHashMap<>();
 
     @Inject
     public DpnTepStateCache(DataBroker dataBroker, JobCoordinator coordinator,
@@ -86,6 +88,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
+        String srcOfTunnel = dpnsTeps.getOfTunnel();
+        List<String> ofChildList = new ArrayList<>();
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
@@ -96,7 +100,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
             dpnTepInterfaceMap.put(dpn, value);
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                     dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
-
+            ofChildList.add(remoteDpns.getTunnelName());
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
 
             TunnelStateInfo tunnelStateInfoNew = null;
@@ -145,6 +149,9 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                         tunnelStateInfoNew);
                 coordinator.enqueueJob(remoteDpns.getTunnelName(), ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
             }
+        }
+        if (srcOfTunnel != null && !srcOfTunnel.isEmpty()) {
+            ofTunnelChildMap.put(srcOfTunnel, ofChildList);
         }
     }
 
