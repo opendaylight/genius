@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7cebcf9b_229da962",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-29T08:31:18Z",
+      "side": 1,
+      "message": "Please take care of the tunnel name while verifying -- check how the tunnel names are created for OF tunnels.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8a246f5_4e2eedd4",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-01-29T08:31:18Z",
+      "side": 1,
+      "message": "You need to also verify the scenario to disable BFD even if the reference count is non zero. In this case, what happens to reference counts and point to point tunnels ? Either do not allow BFD disable when reference count is non zero or if BFD disable takes precedence then two options a. clean up reference counts and delete the point to point tunnels or b. just send disabling options to point to point tunnels.\nNeed a discussion on this.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
