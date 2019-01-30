@@ -88,7 +88,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        String srcOfTunnel = dpnsTeps.getOfTunnel();
+        final String srcOfTunnel = dpnsTeps.getOfTunnel();
         List<String> ofChildList = new ArrayList<>();
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
