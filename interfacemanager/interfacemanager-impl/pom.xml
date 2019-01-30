@@ -139,6 +139,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>blueprint-maven-plugin-annotation</artifactId>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <optional>true</optional>
+    </dependency>
     <!-- for infrautils metrics APIs -->
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
