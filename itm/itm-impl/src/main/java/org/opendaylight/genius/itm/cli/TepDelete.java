@@ -50,7 +50,7 @@ public class TepDelete extends OsgiCommandSupport {
                     + "gatewayIp transportZone");
             return null;
         }
-        itmProvider.deleteVtep(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone, session);
+        itmProvider.deleteVtep(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
         LOG.trace("Executing delete TEP command");
 
         return null;
