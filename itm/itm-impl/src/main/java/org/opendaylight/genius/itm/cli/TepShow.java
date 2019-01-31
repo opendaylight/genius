@@ -23,9 +23,12 @@ public class TepShow extends OsgiCommandSupport {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     protected Object doExecute() {
         LOG.debug("Executing show TEP command");
-        itmProvider.showTeps(session);
+        for (String line : itmProvider.showTeps()) {
+            System.out.println(line);
+        }
         return null;
     }
 
