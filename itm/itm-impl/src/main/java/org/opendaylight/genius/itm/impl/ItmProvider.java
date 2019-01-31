@@ -22,7 +22,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Service;
-import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -253,11 +252,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Override
     public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                                 String gatewayIp, String transportZone, CommandSession session) {
+        String gatewayIp, String transportZone) {
         if (tepCommandHelper != null) {
             try {
                 tepCommandHelper.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask,
-                        gatewayIp, transportZone, session);
+                        gatewayIp, transportZone);
             } catch (TepException e) {
                 LOG.error("Create Local Cache failed", e);
             }
@@ -273,12 +272,13 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @Override
-    public void showTeps(CommandSession session) {
+    public List<String> showTeps() {
         try {
-            tepCommandHelper.showTeps(tunnelMonitoringConfig.isTunnelMonitoringEnabled(),
-                    tunnelMonitoringConfig.getMonitorInterval(), session);
+            return tepCommandHelper.showTeps(tunnelMonitoringConfig.isTunnelMonitoringEnabled(),
+                    tunnelMonitoringConfig.getMonitorInterval());
         } catch (TepException e) {
             LOG.error("show teps failed", e);
+            return Collections.singletonList(e.getMessage());
         }
     }
 
@@ -302,10 +302,10 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
     @Override
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-                           String gatewayIp, String transportZone, CommandSession session) {
+        String gatewayIp, String transportZone) {
         try {
             tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress,
-                    subnetMask, gatewayIp, transportZone, session);
+                    subnetMask, gatewayIp, transportZone);
         } catch (TepException e) {
             LOG.error("Delete Vteps Failed", e);
         }
