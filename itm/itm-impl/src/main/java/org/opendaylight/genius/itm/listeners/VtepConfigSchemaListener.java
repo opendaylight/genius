@@ -292,7 +292,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             }
             try {
                 tepCommandHelper.createLocalCache(dpnId, schema.getPortName(), schema.getVlanId(),
-                        ipAddress.stringValue(), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+                        ipAddress.stringValue(), subnetCidr, gatewayIp, schema.getTransportZoneName());
             } catch (TepException e) {
                 LOG.error("create local cache Failed", e);
             }
@@ -362,7 +362,7 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
             IpAddress ipAddress = vtep.getIpAddress();
             try {
                 tepCommandHelper.deleteVtep(dpnId, vtep.getPortname(), schema.getVlanId(),
-                    ipAddress.stringValue(), subnetCidr, gatewayIp, schema.getTransportZoneName(), null);
+                    ipAddress.stringValue(), subnetCidr, gatewayIp, schema.getTransportZoneName());
             } catch (TepException e) {
                 LOG.error("delete Vtep Failed", e);
             }
