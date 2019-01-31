@@ -54,7 +54,7 @@ public class TepAdd extends OsgiCommandSupport {
                             + " subnetMask={}, gatewayIp={}, transportZone={}", dpnId, portName, vlanId, ipAddress,
                     subnetMask, gatewayIp, transportZone);
             itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
-                    transportZone, session);
+                    transportZone);
         } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"tep-add\"", e);
             throw e;

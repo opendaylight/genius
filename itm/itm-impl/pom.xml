@@ -107,7 +107,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
-      <artifactId>org.apache.karaf.shell.core</artifactId>
+      <artifactId>org.apache.karaf.shell.console</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
