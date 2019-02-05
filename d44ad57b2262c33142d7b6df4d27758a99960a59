@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1290097a_89550d0d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-05T01:26:39Z",
+      "side": 1,
+      "message": "Why is this datastore read required ? The bridge name and UUID is already available in the BridgeRefEntry cache. Wanted to avoid this datastore read for every CLI usage, especially given that network topology DS read will be heavy.",
+      "revId": "d44ad57b2262c33142d7b6df4d27758a99960a59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
