@@ -16,6 +16,24 @@
       "revId": "d44ad57b2262c33142d7b6df4d27758a99960a59",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f11c1d92_13deea54",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 772,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-02-05T02:29:54Z",
+      "side": 1,
+      "message": "BridgeRefEntryCache only returns the InstanceIdentifier or Reference to the actual bridge. The identifier points to a location in NetworkTopology DS. Unless it\u0027s possible to cache NetworkTopology DS as well, I don\u0027t think there\u0027s any other way.",
+      "parentUuid": "1290097a_89550d0d",
+      "revId": "d44ad57b2262c33142d7b6df4d27758a99960a59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
