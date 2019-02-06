@@ -9,6 +9,7 @@
 package org.opendaylight.genius.itm.impl;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
@@ -21,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -141,18 +142,18 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadWriteTx)
+        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
@@ -207,7 +208,7 @@ public class ItmInternalTunnelDeleteTest {
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
         doReturn(true).when(mockReadWriteTx).cancel();
     }
 
@@ -225,8 +226,8 @@ public class ItmInternalTunnelDeleteTest {
 
         Optional<DpnEndpoints> dpnEndpointsOptional = Optional.of(dpnEndpoints);
 
-        doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,dpnEndpointsIdentifier);
+        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
 
         itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
         //FIXME: This verification is broken revisit this.
