@@ -8,11 +8,11 @@
 
 package org.opendaylight.genius.itm.impl;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -153,8 +153,8 @@ public class ItmExternalTunnelDeleteTest {
     public void setUp() {
         setupMocks();
 
-        when(idManagerService.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures.immediateFuture(RpcResultBuilder
-                .<ReleaseIdOutput>success().build()));
+        lenient().when(idManagerService.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures.immediateFuture(
+                RpcResultBuilder.<ReleaseIdOutput>success().build()));
     }
 
     @After
@@ -195,45 +195,45 @@ public class ItmExternalTunnelDeleteTest {
         getIdInput1 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.101:192.168.56.30:VXLAN").build();
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
+        lenient().doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
         getIdInput2 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep:1:192.168.56.30:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
+        lenient().doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
         idOutputOptional3 = RpcResultBuilder.success(expectedId3).buildFuture();
         getIdInput3 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.101:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional3).when(idManagerService).allocateId(getIdInput3);
+        lenient().doReturn(idOutputOptional3).when(idManagerService).allocateId(getIdInput3);
         idOutputOptional4 = RpcResultBuilder.success(expectedId4).buildFuture();
         getIdInput4 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep:1:192.168.56.40:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional4).when(idManagerService).allocateId(getIdInput4);
+        lenient().doReturn(idOutputOptional4).when(idManagerService).allocateId(getIdInput4);
         idOutputOptional5 = RpcResultBuilder.success(expectedId5).buildFuture();
         getIdInput5 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/"
                         + "s3:192.168.56.40:192.168.56.101:VXLAN").build();
-        doReturn(idOutputOptional5).when(idManagerService).allocateId(getIdInput5);
+        lenient().doReturn(idOutputOptional5).when(idManagerService).allocateId(getIdInput5);
         idOutputOptional6 = RpcResultBuilder.success(expectedId6).buildFuture();
         getIdInput6 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/"
                         + "s3:192.168.56.40:192.168.56.30:VXLAN")
                 .build();
-        doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
+        lenient().doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
         idOutputOptional7 = RpcResultBuilder.success(expectedId7).buildFuture();
         getIdInput7 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep:1:192.168.56.30:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional7).when(idManagerService).allocateId(getIdInput7);
+        lenient().doReturn(idOutputOptional7).when(idManagerService).allocateId(getIdInput7);
         idOutputOptional8 = RpcResultBuilder.success(expectedId8).buildFuture();
         getIdInput8 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.30:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional8).when(idManagerService).allocateId(getIdInput8);
+        lenient().doReturn(idOutputOptional8).when(idManagerService).allocateId(getIdInput8);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
                 .setIpAddress(ipAddress3).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
@@ -258,9 +258,9 @@ public class ItmExternalTunnelDeleteTest {
                 .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(ipAddress1.stringValue(),
                     dpId2.toString(), tunnelType1));
 
-        doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
-        doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
+        lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
+        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
     }
 
     @Test
