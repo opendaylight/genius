@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "05f15c19_c72a7b13",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 425,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-06T09:35:20Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "ced81bb8_52955776",
+      "revId": "3b23b293a6b823e7a6d33ae2cfefdb0f96c0a454",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2d871d90_9ef7cf86",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 10
@@ -30,6 +48,24 @@
       "writtenOn": "2019-02-05T07:10:14Z",
       "side": 1,
       "message": "We already have a method convertTunnelTypetoString in ItmUtils for the same functioanality. Please use that.",
+      "revId": "3b23b293a6b823e7a6d33ae2cfefdb0f96c0a454",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a51cfc8_7c9b1705",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-06T09:35:20Z",
+      "side": 1,
+      "message": "The existing method definition specifies String as the parameter and not a Class.",
+      "parentUuid": "2d871d90_9ef7cf86",
       "revId": "3b23b293a6b823e7a6d33ae2cfefdb0f96c0a454",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
