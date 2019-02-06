@@ -10,6 +10,7 @@ package org.opendaylight.genius.itm.cli;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -25,13 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -202,9 +202,9 @@ public class TepCommandHelperTest {
                 .read(LogicalDatastoreType.CONFIGURATION,vtepsIdentifier);
         doReturn(Futures.immediateCheckedFuture(optionalSubnets)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,subnetsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(ifStateOptional)).when(mockReadTx)
+        lenient().doReturn(Futures.immediateCheckedFuture(ifStateOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.OPERATIONAL,interfaceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx)
+        lenient().doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,interfaceIdentifierNew);
 
         unprocessedTunnelsStateCache = new UnprocessedTunnelsStateCache();
@@ -262,7 +262,7 @@ public class TepCommandHelperTest {
                 interval, false, null);
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
         doReturn(FluentFuture.from(Futures.immediateCheckedFuture(CommitInfo.empty()))).when(mockWriteTx).commit();
     }
 

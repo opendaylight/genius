@@ -9,6 +9,7 @@
 package org.opendaylight.genius.itm.impl;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -24,11 +25,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -187,13 +187,6 @@ public class ItmExternalTunnelAddTest {
         tunnelMonitorParamsOptional = Optional.of(tunnelMonitorParams);
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
 
-        doReturn(Futures.immediateCheckedFuture(optionalDpnEndPoints)).when(mockReadTx)
-                .read(LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional))
-                .when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional))
-                .when(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
-
         externalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig,
             new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()), directTunnelUtils,
             jobCoordinator, unprocessedNodeConnectorEndPointCache));
@@ -247,36 +240,36 @@ public class ItmExternalTunnelAddTest {
         getIdInput1 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.101:192.168.56.40:VXLAN").build();
-        doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
+        lenient().doReturn(idOutputOptional1).when(idManagerService).allocateId(getIdInput1);
         idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
         getIdInput2 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("1:phy0:100:192.168.56.101:192.168.56.30:VXLAN").build();
-        doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
+        lenient().doReturn(idOutputOptional2).when(idManagerService).allocateId(getIdInput2);
         idOutputOptional3 = RpcResultBuilder.success(expectedId3).buildFuture();
         getIdInput3 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/s3:192.168.56.30:192.168.56.101:VXLAN")
                 .build();
-        doReturn(idOutputOptional3).when(idManagerService).allocateId(getIdInput3);
+        lenient().doReturn(idOutputOptional3).when(idManagerService).allocateId(getIdInput3);
         idOutputOptional4 = RpcResultBuilder.success(expectedId4).buildFuture();
         getIdInput4 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.40:6640/physicalswitch/s4:192.168.56.40:192.168.56.101:VXLAN")
                 .build();
-        doReturn(idOutputOptional4).when(idManagerService).allocateId(getIdInput4);
+        lenient().doReturn(idOutputOptional4).when(idManagerService).allocateId(getIdInput4);
         idOutputOptional5 = RpcResultBuilder.success(expectedId5).buildFuture();
         getIdInput5 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.30:6640/physicalswitch/s3:192.168.56.30:192.168.56.40:VXLAN")
                 .build();
-        doReturn(idOutputOptional5).when(idManagerService).allocateId(getIdInput5);
+        lenient().doReturn(idOutputOptional5).when(idManagerService).allocateId(getIdInput5);
         idOutputOptional6 = RpcResultBuilder.success(expectedId6).buildFuture();
         getIdInput6 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setIdKey("hwvtep:1:hwvtep://192.168.101.40:6640/physicalswitch/s4:192.168.56.40:192.168.56.30:VXLAN")
                 .build();
-        doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
+        lenient().doReturn(idOutputOptional6).when(idManagerService).allocateId(getIdInput6);
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
@@ -296,9 +289,9 @@ public class ItmExternalTunnelAddTest {
                 .setVteps(vtepsList).setDeviceVteps(deviceVtepsList).build();
         subnetsList.add(subnets);
 
-        doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
-        doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
+        lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
+        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
 
     }
 
