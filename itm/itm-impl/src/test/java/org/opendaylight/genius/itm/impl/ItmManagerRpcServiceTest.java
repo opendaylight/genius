@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.impl;
 
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
@@ -22,7 +23,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -214,10 +215,10 @@ public class ItmManagerRpcServiceTest {
                 .CONFIGURATION,externalTunnelIdentifier1);
         doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,internalTunnelIdentifier);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,internalTunnelIdentifierNew);
-        doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(LogicalDatastoreType
-                .CONFIGURATION,dpnEndpointsIdentifier);
+        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifierNew);
+        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+                LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
         doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
@@ -307,7 +308,7 @@ public class ItmManagerRpcServiceTest {
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
     }
 
     @Test
