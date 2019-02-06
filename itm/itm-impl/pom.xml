@@ -101,6 +101,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
       <scope>provided</scope>
@@ -164,12 +169,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>1.10.19</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
       <artifactId>mdsal-binding-test-utils</artifactId>
       <scope>test</scope>
@@ -180,38 +179,32 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito</artifactId>
-      <version>1.6.4</version>
+      <artifactId>powermock-api-mockito2</artifactId>
+      <version>2.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-     <groupId>org.javassist</groupId>
-     <artifactId>javassist</artifactId>
-     <version>3.21.0-GA</version>
-     <scope>test</scope>
-   </dependency>
-    <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
-      <version>1.6.4</version>
+      <version>2.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
      <groupId>org.powermock</groupId>
      <artifactId>powermock-api-support</artifactId>
-     <version>1.6.4</version>
+     <version>2.0.0</version>
      <scope>test</scope>
    </dependency>
    <dependency>
      <groupId>org.powermock</groupId>
      <artifactId>powermock-reflect</artifactId>
-     <version>1.6.4</version>
+     <version>2.0.0</version>
      <scope>test</scope>
    </dependency>
    <dependency>
      <groupId>org.powermock</groupId>
      <artifactId>powermock-core</artifactId>
-     <version>1.6.4</version>
+     <version>2.0.0</version>
      <scope>test</scope>
    </dependency>
     <dependency>
