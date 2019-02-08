@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da8e1940_fc10e816",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/BridgeRefEntryCache.java",
+        "patchSetId": 23
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-08T00:39:06Z",
+      "side": 1,
+      "message": "There is a cache already in InterfaceManager for this DS. CacheBridgeRefEntryListener which updates the bridgeRefEntryMap in InterfaceMetaUtils. You can use that. You dont need to maintain another cache for the same.",
+      "revId": "df8260df367588ec10e451ee09e007d6d30fdd3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
