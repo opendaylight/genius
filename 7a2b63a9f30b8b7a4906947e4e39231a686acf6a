@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "4da46bbd_f22587b3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OfEndPointCache.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-08T08:15:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f7766cc0_ce70ea09",
+      "revId": "7a2b63a9f30b8b7a4906947e4e39231a686acf6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "70cc4bf6_5a20e67e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 14
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "8299a6f2_787c048f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 555,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-08T08:15:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "70cc4bf6_5a20e67e",
+      "revId": "7a2b63a9f30b8b7a4906947e4e39231a686acf6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "75a196ab_e233f351",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
         "patchSetId": 14
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-08T06:11:40Z",
       "side": 1,
       "message": "Just the reference is passed. Not instantiated ?",
+      "revId": "7a2b63a9f30b8b7a4906947e4e39231a686acf6a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d642c9c_5af7a106",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-08T08:15:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75a196ab_e233f351",
       "revId": "7a2b63a9f30b8b7a4906947e4e39231a686acf6a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
