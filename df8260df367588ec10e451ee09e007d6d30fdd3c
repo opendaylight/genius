@@ -16,6 +16,24 @@
       "revId": "df8260df367588ec10e451ee09e007d6d30fdd3c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66cf4e96_bbcb8b4c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/BridgeRefEntryCache.java",
+        "patchSetId": 23
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 8100
+      },
+      "writtenOn": "2019-02-08T02:29:03Z",
+      "side": 1,
+      "message": "I see... this cache came in as a result of previous rebase. Thanks for pointing out. Will be at it.",
+      "parentUuid": "da8e1940_fc10e816",
+      "revId": "df8260df367588ec10e451ee09e007d6d30fdd3c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
