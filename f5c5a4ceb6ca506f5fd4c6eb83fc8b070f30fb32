@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3f76a45_c24b6daa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 358,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-08T08:24:31Z",
+      "side": 1,
+      "message": "This match should be added only for OFTunnels. Need to add the condition to check if OFTunnels is enabled on Direct Tunnels.",
+      "revId": "f5c5a4ceb6ca506f5fd4c6eb83fc8b070f30fb32",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
