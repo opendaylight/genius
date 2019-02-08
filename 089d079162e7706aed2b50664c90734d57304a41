@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97bc8f38_f733fe23",
+        "filename": "itm/itm-api/src/main/yang/itm-state.yang",
+        "patchSetId": 16
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-08T08:25:53Z",
+      "side": 1,
+      "message": "Can you add some description",
+      "revId": "089d079162e7706aed2b50664c90734d57304a41",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6d05070_c64d6502",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-08T08:25:53Z",
+      "side": 1,
+      "message": "ITM POOL can be used here as the Id is per DPN and it will not clash with Interface. So, better to have its own pool. Moreover, if later we scale up we do not want to use up IFM\u0027s POOL.",
+      "revId": "089d079162e7706aed2b50664c90734d57304a41",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30f9477e_6353473e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-08T08:25:53Z",
+      "side": 1,
+      "message": "Nit pick -- group Id ???",
+      "revId": "089d079162e7706aed2b50664c90734d57304a41",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "101b6475_b4cf5451",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/rpc/ItmManagerRpcService.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 1178,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-08T08:25:53Z",
+      "side": 1,
+      "message": "If DPNTepsInfo is not present then you can fetch the DstId from Id Manager and return the Egress Actions. This way the Egress Action never fails and later on applications can remove their dependency on operational tunnels state",
+      "revId": "089d079162e7706aed2b50664c90734d57304a41",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
