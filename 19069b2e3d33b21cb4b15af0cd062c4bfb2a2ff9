@@ -2,6 +2,144 @@
   "comments": [
     {
       "key": {
+        "uuid": "779dcb33_87c7b568",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-02-08T10:34:06Z",
+      "side": 1,
+      "message": "container dpn-teps-state contains non-relavant \"leaf internal\" because this container will contain internal tunnels only, so no use for this explicit leaf.",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 16
+      },
+      "revId": "19069b2e3d33b21cb4b15af0cd062c4bfb2a2ff9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8d9279b4_34c6ea67",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-02-08T10:34:06Z",
+      "side": 1,
+      "message": "In dpn-endpoints container, list tunnel-end-points should be removed, but its relevant leaf elements should come out. Because tunnel-end-points is no more list now, it was older design when gre and vxlan tunnel could have co-existed.",
+      "range": {
+        "startLine": 224,
+        "startChar": 4,
+        "endLine": 225,
+        "endChar": 41
+      },
+      "revId": "19069b2e3d33b21cb4b15af0cd062c4bfb2a2ff9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7be1eea1_5d4f7134",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-02-08T10:34:06Z",
+      "side": 1,
+      "message": "Since spec is used to be design document, so we should also cover Java code files and their methods where changes will be done against this activity.\nKind of table, we can create.",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 242,
+        "endChar": 4
+      },
+      "revId": "19069b2e3d33b21cb4b15af0cd062c4bfb2a2ff9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0e86d05_32ae2528",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-02-08T10:34:06Z",
+      "side": 1,
+      "message": "Pls add new line.",
+      "range": {
+        "startLine": 264,
+        "startChar": 0,
+        "endLine": 265,
+        "endChar": 19
+      },
+      "revId": "19069b2e3d33b21cb4b15af0cd062c4bfb2a2ff9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8c175f9b_75b9580d",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 283,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-02-08T10:34:06Z",
+      "side": 1,
+      "message": "I think CLI section can be added as sub-section here. You can capture changes for tep:add, tep:delete CLI changes because arguments of these CLI commands will be impacted due to this change.",
+      "range": {
+        "startLine": 283,
+        "startChar": 0,
+        "endLine": 283,
+        "endChar": 8
+      },
+      "revId": "19069b2e3d33b21cb4b15af0cd062c4bfb2a2ff9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c79c13a5_a716bf7d",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-02-08T10:34:06Z",
+      "side": 1,
+      "message": "What are IT cases and where will you add them?",
+      "range": {
+        "startLine": 306,
+        "startChar": 0,
+        "endLine": 306,
+        "endChar": 11
+      },
+      "revId": "19069b2e3d33b21cb4b15af0cd062c4bfb2a2ff9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ea6c2629_e722c1c3",
         "filename": "docs/specs/itm-yang-cleanup.rst",
         "patchSetId": 10
