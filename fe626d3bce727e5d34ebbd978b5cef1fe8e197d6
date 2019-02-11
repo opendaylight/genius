@@ -19,6 +19,193 @@
     },
     {
       "key": {
+        "uuid": "5507e49e_cdc13830",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "This need to be verified from dpn-teps-state ITM DS (existing). \nWe will not have a separate DS populated with parent-child mapping.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "70a53780_e70b4b55",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "Same as above. This need to be verified from dpn-teps-state ITM DS (existing).",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8c5f07a_154c3b9e",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "This need to be verified from dpn-teps-state ITM DS (existing) same as mentioned earlier.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75d96544_455deb0f",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "As discussed, global BFD monitoring is not supported with OFTunnels. Monitoring needs to be enabled between specific DPNs using the RPC setBfdParamOnTunnel.\nIf Global BFD monitoring is enabled, need to verify that ITM logs an appropriate error message stating its not supported.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "788cb287_7a0588e6",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "Same as above. Need to modify the BFD TCs accordingly.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cf81a0d8_d66d655f",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "Verify that a P2P tunnel has been created between the DPNs.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24fa87b7_d6e4d5f2",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "I believe this TC is for disabling BFD",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f15a7ffc_3cca0a3b",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "RPC should be invoked with Disable parameter",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "958a8af5_0563f45b",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "Verify it decreased by one.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9dfa03c_129f2493",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "Same as above. Invoke with disable parameter.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "83f5e68e_dc0f27eb",
+        "filename": "docs/testplans/of-tunnels.rst",
+        "patchSetId": 10
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T05:55:15Z",
+      "side": 1,
+      "message": "Ref., count decreases by one.",
+      "revId": "fe626d3bce727e5d34ebbd978b5cef1fe8e197d6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a8a246f5_4e2eedd4",
         "filename": "docs/testplans/of-tunnels.rst",
         "patchSetId": 10
