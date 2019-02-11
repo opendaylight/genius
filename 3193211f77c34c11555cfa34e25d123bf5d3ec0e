@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c9277fe5_69d81e31",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T06:40:02Z",
+      "side": 1,
+      "message": "As we are planning to get rid of DPNTepsInfo in future. Lets not loop through it to determine the list of child tunnels on other DPNs where this DPN is the dest. DPN. I will be adding a cache which give list of tunnels for a particular DPN (src\u0026dest). \nWe can discuss this further for determine the right approach.",
+      "revId": "3193211f77c34c11555cfa34e25d123bf5d3ec0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5693d2cf_26a55204",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 524,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-11T06:40:02Z",
+      "side": 1,
+      "message": "I feel there can be a timing issue, where the southbound notification comes in which deletes the bridge before you process (auto-tunnel). Need to be discussed.",
+      "revId": "3193211f77c34c11555cfa34e25d123bf5d3ec0e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
