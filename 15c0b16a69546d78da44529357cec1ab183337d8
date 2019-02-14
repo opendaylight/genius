@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f3b10455_7da5a8f5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OfEndPointCache.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-14T06:32:26Z",
+      "side": 1,
+      "message": "The first parameter can be BigInteger for DPNId. As later in the code I see that BigInteger are being converted into String while adding and accessing.\nConversion of BigInteger to String was seen as expensive operation in testing.",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8d2ece8_2b6c7d39",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-14T06:32:26Z",
+      "side": 1,
+      "message": "BigInteger to String conversion while adding",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7bc6d4f3_9e9618ff",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-14T06:32:26Z",
+      "side": 1,
+      "message": "Conversion of BigInteger to String while accessing",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f65aa98_10761655",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-14T06:32:26Z",
+      "side": 1,
+      "message": "There is a method already for the same. Please check ItmUtils. Please refer to comment for an earlier patch",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
