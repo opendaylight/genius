@@ -11,23 +11,23 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import javax.annotation.Nonnull;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 
 @Singleton
 public class PortNameCache {
-    @Nonnull
+    @NonNull
     private final ConcurrentMap<String,String> nodeConnectorIdPortNameMap = new ConcurrentHashMap<>();
 
-    protected void put(@Nonnull String nodeConnectorId, String portName) {
+    protected void put(@NonNull String nodeConnectorId, String portName) {
         nodeConnectorIdPortNameMap.put(nodeConnectorId, portName);
     }
 
-    protected void remove(@Nonnull String nodeConnectorId) {
+    protected void remove(@NonNull String nodeConnectorId) {
         nodeConnectorIdPortNameMap.remove(nodeConnectorId);
     }
 
-    public Optional<String> get(@Nonnull String nodeConnectorId) {
+    public Optional<String> get(@NonNull String nodeConnectorId) {
         return Optional.ofNullable(nodeConnectorIdPortNameMap.get(nodeConnectorId));
     }
 }

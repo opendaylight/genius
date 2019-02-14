@@ -20,13 +20,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -280,7 +279,7 @@ public class DataTreeEventCallbackRegistrarImpl implements DataTreeEventCallback
         // This gets invoked on timeout (if any)
         public void run() {
             synchronized (notificationSync) {
-                if (!timeOutScheduledFuture.isDone()) {
+                if (timeOutScheduledFuture != null && !timeOutScheduledFuture.isDone()) {
                     closeRegistration();
                     timedOutCallback.run();
                     LOG.debug("Closed datastore listener and ran the time-out task now");

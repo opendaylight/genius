@@ -22,8 +22,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -132,11 +132,11 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
      *         returns Optional#absent()
      * @throws ReadFailedException if that data isn't cached and the read to fetch it fails
      */
-    @Nonnull
+    @NonNull
     // The ExecutionException cause should be a ReadFailedException - ok to cast.
     @SuppressFBWarnings("BC_UNCONFIRMED_CAST_OF_RETURN_VALUE")
     @SuppressWarnings("checkstyle:AvoidHidingCauseException")
-    public Optional<V> get(@Nonnull K key) throws ReadFailedException {
+    public Optional<V> get(@NonNull K key) throws ReadFailedException {
         checkIsClosed();
         try {
             return cache.get(key);
@@ -150,7 +150,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
      *
      * @return the DataObjects currently in the cache
      */
-    @Nonnull
+    @NonNull
     public Collection<V> getAllPresent() {
         return cache.asMap().values().stream().flatMap(optional -> optional.isPresent()
                 ? Stream.of(optional.get()) : Stream.empty()).collect(Collectors.toList());

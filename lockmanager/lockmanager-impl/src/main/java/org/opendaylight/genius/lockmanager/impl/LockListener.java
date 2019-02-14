@@ -7,11 +7,11 @@
  */
 package org.opendaylight.genius.lockmanager.impl;
 
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -37,18 +37,18 @@ public class LockListener extends AbstractClusteredAsyncDataTreeChangeListener<L
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock removedLock) {
+    public void remove(@NonNull InstanceIdentifier<Lock> instanceIdentifier, @NonNull Lock removedLock) {
         lockManager.removeLock(removedLock);
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock originalLock,
-                       @Nonnull Lock updatedLock) {
+    public void update(@NonNull InstanceIdentifier<Lock> instanceIdentifier, @NonNull Lock originalLock,
+                       @NonNull Lock updatedLock) {
         // NOOP
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Lock> instanceIdentifier, @Nonnull Lock lock) {
+    public void add(@NonNull InstanceIdentifier<Lock> instanceIdentifier, @NonNull Lock lock) {
         LOG.debug("Received add for lock {} : {}", lock.getLockName(), lock);
     }
 

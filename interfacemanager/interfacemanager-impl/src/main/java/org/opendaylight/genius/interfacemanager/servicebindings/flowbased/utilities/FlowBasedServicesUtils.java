@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -168,7 +168,7 @@ public final class FlowBasedServicesUtils {
         return matches;
     }
 
-    @Nonnull
+    @NonNull
     public static List<MatchInfo> getMatchInfoForTunnelPortAtIngressTable(BigInteger dpId, long portNo) {
         List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInPort(dpId, portNo));

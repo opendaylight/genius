@@ -24,14 +24,13 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
@@ -323,7 +322,7 @@ public final class InterfaceManagerCommonUtils {
         return tunnel != null && tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeLogicalGroup.class);
     }
 
-    @Nonnull
+    @NonNull
     private static FlowEntity buildTunnelIngressFlowEntity(BigInteger dpnId, String interfaceName,
             List<MatchInfoBase> matches, List<InstructionInfo> mkInstructions) {
         String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
@@ -352,7 +351,7 @@ public final class InterfaceManagerCommonUtils {
         tx.merge(interfaceId, interfaceData, CREATE_MISSING_PARENTS);
     }
 
-    public void createInterfaceChildEntry(@Nonnull TypedWriteTransaction<Configuration> tx, String parentInterface,
+    public void createInterfaceChildEntry(@NonNull TypedWriteTransaction<Configuration> tx, String parentInterface,
         String childInterface) {
         createInterfaceChildEntry(parentInterface, childInterface,
             pair -> tx.put(pair.getKey(), pair.getValue(), CREATE_MISSING_PARENTS));

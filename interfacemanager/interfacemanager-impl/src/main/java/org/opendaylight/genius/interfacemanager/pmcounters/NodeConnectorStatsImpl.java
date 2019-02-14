@@ -23,12 +23,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
@@ -164,7 +163,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                 Futures.addCallback(ncStatsFuture, new FutureCallback<RpcResult<GetNodeConnectorStatisticsOutput>>() {
 
                     @Override
-                    public void onFailure(@Nonnull Throwable error) {
+                    public void onFailure(@NonNull Throwable error) {
                         LOG.error("getNodeConnectorStatistics RPC failed for node: {} ", node, error);
                     }
 
@@ -190,7 +189,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                 Futures.addCallback(flowStatsFuture, new FutureCallback<RpcResult<GetFlowStatisticsOutput>>() {
 
                     @Override
-                    public void onFailure(@Nonnull Throwable error) {
+                    public void onFailure(@NonNull Throwable error) {
                         LOG.error("getFlowStatistics RPC failed for node: {} ", node, error);
                     }
 

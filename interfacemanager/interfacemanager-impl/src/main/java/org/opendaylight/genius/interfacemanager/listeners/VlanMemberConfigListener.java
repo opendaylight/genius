@@ -8,11 +8,10 @@
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
@@ -63,7 +62,7 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
+    public void remove(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface removedInterface) {
         IfL2vlan ifL2vlan = removedInterface.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;
@@ -89,8 +88,8 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier,
-                       @Nonnull Interface originalInterface, @Nonnull Interface updatedInterface) {
+    public void update(@NonNull InstanceIdentifier<Interface> instanceIdentifier,
+                       @NonNull Interface originalInterface, @NonNull Interface updatedInterface) {
         IfL2vlan ifL2vlanNew = updatedInterface.augmentation(IfL2vlan.class);
         if (ifL2vlanNew == null) {
             return;
@@ -131,8 +130,8 @@ public class VlanMemberConfigListener extends AbstractSyncDataTreeChangeListener
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier,
-                    @Nonnull Interface newInterface) {
+    public void add(@NonNull InstanceIdentifier<Interface> instanceIdentifier,
+                    @NonNull Interface newInterface) {
         IfL2vlan ifL2vlan = newInterface.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.TrunkMember != ifL2vlan.getL2vlanMode()) {
             return;

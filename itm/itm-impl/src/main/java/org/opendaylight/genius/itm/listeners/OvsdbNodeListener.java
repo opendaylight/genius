@@ -11,9 +11,9 @@ package org.opendaylight.genius.itm.listeners;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.List;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
@@ -72,7 +72,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node ovsdbNodeNew) {
+    public void add(@NonNull InstanceIdentifier<Node> instanceIdentifier, @NonNull Node ovsdbNodeNew) {
         String bridgeName = null;
         String strDpnId = "";
         OvsdbNodeAugmentation ovsdbNewNodeAugmentation = null;
@@ -89,14 +89,14 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node removedDataObject) {
+    public void remove(@NonNull InstanceIdentifier<Node> instanceIdentifier, @NonNull Node removedDataObject) {
         LOG.trace("OvsdbNodeListener called for Ovsdb Node {} Remove.", removedDataObject);
         processBridgeUpdate(removedDataObject, false);
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Node> instanceIdentifier, @Nonnull Node originalOvsdbNode,
-                       @Nonnull Node updatedOvsdbNode) {
+    public void update(@NonNull InstanceIdentifier<Node> instanceIdentifier, @NonNull Node originalOvsdbNode,
+                       @NonNull Node updatedOvsdbNode) {
         String newLocalIp = null;
         String oldLocalIp = null;
         String tzName = null;

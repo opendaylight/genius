@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
@@ -89,8 +89,8 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
-                       @Nonnull VtepConfigSchema vtepConfigSchema) {
+    public void remove(@NonNull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
+                       @NonNull VtepConfigSchema vtepConfigSchema) {
         LOG.trace("Received notification for VTEP config schema [{}] deleted.", vtepConfigSchema.getSchemaName());
         List<BigInteger> lstDpnIds = ItmUtils.getDpnIdList(vtepConfigSchema.nonnullDpnIds());
         if (!lstDpnIds.isEmpty()) {
@@ -103,9 +103,9 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
-                       @Nonnull VtepConfigSchema originalVtepConfigSchema,
-                       @Nonnull VtepConfigSchema updatedConfigSchema) {
+    public void update(@NonNull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
+                       @NonNull VtepConfigSchema originalVtepConfigSchema,
+                       @NonNull VtepConfigSchema updatedConfigSchema) {
         LOG.error("Received DCN for updating VTEP Original schema: {}. Updated schema: {}", originalVtepConfigSchema,
                   updatedConfigSchema);
         VtepConfigSchema originalSchema = ItmUtils.validateVtepConfigSchema(originalVtepConfigSchema);
@@ -122,8 +122,8 @@ public class VtepConfigSchemaListener extends AbstractAsyncDataTreeChangeListene
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
-                    @Nonnull VtepConfigSchema vtepConfigSchema) {
+    public void add(@NonNull InstanceIdentifier<VtepConfigSchema> instanceIdentifier,
+                    @NonNull VtepConfigSchema vtepConfigSchema) {
         // Construct the transport zones from the provided schemas and push it to config DS
         LOG.trace("Add VtepConfigSchema: {}", vtepConfigSchema);
 

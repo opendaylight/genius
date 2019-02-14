@@ -12,7 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -71,8 +71,8 @@ public class TerminationPointStateListener
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
-                       @Nonnull OvsdbTerminationPointAugmentation tpOld) {
+    public void remove(@NonNull InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+                       @NonNull OvsdbTerminationPointAugmentation tpOld) {
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(tpOld.getName())
                 && dpnTepStateCache.isInternal(tpOld.getName())) {
             LOG.debug("Received remove DataChange Notification for ovsdb termination point {}", tpOld.getName());
@@ -85,9 +85,9 @@ public class TerminationPointStateListener
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
-                       @Nonnull OvsdbTerminationPointAugmentation tpOld,
-                       @Nonnull OvsdbTerminationPointAugmentation tpNew) {
+    public void update(@NonNull InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+                       @NonNull OvsdbTerminationPointAugmentation tpOld,
+                       @NonNull OvsdbTerminationPointAugmentation tpNew) {
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(tpNew.getName())
                 && dpnTepStateCache.isInternal(tpNew.getName())) {
             LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
@@ -102,8 +102,8 @@ public class TerminationPointStateListener
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
-                    @Nonnull OvsdbTerminationPointAugmentation tpNew) {
+    public void add(@NonNull InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+                    @NonNull OvsdbTerminationPointAugmentation tpNew) {
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(tpNew.getName())
                 && dpnTepStateCache.isInternal(tpNew.getName())) {
             LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());

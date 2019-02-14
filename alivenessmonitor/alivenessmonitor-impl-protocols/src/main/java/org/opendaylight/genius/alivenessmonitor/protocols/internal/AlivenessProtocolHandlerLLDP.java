@@ -22,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
@@ -80,7 +79,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
 
     @Override
     // TODO remove DLS_DEAD_LOCAL_STORE when 1st  below lldpTlvTypeCur below is removed
-    @SuppressFBWarnings("DLS_DEAD_LOCAL_STORE")
+    @SuppressFBWarnings({"DLS_DEAD_LOCAL_STORE", "NP_NONNULL_RETURN_VIOLATION"})
     public String handlePacketIn(LLDP lldpPacket, PacketReceived packetReceived) {
         String tempString = null;
         byte lldpTlvTypeCur;

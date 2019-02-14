@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.ThreadSafe;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProtocolType;
 
@@ -27,5 +27,5 @@ public interface AlivenessProtocolHandlerRegistry {
 
     @Nullable <T extends Packet> AlivenessProtocolHandler<T> getOpt(Class<T> packetClass);
 
-    @Nonnull AlivenessProtocolHandler<?> get(MonitorProtocolType protocolType);
+    @NonNull AlivenessProtocolHandler<?> get(MonitorProtocolType protocolType);
 }

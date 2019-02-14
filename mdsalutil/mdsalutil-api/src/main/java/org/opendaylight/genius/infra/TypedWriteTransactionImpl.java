@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.infra;
 
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -53,7 +53,7 @@ class TypedWriteTransactionImpl<D extends Datastore> extends TypedTransaction<D>
     }
 
     @Override
-    @Nonnull
+    @NonNull
     public Object getIdentifier() {
         return delegate.getIdentifier();
     }

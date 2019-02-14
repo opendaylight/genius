@@ -7,11 +7,10 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -60,7 +59,7 @@ public class HwVTEPTunnelsStateListener extends AbstractSyncDataTreeChangeListen
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnel) {
+    public void remove(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels tunnel) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, physicalSwitchAugmentation: {}",
                   instanceIdentifier, tunnel);
         coordinator.enqueueJob(tunnel.getTunnelUuid().getValue(), () -> HwVTEPInterfaceStateRemoveHelper
@@ -68,15 +67,15 @@ public class HwVTEPTunnelsStateListener extends AbstractSyncDataTreeChangeListen
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnelOld,
-                       @Nonnull Tunnels tunnelNew) {
+    public void update(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels tunnelOld,
+                       @NonNull Tunnels tunnelNew) {
         LOG.debug("Received Update Tunnel Update Notification for identifier: {}", instanceIdentifier);
         coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), () -> HwVTEPInterfaceStateUpdateHelper
                 .updatePhysicalSwitch(txRunner, instanceIdentifier, tunnelOld), IfmConstants.JOB_MAX_RETRIES);
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnelNew) {
+    public void add(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels tunnelNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, tunnels: {}", instanceIdentifier,
                   tunnelNew);
         coordinator.enqueueJob(tunnelNew.getTunnelUuid().getValue(), () -> HwVTEPInterfaceStateUpdateHelper

@@ -18,9 +18,9 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -501,7 +501,7 @@ public final class DirectTunnelUtils {
     }
 
     public void updateBfdConfiguration(BigInteger srcDpnId, RemoteDpns remoteDpn,
-                                       @Nonnull com.google.common.base.Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
+                                       com.google.common.base.@NonNull Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
         if (ovsBridgeRefEntry.isPresent()) {
             LOG.debug("creating bridge interface on dpn {}", srcDpnId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =

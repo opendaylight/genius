@@ -8,9 +8,9 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -61,8 +61,8 @@ public class TunnelMonitorChangeListener
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
-                       @Nonnull TunnelMonitorParams dataObjectModification) {
+    public void remove(@NonNull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
+                       @NonNull TunnelMonitorParams dataObjectModification) {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
@@ -91,9 +91,9 @@ public class TunnelMonitorChangeListener
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
-                       @Nonnull TunnelMonitorParams dataObjectModificationBefore,
-                       @Nonnull TunnelMonitorParams dataObjectModificationAfter) {
+    public void update(@NonNull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
+                       @NonNull TunnelMonitorParams dataObjectModificationBefore,
+                       @NonNull TunnelMonitorParams dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorChangeListener called with {}",dataObjectModificationAfter.isEnabled());
         Class<? extends TunnelMonitoringTypeBase> monitorProtocolBefore =
                 dataObjectModificationBefore.getMonitorProtocol();
@@ -134,8 +134,8 @@ public class TunnelMonitorChangeListener
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
-                    @Nonnull TunnelMonitorParams dataObjectModification) {
+    public void add(@NonNull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
+                    @NonNull TunnelMonitorParams dataObjectModification) {
         LOG.debug("Add - TunnelMonitorToggleWorker with Enable = {}, MonitorProtocol = {}",
                 dataObjectModification.isEnabled(), dataObjectModification.getMonitorProtocol());
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();

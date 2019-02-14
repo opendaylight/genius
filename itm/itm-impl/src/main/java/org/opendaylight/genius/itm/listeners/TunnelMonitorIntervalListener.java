@@ -8,9 +8,9 @@
 package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -61,8 +61,8 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<TunnelMonitorInterval> instanceIdentifier,
-                       @Nonnull TunnelMonitorInterval dataObjectModification) {
+    public void remove(@NonNull InstanceIdentifier<TunnelMonitorInterval> instanceIdentifier,
+                       @NonNull TunnelMonitorInterval dataObjectModification) {
         LOG.debug("remove TunnelMonitorIntervalListener called with {}", dataObjectModification.getInterval());
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils
@@ -86,9 +86,9 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<TunnelMonitorInterval> instanceIdentifier,
-                       @Nonnull TunnelMonitorInterval dataObjectModificationBefore,
-                       @Nonnull TunnelMonitorInterval dataObjectModificationAfter) {
+    public void update(@NonNull InstanceIdentifier<TunnelMonitorInterval> instanceIdentifier,
+                       @NonNull TunnelMonitorInterval dataObjectModificationBefore,
+                       @NonNull TunnelMonitorInterval dataObjectModificationAfter) {
         LOG.debug("update TunnelMonitorIntervalListener called with {}", dataObjectModificationAfter.getInterval());
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils
@@ -112,8 +112,8 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<TunnelMonitorInterval> instanceIdentifier,
-                    @Nonnull TunnelMonitorInterval dataObjectModification) {
+    public void add(@NonNull InstanceIdentifier<TunnelMonitorInterval> instanceIdentifier,
+                    @NonNull TunnelMonitorInterval dataObjectModification) {
         LOG.debug("Add TunnelMonitorIntervalListener called with {}", dataObjectModification.getInterval());
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils

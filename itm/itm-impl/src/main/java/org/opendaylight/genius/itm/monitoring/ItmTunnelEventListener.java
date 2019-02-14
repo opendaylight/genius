@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.JMException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
@@ -80,8 +80,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
-                       @Nonnull StateTunnelList stateTunnelList) {
+    public void remove(@NonNull InstanceIdentifier<StateTunnelList> instanceIdentifier,
+                       @NonNull StateTunnelList stateTunnelList) {
         LOG.trace("Tunnel Interface remove: {}", stateTunnelList.getTunnelInterfaceName());
         ItmTunnelRemoveAlarmWorker itmTunnelRemoveAlarmWorker = new ItmTunnelRemoveAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name
@@ -90,8 +90,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
-                       @Nonnull StateTunnelList originalTunnelList, @Nonnull StateTunnelList updatedTunnelList) {
+    public void update(@NonNull InstanceIdentifier<StateTunnelList> instanceIdentifier,
+                       @NonNull StateTunnelList originalTunnelList, @NonNull StateTunnelList updatedTunnelList) {
         LOG.trace("Tunnel Interface updated. Old: {} New: {}", originalTunnelList, updatedTunnelList);
         TunnelOperStatus operStatus = updatedTunnelList.getOperState();
         if (!Objects.equals(originalTunnelList.getOperState(), updatedTunnelList.getOperState())) {
@@ -104,8 +104,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<StateTunnelList> instanceIdentifier,
-                    @Nonnull StateTunnelList stateTunnelList) {
+    public void add(@NonNull InstanceIdentifier<StateTunnelList> instanceIdentifier,
+                    @NonNull StateTunnelList stateTunnelList) {
         LOG.debug("Tunnel Interface of type Tunnel added: {}", stateTunnelList.getTunnelInterfaceName());
         ItmTunnelAddAlarmWorker itmTunnelAddAlarmWorker = new ItmTunnelAddAlarmWorker(stateTunnelList);
         // For now, its all queued in one queue. If any delay in alarm being raised, queue based on interface Name

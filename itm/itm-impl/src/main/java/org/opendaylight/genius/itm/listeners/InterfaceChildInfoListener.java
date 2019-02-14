@@ -8,9 +8,9 @@
 
 package org.opendaylight.genius.itm.listeners;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.confighelpers.ItmTunnelAggregationHelper;
@@ -37,8 +37,8 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
-                    @Nonnull InterfaceParentEntry interfaceParentEntry) {
+    public void add(@NonNull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
+                    @NonNull InterfaceParentEntry interfaceParentEntry) {
         if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener add for {}",
                       interfaceParentEntry.getParentInterface());
@@ -47,8 +47,8 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
-                       @Nonnull InterfaceParentEntry interfaceParentEntry) {
+    public void remove(@NonNull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
+                       @NonNull InterfaceParentEntry interfaceParentEntry) {
         if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener remove for {}",
                       interfaceParentEntry.getParentInterface());
@@ -57,9 +57,9 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
-                       @Nonnull InterfaceParentEntry originalParentEntry,
-                       @Nonnull InterfaceParentEntry updatedParentEntry) {
+    public void update(@NonNull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
+                       @NonNull InterfaceParentEntry originalParentEntry,
+                       @NonNull InterfaceParentEntry updatedParentEntry) {
         if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener update for {}",
                       updatedParentEntry.getParentInterface());

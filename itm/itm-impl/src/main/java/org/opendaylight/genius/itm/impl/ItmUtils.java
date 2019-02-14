@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.util.SubnetUtils;
 import org.apache.commons.net.util.SubnetUtils.SubnetInfo;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -179,7 +179,7 @@ public final class ItmUtils {
         }
 
         @Override
-        public void onFailure(@Nonnull Throwable error) {
+        public void onFailure(@NonNull Throwable error) {
             LOG.error("Error in Datastore write operation", error);
         }
     };
@@ -781,7 +781,7 @@ public final class ItmUtils {
         return !isEmpty(collection);
     }
 
-    @Nonnull
+    @NonNull
     public static HwVtep createHwVtepObject(String topoId, String nodeId, IpAddress ipAddress, IpPrefix ipPrefix,
                                             IpAddress gatewayIP, int vlanID,
                                             Class<? extends TunnelTypeBase> tunneltype, TransportZone transportZone) {
@@ -821,7 +821,7 @@ public final class ItmUtils {
         }
     }
 
-    @Nonnull
+    @NonNull
     public static List<BigInteger> getDpnIdList(List<DpnIds> dpnIds) {
         List<BigInteger> dpnList = new ArrayList<>() ;
         for (DpnIds dpn : dpnIds) {
@@ -850,7 +850,7 @@ public final class ItmUtils {
                                interfaceName)).build();
     }
 
-    @Nonnull
+    @NonNull
     public static List<String> getInternalTunnelInterfaces(DataBroker dataBroker) {
         Collection<String> internalInterfaces = ITM_CACHE.getAllInternalInterfaces();
         List<String> tunnelList = new ArrayList<>();
@@ -1336,7 +1336,7 @@ public final class ItmUtils {
         return existingTzList;
     }
 
-    @Nonnull
+    @NonNull
     public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, BigInteger dpnId,
                                                              Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
@@ -1412,7 +1412,7 @@ public final class ItmUtils {
         return InstanceIdentifier.builder(TunnelsState.class).child(StateTunnelList.class, tlKey).build();
     }
 
-    @Nonnull
+    @NonNull
     public static  Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger destDpn,
                                                                     Class<? extends TunnelTypeBase> type,
                                                                     DataBroker dataBroker) {

@@ -13,9 +13,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -68,7 +68,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
+    public void add(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface iface) {
         LOG.trace("Interface added: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Interface of type Tunnel added: {}", iface.getName());
@@ -82,7 +82,7 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface iface) {
+    public void remove(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface iface) {
         LOG.trace("Interface deleted: {}", iface);
         if (ItmUtils.isItmIfType(iface.getType())) {
             LOG.debug("Tunnel interface deleted: {}", iface.getName());
@@ -96,8 +96,8 @@ public class InterfaceStateListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface originalInterface,
-                       @Nonnull Interface updatedInterface) {
+    public void update(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface originalInterface,
+                       @NonNull Interface updatedInterface) {
         /*
          * update contains only delta, may not include iftype Note: This assumes
          * type can't be edited on the fly

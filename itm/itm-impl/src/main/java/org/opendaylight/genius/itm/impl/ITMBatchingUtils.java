@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
@@ -88,7 +88,7 @@ public final class ITMBatchingUtils {
         getQueue(entityType).add(actResource);
     }
 
-    @Nonnull
+    @NonNull
     public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
         switch (entityType) {
             case DEFAULT_OPERATIONAL : return DEFAULT_OPERATIONAL_SHARD_BUFFER_Q;

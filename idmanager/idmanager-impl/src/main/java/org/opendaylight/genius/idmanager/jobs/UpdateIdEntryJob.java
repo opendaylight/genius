@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.Executors;

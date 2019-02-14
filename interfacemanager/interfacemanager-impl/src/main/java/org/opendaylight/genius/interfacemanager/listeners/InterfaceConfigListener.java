@@ -8,11 +8,10 @@
 
 package org.opendaylight.genius.interfacemanager.listeners;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -90,7 +89,7 @@ public class InterfaceConfigListener
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
+    public void remove(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface removedInterface) {
         interfaceManagerCommonUtils.removeFromInterfaceCache(removedInterface);
 
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -113,8 +112,8 @@ public class InterfaceConfigListener
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface originalInterface,
-                       @Nonnull Interface updatedInterface) {
+    public void update(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface originalInterface,
+                       @NonNull Interface updatedInterface) {
         interfaceManagerCommonUtils.addInterfaceToCache(updatedInterface);
 
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -142,7 +141,7 @@ public class InterfaceConfigListener
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface newInterface) {
+    public void add(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface newInterface) {
         interfaceManagerCommonUtils.addInterfaceToCache(newInterface);
 
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,

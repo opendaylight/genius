@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols;
 
-import javax.annotation.Nullable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor.configs.MonitoringInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;

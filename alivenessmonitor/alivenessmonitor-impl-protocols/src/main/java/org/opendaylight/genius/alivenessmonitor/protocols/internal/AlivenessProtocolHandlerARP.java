@@ -16,6 +16,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil;
@@ -77,6 +77,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     }
 
     @Override
+    @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
     public String handlePacketIn(ARP packet, PacketReceived packetReceived) {
         short tableId = packetReceived.getTableId().getValue();
         int arpType = packet.getOpCode();

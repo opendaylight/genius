@@ -9,7 +9,7 @@ package org.opendaylight.genius.utils.hwvtep;
 
 import java.util.Map;
 import java.util.Set;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -26,13 +26,13 @@ public interface HwvtepNodeHACache {
     boolean isHAParentNode(InstanceIdentifier<Node> nodeId);
 
     // Commented out for now - causes findbugs violation in netvirt
-    //@Nonnull
+    //@NonNull
     Set<InstanceIdentifier<Node>> getChildrenForHANode(InstanceIdentifier<Node> parentId);
 
-    @Nonnull
+    @NonNull
     Set<InstanceIdentifier<Node>> getHAParentNodes();
 
-    @Nonnull
+    @NonNull
     Set<InstanceIdentifier<Node>> getHAChildNodes();
 
     InstanceIdentifier<Node> getParent(InstanceIdentifier<Node> childId);
@@ -43,6 +43,6 @@ public interface HwvtepNodeHACache {
 
     void updateDisconnectedNodeStatus(InstanceIdentifier<Node> nodeId);
 
-    @Nonnull
+    @NonNull
     Map<String, Boolean> getNodeConnectionStatuses();
 }
