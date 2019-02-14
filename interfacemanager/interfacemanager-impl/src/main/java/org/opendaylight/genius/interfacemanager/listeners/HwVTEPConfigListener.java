@@ -10,11 +10,10 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import static org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.createGlobalNodeInstanceIdentifier;
 import static org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils.createPhysicalSwitchInstanceIdentifier;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -53,7 +52,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface removedInterface) {
+    public void remove(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface removedInterface) {
         // HwVTEPs support only VXLAN
         IfTunnel ifTunnel = removedInterface.augmentation(IfTunnel.class);
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
@@ -77,8 +76,8 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface originalInterface,
-                       @Nonnull Interface updatedInterface) {
+    public void update(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface originalInterface,
+                       @NonNull Interface updatedInterface) {
         // HwVTEPs support only VXLAN
         IfTunnel ifTunnel = originalInterface.augmentation(IfTunnel.class);
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {
@@ -101,7 +100,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface newInterface) {
+    public void add(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface newInterface) {
         // HwVTEPs support only VXLAN
         IfTunnel ifTunnel = newInterface.augmentation(IfTunnel.class);
         if (ifTunnel != null && ifTunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeVxlan.class)) {

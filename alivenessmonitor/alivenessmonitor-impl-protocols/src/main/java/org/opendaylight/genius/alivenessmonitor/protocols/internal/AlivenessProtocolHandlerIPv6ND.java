@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.Collections;
@@ -23,7 +24,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.StringUtils;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
@@ -82,6 +82,7 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
     }
 
     @Override
+    @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
     public String handlePacketIn(Packet packet, PacketReceived packetReceived) {
         // parameter "packet" is expected to be null in this case
         byte[] data = packetReceived.getPayload();

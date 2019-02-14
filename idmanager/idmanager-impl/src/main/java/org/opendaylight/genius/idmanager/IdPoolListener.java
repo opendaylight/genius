@@ -8,12 +8,11 @@
 package org.opendaylight.genius.idmanager;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -42,12 +41,12 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool idPool) {
+    public void add(@NonNull InstanceIdentifier<IdPool> instanceIdentifier, @NonNull IdPool idPool) {
         LOG.info("Add pool name: {}", idPool.getPoolName());
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool idPool) {
+    public void remove(@NonNull InstanceIdentifier<IdPool> instanceIdentifier, @NonNull IdPool idPool) {
         String parentPoolName = idPool.getParentPoolName();
         String poolName = idPool.getPoolName();
         if (parentPoolName != null && !parentPoolName.isEmpty()) {
@@ -56,8 +55,8 @@ public class IdPoolListener extends AbstractClusteredAsyncDataTreeChangeListener
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<IdPool> instanceIdentifier, @Nonnull IdPool originalIdPool,
-                       @Nonnull IdPool updatedIdPool) {
+    public void update(@NonNull InstanceIdentifier<IdPool> instanceIdentifier, @NonNull IdPool originalIdPool,
+                       @NonNull IdPool updatedIdPool) {
         if (!Objects.equals(updatedIdPool.getAvailableIdsHolder(), originalIdPool.getAvailableIdsHolder())
                 || !Objects.equals(updatedIdPool.getReleasedIdsHolder().getAvailableIdCount(),
                        originalIdPool.getReleasedIdsHolder().getAvailableIdCount())) {

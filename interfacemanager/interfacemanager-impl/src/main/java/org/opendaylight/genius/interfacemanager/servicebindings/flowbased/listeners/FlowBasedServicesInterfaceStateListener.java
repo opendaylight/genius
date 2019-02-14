@@ -12,17 +12,15 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -81,8 +79,8 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
     }
 
     @Override
-    public void remove(@Nonnull final InstanceIdentifier<Interface> instanceIdentifier,
-                       @Nonnull final Interface interfaceStateOld) {
+    public void remove(@NonNull final InstanceIdentifier<Interface> instanceIdentifier,
+                       @NonNull final Interface interfaceStateOld) {
         if (Other.class.equals(interfaceStateOld.getType()) || !entityOwnershipUtils
                 .isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
@@ -97,13 +95,13 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface interfaceStateOld,
-                       @Nonnull Interface interfaceStateNew) {
+    public void update(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface interfaceStateOld,
+                       @NonNull Interface interfaceStateNew) {
         // Do nothing
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Interface> instanceIdentifier, @Nonnull Interface interfaceStateNew) {
+    public void add(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface interfaceStateNew) {
         if (interfaceStateNew.getType() == null || !entityOwnershipUtils
                 .isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {

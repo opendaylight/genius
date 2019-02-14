@@ -18,9 +18,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
@@ -150,8 +150,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
-                       @Nonnull TransportZone transportZone) {
+    public void remove(@NonNull InstanceIdentifier<TransportZone> instanceIdentifier,
+                       @NonNull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
         boolean allowTunnelDeletion;
 
@@ -191,8 +191,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<TransportZone> instanceIdentifier,
-                       @Nonnull TransportZone originalTransportZone, @Nonnull TransportZone updatedTransportZone) {
+    public void update(@NonNull InstanceIdentifier<TransportZone> instanceIdentifier,
+                       @NonNull TransportZone originalTransportZone, @NonNull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                   updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
@@ -254,7 +254,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     @Override
-    public void add(@Nonnull TransportZone transportZone) {
+    public void add(@NonNull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Add Event: {}", transportZone);
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
         List<HwVtep> hwVtepList = createhWVteps(transportZone);

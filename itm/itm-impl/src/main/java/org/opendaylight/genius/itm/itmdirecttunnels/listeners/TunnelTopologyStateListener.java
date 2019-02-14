@@ -13,7 +13,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -70,8 +70,8 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
-                       @Nonnull OvsdbBridgeAugmentation bridgeOld) {
+    public void remove(@NonNull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+                       @NonNull OvsdbBridgeAugmentation bridgeOld) {
         if (directTunnelUtils.isEntityOwner()) {
             LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeOld);
@@ -83,8 +83,8 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
-                       @Nonnull OvsdbBridgeAugmentation bridgeOld, @Nonnull OvsdbBridgeAugmentation bridgeNew) {
+    public void update(@NonNull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+                       @NonNull OvsdbBridgeAugmentation bridgeOld, @NonNull OvsdbBridgeAugmentation bridgeNew) {
 
         if (!directTunnelUtils.isEntityOwner()) {
             return;
@@ -108,8 +108,8 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
-                    @Nonnull OvsdbBridgeAugmentation bridgeNew) {
+    public void add(@NonNull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+                    @NonNull OvsdbBridgeAugmentation bridgeNew) {
         if (directTunnelUtils.isEntityOwner()) {
             LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeNew);

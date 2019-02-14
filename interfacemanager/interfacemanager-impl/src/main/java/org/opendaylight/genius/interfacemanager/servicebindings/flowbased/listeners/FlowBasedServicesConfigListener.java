@@ -16,13 +16,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
@@ -121,7 +120,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
     }
 
     @Override
-    public void onDataTreeChanged(@Nonnull final Collection<DataTreeModification<ServicesInfo>> collection) {
+    public void onDataTreeChanged(@NonNull final Collection<DataTreeModification<ServicesInfo>> collection) {
         collection.forEach(
             servicesInfoDataTreeModification -> servicesInfoDataTreeModification.getRootNode()
                     .getModifiedChildren().stream()
@@ -176,7 +175,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         }
     }
 
-    protected void remove(@Nonnull final ServicesInfoKey serviceKey, @Nonnull  final BoundServices boundServiceOld,
+    protected void remove(@NonNull final ServicesInfoKey serviceKey, @NonNull  final BoundServices boundServiceOld,
                           final List<BoundServices> boundServicesList) {
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                 IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {

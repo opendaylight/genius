@@ -8,10 +8,10 @@
 
 package org.opendaylight.genius.itm.listeners.cache;
 
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -36,20 +36,20 @@ public class ExternalTunnelListener extends AbstractClusteredAsyncDataTreeChange
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
-                       @Nonnull ExternalTunnel externalTunnel) {
+    public void remove(@NonNull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
+                       @NonNull ExternalTunnel externalTunnel) {
         ItmUtils.ITM_CACHE.removeExternalTunnelfromExternalTunnelKeyCache(externalTunnel.key());
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
-                       @Nonnull ExternalTunnel originalExternalTunnel, @Nonnull ExternalTunnel updatedExternalTunnel) {
+    public void update(@NonNull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
+                       @NonNull ExternalTunnel originalExternalTunnel, @NonNull ExternalTunnel updatedExternalTunnel) {
         ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(updatedExternalTunnel);
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
-                    @Nonnull ExternalTunnel externalTunnel) {
+    public void add(@NonNull InstanceIdentifier<ExternalTunnel> instanceIdentifier,
+                    @NonNull ExternalTunnel externalTunnel) {
         ItmUtils.ITM_CACHE.addExternalTunnelKeyToExternalTunnelCache(externalTunnel);
     }
 

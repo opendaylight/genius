@@ -12,7 +12,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -43,18 +43,18 @@ public class InternalTunnelListener extends AbstractSyncDataTreeChangeListener<I
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<InternalTunnel> key, @Nonnull InternalTunnel interfaceOld) {
+    public void remove(@NonNull InstanceIdentifier<InternalTunnel> key, @NonNull InternalTunnel interfaceOld) {
         LOG.debug("REMOVE hit in InternalTunnelListenerITM");
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<InternalTunnel> key, @Nonnull InternalTunnel internalTunnelOld,
-                       @Nonnull InternalTunnel internalTunnelNew) {
+    public void update(@NonNull InstanceIdentifier<InternalTunnel> key, @NonNull InternalTunnel internalTunnelOld,
+                       @NonNull InternalTunnel internalTunnelNew) {
         LOG.debug("UPDATE hit in InternalTunnelListenerITM");
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<InternalTunnel> key, @Nonnull InternalTunnel internalTunnel) {
+    public void add(@NonNull InstanceIdentifier<InternalTunnel> key, @NonNull InternalTunnel internalTunnel) {
         LOG.debug("ADD of Interface {} received in InternalTunnelListenerITM");
         RendererInternalTunnelDeleteWorker configWorker = new RendererInternalTunnelDeleteWorker(key, internalTunnel);
         coordinator.enqueueJob(getKeyForEnqueuing(internalTunnel), configWorker, ITMConstants.JOB_MAX_RETRIES);

@@ -9,11 +9,10 @@ package org.opendaylight.genius.mdsalutil.internal;
 
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -58,20 +57,20 @@ public class UpgradeStateListener extends AbstractSyncDataTreeChangeListener<Con
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Config> instanceIdentifier, @Nonnull Config config) {
+    public void add(@NonNull InstanceIdentifier<Config> instanceIdentifier, @NonNull Config config) {
         upgradeUtils.setUpgradeConfig(config.isUpgradeInProgress());
         LOG.info("UpgradeStateListener.add: isUpgradeInProgress = {}", config.isUpgradeInProgress());
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Config> instanceIdentifier, @Nonnull Config config) {
+    public void remove(@NonNull InstanceIdentifier<Config> instanceIdentifier, @NonNull Config config) {
         upgradeUtils.setUpgradeConfig(false);
         LOG.info("UpgradeStateListener.remove: isUpgradeInProgress = {}", false);
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Config> instanceIdentifier,
-                       @Nonnull Config originalConfig, @Nonnull Config updatedConfig) {
+    public void update(@NonNull InstanceIdentifier<Config> instanceIdentifier,
+                       @NonNull Config originalConfig, @NonNull Config updatedConfig) {
         upgradeUtils.setUpgradeConfig(updatedConfig.isUpgradeInProgress());
         LOG.info("UpgradeStateListener.update: isUpgradeInProgress = {}", updatedConfig.isUpgradeInProgress());
     }

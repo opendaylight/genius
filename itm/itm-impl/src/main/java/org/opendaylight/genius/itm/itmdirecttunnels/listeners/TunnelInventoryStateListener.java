@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -99,8 +99,8 @@ public class TunnelInventoryStateListener extends
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<FlowCapableNodeConnector> key,
-                       @Nonnull FlowCapableNodeConnector flowCapableNodeConnector) {
+    public void remove(@NonNull InstanceIdentifier<FlowCapableNodeConnector> key,
+                       @NonNull FlowCapableNodeConnector flowCapableNodeConnector) {
         String portName = flowCapableNodeConnector.getName();
         LOG.debug("InterfaceInventoryState Remove for {}", portName);
         // ITM Direct Tunnels Return if its not tunnel port and if its not Internal
@@ -135,9 +135,9 @@ public class TunnelInventoryStateListener extends
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<FlowCapableNodeConnector> key,
-                       @Nonnull FlowCapableNodeConnector fcNodeConnectorOld,
-                       @Nonnull FlowCapableNodeConnector fcNodeConnectorNew) {
+    public void update(@NonNull InstanceIdentifier<FlowCapableNodeConnector> key,
+                       @NonNull FlowCapableNodeConnector fcNodeConnectorOld,
+                       @NonNull FlowCapableNodeConnector fcNodeConnectorNew) {
         String portName = fcNodeConnectorNew.getName();
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Update - {} Interface is not a tunnel I/f, so no-op", portName);
@@ -157,8 +157,8 @@ public class TunnelInventoryStateListener extends
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<FlowCapableNodeConnector> key,
-                    @Nonnull FlowCapableNodeConnector fcNodeConnectorNew) {
+    public void add(@NonNull InstanceIdentifier<FlowCapableNodeConnector> key,
+                    @NonNull FlowCapableNodeConnector fcNodeConnectorNew) {
         LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         String portName = fcNodeConnectorNew.getName();
         // Return if its not tunnel port and if its not Internal

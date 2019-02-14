@@ -39,12 +39,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.NotificationPublishService;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
@@ -200,7 +199,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         createIdPool();
         monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
             @Override
-            public String load(@Nonnull Long monitorId) {
+            public String load(@NonNull Long monitorId) {
                 try {
                     return txRunner.<Operational, ExecutionException, Optional<MonitoridKeyEntry>>
                         applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
@@ -241,7 +240,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             }
 
             @Override
-            public void onSuccess(@Nonnull RpcResult<CreateIdPoolOutput> result) {
+            public void onSuccess(@NonNull RpcResult<CreateIdPoolOutput> result) {
                 if (result.isSuccessful()) {
                     LOG.debug("Created IdPool for Aliveness Monitor Service");
                 } else {
@@ -661,7 +660,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             }
 
             @Override
-            public void onSuccess(@Nonnull Optional<MonitoringInfo> optInfo) {
+            public void onSuccess(@NonNull Optional<MonitoringInfo> optInfo) {
                 if (optInfo.isPresent()) {
                     final MonitoringInfo info = optInfo.get();
                     FluentFuture<Optional<MonitorProfile>> readProfile = tx.read(LogicalDatastoreType.OPERATIONAL,
@@ -679,7 +678,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                         }
 
                         @Override
-                        public void onSuccess(@Nonnull Optional<MonitorProfile> optProfile) {
+                        public void onSuccess(@NonNull Optional<MonitorProfile> optProfile) {
                             tx.close();
                             if (optProfile.isPresent()) {
                                 updateMonitorStatusTo(monitorId, MonitorStatus.Started,
@@ -1261,7 +1260,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             }
 
             @Override
-            public void onSuccess(@Nonnull Optional<MonitoringInfo> optInfo) {
+            public void onSuccess(@NonNull Optional<MonitoringInfo> optInfo) {
                 if (optInfo.isPresent()) {
                     final MonitoringInfo info = optInfo.get();
                     ListenableFuture<Optional<MonitorProfile>> readProfile = tx.read(LogicalDatastoreType.OPERATIONAL,
@@ -1277,7 +1276,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                         }
 
                         @Override
-                        public void onSuccess(@Nonnull Optional<MonitorProfile> optProfile) {
+                        public void onSuccess(@NonNull Optional<MonitorProfile> optProfile) {
                             tx.close();
                             if (optProfile.isPresent()) {
                                 updateMonitorStatusTo(monitorId, MonitorStatus.Started,
@@ -1340,8 +1339,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
     //handle monitor stop
     @Override
-    public void remove(@Nonnull InstanceIdentifier<MonitoringState> instanceIdentifier,
-                       @Nonnull MonitoringState removedDataObject) {
+    public void remove(@NonNull InstanceIdentifier<MonitoringState> instanceIdentifier,
+                       @NonNull MonitoringState removedDataObject) {
         final Long monitorId = removedDataObject.getMonitorId();
         LOG.debug("Monitor State remove listener invoked for monitor id: {}", monitorId);
 
@@ -1356,9 +1355,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
     //handle monitor pause
     @Override
-    public void update(@Nonnull InstanceIdentifier<MonitoringState> instanceIdentifier,
-                       @Nonnull MonitoringState originalDataObject,
-                       @Nonnull MonitoringState updatedDataObject) {
+    public void update(@NonNull InstanceIdentifier<MonitoringState> instanceIdentifier,
+                       @NonNull MonitoringState originalDataObject,
+                       @NonNull MonitoringState updatedDataObject) {
         final Long monitorId = updatedDataObject.getMonitorId();
         LOG.debug("Monitor State update listener invoked for monitor id: {}", monitorId);
 

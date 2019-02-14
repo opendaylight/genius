@@ -10,11 +10,11 @@ package org.opendaylight.genius.fcapsapp;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.fcapsapp.alarm.AlarmAgent;
 import org.opendaylight.genius.fcapsapp.performancecounter.FlowNodeConnectorInventoryTranslatorImpl;
 import org.opendaylight.genius.fcapsapp.performancecounter.NodeUpdateCounter;
@@ -67,7 +67,7 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
     }
 
     @Override
-    public void onDataTreeChanged(@Nonnull Collection<DataTreeModification<D>> changes) {
+    public void onDataTreeChanged(@NonNull Collection<DataTreeModification<D>> changes) {
         for (DataTreeModification<D> change : changes) {
             final InstanceIdentifier<D> key = change.getRootPath().getRootIdentifier();
             final DataObjectModification<D> mod = change.getRootNode();
@@ -112,8 +112,8 @@ public class NodeEventListener<D extends DataObject> implements ClusteredDataTre
         }
     }
 
-    @Nonnull
-    private String getDpnId(@Nonnull String node) {
+    @NonNull
+    private String getDpnId(@NonNull String node) {
         // Uri [_value=openflow:1]
         String[] temp = node.split("=");
         return temp[1].substring(0, temp[1].length() - 1);

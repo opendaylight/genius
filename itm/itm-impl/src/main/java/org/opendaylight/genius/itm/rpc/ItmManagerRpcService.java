@@ -29,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -286,8 +286,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                     new FutureCallback<org.opendaylight.yang.gen.v1.urn.opendaylight.genius
                             .interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput>() {
                         @Override
-                        public void onSuccess(@Nonnull org.opendaylight.yang.gen.v1.urn.opendaylight.genius
-                                .interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput result) {
+                        public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs
+                                .rev160406.@NonNull GetEgressActionsForInterfaceOutput result) {
                             GetEgressActionsForTunnelOutputBuilder output =
                                     new GetEgressActionsForTunnelOutputBuilder().setAction(result.getAction());
                             settableFuture.set(RpcResultBuilder.<GetEgressActionsForTunnelOutput>success()
@@ -328,8 +328,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             Futures.addCallback(interfaceManagerService.getTunnelType(inputBuilder.build()),
                     new FutureCallback<org.opendaylight.yang.gen.v1.urn.opendaylight.genius
                             .interfacemanager.rpcs.rev160406.GetTunnelTypeOutput>() {
-                        public void onSuccess(@Nonnull org.opendaylight.yang.gen.v1.urn.opendaylight.genius
-                                .interfacemanager.rpcs.rev160406.GetTunnelTypeOutput result) {
+                        public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs
+                                .rev160406.@NonNull GetTunnelTypeOutput result) {
                             GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder()
                                     .setTunnelType(result.getTunnelType());
                             settableFuture.set(RpcResultBuilder.<GetTunnelTypeOutput>success()
@@ -1211,7 +1211,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
         future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
             @Override
-            public void onSuccess(@Nonnull  Optional<DcGatewayIpList> optional) {
+            public void onSuccess(@NonNull  Optional<DcGatewayIpList> optional) {
                 try {
                     Optional<DcGatewayIpList> opt = future.get();
                     if (opt.isPresent()) {

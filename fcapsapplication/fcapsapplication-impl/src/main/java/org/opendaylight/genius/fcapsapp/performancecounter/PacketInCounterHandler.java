@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.infrautils.metrics.Counter;
 import org.opendaylight.infrautils.metrics.Labeled;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
@@ -55,8 +55,8 @@ public class PacketInCounterHandler implements PacketProcessingListener {
      * Method to extract DpnId
      */
 
-    @Nonnull
-    private String getDpnId(@Nonnull String id) {
+    @NonNull
+    private String getDpnId(@NonNull String id) {
         String[] nodeNo = id.split(":");
         String[] dpnId = nodeNo[1].split("]");
         return dpnId[0];

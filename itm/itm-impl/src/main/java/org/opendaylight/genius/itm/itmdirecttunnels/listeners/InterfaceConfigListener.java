@@ -11,7 +11,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -42,18 +42,18 @@ public class InterfaceConfigListener extends AbstractSyncDataTreeChangeListener<
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Interface> key, @Nonnull Interface interfaceOld) {
+    public void remove(@NonNull InstanceIdentifier<Interface> key, @NonNull Interface interfaceOld) {
         LOG.debug("REMOVE hit in interfaceConfigListenerITM");
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Interface> key, @Nonnull Interface interfaceOld,
-                       @Nonnull Interface interfaceNew) {
+    public void update(@NonNull InstanceIdentifier<Interface> key, @NonNull Interface interfaceOld,
+                       @NonNull Interface interfaceNew) {
         LOG.debug("UPDATE hit in interfaceConfigListenerITM");
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Interface> key, @Nonnull Interface interfaceNew) {
+    public void add(@NonNull InstanceIdentifier<Interface> key, @NonNull Interface interfaceNew) {
         IfTunnel ifTunnel = interfaceNew.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             if (ifTunnel.isInternal()) {

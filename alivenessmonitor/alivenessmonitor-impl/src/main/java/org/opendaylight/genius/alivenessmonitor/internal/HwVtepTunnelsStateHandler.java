@@ -22,11 +22,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
 import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
@@ -95,13 +95,13 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     @Override
-    public void remove(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnelInfo) {
+    public void remove(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels tunnelInfo) {
         // Do nothing
     }
 
     @Override
-    public void update(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels oldTunnelInfo,
-                       @Nonnull Tunnels updatedTunnelInfo) {
+    public void update(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels oldTunnelInfo,
+                       @NonNull Tunnels updatedTunnelInfo) {
         List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
         List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
@@ -154,7 +154,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
             }
 
             @Override
-            public void onFailure(@Nonnull Throwable error) {
+            public void onFailure(@NonNull Throwable error) {
                 alivenessMonitor.releaseLock(lock);
                 LOG.warn("Error in writing monitoring state for {} to Datastore", monitorKey, error);
             }
@@ -181,7 +181,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     @Override
-    public void add(@Nonnull InstanceIdentifier<Tunnels> instanceIdentifier, @Nonnull Tunnels tunnelInfo) {
+    public void add(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels tunnelInfo) {
         // TODO: need to add the code to enable BFD if tunnels are created
         // dynamically by TOR switch
     }
@@ -192,6 +192,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     @Override
+    @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
     public String handlePacketIn(Packet protocolPacket, PacketReceived packetReceived) {
         return null;
     }

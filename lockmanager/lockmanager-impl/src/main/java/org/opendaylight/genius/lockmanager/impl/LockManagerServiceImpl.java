@@ -134,7 +134,7 @@ public class LockManagerServiceImpl implements LockManagerService {
         CompletableFuture<Void> lock = lockSynchronizerMap.get(lockName);
         if (lock != null) {
             // FindBugs flags a false violation here - "passes a null value as the parameter of a method which must be
-            // non-null. Either this parameter has been explicitly marked as @Nonnull, or analysis has determined that
+            // non-null. Either this parameter has been explicitly marked as @NonNull, or analysis has determined that
             // this parameter is always dereferenced.". However neither is true. The type param is Void so you have to
             // pas null.
             lock.complete(null);

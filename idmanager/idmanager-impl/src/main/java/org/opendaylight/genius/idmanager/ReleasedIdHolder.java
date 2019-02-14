@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.annotation.Nonnull;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 
 public class ReleasedIdHolder implements IdHolder {
@@ -121,12 +121,12 @@ public class ReleasedIdHolder implements IdHolder {
         return timeDelaySec;
     }
 
-    @Nonnull
+    @NonNull
     public List<DelayedIdEntry> getDelayedEntries() {
         return delayedEntries;
     }
 
-    public void replaceDelayedEntries(@Nonnull List<DelayedIdEntry> newDelayedEntries) {
+    public void replaceDelayedEntries(@NonNull List<DelayedIdEntry> newDelayedEntries) {
         this.delayedEntries = new CopyOnWriteArrayList<>(newDelayedEntries);
     }
 
