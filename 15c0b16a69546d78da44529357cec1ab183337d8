@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "c8349368_0a99f5b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OfEndPointCache.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-15T06:14:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3b10455_7da5a8f5",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "e8d2ece8_2b6c7d39",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
         "patchSetId": 15
@@ -30,6 +48,24 @@
       "writtenOn": "2019-02-14T06:32:26Z",
       "side": 1,
       "message": "BigInteger to String conversion while adding",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7d565080_d4494b57",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-15T06:14:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "e8d2ece8_2b6c7d39",
       "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "d277f132_eb5dcbc2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 424,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-15T06:14:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7bc6d4f3_9e9618ff",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9f65aa98_10761655",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
         "patchSetId": 15
@@ -64,6 +118,24 @@
       "writtenOn": "2019-02-14T06:32:26Z",
       "side": 1,
       "message": "There is a method already for the same. Please check ItmUtils. Please refer to comment for an earlier patch",
+      "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c007bff3_78af6e2c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-02-15T06:14:02Z",
+      "side": 1,
+      "message": "This is different from ItmUtils, the method signature are different. ItmUtils method specifies String as the parameter while here it is Class.",
+      "parentUuid": "9f65aa98_10761655",
       "revId": "15c0b16a69546d78da44529357cec1ab183337d8",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
