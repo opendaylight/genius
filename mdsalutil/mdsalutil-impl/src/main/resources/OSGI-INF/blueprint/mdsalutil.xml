@@ -15,11 +15,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
   <service ref="mDSALManager"
            interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
-  <odl:clustered-app-config id="config"
-                            binding-class="org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.mdsalutil.rev170830.Config"
-                            default-config-file-name="genius-mdsalutil-config.xml"
-                            update-strategy="none">
-  </odl:clustered-app-config>
 
   <service ref="hwvtepNodeHACacheImpl"
            interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
