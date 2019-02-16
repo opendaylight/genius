@@ -8,7 +8,5 @@
       finalname="etc/opendaylight/datastore/initial/config/genius-itm-config.xml">mvn:org.opendaylight.genius/itm-impl/${project.version}/xml/config</configfile>
     <configfile
       finalname="etc/opendaylight/datastore/initial/config/genius-ifm-config.xml">mvn:org.opendaylight.genius/interfacemanager-impl/${project.version}/xml/config</configfile>
-    <configfile
-      finalname="etc/opendaylight/datastore/initial/config/genius-mdsalutil-config.xml">mvn:org.opendaylight.genius/mdsalutil-impl/${project.version}/xml/config</configfile>
   </feature>
 </features>
