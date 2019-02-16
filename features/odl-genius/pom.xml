@@ -223,14 +223,6 @@
       <classifier>config</classifier>
     </dependency>
     <dependency>
-      <!-- finalname="etc/opendaylight/datastore/initial/config/genius-mdsalutil-config.xml" -->
-      <groupId>org.opendaylight.genius</groupId>
-      <artifactId>mdsalutil-impl</artifactId>
-      <version>${project.version}</version>
-      <type>xml</type>
-      <classifier>config</classifier>
-    </dependency>
-    <dependency>
       <!-- finalname="etc/opendaylight/datastore/initial/config/genius-network-config.xml" -->
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>networkutils</artifactId>
