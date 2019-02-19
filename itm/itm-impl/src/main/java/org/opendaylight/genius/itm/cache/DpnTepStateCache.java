@@ -17,6 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -31,6 +34,8 @@ import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorker
 import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfoBuilder;
+import org.opendaylight.genius.itm.utils.OfTunnelChildInfo;
+import org.opendaylight.genius.itm.utils.OfTunnelChildInfoBuilder;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.genius.itm.utils.TunnelEndPointInfoBuilder;
 import org.opendaylight.genius.itm.utils.TunnelStateInfo;
@@ -65,6 +70,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, List<String>> ofTunnelChildMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<BigInteger, OfTunnelChildInfo> ofDpnAllChildMap = new ConcurrentHashMap<>();
 
     @Inject
     public DpnTepStateCache(DataBroker dataBroker, JobCoordinator coordinator,
@@ -90,6 +96,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         String srcOfTunnel = dpnsTeps.getOfTunnel();
         List<String> ofChildList = new ArrayList<>();
+        TunnelStateInfo ofTunnelStateInfo = unprocessedNCCache.remove(srcOfTunnel);
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
@@ -100,15 +107,29 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
             dpnTepInterfaceMap.put(dpn, value);
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                     dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
-            ofChildList.add(remoteDpns.getTunnelName());
+
+            if (srcOfTunnel != null && !srcOfTunnel.isEmpty()) {
+                LOG.debug("Adding child Tunnel {} for srcOfTunnel: {}", remoteDpns.getTunnelName(), srcOfTunnel);
+                ofChildList.add(remoteDpns.getTunnelName());
+                addOfInwardTunnelInfo(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId(),
+                        remoteDpns.getTunnelName());
+            }
+
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
 
             TunnelStateInfo tunnelStateInfoNew = null;
+            TunnelStateInfo tunnelStateInfo = null;
 
             directTunnelUtils.getTunnelLocks().lock(remoteDpns.getTunnelName());
-            TunnelStateInfo tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+            tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
             directTunnelUtils.getTunnelLocks().unlock(remoteDpns.getTunnelName());
 
+            if (tunnelStateInfo != null || ofTunnelStateInfo != null) {
+                LOG.debug("DpnTepState processing NC Event for the tunnel {}", remoteDpns.getTunnelName());
+                tunnelStateInfoNew = processNCEvent(remoteDpns, dpnsTeps, tunnelStateInfo, value);
+            }
+
+/*
             if (tunnelStateInfo != null) {
                 LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
 
@@ -141,6 +162,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     directTunnelUtils.getTunnelLocks().unlock(dstDpnId);
                 }
             }
+*/
 
             if (tunnelStateInfoNew != null && tunnelStateInfoNew.getSrcDpnTepsInfo() != null
                 && tunnelStateInfoNew.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
@@ -152,6 +174,9 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         }
         if (srcOfTunnel != null && !srcOfTunnel.isEmpty()) {
             ofTunnelChildMap.put(srcOfTunnel, ofChildList);
+            ofDpnAllChildMap.put(dpnsTeps.getSourceDpnId(),
+                    new OfTunnelChildInfoBuilder().setOfTunnelName(dpnsTeps.getOfTunnel())
+                            .setOutChildTunnels(ofChildList).build());
         }
     }
 
@@ -160,6 +185,14 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             dpnTepInterfaceMap.remove(getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId()));
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
+            if (dpnsTeps.getOfTunnel() != null && !dpnsTeps.getOfTunnel().isEmpty()) {
+                removeOfInwardTunnelInfo(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId(),
+                        remoteDpns.getTunnelName());
+            }
+        }
+        if (dpnsTeps.getOfTunnel() != null && !dpnsTeps.getOfTunnel().isEmpty()) {
+            ofTunnelChildMap.remove(dpnsTeps.getOfTunnel());
+            ofDpnAllChildMap.remove(dpnsTeps.getSourceDpnId());
         }
     }
 
@@ -300,5 +333,96 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     public List<String> getOfTunnelChildInfoFromCache(String tunnelName) {
         return ofTunnelChildMap.get(tunnelName);
+    }
+
+    public boolean isOfConfigAvailable(String tunnelName) {
+        if (getOfTunnelChildInfoFromCache(tunnelName) != null) {
+            return true;
+        }
+        return false;
+    }
+
+    public OfTunnelChildInfo getOfTunnelChildInfoForDPN(BigInteger dpnId) {
+        OfTunnelChildInfo ofTunnelChildInfo = ofDpnAllChildMap.get(dpnId);
+        return ofTunnelChildInfo;
+    }
+
+    private void addOfInwardTunnelInfo(BigInteger srcDpnId, BigInteger dstDpnId, String tunnelName) {
+        LOG.debug("addOfInwardTunnelInfo srcDpnId {} dstDpnId {} tunnelName {}", srcDpnId, dstDpnId, tunnelName);
+        List<Pair<BigInteger, String>> ofInwardTunnelInfo = new ArrayList<Pair<BigInteger, String>>();
+        if (ofDpnAllChildMap.get(dstDpnId) != null) {
+            LOG.debug("addOfInwardTunnelInfo map entry exists for dstDpnId {}", dstDpnId);
+            OfTunnelChildInfo ofTunnelChildInfo = ofDpnAllChildMap.get(dstDpnId);
+            if (ofTunnelChildInfo.getInDpnChildTunnels() != null) {
+                ofInwardTunnelInfo = ofTunnelChildInfo.getInDpnChildTunnels();
+            }
+            ofInwardTunnelInfo.add(new ImmutablePair<>(srcDpnId, tunnelName));
+            ofDpnAllChildMap.put(dstDpnId,
+                    new OfTunnelChildInfoBuilder().setOfTunnelName(ofTunnelChildInfo.getOfTunnelName())
+                            .setOutChildTunnels(ofTunnelChildInfo.getOutChildTunnels())
+                            .setInDpnChildTunnels(ofInwardTunnelInfo).build());
+
+        } else {
+            LOG.debug("addOfInwardTunnelInfo map entry doesnt exists for dstDpnId {}", dstDpnId);
+            ofInwardTunnelInfo.add(new ImmutablePair<>(srcDpnId, tunnelName));
+            ofDpnAllChildMap.put(dstDpnId,
+                    new OfTunnelChildInfoBuilder().setInDpnChildTunnels(ofInwardTunnelInfo).build());
+        }
+        LOG.debug("EXIT: addOfInwardTunnelInfo map entry added for dstDpnId {}",
+                ofDpnAllChildMap.get(dstDpnId).toString());
+    }
+
+    private void removeOfInwardTunnelInfo(BigInteger srcDpnId, BigInteger dstDpnId, String tunnelName) {
+        List<Pair<BigInteger, String>> ofInwardTunnelInfo;
+        if (ofDpnAllChildMap.get(dstDpnId) != null) {
+            OfTunnelChildInfo ofTunnelChildInfo = ofDpnAllChildMap.get(dstDpnId);
+            ofInwardTunnelInfo = ofTunnelChildInfo.getInDpnChildTunnels();
+            ofInwardTunnelInfo.remove(new ImmutablePair<>(srcDpnId, tunnelName));
+            ofDpnAllChildMap.put(dstDpnId,
+                    new OfTunnelChildInfoBuilder().setOfTunnelName(ofTunnelChildInfo.getOfTunnelName())
+                            .setOutChildTunnels(ofTunnelChildInfo.getOutChildTunnels())
+                            .setInDpnChildTunnels(ofInwardTunnelInfo).build());
+
+        }
+    }
+
+    private TunnelStateInfo processNCEvent(RemoteDpns remoteDpns, DpnsTeps dpnsTeps, TunnelStateInfo tunnelStateInfo,
+                                           DpnTepInterfaceInfo value) {
+
+
+        LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
+
+        TunnelEndPointInfo tunnelEndPtInfo = getTunnelEndPointInfo(dpnsTeps.getSourceDpnId().toString(),
+                remoteDpns.getDestinationDpnId().toString());
+        TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder()
+                .setNodeConnectorInfo(tunnelStateInfo.getNodeConnectorInfo()).setDpnTepInterfaceInfo(value)
+                .setTunnelEndPointInfo(tunnelEndPtInfo);
+
+        TunnelStateInfo tunnelStateInfoNew = null;
+
+        dpnTepsInfoCache.getDPNTepFromDPNId(dpnsTeps.getSourceDpnId()).ifPresent(builder::setSrcDpnTepsInfo);
+        dpnTepsInfoCache.getDPNTepFromDPNId(remoteDpns.getDestinationDpnId())
+                .ifPresent(builder::setDstDpnTepsInfo);
+
+        tunnelStateInfoNew = builder.build();
+        if (tunnelStateInfoNew.getSrcDpnTepsInfo() == null) {
+            String srcDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getSrcEndPointInfo();
+            directTunnelUtils.getTunnelLocks().lock(srcDpnId);
+            LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                    remoteDpns.getTunnelName(), srcDpnId);
+            unprocessedNodeConnectorEndPointCache.add(srcDpnId, tunnelStateInfoNew);
+            directTunnelUtils.getTunnelLocks().unlock(srcDpnId);
+        }
+
+        if (tunnelStateInfoNew.getDstDpnTepsInfo() == null) {
+            String dstDpnId = tunnelStateInfo.getTunnelEndPointInfo().getDstEndPointInfo();
+            directTunnelUtils.getTunnelLocks().lock(dstDpnId);
+            LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                    remoteDpns.getTunnelName(), dstDpnId);
+            unprocessedNodeConnectorEndPointCache.add(dstDpnId, tunnelStateInfoNew);
+            directTunnelUtils.getTunnelLocks().unlock(dstDpnId);
+        }
+
+        return tunnelStateInfoNew;
     }
 }

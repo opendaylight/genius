@@ -33,6 +33,8 @@ import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.OFTunnelStateAddWorker;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.OFTunnelStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorker;
 import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
@@ -104,12 +106,15 @@ public class TunnelInventoryStateListener extends
         String portName = flowCapableNodeConnector.getName();
         LOG.debug("InterfaceInventoryState Remove for {}", portName);
         // ITM Direct Tunnels Return if its not tunnel port and if its not Internal
-        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)
+                && !DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Remove - {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         } else {
             try {
-                if (!tunnelStateCache.isInternalBasedOnState(portName)) {
+                if (!tunnelStateCache.isInternalBasedOnState(portName)
+                        && ((dpnTepStateCache.getOfTunnelChildInfoFromCache(portName) == null)
+                        ||  dpnTepStateCache.getOfTunnelChildInfoFromCache(portName).isEmpty())) {
                     LOG.debug("Node Connector Remove {} Interface is not a internal tunnel I/f, so no-op", portName);
                     return;
                 }
@@ -123,7 +128,21 @@ public class TunnelInventoryStateListener extends
         }
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnector);
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
-        remove(nodeConnectorId, flowCapableNodeConnector, portName);
+
+        List<String> childTunnelList = new ArrayList<>();
+        LOG.debug("InterfaceInventoryState Remove Event PortName {}", portName);
+        if (DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName)) {
+            childTunnelList = dpnTepStateCache.getOfTunnelChildInfoFromCache(portName);
+            LOG.debug("OfTunnel List of childTunnelList {}", childTunnelList);
+        } else {
+            LOG.debug("Non ofTunnel PortName {}", portName);
+            childTunnelList.add(portName);
+        }
+        LOG.debug("List of childTunnelList {}", childTunnelList);
+
+        for (String childPort: childTunnelList) {
+            remove(nodeConnectorId, flowCapableNodeConnector, childPort);
+        }
     }
 
     private void remove(NodeConnectorId nodeConnectorId,
@@ -162,61 +181,87 @@ public class TunnelInventoryStateListener extends
         LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         String portName = fcNodeConnectorNew.getName();
         // Return if its not tunnel port and if its not Internal
-        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)
+                && !DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Add {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         }
         NodeConnectorInfo nodeConnectorInfo =
-            new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
+                new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
         TunnelStateInfo tunnelStateInfo = null;
         TunnelEndPointInfo tunnelEndPtInfo = null;
         try {
             directTunnelUtils.getTunnelLocks().lock(portName);
-            if (!dpnTepStateCache.isConfigAvailable(portName)) {
+            if (!dpnTepStateCache.isConfigAvailable(portName) && !dpnTepStateCache.isOfConfigAvailable(portName)) {
                 // Park the notification
                 LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
-                    + "Hence parking it", portName);
+                        + "Hence parking it", portName);
                 unprocessedNCCache.add(portName,
-                    new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo).build());
-                return;
-            } else if (!dpnTepStateCache.isInternal(portName)) {
-                LOG.debug("{} Interface is not a internal tunnel I/f, so no-op", portName);
+                        new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo).build());
                 return;
             }
         } finally {
             directTunnelUtils.getTunnelLocks().unlock(portName);
         }
-
-        if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
-            tunnelEndPtInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(portName);
-            TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo);
-            dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getSrcEndPointInfo()))
-                .ifPresent(builder::setSrcDpnTepsInfo);
-            dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getDstEndPointInfo()))
-                .ifPresent(builder::setDstDpnTepsInfo);
-            tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
-                .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
-            if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
-                directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getSrcEndPointInfo());
-                LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
-                        portName, tunnelEndPtInfo.getSrcEndPointInfo());
-                unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getSrcEndPointInfo(), tunnelStateInfo);
-                directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getSrcEndPointInfo());
-            }
-            if (tunnelStateInfo.getDstDpnTepsInfo() == null) {
-                directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getDstEndPointInfo());
-                LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
-                        portName, tunnelEndPtInfo.getDstEndPointInfo());
-                unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getDstEndPointInfo(), tunnelStateInfo);
-                directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getDstEndPointInfo());
-            }
+        LOG.debug("InterfaceInventoryState Add Event PortName {}", portName);
+        List<String> childTunnelList = new ArrayList<>();
+        if (DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName)) {
+            childTunnelList = dpnTepStateCache.getOfTunnelChildInfoFromCache(portName);
+            LOG.debug("OfTunnel List of childTunnelList {}", childTunnelList);
+        } else {
+            LOG.debug("Non ofTunnel PortName {}", portName);
+            childTunnelList.add(portName);
         }
+        LOG.debug("List of childTunnelList {}", childTunnelList);
 
-        if (tunnelEndPtInfo != null && tunnelStateInfo.getSrcDpnTepsInfo() != null
-            && tunnelStateInfo.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
-            coordinator.enqueueJob(portName,
-                new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
-                    tunnelStateInfo), ITMConstants.JOB_MAX_RETRIES);
+        for (String childPort: childTunnelList) {
+            if (dpnTepStateCache.isInternal(childPort)) {
+                tunnelEndPtInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(childPort);
+                TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo);
+                dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getSrcEndPointInfo()))
+                        .ifPresent(builder::setSrcDpnTepsInfo);
+                dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getDstEndPointInfo()))
+                        .ifPresent(builder::setDstDpnTepsInfo);
+                tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
+                        .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(childPort)).build();
+                if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
+                    directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getSrcEndPointInfo());
+                    LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                            childPort, tunnelEndPtInfo.getSrcEndPointInfo());
+                    unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getSrcEndPointInfo(), tunnelStateInfo);
+                    directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getSrcEndPointInfo());
+                }
+                if (tunnelStateInfo.getDstDpnTepsInfo() == null) {
+                    directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getDstEndPointInfo());
+                    LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                            childPort, tunnelEndPtInfo.getDstEndPointInfo());
+                    unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getDstEndPointInfo(), tunnelStateInfo);
+                    directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getDstEndPointInfo());
+                }
+            }
+
+            Boolean isOfPort = DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName);
+            LOG.debug("portName{} isOfPort: {}", portName, isOfPort);
+
+            if (tunnelEndPtInfo != null && tunnelStateInfo.getSrcDpnTepsInfo() != null
+                    && tunnelStateInfo.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
+                if (DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName)) {
+                    LOG.debug("Invoking OFTunnelStateAddWorker for dpn: {}", tunnelEndPtInfo.getSrcEndPointInfo());
+                    coordinator.enqueueJob(childPort,
+                            new OFTunnelStateAddWorkerForNodeConnector(
+                                    new OFTunnelStateAddWorker(directTunnelUtils, txRunner),
+                                    tunnelStateInfo,
+                                    dpnTepStateCache.getOfTunnelChildInfoForDPN(
+                                            new BigInteger(tunnelEndPtInfo.getSrcEndPointInfo()))),
+                                    ITMConstants.JOB_MAX_RETRIES);
+                } else {
+                    LOG.debug("Invoking Non-OFTunnelStateAddWorker for dpn: {}", tunnelEndPtInfo.getSrcEndPointInfo());
+                    coordinator.enqueueJob(childPort,
+                            new TunnelStateAddWorkerForNodeConnector(
+                                    new TunnelStateAddWorker(directTunnelUtils, txRunner),
+                                    tunnelStateInfo), ITMConstants.JOB_MAX_RETRIES);
+                }
+            }
         }
     }
 
@@ -397,6 +442,7 @@ public class TunnelInventoryStateListener extends
         public Object call() {
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
+
             return removeInterfaceStateConfiguration(nodeConnectorId, interfaceName, flowCapableNodeConnector);
         }
 
