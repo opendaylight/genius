@@ -171,6 +171,11 @@ public final class DirectTunnelUtils {
     public  static final Predicate<String> TUNNEL_PORT_PREDICATE =
         portName -> TUNNEL_PORT_PATTERN.matcher(portName).matches();
 
+    private static final String OF_TUNNEL_PORT_REGEX = "of[0-9a-f]{11}";
+    private static final Pattern OF_TUNNEL_PORT_PATTERN = Pattern.compile(OF_TUNNEL_PORT_REGEX);
+    public  static final Predicate<String> OF_TUNNEL_PORT_PREDICATE =
+        portName -> OF_TUNNEL_PORT_PATTERN.matcher(portName).matches();
+
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalApiManager;
     private final EntityOwnershipUtils entityOwnershipUtils;
