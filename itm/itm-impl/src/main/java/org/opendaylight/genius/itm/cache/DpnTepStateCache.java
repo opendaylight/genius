@@ -301,4 +301,11 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     public List<String> getOfTunnelChildInfoFromCache(String tunnelName) {
         return ofTunnelChildMap.get(tunnelName);
     }
+
+    public boolean isOfConfigAvailable(String tunnelName) {
+        if (getOfTunnelChildInfoFromCache(tunnelName) != null) {
+            return true;
+        }
+        return false;
+    }
 }
