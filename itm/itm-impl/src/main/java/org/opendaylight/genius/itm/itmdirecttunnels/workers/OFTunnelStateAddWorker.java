@@ -8,10 +8,11 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.workers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
@@ -20,6 +21,7 @@ import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
+import org.opendaylight.genius.itm.utils.OfTunnelChildInfo;
 import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -43,67 +45,64 @@ import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class TunnelStateAddWorker {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TunnelStateAddWorker.class);
+public final class OFTunnelStateAddWorker {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OFTunnelStateAddWorker.class);
 
     private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
 
-    public TunnelStateAddWorker(final DirectTunnelUtils directTunnelUtils, final ManagedNewTransactionRunner txRunner) {
+    public OFTunnelStateAddWorker(final DirectTunnelUtils directTunnelUtils,
+                                  final ManagedNewTransactionRunner txRunner) {
         this.directTunnelUtils = directTunnelUtils;
         this.txRunner = txRunner;
     }
 
-    public List<ListenableFuture<Void>> addState(TunnelStateInfo tunnelStateInfo)
+    public List<ListenableFuture<Void>> addState(TunnelStateInfo tunnelStateInfo, OfTunnelChildInfo ofTunnelChildInfo)
             throws ExecutionException, InterruptedException, OperationFailedException {
 
         // When this method is invoked, all parameters necessary should be available
         // Retrieve Port No from nodeConnectorId
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(tunnelStateInfo.getNodeConnectorInfo()
                 .getNodeConnectorId().firstIdentifierOf(NodeConnector.class)).getId();
-        String portName = tunnelStateInfo.getNodeConnectorInfo().getNodeConnector().getName();
-        final String interfaceName;
+        String interfaceName = tunnelStateInfo.getNodeConnectorInfo().getNodeConnector().getName();
         long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
-        LOG.debug("Tunnel addState for the interface {} portNo {}", portName, portNo);
         if (portNo == ITMConstants.INVALID_PORT_NO) {
             LOG.error("Cannot derive port number, not proceeding with Interface State addition for interface: {}",
-                portName);
+                interfaceName);
             return Collections.emptyList();
         }
 
-        Boolean isOfPort = DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(portName);
+        LOG.info("OFTunnelStateAddWorker adding interface state to Oper DS for interface: {}", interfaceName);
 
-        if (isOfPort) {
-            LOG.debug("Deriving tunnel for the OF Port {}", portName);
-            interfaceName = tunnelStateInfo.getDpnTepInterfaceInfo().getTunnelName();
+        List<String> childTunnelList = new ArrayList<>();
+        if (DirectTunnelUtils.OF_TUNNEL_PORT_PREDICATE.test(interfaceName)) {
+            childTunnelList = ofTunnelChildInfo.getOutChildTunnels();
+            LOG.debug("OFTunnelStateAddWorker OfTunnel List of childTunnelList {}", childTunnelList);
+        } else {
+            LOG.debug("OFTunnelStateAddWorker Non ofTunnel PortName {}", interfaceName);
+            childTunnelList.add(interfaceName);
         }
-        else {
-            interfaceName = portName;
-        }
+        LOG.debug("OFTunnelStateAddWorker List of childTunnelList {}", childTunnelList);
 
-        LOG.info("adding interface state to Oper DS for interface: {}", interfaceName);
+        for (String childPort: childTunnelList) {
+            // Fetch the interface/Tunnel from config DS if exists
+            // If it doesnt exists then "park" the processing and comeback to it when the data is available and
+            // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
+            StateTunnelList stateTnl = addStateEntry(childPort, portNo, tunnelStateInfo);
 
-        // Fetch the interface/Tunnel from config DS if exists
-        // If it doesnt exists then "park" the processing and comeback to it when the data is available and
-        // this will be triggered by the corres. listener. Caching and de-caching has to be synchronized.
-        StateTunnelList stateTnl = addStateEntry(interfaceName, portNo, tunnelStateInfo);
-
-        // This will be only tunnel If so not required
-        // If this interface is a tunnel interface, create the tunnel ingress flow,
-        // Egress flow for table 95 is installed based on dstId of the remote dpn,
-        // and start tunnel monitoring
-        if (stateTnl != null) {
-            return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                tx -> {
-                    BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
-                    directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex(),
-                        tunnelStateInfo.getDstDpnTepsInfo().getTunnelEndPoints().get(0).getIpAddress()
-                            .getIpv4Address());
-                    directTunnelUtils.addTunnelEgressFlow(tx, dpId, String.valueOf(portNo),
-                        tunnelStateInfo.getDstDpnTepsInfo().getDstId(), interfaceName,
-                        tunnelStateInfo.getDstDpnTepsInfo().getTunnelEndPoints().get(0).getIpAddress());
-                }));
+            // This will be only tunnel If so not required
+            // If this interface is a tunnel interface, create the tunnel ingress flow,
+            // and start tunnel monitoring
+            if (stateTnl != null) {
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                        Datastore.CONFIGURATION, tx -> directTunnelUtils.addTunnelIngressFlow(tx,
+                                DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId), portNo, childPort,
+                                stateTnl.getIfIndex(), tunnelStateInfo.getDstDpnTepsInfo()
+                                        .getTunnelEndPoints().get(0).getIpAddress()
+                                        .getIpv4Address())));
+            }
         }
         return Collections.emptyList();
     }
