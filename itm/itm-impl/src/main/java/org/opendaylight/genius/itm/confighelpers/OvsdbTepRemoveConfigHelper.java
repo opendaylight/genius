@@ -16,7 +16,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
-import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -54,53 +53,30 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param tepIp TEP-IP address in string
      * @param strDpnId bridge datapath ID in string
      * @param tzName transport zone name in string
+     * @param transportZone transport zone object
      * @param dataBroker data broker handle to perform operations on config/operational datastore
      * @param txRunner ManagedNewTransactionRunner object
      */
-
     public static List<ListenableFuture<Void>> removeTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
+                                                                          TransportZone transportZone,
                                                                           DataBroker dataBroker,
                                                                           ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpnId = BigInteger.ZERO;
         LOG.trace("Remove TEP: TEP-IP: {}, TZ name: {}, DPID: {}", tepIp, tzName, strDpnId);
-
         if (strDpnId != null && !strDpnId.isEmpty()) {
             dpnId = MDSALUtil.getDpnId(strDpnId);
         }
         // Get tep IP
         IpAddress tepIpAddress = IpAddressBuilder.getDefaultInstance(tepIp);
-        TransportZone transportZone;
-
-        // Case: TZ name is not given from OVS's other_config parameters.
-        if (tzName == null) {
-            tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
-            // add TEP into default-TZ
-            transportZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
-            if (transportZone == null) {
-                LOG.error("Error: default-transport-zone is not yet created.");
-                return futures;
-            }
-            LOG.trace("Remove TEP from default-transport-zone.");
-        } else {
-            // Case: Add TEP into corresponding TZ created from Northbound.
-            transportZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
-            String name = tzName;
+        if (transportZone == null) {
+            // Case: TZ is not configured from Northbound, then remove TEP from "teps-in-not-hosted-transport-zone"
             BigInteger id = dpnId;
-            if (transportZone == null) {
-                // Case: TZ is not configured from Northbound, then add TEP into
-                // "teps-in-not-hosted-transport-zone"
-                LOG.trace("Removing TEP from teps-in-not-hosted-transport-zone list.");
-                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
-                    tx -> removeUnknownTzTepFromTepsNotHosted(name, tepIpAddress, id, dataBroker, tx)));
-                return futures;
-            } else {
-                LOG.trace("Remove TEP from transport-zone already configured by Northbound.");
-            }
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+                tx -> removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, id, dataBroker, tx)));
+            return futures;
         }
-
         // Remove TEP from (default transport-zone) OR (transport-zone already configured by Northbound)
-
         // Get subnet list of corresponding TZ created from Northbound.
         List<Subnets> subnetList = transportZone.getSubnets();
 

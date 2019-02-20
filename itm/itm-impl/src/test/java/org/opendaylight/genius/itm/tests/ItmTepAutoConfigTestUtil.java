@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFaile
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
+import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
@@ -38,13 +39,16 @@ public final class ItmTepAutoConfigTestUtil {
     /* transaction methods */
     public static ListenableFuture<Void> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,
                                                 DataBroker dataBroker, ManagedNewTransactionRunner tx) {
-        return
-            OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel, dataBroker, tx).get(0);
+        TransportZone transportZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+        return OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, transportZone, ofTunnel,
+                dataBroker, tx).get(0);
     }
 
     public static ListenableFuture<Void> deleteTep(String tepIp, String strDpnId, String tzName,
                                                    DataBroker dataBroker, ManagedNewTransactionRunner tx) {
-        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, tx).get(0);
+        TransportZone transportZone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
+        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, transportZone,
+                dataBroker, tx).get(0);
     }
 
     public static CheckedFuture<Void, TransactionCommitFailedException> writeItmConfig(

@@ -59,51 +59,29 @@ public final class OvsdbTepAddConfigHelper {
      * @param tepIp TEP-IP address in string
      * @param strDpnId bridge datapath ID in string
      * @param tzName transport zone name in string
+     * @param transportZone transport zone object
      * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
      * @param dataBroker data broker handle to perform operations on config/operational datastore
      * @param txRunner ManagedTransactionRunner object
      */
-
     public static List<ListenableFuture<Void>> addTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
-        boolean ofTunnel, DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
+                                                                       TransportZone transportZone, boolean ofTunnel,
+                                                                       DataBroker dataBroker,
+                                                                       ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpnId = BigInteger.valueOf(0);
-
         if (strDpnId != null && !strDpnId.isEmpty()) {
             dpnId = MDSALUtil.getDpnId(strDpnId);
         }
-
         // Get tep IP
         IpAddress tepIpAddress = IpAddressBuilder.getDefaultInstance(tepIp);
-        TransportZone tzone = null;
-
-        // Case: TZ name is not given with OVS TEP.
-        if (tzName == null) {
-            tzName = ITMConstants.DEFAULT_TRANSPORT_ZONE;
-            // add TEP into default-TZ
-            tzone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
-            if (tzone == null) {
-                // Case: default-TZ is not yet created, then add TEP into "teps-in-not-hosted-transport-zone"
-                LOG.trace("Adding TEP with default TZ into teps-in-not-hosted-transport-zone.");
-                return addUnknownTzTepIntoTepsNotHostedAndReturnFutures(tzName, tepIpAddress, dpnId, ofTunnel,
+        if (transportZone == null) {
+            return addUnknownTzTepIntoTepsNotHostedAndReturnFutures(tzName, tepIpAddress, dpnId, ofTunnel,
                     dataBroker, txRunner);
-            }
-            LOG.trace("Add TEP into default-transport-zone.");
-        } else {
-            // Case: Add TEP into corresponding TZ created from Northbound.
-            tzone = ItmUtils.getTransportZoneFromConfigDS(tzName, dataBroker);
-            if (tzone == null) {
-                // Case: TZ is not configured from Northbound, then add TEP into "teps-in-not-hosted-transport-zone"
-                LOG.trace("Adding TEP with unknown TZ into teps-in-not-hosted-transport-zone.");
-                return addUnknownTzTepIntoTepsNotHostedAndReturnFutures(tzName, tepIpAddress, dpnId, ofTunnel,
-                    dataBroker, txRunner);
-            } else {
-                LOG.trace("Add TEP into transport-zone already configured by Northbound.");
-            }
         }
 
         // Get subnet list of corresponding TZ created from Northbound.
-        final List<Subnets> subnetList = tzone.getSubnets();
+        final List<Subnets> subnetList = transportZone.getSubnets();
         final BigInteger id = dpnId;
         final String name = tzName;
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
