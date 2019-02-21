@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e415f45c_574de74d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 18
+      },
+      "lineNbr": 552,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-02-21T17:58:45Z",
+      "side": 1,
+      "message": "The method signature is exactly the same\npublic static String convertTunnelTypetoString(Class\u003c? extends TunnelTypeBase\u003e tunType) \nCan we not have just one method?",
+      "revId": "262ca6a2ff3c59c03570b9dae8e58d866b51a477",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
