@@ -104,10 +104,7 @@ public class InterfaceConfigListener
             LOG.debug("parent refs not specified for {}", removedInterface.getName());
             return;
         }
-        boolean isTunnelInterface = InterfaceManagerCommonUtils.isTunnelInterface(removedInterface);
-        String synchronizationKey = isTunnelInterface ? parentRefs.getDatapathNodeIdentifier().toString()
-                : parentRefs.getParentInterface();
-        coordinator.enqueueJob(synchronizationKey,
+        coordinator.enqueueJob(removedInterface.getName(),
             () -> ovsInterfaceConfigRemoveHelper.removeConfiguration(removedInterface, parentRefs),
             IfmConstants.JOB_MAX_RETRIES);
     }
