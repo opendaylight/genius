@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +29,17 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
     private final BigInteger dpnId;
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
+    private final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache;
 
-    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId, DataBroker broker,
-                                        ManagedNewTransactionRunner txRunner) {
+    public ItmTepsNotHostedRemoveWorker(String tzName, IpAddress tepIpAddress, BigInteger dpnId,
+                                        TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache,
+                                        DataBroker broker, ManagedNewTransactionRunner txRunner) {
         this.tepIpAddress = tepIpAddress;
         this.tzName = tzName;
         this.dpnId = dpnId;
         this.dataBroker = broker;
         this.txRunner = txRunner;
+        this.tepsInNotHostedTransportZoneCache = tepsInNotHostedTransportZoneCache;
     }
 
     @Override
@@ -45,6 +49,7 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFut
         // Remove TEP from TepsNotHosted list.
         return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL,
             tx -> OvsdbTepRemoveConfigHelper
-                    .removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, dataBroker, tx)));
+                    .removeUnknownTzTepFromTepsNotHosted(tzName, tepIpAddress, dpnId, tepsInNotHostedTransportZoneCache,
+                            dataBroker, tx)));
     }
 }

@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,20 +27,24 @@ public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>>
     private final boolean ofTunnel;
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
+    private final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache;
 
-    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel, DataBroker broker) {
+    public OvsdbTepAddWorker(String tepIp, String strDpnId, String tzName,  boolean ofTunnel,
+                             TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache, DataBroker broker) {
         this.tepIp = tepIp;
         this.strDpid = strDpnId;
         this.tzName = tzName;
         this.ofTunnel = ofTunnel;
         this.dataBroker = broker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.tepsInNotHostedTransportZoneCache = tepsInNotHostedTransportZoneCache;
     }
 
     @Override
     public List<ListenableFuture<Void>> call() throws Exception {
         LOG.trace("Add TEP task is picked from DataStoreJobCoordinator for execution.");
         // add TEP received from southbound OVSDB into ITM config DS.
-        return OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpid, tzName, ofTunnel, dataBroker, txRunner);
+        return OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpid, tzName, ofTunnel,
+                tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
     }
 }

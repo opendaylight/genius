@@ -17,6 +17,7 @@ import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveWorker;
@@ -59,16 +60,19 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
     private final JobCoordinator jobCoordinator;
     private final ItmConfig itmConfig;
     private final DataTreeEventCallbackRegistrar eventCallbacks;
+    private final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache;
 
     @Inject
     public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator,
-                             DataTreeEventCallbackRegistrar eventCallbacks) {
+                             DataTreeEventCallbackRegistrar eventCallbacks,
+                             final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class));
         this.dataBroker = dataBroker;
         this.jobCoordinator = jobCoordinator;
         this.itmConfig = itmConfig;
         this.eventCallbacks = eventCallbacks;
+        this.tepsInNotHostedTransportZoneCache = tepsInNotHostedTransportZoneCache;
     }
 
     @Override
@@ -281,14 +285,16 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
             // Enqueue 'add TEP into new TZ' operation into DataStoreJobCoordinator
             jobCoordinator.enqueueJob(jobKey,
-                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, dataBroker));
+                    new OvsdbTepAddWorker(localIp, strDpnId, tzName, newOfTunnel, tepsInNotHostedTransportZoneCache,
+                            dataBroker));
         } else {
             // remove TEP
             LOG.trace("Update case: Removing TEP-IP: {}, TZ name: {}, Bridge Name: {}, Bridge DPID: {}", localIp,
                     tzName, bridgeName, strDpnId);
 
             // Enqueue 'remove TEP from TZ' operation into DataStoreJobCoordinator
-            jobCoordinator.enqueueJob(jobKey, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName, dataBroker));
+            jobCoordinator.enqueueJob(jobKey, new OvsdbTepRemoveWorker(localIp, strDpnId, tzName,
+                    tepsInNotHostedTransportZoneCache, dataBroker));
         }
     }
 

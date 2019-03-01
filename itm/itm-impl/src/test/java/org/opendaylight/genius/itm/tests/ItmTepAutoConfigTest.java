@@ -29,6 +29,7 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -65,6 +66,7 @@ public class ItmTepAutoConfigTest {
     private @Inject DataBroker dataBroker;
     private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
     private @Inject ItmProvider itmProvider;
+    private @Inject TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache;
 
     @Before
     public void start() throws InterruptedException {
@@ -251,7 +253,7 @@ public class ItmTepAutoConfigTest {
         ListenableFuture<Void> futures =
             ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.DEF_TZ_TEP_IP,
             ItmTestConstants.DEF_BR_DPID,
-            ITMConstants.DEFAULT_TRANSPORT_ZONE, false, dataBroker, txRunner);
+            ITMConstants.DEFAULT_TRANSPORT_ZONE, false, tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         futures.get();
 
         InstanceIdentifier<Vteps> vtepPath = ItmTepAutoConfigTestUtil.getTepIid(subnetMaskObj,
@@ -265,7 +267,7 @@ public class ItmTepAutoConfigTest {
 
         // remove tep from default-TZ
         futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.DEF_TZ_TEP_IP, ItmTestConstants.DEF_BR_DPID,
-            ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker, txRunner);
+            ITMConstants.DEFAULT_TRANSPORT_ZONE, tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         futures.get();
 
         // check TEP is deleted from default-TZ
@@ -293,7 +295,8 @@ public class ItmTepAutoConfigTest {
 
         // add tep
         ListenableFuture<Void> futures = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
-            ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker, txRunner);
+            ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, tepsInNotHostedTransportZoneCache,
+                dataBroker, txRunner);
         futures.get();
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -309,7 +312,7 @@ public class ItmTepAutoConfigTest {
 
         // remove tep
         futures = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NB_TZ_TEP_IP, ItmTestConstants.DEF_BR_DPID,
-            ItmTestConstants.TZ_NAME, dataBroker, txRunner);
+            ItmTestConstants.TZ_NAME, tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         futures.get();
 
         // check TEP is deleted
@@ -638,7 +641,8 @@ public class ItmTepAutoConfigTest {
     public void tepAddIntoTepsNotHostedListTest() throws Exception {
         // add into not hosted list
         ListenableFuture<Void> future = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker, txRunner);
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
+                tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -653,7 +657,8 @@ public class ItmTepAutoConfigTest {
     public void tepDeleteFromTepsNotHostedListTest() throws Exception {
         // add into not hosted list
         ListenableFuture<Void> future = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker, txRunner);
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
+                tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
@@ -665,7 +670,8 @@ public class ItmTepAutoConfigTest {
 
         //delete from not hosted list
         future = ItmTepAutoConfigTestUtil.deleteTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, dataBroker, txRunner);
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME,
+                tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         future.get();
 
         Assert.assertEquals(Optional.absent(),
@@ -677,7 +683,8 @@ public class ItmTepAutoConfigTest {
     public void tepMoveFromTepsNotHostedListToTzTest() throws Exception {
         // add into not hosted list
         ListenableFuture<Void> future = ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NOT_HOSTED_TZ_TEP_IP,
-            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false, dataBroker, txRunner);
+            ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, false,
+                tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
         future.get();
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
