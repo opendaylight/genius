@@ -15,6 +15,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -37,14 +38,18 @@ public final class ItmTepAutoConfigTestUtil {
 
     /* transaction methods */
     public static ListenableFuture<Void> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,
+                                                TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache,
                                                 DataBroker dataBroker, ManagedNewTransactionRunner tx) {
         return
-            OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel, dataBroker, tx).get(0);
+            OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel,
+                    tepsInNotHostedTransportZoneCache, dataBroker, tx).get(0);
     }
 
     public static ListenableFuture<Void> deleteTep(String tepIp, String strDpnId, String tzName,
+                                                   TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache,
                                                    DataBroker dataBroker, ManagedNewTransactionRunner tx) {
-        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, tx).get(0);
+        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName,
+                tepsInNotHostedTransportZoneCache, dataBroker, tx).get(0);
     }
 
     public static CheckedFuture<Void, TransactionCommitFailedException> writeItmConfig(

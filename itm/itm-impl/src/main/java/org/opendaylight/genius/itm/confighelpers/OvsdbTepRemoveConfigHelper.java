@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -54,11 +55,14 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param tepIp TEP-IP address in string
      * @param strDpnId bridge datapath ID in string
      * @param tzName transport zone name in string
+     * @param tepsInNotHostedTransportZoneCache cache for teps in not hosted tz
      * @param dataBroker data broker handle to perform operations on config/operational datastore
      * @param txRunner ManagedNewTransactionRunner object
      */
 
     public static List<ListenableFuture<Void>> removeTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
+                                                                          TepsInNotHostedTransportZoneCache
+                                                                                  tepsInNotHostedTransportZoneCache,
                                                                           DataBroker dataBroker,
                                                                           ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
@@ -92,7 +96,8 @@ public final class OvsdbTepRemoveConfigHelper {
                 // "teps-in-not-hosted-transport-zone"
                 LOG.trace("Removing TEP from teps-in-not-hosted-transport-zone list.");
                 futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
-                    tx -> removeUnknownTzTepFromTepsNotHosted(name, tepIpAddress, id, dataBroker, tx)));
+                    tx -> removeUnknownTzTepFromTepsNotHosted(name, tepIpAddress, id, tepsInNotHostedTransportZoneCache,
+                            dataBroker, tx)));
                 return futures;
             } else {
                 LOG.trace("Remove TEP from transport-zone already configured by Northbound.");
@@ -186,15 +191,18 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param tzName transport zone name in string
      * @param tepIpAddress TEP IP address in IpAddress object
      * @param dpnId bridge datapath ID in BigInteger
+     * @param tepsInNotHostedTransportZoneCache cache for teps in not hosted tz
      * @param dataBroker data broker handle to perform operations on operational datastore
      * @param tx TypedWriteTransaction object
      */
     public static void removeUnknownTzTepFromTepsNotHosted(String tzName, IpAddress tepIpAddress,
-                                                           BigInteger dpnId, DataBroker dataBroker,
+                                                           BigInteger dpnId, TepsInNotHostedTransportZoneCache
+                                                                   tepsInNotHostedTransportZoneCache,
+                                                           DataBroker dataBroker,
                                                            TypedWriteTransaction<Datastore.Operational> tx) {
         List<UnknownVteps> vtepList;
-        TepsInNotHostedTransportZone tepsInNotHostedTransportZone =
-            ItmUtils.getUnknownTransportZoneFromITMOperDS(tzName, dataBroker);
+        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = tepsInNotHostedTransportZoneCache
+                .getNotHostedTZFromCache(tzName);
         if (tepsInNotHostedTransportZone == null) {
             LOG.trace("Unhosted TransportZone ({}) does not exist in OperDS. Nothing to do for TEP removal.", tzName);
             return;

@@ -13,6 +13,7 @@ import java.util.concurrent.Callable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,13 +26,17 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
     private final String tzName;
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
+    private final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache;
 
-    public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName, DataBroker broker) {
+    public OvsdbTepRemoveWorker(String tepIp, String strDpid, String tzName,
+                                TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache,
+                                DataBroker broker) {
         this.tepIp = tepIp;
         this.strDpid = strDpid;
         this.tzName = tzName;
         this.dataBroker = broker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.tepsInNotHostedTransportZoneCache = tepsInNotHostedTransportZoneCache;
     }
 
     @Override
@@ -40,6 +45,7 @@ public class OvsdbTepRemoveWorker implements Callable<List<ListenableFuture<Void
         LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
 
         // remove TEP received from southbound OVSDB from ITM config DS.
-        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName, dataBroker, txRunner);
+        return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpid, tzName,
+                tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
     }
 }

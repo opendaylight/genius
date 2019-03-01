@@ -31,6 +31,7 @@ import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
@@ -60,11 +61,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
@@ -97,6 +96,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
     private final ManagedNewTransactionRunner txRunner;
+    private final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
@@ -109,7 +109,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final DpnTepStateCache dpnTepStateCache, final OvsBridgeEntryCache ovsBridgeEntryCache,
                                  final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                  final IInterfaceManager interfaceManager,
-                                 final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                 final ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                 final TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
         this.dataBroker = dataBroker;
@@ -117,6 +118,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.mdsalManager = mdsalManager;
         this.itmConfig = itmConfig;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
+        this.tepsInNotHostedTransportZoneCache = tepsInNotHostedTransportZoneCache;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         initializeTZNode();
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
@@ -319,7 +321,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
         Class<? extends TunnelTypeBase> tunnelType  = tzNew.getTunnelType();
 
-        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = getNotHostedTransportZone(newZoneName).get();
+        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = tepsInNotHostedTransportZoneCache
+                .getNotHostedTZFromCache(newZoneName);
+
         if (tepsInNotHostedTransportZone == null) {
             return notHostedDpnTepInfo;
         }
@@ -355,7 +359,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 // Enqueue 'remove TEP from TepsNotHosted list' operation
                 // into DataStoreJobCoordinator
                 jobCoordinator.enqueueJob(newZoneName,
-                    new ItmTepsNotHostedRemoveWorker(newZoneName, ipAddress, dpnID, dataBroker, txRunner));
+                    new ItmTepsNotHostedRemoveWorker(newZoneName, ipAddress, dpnID, tepsInNotHostedTransportZoneCache,
+                            dataBroker, txRunner));
             }
         }
         //avoiding duplicate vteps which are already present in dpn list pushed from NBI
@@ -406,19 +411,10 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     private boolean isNewTZExistInNotHostedTZ(TransportZone tzNew) {
         boolean isPresent = false;
-        if (getNotHostedTransportZone(tzNew.getZoneName()).isPresent()) {
+        if (tepsInNotHostedTransportZoneCache.getNotHostedTZFromCache(tzNew.getZoneName()) != null) {
             isPresent = true;
         }
         return isPresent;
-    }
-
-    public  Optional<TepsInNotHostedTransportZone> getNotHostedTransportZone(String transportZoneName) {
-        InstanceIdentifier<TepsInNotHostedTransportZone> notHostedTzPath = InstanceIdentifier
-                .builder(NotHostedTransportZones.class).child(TepsInNotHostedTransportZone.class,
-                        new TepsInNotHostedTransportZoneKey(transportZoneName)).build();
-        Optional<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneOptional =
-                ItmUtils.read(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
-        return tepsInNotHostedTransportZoneOptional;
     }
 
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone) {

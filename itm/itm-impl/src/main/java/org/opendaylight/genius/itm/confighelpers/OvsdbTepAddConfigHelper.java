@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.itm.cache.TepsInNotHostedTransportZoneCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -60,12 +61,14 @@ public final class OvsdbTepAddConfigHelper {
      * @param strDpnId bridge datapath ID in string
      * @param tzName transport zone name in string
      * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
+     * @param tepsInNotHostedTransportZoneCache cache for teps in not hosted tz.
      * @param dataBroker data broker handle to perform operations on config/operational datastore
      * @param txRunner ManagedTransactionRunner object
      */
 
     public static List<ListenableFuture<Void>> addTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
-        boolean ofTunnel, DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
+        boolean ofTunnel, TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache, DataBroker dataBroker,
+                                                                       ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         BigInteger dpnId = BigInteger.valueOf(0);
 
@@ -86,7 +89,7 @@ public final class OvsdbTepAddConfigHelper {
                 // Case: default-TZ is not yet created, then add TEP into "teps-in-not-hosted-transport-zone"
                 LOG.trace("Adding TEP with default TZ into teps-in-not-hosted-transport-zone.");
                 return addUnknownTzTepIntoTepsNotHostedAndReturnFutures(tzName, tepIpAddress, dpnId, ofTunnel,
-                    dataBroker, txRunner);
+                        tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
             }
             LOG.trace("Add TEP into default-transport-zone.");
         } else {
@@ -96,7 +99,7 @@ public final class OvsdbTepAddConfigHelper {
                 // Case: TZ is not configured from Northbound, then add TEP into "teps-in-not-hosted-transport-zone"
                 LOG.trace("Adding TEP with unknown TZ into teps-in-not-hosted-transport-zone.");
                 return addUnknownTzTepIntoTepsNotHostedAndReturnFutures(tzName, tepIpAddress, dpnId, ofTunnel,
-                    dataBroker, txRunner);
+                        tepsInNotHostedTransportZoneCache, dataBroker, txRunner);
             } else {
                 LOG.trace("Add TEP into transport-zone already configured by Northbound.");
             }
@@ -187,14 +190,17 @@ public final class OvsdbTepAddConfigHelper {
      * @param tepIpAddress TEP IP address in IpAddress object
      * @param dpid bridge datapath ID in BigInteger
      * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
+     * @param tepsInNotHostedTransportZoneCache cache for teps in not hosted tz
      * @param dataBroker data broker handle to perform operations on operational datastore
      * @param tx TypedWriteTransaction object
      */
     protected static void addUnknownTzTepIntoTepsNotHosted(String tzName, IpAddress tepIpAddress,
-        BigInteger dpid, boolean ofTunnel, DataBroker dataBroker, TypedWriteTransaction<Datastore.Operational> tx) {
+        BigInteger dpid, boolean ofTunnel, TepsInNotHostedTransportZoneCache tepsInNotHostedTransportZoneCache,
+                                                           DataBroker dataBroker,
+                                                           TypedWriteTransaction<Datastore.Operational> tx) {
         List<UnknownVteps> vtepList;
-        TepsInNotHostedTransportZone tepsInNotHostedTransportZone =
-            ItmUtils.getUnknownTransportZoneFromITMOperDS(tzName, dataBroker);
+        TepsInNotHostedTransportZone tepsInNotHostedTransportZone = tepsInNotHostedTransportZoneCache
+                .getNotHostedTZFromCache(tzName);
         if (tepsInNotHostedTransportZone == null) {
             LOG.trace("Unhosted TransportZone ({}) does not exist in OperDS.", tzName);
             vtepList = new ArrayList<>();
@@ -317,11 +323,15 @@ public final class OvsdbTepAddConfigHelper {
         }
     }
 
-    private static List<ListenableFuture<Void>> addUnknownTzTepIntoTepsNotHostedAndReturnFutures(String tzName,
-        IpAddress tepIpAddress, BigInteger id, boolean ofTunnel, DataBroker dataBroker,
-        ManagedNewTransactionRunner txRunner) {
+    private static List<ListenableFuture<Void>>
+        addUnknownTzTepIntoTepsNotHostedAndReturnFutures(String tzName, IpAddress tepIpAddress, BigInteger id,
+                                                         boolean ofTunnel,
+                                                         TepsInNotHostedTransportZoneCache
+                                                                 tepsInNotHostedTransportZoneCache,
+                                                         DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
-            tx -> addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, id, ofTunnel, dataBroker, tx)));
+            tx -> addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, id, ofTunnel,
+                    tepsInNotHostedTransportZoneCache, dataBroker, tx)));
     }
 
     private static List<UnknownVteps> addVtepToUnknownVtepsList(List<UnknownVteps> updatedVtepList,

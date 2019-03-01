@@ -128,10 +128,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.DstInfoBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.state.tunnel.list.SrcInfoBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
@@ -1163,29 +1160,6 @@ public final class ItmUtils {
         List<TzMembership> zones = new ArrayList<>();
         zones.add(new TzMembershipBuilder().setZoneName(zoneName).build());
         return zones;
-    }
-
-    /**
-     * Gets the transport zone in TepsNotHosted list in the Operational Datastore, based on transport zone name.
-     *
-     * @param unknownTz transport zone name
-     *
-     * @param dataBroker data broker handle to perform read operations on Oper datastore
-     *
-     * @return the TepsInNotHostedTransportZone object in the TepsNotHosted list in Oper DS
-     */
-    public static TepsInNotHostedTransportZone getUnknownTransportZoneFromITMOperDS(
-        String unknownTz, DataBroker dataBroker) {
-        InstanceIdentifier<TepsInNotHostedTransportZone> unknownTzPath =
-            InstanceIdentifier.builder(NotHostedTransportZones.class)
-                    .child(TepsInNotHostedTransportZone.class,
-                    new TepsInNotHostedTransportZoneKey(unknownTz)).build();
-        Optional<TepsInNotHostedTransportZone> unknownTzOptional =
-            ItmUtils.read(LogicalDatastoreType.OPERATIONAL, unknownTzPath, dataBroker);
-        if (unknownTzOptional.isPresent()) {
-            return unknownTzOptional.get();
-        }
-        return null;
     }
 
     /**
