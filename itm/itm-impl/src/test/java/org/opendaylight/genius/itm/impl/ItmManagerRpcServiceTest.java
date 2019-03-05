@@ -224,10 +224,11 @@ public class ItmManagerRpcServiceTest {
 
         DPNTEPsInfoCache dpntePsInfoCache =
             new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
-            directTunnelUtils, jobCoordinator, unprocessedNodeConnectorEndPointCache);
+            directTunnelUtils, jobCoordinator, unprocessedNodeConnectorEndPointCache, itmConfig);
         DpnTepStateCache dpnTepStateCache =
             new DpnTepStateCache(dataBroker, jobCoordinator, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
-            directTunnelUtils, dpntePsInfoCache, unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache);
+            directTunnelUtils, dpntePsInfoCache, unprocessedNodeConnectorCache, unprocessedNodeConnectorEndPointCache,
+            itmConfig);
         TunnelStateCache tunnelStateCache =
                 new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
         OvsBridgeRefEntryCache ovsBridgeRefEntryCache =

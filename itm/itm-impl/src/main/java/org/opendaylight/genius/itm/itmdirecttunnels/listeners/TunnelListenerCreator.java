@@ -21,6 +21,7 @@ import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,14 +49,15 @@ public class TunnelListenerCreator implements AutoCloseable {
                                  final TunnelStateCache tunnelStateCache,
                                  final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
                                  final UnprocessedNodeConnectorEndPointCache
-                                    unprocessedNodeConnectorEndPointCache) {
+                                    unprocessedNodeConnectorEndPointCache,
+                                 final ItmConfig itmConfig) {
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             LOG.debug("ITM Direct Tunnels is enabled. Initializing the listeners");
             this.tunnelTopologyStateListener = new TunnelTopologyStateListener(dataBroker, coordinator,
                 directTunnelUtils, dpnTepStateCache, ovsBridgeEntryCache);
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
                 tunnelStateCache, dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
-                unprocessedNodeConnectorEndPointCache, directTunnelUtils);
+                unprocessedNodeConnectorEndPointCache, directTunnelUtils, itmConfig);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
                 coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
             this.interfaceConfigListener = new InterfaceConfigListener(dataBroker, coordinator);

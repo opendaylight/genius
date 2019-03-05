@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.workers;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,6 +23,7 @@ import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.IfIndexesTunnelMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._if.indexes.tunnel.map.IfIndexTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210._if.indexes.tunnel.map.IfIndexTunnelBuilder;
@@ -48,10 +50,13 @@ public final class TunnelStateAddWorker {
 
     private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
+    private final ItmConfig itmConfig;
 
-    public TunnelStateAddWorker(final DirectTunnelUtils directTunnelUtils, final ManagedNewTransactionRunner txRunner) {
+    public TunnelStateAddWorker(final DirectTunnelUtils directTunnelUtils, final ManagedNewTransactionRunner txRunner,
+                                final ItmConfig itmConfig) {
         this.directTunnelUtils = directTunnelUtils;
         this.txRunner = txRunner;
+        this.itmConfig = itmConfig;
     }
 
     public List<ListenableFuture<Void>> addState(TunnelStateInfo tunnelStateInfo)
@@ -78,12 +83,19 @@ public final class TunnelStateAddWorker {
 
         // This will be only tunnel If so not required
         // If this interface is a tunnel interface, create the tunnel ingress flow,
+        // Egress flow for table 95 is installed based on dstId of the remote dpn,
         // and start tunnel monitoring
         if (stateTnl != null) {
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                tx -> directTunnelUtils.addTunnelIngressFlow(tx,
-                    DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId), portNo, interfaceName,
-                    stateTnl.getIfIndex())));
+                tx -> {
+                    BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
+                    directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex());
+                    if (itmConfig.isUseOfTunnels()) {
+                        directTunnelUtils.addTunnelEgressFlow(tx, dpId, String.valueOf(portNo),
+                            tunnelStateInfo.getDstDpnTepsInfo().getDstId(), interfaceName,
+                            tunnelStateInfo.getDstDpnTepsInfo().getTunnelEndPoints().get(0).getIpAddress());
+                    }
+                }));
         }
         return Collections.emptyList();
     }

@@ -47,6 +47,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
@@ -75,6 +76,7 @@ public class TunnelInventoryStateListener extends
     private final UnprocessedNodeConnectorCache unprocessedNCCache;
     private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
     private final DirectTunnelUtils directTunnelUtils;
+    private final ItmConfig itmConfig;
 
     public TunnelInventoryStateListener(final DataBroker dataBroker,
                                         final JobCoordinator coordinator,
@@ -84,7 +86,8 @@ public class TunnelInventoryStateListener extends
                                         final UnprocessedNodeConnectorCache unprocessedNCCache,
                                         final UnprocessedNodeConnectorEndPointCache
                                             unprocessedNodeConnectorEndPointCache,
-                                        final DirectTunnelUtils directTunnelUtils) {
+                                        final DirectTunnelUtils directTunnelUtils,
+                                        final ItmConfig itmConfig) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class)
             .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class));
         this.coordinator = coordinator;
@@ -95,6 +98,7 @@ public class TunnelInventoryStateListener extends
         this.unprocessedNCCache = unprocessedNCCache;
         this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
         this.directTunnelUtils = directTunnelUtils;
+        this.itmConfig = itmConfig;
         super.register();
     }
 
@@ -215,8 +219,8 @@ public class TunnelInventoryStateListener extends
         if (tunnelEndPtInfo != null && tunnelStateInfo.getSrcDpnTepsInfo() != null
             && tunnelStateInfo.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
             coordinator.enqueueJob(portName,
-                new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
-                    tunnelStateInfo), ITMConstants.JOB_MAX_RETRIES);
+                new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner,
+                    itmConfig), tunnelStateInfo), ITMConstants.JOB_MAX_RETRIES);
         }
     }
 
@@ -343,6 +347,7 @@ public class TunnelInventoryStateListener extends
                     // Do if-index and ingress flow clean-up only for tunnel-interfaces
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+                    directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
                 }));
             } else {
                 LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);

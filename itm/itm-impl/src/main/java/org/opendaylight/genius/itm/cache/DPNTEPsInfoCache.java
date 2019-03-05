@@ -28,6 +28,7 @@ import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -49,17 +50,20 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
     private final JobCoordinator coordinator;
     private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
     private final ManagedNewTransactionRunner txRunner;
+    private final ItmConfig itmConfig;
 
     @Inject
     public DPNTEPsInfoCache(final DataBroker dataBroker, final CacheProvider cacheProvider,
                             final DirectTunnelUtils directTunnelUtils, final JobCoordinator coordinator,
-                            final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
+                            final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache,
+                            final ItmConfig itmConfig) {
         super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class).build(), cacheProvider);
         this.directTunnelUtils = directTunnelUtils;
         this.coordinator = coordinator;
         this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.itmConfig = itmConfig;
     }
 
     @Override
@@ -140,8 +144,8 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                         .setSrcDpnTepsInfo(srcDpnTepsInfo).setDstDpnTepsInfo(dstDpnTepsInfo).build();
                     LOG.debug("Queueing TunnelStateAddWorker to DJC for tunnel {}", interfaceName);
                     coordinator.enqueueJob(interfaceName,
-                        new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
-                            tunnelStateInfoNew), ITMConstants.JOB_MAX_RETRIES);
+                        new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner,
+                            itmConfig), tunnelStateInfoNew), ITMConstants.JOB_MAX_RETRIES);
                 }
             }
         }
