@@ -89,11 +89,16 @@ public final class TunnelStateAddWorker {
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> {
                     BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
-                    directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex());
                     if (itmConfig.isUseOfTunnels()) {
                         directTunnelUtils.addTunnelEgressFlow(tx, dpId, String.valueOf(portNo),
                             tunnelStateInfo.getDstDpnTepsInfo().getDstId(), interfaceName,
                             tunnelStateInfo.getDstDpnTepsInfo().getTunnelEndPoints().get(0).getIpAddress());
+                        directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex(),
+                                tunnelStateInfo.getDstDpnTepsInfo().getTunnelEndPoints().get(0).getIpAddress()
+                                        .getIpv4Address());
+                    } else {
+                        directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex(),
+                            null);
                     }
                 }));
         }

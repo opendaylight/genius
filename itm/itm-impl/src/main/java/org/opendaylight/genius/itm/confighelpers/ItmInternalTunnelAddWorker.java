@@ -134,7 +134,7 @@ public final class ItmInternalTunnelAddWorker {
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(new DPNTEPsInfoBuilder(dpn)
             .setDstId(directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
-        DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
+        DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build();
         tx.merge(dep, tnlBuilder);
     }
 
