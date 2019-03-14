@@ -343,6 +343,7 @@ public class TunnelInventoryStateListener extends
                     // Do if-index and ingress flow clean-up only for tunnel-interfaces
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+                    directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
                 }));
             } else {
                 LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
