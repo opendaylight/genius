@@ -58,16 +58,16 @@ import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
+import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionNxResubmit;
+import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeRefInfo;
@@ -91,7 +91,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
@@ -162,7 +161,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.g
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.ComputesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -187,6 +188,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
     private final RetryingManagedNewTransactionRunner retryingTxRunner;
+    private final ItmConfig itmConfig;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
@@ -209,6 +211,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         this.directTunnelUtils = directTunnelUtils;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.retryingTxRunner = new RetryingManagedNewTransactionRunner(dataBroker);
+        this.itmConfig = itmConfig;
     }
 
     @PostConstruct
@@ -305,7 +308,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 } ,MoreExecutors.directExecutor());
             return  settableFuture;
         } else {
-            return fromListenableFuture(LOG, input, () -> getEgressActionsForInterface(input.getIntfName(),
+            return fromListenableFuture(LOG, input, () -> getEgressActionsForInternalTunnels(input.getIntfName(),
                     input.getTunnelKey(), input.getActionKey())).onFailureLogLevel(ERROR).build();
         }
     }
@@ -1163,46 +1166,41 @@ public class ItmManagerRpcService implements ItmRpcService {
                         .network.topology.topology.Node.class).getNodeId().getValue();
     }
 
-    private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
-           Long tunnelKey, Integer actionKey) throws ReadFailedException {
-        int actionKeyStart = actionKey == null ? 0 : actionKey;
+    private ListenableFuture<GetEgressActionsForTunnelOutput>
+        getEgressActionsForInternalTunnels(String interfaceName, Long tunnelKey, Integer actionKey)
+            throws ExecutionException, InterruptedException, OperationFailedException {
+
         DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
         if (interfaceInfo == null) {
             throw new IllegalStateException("Interface information not present in config DS for" + interfaceName);
         }
-        Optional<StateTunnelList> ifState = tunnelStateCache
-                .get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
-        if (ifState.isPresent()) {
-            String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
-            List<Action> actions = getEgressActionInfosForInterface(tunnelType, ifState.get().getPortNumber(),
-                    tunnelKey, actionKeyStart).stream().map(ActionInfo::buildAction).collect(Collectors.toList());
-            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder().setAction(actions).build());
-        }
-        throw new IllegalStateException("Interface information not present in oper DS for" + interfaceName);
-    }
 
-    private static List<ActionInfo> getEgressActionInfosForInterface(String tunnelType, String portNo, Long tunnelKey,
-                                                                     int actionKeyStart) {
+        String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
+        if (!tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN)) {
+            throw new IllegalArgumentException(tunnelType + " tunnel not handled by ITM");
+        }
+
+        Optional<DPNTEPsInfo> dpntePsInfoOptional = dpnTEPsInfoCache.get(InstanceIdentifier.builder(DpnEndpoints.class)
+                .child(DPNTEPsInfo.class, new DPNTEPsInfoKey(new BigInteger(dpnTepStateCache
+                        .getTunnelEndPointInfoFromCache(interfaceInfo.getTunnelName()).getDstEndPointInfo()))).build());
+        Integer dstId;
+        if (dpntePsInfoOptional.isPresent()) {
+            dstId = dpntePsInfoOptional.get().getDstId();
+        } else {
+            dstId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, interfaceInfo.getRemoteDPN().toString());
+        }
+
         List<ActionInfo> result = new ArrayList<>();
-        switch (tunnelType) {
-            case ITMConstants.TUNNEL_TYPE_GRE:
-            case ITMConstants.TUNNEL_TYPE_MPLSoGRE:
-                // Invoke IFM RPC and pass it on to the caller.
-                LOG.warn("Interface Type {} not handled by ITM", tunnelType);
-                break;
-            case ITMConstants.TUNNEL_TYPE_VXLAN:
-                //TODO tunnel_id to encode GRE key, once it is supported
-                // Until then, tunnel_id should be "cleaned", otherwise it stores the value coming from a VXLAN tunnel
-                result.add(new ActionSetFieldTunnelId(actionKeyStart++,
-                        BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
-                result.add(new ActionOutput(actionKeyStart, new Uri(portNo)));
-                break;
+        long regValue = MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(dstId);
+        int actionKeyStart = actionKey == null ? 0 : actionKey;
+        result.add(new ActionSetFieldTunnelId(actionKeyStart++,
+                BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
+        result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, MetaDataUtil.REG6_START_INDEX,
+                MetaDataUtil.REG6_END_INDEX, regValue));
+        result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_TUNNEL_TABLE));
 
-            default:
-                LOG.warn("Interface Type {} not handled yet", tunnelType);
-                break;
-        }
-        return result;
+        return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder()
+                .setAction(result.stream().map(ActionInfo::buildAction).collect(Collectors.toList())).build());
     }
 
     public static List<DcGatewayIp> getDcGatewayIpList(TypedReadWriteTransaction<Datastore.Configuration> tx)
