@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,21 +29,26 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.MatchInfoBase;
 import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
+import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionWriteMetadata;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
+import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -57,6 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlanGpe;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.IfIndexesTunnelMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.OvsBridgeRefInfo;
@@ -78,6 +85,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev140421.NxmNxReg6;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeGre;
@@ -170,13 +178,15 @@ public final class DirectTunnelUtils {
     private final IdManagerService idManagerService;
     private final IMdsalApiManager mdsalApiManager;
     private final EntityOwnershipUtils entityOwnershipUtils;
+    private final ItmConfig itmConfig;
 
     @Inject
     public DirectTunnelUtils(final IdManagerService idManagerService, final IMdsalApiManager mdsalApiManager,
-                             final EntityOwnershipUtils entityOwnershipUtils) {
+                             final EntityOwnershipUtils entityOwnershipUtils, final ItmConfig itmConfig) {
         this.idManagerService = idManagerService;
         this.mdsalApiManager = mdsalApiManager;
         this.entityOwnershipUtils = entityOwnershipUtils;
+        this.itmConfig = itmConfig;
     }
 
     public KeyedLocks<String> getTunnelLocks() {
@@ -369,6 +379,33 @@ public final class DirectTunnelUtils {
         mdsalApiManager.removeFlow(tx, dpnId, flowRef, NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
     }
 
+    public void addTunnelEgressFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpnId, String portNo,
+                                    int dstId, String interfaceName, IpAddress dstIp) {
+        LOG.debug("add tunnel egress flow for {}", interfaceName);
+        List<MatchInfoBase> matches = new ArrayList<>();
+        List<ActionInfo> actions = new ArrayList<>();
+        matches.add(new NxMatchRegister(NxmNxReg6.class, MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(dstId)));
+        if (itmConfig.isUseOfTunnels()) {
+            actions.add(new ActionSetTunnelDestinationIp(0, dstIp));
+            actions.add(new ActionOutput(1, new Uri(portNo)));
+        } else {
+            actions.add(new ActionOutput(0, new Uri(portNo)));
+        }
+        String flowRef = getTunnelInterfaceFlowRef(dpnId, NwConstants.EGRESS_TUNNEL_TABLE, interfaceName);
+        Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_TUNNEL_TABLE, flowRef, 5, flowRef, 0, 0,
+            NwConstants.COOKIE_ITM_EGRESS_TUNNEL_TABLE, matches,
+            Collections.singletonList(MDSALUtil.buildApplyActionsInstruction(MDSALUtil.buildActions(actions))));
+        mdsalApiManager.addFlow(tx, dpnId, egressFlow);
+    }
+
+    public void removeTunnelEgressFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpnId,
+                                       String interfaceName) throws ExecutionException, InterruptedException {
+        LOG.debug("remove tunnel egress flow for {}", interfaceName);
+        String flowRef =
+                getTunnelInterfaceFlowRef(dpnId, NwConstants.EGRESS_TUNNEL_TABLE, interfaceName);
+        mdsalApiManager.removeFlow(tx, dpnId, flowRef, NwConstants.EGRESS_TUNNEL_TABLE);
+    }
+
     private String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
         return String.valueOf(dpnId) + tableId + ifName;
     }
@@ -398,8 +435,12 @@ public final class DirectTunnelUtils {
         IpAddress localIp = ifTunnel.getTunnelSource();
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
 
-        IpAddress remoteIp = ifTunnel.getTunnelDestination();
-        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        if (itmConfig.isUseOfTunnels()) {
+            options.put(TUNNEL_OPTIONS_REMOTE_IP, TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress remoteIp = ifTunnel.getTunnelDestination();
+            options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        }
 
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
