@@ -705,7 +705,7 @@ public final class FlowBasedServicesUtils {
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         BoundServicesStateKey boundServicesStateKey = new BoundServicesStateKey(interfaceState.getName(), serviceMode);
         return new BoundServicesStateBuilder().setDpid(dpId).setIfIndex(interfaceState.getIfIndex())
-            .setInterfaceName(interfaceState.getName()).setInterfaceType(interfaceState.getType()).setPortNo(portNo)
+            .setInterfaceName(interfaceState.getName()).setInterfaceType(interfaceState.getType())
             .setServiceMode(serviceMode).withKey(boundServicesStateKey).build();
     }
 

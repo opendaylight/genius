@@ -243,9 +243,6 @@ module interface-service-bindings {
                     leaf dpid {
                         type uint64;
                     }
-                    leaf port-no {
-                        type uint32;
-                    }
                     leaf if-index {
                         type int32;
                     }
