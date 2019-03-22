@@ -429,6 +429,8 @@ public class InterfaceInventoryStateListener
                         // skip this check for non-unique ports(Ex: br-int,br-ex)
                         if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
                             FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
+                            IfmUtil.unbindService(txRunner, coordinator, iface.getName(),
+                                    FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
                         }
 
                         // Delete the Vpn Interface from DpnToInterface Op DS.
