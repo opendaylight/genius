@@ -227,6 +227,8 @@ public interface NwConstants {
         NXM_OF_ICMPv6_CODE(0x0001, 22, 1, 8),
         NXM_NX_ND_TARGET(0x0001, 23, 16, 128),
         NXM_NX_ND_TARGET_W(0x0001, 23, 16, 128),
+        OXM_OF_ICMPV6_TYPE(0x8000L, 29, 1, 8),
+        OXM_OF_IPV6_ND_TARGET(0x8000L, 31, 16, 128),
         NXM_NX_ND_SLL(0x0001, 24, 6, 48),
         NXM_NX_ND_TLL(0x0001, 25, 6, 48),
         NXM_NX_IP_FRAG(0x0001, 26, 1, 8),
