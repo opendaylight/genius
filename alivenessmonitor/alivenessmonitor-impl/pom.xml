@@ -50,7 +50,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependencies>
   </dependencyManagement>
 
+
   <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>alivenessmonitor-api</artifactId>

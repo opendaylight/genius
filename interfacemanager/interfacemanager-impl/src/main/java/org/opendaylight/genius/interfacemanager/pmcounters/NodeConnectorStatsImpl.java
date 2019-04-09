@@ -151,7 +151,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         @Override
         public void run() {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Requesting port stats - {}");
+                LOG.trace("Requesting port stats");
             }
             for (String node : nodes) {
                 LOG.trace("Requesting AllNodeConnectorStatistics and flow table statistics for node - {}", node);

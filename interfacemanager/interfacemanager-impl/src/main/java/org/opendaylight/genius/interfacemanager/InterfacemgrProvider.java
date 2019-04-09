@@ -707,7 +707,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
         OvsdbBridgeAugmentation bridge = node.augmentation(OvsdbBridgeAugmentation.class);
         if (bridge == null) {
-            LOG.error("Node {} has no bridge augmentation");
+            LOG.error("Node {} has no bridge augmentation", nodeIid);
             return null;
         }
 

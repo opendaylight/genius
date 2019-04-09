@@ -85,7 +85,7 @@ public class PMRegistrationListener implements Runnable {
         try {
             delegate = new ObjectName("JMImplementation:type=MBeanServerDelegate");
         } catch (MalformedObjectNameException e) {
-            LOG.error("Malformed object name: {} ", e);
+            LOG.error("Malformed object", e);
             return;
         }
         NotificationFilterSupport filter = new NotificationFilterSupport();
@@ -97,7 +97,7 @@ public class PMRegistrationListener implements Runnable {
         try {
             mbs.addNotificationListener(delegate, delegateListener, filter, null);
         } catch (InstanceNotFoundException e) {
-            LOG.error("Instance not found: {}", e);
+            LOG.error("Instance not found", e);
             return;
         }
         Poller poller = new Poller(bundleContext, this);

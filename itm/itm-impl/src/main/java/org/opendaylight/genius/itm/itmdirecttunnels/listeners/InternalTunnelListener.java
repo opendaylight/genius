@@ -55,7 +55,7 @@ public class InternalTunnelListener extends AbstractSyncDataTreeChangeListener<I
 
     @Override
     public void add(@NonNull InstanceIdentifier<InternalTunnel> key, @NonNull InternalTunnel internalTunnel) {
-        LOG.debug("ADD of Interface {} received in InternalTunnelListenerITM");
+        LOG.debug("ADD of Interface {} received in InternalTunnelListenerITM", internalTunnel);
         RendererInternalTunnelDeleteWorker configWorker = new RendererInternalTunnelDeleteWorker(key, internalTunnel);
         coordinator.enqueueJob(getKeyForEnqueuing(internalTunnel), configWorker, ITMConstants.JOB_MAX_RETRIES);
     }
