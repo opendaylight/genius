@@ -12,7 +12,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
-import javax.annotation.CheckReturnValue;
+
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
