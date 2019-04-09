@@ -93,6 +93,7 @@ import org.slf4j.LoggerFactory;
 public final class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
     private static final int DEFAULT_DISPATCHER_PRIORITY = 10;
+    public static final int EGRESS_SERVICE_FLOW_PRIORITY = 9;
 
     private FlowBasedServicesUtils() {
     }
@@ -251,7 +252,8 @@ public final class FlowBasedServicesUtils {
                 .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
 
-        writeTransaction.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
+        writeTransaction.put(LogicalDatastoreType.CONFIGURATION, flowInstanceId, flow, true);
+        LOG.debug("IFM,InstallFlow {}", flow.getId());
     }
 
     private static Node buildInventoryDpnNode(BigInteger dpnId) {
@@ -378,7 +380,7 @@ public final class FlowBasedServicesUtils {
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName,
                 currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
-                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie(), matches,
+                EGRESS_SERVICE_FLOW_PRIORITY, serviceRef, 0, 0, stypeOpenflow.getFlowCookie(), matches,
                 instructions);
         LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", interfaceName, flowRef);
         installFlow(dpId, egressFlow, tx);
@@ -545,7 +547,8 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
-        writeTransaction.delete(flowInstanceId);
+        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        LOG.debug("IFM,removeFlow {}", flowRef);
     }
 
     public static void removeEgressDispatcherFlows(BigInteger dpId, String iface,
@@ -567,7 +570,8 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE)).child(Flow.class, flowKey)
                 .build();
 
-        writeTransaction.delete(flowInstanceId);
+        writeTransaction.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
+        LOG.debug("IFM,removeFlow {}", flowRef);
     }
 
     public static void removeEgressSplitHorizonDispatcherFlow(BigInteger dpId, String iface,
