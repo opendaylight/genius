@@ -40,6 +40,10 @@ import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
+import org.opendaylight.genius.interfacemanager.listeners.sequencer.InterfaceInventoryStateTaskSequencer;
+import org.opendaylight.genius.interfacemanager.listeners.sequencer.InterfaceJobQueue;
+import org.opendaylight.genius.interfacemanager.listeners.sequencer.SleepTask;
+import org.opendaylight.genius.interfacemanager.listeners.sequencer.TaskEntry;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateAddHelper;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceStateUpdateHelper;
@@ -91,6 +95,7 @@ public class InterfaceInventoryStateListener
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final PortNameCache portNameCache;
     private final InterfacemgrProvider interfacemgrProvider;
+    private final InterfaceInventoryStateTaskSequencer taskSequencer;
 
     @Inject
     public InterfaceInventoryStateListener(@Reference final DataBroker dataBroker,
@@ -122,6 +127,7 @@ public class InterfaceInventoryStateListener
         registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
+        this.taskSequencer = new InterfaceInventoryStateTaskSequencer(coordinator);
     }
 
     @Override
@@ -168,10 +174,15 @@ public class InterfaceInventoryStateListener
 
     private void remove(NodeConnectorId nodeConnectorIdNew, NodeConnectorId nodeConnectorIdOld,
                         FlowCapableNodeConnector fcNodeConnectorNew, String portName, boolean isNetworkEvent) {
-        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
-                nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName,
-                isNetworkEvent, true);
-        coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        InterfaceStateRemoveWorker portStateRemoveWorker = new InterfaceStateRemoveWorker(idManager, nodeConnectorIdNew,
+                nodeConnectorIdOld, fcNodeConnectorNew, portName, isNetworkEvent, true);
+        InterfaceJobQueue interfaceJobQueue = taskSequencer.getJobQueueMap().get(portName);
+        if (interfaceJobQueue == null || interfaceJobQueue.getTaskQueue().isEmpty()) {
+            coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        } else {
+            LOG.debug("Job Submitted to Sequencer portStateRemoveWorker for {}", portName);
+            taskSequencer.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        }
         LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
         portNameCache.remove(nodeConnectorIdNew.getValue());
     }
@@ -202,12 +213,21 @@ public class InterfaceInventoryStateListener
 
         InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
             fcNodeConnectorNew, portName);
-        coordinator.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
+        InterfaceJobQueue interfaceJobQueue = taskSequencer.getJobQueueMap().get(portName);
+        if (interfaceJobQueue == null || interfaceJobQueue.getTaskQueue().isEmpty()) {
+            coordinator.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
+        } else {
+            LOG.debug("Job Submitted to Sequencer portStateUpdateWorker for {}", portName);
+            taskSequencer.enqueueJob(portName, portStateUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
+        }
     }
 
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
         String interfaceName = fcNodeConnectorNew.getName();
+        Boolean sleepRequired = false;
+
+        LOG.debug("IFM-InterfaceInventoryState,ADD {}", interfaceName);
         if (interfacemgrProvider.isItmDirectTunnelsEnabled()
             && InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
@@ -259,17 +279,32 @@ public class InterfaceInventoryStateListener
                 remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
                 // Adding a delay of 10sec for VM migration, so applications will have sufficient time
                 // for processing remove before add
-                try {
-                    Thread.sleep(IfmConstants.DELAY_TIME_IN_MILLISECOND);
-                } catch (final InterruptedException e) {
-                    LOG.error("Error while waiting for the vm migration remove events to get processed");
-                }
+                sleepRequired = true;
             }
         }
-
-        InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
-            fcNodeConnectorNew, portName);
-        coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+        if (sleepRequired) {
+            List<TaskEntry> tasks = new ArrayList<>();
+            SleepTask sleepTask = taskSequencer.getSleepTask();
+            TaskEntry sleepTaskEntry = new TaskEntry(sleepTask, 0);
+            tasks.add(sleepTaskEntry);
+            InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
+                    fcNodeConnectorNew, portName);
+            TaskEntry addTaskEntry =  new TaskEntry(ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+            tasks.add(addTaskEntry);
+            LOG.debug("Migrating Port {} to Dpn {}, Submitting Sequencer SleepTask",
+                    portName, IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId));
+            taskSequencer.enqueueJob(portName, tasks);
+        } else {
+            InterfaceStateAddWorker ifStateAddWorker = new InterfaceStateAddWorker(idManager, nodeConnectorId,
+                    fcNodeConnectorNew, portName);
+            InterfaceJobQueue interfaceJobQueue = taskSequencer.getJobQueueMap().get(portName);
+            if (interfaceJobQueue == null || interfaceJobQueue.getTaskQueue().isEmpty()) {
+                coordinator.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+            } else {
+                LOG.debug("Job Submitted to Sequencer ifStateAddWorker for {}", portName);
+                taskSequencer.enqueueJob(portName, ifStateAddWorker, IfmConstants.JOB_MAX_RETRIES);
+            }
+        }
     }
 
 
@@ -325,6 +360,12 @@ public class InterfaceInventoryStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
+            final Interface ifState = InterfaceInventoryStateListener.this.interfaceManagerCommonUtils
+                    .getInterfaceStateFromOperDS(interfaceName);
+            if (ifState == null) {
+                add(key, fcNodeConnectorNew);
+                return null;
+            }
             List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
