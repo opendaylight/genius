@@ -11,9 +11,10 @@ import static com.google.common.util.concurrent.Futures.immediateFailedFuture;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.MoreExecutors;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-import javax.annotation.CheckReturnValue;
+
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
