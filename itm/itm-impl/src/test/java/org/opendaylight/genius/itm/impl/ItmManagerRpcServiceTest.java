@@ -209,17 +209,17 @@ public class ItmManagerRpcServiceTest {
         dpnEndpointsOptional = Optional.of(dpnEndpoints);
         transportZonesOptional = Optional.of(transportZones);
 
-        doReturn(Futures.immediateCheckedFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(Futures.immediateFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,externalTunnelIdentifier);
-        doReturn(Futures.immediateCheckedFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(Futures.immediateFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,externalTunnelIdentifier1);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(Futures.immediateFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,internalTunnelIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(
+        lenient().doReturn(Futures.immediateFuture(internalTunnelOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifierNew);
-        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+        lenient().doReturn(Futures.immediateFuture(dpnEndpointsOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(Futures.immediateFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
@@ -308,7 +308,7 @@ public class ItmManagerRpcServiceTest {
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(Futures.immediateFuture(null)).when(mockWriteTx).submit();
     }
 
     @Test
@@ -321,7 +321,7 @@ public class ItmManagerRpcServiceTest {
     @Ignore
     @Test
     public void testGetInternalOrExternalInterfaceNameExtTunnelAbsent() {
-        doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(Futures.immediateFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,externalTunnelIdentifier);
 
         itmManagerRpcService.getInternalOrExternalInterfaceName(getInternalOrExternalInterfaceNameInput);

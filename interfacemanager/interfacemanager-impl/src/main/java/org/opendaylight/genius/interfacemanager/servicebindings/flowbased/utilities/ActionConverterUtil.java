@@ -161,7 +161,7 @@ public final class ActionConverterUtil {
     }
 
     public static Action convertServiceActionToFlowAction(Action inAction) {
-        final Function<Action, Action> func = SERVICE_TO_OF.get(inAction.getImplementedInterface());
+        final Function<Action, Action> func = SERVICE_TO_OF.get(inAction.implementedInterface());
         return func == null ? inAction : func.apply(inAction);
     }
 }

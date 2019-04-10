@@ -260,7 +260,7 @@ public class ItmExternalTunnelDeleteTest {
 
         lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(Futures.immediateFuture(null)).when(mockWriteTx).submit();
     }
 
     @Test
@@ -297,19 +297,19 @@ public class ItmExternalTunnelDeleteTest {
         Optional<TransportZone> optionalTransportZone = Optional.of(transportZone);
         Optional<ExternalTunnel> exTunnels = Optional.of(externalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZone))
+        doReturn(Futures.immediateFuture(optionalTransportZone))
                 .when(typedReadWriteTransaction).read(transportZoneIdentifier);
-        doReturn(Futures.immediateCheckedFuture(exTunnels))
+        doReturn(Futures.immediateFuture(exTunnels))
                 .when(typedReadWriteTransaction).read(externalTunnelIdentifier1);
-        doReturn(Futures.immediateCheckedFuture(exTunnels))
+        doReturn(Futures.immediateFuture(exTunnels))
                 .when(typedReadWriteTransaction).read(externalTunnelIdentifier2);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(Futures.immediateFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier3);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(Futures.immediateFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier4);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(Futures.immediateFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier5);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(Futures.immediateFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier6);
         try {
             ItmExternalTunnelDeleteWorker
