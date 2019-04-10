@@ -568,7 +568,7 @@ public class IPv4 extends Packet {
             try {
                 payloadLength = payload.serialize().length;
             } catch (PacketException e) {
-                LOG.error("", e);
+                LOG.error("Exception in setpayload", e);
             }
         }
 

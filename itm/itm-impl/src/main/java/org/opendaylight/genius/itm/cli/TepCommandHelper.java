@@ -12,6 +12,7 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -418,7 +419,8 @@ public class TepCommandHelper {
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
                 LOG.debug("InstanceIdentifier {}", path);
                 Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                    tx -> tx.merge(path, transportZones, true)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+                    tx -> tx.merge(path, transportZones, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                        MoreExecutors.directExecutor());
                 LOG.debug("wrote to Config DS {}", transportZones);
                 transportZonesHashMap.clear();
                 transportZoneArrayList.clear();
@@ -669,7 +671,8 @@ public class TepCommandHelper {
                     allPaths.addAll(vtepPaths);
                     allPaths.addAll(subnetPaths);
                     Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                        tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+                        tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                            MoreExecutors.directExecutor());
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -881,7 +884,8 @@ public class TepCommandHelper {
             TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled)
                     .setMonitorProtocol(monitorType).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                    MoreExecutors.directExecutor());
         }
     }
 
@@ -893,7 +897,8 @@ public class TepCommandHelper {
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                    MoreExecutors.directExecutor());
         }
     }
 
