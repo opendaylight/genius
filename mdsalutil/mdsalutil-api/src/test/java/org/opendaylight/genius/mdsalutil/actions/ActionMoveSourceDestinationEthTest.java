@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.NxRegMove;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfEthSrcCase;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Test class for {@link ActionMoveSourceDestinationEth}.
@@ -37,11 +38,11 @@ public class ActionMoveSourceDestinationEthTest {
         NxRegMove nxRegMove = actionCase.getNxRegMove();
         assertTrue(nxRegMove.getSrc().getSrcChoice() instanceof SrcOfEthSrcCase);
         SrcOfEthSrcCase srcChoice = (SrcOfEthSrcCase) nxRegMove.getSrc().getSrcChoice();
-        assertTrue(srcChoice.isOfEthSrc());
+        assertEquals(Empty.getInstance(),srcChoice.isOfEthSrc());
         assertEquals(0, nxRegMove.getSrc().getStart().intValue());
         assertTrue(nxRegMove.getDst().getDstChoice() instanceof DstOfEthDstCase);
         DstOfEthDstCase dstChoice = (DstOfEthDstCase) nxRegMove.getDst().getDstChoice();
-        assertTrue(dstChoice.isOfEthDst());
+        assertEquals(Empty.getInstance(),dstChoice.isOfEthDst());
         assertEquals(0, nxRegMove.getDst().getStart().intValue());
         assertEquals(47, nxRegMove.getDst().getEnd().intValue());
     }

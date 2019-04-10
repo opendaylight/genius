@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.NxRegMove;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxIpv6SrcCase;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Test class for {@link ActionMoveSourceDestinationIpv6}.
@@ -37,11 +38,11 @@ public class ActionMoveSourceDestinationIpv6Test {
         NxRegMove nxRegMove = actionCase.getNxRegMove();
         assertTrue(nxRegMove.getSrc().getSrcChoice() instanceof SrcNxIpv6SrcCase);
         SrcNxIpv6SrcCase srcChoice = (SrcNxIpv6SrcCase) nxRegMove.getSrc().getSrcChoice();
-        assertTrue(srcChoice.isNxIpv6Src());
+        assertEquals(Empty.getInstance(),srcChoice.isNxIpv6Src());
         assertEquals(0, nxRegMove.getSrc().getStart().intValue());
         assertTrue(nxRegMove.getDst().getDstChoice() instanceof DstNxIpv6DstCase);
         DstNxIpv6DstCase dstChoice = (DstNxIpv6DstCase) nxRegMove.getDst().getDstChoice();
-        assertTrue(dstChoice.isNxIpv6Dst());
+        assertEquals(Empty.getInstance(), dstChoice.isNxIpv6Dst());
         assertEquals(0, nxRegMove.getDst().getStart().intValue());
         assertEquals(127, nxRegMove.getDst().getEnd().intValue());
     }
