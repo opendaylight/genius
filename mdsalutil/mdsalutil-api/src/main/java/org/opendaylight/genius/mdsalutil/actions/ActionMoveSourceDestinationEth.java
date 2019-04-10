@@ -18,7 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfEthSrcCaseBuilder;
-
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Move source/destination Ethernet action.
@@ -43,11 +43,11 @@ public class ActionMoveSourceDestinationEth extends ActionInfo {
         ActionBuilder ab = new ActionBuilder();
         NxRegMove regMove = new NxRegMoveBuilder()
             .setSrc(new SrcBuilder()
-                .setSrcChoice(new SrcOfEthSrcCaseBuilder().setOfEthSrc(Boolean.TRUE).build())
+                .setSrcChoice(new SrcOfEthSrcCaseBuilder().setOfEthSrc(Empty.getInstance()).build())
                 .setStart(0)
                 .build())
             .setDst(new DstBuilder()
-                .setDstChoice(new DstOfEthDstCaseBuilder().setOfEthDst(Boolean.TRUE).build())
+                .setDstChoice(new DstOfEthDstCaseBuilder().setOfEthDst(Empty.getInstance()).build())
                 .setStart(0)
                 .setEnd(47)
                 .build())
