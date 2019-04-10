@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxArpShaCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Test for {@link ActionLoadMacToSha}.
@@ -43,7 +44,7 @@ public class ActionLoadMacToShaTest {
         NxRegLoad nxRegLoad = actionCase.getNxRegLoad();
         assertTrue(nxRegLoad.getDst().getDstChoice() instanceof DstNxArpShaCase);
         DstNxArpShaCase dstNxArpShaCase = (DstNxArpShaCase) nxRegLoad.getDst().getDstChoice();
-        assertTrue(dstNxArpShaCase.isNxArpSha());
+        assertEquals(Empty.getInstance(),dstNxArpShaCase.getNxArpSha());
         assertEquals(0, nxRegLoad.getDst().getStart().intValue());
         assertEquals(47, nxRegLoad.getDst().getEnd().intValue());
         assertEquals(BigInteger.valueOf(NWUtil.macToLong(new MacAddress(MAC_ADDRESS))), nxRegLoad.getValue());

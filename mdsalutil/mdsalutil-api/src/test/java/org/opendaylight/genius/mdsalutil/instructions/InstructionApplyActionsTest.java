@@ -52,7 +52,7 @@ public class InstructionApplyActionsTest {
                 + "    (new ActionGroupBuilder => [\n"
                 + "        groupId = 1L\n"
                 + "    ]).build()\n"
-                + "])", generator.getExpression(INSTRUCTION_INFO));
+                + "])", generator.getExpression(INSTR/AbstractTestableListener.javaUCTION_INFO));
     }
 
 }

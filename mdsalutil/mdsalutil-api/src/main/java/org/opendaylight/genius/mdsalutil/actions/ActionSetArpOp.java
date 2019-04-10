@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Set ARP Operation Type that is Request or Replay.
@@ -49,7 +50,7 @@ public class ActionSetArpOp extends ActionInfo {
             .setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegLoad(new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
-                        .setDstChoice(new DstOfArpOpCaseBuilder().setOfArpOp(true).build())
+                        .setDstChoice(new DstOfArpOpCaseBuilder().setOfArpOp(Empty.getInstance()).build())
                         .setStart(0)
                         .setEnd(15)
                         .build())
