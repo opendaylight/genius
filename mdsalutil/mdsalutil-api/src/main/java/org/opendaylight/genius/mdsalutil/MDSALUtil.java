@@ -89,6 +89,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Tr
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -644,7 +645,8 @@ public class MDSALUtil {
 
     public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {
         NxRegLoad regLoad = new NxRegLoadBuilder()
-                .setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Boolean.TRUE).build())
+                .setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder()
+                        .setOfInPort(Empty.getInstance()).build())
                         .setStart(0).setEnd(15).build())
                 .setValue(BigInteger.valueOf(inPortVal)).build();
         ActionBuilder abExt = new ActionBuilder();
