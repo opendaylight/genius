@@ -168,13 +168,13 @@ public class ItmInternalTunnelAddTest {
         idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
         idOutputOptional2 = RpcResultBuilder.success(expectedId2).buildFuture();
 
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
+        doReturn(Futures.immediateFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+        doReturn(Futures.immediateFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+        doReturn(Futures.immediateFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+        doReturn(Futures.immediateFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
 
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
@@ -234,7 +234,7 @@ public class ItmInternalTunnelAddTest {
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        doReturn(Futures.immediateFuture(null)).when(mockReadWriteTx).submit();
         doReturn(true).when(mockReadWriteTx).cancel();
     }
 

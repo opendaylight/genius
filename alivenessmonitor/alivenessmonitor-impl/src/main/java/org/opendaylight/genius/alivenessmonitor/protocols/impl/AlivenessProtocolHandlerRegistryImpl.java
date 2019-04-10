@@ -10,7 +10,6 @@ package org.opendaylight.genius.alivenessmonitor.protocols.impl;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Singleton;
 
 import org.apache.aries.blueprint.annotation.service.Service;
@@ -23,11 +22,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of AlivenessProtocolHandlerRegistry.
+ * Implementations of this interface are expected to be thread-safe.
  *
  * @author Michael Vorburger.ch
  */
+
 @Singleton
-@ThreadSafe
 @Service(classes = AlivenessProtocolHandlerRegistry.class)
 public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHandlerRegistry {
 

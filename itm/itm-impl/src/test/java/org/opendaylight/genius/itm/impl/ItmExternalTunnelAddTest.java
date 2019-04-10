@@ -291,7 +291,7 @@ public class ItmExternalTunnelAddTest {
 
         lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(Futures.immediateFuture(null)).when(mockWriteTx).submit();
 
     }
 
@@ -394,7 +394,7 @@ public class ItmExternalTunnelAddTest {
                         new ExternalTunnelKey(getExternalTunnelKey(source),
                                 getExternalTunnelKey(destination), tunnelType1));
 
-        doReturn(Futures.immediateCheckedFuture(Optional.of(transportZone))).when(typedReadWriteTransaction)
+        doReturn(Futures.immediateFuture(Optional.of(transportZone))).when(typedReadWriteTransaction)
             .read(transportZoneIdentifier);
 
         externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null, typedReadWriteTransaction);

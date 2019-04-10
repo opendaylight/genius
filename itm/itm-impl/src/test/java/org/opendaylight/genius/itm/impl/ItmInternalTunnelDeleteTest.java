@@ -139,21 +139,21 @@ public class ItmInternalTunnelDeleteTest {
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
         internalTunnelOptional = Optional.of(internalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
+        doReturn(Futures.immediateFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+        lenient().doReturn(Futures.immediateFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+        lenient().doReturn(Futures.immediateFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+        lenient().doReturn(Futures.immediateFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
+        doReturn(Futures.immediateFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadWriteTx)
+        lenient().doReturn(Futures.immediateFuture(internalTunnelOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
@@ -208,7 +208,7 @@ public class ItmInternalTunnelDeleteTest {
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        lenient().doReturn(Futures.immediateFuture(null)).when(mockReadWriteTx).submit();
         doReturn(true).when(mockReadWriteTx).cancel();
     }
 
@@ -226,7 +226,7 @@ public class ItmInternalTunnelDeleteTest {
 
         Optional<DpnEndpoints> dpnEndpointsOptional = Optional.of(dpnEndpoints);
 
-        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+        lenient().doReturn(Futures.immediateFuture(dpnEndpointsOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
 
         itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
