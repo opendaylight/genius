@@ -302,7 +302,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             settableFuture.set(RpcResultBuilder.<GetEgressActionsForTunnelOutput>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, errMsg, throwable).build());
                         }
-                });
+                } ,MoreExecutors.directExecutor());
             return  settableFuture;
         } else {
             return fromListenableFuture(LOG, input, () -> getEgressActionsForInterface(input.getIntfName(),
@@ -342,8 +342,9 @@ public class ItmManagerRpcService implements ItmRpcService {
                                     tunnelName);
                             settableFuture.set(RpcResultBuilder.<GetTunnelTypeOutput>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, errMsg, throwable).build());
+
                         }
-                });
+                },MoreExecutors.directExecutor());
             return settableFuture;
         } else {
             LOG.debug("get tunnel type from ITM for interface name {}", input.getIntfName());
