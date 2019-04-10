@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * NX load metadata action.
@@ -48,7 +49,7 @@ public class ActionNxLoadMetadata extends ActionInfo {
             .setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegLoad(new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
-                        .setDstChoice(new DstOfMetadataCaseBuilder().setOfMetadata(true).build())
+                        .setDstChoice(new DstOfMetadataCaseBuilder().setOfMetadata(Empty.getInstance()).build())
                         .setStart(startBit)
                         .setEnd(endBit)
                         .build())
