@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxArpShaCaseBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Move Source Hardware address to Destination address, to where the ARP
@@ -44,12 +45,12 @@ public class ActionMoveShaToTha extends ActionInfo {
             .setAction(new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegMove(new NxRegMoveBuilder()
                     .setSrc(new SrcBuilder()
-                        .setSrcChoice(new SrcNxArpShaCaseBuilder().setNxArpSha(true).build())
+                        .setSrcChoice(new SrcNxArpShaCaseBuilder().setNxArpSha(Empty.getInstance()).build())
                         .setStart(0)
                         .setEnd(47)
                         .build())
                     .setDst(new DstBuilder()
-                        .setDstChoice(new DstNxArpThaCaseBuilder().setNxArpTha(true).build())
+                        .setDstChoice(new DstNxArpThaCaseBuilder().setNxArpTha(Empty.getInstance()).build())
                         .setStart(0)
                         .setEnd(47)
                         .build())

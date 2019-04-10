@@ -52,18 +52,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <scope>compile</scope> <!-- Do *NOT* use <scope>test</scope> here, because this is a testutils -->
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
-      <!-- Hamcrest is internally used by Awaitility, so must be compile instead of test scope for build to work -->
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <!-- Hamcrest is internally used by Awaitility, so must be compile instead of test scope for build to work -->
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>compile</scope>

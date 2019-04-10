@@ -20,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Set tunnel destination IP action.
@@ -64,7 +65,7 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
     public Action buildAction(int newActionKey) {
         NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
         Dst dst = new DstBuilder()
-            .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Boolean.TRUE).build())
+            .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Empty.getInstance()).build())
             .setStart(0)
             .setEnd(31)
             .build();
