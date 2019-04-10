@@ -17,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.DstBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcOfArpSpaCaseBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Move Source IP address to Destination IP address, to where the ARP
@@ -44,12 +45,12 @@ public class ActionMoveSpaToTpa extends ActionInfo {
             .setAction(new NxActionRegMoveNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegMove(new NxRegMoveBuilder()
                     .setSrc(new SrcBuilder()
-                        .setSrcChoice(new SrcOfArpSpaCaseBuilder().setOfArpSpa(true).build())
+                        .setSrcChoice(new SrcOfArpSpaCaseBuilder().setOfArpSpa(Empty.getInstance()).build())
                         .setStart(0)
                         .setEnd(31)
                         .build())
                     .setDst(new DstBuilder()
-                        .setDstChoice(new DstOfArpTpaCaseBuilder().setOfArpTpa(true).build())
+                        .setDstChoice(new DstOfArpTpaCaseBuilder().setOfArpTpa(Empty.getInstance()).build())
                         .setStart(0)
                         .setEnd(31)
                         .build())

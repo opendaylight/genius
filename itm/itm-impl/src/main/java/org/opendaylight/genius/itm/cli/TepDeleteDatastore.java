@@ -8,6 +8,7 @@
 package org.opendaylight.genius.itm.cli;
 
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +52,13 @@ public class TepDeleteDatastore<T extends DataObject>  extends OsgiCommandSuppor
         //allConfigPaths.add((InstanceIdentifier<T>) tunnelsConfigPath);
         final ManagedNewTransactionRunner txrunner = new ManagedNewTransactionRunnerImpl(itmProvider.getDataBroker());
         Futures.addCallback(txrunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-            tx -> allConfigPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+            tx -> allConfigPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK, MoreExecutors.directExecutor());
         List<InstanceIdentifier<T>> allOperationalPaths = new ArrayList<>();
         // allOperationalPaths.add((InstanceIdentifier<T>) tnStateOpPath);
         allOperationalPaths.add((InstanceIdentifier<T>) ifStateOpPath);
         Futures.addCallback(txrunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
-            tx -> allOperationalPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK);
+            tx -> allOperationalPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                MoreExecutors.directExecutor());
         return null;
     }
 }
