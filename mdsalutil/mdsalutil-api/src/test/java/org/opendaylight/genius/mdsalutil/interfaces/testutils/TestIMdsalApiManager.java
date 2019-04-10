@@ -277,7 +277,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
         storeFlow(flowEntity);
-        return Futures.immediateCheckedFuture(null);
+        return Futures.immediateFuture(null);
     }
 
     @Override
