@@ -10,7 +10,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>3.0.6</version>
+    <version>4.0.0-SNAPSHOT</version>
     <relativePath/>
   </parent>
 
@@ -55,6 +55,20 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     </dependency>
 
     <!-- Testing Dependencies -->
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <!-- Hamcrest is internally used by Awaitility, so must be compile instead of test scope for build to work -->
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <!-- Hamcrest is internally used by Awaitility, so must be compile instead of test scope for build to work -->
+      <scope>compile</scope>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
