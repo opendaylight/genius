@@ -85,6 +85,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -394,7 +395,7 @@ public class ItmExternalTunnelAddTest {
                         new ExternalTunnelKey(getExternalTunnelKey(source),
                                 getExternalTunnelKey(destination), tunnelType1));
 
-        doReturn(Futures.immediateCheckedFuture(Optional.of(transportZone))).when(typedReadWriteTransaction)
+        doReturn(FluentFutures.immediateFluentFuture(Optional.of(transportZone))).when(typedReadWriteTransaction)
             .read(transportZoneIdentifier);
 
         externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null, typedReadWriteTransaction);

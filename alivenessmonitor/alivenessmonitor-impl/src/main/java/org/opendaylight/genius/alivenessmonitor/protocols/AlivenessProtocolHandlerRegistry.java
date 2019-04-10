@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols;
 
-import javax.annotation.concurrent.ThreadSafe;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.openflowplugin.libraries.liblldp.Packet;
@@ -15,10 +14,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 
 /**
  * Registry of {@link AlivenessProtocolHandler}s.
+ *Implementations of this interface are expected to be thread-safe.
  *
  * @author Michael Vorburger.ch
  */
-@ThreadSafe
+
 public interface AlivenessProtocolHandlerRegistry {
 
     void register(MonitorProtocolType protocolType, AlivenessProtocolHandler<?> protocolHandler);

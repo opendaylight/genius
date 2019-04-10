@@ -73,6 +73,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
@@ -297,19 +298,19 @@ public class ItmExternalTunnelDeleteTest {
         Optional<TransportZone> optionalTransportZone = Optional.of(transportZone);
         Optional<ExternalTunnel> exTunnels = Optional.of(externalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZone))
+        doReturn(FluentFutures.immediateFluentFuture(optionalTransportZone))
                 .when(typedReadWriteTransaction).read(transportZoneIdentifier);
-        doReturn(Futures.immediateCheckedFuture(exTunnels))
+        doReturn(FluentFutures.immediateFluentFuture(exTunnels))
                 .when(typedReadWriteTransaction).read(externalTunnelIdentifier1);
-        doReturn(Futures.immediateCheckedFuture(exTunnels))
+        doReturn(FluentFutures.immediateFluentFuture(exTunnels))
                 .when(typedReadWriteTransaction).read(externalTunnelIdentifier2);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier3);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier4);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier5);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
+        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
                 .read(externalTunnelIdentifier6);
         try {
             ItmExternalTunnelDeleteWorker

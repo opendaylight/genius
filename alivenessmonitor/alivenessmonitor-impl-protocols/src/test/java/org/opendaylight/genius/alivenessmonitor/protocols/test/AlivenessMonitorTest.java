@@ -194,8 +194,8 @@ public class AlivenessMonitorTest {
         doReturn(readWriteTx).when(dataBroker).newReadWriteTransaction();
         doNothing().when(writeTx).put(eq(LogicalDatastoreType.OPERATIONAL),
                 any(InstanceIdentifier.class), any(DataObject.class));
-        doReturn(Futures.immediateCheckedFuture(null)).when(writeTx).commit();
-        doReturn(Futures.immediateCheckedFuture(null)).when(readWriteTx).commit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(writeTx).commit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(readWriteTx).commit();
     }
 
     @After
@@ -211,10 +211,10 @@ public class AlivenessMonitorTest {
                         .setMonitorInterval(10000L).setMonitorWindow(10L)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
-        doReturn(Futures.immediateCheckedFuture(Optional.empty()))
+        doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
                 .when(readWriteTx).read(eq(LogicalDatastoreType.OPERATIONAL),
                         argThat(isType(MonitorProfile.class)));
-        doReturn(Futures.immediateCheckedFuture(null)).when(readWriteTx).commit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(readWriteTx).commit();
         RpcResult<MonitorProfileCreateOutput> output = alivenessMonitor
                 .monitorProfileCreate(input).get();
         assertTrue("Monitor Profile Create result", output.isSuccessful());
