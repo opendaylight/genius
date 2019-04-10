@@ -20,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.Src;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.nx.reg.move.SrcBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.src.choice.grouping.src.choice.SrcNxRegCaseBuilder;
+import org.opendaylight.yangtools.yang.common.Empty;
 
 /**
  * Action to move an NXM register.
@@ -55,7 +56,7 @@ public class ActionRegMove extends ActionInfo {
                 .build();
 
         Dst dst = new DstBuilder()
-                .setDstChoice(new DstOfMplsLabelCaseBuilder().setOfMplsLabel(true).build())
+                .setDstChoice(new DstOfMplsLabelCaseBuilder().setOfMplsLabel(Empty.getInstance()).build())
                 .setStart(start)
                 .setEnd(end)
                 .build();
