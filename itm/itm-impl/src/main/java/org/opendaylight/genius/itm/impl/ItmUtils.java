@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -214,7 +215,7 @@ public final class ItmUtils {
                                                          FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
+        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
     }
 
     /**
@@ -228,7 +229,7 @@ public final class ItmUtils {
                                                           FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback);
+        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
     }
 
     /**
@@ -242,7 +243,7 @@ public final class ItmUtils {
                                                           FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback);
+        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
     }
 
     /**
@@ -260,7 +261,7 @@ public final class ItmUtils {
             for (InstanceIdentifier<T> path : pathList) {
                 tx.delete(datastoreType, path);
             }
-            Futures.addCallback(tx.submit(), callback);
+            Futures.addCallback(tx.submit(), callback ,MoreExecutors.directExecutor());
         }
     }
 
