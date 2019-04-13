@@ -38,6 +38,7 @@ import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
@@ -106,9 +107,10 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
             TunnelStateInfo tunnelStateInfoNew = null;
 
-            directTunnelUtils.getTunnelLocks().lock(remoteDpns.getTunnelName());
-            TunnelStateInfo tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
-            directTunnelUtils.getTunnelLocks().unlock(remoteDpns.getTunnelName());
+            TunnelStateInfo tunnelStateInfo;
+            try (Acquired lock = directTunnelUtils.lockTunnel(remoteDpns.getTunnelName())) {
+                tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+            }
 
             if (tunnelStateInfo != null) {
                 LOG.debug("Processing the Unprocessed NodeConnector for Tunnel {}", remoteDpns.getTunnelName());
@@ -126,20 +128,20 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 tunnelStateInfoNew = builder.build();
                 if (tunnelStateInfoNew.getSrcDpnTepsInfo() == null) {
                     String srcDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getSrcEndPointInfo();
-                    directTunnelUtils.getTunnelLocks().lock(srcDpnId);
-                    LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
-                        remoteDpns.getTunnelName(), srcDpnId);
-                    unprocessedNodeConnectorEndPointCache.add(srcDpnId, tunnelStateInfoNew);
-                    directTunnelUtils.getTunnelLocks().unlock(srcDpnId);
+                    try (Acquired lock = directTunnelUtils.lockTunnel(srcDpnId)) {
+                        LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                            remoteDpns.getTunnelName(), srcDpnId);
+                        unprocessedNodeConnectorEndPointCache.add(srcDpnId, tunnelStateInfoNew);
+                    }
                 }
 
                 if (tunnelStateInfoNew.getDstDpnTepsInfo() == null) {
                     String dstDpnId = tunnelStateInfo.getTunnelEndPointInfo().getDstEndPointInfo();
-                    directTunnelUtils.getTunnelLocks().lock(dstDpnId);
-                    LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
-                        remoteDpns.getTunnelName(), dstDpnId);
-                    unprocessedNodeConnectorEndPointCache.add(dstDpnId, tunnelStateInfoNew);
-                    directTunnelUtils.getTunnelLocks().unlock(dstDpnId);
+                    try (Acquired lock = directTunnelUtils.lockTunnel(dstDpnId)) {
+                        LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                            remoteDpns.getTunnelName(), dstDpnId);
+                        unprocessedNodeConnectorEndPointCache.add(dstDpnId, tunnelStateInfoNew);
+                    }
                 }
             }
 
