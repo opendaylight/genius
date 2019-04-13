@@ -28,6 +28,7 @@ import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -66,9 +67,11 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
     protected void added(InstanceIdentifier<DPNTEPsInfo> path, DPNTEPsInfo dpnTepsInfo) {
         LOG.info("DPNTepsInfo Add Received for {}", dpnTepsInfo.getDPNID());
         String dpnId = dpnTepsInfo.getDPNID().toString();
-        directTunnelUtils.getTunnelLocks().lock(dpnId);
-        Collection<TunnelStateInfo> tunnelStateInfoList = unprocessedNodeConnectorEndPointCache.remove(dpnId);
-        directTunnelUtils.getTunnelLocks().unlock(dpnId);
+
+        Collection<TunnelStateInfo> tunnelStateInfoList;
+        try (Acquired lock = directTunnelUtils.lockTunnel(dpnId)) {
+            tunnelStateInfoList = unprocessedNodeConnectorEndPointCache.remove(dpnId);
+        }
 
         if (tunnelStateInfoList != null) {
             for (TunnelStateInfo tsInfo : tunnelStateInfoList) {
@@ -82,8 +85,7 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                     dstDpnTepsInfo = tsInfo.getDstDpnTepsInfo();
                     if (dstDpnTepsInfo == null) {
                         // Check if the destination End Point has come
-                        try {
-                            directTunnelUtils.getTunnelLocks().lock(tunnelEndPointInfo.getDstEndPointInfo());
+                        try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPointInfo.getDstEndPointInfo())) {
                             Optional<DPNTEPsInfo> dstInfoOpt = getDPNTepFromDPNId(
                                     new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
                             if (dstInfoOpt.isPresent()) {
@@ -99,8 +101,6 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                                 unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo
                                         .getDstEndPointInfo(), tunnelStateInfoNew);
                             }
-                        } finally {
-                            directTunnelUtils.getTunnelLocks().unlock(tunnelEndPointInfo.getDstEndPointInfo());
                         }
                     }
                 } else if (dpnId.equals(tunnelEndPointInfo.getDstEndPointInfo())) {
@@ -108,8 +108,7 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                     srcDpnTepsInfo = tsInfo.getSrcDpnTepsInfo();
                     // Check if the destination End Point has come
                     if (srcDpnTepsInfo == null) {
-                        try {
-                            directTunnelUtils.getTunnelLocks().lock(tunnelEndPointInfo.getSrcEndPointInfo());
+                        try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPointInfo.getSrcEndPointInfo())) {
                             Optional<DPNTEPsInfo> srcInfoOpt = getDPNTepFromDPNId(
                                     new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()));
                             if (srcInfoOpt.isPresent()) {
@@ -126,8 +125,6 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                                 unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(),
                                         tunnelStateInfoNew);
                             }
-                        } finally {
-                            directTunnelUtils.getTunnelLocks().unlock(tunnelEndPointInfo.getSrcEndPointInfo());
                         }
                     }
                 }

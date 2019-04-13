@@ -42,6 +42,7 @@ import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -170,8 +171,7 @@ public class TunnelInventoryStateListener extends
             new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
         TunnelStateInfo tunnelStateInfo = null;
         TunnelEndPointInfo tunnelEndPtInfo = null;
-        try {
-            directTunnelUtils.getTunnelLocks().lock(portName);
+        try (Acquired lock = directTunnelUtils.lockTunnel(portName)) {
             if (!dpnTepStateCache.isConfigAvailable(portName)) {
                 // Park the notification
                 LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
@@ -183,8 +183,6 @@ public class TunnelInventoryStateListener extends
                 LOG.debug("{} Interface is not a internal tunnel I/f, so no-op", portName);
                 return;
             }
-        } finally {
-            directTunnelUtils.getTunnelLocks().unlock(portName);
         }
 
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
@@ -197,18 +195,18 @@ public class TunnelInventoryStateListener extends
             tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
                 .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
             if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
-                directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getSrcEndPointInfo());
-                LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPtInfo.getSrcEndPointInfo())) {
+                    LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                         portName, tunnelEndPtInfo.getSrcEndPointInfo());
-                unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getSrcEndPointInfo(), tunnelStateInfo);
-                directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getSrcEndPointInfo());
+                    unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getSrcEndPointInfo(), tunnelStateInfo);
+                }
             }
             if (tunnelStateInfo.getDstDpnTepsInfo() == null) {
-                directTunnelUtils.getTunnelLocks().lock(tunnelEndPtInfo.getDstEndPointInfo());
-                LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
+                try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPtInfo.getDstEndPointInfo())) {
+                    LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                         portName, tunnelEndPtInfo.getDstEndPointInfo());
-                unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getDstEndPointInfo(), tunnelStateInfo);
-                directTunnelUtils.getTunnelLocks().unlock(tunnelEndPtInfo.getDstEndPointInfo());
+                    unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getDstEndPointInfo(), tunnelStateInfo);
+                }
             }
         }
 
@@ -312,7 +310,7 @@ public class TunnelInventoryStateListener extends
     }
 
     private boolean modifyOpState(DpnTepInterfaceInfo dpnTepInterfaceInfo, boolean opStateModified) {
-        return opStateModified && (dpnTepInterfaceInfo != null);
+        return opStateModified && dpnTepInterfaceInfo != null;
     }
 
     private boolean modifyTunnelOpState(DpnTepInterfaceInfo dpnTepInterfaceInfo, boolean opStateModified) {
