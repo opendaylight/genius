@@ -10,6 +10,7 @@ package org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -47,7 +48,8 @@ import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelSourceIp;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
-import org.opendaylight.infrautils.utils.concurrent.KeyedLocks;
+import org.opendaylight.infrautils.utils.concurrent.NamedLocks;
+import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv4Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -163,7 +165,7 @@ public final class DirectTunnelUtils {
     private static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
 
     private static final long INVALID_ID = 0;
-    private final KeyedLocks<String> tunnelLocks = new KeyedLocks<>();
+    private final NamedLocks<String> tunnelLocks = new NamedLocks<>();
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
 
@@ -193,8 +195,9 @@ public final class DirectTunnelUtils {
         this.itmConfig = itmConfig;
     }
 
-    public KeyedLocks<String> getTunnelLocks() {
-        return tunnelLocks;
+    @CheckReturnValue
+    public @NonNull Acquired lockTunnel(String tunnelName) {
+        return tunnelLocks.acquire(tunnelName);
     }
 
     public BigInteger getDpnId(DatapathId datapathId) {
