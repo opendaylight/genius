@@ -232,13 +232,22 @@ public class InterfaceInventoryStateListener
             fcNodeConnectorNew.getName());
 
         if (InterfaceManagerCommonUtils.isNovaPort(portName) || InterfaceManagerCommonUtils.isK8SPort(portName)) {
-            NodeConnectorId nodeConnectorIdOld =
-                    FlowBasedServicesUtils.getNodeConnectorIdFromInterface(portName, interfaceManagerCommonUtils);
+            NodeConnectorId nodeConnectorIdOld = null;
+            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                    .ietf.interfaces.rev140508.interfaces.state.Interface interfaceState = interfaceManagerCommonUtils
+                    .getInterfaceState(interfaceName);
+            if (interfaceState != null) {
+                List<String> ofportIds = interfaceState.getLowerLayerIf();
+                nodeConnectorIdOld = new NodeConnectorId(ofportIds.get(0));
+            }
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
                 BigInteger dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
                 BigInteger dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 if (!Objects.equals(dpnIdOld, dpnIdNew)) {
-                    if (fcNodeConnectorNew.getReason() != PortReason.Add) {
+                    if ((fcNodeConnectorNew.getReason() != PortReason.Add)
+                            && (interfaceState.getOperStatus() !=
+                            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+                                    .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus)) {
                         LOG.error("Dropping Port update event for {}, as DPN id is changed from {} to {}",
                             fcNodeConnectorNew.getName(), dpnIdOld, dpnIdNew);
                         return;
