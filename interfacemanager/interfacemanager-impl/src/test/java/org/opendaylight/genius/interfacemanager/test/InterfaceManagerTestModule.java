@@ -41,7 +41,9 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listen
 import org.opendaylight.genius.lockmanager.impl.LockListener;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.testutils.TestShardStatusMonitor;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.caches.CacheProvider;
@@ -97,6 +99,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(LockListener.class);
         bind(IdManagerService.class).to(IdManager.class);
+        bind(ShardStatusMonitor.class).toInstance(TestShardStatusMonitor.newInstance());
         bind(IInterfaceManager.class).to(InterfacemgrProvider.class);
 
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
