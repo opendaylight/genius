@@ -7,6 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
+
+import java.util.ArrayList;
+import java.util.List;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface NwConstants {
@@ -277,6 +280,30 @@ public interface NwConstants {
 
         public int getFlowModHeaderLenInt() {
             return flowModHeaderLen;
+        }
+    }
+
+    enum IdManagerShards {
+        DefaultConfig("default:config"),
+        DefaultOper("default:oper"),
+        InventoryConfig("inventory:config"),
+        InventoryOper("inventory:oper"),
+        TopologyConfig("topology:config"),
+        TopologyOper("topology:oper"),
+        EntityOper("entity:oper");
+
+        private String shardName;
+
+        IdManagerShards(String shardName) {
+            this.shardName = shardName;
+        }
+
+        public static List<String> getShardList() {
+            List<String> list = new ArrayList<>();
+            for (IdManagerShards val : IdManagerShards.values()) {
+                list.add(val.shardName);
+            }
+            return list;
         }
     }
 }
