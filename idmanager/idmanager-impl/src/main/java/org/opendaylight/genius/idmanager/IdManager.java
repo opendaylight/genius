@@ -53,6 +53,8 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.mdsalutil.NwConstants;
+import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -112,7 +114,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     @Inject
     public IdManager(DataBroker db, LockManagerService lockManager, IdUtils idUtils,
-                     @Reference DataImportBootReady dataImportBootReady, @Reference JobCoordinator jobCoordinator)
+                     @Reference DataImportBootReady dataImportBootReady,
+                     @Reference JobCoordinator jobCoordinator, @Reference ShardStatusMonitor shardStatusMonitor)
                     throws ReadFailedException, InterruptedException {
         this.broker = db;
         this.txRunner = new ManagedNewTransactionRunnerImpl(db);
@@ -130,7 +133,28 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         // it appears to be (is) un-used from a Java code PoV!
 
         this.localPool = new ConcurrentHashMap<>();
-        populateCache();
+        boolean isDatastoreAvailable = false;
+        int retryCount = 0;
+        try {
+            while (retryCount < 1000) {
+                isDatastoreAvailable = shardStatusMonitor.getShardStatus(NwConstants.IdManagerShards.getShardList());
+                if (isDatastoreAvailable) {
+                    break;
+                }
+                LOG.error("IdManager: retrying shard status check for the {} time", ++retryCount);
+                Thread.sleep(2000);
+            }
+            if (isDatastoreAvailable) {
+                LOG.info("IDManager is UP");
+                populateCache();
+            }
+        } catch (InterruptedException e) {
+            LOG.error("IDManager is DOWN, shard status check failed");
+        }
+
+        if (!isDatastoreAvailable) {
+            LOG.error("IDManager is DOWN, as shards were not available at bundle bringup");
+        }
     }
 
     @Override
