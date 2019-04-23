@@ -28,6 +28,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.tools.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
@@ -66,7 +67,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
     @Inject
     public OvsdbNodeListener(DataBroker dataBroker, ItmConfig itmConfig, JobCoordinator jobCoordinator,
-                             DataTreeEventCallbackRegistrar eventCallbacks) {
+                             DataTreeEventCallbackRegistrar eventCallbacks,
+                             final IdManagerService idManagerService) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(NetworkTopology.class).child(Topology.class).child(Node.class));
         this.dataBroker = dataBroker;
