@@ -37,6 +37,7 @@ import org.opendaylight.serviceutils.tools.listener.AbstractClusteredSyncDataTre
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -62,9 +63,10 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
                                                            flowBasedServicesStateRendererFactoryResolver,
                                                    final InterfaceServiceRecoveryHandler
                                                            interfaceServiceRecoveryHandler,
-                                                   @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
-        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
-              InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
+                                                   @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                                   final IdManagerService idManagerService) {
+    	super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+    	      InstanceIdentifier.create(InterfacesState.class).child(Interface.class));
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
