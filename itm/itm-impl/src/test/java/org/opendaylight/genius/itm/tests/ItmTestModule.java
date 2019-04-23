@@ -34,7 +34,9 @@ import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.testutils.TestShardStatusMonitor;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
@@ -114,6 +116,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(TestIMdsalApiManager.class).toInstance(mdsalManager);
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
         bind(DiagStatusService.class).toInstance(mock(DiagStatusService.class));
+        bind(ShardStatusMonitor.class).toInstance(TestShardStatusMonitor.newInstance());
     }
 
 }
