@@ -22,6 +22,7 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.tools.listener.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
@@ -42,7 +43,8 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
     public FlowBasedServicesNodeStateListener(@Reference final DataBroker dataBroker,
                                               @Reference final JobCoordinator jobCoordinator,
                                               final FlowBasedServicesStateRendererFactoryResolver
-                                                      flowBasedServicesStateRendererFactoryResolver) {
+                                                      flowBasedServicesStateRendererFactoryResolver,
+                                              final IdManagerService idManagerService) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class));
         this.jobCoordinator = jobCoordinator;
         this.flowBasedServicesStateRendererFactoryResolver = flowBasedServicesStateRendererFactoryResolver;
