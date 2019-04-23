@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
+import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
+import org.opendaylight.genius.mdsalutil.testutils.TestShardStatusMonitor;
 import org.opendaylight.genius.networkutils.RDUtils;
 import org.opendaylight.genius.networkutils.VniUtils;
 import org.opendaylight.genius.networkutils.impl.RDUtilsImpl;
@@ -47,6 +49,7 @@ public class NetworkUtilTestModule extends AbstractGuiceJsr250Module {
         bind(DataBroker.class).toInstance(dataBroker);
         bind(NetworkConfig.class).toInstance(mock(NetworkConfig.class));
         bind(IdManagerService.class).to(IdManager.class);
+        bind(ShardStatusMonitor.class).toInstance(TestShardStatusMonitor.newInstance());
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(VniUtils.class).to(VniUtilsImpl.class);
