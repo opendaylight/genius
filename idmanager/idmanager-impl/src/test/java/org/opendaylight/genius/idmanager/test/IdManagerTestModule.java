@@ -15,7 +15,9 @@ import org.opendaylight.genius.idmanager.IdPoolListener;
 import org.opendaylight.genius.lockmanager.impl.LockListener;
 import org.opendaylight.genius.lockmanager.impl.LockManagerServiceImpl;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
+import org.opendaylight.genius.mdsalutil.testutils.TestShardStatusMonitor;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
@@ -55,5 +57,6 @@ public class IdManagerTestModule extends AbstractGuiceJsr250Module {
         dataBrokerTest.setup();
         DataBroker dataBroker = dataBrokerTest.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
+        bind(ShardStatusMonitor.class).toInstance(TestShardStatusMonitor.newInstance());
     }
 }
