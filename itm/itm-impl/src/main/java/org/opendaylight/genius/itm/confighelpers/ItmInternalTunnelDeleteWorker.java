@@ -251,9 +251,13 @@ public class ItmInternalTunnelDeleteWorker {
 
     private void removeTrunkInterface(TypedWriteTransaction<Configuration> tx, TunnelEndPoints srcTep,
         TunnelEndPoints dstTep, BigInteger srcDpnId, BigInteger dstDpnId) {
+        String remoteIp = "flow";
+        if (!ItmUtils.falseIfNull(srcTep.isOptionOfTunnel())) {
+            remoteIp = dstTep.getIpAddress().stringValue();
+        }
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 srcTep.getIpAddress().stringValue(),
-                dstTep.getIpAddress().stringValue(),
+                remoteIp,
                 srcTep.getTunnelType().getName());
         LOG.trace("Removing forward Trunk Interface {}" , trunkfwdIfName);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkfwdIfName);
@@ -273,9 +277,13 @@ public class ItmInternalTunnelDeleteWorker {
                 srcTep.getTunnelType().getName());
         removeLogicalGroupTunnel(srcDpnId, dstDpnId);
 
+        remoteIp = "flow";
+        if (!ItmUtils.falseIfNull(dstTep.isOptionOfTunnel())) {
+            remoteIp = srcTep.getIpAddress().stringValue();
+        }
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(dstTep.getInterfaceName(),
                 dstTep.getIpAddress().stringValue(),
-                srcTep.getIpAddress().stringValue(),
+                remoteIp,
                 srcTep.getTunnelType().getName());
         LOG.trace("Removing Reverse Trunk Interface {}", trunkRevIfName);
         trunkIdentifier = ItmUtils.buildId(trunkRevIfName);
@@ -368,9 +376,13 @@ public class ItmInternalTunnelDeleteWorker {
 
     private void removeTunnelInterfaceFromOvsdb(TypedReadWriteTransaction<Configuration> tx, TunnelEndPoints srcTep,
         TunnelEndPoints dstTep, BigInteger srcDpnId, BigInteger dstDpnId) {
+        String remoteIp = "flow";
+        if (!ItmUtils.falseIfNull(srcTep.isOptionOfTunnel())) {
+            remoteIp = dstTep.getIpAddress().stringValue();
+        }
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 srcTep.getIpAddress().getIpv4Address().getValue(),
-                dstTep.getIpAddress().getIpv4Address().getValue(),
+                remoteIp,
                 srcTep.getTunnelType().getName());
         LOG.trace("Removing forward Trunk Interface {}", trunkfwdIfName);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(srcDpnId).build();
@@ -383,9 +395,13 @@ public class ItmInternalTunnelDeleteWorker {
                 LOG.error("Cannot Delete Tunnel {} as OVS Bridge Entry is NULL ", iface.getName(), e);
             }
         }
+        remoteIp = "flow";
+        if (!ItmUtils.falseIfNull(dstTep.isOptionOfTunnel())) {
+            remoteIp = srcTep.getIpAddress().stringValue();
+        }
         String trunkRevIfName = ItmUtils.getTrunkInterfaceName(dstTep.getInterfaceName(),
                 dstTep.getIpAddress().getIpv4Address().getValue(),
-                srcTep.getIpAddress().getIpv4Address().getValue(),
+                remoteIp,
                 srcTep.getTunnelType().getName());
         parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dstDpnId).build();
         iface = dpnTepStateCache.getInterfaceFromCache(trunkRevIfName);

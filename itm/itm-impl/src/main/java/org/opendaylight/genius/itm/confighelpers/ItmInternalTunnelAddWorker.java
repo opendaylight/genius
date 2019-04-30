@@ -206,15 +206,21 @@ public final class ItmInternalTunnelAddWorker {
         String tunTypeStr = srcte.getTunnelType().getName();
         // Form the trunk Interface Name
 
+        String remoteIp = "flow";
+        if (!ItmUtils.falseIfNull(srcte.isOptionOfTunnel())) {
+            remoteIp = dstte.getIpAddress().stringValue();
+        }
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
-                srcte.getIpAddress().stringValue(), dstte.getIpAddress().stringValue(), tunTypeStr);
+                srcte.getIpAddress().stringValue(), remoteIp, tunTypeStr);
         String parentInterfaceName = null;
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
             parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId);
         }
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
-            createInternalDirectTunnels(srcte, dstte, srcDpnId, dstDpnId, tunType, trunkInterfaceName,
-                    parentInterfaceName);
+            if (ItmUtils.ITM_CACHE.getInterface(trunkInterfaceName) == null) {
+                createInternalDirectTunnels(srcte, dstte, srcDpnId, dstDpnId, tunType, trunkInterfaceName,
+                        parentInterfaceName);
+            }
         } else {
             createTunnelInterface(srcte, dstte, srcDpnId, tunType, trunkInterfaceName, parentInterfaceName);
             // also update itm-state ds?

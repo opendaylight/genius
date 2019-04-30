@@ -398,8 +398,12 @@ public final class DirectTunnelUtils {
         IpAddress localIp = ifTunnel.getTunnelSource();
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.getIpv4Address().getValue());
 
-        IpAddress remoteIp = ifTunnel.getTunnelDestination();
-        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        if (ifTunnel.isTunnelRemoteIpFlow()) {
+            options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
+        } else {
+            IpAddress remoteIp = ifTunnel.getTunnelDestination();
+            options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, remoteIp.getIpv4Address().getValue());
+        }
 
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
