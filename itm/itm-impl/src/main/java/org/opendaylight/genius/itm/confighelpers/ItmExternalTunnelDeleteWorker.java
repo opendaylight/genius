@@ -29,9 +29,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,8 +63,8 @@ public final class ItmExternalTunnelDeleteWorker {
                 ItmUtils.ITM_CACHE.removeInterface(trunkInterfaceName);
 
                 InstanceIdentifier<ExternalTunnel> path =
-                    InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class,
-                        ItmUtils.getExternalTunnelKey(extIp.stringValue(), teps.getDPNID().toString(), tunType));
+                        InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class,
+                               ItmUtils.getExternalTunnelKey(extIp.stringValue(), teps.getDPNID().toString(), tunType));
                 tx.delete(path);
                 LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
                 ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
@@ -94,8 +93,8 @@ public final class ItmExternalTunnelDeleteWorker {
             ItmUtils.ITM_CACHE.removeInterface(trunkInterfaceName);
 
             InstanceIdentifier<ExternalTunnel> path =
-                InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class,
-                    ItmUtils.getExternalTunnelKey(extIp.stringValue(), teps.getDPNID().toString(), tunType));
+                    InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class,
+                            ItmUtils.getExternalTunnelKey(extIp.stringValue(), teps.getDPNID().toString(), tunType));
             tx.delete(path);
             LOG.debug("Deleting tunnel towards DC gateway, Tunnel interface name {} ", trunkInterfaceName);
             ItmUtils.ITM_CACHE.removeExternalTunnel(trunkInterfaceName);
@@ -107,7 +106,7 @@ public final class ItmExternalTunnelDeleteWorker {
 
     public static void deleteHwVtepsTunnels(List<DPNTEPsInfo> delDpnList, List<HwVtep> cfgdHwVteps,
                                             TransportZone originalTZone, TypedReadWriteTransaction<Configuration> tx)
-                                                throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException {
         if (delDpnList != null || cfgdHwVteps != null) {
             tunnelsDeletion(delDpnList, cfgdHwVteps, originalTZone, tx);
         }
@@ -115,7 +114,7 @@ public final class ItmExternalTunnelDeleteWorker {
 
     private static void tunnelsDeletion(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdhwVteps,
                                         TransportZone originalTZone, TypedReadWriteTransaction<Configuration> tx)
-                                            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException {
         if (cfgdDpnList != null) {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 if (dpn.getTunnelEndPoints() != null) {
@@ -134,41 +133,35 @@ public final class ItmExternalTunnelDeleteWorker {
                 for (HwVtep hwTepRemote : cfgdhwVteps) {
                     if (!hwTep.getHwIp().equals(hwTepRemote.getHwIp())) {
                         deleteTrunksTorTor(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
-                            hwTepRemote.getTopoId(), hwTepRemote.getNodeId(), hwTepRemote.getHwIp(),
-                            TunnelTypeVxlan.class, tx);
+                                hwTepRemote.getTopoId(), hwTepRemote.getNodeId(), hwTepRemote.getHwIp(),
+                                TunnelTypeVxlan.class, tx);
                     }
                 }
                 // do we need to check tunnel type?
-                LOG.trace("subnets under tz {} are {}", originalTZone.getZoneName(), originalTZone.getSubnets());
-                if (originalTZone.getSubnets() != null && !originalTZone.getSubnets().isEmpty()) {
-
-                    for (Subnets sub : originalTZone.getSubnets()) {
-                        if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                            for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                                LOG.trace("hwtepDS exists {}", hwVtepDS);
-                                // do i need to check node-id?
-                                // for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
-                                if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
-                                    continue;// dont delete tunnels with self
-                                }
-                                // TOR-TOR
-                                LOG.trace("deleting tor-tor {} and {}", hwTep, hwVtepDS);
-                                deleteTrunksTorTor(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
-                                    hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
-                                    originalTZone.getTunnelType(), tx);
-
-                            }
+                if (originalTZone.getDeviceVteps() != null) {
+                    for (DeviceVteps hwVtepDS : originalTZone.getDeviceVteps()) {
+                        LOG.trace("hwtepDS exists {}", hwVtepDS);
+                        // do i need to check node-id?
+                        // for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
+                        if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
+                            continue;// dont delete tunnels with self
                         }
-                        if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
-                            for (Vteps vtep : sub.getVteps()) {
-                                // TOR-OVS
-                                LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
-                                String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), vtep.getPortname(),
-                                        sub.getVlanId());
-                                deleteTrunksOvsTor(vtep.getDpnId(), parentIf, vtep.getIpAddress(), hwTep.getTopoId(),
-                                    hwTep.getNodeId(), hwTep.getHwIp(), originalTZone.getTunnelType(), tx);
-                            }
-                        }
+                        // TOR-TOR
+                        LOG.trace("deleting tor-tor {} and {}", hwTep, hwVtepDS);
+                        deleteTrunksTorTor(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
+                                hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
+                                originalTZone.getTunnelType(), tx);
+
+                    }
+                }
+                if (originalTZone.getVteps() != null) {
+                    for (Vteps vtep : originalTZone.getVteps()) {
+                        // TOR-OVS
+                        LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
+                        String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId());
+                        deleteTrunksOvsTor(vtep.getDpnId(), parentIf,
+                                vtep.getIpAddress(), hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
+                                originalTZone.getTunnelType(), tx);
                     }
                 }
             }
@@ -176,7 +169,7 @@ public final class ItmExternalTunnelDeleteWorker {
     }
 
     private static void deleteTunnelsInTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints srcTep,
-        List<HwVtep> cfgdhwVteps, TypedReadWriteTransaction<Configuration> tx)
+                                                  List<HwVtep> cfgdhwVteps, TypedReadWriteTransaction<Configuration> tx)
             throws InterruptedException, ExecutionException {
         InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(zoneName)).build();
@@ -184,19 +177,16 @@ public final class ItmExternalTunnelDeleteWorker {
         if (tz.isPresent()) {
             TransportZone tzone = tz.get();
             // do we need to check tunnel type?
-            if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                for (Subnets sub : tzone.getSubnets()) {
-                    if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                        for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                            // OVS-TOR-OVS
-                            deleteTrunksOvsTor(dpn.getDPNID(), srcTep.getInterfaceName(),
-                                    srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
-                                    hwVtepDS.getIpAddress(), tzone.getTunnelType(), tx);
+            if (tzone.getDeviceVteps() != null) {
+                for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
+                    // OVS-TOR-OVS
+                    deleteTrunksOvsTor(dpn.getDPNID(), srcTep.getInterfaceName(),
+                            srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
+                            hwVtepDS.getIpAddress(), tzone.getTunnelType(), tx);
 
-                        }
-                    }
                 }
             }
+
             if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
                 for (HwVtep hwVtep : cfgdhwVteps) {
                     deleteTrunksOvsTor(dpn.getDPNID(), srcTep.getInterfaceName(),
@@ -209,8 +199,8 @@ public final class ItmExternalTunnelDeleteWorker {
     }
 
     private static void deleteTrunksOvsTor(BigInteger dpnid, String interfaceName, IpAddress cssIpAddress,
-        String topologyId, String nodeId, IpAddress hwIpAddress, Class<? extends TunnelTypeBase> tunType,
-        TypedReadWriteTransaction<Configuration> tx) throws ExecutionException, InterruptedException {
+                      String topologyId, String nodeId, IpAddress hwIpAddress, Class<? extends TunnelTypeBase> tunType,
+                      TypedReadWriteTransaction<Configuration> tx) throws ExecutionException, InterruptedException {
         // OVS-TOR
         if (trunkExists(dpnid.toString(), nodeId, tunType, tx)) {
             LOG.trace("deleting tunnel from {} to {} ", dpnid.toString(), nodeId);
@@ -245,8 +235,8 @@ public final class ItmExternalTunnelDeleteWorker {
     }
 
     private static void deleteTrunksTorTor(String topologyId1, String nodeId1, IpAddress hwIpAddress1,
-        String topologyId2, String nodeId2, IpAddress hwIpAddress2, Class<? extends TunnelTypeBase> tunType,
-        TypedReadWriteTransaction<Configuration> tx) throws ExecutionException, InterruptedException {
+                   String topologyId2, String nodeId2, IpAddress hwIpAddress2, Class<? extends TunnelTypeBase> tunType,
+                   TypedReadWriteTransaction<Configuration> tx) throws ExecutionException, InterruptedException {
         // TOR1-TOR2
         if (trunkExists(nodeId1, nodeId2, tunType, tx)) {
             LOG.trace("deleting tunnel from {} to {} ", nodeId1, nodeId2);
@@ -281,7 +271,8 @@ public final class ItmExternalTunnelDeleteWorker {
     }
 
     private static boolean trunkExists(String srcDpnOrNode, String dstDpnOrNode,
-        Class<? extends TunnelTypeBase> tunType, TypedReadWriteTransaction<Configuration> tx)
+                                       Class<? extends TunnelTypeBase> tunType,
+                                       TypedReadWriteTransaction<Configuration> tx)
             throws ExecutionException, InterruptedException {
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(dstDpnOrNode, srcDpnOrNode, tunType));
