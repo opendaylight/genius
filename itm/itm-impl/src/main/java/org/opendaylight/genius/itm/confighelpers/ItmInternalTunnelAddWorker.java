@@ -232,8 +232,8 @@ public final class ItmInternalTunnelAddWorker {
             Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName, String parentInterfaceName) {
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance(gateway);
-        IpAddress gwyIpAddress =
-                Objects.equals(srcte.getSubnetMask(), dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress();
+        IpAddress gwyIpAddress = gatewayIpObj;
+      //          Objects.equals(srcte.getSubnetMask(), dstte.getSubnetMask()) ? gatewayIpObj : srcte.getGwIpAddress();
         LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, "
                 + "source IP - {}, destination IP - {} gateway IP - {}",
                 trunkInterfaceName, srcte.getInterfaceName(), srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress);
@@ -243,7 +243,7 @@ public final class ItmInternalTunnelAddWorker {
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
-                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(), true,
+                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(),
                 isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug(" Trunk Interface builder - {} ", iface);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -322,8 +322,7 @@ public final class ItmInternalTunnelAddWorker {
         BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
         String parentInterfaceName) throws ExecutionException, InterruptedException, OperationFailedException {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-        IpAddress gwyIpAddress = Objects.equals(srcte.getSubnetMask(), dstte.getSubnetMask())
-                ? gatewayIpObj : srcte.getGwIpAddress() ;
+        IpAddress gwyIpAddress = gatewayIpObj;
         LOG.debug("Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {},"
                         + " destination IP - {} gateway IP - {}", trunkInterfaceName, parentInterfaceName,
                 srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress) ;
@@ -334,8 +333,8 @@ public final class ItmInternalTunnelAddWorker {
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
-                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress, srcte.getVLANID(),
-                true, isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
+                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(),
+                isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug("Trunk Interface builder - {} ", iface);
 
         final DpnTepsStateBuilder dpnTepsStateBuilder = new DpnTepsStateBuilder();
