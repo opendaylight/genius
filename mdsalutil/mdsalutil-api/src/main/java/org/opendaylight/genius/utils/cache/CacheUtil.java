@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentMap;
  * such as <a href="http://infinispan.org">Infinispan</a> or <a href="http://www.ehcache.org">Ehcache</a>,
  * instead of this class?
  *
- * @deprecated We now recommend you simply use your own <tt>new ConcurrentHashMap&lt;&gt;()</tt> instead.
+ * @deprecated We now recommend you simply use your own {@code new ConcurrentHashMap<>()} instead.
  *
  * @author unascribed (Ericsson India?) - original code
  * @author Michael Vorburger.ch - JavaDoc
