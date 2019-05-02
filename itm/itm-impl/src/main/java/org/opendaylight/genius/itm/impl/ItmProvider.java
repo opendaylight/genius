@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.controller.sal.binding.api.RpcProviderRegistry;
 import org.opendaylight.genius.itm.api.IITMProvider;
@@ -39,10 +37,8 @@ import org.opendaylight.genius.itm.listeners.OvsdbNodeListener;
 import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
-import org.opendaylight.genius.itm.listeners.VtepConfigSchemaListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
@@ -61,9 +57,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.VtepConfigSchemas;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchema;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.vtep.config.schemas.VtepConfigSchemaBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
@@ -86,7 +79,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final TransportZoneListener tzChangeListener;
     private final TunnelMonitorChangeListener tnlToggleListener;
     private final TunnelMonitorIntervalListener tnlIntervalListener;
-    private final VtepConfigSchemaListener vtepConfigSchemaListener;
     private final InterfaceStateListener ifStateListener;
     private final EntityOwnershipService entityOwnershipService;
     private final ItmDiagStatusProvider itmStatusProvider;
@@ -112,7 +104,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        TunnelMonitorChangeListener tunnelMonitorChangeListener,
                        TunnelMonitorIntervalListener tunnelMonitorIntervalListener,
                        TransportZoneListener transportZoneListener,
-                       VtepConfigSchemaListener vtepConfigSchemaListener,
                        OvsdbNodeListener ovsdbNodeListener,
                        TunnelMonitoringConfig tunnelMonitoringConfig,
                        EntityOwnershipService entityOwnershipService,
@@ -131,7 +122,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.tnlToggleListener = tunnelMonitorChangeListener;
         this.tnlIntervalListener = tunnelMonitorIntervalListener;
         this.tzChangeListener = transportZoneListener;
-        this.vtepConfigSchemaListener = vtepConfigSchemaListener;
         this.ovsdbChangeListener = ovsdbNodeListener;
         this.tunnelMonitoringConfig = tunnelMonitoringConfig;
         this.entityOwnershipService = entityOwnershipService;
@@ -314,7 +304,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
         String gatewayIp, String transportZone) {
         try {
-            tepCommandHelper.deleteVtep(dpnId,  portName, vlanId, ipAddress,
+            tepCommandHelper.deleteVtep(dpnId, ipAddress,
                     subnetMask, gatewayIp, transportZone);
         } catch (TepException e) {
             LOG.error("Delete Vteps Failed", e);
@@ -329,74 +319,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         } catch (ExecutionException | InterruptedException e) {
             LOG.error("configureTunnelType {} failed for transportZone {}", tunnelType, transportZone, e);
         }
-    }
-
-    @Override
-    public void addVtepConfigSchema(VtepConfigSchema vtepConfigSchema) {
-        VtepConfigSchema validatedSchema = ItmUtils.validateForAddVtepConfigSchema(vtepConfigSchema,
-                getAllVtepConfigSchemas());
-
-        String schemaName = validatedSchema.getSchemaName();
-        VtepConfigSchema existingSchema = getVtepConfigSchema(schemaName);
-        Preconditions.checkArgument(existingSchema == null, "VtepConfigSchema [" + schemaName + "] already exists!");
-        MDSALUtil.syncWrite(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
-                ItmUtils.getVtepConfigSchemaIdentifier(schemaName), validatedSchema);
-        LOG.debug("Vtep config schema {} added to config DS", schemaName);
-    }
-
-    @Override
-    public VtepConfigSchema getVtepConfigSchema(String schemaName) {
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, ItmUtils.getVtepConfigSchemaIdentifier(schemaName),
-                this.dataBroker).orNull();
-    }
-
-    @Override
-    public List<VtepConfigSchema> getAllVtepConfigSchemas() {
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, ItmUtils.getVtepConfigSchemasIdentifier(),
-                this.dataBroker).toJavaUtil().map(VtepConfigSchemas::getVtepConfigSchema).orElse(null);
-    }
-
-    @Override
-    public void updateVtepSchema(String schemaName, List<BigInteger> lstDpnsForAdd, List<BigInteger> lstDpnsForDelete) {
-        LOG.trace("Updating VTEP schema {} by adding DPN's {} and deleting DPN's {}.", schemaName, lstDpnsForAdd,
-                lstDpnsForDelete);
-
-        VtepConfigSchema schema = ItmUtils.validateForUpdateVtepSchema(schemaName, lstDpnsForAdd, lstDpnsForDelete,
-                this);
-        VtepConfigSchemaBuilder builder = new VtepConfigSchemaBuilder(schema);
-       /* if (ItmUtils.getDpnIdList(schema.getDpnIds()).isEmpty()) {
-            builder.setDpnIds(schema.getDpnIds());
-        } else {*/
-        if (lstDpnsForAdd != null && !lstDpnsForAdd.isEmpty()) {
-            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.nonnullDpnIds());
-            originalDpnList.addAll(lstDpnsForAdd) ;
-            builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList));
-        }
-        if (lstDpnsForDelete != null && !lstDpnsForDelete.isEmpty()) {
-            List<BigInteger> originalDpnList = ItmUtils.getDpnIdList(schema.nonnullDpnIds());
-            originalDpnList.removeAll(lstDpnsForDelete) ;
-            builder.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(originalDpnList));
-            // schema.setDpnIds(ItmUtils.getDpnIdsListFromBigInt(ItmUtils.getDpnIdList(schema.getDpnIds())
-            // .removeAll(lstDpnsForAdd)));
-        }
-        // }
-        schema = builder.build();
-        MDSALUtil.syncWrite(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
-                ItmUtils.getVtepConfigSchemaIdentifier(schemaName), schema);
-        LOG.debug("Vtep config schema {} updated to config DS with DPN's {}",
-                schemaName, ItmUtils.getDpnIdList(schema.getDpnIds()));
-    }
-
-    @Override
-    public void deleteAllVtepSchemas() {
-        List<VtepConfigSchema> lstSchemas = getAllVtepConfigSchemas();
-        if (lstSchemas != null && !lstSchemas.isEmpty()) {
-            for (VtepConfigSchema schema : lstSchemas) {
-                MDSALUtil.syncDelete(this.dataBroker, LogicalDatastoreType.CONFIGURATION,
-                        ItmUtils.getVtepConfigSchemaIdentifier(schema.getSchemaName()));
-            }
-        }
-        LOG.debug("Deleted all Vtep schemas from config DS");
     }
 
     @Override
