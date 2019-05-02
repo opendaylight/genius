@@ -75,12 +75,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.Transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
@@ -132,14 +129,12 @@ public class ItmManagerRpcServiceTest {
     DPNTEPsInfo dpntePsInfoVxlan = null;
     TunnelEndPoints tunnelEndPointsVxlan = null;
     Interface iface = null;
-    Subnets subnetsTest = null;
     TransportZones transportZones = null;
     TransportZone transportZone = null;
     DeviceVteps deviceVteps = null;
     List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<TransportZone> transportZoneList = new ArrayList<>() ;
-    List<Subnets> subnetsList = new ArrayList<>() ;
     List<DeviceVteps> deviceVtepsList = new ArrayList<>();
     List<String> stringList = new ArrayList<>();
     List<BigInteger> dpId1List = new ArrayList<>();
@@ -178,7 +173,7 @@ public class ItmManagerRpcServiceTest {
     InstanceIdentifier<TransportZones> transportZonesIdentifier = InstanceIdentifier.create(TransportZones.class);
     InstanceIdentifier<DeviceVteps> deviceVtepsIdentifier = InstanceIdentifier.builder(TransportZones.class)
             .child(TransportZone.class, new TransportZoneKey(transportZone1))
-            .child(Subnets.class, new SubnetsKey(ipPrefixTest)).child(DeviceVteps.class, deviceVtepKey).build();
+            .child(DeviceVteps.class, deviceVtepKey).build();
 
     @Mock DataBroker dataBroker;
     @Mock JobCoordinator jobCoordinator;
@@ -252,11 +247,10 @@ public class ItmManagerRpcServiceTest {
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(tunnelInterfaceName, ipAddress1.stringValue(),
             ipAddress1.stringValue(), tunnelType1.getName());
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
-        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
-                .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(tunnelInterfaceName)
+        tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress1).setInterfaceName(tunnelInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
-                .setSubnetMask(ipPrefixTest)
-                .withKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
+                .withKey(new TunnelEndPointsKey(ipAddress1,tunnelType1)).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
@@ -296,14 +290,12 @@ public class ItmManagerRpcServiceTest {
                 .setTunnelType(tunnelType1).setDestinationNode(destinationDevice).setSourceNode(sourceDevice).build();
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,
-                tunnelEndPointsVxlan.getIpAddress(),ipAddress1,gtwyIp1,tunnelEndPointsVxlan.getVLANID(), false, false,
+                tunnelEndPointsVxlan.getIpAddress(),ipAddress1, false,
                 monitorProtocol,null, false, null);
-        subnetsTest = new SubnetsBuilder().setGatewayIp(gtwyIp1).setVlanId(vlanId).withKey(new SubnetsKey(ipPrefixTest))
-                .setDeviceVteps(deviceVtepsList).build();
-        subnetsList.add(subnetsTest);
+
         transportZone = new TransportZoneBuilder().setZoneName(transportZone1)
                 .setTunnelType(tunnelType1).withKey(new TransportZoneKey(transportZone1))
-                .setSubnets(subnetsList).build();
+                .build();
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();

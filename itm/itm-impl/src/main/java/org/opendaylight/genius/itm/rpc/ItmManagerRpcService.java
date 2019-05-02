@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
@@ -99,12 +100,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gat
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIpKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
@@ -714,16 +713,10 @@ public class ItmManagerRpcService implements ItmRpcService {
                     }
                     foundVxlanTzone = true;
                     String transportZone = tzone.getZoneName();
-                    if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
-                        result.set(RpcResultBuilder.<DeleteL2GwDeviceOutput>failed()
-                                .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
-                        return result;
-                    }
-                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).key();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
-                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
+                            .child(DeviceVteps.class, deviceVtepKey)
                             .build();
                     FluentFuture<Void> future =
                         retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(path));
@@ -787,15 +780,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                         continue;
                     }
                     String transportZone = tzone.getZoneName();
-                    if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
-                        continue;
-                    }
                     foundVxlanTzone = true;
-                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).key();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
                     InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
                             .child(TransportZone.class, new TransportZoneKey(transportZone))
-                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
+                            .child(DeviceVteps.class, deviceVtepKey)
                             .build();
                     DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
@@ -864,18 +853,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 String transportZone = transportZones.getTransportZone().get(0).getZoneName();
-                if (transportZones.getTransportZone().get(0).getSubnets() == null
-                        || transportZones.getTransportZone().get(0).getSubnets().isEmpty()) {
-                    result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>failed()
-                            .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
-                    return result;
-                }
-                SubnetsKey subnetsKey = transportZones.getTransportZone().get(0).getSubnets().get(0).key();
                 DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
                 InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
                                 .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey).build();
+                                .child(DeviceVteps.class, deviceVtepKey).build();
                 DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                         .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
                 LOG.trace("writing hWvtep{}", deviceVtep);
@@ -888,7 +870,6 @@ public class ItmManagerRpcService implements ItmRpcService {
                                 DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
                                 InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier.builder(TransportZones.class)
                                         .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                        .child(Subnets.class, subnetsKey)
                                         .child(DeviceVteps.class, deviceVtepKey2).build();
                                 DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().withKey(deviceVtepKey2)
                                         .setIpAddress(hwIp).setNodeId(nodeId.get(1))
@@ -941,14 +922,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 String transportZone = tzones.getTransportZone().get(0).getZoneName();
-                if (tzones.getTransportZone().get(0).getSubnets() == null || tzones.getTransportZone()
-                        .get(0).getSubnets().isEmpty()) {
+                if (tzones.getTransportZone().get(0).getDeviceVteps() == null || tzones.getTransportZone()
+                        .get(0).getDeviceVteps().isEmpty()) {
                     result.set(RpcResultBuilder.<DeleteL2GwMlagDeviceOutput>failed()
                             .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                     return result;
                 }
-                SubnetsKey subnetsKey = tzones.getTransportZone().get(0).getSubnets().get(0).key();
-
                 FluentFuture<Void> future =
                     retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                         tx -> {
@@ -956,14 +935,14 @@ public class ItmManagerRpcService implements ItmRpcService {
                             InstanceIdentifier<DeviceVteps> path =
                                     InstanceIdentifier.builder(TransportZones.class)
                                             .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
-                                            deviceVtepKey).build();
+                                            .child(DeviceVteps.class,
+                                             deviceVtepKey).build();
                             tx.delete(path);
                             DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
                             InstanceIdentifier<DeviceVteps> path2 =
                                     InstanceIdentifier.builder(TransportZones.class)
                                             .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
+                                            .child(DeviceVteps.class,
                                             deviceVtepKey2).build();
                             tx.delete(path2);
                         }
@@ -1096,29 +1075,16 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         Map<BigInteger, ComputesBuilder> result = new HashMap<>();
         for (TransportZone transportZone : transportZones.getTransportZone()) {
-            if (transportZone.getSubnets() == null || transportZone.getSubnets().isEmpty()) {
-                LOG.debug("Transport Zone {} has no subnets", transportZone.getZoneName());
-                continue;
-            }
-            for (Subnets sub : transportZone.getSubnets()) {
-                if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
-                    LOG.debug("Transport Zone {} subnet {} has no vteps configured",
-                            transportZone.getZoneName(), sub.getPrefix());
-                    continue;
-                }
-                for (Vteps vtep : sub.getVteps()) {
+                for (Vteps vtep : transportZone.getVteps()) {
                     if (dpnIds.contains(vtep.getDpnId())) {
                         result.putIfAbsent(vtep.getDpnId(),
                             new ComputesBuilder()
                                 .setZoneName(transportZone.getZoneName())
-                                .setPrefix(sub.getPrefix())
                                 .setDpnId(vtep.getDpnId())
-                                .setPortName(vtep.getPortname())
                                 .setNodeId(getNodeId(vtep.getDpnId()))
                                 .setTepIp(Collections.singletonList(vtep.getIpAddress())));
                     }
                 }
-            }
         }
         for (BigInteger dpnId : dpnIds) {
             if (!result.containsKey(dpnId)) {

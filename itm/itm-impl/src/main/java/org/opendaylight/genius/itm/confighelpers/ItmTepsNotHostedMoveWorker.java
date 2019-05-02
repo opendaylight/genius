@@ -17,7 +17,8 @@ import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,8 +43,8 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<ListenableFutur
 
         // Move TEP from TepsNotHosted list to NBI configured TZ.
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore
-            .CONFIGURATION, tx -> OvsdbTepAddConfigHelper.addVtepInITMConfigDS(new ArrayList<>(),
-            ItmUtils.getDummySubnet(), vtepsList, null /*tepIpAddress*/, tzName, BigInteger.ZERO,
-            ITMConstants.DUMMY_PORT, false, tx)));
+            .CONFIGURATION, tx -> OvsdbTepAddConfigHelper.addVtepInITMConfigDS(
+            vtepsList, null /*tepIpAddress*/, tzName, BigInteger.ZERO,
+            false, tx)));
     }
 }

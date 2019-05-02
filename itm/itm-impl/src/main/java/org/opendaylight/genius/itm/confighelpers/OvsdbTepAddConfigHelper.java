@@ -34,12 +34,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,12 +99,11 @@ public final class OvsdbTepAddConfigHelper {
             }
         }
 
-        // Get subnet list of corresponding TZ created from Northbound.
-        final List<Subnets> subnetList = tzone.getSubnets();
+
         final BigInteger id = dpnId;
         final String name = tzName;
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-            tx -> addConfig(subnetList, name, id, tepIpAddress, ofTunnel, tx)));
+            tx -> addConfig(name, id, tepIpAddress, ofTunnel, tx)));
         return futures;
     }
 
@@ -115,19 +111,15 @@ public final class OvsdbTepAddConfigHelper {
      * Adds the TEP into Vtep list in the subnet list in the transport zone list
      * from ITM configuration Datastore by merge operation with write transaction.
      *
-     * @param subnetList subnets list object
-     * @param subnetMaskObj subnet mask in IpPrefix object
      * @param updatedVtepList updated Vteps list object which will have new TEP for addition
      * @param tepIpAddress TEP IP address in IpAddress object
      * @param tzName transport zone name in string
      * @param dpid bridge datapath ID in BigInteger
-     * @param portName port name as a part of VtepsKey
      * @param ofTunnel boolean flag for TEP to enable/disable of-tunnel feature on it
      * @param tx TypedWriteTransaction object
      */
-    public static void addVtepInITMConfigDS(List<Subnets> subnetList, IpPrefix subnetMaskObj,
-        List<Vteps> updatedVtepList, IpAddress tepIpAddress, String tzName, BigInteger dpid,
-        String portName, boolean ofTunnel, TypedWriteTransaction<Datastore.Configuration> tx) {
+    public static void addVtepInITMConfigDS(List<Vteps> updatedVtepList, IpAddress tepIpAddress, String tzName, BigInteger dpid,
+        boolean ofTunnel, TypedWriteTransaction<Datastore.Configuration> tx) {
         //Create TZ node path
         InstanceIdentifier<TransportZone> tranzportZonePath =
             InstanceIdentifier.builder(TransportZones.class)
@@ -137,16 +129,16 @@ public final class OvsdbTepAddConfigHelper {
         // when VTEP is moved from TepsNotHosted list to TZ configured from Northbound.
         if (dpid.compareTo(BigInteger.ZERO) > 0) {
             // create vtep
-            VtepsKey vtepkey = new VtepsKey(dpid, portName);
+            VtepsKey vtepkey = new VtepsKey(dpid);
             Vteps vtepObj =
-                new VtepsBuilder().setDpnId(dpid).setIpAddress(tepIpAddress).withKey(vtepkey).setPortname(portName)
+                new VtepsBuilder().setDpnId(dpid).setIpAddress(tepIpAddress).withKey(vtepkey)
                         .setOptionOfTunnel(ofTunnel).build();
 
             // Add vtep obtained from bridge into list
             updatedVtepList.add(vtepObj);
 
-            LOG.trace("Adding TEP (TZ: {} Subnet: {} TEP IP: {} DPID: {}, of-tunnel: {}) in ITM Config DS.", tzName,
-                    subnetMaskObj, tepIpAddress, dpid, ofTunnel);
+            LOG.trace("Adding TEP (TZ: {} TEP IP: {} DPID: {}, of-tunnel: {}) in ITM Config DS.", tzName,
+                    tepIpAddress, dpid, ofTunnel);
         } else {
             // this is case when this function is called while TEPs movement from tepsNotHosted list when
             // corresponding TZ is configured from northbound.
@@ -157,22 +149,9 @@ public final class OvsdbTepAddConfigHelper {
             }
         }
 
-        // Create subnet object
-        SubnetsKey subKey = new SubnetsKey(subnetMaskObj);
-        IpAddress gatewayIP = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP);
-        int vlanID = ITMConstants.DUMMY_VLANID;
-
-        Subnets subnet =
-            new SubnetsBuilder().setGatewayIp(gatewayIP)
-                .withKey(subKey).setPrefix(subnetMaskObj)
-                .setVlanId(vlanID).setVteps(updatedVtepList).build();
-
-        // add subnet into subnet list
-        subnetList.add(subnet);
-
         // create TZ node with updated subnet having new vtep
         TransportZone updatedTzone =
-            new TransportZoneBuilder().withKey(new TransportZoneKey(tzName)).setSubnets(subnetList)
+            new TransportZoneBuilder().withKey(new TransportZoneKey(tzName))
                 .setZoneName(tzName).build();
 
         // Update TZ in Config DS to add vtep in TZ
@@ -260,61 +239,12 @@ public final class OvsdbTepAddConfigHelper {
         tx.merge(tepsInNotHostedTransportZoneIid, updatedTzone, true);
     }
 
-    private static void addConfig(List<Subnets> subnets, String tzName, BigInteger dpnId, IpAddress ipAdd,
+    private static void addConfig(String tzName, BigInteger dpnId, IpAddress ipAdd,
                                   boolean ofTunnel, TypedWriteTransaction<Datastore.Configuration> tx) {
-        String portName = ITMConstants.DUMMY_PORT;
-        IpPrefix subnetMask = ItmUtils.getDummySubnet(); // get subnetMaskObject
+        List<Vteps> vtepList = new ArrayList<>();
 
-        if (subnets == null || subnets.isEmpty()) {
-            if (subnets == null) {
-                subnets = new ArrayList<>();
-            }
-            List<Vteps> vtepList = new ArrayList<>();
-            LOG.trace("Add TEP in transport-zone when no subnet-list.");
-            addVtepInITMConfigDS(subnets, subnetMask, vtepList, ipAdd, tzName, dpnId, portName, ofTunnel, tx);
-        } else {
-            List<Vteps> vtepList = null;
-
-            // subnet list already exists case; check for dummy-subnet
-            for (Subnets subnet : subnets) {
-                if (subnet.key().getPrefix().equals(subnetMask)) {
-                    LOG.trace("Subnet exists in the subnet list of transport-zone {}.", tzName);
-                    // get vtep list of existing subnet
-                    vtepList = subnet.getVteps();
-                    break;
-                }
-            }
-
-            if (vtepList == null || vtepList.isEmpty()) {
-                //  case: vtep list does not exist or it has no elements
-                if (vtepList == null) {
-                    vtepList = new ArrayList<>();
-                }
-                LOG.trace("Add TEP in transport-zone when no vtep-list for specific subnet.");
-                addVtepInITMConfigDS(subnets, subnetMask, vtepList, ipAdd, tzName, dpnId, portName, ofTunnel, tx);
-            } else {
-                //  case: vtep list has elements
-                boolean vtepFound = false;
-                Vteps oldVtep = null;
-
-                for (Vteps vtep : vtepList) {
-                    if (Objects.equals(vtep.getDpnId(),dpnId)) {
-                        vtepFound = true;
-                        oldVtep = vtep;
-                        // get portName of existing vtep
-                        portName = vtep.getPortname();
-                        break;
-                    }
-                }
-                if (!vtepFound) {
-                    addVtepInITMConfigDS(subnets, subnetMask, vtepList, ipAdd, tzName, dpnId, portName, ofTunnel, tx);
-                } else {
-                    // vtep is found, update it with tep-ip
-                    vtepList.remove(oldVtep);
-                    addVtepInITMConfigDS(subnets, subnetMask, vtepList, ipAdd, tzName, dpnId, portName, ofTunnel, tx);
-                }
-            }
-        }
+        LOG.trace("Add TEP in transport-zone when no vtep-list for specific subnet.");
+        addVtepInITMConfigDS(vtepList, ipAdd, tzName, dpnId, ofTunnel, tx);
     }
 
     private static List<ListenableFuture<Void>> addUnknownTzTepIntoTepsNotHostedAndReturnFutures(String tzName,

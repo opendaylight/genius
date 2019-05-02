@@ -194,22 +194,22 @@ public class ItmInternalTunnelAddTest {
         ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
         gtwyIp1 = IpAddressBuilder.getDefaultInstance(gwyIp1);
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
-        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
-                .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
+        tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
-                .setSubnetMask(ipPrefixTest).build();
-        tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName2)
-                .setIpAddress(ipAddress2).setGwIpAddress(gtwyIp2).setInterfaceName(parentInterfaceName)
+                .build();
+        tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
-                .setSubnetMask(ipPrefixTest).build();
-        tunnelEndPointsGre = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
-                .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
+                .build();
+        tunnelEndPointsGre = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType2)
-                .setSubnetMask(ipPrefixTest).build();
-        tunnelEndPointsGreNew = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName2)
-                .setIpAddress(ipAddress2).setGwIpAddress(gtwyIp2).setInterfaceName(parentInterfaceName)
+                .build();
+        tunnelEndPointsGreNew = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType2)
-                .setSubnetMask(ipPrefixTest).build();
+                .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
         tunnelEndPointsListGre.add(tunnelEndPointsGre);

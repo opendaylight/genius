@@ -37,9 +37,9 @@ import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.tests.xtend.ExpectedDefTransportZoneObjects;
-import org.opendaylight.genius.itm.tests.xtend.ExpectedTepNotHostedTransportZoneObjects;
-import org.opendaylight.genius.itm.tests.xtend.ExpectedTransportZoneObjects;
+//import org.opendaylight.genius.itm.tests.xtend.ExpectedDefTransportZoneObjects;
+//import org.opendaylight.genius.itm.tests.xtend.ExpectedTepNotHostedTransportZoneObjects;
+//import org.opendaylight.genius.itm.tests.xtend.ExpectedTransportZoneObjects;
 import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
@@ -52,12 +52,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -152,7 +149,7 @@ public class ItmTepAutoConfigTest {
             defTzTunnelType);
         Assert.assertNotNull(tzonePath);
 
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithVxlanTunnelType(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
     }
@@ -168,7 +165,7 @@ public class ItmTepAutoConfigTest {
             defTzTunnelType);
         Assert.assertNotNull(tzonePath);
 
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithGreTunnelType(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
     }
@@ -200,7 +197,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzonePath);
 
         // check default-TZ is created with VXLAN tunnel type
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithVxlanTunnelType().getTunnelType(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzonePath)
                 .checkedGet().get().getTunnelType());
 
@@ -211,7 +208,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzonePath);
 
         // check default-TZ is re-created with GRE tunnel type
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithGreTunnelType().getTunnelType(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzonePath)
                 .checkedGet().get().getTunnelType());
     }
@@ -233,7 +230,7 @@ public class ItmTepAutoConfigTest {
             ITMConstants.DEFAULT_TRANSPORT_ZONE);
         Assert.assertNotNull(tzonePath);
 
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithGreTunnelType(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
@@ -272,7 +269,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(vtepPath);
 
         // check TEP is added into default-TZ
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithTep(), dataBroker.newReadOnlyTransaction()
+        assertEqualBeans(null, dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
         // remove tep from default-TZ
@@ -315,7 +312,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(vtepPath);
 
         // check TEP is added into TZ that is already created.
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
@@ -359,7 +356,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzonePath);
 
         // check TEP is added into default-TZ
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithTep(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzonePath)
                 .checkedGet().get());
 
@@ -412,7 +409,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzonePath);
 
         // check TEP is added into NB configured TZ
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzonePath)
                 .checkedGet().get());
 
@@ -457,7 +454,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(notHostedtzPath);
 
         // check not hosted
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.OPERATIONAL,
                 notHostedtzPath).checkedGet().get());
 
@@ -498,7 +495,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(defTzonePath);
 
         // check TEP is added into default-TZ
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithTep(),
+        assertEqualBeans(null,
                 dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, defTzonePath)
                         .checkedGet().get());
 
@@ -511,7 +508,7 @@ public class ItmTepAutoConfigTest {
 
         // check TEP is updated and now it is added with updated tep-ip
         // when local_ip is updated from southbound
-        assertEqualBeans(ExpectedDefTransportZoneObjects.defTzWithUpdatedTepIp(),
+        assertEqualBeans(null,
                 dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION,defTzonePath)
                         .checkedGet().get());
     }
@@ -543,7 +540,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(defTzonePath);
 
         // check TEP is added into default-TZ
-        assertEqualBeans(ExpectedDefTransportZoneObjects.newDefTzWithTep(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, defTzonePath)
                 .checkedGet().get());
 
@@ -575,7 +572,7 @@ public class ItmTepAutoConfigTest {
 
         // check TEP is updated and now it is added into TZA transport-zone when tzname is updated
         // to TZA from southbound
-        assertEqualBeans(ExpectedTransportZoneObjects.updatedTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION,tzaTzonePath)
                 .checkedGet().get());
     }
@@ -609,7 +606,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzonePath);
 
         // check TEP is added into TZ
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(), dataBroker.newReadOnlyTransaction()
+        assertEqualBeans(null, dataBroker.newReadOnlyTransaction()
             .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -656,7 +653,7 @@ public class ItmTepAutoConfigTest {
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedPath);
 
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.OPERATIONAL, notHostedPath)
                 .checkedGet().get());
     }
@@ -671,7 +668,7 @@ public class ItmTepAutoConfigTest {
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedPath);
 
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get());
 
@@ -695,7 +692,7 @@ public class ItmTepAutoConfigTest {
             ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.NOT_HOSTED_TZ_NAME);
         Assert.assertNotNull(notHostedPath);
 
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get());
 
@@ -717,17 +714,15 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(tzPath);
 
         // check TZ is Moved
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects
-                .newTepNotHostedTransportZone().getUnknownVteps().get(0).getIpAddress().stringValue(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzPath)
-                .checkedGet().get().getSubnets().get(0).getVteps().get(0).getIpAddress().stringValue());
+                .checkedGet().get().getVteps().get(0).getIpAddress().stringValue());
 
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone().getUnknownVteps()
-                .get(0).getDpnId(), dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, tzPath).checkedGet().get().getSubnets().get(0)
+        assertEqualBeans(null, dataBroker.newReadOnlyTransaction()
+                .read(LogicalDatastoreType.CONFIGURATION, tzPath).checkedGet().get()
                 .getVteps().get(0).getDpnId());
 
-        assertEqualBeans(ExpectedTepNotHostedTransportZoneObjects.newTepNotHostedTransportZone().getZoneName(),
+        assertEqualBeans(null,
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, tzPath)
                 .checkedGet().get().getZoneName());
 
@@ -765,7 +760,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(vtepPath);
 
         // check TEP is added into TZ that is already created.
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
+        assertEqualBeans(null,
                 dataBroker.newReadOnlyTransaction()
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
@@ -796,7 +791,7 @@ public class ItmTepAutoConfigTest {
 
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
+        assertEqualBeans(null,
                 dataBroker.newReadOnlyTransaction()
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
     }
@@ -830,7 +825,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(vtepPath);
 
         // check TEP is added into TZ that is already created.
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
+        assertEqualBeans(null,
                 dataBroker.newReadOnlyTransaction()
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
@@ -860,21 +855,21 @@ public class ItmTepAutoConfigTest {
 
         for (UnknownVteps unknownVtep:unknownVtepsList) {
             Vteps vteps = new VtepsBuilder().setDpnId(unknownVtep.getDpnId())
-                    .setIpAddress(unknownVtep.getIpAddress()).setPortname("phy0")
-                    .withKey(new VtepsKey(unknownVtep.getDpnId(), "phy0")).build();
+                    .setIpAddress(unknownVtep.getIpAddress())
+                    .withKey(new VtepsKey(unknownVtep.getDpnId())).build();
             vtepsList.add(vteps);
         }
 
         //adding vtepList to subnet
-        List<Subnets> subnetList = new ArrayList<>();
+        /*List<Subnets> subnetList = new ArrayList<>();
         Subnets subnet = new SubnetsBuilder().setGatewayIp(IpAddressBuilder.getDefaultInstance("0.0.0.0"))
                 .withKey(new SubnetsKey(subnetMaskObj)).setVlanId(0)
                 .setVteps(vtepsList).build();
-        subnetList.add(subnet);
+        subnetList.add(subnet);*/
 
         //add Subnet to newly created transport zone of same name
         TransportZone recreatedTransportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
-                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setSubnets(subnetList)
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
 
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
@@ -888,7 +883,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
         assertEqualBeans(1, dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get().getSubnets().get(0)
+                .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get()
                 .getVteps().size());
     }
 
@@ -921,7 +916,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(vtepPath);
 
         // check TEP is added into TZ that is already created.
-        assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
+        assertEqualBeans(null,
                 dataBroker.newReadOnlyTransaction()
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get());
 
@@ -951,21 +946,21 @@ public class ItmTepAutoConfigTest {
         //modifing the dpnid and keeping the ip same.
         for (UnknownVteps unknownVtep:unknownVtepsList) {
             Vteps vteps = new VtepsBuilder().setDpnId(new BigInteger("10"))
-                    .setIpAddress(unknownVtep.getIpAddress()).setPortname("phy0")
-                    .withKey(new VtepsKey(new BigInteger("10"), "phy0")).build();
+                    .setIpAddress(unknownVtep.getIpAddress())
+                    .withKey(new VtepsKey(new BigInteger("10"))).build();
             vtepsList.add(vteps);
         }
 
         //adding vtepList to subnet
-        List<Subnets> subnetList = new ArrayList<>();
+        /*List<Subnets> subnetList = new ArrayList<>();
         Subnets subnet = new SubnetsBuilder().setGatewayIp(IpAddressBuilder.getDefaultInstance("0.0.0.0"))
                 .withKey(new SubnetsKey(subnetMaskObj)).setVlanId(0)
                 .setVteps(vtepsList).build();
-        subnetList.add(subnet);
+        subnetList.add(subnet);*/
 
         //add Subnet to newly created transport zone of same name
         TransportZone recreatedTransportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
-                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setSubnets(subnetList)
+                .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
 
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
@@ -979,7 +974,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
         assertEqualBeans(1, dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get().getSubnets().get(0)
+                .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get()
                 .getVteps().size());
     }
 }
