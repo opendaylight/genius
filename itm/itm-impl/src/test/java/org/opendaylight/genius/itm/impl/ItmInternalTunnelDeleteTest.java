@@ -182,15 +182,15 @@ public class ItmInternalTunnelDeleteTest {
         ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
         gtwyIp1 = IpAddressBuilder.getDefaultInstance(gwyIp1);
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
-        tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName1)
-                .setIpAddress(ipAddress1).setGwIpAddress(gtwyIp1).setInterfaceName(parentInterfaceName)
+        tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
-                .setTunnelType(tunnelType1).setSubnetMask(ipPrefixTest)
-                .withKey(new TunnelEndPointsKey(ipAddress1,portName1,tunnelType1,vlanId)).build();
-        tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder().setVLANID(vlanId).setPortname(portName2)
-                .setIpAddress(ipAddress2).setGwIpAddress(gtwyIp2).setInterfaceName(parentInterfaceName)
+                .setTunnelType(tunnelType1)
+                .withKey(new TunnelEndPointsKey(ipAddress1,tunnelType1)).build();
+        tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder()
+                .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
                 .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
-                .setSubnetMask(ipPrefixTest).build();
+                .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).withKey(new DPNTEPsInfoKey(dpId1)).setUp(true)

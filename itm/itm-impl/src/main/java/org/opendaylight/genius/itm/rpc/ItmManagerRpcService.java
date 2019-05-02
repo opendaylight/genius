@@ -99,12 +99,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gat
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIpKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVtepsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddL2GwDeviceInput;
@@ -240,7 +238,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
             optTunnel = ItmUtils.getInternalTunnelFromDS(sourceDpn, destinationDpn,
-                                                         TunnelTypeLogicalGroup.class, dataBroker);
+                    TunnelTypeLogicalGroup.class, dataBroker);
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: getTunnelInterfaceName {}", optTunnel);
         }
         if (!optTunnel.isPresent()) {
@@ -271,7 +269,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         if (tunnelName == null) {
             return Futures.immediateFuture(RpcResultBuilder.<GetEgressActionsForTunnelOutput>failed()
                     .withError(RpcError.ErrorType.APPLICATION,
-                    "tunnel name not set for GetEgressActionsForTunnel call").build());
+                            "tunnel name not set for GetEgressActionsForTunnel call").build());
         }
         if (!dpnTepStateCache.isInternal(tunnelName) || !interfaceManager.isItmDirectTunnelsEnabled()) {
             // Re-direct the RPC to Interface Manager
@@ -287,7 +285,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .interfacemanager.rpcs.rev160406.GetEgressActionsForInterfaceOutput>() {
                         @Override
                         public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs
-                                .rev160406.@NonNull GetEgressActionsForInterfaceOutput result) {
+                                                      .rev160406.@NonNull GetEgressActionsForInterfaceOutput result) {
                             GetEgressActionsForTunnelOutputBuilder output =
                                     new GetEgressActionsForTunnelOutputBuilder().setAction(result.getAction());
                             settableFuture.set(RpcResultBuilder.<GetEgressActionsForTunnelOutput>success()
@@ -302,7 +300,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             settableFuture.set(RpcResultBuilder.<GetEgressActionsForTunnelOutput>failed()
                                     .withError(RpcError.ErrorType.APPLICATION, errMsg, throwable).build());
                         }
-                } ,MoreExecutors.directExecutor());
+                    } ,MoreExecutors.directExecutor());
             return  settableFuture;
         } else {
             return fromListenableFuture(LOG, input, () -> getEgressActionsForInterface(input.getIntfName(),
@@ -316,7 +314,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         if (tunnelName == null) {
             return Futures.immediateFuture(RpcResultBuilder.<GetTunnelTypeOutput>failed()
                     .withError(RpcError.ErrorType.APPLICATION,
-                    "tunnel name not set for getTunnelType call").build());
+                            "tunnel name not set for getTunnelType call").build());
         }
 
         if (!dpnTepStateCache.isInternal(tunnelName) || !interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -329,7 +327,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     new FutureCallback<org.opendaylight.yang.gen.v1.urn.opendaylight.genius
                             .interfacemanager.rpcs.rev160406.GetTunnelTypeOutput>() {
                         public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs
-                                .rev160406.@NonNull GetTunnelTypeOutput result) {
+                                                      .rev160406.@NonNull GetTunnelTypeOutput result) {
                             GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder()
                                     .setTunnelType(result.getTunnelType());
                             settableFuture.set(RpcResultBuilder.<GetTunnelTypeOutput>success()
@@ -344,7 +342,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                                     .withError(RpcError.ErrorType.APPLICATION, errMsg, throwable).build());
 
                         }
-                },MoreExecutors.directExecutor());
+                    },MoreExecutors.directExecutor());
             return settableFuture;
         } else {
             LOG.debug("get tunnel type from ITM for interface name {}", input.getIntfName());
@@ -377,9 +375,9 @@ public class ItmManagerRpcService implements ItmRpcService {
                 Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(srcDpnId);
                 directTunnelUtils.updateBfdConfiguration(srcDpnId, remoteDpn, ovsBridgeRefEntry);
                 InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class)
-                    .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
-                    .child(RemoteDpns.class,
-                        new RemoteDpnsKey(destDpnId)).build();
+                        .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
+                        .child(RemoteDpns.class,
+                                new RemoteDpnsKey(destDpnId)).build();
                 tx.merge(LogicalDatastoreType.CONFIGURATION, iid, remoteDpn);
             }), unused -> new SetBfdParamOnTunnelOutputBuilder().build(), MoreExecutors.directExecutor())).build();
     }
@@ -393,9 +391,9 @@ public class ItmManagerRpcService implements ItmRpcService {
         FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
                 ItmExternalTunnelDeleteWorker.deleteTunnels(meshedDpnList, input.getDestinationIp(),
-                    input.getTunnelType(), tx);
+                        input.getTunnelType(), tx);
                 InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
-                    .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
+                        .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
                 tx.delete(extPath);
             }
         );
@@ -424,7 +422,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, input.getDpnId());
         FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> ItmExternalTunnelDeleteWorker.deleteTunnels(cfgDpnList, input.getDestinationIp(),
-                input.getTunnelType(), tx));
+                    input.getTunnelType(), tx));
 
         future.addCallback(new FutureCallback<Void>() {
             @Override
@@ -488,7 +486,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
                 externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList, input.getDestinationIp(),
-                        input.getTunnelType(), tx);
+                    input.getTunnelType(), tx);
                 tx.put(extPath, dcGatewayIp, true);
             }
         );
@@ -581,8 +579,8 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         ListenableFuture<Void> removeFlowResult = txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
             tx -> mdsalManager.removeFlow(tx, input.getDpnId(),
-                getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId()),
-                NwConstants.INTERNAL_TUNNEL_TABLE));
+                        getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId()),
+                        NwConstants.INTERNAL_TUNNEL_TABLE));
         Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
 
             @Override
@@ -658,12 +656,12 @@ public class ItmManagerRpcService implements ItmRpcService {
 
                     if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
                         optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
-                                                                     TunnelTypeLogicalGroup.class, dataBroker);
+                                TunnelTypeLogicalGroup.class, dataBroker);
                         LOG.debug("MULTIPLE_VxLAN_TUNNELS: getInternalOrExternalInterfaceName {}", optTunnel);
                     }
                     if (!optTunnel.isPresent()) {
                         optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
-                                                                     input.getTunnelType(), dataBroker);
+                                input.getTunnelType(), dataBroker);
                     }
                     if (optTunnel.isPresent()) {
                         InternalTunnel tunnel = optTunnel.get();
@@ -714,16 +712,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                     }
                     foundVxlanTzone = true;
                     String transportZone = tzone.getZoneName();
-                    if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
-                        result.set(RpcResultBuilder.<DeleteL2GwDeviceOutput>failed()
-                                .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
-                        return result;
-                    }
-                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).key();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
-                    InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
-                            .child(TransportZone.class, new TransportZoneKey(transportZone))
-                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
+                    InstanceIdentifier<DeviceVteps> path = InstanceIdentifier
+                            .builder(TransportZones.class)
+                            .child(TransportZone.class,
+                                    new TransportZoneKey(transportZone))
+                            .child(DeviceVteps.class, deviceVtepKey)
                             .build();
                     FluentFuture<Void> future =
                         retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(path));
@@ -787,21 +781,20 @@ public class ItmManagerRpcService implements ItmRpcService {
                         continue;
                     }
                     String transportZone = tzone.getZoneName();
-                    if (tzone.getSubnets() == null || tzone.getSubnets().isEmpty()) {
-                        continue;
-                    }
                     foundVxlanTzone = true;
-                    SubnetsKey subnetsKey = tzone.getSubnets().get(0).key();
                     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId);
-                    InstanceIdentifier<DeviceVteps> path = InstanceIdentifier.builder(TransportZones.class)
-                            .child(TransportZone.class, new TransportZoneKey(transportZone))
-                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey)
+                    InstanceIdentifier<DeviceVteps> path = InstanceIdentifier
+                            .builder(TransportZones.class)
+                            .child(TransportZone.class,
+                                    new TransportZoneKey(transportZone))
+                            .child(DeviceVteps.class, deviceVtepKey)
                             .build();
                     DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
                     //TO DO: add retry if it fails
                     FluentFuture<Void> future = retryingTxRunner
-                        .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(path, deviceVtep, true));
+                            .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(path, deviceVtep,
+                                    true));
 
                     future.addCallback(new FutureCallback<Void>() {
 
@@ -864,18 +857,11 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 String transportZone = transportZones.getTransportZone().get(0).getZoneName();
-                if (transportZones.getTransportZone().get(0).getSubnets() == null
-                        || transportZones.getTransportZone().get(0).getSubnets().isEmpty()) {
-                    result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>failed()
-                            .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
-                    return result;
-                }
-                SubnetsKey subnetsKey = transportZones.getTransportZone().get(0).getSubnets().get(0).key();
                 DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
                 InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
                                 .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                .child(Subnets.class, subnetsKey).child(DeviceVteps.class, deviceVtepKey).build();
+                                .child(DeviceVteps.class, deviceVtepKey).build();
                 DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                         .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
                 LOG.trace("writing hWvtep{}", deviceVtep);
@@ -886,9 +872,9 @@ public class ItmManagerRpcService implements ItmRpcService {
                             if (nodeId.size() == 2) {
                                 LOG.trace("second node-id {}", nodeId.get(1));
                                 DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
-                                InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier.builder(TransportZones.class)
+                                InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier
+                                        .builder(TransportZones.class)
                                         .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                        .child(Subnets.class, subnetsKey)
                                         .child(DeviceVteps.class, deviceVtepKey2).build();
                                 DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().withKey(deviceVtepKey2)
                                         .setIpAddress(hwIp).setNodeId(nodeId.get(1))
@@ -941,14 +927,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 String transportZone = tzones.getTransportZone().get(0).getZoneName();
-                if (tzones.getTransportZone().get(0).getSubnets() == null || tzones.getTransportZone()
-                        .get(0).getSubnets().isEmpty()) {
+                if (tzones.getTransportZone().get(0).getDeviceVteps() == null || tzones.getTransportZone()
+                        .get(0).getDeviceVteps().isEmpty()) {
                     result.set(RpcResultBuilder.<DeleteL2GwMlagDeviceOutput>failed()
                             .withError(RpcError.ErrorType.APPLICATION, "No subnets Configured").build());
                     return result;
                 }
-                SubnetsKey subnetsKey = tzones.getTransportZone().get(0).getSubnets().get(0).key();
-
                 FluentFuture<Void> future =
                     retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                         tx -> {
@@ -956,15 +940,15 @@ public class ItmManagerRpcService implements ItmRpcService {
                             InstanceIdentifier<DeviceVteps> path =
                                     InstanceIdentifier.builder(TransportZones.class)
                                             .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
-                                            deviceVtepKey).build();
+                                            .child(DeviceVteps.class,
+                                                    deviceVtepKey).build();
                             tx.delete(path);
                             DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
                             InstanceIdentifier<DeviceVteps> path2 =
                                     InstanceIdentifier.builder(TransportZones.class)
                                             .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                            .child(Subnets.class, subnetsKey).child(DeviceVteps.class,
-                                            deviceVtepKey2).build();
+                                            .child(DeviceVteps.class,
+                                                    deviceVtepKey2).build();
                             tx.delete(path2);
                         }
                     );
@@ -1002,7 +986,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         String tunIfName = input.getTunnelInterfaceName();
         long tunVal = 0;
         IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder()
-                        .setTunnelType(tunVal);
+                .setTunnelType(tunVal);
 
         if (ItmUtils.ITM_CACHE.getInternalTunnel(tunIfName) != null) {
             tunVal = 1;
@@ -1096,27 +1080,14 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         Map<BigInteger, ComputesBuilder> result = new HashMap<>();
         for (TransportZone transportZone : transportZones.getTransportZone()) {
-            if (transportZone.getSubnets() == null || transportZone.getSubnets().isEmpty()) {
-                LOG.debug("Transport Zone {} has no subnets", transportZone.getZoneName());
-                continue;
-            }
-            for (Subnets sub : transportZone.getSubnets()) {
-                if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
-                    LOG.debug("Transport Zone {} subnet {} has no vteps configured",
-                            transportZone.getZoneName(), sub.getPrefix());
-                    continue;
-                }
-                for (Vteps vtep : sub.getVteps()) {
-                    if (dpnIds.contains(vtep.getDpnId())) {
-                        result.putIfAbsent(vtep.getDpnId(),
+            for (Vteps vtep : transportZone.getVteps()) {
+                if (dpnIds.contains(vtep.getDpnId())) {
+                    result.putIfAbsent(vtep.getDpnId(),
                             new ComputesBuilder()
-                                .setZoneName(transportZone.getZoneName())
-                                .setPrefix(sub.getPrefix())
-                                .setDpnId(vtep.getDpnId())
-                                .setPortName(vtep.getPortname())
-                                .setNodeId(getNodeId(vtep.getDpnId()))
-                                .setTepIp(Collections.singletonList(vtep.getIpAddress())));
-                    }
+                                    .setZoneName(transportZone.getZoneName())
+                                    .setDpnId(vtep.getDpnId())
+                                    .setNodeId(getNodeId(vtep.getDpnId()))
+                                    .setTepIp(Collections.singletonList(vtep.getIpAddress())));
                 }
             }
         }
@@ -1164,7 +1135,9 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     private ListenableFuture<GetEgressActionsForTunnelOutput> getEgressActionsForInterface(String interfaceName,
-           Long tunnelKey, Integer actionKey) throws ReadFailedException {
+                                                                                           Long tunnelKey,
+                                                                                           Integer actionKey)
+            throws ReadFailedException {
         int actionKeyStart = actionKey == null ? 0 : actionKey;
         DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
         if (interfaceInfo == null) {

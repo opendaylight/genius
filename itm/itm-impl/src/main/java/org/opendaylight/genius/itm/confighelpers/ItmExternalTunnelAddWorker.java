@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
-import org.apache.commons.net.util.SubnetUtils;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -24,7 +23,6 @@ import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -42,9 +40,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.DeviceVteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,21 +68,17 @@ public class ItmExternalTunnelAddWorker {
                 String tunTypeStr = tunType.getName();
                 String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
                         firstEndPt.getIpAddress().stringValue(), extIp.stringValue(), tunTypeStr);
-                String subnetMaskStr = firstEndPt.getSubnetMask().stringValue();
                 boolean useOfTunnel = ItmUtils.falseIfNull(firstEndPt.isOptionOfTunnel());
                 List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(firstEndPt, itmConfig);
-                SubnetUtils utils = new SubnetUtils(subnetMaskStr);
-                String dcGwyIpStr = extIp.stringValue();
                 IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-                IpAddress gwyIpAddress =
-                        utils.getInfo().isInRange(dcGwyIpStr) ? gatewayIpObj : firstEndPt.getGwIpAddress();
+                IpAddress gwyIpAddress = gatewayIpObj;
                 LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {},"
-                        + " source IP - {}, DC Gateway IP - {} gateway IP - {}", trunkInterfaceName, interfaceName,
-                        firstEndPt.getIpAddress(), extIp, gwyIpAddress);
+                                + " source IP - {}, DC Gateway IP - {} gateway IP - {}", trunkInterfaceName,
+                        interfaceName, firstEndPt.getIpAddress(), extIp, gwyIpAddress);
                 Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
-                    String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"), true,
-                    tunType, firstEndPt.getIpAddress(), extIp, gwyIpAddress, firstEndPt.getVLANID(), false, false,
-                    ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
+                        String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
+                        true, tunType, firstEndPt.getIpAddress(), extIp, false,
+                        ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
 
                 LOG.debug(" Trunk Interface builder - {} ", iface);
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -97,7 +90,7 @@ public class ItmExternalTunnelAddWorker {
                         .child(ExternalTunnel.class, new ExternalTunnelKey(extIp.stringValue(),
                                 teps.getDPNID().toString(), tunType));
                 ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(),
-                    extIp.stringValue(), tunType, trunkInterfaceName);
+                        extIp.stringValue(), tunType, trunkInterfaceName);
                 tx.merge(path, tnl, true);
             }
         }
@@ -107,7 +100,7 @@ public class ItmExternalTunnelAddWorker {
                                                       Class<? extends TunnelTypeBase> tunType,
                                                       TypedWriteTransaction<Configuration> tx) {
         Collection<DPNTEPsInfo> cfgDpnList = dpnId == null ? dpnTEPsInfoCache.getAllPresent()
-                        : ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, dpnId);
+                : ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, dpnId);
         buildTunnelsToExternalEndPoint(cfgDpnList, extIp, tunType, tx);
     }
 
@@ -142,7 +135,7 @@ public class ItmExternalTunnelAddWorker {
                     for (TzMembership zone : tep.nonnullTzMembership()) {
                         try {
                             createTunnelsFromOVSinTransportZone(zone.getZoneName(), dpn, tep, tx, monitorInterval,
-                                monitorProtocol);
+                                    monitorProtocol);
                         } catch (ExecutionException | InterruptedException e) {
                             LOG.error("Tunnel Creation failed for {} due to ", zone.getZoneName(), e);
                         }
@@ -153,110 +146,100 @@ public class ItmExternalTunnelAddWorker {
     }
 
     private void createTunnelsFromOVSinTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints tep,
-        TypedReadWriteTransaction<Configuration> tx, Integer monitorInterval,
-        Class<? extends TunnelMonitoringTypeBase> monitorProtocol) throws ExecutionException, InterruptedException {
+                                                   TypedReadWriteTransaction<Configuration> tx, Integer monitorInterval,
+                                                   Class<? extends TunnelMonitoringTypeBase> monitorProtocol)
+            throws ExecutionException, InterruptedException {
         Optional<TransportZone> transportZoneOptional = tx.read(InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(zoneName)).build()).get();
         if (transportZoneOptional.isPresent()) {
             TransportZone transportZone = transportZoneOptional.get();
             //do we need to check tunnel type?
-            if (transportZone.getSubnets() != null && !transportZone.getSubnets().isEmpty()) {
-                for (Subnets sub : transportZone.getSubnets()) {
-                    if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                        for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                            //dont mesh if hwVteps and OVS-tep have same ip-address
-                            if (Objects.equals(hwVtepDS.getIpAddress(), tep.getIpAddress())) {
-                                continue;
-                            }
-                            final String cssID = dpn.getDPNID().toString();
-                            String nodeId = hwVtepDS.getNodeId();
-                            boolean useOfTunnel = ItmUtils.falseIfNull(tep.isOptionOfTunnel());
-                            LOG.trace("wire up {} and {}",tep, hwVtepDS);
-                            if (!wireUp(dpn.getDPNID(), tep.getPortname(), sub.getVlanId(),
-                                    tep.getIpAddress(), useOfTunnel, nodeId, hwVtepDS.getIpAddress(),
-                                    tep.getSubnetMask(), sub.getGatewayIp(), sub.getPrefix(),
-                                    transportZone.getTunnelType(), false, monitorInterval, monitorProtocol, tx)) {
-                                LOG.error("Unable to build tunnel {} -- {}",
-                                        tep.getIpAddress(), hwVtepDS.getIpAddress());
-                            }
-                            //TOR-OVS
-                            LOG.trace("wire up {} and {}", hwVtepDS,tep);
-                            if (!wireUp(hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
-                                    cssID, tep.getIpAddress(), sub.getPrefix(), sub.getGatewayIp(),
-                                    tep.getSubnetMask(), transportZone.getTunnelType(), false, monitorInterval,
-                                    monitorProtocol, tx)) {
-                                LOG.error("Unable to build tunnel {} -- {}",
-                                        hwVtepDS.getIpAddress(), tep.getIpAddress());
-                            }
-
-                        }
+            if (transportZone.getDeviceVteps() != null && !transportZone.getDeviceVteps().isEmpty()) {
+                for (DeviceVteps hwVtepDS : transportZone.getDeviceVteps()) {
+                    //dont mesh if hwVteps and OVS-tep have same ip-address
+                    if (Objects.equals(hwVtepDS.getIpAddress(), tep.getIpAddress())) {
+                        continue;
                     }
+                    final String cssID = dpn.getDPNID().toString();
+                    String nodeId = hwVtepDS.getNodeId();
+                    boolean useOfTunnel = ItmUtils.falseIfNull(tep.isOptionOfTunnel());
+                    LOG.trace("wire up {} and {}",tep, hwVtepDS);
+                    if (!wireUp(dpn.getDPNID(), tep.getIpAddress(), useOfTunnel, nodeId, hwVtepDS.getIpAddress(),
+                            transportZone.getTunnelType(), false, monitorInterval, monitorProtocol,
+                            tx)) {
+                        LOG.error("Unable to build tunnel {} -- {}",
+                                tep.getIpAddress(), hwVtepDS.getIpAddress());
+                    }
+                    //TOR-OVS
+                    LOG.trace("wire up {} and {}", hwVtepDS,tep);
+                    if (!wireUp(hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
+                            cssID, tep.getIpAddress(),
+                            transportZone.getTunnelType(), false, monitorInterval,
+                            monitorProtocol, tx)) {
+                        LOG.error("Unable to build tunnel {} -- {}",
+                                hwVtepDS.getIpAddress(), tep.getIpAddress());
+                    }
+
                 }
             }
         }
     }
 
-    private void tunnelsFromhWVtep(HwVtep hwTep, TypedReadWriteTransaction<Configuration> tx, Integer monitorInterval,
-                                   Class<? extends TunnelMonitoringTypeBase> monitorProtocol) throws ExecutionException,
-                                    InterruptedException {
+    private void tunnelsFromhWVtep(HwVtep hwTep, TypedReadWriteTransaction<Configuration> tx,
+                                   Integer monitorInterval, Class<? extends TunnelMonitoringTypeBase> monitorProtocol)
+            throws ExecutionException, InterruptedException {
         Optional<TransportZone> transportZoneOptional = tx.read(InstanceIdentifier.builder(TransportZones.class)
-            .child(TransportZone.class, new TransportZoneKey(hwTep.getTransportZone())).build()).get();
+                .child(TransportZone.class, new TransportZoneKey(hwTep.getTransportZone())).build()).get();
         Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
         if (transportZoneOptional.isPresent()) {
             TransportZone tzone = transportZoneOptional.get();
             //do we need to check tunnel type?
-            if (tzone.getSubnets() != null && !tzone.getSubnets().isEmpty()) {
-                for (Subnets sub : tzone.getSubnets()) {
-                    if (sub.getDeviceVteps() != null && !sub.getDeviceVteps().isEmpty()) {
-                        for (DeviceVteps hwVtepDS : sub.getDeviceVteps()) {
-                            if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
-                                continue;//dont mesh with self
-                            }
-                            LOG.trace("wire up {} and {}",hwTep, hwVtepDS);
-                            if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
-                                    hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(), hwTep.getIpPrefix(),
-                                    hwTep.getGatewayIP(), sub.getPrefix(), tunType, false,
-                                    monitorInterval, monitorProtocol, tx)) {
-                                LOG.error("Unable to build tunnel {} -- {}",
-                                        hwTep.getHwIp(), hwVtepDS.getIpAddress());
-                            }
-                            //TOR2-TOR1
-                            LOG.trace("wire up {} and {}", hwVtepDS,hwTep);
-                            if (!wireUp(hwTep.getTopoId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
-                                    hwTep.getNodeId(), hwTep.getHwIp(), sub.getPrefix(), sub.getGatewayIp(),
-                                    hwTep.getIpPrefix(), tunType, false, monitorInterval,
-                                    monitorProtocol, tx)) {
-                                LOG.error("Unable to build tunnel {} -- {}",
-                                        hwVtepDS.getIpAddress(), hwTep.getHwIp());
-                            }
-                        }
+            if (tzone.getDeviceVteps() != null && !tzone.getDeviceVteps().isEmpty()) {
+                for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
+                    if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
+                        continue;//dont mesh with self
                     }
-                    if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
-                        for (Vteps vtep : sub.getVteps()) {
-                            if (Objects.equals(vtep.getIpAddress(), hwTep.getHwIp())) {
-                                continue;
-                            }
-                            //TOR-OVS
-                            String cssID = vtep.getDpnId().toString();
-                            LOG.trace("wire up {} and {}",hwTep, vtep);
-                            if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(), cssID,
-                                    vtep.getIpAddress(), hwTep.getIpPrefix(), hwTep.getGatewayIP(),
-                                    sub.getPrefix(), tunType,false, monitorInterval, monitorProtocol,
-                                    tx)) {
-                                LOG.error("Unable to build tunnel {} -- {}",
-                                        hwTep.getHwIp(), vtep.getIpAddress());
-                            }
-                            //OVS-TOR
-                            LOG.trace("wire up {} and {}", vtep,hwTep);
-                            boolean useOfTunnel = ItmUtils.falseIfNull(vtep.isOptionOfTunnel());
-                            if (!wireUp(vtep.getDpnId(), vtep.getPortname(), sub.getVlanId(), vtep.getIpAddress(),
-                                    useOfTunnel, hwTep.getNodeId(),hwTep.getHwIp(),sub.getPrefix(),
-                                    sub.getGatewayIp(),hwTep.getIpPrefix(), tunType, false,
-                                    monitorInterval, monitorProtocol, tx)) {
-                                LOG.debug("wireUp returned false");
-                            }
-                        }
+                    LOG.trace("wire up {} and {}",hwTep, hwVtepDS);
+                    if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
+                            hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
+                            tunType, false,
+                            monitorInterval, monitorProtocol, tx)) {
+                        LOG.error("Unable to build tunnel {} -- {}",
+                                hwTep.getHwIp(), hwVtepDS.getIpAddress());
                     }
+                    //TOR2-TOR1
+                    LOG.trace("wire up {} and {}", hwVtepDS,hwTep);
+                    if (!wireUp(hwTep.getTopoId(), hwVtepDS.getNodeId(), hwVtepDS.getIpAddress(),
+                            hwTep.getNodeId(), hwTep.getHwIp(),
+                            tunType, false, monitorInterval,
+                            monitorProtocol, tx)) {
+                        LOG.error("Unable to build tunnel {} -- {}",
+                                hwVtepDS.getIpAddress(), hwTep.getHwIp());
+                    }
+                }
+            }
+            for (Vteps vtep : tzone.getVteps()) {
+                if (Objects.equals(vtep.getIpAddress(), hwTep.getHwIp())) {
+                    continue;
+                }
+                //TOR-OVS
+                String cssID = vtep.getDpnId().toString();
+                LOG.trace("wire up {} and {}",hwTep, vtep);
+                if (!wireUp(hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(), cssID,
+                        vtep.getIpAddress(),
+                        tunType,false, monitorInterval, monitorProtocol,
+                        tx)) {
+                    LOG.error("Unable to build tunnel {} -- {}",
+                            hwTep.getHwIp(), vtep.getIpAddress());
+                }
+                //OVS-TOR
+                LOG.trace("wire up {} and {}", vtep,hwTep);
+                boolean useOfTunnel = ItmUtils.falseIfNull(vtep.isOptionOfTunnel());
+                if (!wireUp(vtep.getDpnId(),vtep.getIpAddress(),
+                        useOfTunnel, hwTep.getNodeId(),hwTep.getHwIp(),
+                        tunType, false,
+                        monitorInterval, monitorProtocol, tx)) {
+                    LOG.debug("wireUp returned false");
                 }
             }
         }
@@ -264,18 +247,18 @@ public class ItmExternalTunnelAddWorker {
 
     //for tunnels from TOR device
     private boolean wireUp(String topoId, String srcNodeid, IpAddress srcIp, String dstNodeId, IpAddress dstIp,
-                           IpPrefix srcSubnet, IpAddress gwIp, IpPrefix dstSubnet,
-                           Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Integer monitorInterval,
+                           Class<? extends TunnelTypeBase> tunType,
+                           Boolean monitorEnabled, Integer monitorInterval,
                            Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                            TypedWriteTransaction<Configuration> tx) {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-        IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gwIp;
+        IpAddress gwyIpAddress = gatewayIpObj;
         String parentIf =  ItmUtils.getHwParentIf(topoId, srcNodeid);
         String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(parentIf,
                 srcIp.stringValue(), dstIp.stringValue(), tunTypeStr);
         LOG.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, "
-                + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
+                        + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
         Interface hwTunnelIf = ItmUtils.buildHwTunnelInterface(tunnelIfName,
                 String.format("%s %s", tunType.getName(), "Trunk Interface"), true, topoId, srcNodeid, tunType, srcIp,
@@ -297,23 +280,23 @@ public class ItmExternalTunnelAddWorker {
     }
 
     //for tunnels from OVS
-    private boolean wireUp(BigInteger dpnId, String portname, Integer vlanId, IpAddress srcIp, Boolean remoteIpFlow,
-                           String dstNodeId, IpAddress dstIp, IpPrefix srcSubnet, IpAddress gwIp, IpPrefix dstSubnet,
+    private boolean wireUp(BigInteger dpnId, IpAddress srcIp, Boolean remoteIpFlow,
+                           String dstNodeId, IpAddress dstIp,
                            Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Integer monitorInterval,
                            Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                            TypedWriteTransaction<Configuration> tx) {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-        IpAddress gwyIpAddress = srcSubnet.equals(dstSubnet) ? gatewayIpObj : gwIp;
-        String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);
+        IpAddress gwyIpAddress = gatewayIpObj;
+        String parentIf = ItmUtils.getInterfaceName(dpnId);
         String tunTypeStr = tunType.getName();
         String tunnelIfName = ItmUtils.getTrunkInterfaceName(parentIf,
                 srcIp.stringValue(), dstIp.stringValue(), tunTypeStr);
         LOG.debug(" Creating ExternalTrunk Interface with parameters Name - {}, parent I/f name - {}, "
-                + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
+                        + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
         Interface extTunnelIf = ItmUtils.buildTunnelInterface(dpnId, tunnelIfName,
-                String.format("%s %s", tunType.getName(), "Trunk Interface"), true, tunType, srcIp, dstIp, gwyIpAddress,
-                vlanId, false,monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow, null);
+                String.format("%s %s", tunType.getName(), "Trunk Interface"), true, tunType, srcIp, dstIp,
+                monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow, null);
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
                 new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, extTunnelIf);
