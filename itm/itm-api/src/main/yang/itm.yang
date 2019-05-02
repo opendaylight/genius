@@ -27,7 +27,7 @@ module itm {
 
     container transport-zones {
           list transport-zone {
-          ordered-by user;
+            ordered-by user;
             key zone-name;
             leaf zone-name {
                 type string;
@@ -39,68 +39,44 @@ module itm {
                 }
                 mandatory true;
             }
-
-            list subnets {
-                status deprecated;
-                key "prefix";
-                leaf prefix {
-                    type inet:ip-prefix;
+            list vteps {
+                key "dpn-id";
+                leaf dpn-id {
+                    type uint64;
                 }
-                leaf gateway-ip {
+                leaf ip-address {
                     type inet:ip-address;
                 }
-                leaf vlan-id {
-                    type uint16 {
-                        range "0..4094";
+                leaf option-of-tunnel {
+                    description "Use flow based tunnels for remote-ip";
+                    type boolean;
+                    default false;
+                }
+                leaf option-tunnel-tos {
+                    description "Value of ToS bits to be set on the encapsulating
+                        packet.  The value of 'inherit' will copy the DSCP value
+                        from inner IPv4 or IPv6 packets.  When ToS is given as
+                        a numberic value, the least significant two bits will
+                        be ignored.";
+                    type string {
+                        length "1..8";
                     }
                 }
-                list vteps {
-                    key "dpn-id portname";
-                    leaf dpn-id {
-                        type uint64;
-                    }
-                    leaf portname {
-                        type string;
-                    }
-                    leaf ip-address {
-                        type inet:ip-address;
-                    }
-                    leaf option-of-tunnel {
-                        description "Use flow based tunnels for remote-ip";
-                        type boolean;
-                        default false;
-                    }
-                    leaf weight {
-                        type uint16;
-                        default 1;
-                        description "Bucket weight if tunnel belongs to OF select group";
-                    }
-                    leaf option-tunnel-tos {
-                        description "Value of ToS bits to be set on the encapsulating
-                            packet.  The value of 'inherit' will copy the DSCP value
-                            from inner IPv4 or IPv6 packets.  When ToS is given as
-                            a numberic value, the least significant two bits will
-                            be ignored.";
-                        type string {
-                            length "1..8";
-                        }
-                    }
-                 }
-                 list device-vteps {
-                     key "node-id ip-address";
+            }
+             list device-vteps {
+                 key "node-id ip-address";
 
-                     leaf topology-id {
-                         type string;
-                     }
-                     leaf node-id {
-                         type string;
-                     }
-                     leaf ip-address {
-                         type inet:ip-address;
-                     }
+                 leaf topology-id {
+                     type string;
+                 }
+                 leaf node-id {
+                     type string;
+                 }
+                 leaf ip-address {
+                     type inet:ip-address;
                  }
              }
-         }
+		 }
     }
 
     container not-hosted-transport-zones {
