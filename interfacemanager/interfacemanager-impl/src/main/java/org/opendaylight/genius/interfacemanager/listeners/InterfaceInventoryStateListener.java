@@ -11,17 +11,22 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Function;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -84,6 +89,7 @@ public class InterfaceInventoryStateListener
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
+    private static final int IFM_DELETE_CACHE_EXPIRY_TIMEOUT = 10;
 
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
@@ -98,6 +104,7 @@ public class InterfaceInventoryStateListener
     private final PortNameCache portNameCache;
     private final InterfacemgrProvider interfacemgrProvider;
     private final InterfaceInventoryStateTaskSequencer taskSequencer;
+    private final Cache<String, LocalTime> interfaceDeleteTimeStampCache;
 
     @Inject
     public InterfaceInventoryStateListener(@Reference final DataBroker dataBroker,
@@ -126,10 +133,13 @@ public class InterfaceInventoryStateListener
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
         this.interfacemgrProvider = interfacemgrProvider;
+        this.taskSequencer = new InterfaceInventoryStateTaskSequencer(coordinator);
+        this.interfaceDeleteTimeStampCache = CacheBuilder.newBuilder()
+                .expireAfterWrite(IFM_DELETE_CACHE_EXPIRY_TIMEOUT, TimeUnit.SECONDS).build();
+
         registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
-        this.taskSequencer = new InterfaceInventoryStateTaskSequencer(coordinator);
     }
 
     @Override
@@ -146,6 +156,14 @@ public class InterfaceInventoryStateListener
     @Override
     protected InterfaceInventoryStateListener getDataTreeChangeListener() {
         return InterfaceInventoryStateListener.this;
+    }
+
+    public Cache<String, LocalTime> getInterfaceDeleteTimeStampCache() {
+        return interfaceDeleteTimeStampCache;
+    }
+
+    public Map<String, InterfaceJobQueue> getTaskSequencerMap() {
+        return taskSequencer.getJobQueueMap();
     }
 
     @Override
@@ -177,6 +195,12 @@ public class InterfaceInventoryStateListener
             flowCapableNodeConnectorOld.getName());
         LOG.debug("IFM-InterfaceInventoryState Entity Owner,REMOVE {},{}", portName,
                 nodeConnectorId.getValue());
+
+        LOG.debug("IFM-InterfaceInventoryState Entity Owner,REMOVE {},{}", portName,
+                nodeConnectorId.getValue());
+
+        final LocalTime interfaceDeleteTimeStamp = LocalTime.now();
+        interfaceDeleteTimeStampCache.put(portName, interfaceDeleteTimeStamp);
 
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
@@ -299,6 +323,12 @@ public class InterfaceInventoryStateListener
                 sleepRequired = true;
             }
         }
+
+        if (interfaceDeleteTimeStampCache.asMap().containsKey(portName)) {
+            interfaceDeleteTimeStampCache.invalidate(portName);
+            sleepRequired = true;
+        }
+
         if (sleepRequired) {
             List<TaskEntry> tasks = new ArrayList<>();
             SleepTask sleepTask = taskSequencer.getSleepTask();
