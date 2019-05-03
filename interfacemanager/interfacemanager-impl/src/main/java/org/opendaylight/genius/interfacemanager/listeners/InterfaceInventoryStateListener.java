@@ -89,7 +89,10 @@ public class InterfaceInventoryStateListener
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
+<<<<<<< HEAD
     private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
+=======
+>>>>>>> 29189ea1... Many L3VPN pings are failing after 1 node reboot
     private static final int IFM_DELETE_CACHE_EXPIRY_TIMEOUT = 10;
 
     private final DataBroker dataBroker;
@@ -198,6 +201,12 @@ public class InterfaceInventoryStateListener
         EVENT_LOGGER.debug("IFM-InterfaceInventoryState Entity Owner,REMOVE {},{}", portName,
                 nodeConnectorId.getValue());
 
+<<<<<<< HEAD
+=======
+        LOG.debug("IFM-InterfaceInventoryState Entity Owner,REMOVE {},{}", portName,
+                nodeConnectorId.getValue());
+
+>>>>>>> 29189ea1... Many L3VPN pings are failing after 1 node reboot
         final LocalTime interfaceDeleteTimeStamp = LocalTime.now();
         interfaceDeleteTimeStampCache.put(portName, interfaceDeleteTimeStamp);
 
