@@ -159,8 +159,11 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     @Override
     protected void removed(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
-            dpnTepInterfaceMap.remove(getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId()));
+            String fwkey = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
+            dpnTepInterfaceMap.remove(fwkey);
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
+            String revkey = getDpnId(remoteDpns.getDestinationDpnId(), dpnsTeps.getSourceDpnId());
+            dpnTepInterfaceMap.remove(revkey);
         }
     }
 
@@ -301,5 +304,9 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     public List<String> getOfTunnelChildInfoFromCache(String tunnelName) {
         return ofTunnelChildMap.get(tunnelName);
+    }
+
+    public void removeFromTunnelEndPointMap(String tunnelName) {
+        tunnelEndpointMap.remove(tunnelName);
     }
 }
