@@ -19,6 +19,7 @@ import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.listeners.RemoteDpnListener;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class TunnelListenerCreator implements AutoCloseable {
     private final TerminationPointStateListener terminationPointStateListener;
     private final InterfaceConfigListener interfaceConfigListener;
     private final InternalTunnelListener internalTunnelListener;
+    private final RemoteDpnListener remoteDpnListener;
 
     @Inject
     public TunnelListenerCreator(final DataBroker dataBroker,
@@ -60,6 +62,7 @@ public class TunnelListenerCreator implements AutoCloseable {
                 coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
             this.interfaceConfigListener = new InterfaceConfigListener(dataBroker, coordinator);
             this.internalTunnelListener = new InternalTunnelListener(dataBroker, coordinator);
+            this.remoteDpnListener = new RemoteDpnListener(dataBroker, dpnTepStateCache);
         } else {
             LOG.debug("ITM Direct Tunnels is disabled. Listeners are not registered");
             this.tunnelTopologyStateListener = null;
@@ -67,6 +70,7 @@ public class TunnelListenerCreator implements AutoCloseable {
             this.terminationPointStateListener = null;
             this.interfaceConfigListener = null;
             this.internalTunnelListener = null;
+            this.remoteDpnListener = null;
         }
     }
 
@@ -86,6 +90,9 @@ public class TunnelListenerCreator implements AutoCloseable {
         }
         if (internalTunnelListener != null) {
             this.internalTunnelListener.close();
+        }
+        if (remoteDpnListener != null) {
+            this.remoteDpnListener.close();
         }
     }
 }
