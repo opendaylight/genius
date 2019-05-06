@@ -14,6 +14,7 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.math.BigInteger;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +23,9 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -50,7 +53,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.OvsBridgeRefInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
@@ -89,13 +94,15 @@ public final class ItmInternalTunnelAddWorker {
     private final IInterfaceManager interfaceManager;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final OfEndPointCache ofEndPointCache;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                       TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
                                       DirectTunnelUtils directTunnelUtil,
                                       IInterfaceManager interfaceManager,
                                       OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
-                                      OfEndPointCache ofEndPointCache) {
+                                      OfEndPointCache ofEndPointCache,
+                                      DataTreeEventCallbackRegistrar eventCallbacks) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
@@ -104,6 +111,7 @@ public final class ItmInternalTunnelAddWorker {
         this.interfaceManager = interfaceManager;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.ofEndPointCache = ofEndPointCache;
+        this.eventCallbacks = eventCallbacks;
 
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
@@ -412,7 +420,37 @@ public final class ItmInternalTunnelAddWorker {
                 addPortToBridge(bridgeIid, iface, tunnelName);
             }
         }
-    }
+
+            if (ovsBridgeRefEntry.isPresent()) {
+                LOG.debug("creating bridge interface on dpn {}", dpId);
+                InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
+                        (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
+                                .getOvsBridgeReference().getValue();
+                LOG.debug("creating bridge interface on dpn {}", dpId);
+                addPortToBridge(bridgeIid, iface, iface.getName());
+            } else {
+                LOG.debug("Bridge not found. Registering Eventcallback for dpid {}", dpId);
+
+                InstanceIdentifier<OvsBridgeRefEntry> bridgeRefEntryFromDS =
+                        InstanceIdentifier.builder(OvsBridgeRefInfo.class)
+                                .child(OvsBridgeRefEntry.class, new OvsBridgeRefEntryKey(dpId)).build();
+
+                eventCallbacks.onAdd(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryFromDS, (refEntryIid) -> {
+                    addPortToBridgeOnCallback(iface, iface.getName(), refEntryIid);
+                    return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+                }, Duration.ofMillis(5000), (id) -> {
+                    try {
+                        Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOnCallback = ovsBridgeRefEntryCache.get(dpId);
+                        InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIidOnCallback =
+                                (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntryOnCallback.get()
+                                        .getOvsBridgeReference().getValue();
+                        addPortToBridge(bridgeIidOnCallback, iface, iface.getName());
+                    } catch (ReadFailedException e) {
+                        LOG.error("Bridge not found in DS/cache for dpId {}", dpId);
+                    }
+                });
+            }
+        }
 
     private void addPortToBridge(InstanceIdentifier<?> bridgeIid, Interface iface, String portName) {
         IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
@@ -426,5 +464,11 @@ public final class ItmInternalTunnelAddWorker {
             return true;
         }
         return (ofEndPointCache.get(dpId) == null);
+    }
+
+    private void addPortToBridgeOnCallback(Interface iface, String portName, OvsBridgeRefEntry bridgeRefEntry) {
+        InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
+                (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getOvsBridgeReference().getValue();
+        addPortToBridge(bridgeIid, iface, portName);
     }
 }
