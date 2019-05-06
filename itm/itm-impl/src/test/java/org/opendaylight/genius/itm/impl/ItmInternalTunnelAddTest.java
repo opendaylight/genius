@@ -26,6 +26,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
@@ -153,6 +154,7 @@ public class ItmInternalTunnelAddTest {
     @Mock IInterfaceManager interfaceManager;
     ItmInternalTunnelAddWorker itmInternalTunnelAddWorker;
     DirectTunnelUtils directTunnelUtils;
+    DataTreeEventCallbackRegistrar eventCallbacks;
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
     Optional<TunnelMonitorInterval> tunnelMonitorIntervalOptional;
@@ -180,7 +182,7 @@ public class ItmInternalTunnelAddTest {
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
                 itmConfig, directTunnelUtils, interfaceManager, new OvsBridgeRefEntryCache(dataBroker,
-                new GuavaCacheProvider(new CacheManagersRegistryImpl())));
+                new GuavaCacheProvider(new CacheManagersRegistryImpl())), eventCallbacks);
     }
 
     @After
