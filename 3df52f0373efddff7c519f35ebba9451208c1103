@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3264b555_db085844",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/EricMatchInfo.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-05-06T08:54:14Z",
+      "side": 1,
+      "message": "please avoid ericsson specific classnames",
+      "revId": "3df52f0373efddff7c519f35ebba9451208c1103",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
