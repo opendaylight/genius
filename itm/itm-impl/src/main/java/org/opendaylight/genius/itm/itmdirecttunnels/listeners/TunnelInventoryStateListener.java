@@ -139,7 +139,7 @@ public class TunnelInventoryStateListener extends
                        @NonNull FlowCapableNodeConnector fcNodeConnectorOld,
                        @NonNull FlowCapableNodeConnector fcNodeConnectorNew) {
         String portName = fcNodeConnectorNew.getName();
-        if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Update - {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         } else if (!dpnTepStateCache.isInternal(portName)) {
