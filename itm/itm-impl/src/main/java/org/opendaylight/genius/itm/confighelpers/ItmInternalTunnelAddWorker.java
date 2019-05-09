@@ -31,6 +31,7 @@ import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OfEndPointCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
+import org.opendaylight.genius.itm.cache.RemoteDpnsCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -89,6 +90,7 @@ public final class ItmInternalTunnelAddWorker {
     private final IInterfaceManager interfaceManager;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final OfEndPointCache ofEndPointCache;
+    private final RemoteDpnsCache remoteDpnsCache;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                       TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
@@ -104,6 +106,7 @@ public final class ItmInternalTunnelAddWorker {
         this.interfaceManager = interfaceManager;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.ofEndPointCache = ofEndPointCache;
+        this.remoteDpnsCache = new RemoteDpnsCache();
 
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
@@ -347,6 +350,9 @@ public final class ItmInternalTunnelAddWorker {
         final List<DpnsTeps> dpnTeps = new ArrayList<>();
         final List<RemoteDpns> remoteDpns = new ArrayList<>();
         String ofTunnelPortName = null;
+        if (remoteDpnsCache.containsKey(srcDpnId)) {
+            remoteDpns.addAll(remoteDpnsCache.get(srcDpnId));
+        }
         dpnsTepsBuilder.withKey(new DpnsTepsKey(srcDpnId));
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
@@ -364,9 +370,12 @@ public final class ItmInternalTunnelAddWorker {
         remoteDpn.setMonitoringInterval(monitorInterval);
         remoteDpn.setInternal(true);
         remoteDpns.add(remoteDpn.build());
+        remoteDpnsCache.add(srcDpnId, remoteDpns);
         dpnsTepsBuilder.setRemoteDpns(remoteDpns);
         dpnTeps.add(dpnsTepsBuilder.build());
         dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
+        LOG.info("ofTunnelPortName {}, remoteDpn TunnelName {}, dstDpnId {}",
+            ofTunnelPortName, trunkInterfaceName, dstDpnId);
         updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
         addTunnelConfiguration(iface, ofTunnelPortName);
     }
