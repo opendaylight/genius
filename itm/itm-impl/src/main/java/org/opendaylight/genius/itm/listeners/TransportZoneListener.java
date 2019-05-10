@@ -23,6 +23,7 @@ import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -98,6 +99,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final ItmExternalTunnelAddWorker externalTunnelAddWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
     private final ManagedNewTransactionRunner txRunner;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
@@ -111,7 +113,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                  final IInterfaceManager interfaceManager,
                                  final OfEndPointCache ofEndPointCache,
-                                 final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+                                 final ServiceRecoveryRegistry serviceRecoveryRegistry,
+                                 final DataTreeEventCallbackRegistrar eventCallbacks) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
               InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
         this.dataBroker = dataBroker;
@@ -120,13 +123,14 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.itmConfig = itmConfig;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        this.eventCallbacks = eventCallbacks;
         initializeTZNode();
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
                 ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager,
-                ovsBridgeRefEntryCache, ofEndPointCache);
+                ovsBridgeRefEntryCache, ofEndPointCache, eventCallbacks);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig, dpnTEPsInfoCache);
         serviceRecoveryRegistry.addRecoverableListener(ItmServiceRecoveryHandler.getServiceRegistryKey(), this);
     }
