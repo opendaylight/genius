@@ -427,10 +427,12 @@ public class InterfaceInventoryStateListener
                         }
                         // remove ingress flow only for northbound configured interfaces
                         // skip this check for non-unique ports(Ex: br-int,br-ex)
-                        if (iface != null || !interfaceName.contains(fcNodeConnectorOld.getName())) {
-                            FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
-                        }
 
+                        if (iface != null) {
+                            FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
+                            IfmUtil.unbindService(txRunner, coordinator, iface.getName(),
+                                    FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
+                        }
                         // Delete the Vpn Interface from DpnToInterface Op DS.
                         InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
                     }
