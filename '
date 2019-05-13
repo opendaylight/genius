@@ -1,0 +1,26 @@
+GENIUS-271: Updating Tunnel state operational DS with
+all of the child Tunnels mapped to the OFTunnel port.
+
+Change-Id: I0c22d54f556dcf20257ddebb3113f560bbac22a7
+Signed-off-by: Dimple Jain <dimple.jain@ericsson.com>
+Signed-off-by: R P Karthika <r.p.karthika@ericsson.com>
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Author:    Dimple Jain <dimple.jain@ericsson.com>
+# Date:      Tue Feb 19 10:50:49 2019 +0530
+# Committer: R P Karthika <r.p.karthika@ericsson.com>
+#
+# On branch oft
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#	new file:   itm/itm-api/src/main/java/org/opendaylight/genius/itm/utils/OfTunnelChildInfo.java
+#	modified:   itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java
+#	modified:   itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/listeners/TunnelInventoryStateListener.java
+#	modified:   itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java
+#	new file:   itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/workers/OFTunnelStateAddWorker.java
+#	new file:   itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/workers/OFTunnelStateAddWorkerForNodeConnector.java
+#
