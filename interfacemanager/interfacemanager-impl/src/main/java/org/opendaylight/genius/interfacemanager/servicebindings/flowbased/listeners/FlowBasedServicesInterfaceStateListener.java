@@ -102,7 +102,7 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
 
     @Override
     public void add(@NonNull InstanceIdentifier<Interface> instanceIdentifier, @NonNull Interface interfaceStateNew) {
-        if (interfaceStateNew.getType() == null || !entityOwnershipUtils
+        if (Other.class.equals(interfaceStateNew.getType()) || !entityOwnershipUtils
                 .isEntityOwner(IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY,
                                IfmConstants.INTERFACE_SERVICE_BINDING_ENTITY)) {
             return;
