@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e305c3a1_f246d14e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 7937
+      },
+      "writtenOn": "2019-06-03T09:38:56Z",
+      "side": 1,
+      "message": "I am little confused here..this method does addPortToBridge and in line# 437 you are redoing it.\nAm i missing something?",
+      "revId": "77b268dc6ba608ed86cc31edae873732bac6437c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
