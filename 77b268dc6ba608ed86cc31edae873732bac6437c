@@ -16,6 +16,24 @@
       "revId": "77b268dc6ba608ed86cc31edae873732bac6437c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5da40254_3098a9b5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 430,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-04T04:48:54Z",
+      "side": 1,
+      "message": "This is fine as the one here, will be triggered on \"ADD\" and the one below will get triggered when the timer expires. Its either of them and not both.",
+      "parentUuid": "e305c3a1_f246d14e",
+      "revId": "77b268dc6ba608ed86cc31edae873732bac6437c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
