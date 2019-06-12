@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "11d38542_78bd951f",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-12T13:57:56Z",
+      "side": 1,
+      "message": "tunnel-type is repeated here. Please remove.",
+      "revId": "3fe29b82c2f54f498fbe8e37840a3bc0416b1c8f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "99d9218f_fa7440a4",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-12T13:57:56Z",
+      "side": 1,
+      "message": "Shouldn\u0027t this parameter be inside the list below ?",
+      "revId": "3fe29b82c2f54f498fbe8e37840a3bc0416b1c8f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "517dc63b_d2450e2e",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-12T13:57:56Z",
+      "side": 1,
+      "message": "same as above.",
+      "revId": "3fe29b82c2f54f498fbe8e37840a3bc0416b1c8f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "67d4577c_8a2cc005",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-12T13:57:56Z",
+      "side": 1,
+      "message": "shouldn\u0027t this be gw-ip-address ?",
+      "revId": "3fe29b82c2f54f498fbe8e37840a3bc0416b1c8f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7e7499dc_a93d0d39",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 15
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-06-12T13:57:56Z",
+      "side": 1,
+      "message": "There is a configuration impact as the JSON to configure ITM TZ changes.correct ?",
+      "revId": "3fe29b82c2f54f498fbe8e37840a3bc0416b1c8f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
