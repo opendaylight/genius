@@ -7,68 +7,44 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import static java.util.Collections.singletonList;
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.util.concurrent.*;
+import java.math.*;
+import java.time.*;
+import java.util.*;
+import static java.util.Collections.*;
 import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
-import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
-import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
-import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
-import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
-import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
-import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
-import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.TunnelOptions;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpointsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsStateBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
-import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.OperationFailedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.*;
+import org.opendaylight.controller.md.sal.binding.api.*;
+import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.*;
+import org.opendaylight.controller.md.sal.common.api.data.*;
+import org.opendaylight.genius.datastoreutils.listeners.*;
+import static org.opendaylight.genius.infra.Datastore.*;
+import org.opendaylight.genius.infra.Datastore.*;
+import org.opendaylight.genius.infra.*;
+import org.opendaylight.genius.interfacemanager.interfaces.*;
+import org.opendaylight.genius.itm.cache.*;
+import org.opendaylight.genius.itm.impl.*;
+import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.*;
+import org.opendaylight.genius.mdsalutil.interfaces.*;
+import org.opendaylight.infrautils.jobcoordinator.*;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.*;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.tunnel.optional.params.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.*;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.*;
+import org.opendaylight.yangtools.yang.binding.*;
+import org.opendaylight.yangtools.yang.common.*;
+import org.slf4j.*;
 
 public final class ItmInternalTunnelAddWorker {
 
@@ -85,12 +61,14 @@ public final class ItmInternalTunnelAddWorker {
     private final DirectTunnelUtils directTunnelUtils;
     private final IInterfaceManager interfaceManager;
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
+    private final DataTreeEventCallbackRegistrar eventCallbacks;
 
     public ItmInternalTunnelAddWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                       TunnelMonitoringConfig tunnelMonitoringConfig, ItmConfig itmCfg,
                                       DirectTunnelUtils directTunnelUtil,
                                       IInterfaceManager interfaceManager,
-                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
+                                      OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
+                                      DataTreeEventCallbackRegistrar eventCallbacks) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
@@ -102,6 +80,7 @@ public final class ItmInternalTunnelAddWorker {
         isTunnelMonitoringEnabled = tunnelMonitoringConfig.isTunnelMonitoringEnabled();
         monitorProtocol = tunnelMonitoringConfig.getMonitorProtocol();
         monitorInterval = tunnelMonitoringConfig.getMonitorInterval();
+        this.eventCallbacks = eventCallbacks;
     }
 
     public List<ListenableFuture<Void>> buildAllTunnels(IMdsalApiManager mdsalManager, List<DPNTEPsInfo> cfgdDpnList,
@@ -392,6 +371,27 @@ public final class ItmInternalTunnelAddWorker {
                     (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
                             .getOvsBridgeReference().getValue();
             addPortToBridge(bridgeIid, iface, iface.getName());
+        } else {
+            LOG.debug("Bridge not found. Registering Eventcallback for dpid {}", dpId);
+
+            InstanceIdentifier<OvsBridgeRefEntry> bridgeRefEntryFromDS =
+                    InstanceIdentifier.builder(OvsBridgeRefInfo.class)
+                            .child(OvsBridgeRefEntry.class, new OvsBridgeRefEntryKey(dpId)).build();
+
+            eventCallbacks.onAdd(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryFromDS, (refEntryIid) -> {
+                addPortToBridgeOnCallback(iface, iface.getName(), refEntryIid);
+                return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+            }, Duration.ofMillis(5000), (id) -> {
+                try {
+                    Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOnCallback = ovsBridgeRefEntryCache.get(dpId);
+                    InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIidOnCallback =
+                            (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntryOnCallback.get()
+                                    .getOvsBridgeReference().getValue();
+                    addPortToBridge(bridgeIidOnCallback, iface, iface.getName());
+                } catch (ReadFailedException e) {
+                    LOG.error("Bridge not found in DS/cache for dpId {}", dpId);
+                }
+            });
         }
     }
 
@@ -400,5 +400,11 @@ public final class ItmInternalTunnelAddWorker {
         if (ifTunnel != null) {
             directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }
+    }
+
+    private void addPortToBridgeOnCallback(Interface iface, String portName, OvsBridgeRefEntry bridgeRefEntry) {
+        InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
+                (InstanceIdentifier<OvsdbBridgeAugmentation>) bridgeRefEntry.getOvsBridgeReference().getValue();
+        addPortToBridge(bridgeIid, iface, portName);
     }
 }
