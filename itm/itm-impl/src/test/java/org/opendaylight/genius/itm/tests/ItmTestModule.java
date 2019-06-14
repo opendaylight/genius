@@ -70,6 +70,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setGpeExtensionEnabled(false)
                 .setPortname("")
                 .setVlanId(0)
+                .setUseOfTunnels(true)
                 .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);
         IfmConfig interfaceConfig = new IfmConfigBuilder().setItmDirectTunnels(false).build();
