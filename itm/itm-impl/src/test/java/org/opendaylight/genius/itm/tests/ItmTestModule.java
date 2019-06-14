@@ -69,6 +69,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setDefTzEnabled(true)
                 .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN)
                 .setGpeExtensionEnabled(false)
+                .setUseOfTunnels(true)
                 .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);
         IfmConfig interfaceConfig = new IfmConfigBuilder().setItmDirectTunnels(false).build();
