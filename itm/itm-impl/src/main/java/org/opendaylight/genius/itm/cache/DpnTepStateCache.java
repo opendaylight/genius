@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.cache;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +64,6 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private final ManagedNewTransactionRunner txRunner;
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, List<String>> ofTunnelChildMap = new ConcurrentHashMap<>();
 
     @Inject
     public DpnTepStateCache(DataBroker dataBroker, JobCoordinator coordinator,
@@ -90,7 +88,6 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         String srcOfTunnel = dpnsTeps.getOfTunnel();
-        List<String> ofChildList = new ArrayList<>();
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
@@ -100,16 +97,21 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 .setTunnelType(dpnsTeps.getTunnelType())
                 .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
             dpnTepInterfaceMap.put(dpn, value);
-            addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
-                    dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
-            ofChildList.add(remoteDpns.getTunnelName());
+
+            addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(), dpnsTeps.getSourceDpnId().toString(),
+                    remoteDpns.getDestinationDpnId().toString());
+
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
 
             TunnelStateInfo tunnelStateInfoNew = null;
 
             TunnelStateInfo tunnelStateInfo;
             try (Acquired lock = directTunnelUtils.lockTunnel(remoteDpns.getTunnelName())) {
-                tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+                if (srcOfTunnel != null && unprocessedNCCache.get(dpn) != null) {
+                    tunnelStateInfo = unprocessedNCCache.remove(dpn);
+                } else {
+                    tunnelStateInfo = unprocessedNCCache.remove(remoteDpns.getTunnelName());
+                }
             }
 
             if (tunnelStateInfo != null) {
@@ -153,9 +155,6 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 coordinator.enqueueJob(remoteDpns.getTunnelName(), ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
             }
         }
-        if (srcOfTunnel != null && !srcOfTunnel.isEmpty()) {
-            ofTunnelChildMap.put(srcOfTunnel, ofChildList);
-        }
     }
 
     @Override
@@ -185,7 +184,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                                 .setTunnelName(remoteDpns.getTunnelName())
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                                 .setIsInternal(remoteDpns.isInternal())
-                                .setTunnelType(teps.getTunnelType()).build();
+                                .setTunnelType(teps.getTunnelType())
+                                .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
                         dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId()), value);
                         addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                                 teps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
@@ -302,10 +302,6 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     public TunnelEndPointInfo getTunnelEndPointInfoFromCache(String tunnelName) {
         return tunnelEndpointMap.get(tunnelName);
-    }
-
-    public List<String> getOfTunnelChildInfoFromCache(String tunnelName) {
-        return ofTunnelChildMap.get(tunnelName);
     }
 
     public void removeFromTunnelEndPointMap(String tunnelName) {
