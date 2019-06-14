@@ -66,6 +66,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     private final ConcurrentMap<String, DpnTepInterfaceInfo> dpnTepInterfaceMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, TunnelEndPointInfo> tunnelEndpointMap = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, List<String>> ofTunnelChildMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, List<String>> srcToDstDpns = new ConcurrentHashMap<>();
 
     @Inject
     public DpnTepStateCache(DataBroker dataBroker, JobCoordinator coordinator,
@@ -100,8 +101,17 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 .setTunnelType(dpnsTeps.getTunnelType())
                 .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
             dpnTepInterfaceMap.put(dpn, value);
-            addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
-                    dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+            if (srcToDstDpns.get(dpnsTeps.getSourceDpnId().toString()) == null) {
+                List<String> destDpns = new ArrayList<>();
+                destDpns.add(remoteDpns.getDestinationDpnId().toString());
+                srcToDstDpns.put(dpnsTeps.getSourceDpnId().toString(), destDpns);
+            } else {
+                srcToDstDpns.get(dpnsTeps.getSourceDpnId().toString()).add(remoteDpns.getDestinationDpnId().toString());
+            }
+
+            addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(), dpnsTeps.getSourceDpnId().toString(),
+                    remoteDpns.getDestinationDpnId().toString());
+
             ofChildList.add(remoteDpns.getTunnelName());
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
 
@@ -154,7 +164,11 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
             }
         }
         if (srcOfTunnel != null && !srcOfTunnel.isEmpty()) {
-            ofTunnelChildMap.put(srcOfTunnel, ofChildList);
+            if (ofTunnelChildMap.get(srcOfTunnel) == null) {
+                ofTunnelChildMap.put(srcOfTunnel, ofChildList);
+            } else {
+                ofTunnelChildMap.get(srcOfTunnel).addAll(ofChildList);
+            }
         }
     }
 
@@ -310,5 +324,13 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     public void removeFromTunnelEndPointMap(String tunnelName) {
         tunnelEndpointMap.remove(tunnelName);
+    }
+
+    public List<String> getDestinationDpns(String srcDpn) {
+        return srcToDstDpns.get(srcDpn);
+    }
+
+    public boolean isPortNameAvailable(String portName) {
+        return ofTunnelChildMap.containsKey(portName);
     }
 }
