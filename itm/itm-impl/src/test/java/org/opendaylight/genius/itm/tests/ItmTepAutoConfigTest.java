@@ -808,6 +808,7 @@ public class ItmTepAutoConfigTest {
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
                 tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
 
+        coordinatorEventsWaiter.awaitEventsConsumption();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);

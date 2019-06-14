@@ -448,7 +448,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                         BigInteger dpnID = vteps.getDpnId();
                         String port = vteps.getPortname();
                         IpAddress ipAddress = vteps.getIpAddress();
-                        boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOptionOfTunnel());
+                        //boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOptionOfTunnel());
+                        boolean useOfTunnel = itmConfig.isUseOfTunnels();
                         String tos = vteps.getOptionTunnelTos();
                         if (tos == null) {
                             tos = itmConfig.getDefaultTunnelTos();
