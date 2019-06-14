@@ -76,6 +76,7 @@ public class TunnelInventoryStateListener extends
     private final UnprocessedNodeConnectorCache unprocessedNCCache;
     private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
     private final DirectTunnelUtils directTunnelUtils;
+    private boolean isFirstDpn = true;
 
     public TunnelInventoryStateListener(final DataBroker dataBroker,
                                         final JobCoordinator coordinator,
@@ -163,12 +164,48 @@ public class TunnelInventoryStateListener extends
         LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         String portName = fcNodeConnectorNew.getName();
         // Return if its not tunnel port and if its not Internal
-        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && !portName.startsWith("of")) {
             LOG.debug("Node Connector Add {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         }
+
         NodeConnectorInfo nodeConnectorInfo =
-            new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
+                new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
+
+        if (portName.startsWith("of")) {
+            if (isFirstDpn) {
+                isFirstDpn = false;
+                return;
+            }
+            try (Acquired lock = directTunnelUtils.lockTunnel(portName)) {
+                if (!dpnTepStateCache.isPortNameAvailable(portName)) {
+                    // Park the notification
+                    LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+                            + "Hence parking it", portName);
+                    unprocessedNCCache.add(portName,
+                            new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo).build());
+                    return;
+                }
+            }
+
+            String srcDpn = dpnTepStateCache.getSourceDpnFromOfPort(portName);
+            List<String> destDpns = dpnTepStateCache.getDestinationDpns(srcDpn);
+            for (String destDpn : destDpns) {
+                String forwardTunnel = dpnTepStateCache.getDpnTepInterface(new BigInteger(srcDpn),
+                        new BigInteger(destDpn)).getTunnelName();
+                addTunnelState(nodeConnectorInfo, forwardTunnel);
+                String reverseTunnel = dpnTepStateCache.getDpnTepInterface(new BigInteger(destDpn),
+                        new BigInteger(srcDpn)).getTunnelName();
+                addTunnelState(nodeConnectorInfo, reverseTunnel);
+            }
+        } else {
+            addTunnelState(nodeConnectorInfo, portName);
+        }
+
+    }
+
+    private void addTunnelState(NodeConnectorInfo nodeConnectorInfo, String portName) {
+
         TunnelStateInfo tunnelStateInfo = null;
         TunnelEndPointInfo tunnelEndPtInfo = null;
         try (Acquired lock = directTunnelUtils.lockTunnel(portName)) {
@@ -194,6 +231,7 @@ public class TunnelInventoryStateListener extends
                 .ifPresent(builder::setDstDpnTepsInfo);
             tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
                 .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
+            //tunnelStateInfo.getNodeConnectorInfo().getNodeConnector()
             if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
                 try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPtInfo.getSrcEndPointInfo())) {
                     LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
