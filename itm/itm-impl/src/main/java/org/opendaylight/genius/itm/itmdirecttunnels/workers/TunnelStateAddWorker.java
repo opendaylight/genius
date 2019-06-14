@@ -62,7 +62,13 @@ public final class TunnelStateAddWorker {
         // Retrieve Port No from nodeConnectorId
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(tunnelStateInfo.getNodeConnectorInfo()
                 .getNodeConnectorId().firstIdentifierOf(NodeConnector.class)).getId();
-        String interfaceName = tunnelStateInfo.getNodeConnectorInfo().getNodeConnector().getName();
+        String tunnelName = tunnelStateInfo.getNodeConnectorInfo().getNodeConnector().getName();
+        if (tunnelName != null && tunnelName.startsWith("of")) {
+            tunnelName = tunnelStateInfo.getDpnTepInterfaceInfo().getTunnelName();
+        }
+
+        String interfaceName = tunnelName;
+
         long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
         if (portNo == ITMConstants.INVALID_PORT_NO) {
             LOG.error("Cannot derive port number, not proceeding with Interface State addition for interface: {}",
