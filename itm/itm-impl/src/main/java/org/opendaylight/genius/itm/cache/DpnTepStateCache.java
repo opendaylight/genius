@@ -100,8 +100,14 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 .setTunnelType(dpnsTeps.getTunnelType())
                 .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
             dpnTepInterfaceMap.put(dpn, value);
-            addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
-                    dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+            if (srcOfTunnel != null && !srcOfTunnel.isEmpty()) {
+                addTunnelEndPointInfoToCache(srcOfTunnel,
+                        dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+            } else {
+                addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
+                        dpnsTeps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+            }
+
             ofChildList.add(remoteDpns.getTunnelName());
             //Process the unprocessed NodeConnector for the Tunnel, if present in the UnprocessedNodeConnectorCache
 

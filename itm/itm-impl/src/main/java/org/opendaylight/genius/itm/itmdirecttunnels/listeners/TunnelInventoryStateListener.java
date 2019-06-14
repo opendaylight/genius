@@ -163,7 +163,7 @@ public class TunnelInventoryStateListener extends
         LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         String portName = fcNodeConnectorNew.getName();
         // Return if its not tunnel port and if its not Internal
-        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && !portName.startsWith("of")) {
             LOG.debug("Node Connector Add {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         }
@@ -185,7 +185,8 @@ public class TunnelInventoryStateListener extends
             }
         }
 
-        if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
+        if ((DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) || portName.startsWith("of"))
+                && dpnTepStateCache.isInternal(portName)) {
             tunnelEndPtInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(portName);
             TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo);
             dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getSrcEndPointInfo()))
@@ -194,6 +195,7 @@ public class TunnelInventoryStateListener extends
                 .ifPresent(builder::setDstDpnTepsInfo);
             tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
                 .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
+            //tunnelStateInfo.getNodeConnectorInfo().getNodeConnector()
             if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
                 try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPtInfo.getSrcEndPointInfo())) {
                     LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
