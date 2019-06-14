@@ -433,7 +433,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
             for (Vteps vteps : vtepsList) {
                 BigInteger dpnID = vteps.getDpnId();
                 IpAddress ipAddress = vteps.getIpAddress();
-                boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOptionOfTunnel());
+                boolean useOfTunnel = itmConfig.isUseOfTunnels();
                 String tos = vteps.getOptionTunnelTos();
                 if (tos == null) {
                     tos = itmConfig.getDefaultTunnelTos();
@@ -450,6 +450,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                     tunnelEndPointsList = new ArrayList<>();
                     tunnelEndPointsList.add(tunnelEndPoints);
                     mapDPNToTunnelEndpt.put(dpnID, tunnelEndPointsList);
+
                 }
             }
         }
