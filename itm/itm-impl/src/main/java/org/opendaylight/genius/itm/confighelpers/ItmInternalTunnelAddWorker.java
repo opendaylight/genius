@@ -225,6 +225,7 @@ public final class ItmInternalTunnelAddWorker {
 
         String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
                 srcte.getIpAddress().stringValue(), dstte.getIpAddress().stringValue(), tunTypeStr);
+
         String parentInterfaceName = null;
         if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
             parentInterfaceName = createLogicalGroupTunnel(srcDpnId, dstDpnId);
@@ -340,7 +341,8 @@ public final class ItmInternalTunnelAddWorker {
                         + " destination IP - {} gateway IP - {}", trunkInterfaceName, parentInterfaceName,
                 srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress) ;
 
-        boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+        //boolean useOfTunnel = ItmUtils.falseIfNull(srcte.isOptionOfTunnel());
+        boolean useOfTunnel = itmCfg.isUseOfTunnels();
 
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
@@ -358,12 +360,11 @@ public final class ItmInternalTunnelAddWorker {
         dpnsTepsBuilder.withKey(new DpnsTepsKey(srcDpnId));
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
-        if (itmCfg.isUseOfTunnels()) {
+        if (useOfTunnel) {
             String tunnelType = ItmUtils.convertTunnelTypetoString(srcte.getTunnelType());
             ofTunnelPortName = directTunnelUtils.generateOfPortName(srcDpnId, tunnelType);
             dpnsTepsBuilder.setOfTunnel(ofTunnelPortName);
         }
-
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
         remoteDpn.withKey(new RemoteDpnsKey(dstDpnId));
         remoteDpn.setDestinationDpnId(dstDpnId);
@@ -407,7 +408,7 @@ public final class ItmInternalTunnelAddWorker {
         LOG.info("adding tunnel port configuration for tunnelName: {}", tunnelName);
         if (createTunnelPort(dpId)) {
             LOG.debug("creating dpn tunnel mapping  for dpn: {} tunnelName: {}", dpId, tunnelName);
-            DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, tunnelName);
+            DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
             if (ofTunnelPortName != null) {
                 ofEndPointCache.add(dpId, tunnelName);
             }
@@ -434,7 +435,7 @@ public final class ItmInternalTunnelAddWorker {
                             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIidOnCallback =
                                     (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntryOnCallback.get()
                                             .getOvsBridgeReference().getValue();
-                            addPortToBridge(bridgeIidOnCallback, iface, iface.getName());
+                            addPortToBridge(bridgeIidOnCallback, iface, tunnelName);
                         }   catch (ReadFailedException e) {
                             LOG.error("Bridge not found in DS/cache for dpId {}", dpId);
                         }
