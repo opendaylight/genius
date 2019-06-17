@@ -13,12 +13,10 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -117,8 +115,7 @@ public class ItmTepAutoConfigTest {
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(false).build();
 
         // write into config DS
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(iid, itmConfigObj, true));
-        Thread.sleep(1000);
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(iid, itmConfigObj, true)).get();
 
         // read from config DS
         boolean defTzEnabled = SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
@@ -133,8 +130,7 @@ public class ItmTepAutoConfigTest {
         ItmConfig itmConfigObj = new ItmConfigBuilder().setDefTzEnabled(true).build();
 
         // write into config DS
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(iid, itmConfigObj, true));
-        Thread.sleep(1000);
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(iid, itmConfigObj, true)).get();
         // read from config DS
         boolean defTzEnabled = SingleTransactionDataBroker.syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
             dataBroker, LogicalDatastoreType.CONFIGURATION, iid).get().isDefTzEnabled();
@@ -822,6 +818,7 @@ public class ItmTepAutoConfigTest {
                 ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
                         ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker, txRunner);
         futures.get();
+        coordinatorEventsWaiter.awaitEventsConsumption();
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
 
@@ -848,7 +845,7 @@ public class ItmTepAutoConfigTest {
         //check deleted tz moved to notHosted
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
                 ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.TZ_NAME);
-
+        coordinatorEventsWaiter.awaitEventsConsumption();
         Assert.assertNotNull(notHostedPath);
         Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get().getZoneName());
