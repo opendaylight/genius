@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
-import static org.opendaylight.infrautils.utils.concurrent.JdkFutures.addErrorLogging;
+import static org.opendaylight.infrautils.utils.concurrent.LoggingFutures.addErrorLogging;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
@@ -183,7 +183,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         return split[2];
     }
 
-    private List<ActionInfo> getInterfaceActions(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
+    private static List<ActionInfo> getInterfaceActions(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf
             .interfaces.rev140508.interfaces.state.Interface interfaceState, long portNum)
                     throws InterruptedException, ExecutionException {
         Class<? extends InterfaceType> intfType;
@@ -252,7 +252,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         return ethernetPacket;
     }
 
-    private String colonize(String orig) {
+    private static String colonize(String orig) {
         return orig.replaceAll("(?<=..)(..)", ":$1");
     }
 
@@ -262,11 +262,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         return interfaceName + EtherTypes.LLDP;
     }
 
-    private String getInterfaceName(EndpointType endpoint) {
-        String interfaceName = null;
-        if (endpoint instanceof Interface) {
-            interfaceName = ((Interface) endpoint).getInterfaceName();
-        }
-        return interfaceName;
+    private static String getInterfaceName(EndpointType endpoint) {
+        return endpoint instanceof Interface ? ((Interface) endpoint).getInterfaceName() : null;
     }
 }
