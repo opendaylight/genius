@@ -147,7 +147,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             tx -> writeFlowInternal(dpId, flow, tx));
     }
 
-    private void writeFlowEntityInternal(FlowEntity flowEntity, TypedWriteTransaction<Datastore.Configuration> tx) {
+    private static void writeFlowEntityInternal(FlowEntity flowEntity,
+            TypedWriteTransaction<Datastore.Configuration> tx) {
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
         FlowBuilder flowbld = flowEntity.getFlowBuilder();
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(flowEntity.getDpnId(),
@@ -155,7 +156,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         tx.put(flowInstanceId, flowbld.build(), true);
     }
 
-    private void writeFlowInternal(BigInteger dpId, Flow flow, TypedWriteTransaction<Datastore.Configuration> tx) {
+    private static void writeFlowInternal(BigInteger dpId, Flow flow,
+            TypedWriteTransaction<Datastore.Configuration> tx) {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId(), flowKey);
         tx.put(flowInstanceId, flow, true);
@@ -168,7 +170,8 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                 tx -> writeGroupEntityInternal(groupEntity, tx)));
     }
 
-    private void writeGroupEntityInternal(GroupEntity groupEntity, TypedWriteTransaction<Datastore.Configuration> tx) {
+    private static void writeGroupEntityInternal(GroupEntity groupEntity,
+            TypedWriteTransaction<Datastore.Configuration> tx) {
         Group group = groupEntity.getGroupBuilder().build();
         Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getGroupId(), nodeDpn);
@@ -243,12 +246,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return nodeDpn;
     }
 
-    private String getGroupKey(long groupId, BigInteger dpId) {
+    private static String getGroupKey(long groupId, BigInteger dpId) {
         String synchronizingKey = "group-key-" + groupId + dpId;
         return synchronizingKey.intern();
     }
 
-    private String getFlowKey(BigInteger dpId, short tableId, FlowKey flowKey) {
+    private static String getFlowKey(BigInteger dpId, short tableId, FlowKey flowKey) {
         String synchronizingKey = "flow-key-" + dpId + tableId + flowKey;
         return synchronizingKey.intern();
     }
@@ -637,12 +640,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return false;
     }
 
-    private boolean groupExists(TypedReadTransaction<Configuration> tx, Node nodeDpn, long groupId)
+    private static boolean groupExists(TypedReadTransaction<Configuration> tx, Node nodeDpn, long groupId)
            throws ExecutionException, InterruptedException {
         return tx.read(buildGroupInstanceIdentifier(groupId, nodeDpn)).get().isPresent();
     }
 
-    private InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {
+    private static InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {
         InstanceIdentifier<Group> groupInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Group.class, new GroupKey(new GroupId(groupId))).build();
@@ -669,7 +672,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return flowInstanceId;
     }
 
-    private InstanceIdentifier<Bucket> buildBucketInstanceIdentifier(long groupId, long bucketId,
+    private static InstanceIdentifier<Bucket> buildBucketInstanceIdentifier(long groupId, long bucketId,
             Node nodeDpn) {
         InstanceIdentifier<Bucket> bucketInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
@@ -679,20 +682,20 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return bucketInstanceId;
     }
 
-    private FluentFuture<Void> addCallBackForDeleteFlowAndReturn(FluentFuture<Void> fluentFuture) {
+    private static FluentFuture<Void> addCallBackForDeleteFlowAndReturn(FluentFuture<Void> fluentFuture) {
         return callBack(fluentFuture, "Delete Flow");
     }
 
-    private FluentFuture<Void> addCallBackForInstallFlowAndReturn(FluentFuture<Void> fluentFuture) {
+    private static FluentFuture<Void> addCallBackForInstallFlowAndReturn(FluentFuture<Void> fluentFuture) {
         return callBack(fluentFuture, "Install Flow");
     }
 
-    private FluentFuture<Void> addCallBackForInstallGroupAndReturn(FluentFuture<Void> fluentFuture) {
+    private static FluentFuture<Void> addCallBackForInstallGroupAndReturn(FluentFuture<Void> fluentFuture) {
         return callBack(fluentFuture, "Install Group");
     }
 
     // Generic for handling callbacks
-    private FluentFuture<Void> callBack(FluentFuture<Void> fluentFuture, String log) {
+    private static FluentFuture<Void> callBack(FluentFuture<Void> fluentFuture, String log) {
         fluentFuture.addCallback(new FutureCallback<Void>() {
             @Override
             public void onSuccess(final Void result) {
