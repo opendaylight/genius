@@ -18,7 +18,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
-import org.opendaylight.infrautils.utils.concurrent.JdkFutures;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ public abstract class TestableDataBroker implements DataBroker {
      * were exceptions in the listener.
      */
     public void asyncFireDataTreeChangeListener() {
-        JdkFutures.addErrorLogging(executor.submit(() -> fireDataTreeChangeListener()),
+        LoggingFutures.addErrorLogging(executor.submit(() -> fireDataTreeChangeListener()),
                 LOG, "fireDataTreeChangeListener() eventually failed");
     }
 
