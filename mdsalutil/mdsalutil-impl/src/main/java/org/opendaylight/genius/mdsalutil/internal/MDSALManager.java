@@ -17,6 +17,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -39,6 +40,8 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.inject.AbstractLifecycle;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.infrautils.utils.concurrent.NamedLocks;
+import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -72,8 +75,66 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager {
+    private static final class FlowLockKey {
+        private final Uint64 dpId;
+        private final FlowKey flowKey;
+        private final short tableId;
+
+        FlowLockKey(Uint64 dpId, short tableId, FlowKey flowKey) {
+            this.dpId = dpId;
+            this.tableId = tableId;
+            this.flowKey = flowKey;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * Short.hashCode(tableId) + Objects.hash(dpId, flowKey);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof FlowLockKey)) {
+                return false;
+            }
+            final FlowLockKey other = (FlowLockKey) obj;
+            return tableId == other.tableId && Objects.equals(dpId, other.dpId)
+                    && Objects.equals(flowKey, other.flowKey);
+        }
+    }
+
+    private static final class GroupLockKey {
+        private final Uint64 dpId;
+        private final long groupId;
+
+        GroupLockKey(long groupId, Uint64 dpId) {
+            this.groupId = groupId;
+            this.dpId = dpId;
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * Long.hashCode(groupId) + Objects.hashCode(dpId);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (!(obj instanceof GroupLockKey)) {
+                return false;
+            }
+            final GroupLockKey other = (GroupLockKey) obj;
+            return groupId == other.groupId && Objects.equals(dpId, other.dpId);
+        }
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(MDSALManager.class);
+    private static final NamedLocks<FlowLockKey> FLOW_LOCKS = new NamedLocks<>();
+    private static final NamedLocks<GroupLockKey> GROUP_LOCKS = new NamedLocks<>();
 
     private final DataBroker dataBroker;
     private final RetryingManagedNewTransactionRunner txRunner;
@@ -242,16 +303,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return nodeDpn;
     }
 
-    private static String getGroupKey(long groupId, Uint64 dpId) {
-        String synchronizingKey = "group-key-" + groupId + dpId;
-        return synchronizingKey.intern();
-    }
-
-    private static String getFlowKey(Uint64 dpId, short tableId, FlowKey flowKey) {
-        String synchronizingKey = "flow-key-" + dpId + tableId + flowKey;
-        return synchronizingKey.intern();
-    }
-
     private void syncSetUpFlowInternal(FlowEntity flowEntity, boolean isRemove) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("syncSetUpFlow for flowEntity {} ", flowEntity);
@@ -264,7 +315,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
 
         if (isRemove) {
-            synchronized (getFlowKey(dpId, tableId, flowKey)) {
+            try (Acquired lock = FLOW_LOCKS.acquire(new FlowLockKey(dpId, tableId, flowKey))) {
                 if (flowExists(dpId, tableId, flowKey)) {
                     MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, flowInstanceId);
                 } else {
@@ -286,7 +337,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, buildDpnNode(dpId));
 
         if (isRemove) {
-            synchronized (getGroupKey(groupId, dpId)) {
+            try (Acquired lock = GROUP_LOCKS.acquire(new GroupLockKey(groupId, dpId))) {
                 if (groupExists(dpId, groupId)) {
                     MDSALUtil.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, groupInstanceId);
                 } else {
