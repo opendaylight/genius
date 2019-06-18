@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.internal;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningSingleThreadExecutor;
-import static org.opendaylight.infrautils.utils.concurrent.FluentFutures2.toChecked;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
@@ -432,19 +431,19 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
-        return toChecked(installFlowInternal(flowEntity),
+        return Futures.makeChecked(installFlowInternal(flowEntity),
             t -> new TransactionCommitFailedException("installFlow failed", t));
     }
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity) {
-        return toChecked(installFlowInternal(dpId, flowEntity),
+        return Futures.makeChecked(installFlowInternal(dpId, flowEntity),
             t -> new TransactionCommitFailedException("installFlow failed", t));
     }
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity) {
-        return toChecked(installFlowInternal(dpId, flowEntity.getFlowBuilder().build()),
+        return Futures.makeChecked(installFlowInternal(dpId, flowEntity.getFlowBuilder().build()),
             t -> new TransactionCommitFailedException("installFlow failed", t));
     }
 
@@ -480,13 +479,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity) {
-        return toChecked(removeFlowNewInternal(dpId, flowEntity),
+        return Futures.makeChecked(removeFlowNewInternal(dpId, flowEntity),
             t -> new TransactionCommitFailedException("removeFlow failed", t));
     }
 
     @Override
     public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(FlowEntity flowEntity) {
-        return toChecked(removeFlowInternal(flowEntity),
+        return Futures.makeChecked(removeFlowInternal(flowEntity),
             t -> new TransactionCommitFailedException("removeFlow failed", t));
     }
 
