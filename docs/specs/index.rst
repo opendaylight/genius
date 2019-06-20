@@ -20,3 +20,4 @@ Contents:
    service-binding-on-tunnels
    service-recovery
    arputil-dpn-id-in-notifications
+   Support for compute node scale in and scale out functionality <compute-node-scalein-and-scaleout>
