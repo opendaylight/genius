@@ -21,3 +21,4 @@ Contents:
    service-recovery
    arputil-dpn-id-in-notifications
    itm-yang-cleanup
+   Support for compute node scale in and scale out functionality <compute-node-scalein-and-scaleout>
