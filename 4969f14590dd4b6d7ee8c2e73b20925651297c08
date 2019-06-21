@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1598958b_5bc11669",
+        "filename": "docs/specs/itm-yang-cleanup.rst",
+        "patchSetId": 18
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-06-21T10:35:02Z",
+      "side": 1,
+      "message": "can we get rid of this?",
+      "revId": "4969f14590dd4b6d7ee8c2e73b20925651297c08",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
