@@ -8,8 +8,8 @@
 package org.opendaylight.genius.itm.rpc;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.ERROR;
-import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.LogLevel.ERROR;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Objects;
@@ -65,7 +65,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
-import org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults;
+import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -331,6 +331,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             Futures.addCallback(interfaceManagerService.getTunnelType(inputBuilder.build()),
                     new FutureCallback<org.opendaylight.yang.gen.v1.urn.opendaylight.genius
                             .interfacemanager.rpcs.rev160406.GetTunnelTypeOutput>() {
+                        @Override
                         public void onSuccess(org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs
                                 .rev160406.@NonNull GetTunnelTypeOutput result) {
                             GetTunnelTypeOutputBuilder output = new GetTunnelTypeOutputBuilder()
@@ -339,6 +340,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                                     .withResult(output.build()).build());
                         }
 
+                        @Override
                         public void onFailure(Throwable throwable) {
                             LOG.debug("RPC Call to Get tunnel type failed for interface {}", tunnelName);
                             String errMsg = String.format("RPC to Get tunnel type failed for interface %s",
