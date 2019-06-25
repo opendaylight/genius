@@ -52,6 +52,20 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.opendaylight.openflowplugin</groupId>
+        <artifactId>openflowplugin-artifacts</artifactId>
+        <version>${openflowplugin.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- TODO: this really should be declared in openflowplugin-artifacts -->
+      <dependency> 
+        <groupId>org.opendaylight.openflowplugin.libraries</groupId> 
+        <artifactId>liblldp</artifactId> 
+        <version>${openflowplugin.version}</version> 
+      </dependency> 
+
     </dependencies>
   </dependencyManagement>
 
