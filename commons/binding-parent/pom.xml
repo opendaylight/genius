@@ -66,6 +66,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <version>${openflowplugin.version}</version> 
       </dependency> 
 
+      <dependency>
+        <groupId>org.opendaylight.genius</groupId>
+        <artifactId>genius-artifacts</artifactId>
+        <!-- We cannot use ${project.version} here -->
+        <version>0.7.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
