@@ -7,14 +7,13 @@
  */
 package org.opendaylight.genius.interfacemanager.rpcservice;
 
-import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.DEBUG;
-import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.LogLevel.NONE;
-import static org.opendaylight.serviceutils.tools.mdsal.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListenableFuture;
+import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.LogLevel.DEBUG;
+import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.LogLevel.NONE;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutput;
@@ -126,7 +125,7 @@ public class InterfaceManagerRpcService implements OdlInterfaceRpcService {
                 }).build();
     }
 
-    private String getDpidFromInterfaceErrorMessage(final String interfaceName, final String dueTo) {
+    private static String getDpidFromInterfaceErrorMessage(final String interfaceName, final String dueTo) {
         return String.format("Retrieval of datapath id for the key {%s} failed due to %s",
                 interfaceName, dueTo);
     }
