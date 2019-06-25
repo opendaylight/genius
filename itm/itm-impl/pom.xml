@@ -36,13 +36,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.opendaylight.infrautils</groupId>
-        <artifactId>infrautils-artifacts</artifactId>
-        <version>${genius.infrautils.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.opendaylight.openflowplugin</groupId>
         <artifactId>openflowplugin-artifacts</artifactId>
         <version>${openflowplugin.version}</version>
@@ -235,8 +228,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>caches-test</artifactId>
-      <version>${genius.infrautils.version}</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
   <!--Build Dependencies-->
