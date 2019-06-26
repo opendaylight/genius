@@ -14,6 +14,7 @@ import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -103,9 +104,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.PortExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.PortExternalIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
@@ -166,6 +171,8 @@ public final class DirectTunnelUtils {
 
     private static final long INVALID_ID = 0;
     private final NamedLocks<String> tunnelLocks = new NamedLocks<>();
+    private static final String CREATED_BY = "created_by";
+    private static final String ODL = "odl";
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
 
@@ -509,12 +516,25 @@ public final class DirectTunnelUtils {
             List<InterfaceBfd> bfdParams = DirectTunnelUtils.getBfdParams(ifTunnel);
             tpAugmentationBuilder.setInterfaceBfd(bfdParams);
         }
-
+        tpAugmentationBuilder.setInterfaceExternalIds(Arrays.asList(getCreateByOdlExternalIdForIface()));
+        tpAugmentationBuilder.setPortExternalIds(Arrays.asList(getCreateByOdlExternalIdForPort()));
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         ITMBatchingUtils.write(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
+    private PortExternalIds getCreateByOdlExternalIdForPort() {
+        return new PortExternalIdsBuilder()
+                .setExternalIdKey(CREATED_BY)
+                .setExternalIdValue(ODL).build();
+    }
+
+    private InterfaceExternalIds getCreateByOdlExternalIdForIface() {
+        return new InterfaceExternalIdsBuilder()
+                .setExternalIdKey(CREATED_BY)
+                .setExternalIdValue(ODL).build();
     }
 
     public void removeLportTagInterfaceMap(String infName)

@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -62,9 +63,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.OptionsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.PortExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.PortExternalIdsBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TpId;
@@ -121,6 +126,8 @@ public class SouthboundUtils {
 
     // Tunnel option values for MPLS-GRE tunnels [requires OVS 2.8+)
     private static final String TUNNEL_OPTIONS_VALUE_LEGACY_L3 = "legacy_l3";
+    private static final String CREATED_BY = "created_by";
+    private static final String ODL = "odl";
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
     private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
@@ -323,6 +330,8 @@ public class SouthboundUtils {
             List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
             tpAugmentationBuilder.setInterfaceBfd(bfdParams);
         }
+        tpAugmentationBuilder.setInterfaceExternalIds(Arrays.asList(getCreateByOdlExternalIdForIface()));
+        tpAugmentationBuilder.setPortExternalIds(Arrays.asList(getCreateByOdlExternalIdForPort()));
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
@@ -330,6 +339,18 @@ public class SouthboundUtils {
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
         batchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
+    }
+
+    private PortExternalIds getCreateByOdlExternalIdForPort() {
+        return new PortExternalIdsBuilder()
+                .setExternalIdKey(CREATED_BY)
+                .setExternalIdValue(ODL).build();
+    }
+
+    private InterfaceExternalIds getCreateByOdlExternalIdForIface() {
+        return new InterfaceExternalIdsBuilder()
+                .setExternalIdKey(CREATED_BY)
+                .setExternalIdValue(ODL).build();
     }
 
     private static List<InterfaceBfd> getBfdParams(IfTunnel ifTunnel) {
