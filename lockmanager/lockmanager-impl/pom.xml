@@ -33,12 +33,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>lockmanager-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>mdsalutil-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>

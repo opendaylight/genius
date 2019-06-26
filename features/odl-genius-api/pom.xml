@@ -31,6 +31,13 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+      <dependency>
+        <groupId>org.opendaylight.genius</groupId>
+        <artifactId>genius-artifacts</artifactId>
+        <version>${project.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -153,7 +160,6 @@
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>itm-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
