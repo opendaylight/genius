@@ -22,6 +22,30 @@
       "revId": "ed285b07e8ecfb71aa5c89da94801dc395f7cab9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d9970696_7d9ac697",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/renderer/ovs/utilities/DirectTunnelUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 528,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-06-27T12:31:46Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "621d095e_8762b145",
+      "range": {
+        "startLine": 528,
+        "startChar": 34,
+        "endLine": 528,
+        "endChar": 46
+      },
+      "revId": "ed285b07e8ecfb71aa5c89da94801dc395f7cab9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
