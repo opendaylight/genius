@@ -89,7 +89,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        String srcOfTunnel = dpnsTeps.getOfTunnel();
+        final String srcOfTunnel = dpnsTeps.getOfTunnel();
         List<String> ofChildList = new ArrayList<>();
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
@@ -174,22 +174,28 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     }
 
     public DpnTepInterfaceInfo getDpnTepInterface(BigInteger srcDpnId, BigInteger dstDpnId) {
-        DpnTepInterfaceInfo  dpnTepInterfaceInfo = dpnTepInterfaceMap.get(getDpnId(srcDpnId, dstDpnId));
+        return getDpnTepInterface(getDpnId(srcDpnId, dstDpnId));
+    }
+
+    public DpnTepInterfaceInfo getDpnTepInterface(String srcDstDpid) {
+        DpnTepInterfaceInfo  dpnTepInterfaceInfo = dpnTepInterfaceMap.get(srcDstDpid);
+        BigInteger srcDpnId = new BigInteger(srcDstDpid.split(":")[0]);
+        BigInteger dstDpnId = new BigInteger(srcDstDpid.split(":")[1]);
         if (dpnTepInterfaceInfo == null) {
             try {
                 com.google.common.base.Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
                 if (dpnsTeps.isPresent()) {
                     DpnsTeps teps = dpnsTeps.get();
                     teps.nonnullRemoteDpns().forEach(remoteDpns -> {
-                        DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
-                                .setTunnelName(remoteDpns.getTunnelName())
-                                .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
-                                .setIsInternal(remoteDpns.isInternal())
-                                .setTunnelType(teps.getTunnelType()).build();
-                        dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId()), value);
-                        addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
-                                teps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
-                        }
+                                DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
+                                        .setTunnelName(remoteDpns.getTunnelName())
+                                        .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
+                                        .setIsInternal(remoteDpns.isInternal())
+                                        .setTunnelType(teps.getTunnelType()).build();
+                                dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId()), value);
+                                addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
+                                        teps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
+                            }
                     );
                 }
             } catch (ReadFailedException e) {
