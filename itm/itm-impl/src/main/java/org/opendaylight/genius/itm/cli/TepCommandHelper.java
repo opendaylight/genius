@@ -36,7 +36,6 @@ import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
-import org.opendaylight.genius.utils.cache.DataStoreCache;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -302,56 +301,30 @@ public class TepCommandHelper {
 
     @SuppressWarnings("checkstyle:RegexpSinglelineJava")
     public void showCache(String cacheName) {
-        boolean dataStoreCache = DataStoreCache.isCacheValid(cacheName);
-        boolean inMemoryCache = isInMemoryCacheNameValid(cacheName);
-        if (!dataStoreCache && !inMemoryCache) {
-            System.out.println(" " + cacheName + " is not a valid Cache Name ");
-            return ;
+        final Collection<String> cacheContent;
+        switch (cacheName) {
+            case ITMConstants.INTERNAL_TUNNEL_CACHE_NAME:
+                cacheContent = ItmUtils.ITM_CACHE.getAllInternalInterfaces();
+                break;
+            case ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME:
+                cacheContent = ItmUtils.ITM_CACHE.getAllExternalInterfaces();
+                break;
+            case ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME:
+                cacheContent = unprocessedTunnelsStateCache.getAllUnprocessedTunnels();
+                break;
+            default:
+                System.out.println(" " + cacheName + " is not a valid Cache Name ");
+                return;
         }
-        if (dataStoreCache) {
-            List<Object> keys = null;
-            keys = DataStoreCache.getKeys(cacheName);
-            if (keys != null && !keys.isEmpty()) {
-                System.out.println("Dumping the data in cache for " + cacheName);
-                for (Object key : keys) {
-                    System.out.println(" KEY:  " + key + " Value: " + DataStoreCache.get(cacheName, key));
-                }
-            } else {
-                System.out.println("No data in cache for " + cacheName);
+        System.out.println("Dumping the data in cache for " + cacheName);
+        System.out.println("Number of data in cache " + cacheContent.size());
+        if (!cacheContent.isEmpty()) {
+            for (String key : cacheContent) {
+                System.out.println(key + " ");
             }
-        } else if (inMemoryCache) {
-            System.out.println("Dumping the data in cache for " + cacheName);
-            Collection<String> cacheContent;
-            switch (cacheName) {
-                case ITMConstants.INTERNAL_TUNNEL_CACHE_NAME:
-                    cacheContent = ItmUtils.ITM_CACHE.getAllInternalInterfaces();
-                    break;
-                case ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME:
-                    cacheContent = ItmUtils.ITM_CACHE.getAllExternalInterfaces();
-                    break;
-                case ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME:
-                    cacheContent = unprocessedTunnelsStateCache.getAllUnprocessedTunnels();
-                    break;
-                default:
-                    cacheContent = Collections.emptyList();
-            }
-            System.out.println("Number of data in cache " + cacheContent.size());
-            if (!cacheContent.isEmpty()) {
-                for (String key : cacheContent) {
-                    System.out.println(key + " ");
-                }
-            } else {
-                System.out.println("No data in cache for " + cacheName);
-            }
+        } else {
+            System.out.println("No data in cache for " + cacheName);
         }
-    }
-
-    public boolean isInMemoryCacheNameValid(String name) {
-        boolean valid = false;
-        valid = name.equals(ITMConstants.INTERNAL_TUNNEL_CACHE_NAME)
-                || name.equals(ITMConstants.EXTERNAL_TUNNEL_CACHE_NAME)
-                || name.equals(ITMConstants.UNPROCESSED_TUNNELS_CACHE_NAME);
-        return valid;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
