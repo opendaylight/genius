@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import javax.annotation.Nonnull;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
@@ -504,9 +503,9 @@ public final class ItmUtils {
         return collection == null || collection.isEmpty();
     }
 
-    @Nonnull
-    public static HwVtep createHwVtepObject(String topoId, String nodeId, IpAddress ipAddress,
-                                            Class<? extends TunnelTypeBase> tunneltype, TransportZone transportZone) {
+    public static @NonNull HwVtep createHwVtepObject(String topoId, String nodeId, IpAddress ipAddress,
+                                                     Class<? extends TunnelTypeBase> tunneltype,
+                                                     TransportZone transportZone) {
         HwVtep hwVtep = new HwVtep();
         hwVtep.setHwIp(ipAddress);
         hwVtep.setNodeId(nodeId);
