@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
@@ -46,11 +46,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 
 @RunWith(MockitoJUnitRunner.class)
-@PrepareForTest(MDSALUtil.class)
 public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
     DataBroker dataBroker;
@@ -67,8 +64,6 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         mdSalMgr = new MDSALManager(dataBroker, ppS);
         flowFwder = new MockFlowForwarder(dataBroker);
         grpFwder = new MockGroupForwarder(dataBroker);
-
-        PowerMockito.mockStatic(MDSALUtil.class);
 
         NodeKey s1Key = new NodeKey(new NodeId("openflow:1"));
         addFlowCapableNode(s1Key);

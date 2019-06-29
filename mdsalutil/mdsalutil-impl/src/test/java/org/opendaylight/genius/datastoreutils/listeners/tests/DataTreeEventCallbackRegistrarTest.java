@@ -32,7 +32,6 @@ import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledExecutorService;
@@ -150,8 +149,8 @@ public class DataTreeEventCallbackRegistrarTest {
         ListenerRegistration<?> mockListenerReg = mock(ListenerRegistration.class);
         doAnswer(invocation -> {
             ListenerRegistration<?> realReg = db.registerDataTreeChangeListener(
-                invocation.getArgumentAt(0, DataTreeIdentifier.class),
-                invocation.getArgumentAt(1, DataTreeChangeListener.class));
+                invocation.getArgument(0),
+                invocation.getArgument(1));
             doAnswer(ignored -> {
                 realReg.close();
                 return null;
@@ -234,7 +233,7 @@ public class DataTreeEventCallbackRegistrarTest {
 
         DataBroker spiedDataBroker = spy(db);
         final DataTreeChangeListener mockListener = mock(DataTreeChangeListener.class, "TestListener");
-        doAnswer(invocation -> db.registerDataTreeChangeListener(invocation.getArgumentAt(0, DataTreeIdentifier.class),
+        doAnswer(invocation -> db.registerDataTreeChangeListener(invocation.getArgument(0),
                 mockListener)).when(spiedDataBroker).registerDataTreeChangeListener(any(), any());
 
         AtomicBoolean added = new AtomicBoolean(false);
@@ -252,7 +251,7 @@ public class DataTreeEventCallbackRegistrarTest {
         AtomicBoolean onDataTreeChangeDone = new AtomicBoolean(false);
         doAnswer(invocation -> {
             try {
-                realListener.getValue().onDataTreeChanged(invocation.getArgumentAt(0, Collection.class));
+                realListener.getValue().onDataTreeChanged(invocation.getArgument(0));
             } finally {
                 onDataTreeChangeDone.set(true);
             }
@@ -351,7 +350,7 @@ public class DataTreeEventCallbackRegistrarTest {
 
         final DataTreeChangeListener mockListener = mock(DataTreeChangeListener.class);
         doAnswer(invocation -> {
-            db.registerDataTreeChangeListener(invocation.getArgumentAt(0, DataTreeIdentifier.class), mockListener);
+            db.registerDataTreeChangeListener(invocation.getArgument(0), mockListener);
             return mock(ListenerRegistration.class);
         }).when(spiedDataBroker).registerDataTreeChangeListener(any(), any());
 
@@ -377,7 +376,7 @@ public class DataTreeEventCallbackRegistrarTest {
         AtomicBoolean onDataTreeChangeDone = new AtomicBoolean(false);
         doAnswer(invocation -> {
             try {
-                realListener.getValue().onDataTreeChanged(invocation.getArgumentAt(0, Collection.class));
+                realListener.getValue().onDataTreeChanged(invocation.getArgument(0));
             } finally {
                 onDataTreeChangeDone.set(true);
             }
@@ -403,8 +402,8 @@ public class DataTreeEventCallbackRegistrarTest {
         AtomicBoolean updated = new AtomicBoolean(false);
         ListenerRegistration<?> mockListenerReg = mock(ListenerRegistration.class);
         doAnswer(invocation -> {
-            DataTreeChangeListener<?> listener = invocation.getArgumentAt(1, DataTreeChangeListener.class);
-            db.registerDataTreeChangeListener(invocation.getArgumentAt(0, DataTreeIdentifier.class), listener);
+            DataTreeChangeListener<?> listener = invocation.getArgument(1);
+            db.registerDataTreeChangeListener(invocation.getArgument(0), listener);
             db1.syncWrite(OPERATIONAL, FOO_PATH, FOO_DATA);
             await().untilTrue(updated);
             return mockListenerReg;
