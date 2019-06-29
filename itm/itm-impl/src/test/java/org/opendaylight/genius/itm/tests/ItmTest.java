@@ -17,7 +17,6 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWait
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.itm.impl.ItmTestUtils;
-import org.opendaylight.genius.utils.cache.CacheTestUtil;
 import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
@@ -48,11 +47,10 @@ public class ItmTest {
         clearCaches();
     }
 
-    private void clearCaches() {
+    private static void clearCaches() {
         // Explicitly clear stupid static caches
         // (TODO which really need to be de-static-ified instead of doing this..)
         ItmTestUtils.clearAllItmCaches();
-        CacheTestUtil.clearAllCaches();
     }
 
     @Test
