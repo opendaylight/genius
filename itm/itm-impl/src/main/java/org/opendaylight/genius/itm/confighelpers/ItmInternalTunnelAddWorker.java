@@ -424,7 +424,7 @@ public final class ItmInternalTunnelAddWorker {
                                 .child(OvsBridgeRefEntry.class, new OvsBridgeRefEntryKey(dpId)).build();
 
                 eventCallbacks.onAdd(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryFromDS, (refEntryIid) -> {
-                    addPortToBridgeOnCallback(iface, iface.getName(), refEntryIid);
+                    addPortToBridgeOnCallback(iface, tunnelName, refEntryIid);
                     return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
                 }, Duration.ofMillis(5000), (id) -> {
                         try {
