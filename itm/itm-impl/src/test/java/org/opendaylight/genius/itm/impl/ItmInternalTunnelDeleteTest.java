@@ -30,6 +30,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OfEndPointCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -125,6 +126,7 @@ public class ItmInternalTunnelDeleteTest {
     ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
     UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
+    OfEndPointCache ofEndPointCache;
 
 
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
@@ -168,7 +170,7 @@ public class ItmInternalTunnelDeleteTest {
             new OvsBridgeEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
-            directTunnelUtils);
+            directTunnelUtils, ofEndPointCache, itmConfig);
     }
 
     @After
@@ -210,6 +212,7 @@ public class ItmInternalTunnelDeleteTest {
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
         lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
         doReturn(true).when(mockReadWriteTx).cancel();
+        lenient().doReturn(false).when(itmConfig).isUseOfTunnels();
     }
 
     // Since all the unit test cases will be written to the new way, this should be taken care then.
