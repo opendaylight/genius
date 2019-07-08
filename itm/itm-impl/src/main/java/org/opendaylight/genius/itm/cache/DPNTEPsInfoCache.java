@@ -28,6 +28,7 @@ import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -54,7 +55,8 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
     @Inject
     public DPNTEPsInfoCache(final DataBroker dataBroker, final CacheProvider cacheProvider,
                             final DirectTunnelUtils directTunnelUtils, final JobCoordinator coordinator,
-                            final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
+                            final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache,
+                            final IdManagerService idManagerService) {
         super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class).build(), cacheProvider);
         this.directTunnelUtils = directTunnelUtils;
