@@ -40,6 +40,7 @@ import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnTepsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -72,7 +73,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                             CacheProvider cacheProvider, DirectTunnelUtils directTunnelUtils,
                             DPNTEPsInfoCache dpnTepsInfoCache,
                             UnprocessedNodeConnectorCache unprocessedNCCache,
-                            UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
+                            UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache,
+                            final IdManagerService idManagerService) {
         super(DpnsTeps.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class).build(), cacheProvider,
             (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId(),

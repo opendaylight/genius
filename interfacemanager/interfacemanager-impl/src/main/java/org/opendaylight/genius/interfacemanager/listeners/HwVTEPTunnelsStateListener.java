@@ -24,6 +24,7 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.PhysicalSwitchAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
@@ -47,7 +48,8 @@ public class HwVTEPTunnelsStateListener extends AbstractSyncDataTreeChangeListen
                                       @Reference JobCoordinator coordinator,
                                       InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
                                       @Reference ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                      @Reference HwvtepNodeHACache hwvtepNodeHACache) {
+                                      @Reference HwvtepNodeHACache hwvtepNodeHACache,
+                                      final IdManagerService idManagerService) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
                       .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class).build());

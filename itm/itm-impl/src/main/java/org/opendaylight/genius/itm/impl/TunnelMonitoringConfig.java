@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
@@ -43,7 +44,8 @@ public class TunnelMonitoringConfig implements AutoCloseable {
     private final InstanceIdDataObjectCache<TunnelMonitorParams> tunnelMonitorParamsCache;
 
     @Inject
-    public TunnelMonitoringConfig(DataBroker dataBroker, CacheProvider cacheProvider) {
+    public TunnelMonitoringConfig(DataBroker dataBroker, CacheProvider cacheProvider,
+                                  final IdManagerService idManagerService) {
         tunnelMonitorIntervalCache = new InstanceIdDataObjectCache<>(TunnelMonitorInterval.class, dataBroker,
                 LogicalDatastoreType.CONFIGURATION, TUNNEL_MONITOR_INTERVAL_PATH, cacheProvider);
         tunnelMonitorParamsCache = new InstanceIdDataObjectCache<>(TunnelMonitorParams.class, dataBroker,
