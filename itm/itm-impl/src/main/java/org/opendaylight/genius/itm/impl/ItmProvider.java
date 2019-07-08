@@ -101,6 +101,9 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final ItmConfig itmConfig;
     private final JobCoordinator jobCoordinator;
     private final ItmProvider.ItmProviderEOSListener itmProviderEOSListener;
+    public  Integer batchSize;
+    public  Integer batchInterval;
+
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -138,7 +141,6 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.dpnTepStateCache = dpnTepStateCache;
         this.itmStatusProvider = itmDiagStatusProvider;
         this.tunnelStateCache = tunnelStateCache;
-        ITMBatchingUtils.registerWithBatchManager(this.dataBroker);
 
         this.itmConfig = itmConfig;
         this.jobCoordinator = jobCoordinator;
@@ -151,12 +153,26 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         try {
             createIdPool();
             registerEntityForOwnership();
+            initialiseBatchingManager();
             LOG.info("ItmProvider Started");
         } catch (Exception ex) {
             itmStatusProvider.reportStatus(ex);
             LOG.info("ItmProvider failed to start", ex);
             return;
         }
+    }
+
+    public void initialiseBatchingManager() {
+        batchSize = ITMConstants.BATCH_SIZE;
+        LOG.info("entered initialse");
+        if (itmConfig.getBatchSize() != null) {
+            batchSize = itmConfig.getBatchSize();
+        }
+        batchInterval = ITMConstants.PERIODICITY;
+        if (itmConfig.getBatchInterval() != null) {
+            batchInterval = itmConfig.getBatchInterval();
+        }
+        ITMBatchingUtils.registerWithBatchManager(this.dataBroker,this.batchSize,this.batchInterval);
     }
 
     public void createDefaultTransportZone(ItmConfig itmConfigObj) {
