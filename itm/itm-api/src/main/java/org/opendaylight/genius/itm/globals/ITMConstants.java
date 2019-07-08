@@ -26,6 +26,9 @@ public interface ITMConstants {
     int REG6_END_INDEX = 31;
     int JOB_MAX_RETRIES = 6;
 
+    int BATCH_SIZE = 1000;
+    int PERIODICITY = 500;
+
     int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring
     boolean DEFAULT_MONITOR_ENABLED = false;

@@ -97,5 +97,11 @@ module itm-config {
        leaf portname {
            type string;
        }
+       leaf batch-interval {
+            type uint16;
+       }
+       leaf batch-size {
+            type uint16;
+       }
     }
 }
