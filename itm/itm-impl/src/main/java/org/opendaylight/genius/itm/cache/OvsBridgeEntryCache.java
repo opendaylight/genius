@@ -14,6 +14,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.BridgeTunnelInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
@@ -23,7 +24,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class OvsBridgeEntryCache extends DataObjectCache<BigInteger, OvsBridgeEntry> {
 
     @Inject
-    public OvsBridgeEntryCache(DataBroker dataBroker, CacheProvider cacheProvider) {
+    public OvsBridgeEntryCache(DataBroker dataBroker, CacheProvider cacheProvider,
+                               final IdManagerService idManagerService) {
         super(OvsBridgeEntry.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(BridgeTunnelInfo.class).child(OvsBridgeEntry.class).build(), cacheProvider,
             (iid, ovsBridgeEntry) -> ovsBridgeEntry.key().getDpid(),

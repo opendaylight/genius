@@ -192,9 +192,11 @@ public class ItmInternalTunnelAddTest {
 
         directTunnelUtils = new DirectTunnelUtils(idManagerService, mdsalApiManager, entityOwnershipUtils, itmConfig);
         itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
-                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+                new TunnelMonitoringConfig(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+                        idManagerService),
                 itmConfig, directTunnelUtils, interfaceManager,
-                new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
+                new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()),
+                        idManagerService),
                 new OfEndPointCache(), eventCallbacks);
     }
 
