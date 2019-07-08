@@ -17,6 +17,7 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeInternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
@@ -33,7 +34,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class TunnelStateCache extends InstanceIdDataObjectCache<StateTunnelList> {
 
     @Inject
-    public TunnelStateCache(DataBroker dataBroker, CacheProvider cacheProvider) {
+    public TunnelStateCache(DataBroker dataBroker, CacheProvider cacheProvider,
+                            final IdManagerService idManagerService) {
         super(StateTunnelList.class, dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.builder(TunnelsState.class).child(StateTunnelList.class).build(), cacheProvider);
     }

@@ -190,7 +190,7 @@ public class ItmExternalTunnelAddTest {
 
         externalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig,
             new DPNTEPsInfoCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()), directTunnelUtils,
-            jobCoordinator, unprocessedNodeConnectorEndPointCache));
+            jobCoordinator, unprocessedNodeConnectorEndPointCache, idManagerService));
 
     }
 

@@ -16,6 +16,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.IfIndexesInterfaceMap;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._if.indexes._interface.map.IfIndexInterfaceKey;
@@ -25,7 +26,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 public class IfIndexInterfaceCache extends DataObjectCache<Integer, IfIndexInterface> {
 
     @Inject
-    public IfIndexInterfaceCache(@Reference DataBroker dataBroker, @Reference CacheProvider cacheProvider) {
+    public IfIndexInterfaceCache(@Reference DataBroker dataBroker, @Reference CacheProvider cacheProvider,
+                                 final IdManagerService idManagerService) {
         super(IfIndexInterface.class, dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.builder(IfIndexesInterfaceMap.class).child(IfIndexInterface.class).build(),
                 cacheProvider, (iid, ifIndexInterface) -> ifIndexInterface.key().getIfIndex(),

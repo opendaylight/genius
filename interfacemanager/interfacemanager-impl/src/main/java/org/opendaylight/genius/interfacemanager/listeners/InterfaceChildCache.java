@@ -20,6 +20,7 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.InterfaceChildInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
@@ -35,7 +36,8 @@ public class InterfaceChildCache {
     private final InstanceIdDataObjectCache<InterfaceParentEntry> dataObjectCache;
 
     @Inject
-    public InterfaceChildCache(@Reference final DataBroker dataBroker, final @Reference CacheProvider cacheProvider) {
+    public InterfaceChildCache(@Reference final DataBroker dataBroker, final @Reference CacheProvider cacheProvider,
+                               final IdManagerService idManagerService) {
         dataObjectCache = new InstanceIdDataObjectCache<>(InterfaceParentEntry.class,
                 dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(InterfaceChildInfo.class).child(InterfaceParentEntry.class),
