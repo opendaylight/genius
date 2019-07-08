@@ -173,5 +173,11 @@ module itm-config {
           type boolean;
           default false;
        }
+       leaf batch-interval {
+            type uint16;
+       }
+       leaf batch-size {
+            type uint16;
+       }
     }
 }

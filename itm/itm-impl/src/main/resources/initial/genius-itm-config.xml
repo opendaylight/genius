@@ -1,4 +1,6 @@
 <itm-config xmlns="urn:opendaylight:genius:itm:config">
+    <batch-interval>500</batch-interval>
+    <batch-size>1000</batch-size>
     <def-tz-enabled>true</def-tz-enabled>
     <def-tz-tunnel-type>vxlan</def-tz-tunnel-type>
     <tunnel-aggregation>

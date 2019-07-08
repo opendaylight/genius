@@ -25,8 +25,6 @@ public final class ITMBatchingUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ITMBatchingUtils.class);
 
-    private static final int DEF_BATCH_SIZE = 1000;
-    private static final int DEF_PERIODICITY = 500;
 
     private static final BlockingQueue<ActionableResource> DEFAULT_OPERATIONAL_SHARD_BUFFER_Q
             = new LinkedBlockingQueue<>();
@@ -53,10 +51,8 @@ public final class ITMBatchingUtils {
         dataBroker = broker;
     }
 
-    public static void registerWithBatchManager(DataBroker broker) {
+    public static void registerWithBatchManager(DataBroker broker,Integer batchSize,Integer batchInterval) {
         ITMBatchingUtils.setBroker(broker);
-        Integer batchSize = Integer.getInteger("batch.size", DEF_BATCH_SIZE);
-        Integer batchInterval = Integer.getInteger("batch.wait.time", DEF_PERIODICITY);
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
         resBatchingManager.registerBatchableResource("ITM-DEFAULT-OPERATIONAL", DEFAULT_OPERATIONAL_SHARD_BUFFER_Q,
                                                      new DefaultBatchHandler(broker, LogicalDatastoreType.OPERATIONAL,
