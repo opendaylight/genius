@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "06b9334e_373d77d0",
+        "filename": "docs/specs/compute-node-scalein-and-scaleout.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2019-07-09T10:03:44Z",
+      "side": 1,
+      "message": "* missing",
+      "revId": "3c627b10a981fb25f23d135e8b7b8e7073c73bf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
