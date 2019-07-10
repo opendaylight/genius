@@ -16,6 +16,24 @@
       "revId": "3c627b10a981fb25f23d135e8b7b8e7073c73bf2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4c895726_2ab65a75",
+        "filename": "docs/specs/compute-node-scalein-and-scaleout.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 241,
+      "author": {
+        "id": 8158
+      },
+      "writtenOn": "2019-07-10T06:37:39Z",
+      "side": 1,
+      "message": "* is not required there, it is supposed to be one point:\n\nIdentify a compute node which is designated for NAT/subnetroute functionality , scale in that compute, verify that NAT/subnetroute functionality continues to work. Verify that its relevant flows are reprogrammed.",
+      "parentUuid": "06b9334e_373d77d0",
+      "revId": "3c627b10a981fb25f23d135e8b7b8e7073c73bf2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
