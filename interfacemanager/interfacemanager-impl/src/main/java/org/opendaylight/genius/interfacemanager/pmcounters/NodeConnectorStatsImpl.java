@@ -13,12 +13,14 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -149,6 +151,11 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      */
     private class PortStatRequestTask implements Runnable {
 
+        private ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                .setNameFormat("PMStatsHandler-%d").setDaemon(false)
+                .setUncaughtExceptionHandler((thread, ex) -> LOG.error("Uncaught exception {}", thread, ex))
+                .build());
+
         @Override
         public void run() {
             if (LOG.isTraceEnabled()) {
@@ -181,7 +188,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             }
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                }, executorService);
 
                 // Call RPC to Get flow stats for node
                 ListenableFuture<RpcResult<GetFlowStatisticsOutput>> flowStatsFuture =
@@ -207,7 +214,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             }
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                }, executorService);
 
                 delay();
             }
