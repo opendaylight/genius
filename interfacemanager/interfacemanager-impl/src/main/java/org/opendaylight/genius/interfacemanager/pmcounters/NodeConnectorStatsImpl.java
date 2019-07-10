@@ -13,12 +13,12 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +39,7 @@ import org.opendaylight.infrautils.metrics.Counter;
 import org.opendaylight.infrautils.metrics.Labeled;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
 import org.opendaylight.infrautils.metrics.MetricProvider;
-import org.opendaylight.infrautils.utils.UncheckedCloseable;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsOutput;
@@ -148,6 +148,8 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      */
     private class PortStatRequestTask implements Runnable {
 
+        private ExecutorService executorService = Executors.newSingleThreadExecutor("PMStatsHandler", LOG);
+
         @Override
         public void run() {
             if (LOG.isTraceEnabled()) {
@@ -180,7 +182,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             }
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                }, executorService);
 
                 // Call RPC to Get flow stats for node
                 ListenableFuture<RpcResult<GetFlowStatisticsOutput>> flowStatsFuture =
@@ -206,7 +208,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             }
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                }, executorService);
 
                 delay();
             }
