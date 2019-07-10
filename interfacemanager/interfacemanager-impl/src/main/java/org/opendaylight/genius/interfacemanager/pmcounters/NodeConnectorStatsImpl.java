@@ -13,7 +13,6 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -180,7 +179,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             }
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                }, portStatExecutorService);
 
                 // Call RPC to Get flow stats for node
                 ListenableFuture<RpcResult<GetFlowStatisticsOutput>> flowStatsFuture =
@@ -206,7 +205,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                             }
                         }
                     }
-                }, MoreExecutors.directExecutor());
+                }, portStatExecutorService);
 
                 delay();
             }
