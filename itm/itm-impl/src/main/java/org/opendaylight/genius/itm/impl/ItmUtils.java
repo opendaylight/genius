@@ -1528,4 +1528,28 @@ public final class ItmUtils {
         return tunType ;
     }
 
+    public static List<BigInteger> getDpIdFromTransportzone(DataBroker dataBroker, String tzone) {
+        List<BigInteger> listOfDpId = new ArrayList<>();
+        InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
+                .child(TransportZone.class, new TransportZoneKey(tzone)).build();
+        Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                path, dataBroker);
+        if (transportZoneOptional.isPresent()) {
+            TransportZone transportZone = transportZoneOptional.get();
+            if (transportZone.getSubnets() != null && !transportZone.getSubnets().isEmpty()) {
+                for (Subnets sub : transportZone.getSubnets()) {
+                    if (sub.getVteps() != null && !sub.getVteps().isEmpty()) {
+                        List<Vteps> vtepsList = sub.getVteps();
+                        if (vtepsList != null && !vtepsList.isEmpty()) {
+                            for (Vteps vtep : vtepsList) {
+                                listOfDpId.add(vtep.getDpnId());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return listOfDpId;
+    }
+
 }
