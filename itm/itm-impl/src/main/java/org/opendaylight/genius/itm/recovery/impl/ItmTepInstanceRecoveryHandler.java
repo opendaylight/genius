@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.recovery.impl;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,6 +46,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
@@ -71,6 +74,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
     private final IMdsalApiManager imdsalApiManager;
     private final DataTreeEventCallbackRegistrar eventCallbacks;
     private final ManagedNewTransactionRunner txRunner;
+    private final IInterfaceManager interfaceManager;
+    private final DpnTepStateCache dpnTepStateCache;
 
     @Inject
     public ItmTepInstanceRecoveryHandler(DataBroker dataBroker,
@@ -104,6 +109,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
                 ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, ofEndPointCache, itmConfig);
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(getServiceRegistryKey(), this);
+        this.interfaceManager = interfaceManager;
+        this.dpnTepStateCache = dpnTepStateCache;
     }
 
     private String getServiceRegistryKey() {
@@ -152,11 +159,27 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 jobCoordinator.enqueueJob(tzName, tepRemoveWorker);
                 AtomicInteger eventCallbackCount = new AtomicInteger(0);
                 AtomicInteger eventRegistrationCount = new AtomicInteger(0);
-                tunnelList.stream().filter(internalTunnel -> Objects.equals(internalTunnel
-                        .getDestinationDPN(), dpnTepsToRecover.getDPNID()) || Objects.equals(
-                        internalTunnel.getSourceDPN(), dpnTepsToRecover.getDPNID())).forEach(internalTunnel -> {
-                            eventRegistrationCount.incrementAndGet();
-                            interfaceListToRecover.add(String.valueOf(internalTunnel.getTunnelInterfaceNames())); });
+                if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                    Collection<DpnsTeps> dpnsTeps = dpnTepStateCache.getAllPresent();
+                    for (DpnsTeps dpnTep : dpnsTeps) {
+                        List<RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
+                        for (RemoteDpns remoteDpn : rmtdpns) {
+                            if (remoteDpn.getDestinationDpnId().equals(dpnTepsToRecover.getDPNID())
+                                    || dpnTep.getSourceDpnId().equals(dpnTepsToRecover.getDPNID())) {
+                                eventRegistrationCount.incrementAndGet();
+                                interfaceListToRecover.add(remoteDpn.getTunnelName());
+                            }
+                        }
+                    }
+                    LOG.trace("List of tunnels to be recovered : {}", interfaceListToRecover);
+                } else {
+                    tunnelList.stream().filter(internalTunnel -> Objects.equals(internalTunnel
+                            .getDestinationDPN(), dpnTepsToRecover.getDPNID()) || Objects.equals(
+                            internalTunnel.getSourceDPN(), dpnTepsToRecover.getDPNID())).forEach(internalTunnel -> {
+                                eventRegistrationCount.incrementAndGet();
+                                interfaceListToRecover.add(String.valueOf(internalTunnel.getTunnelInterfaceNames()));
+                            });
+                }
 
                 if (!interfaceListToRecover.isEmpty()) {
                     interfaceListToRecover.forEach(interfaceName -> {
@@ -180,7 +203,6 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         }
     }
 
-
     private void recreateTEP(String tzName, List tepts, AtomicInteger eventCallbackCount, int registeredEventSize) {
         eventCallbackCount.incrementAndGet();
         if (eventCallbackCount.intValue() == registeredEventSize || registeredEventSize == 0) {
@@ -188,9 +210,6 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             ItmTepAddWorker tepAddWorker = new ItmTepAddWorker(tepts, null, dataBroker, imdsalApiManager,
                     itmInternalTunnelAddWorker, itmExternalTunnelAddWorker);
             jobCoordinator.enqueueJob(tzName, tepAddWorker);
-        } else {
-            LOG.trace("{} call back events registered for {} tunnel interfaces",
-                    registeredEventSize, eventCallbackCount);
         }
     }
 

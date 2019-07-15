@@ -117,6 +117,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
@@ -1107,4 +1108,23 @@ public final class ItmUtils {
         return tunType ;
     }
 
+    public static List<BigInteger> getDpIdFromTransportzone(DataBroker dataBroker, String tzone) {
+        List<BigInteger> listOfDpId = new ArrayList<>();
+        InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
+                .child(TransportZone.class, new TransportZoneKey(tzone)).build();
+        Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                path, dataBroker);
+        if (transportZoneOptional.isPresent()) {
+            TransportZone transportZone = transportZoneOptional.get();
+            if (transportZone.getVteps() != null && !transportZone.getVteps().isEmpty()) {
+                List<Vteps> vtepsList = transportZone.getVteps();
+                if (vtepsList != null && !vtepsList.isEmpty()) {
+                    for (Vteps vtep : vtepsList) {
+                        listOfDpId.add(vtep.getDpnId());
+                    }
+                }
+            }
+        }
+        return listOfDpId;
+    }
 }
