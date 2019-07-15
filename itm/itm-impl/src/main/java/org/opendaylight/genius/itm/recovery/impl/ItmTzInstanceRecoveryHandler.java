@@ -7,7 +7,10 @@
  */
 package org.opendaylight.genius.itm.recovery.impl;
 
+import java.math.BigInteger;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,6 +21,8 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -27,6 +32,8 @@ import org.opendaylight.serviceutils.srm.ServiceRecoveryInterface;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -47,6 +54,8 @@ public class ItmTzInstanceRecoveryHandler extends
     private final EntityOwnershipUtils entityOwnershipUtils;
     private final DataTreeEventCallbackRegistrar eventCallbacks;
     private final EntityOwnershipService entityOwnershipService;
+    private final IInterfaceManager interfaceManager;
+    private final DpnTepStateCache dpnTepStateCache;
 
     @Inject
     public ItmTzInstanceRecoveryHandler(DataBroker dataBroker,
@@ -54,7 +63,9 @@ public class ItmTzInstanceRecoveryHandler extends
                                         ServiceRecoveryRegistry serviceRecoveryRegistry,
                                         EntityOwnershipUtils entityOwnershipUtils,
                                         EntityOwnershipService entityOwnershipService,
-                                        DataTreeEventCallbackRegistrar eventCallbacks) {
+                                        DataTreeEventCallbackRegistrar eventCallbacks,
+                                        IInterfaceManager interfaceManager,
+                                        DpnTepStateCache dpnTepStateCache) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
                 InstanceIdentifier.create(TunnelsState.class).child(StateTunnelList.class));
         this.dataBroker = dataBroker;
@@ -64,6 +75,9 @@ public class ItmTzInstanceRecoveryHandler extends
         this.entityOwnershipService = entityOwnershipService;
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(getServiceRegistryKey(), this);
         this.eventCallbacks = eventCallbacks;
+        this.interfaceManager = interfaceManager;
+        this.dpnTepStateCache = dpnTepStateCache;
+
     }
 
     private String getServiceRegistryKey() {
@@ -85,7 +99,23 @@ public class ItmTzInstanceRecoveryHandler extends
 
     private void recoverTransportZone(String entityId) throws InterruptedException {
         //List of Internel tunnels
-        List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
+        List<String> tunnelList = new ArrayList<>();
+        if (interfaceManager.isItmDirectTunnelsEnabled()) {
+            Collection<DpnsTeps> dpnsTeps = dpnTepStateCache.getAllPresent();
+            List<BigInteger> listOfDpnIds = ItmUtils.getDpIdFromTransportzone(dataBroker, entityId);
+            for (DpnsTeps dpnTep : dpnsTeps) {
+                List<RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
+                for (RemoteDpns remoteDpn : rmtdpns) {
+                    if (listOfDpnIds.contains(remoteDpn.getDestinationDpnId())) {
+                        tunnelList.add(remoteDpn.getTunnelName());
+                    }
+                }
+            }
+            LOG.trace("List of tunnels to be recovered : {}", tunnelList);
+        } else {
+            //List of Internal tunnels
+            tunnelList.addAll(ItmUtils.getInternalTunnelInterfaces(dataBroker));
+        }
         LOG.debug("List of tunnel interfaces: {}" , tunnelList);
         InstanceIdentifier<TransportZone> tzII = ItmUtils.getTZInstanceIdentifier(entityId);
         TransportZone tz = ItmUtils.getTransportZoneFromConfigDS(entityId , dataBroker);
@@ -101,7 +131,7 @@ public class ItmTzInstanceRecoveryHandler extends
                     LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, tunnelInterface);
                     InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
                     eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL, stListId, (unused) -> {
-                        LOG.trace("callback event for a delete {} interface instance", stListId);
+                        LOG.trace("on removal of {}, event callback triggered", stListId);
                         // recreating the transportZone
                         recreateTZ(entityId, tz, tzII, tunnelList.size(), eventCallbackCount);
                         return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
@@ -110,6 +140,7 @@ public class ItmTzInstanceRecoveryHandler extends
                             recreateTZ(entityId, tz, tzII, tunnelList.size(), eventCallbackCount); });
                 });
             } else {
+                LOG.trace("List of tunnels to be recovered is empty, still recreate transportzone {}",entityId);
                 recreateTZ(entityId, tz, tzII, tunnelList.size(), eventCallbackCount);
             }
         }
@@ -125,9 +156,6 @@ public class ItmTzInstanceRecoveryHandler extends
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(
                     tx -> tx.merge(LogicalDatastoreType.CONFIGURATION, tzII, tz))),
                 ITMConstants.JOB_MAX_RETRIES);
-        } else {
-            LOG.trace("{} call back events registered for {} tunnel interfaces",
-                    registeredEvents, sizeOfTunnelList);
         }
     }
 }
