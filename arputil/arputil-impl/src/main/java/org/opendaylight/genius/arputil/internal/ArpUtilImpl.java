@@ -449,8 +449,14 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
         Future<RpcResult<GetInterfaceFromIfIndexOutput>> interfaceFromIfIndex = odlInterfaceRpcService
                 .getInterfaceFromIfIndex(input);
-        GetInterfaceFromIfIndexOutput interfaceFromIfIndexOutput = interfaceFromIfIndex.get().getResult();
-        return interfaceFromIfIndexOutput.getInterfaceName();
+        if (interfaceFromIfIndex.get().isSuccessful()) {
+            GetInterfaceFromIfIndexOutput interfaceFromIfIndexOutput = interfaceFromIfIndex.get().getResult();
+            return interfaceFromIfIndexOutput.getInterfaceName();
+        } else {
+            LOG.error("RPC call to get interface name for if index {} failed with errors {}", lportTag,
+                interfaceFromIfIndex.get().getErrors());
+            return null;
+        }
     }
 
     private class MacResponderTask implements Runnable {
