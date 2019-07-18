@@ -50,6 +50,210 @@
       "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "addbf888_49208605",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 259,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Lets not change the tunnel name creation logic. Instead, we will assume configurable default values for portName and vlan Id, so that the upgrade is not affected.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4eb508b_bb422747",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 543,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Check if this also can be removed as I feel this will only be used in VtepSchema",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01ff533f_97d437cc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 579,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Can you check if this method is used ?",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9d791092_de9de6c6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 609,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Can this be removed ?",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46efb27a_36b2cbbb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 704,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Can this also be removed ?",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0cb4a01f_9a053739",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/cli/TepCommandHelperTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Can this not be removed instead of commenting it out ?",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2229c3b3_8e3d949a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/cli/TepCommandHelperTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Same as above",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1470d1ff_fafcc80f",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 349,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Why is this commented ? If not required, remove.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "422844a0_f1198f6c",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 354,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "860ba00e_760f5b65",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 367,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01355796_3a116f0b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 374,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d979ac7a_76980dee",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmManagerRpcServiceTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:49:51Z",
+      "side": 1,
+      "message": "Why commented it. If not required, remove",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
