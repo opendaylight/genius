@@ -88,6 +88,6 @@ Below are the requirements for running genius CSIT.
 References
 ==========
 
-[1] `OpenDaylight Genius usrr Guide <http://docs.opendaylight.org/en/latest/user-guide/genius-user-guide.html#interface-manager-operations>`__
+[1] `OpenDaylight Genius user Guide <http://docs.opendaylight.org/en/latest/user-guide/genius-user-guide.html#interface-manager-operations>`__
 
 [2] https://simplyexplainedblog.wordpress.com/2017/04/11/running-odl-csit-locally/
