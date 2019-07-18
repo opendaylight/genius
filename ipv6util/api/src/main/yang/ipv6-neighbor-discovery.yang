@@ -190,5 +190,26 @@ module ipv6-neighbor-discovery {
                 type inet:ipv6-prefix;
             }
         }
+        list route-information-option-list {
+            key "prefix";
+            leaf option-type {
+                type uint8;
+            }
+            leaf option-length {
+                type uint8;
+            }
+            leaf prefix-length {
+                type uint8;
+            }
+            leaf flags {
+                type uint8;
+            }
+            leaf route-lifetime {
+                type uint32;
+            }
+            leaf prefix {
+                type inet:ipv6-prefix;
+            }
+        }
     }
 }

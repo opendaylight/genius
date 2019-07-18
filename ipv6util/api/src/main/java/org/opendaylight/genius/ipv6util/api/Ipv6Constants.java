@@ -31,6 +31,7 @@ public interface Ipv6Constants {
     int IPV6_RA_VALID_LIFETIME = 2592000;
     int IPV6_RA_PREFERRED_LIFETIME = 604800;
     int IPV6_RA_REACHABLE_TIME = 120000;
+    int IPV6_RIO_ROUTE_LIFETIME = 0xffffffff;
 
     short ICMP_V6_MAX_HOP_LIMIT = 255;
     int ICMPV6_OFFSET = 54;
@@ -40,6 +41,8 @@ public interface Ipv6Constants {
     short ICMP_V6_OPTION_PREFIX_INFO = 3;
     short ICMP_V6_OPTION_REDIRECTED_HEADER = 4;
     short ICMP_V6_OPTION_MTU = 5;
+
+    short ICMP_V6_ROUTE_INFORMATION_OPTION = 24;
 
     String ALL_NODES_MCAST_MAC = "33:33:00:00:00:01";
     String ALL_ROUTERS_MCAST_MAC = "33:33:00:00:00:02";
