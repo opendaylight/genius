@@ -61,6 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInputBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
@@ -145,8 +146,11 @@ public class IdManagerTest {
         ReleaseIdInput releaseIdInput = new ReleaseIdInputBuilder().setIdKey(TEST_KEY1).setPoolName(ID_POOL_NAME)
                 .build();
         idManagerService.createIdPool(createIdPoolInput);
-        idManagerService.allocateId(allocateIdInput);
-        assertTrue(idManagerService.releaseId(releaseIdInput).get().isSuccessful());
+        Future<RpcResult<AllocateIdOutput>> allocateIdResult = idManagerService.allocateId(allocateIdInput);
+        assertTrue(allocateIdResult.get().isSuccessful());
+        Future<RpcResult<ReleaseIdOutput>> result = idManagerService.releaseId(releaseIdInput);
+        assertTrue(result.get().isSuccessful());
+        assertEquals(allocateIdResult.get().getResult().getIdValue(), result.get().getResult().getIdValues().get(0));
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         validateIdPools(ExpectedReleaseIdObjects.idPoolParent(), ExpectedReleaseIdObjects.idPoolChild());

@@ -72,6 +72,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.ReleaseIdOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolKey;
@@ -276,11 +277,9 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         String poolName = input.getPoolName();
         String idKey = input.getIdKey();
         String uniqueKey = idUtils.getUniqueKey(poolName, idKey);
-        return FutureRpcResults.fromListenableFuture(LOG, "releaseId", input, () -> {
+        return FutureRpcResults.fromBuilder(LOG, "releaseId", input, () -> {
             idUtils.lock(lockManager, uniqueKey);
-            releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
-            // TODO return the Future from releaseIdFromLocalPool() instead.. check all callers @CheckReturnValue
-            return Futures.immediateFuture((ReleaseIdOutput) null);
+            return releaseIdFromLocalPool(poolName, idUtils.getLocalPoolName(poolName), idKey);
         }).onFailureLogLevel(FutureRpcResults.LogLevel.NONE)
                 .onFailure(e -> {
                     if (e instanceof IdDoesNotExistException) {
@@ -541,7 +540,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return idCount;
     }
 
-    private void releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
+    private ReleaseIdOutputBuilder releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
             throws ReadFailedException, IdManagerException {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
         LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
@@ -570,7 +569,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (!existingIdEntryObject.isPresent()) {
             LOG.info("Specified Id key {} does not exist in id pool {}", idKey, parentPoolName);
             idUtils.unlock(lockManager, idLatchKey);
-            return;
+            throw new IdManagerException(String.format("Specified Id key %s does not exist in id pool %s",
+                    idKey, parentPoolName));
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
         List<Long> idValuesList = nonnull(existingIdEntry.getIdValue());
@@ -587,6 +587,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, txRunner, idUtils,
                         lockManager);
         jobCoordinator.enqueueJob(parentPoolName, job, IdUtils.RETRY_COUNT);
+        return new ReleaseIdOutputBuilder().setIdValues(idValuesList);
     }
 
     private void scheduleCleanUpTask(final IdLocalPool localIdPoolCache,
