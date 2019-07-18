@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9fc05718_aa8aad80",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 11
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:05:38Z",
+      "side": 1,
+      "message": "Can remove this as well",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bd5707f2_e18ef231",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 11
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:05:38Z",
+      "side": 1,
+      "message": "This container can also be removed, isnt it ?\nThis  has been already deprecated.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a89a51db_545fa107",
+        "filename": "itm/itm-api/src/main/yang/itm.yang",
+        "patchSetId": 11
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-18T05:05:38Z",
+      "side": 1,
+      "message": "Remove this tab",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
