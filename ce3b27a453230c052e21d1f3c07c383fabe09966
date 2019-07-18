@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a80d6320_f1106eaf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2019-07-18T09:41:12Z",
+      "side": 1,
+      "message": "remove extra line",
+      "revId": "ce3b27a453230c052e21d1f3c07c383fabe09966",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
