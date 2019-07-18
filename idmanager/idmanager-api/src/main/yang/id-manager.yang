@@ -133,6 +133,12 @@ module id-manager {
                 type string;
              }
         }
+        output {
+             leaf-list id-values{
+                 type uint32;
+                     ordered-by user;
+             }
+        }
     }
 
     rpc allocateIdRange {
