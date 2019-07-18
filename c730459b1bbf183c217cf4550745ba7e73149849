@@ -53,6 +53,227 @@
     },
     {
       "key": {
+        "uuid": "0a1a6c9b_4999e39b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "apart from dpnId and ipAddress, all the arguments are redundant.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "93bff55e_18d079b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Please remove this function altogether.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80d30697_a3fb736c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 163,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "please remove this if block",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa5f34d1_f4e91357",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 175,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Please remove this function as well if there is no usage of it.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5628eefd_865a77e6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 399,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "dpnId and ipAddress are the only valid arguments here.\nRemove all the other ones.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d1705b67_d951059a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 554,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "same as above.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fbee8c46_d7a1afc9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Nitpick: Please correct the indentation.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62d0095b_36004438",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Same nitpick :-)",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "240dbae1_6d93be81",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Same,  correct the indentation.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "684b5769_e6510b12",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "same here.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3e755f6_3341a258",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmExternalTunnelDeleteWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 202,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Same",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ca0a390_4b1502ee",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Indentation",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ecbe340c_ab96da83",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 308,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-18T07:37:16Z",
+      "side": 1,
+      "message": "Remove the redundant parameters.",
+      "revId": "c730459b1bbf183c217cf4550745ba7e73149849",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "addbf888_49208605",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 11
