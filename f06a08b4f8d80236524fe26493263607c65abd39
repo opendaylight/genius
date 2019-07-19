@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46c53cee_375830ed",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-07-19T12:08:06Z",
+      "side": 1,
+      "message": "Shouldn\u0027t there be a limit to the number of attempts?",
+      "revId": "f06a08b4f8d80236524fe26493263607c65abd39",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "404aed9e_157bfa69",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-07-19T12:08:06Z",
+      "side": 1,
+      "message": "An InterruptedException means that an external actor has asked the current thread to stop; swallowing the exception in an infinite loop is a bad idea in the circumstances.",
+      "revId": "f06a08b4f8d80236524fe26493263607c65abd39",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
