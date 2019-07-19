@@ -147,11 +147,23 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         LOG.info("{} close", getClass().getSimpleName());
     }
 
-    private void populateCache() throws ReadFailedException {
+    private void populateCache() {
         // If IP changes during reboot, then there will be orphaned child pools.
         InstanceIdentifier<IdPools> idPoolsInstance = idUtils.getIdPools();
-        Optional<IdPools> idPoolsOptional =
-                singleTxDB.syncReadOptional(LogicalDatastoreType.CONFIGURATION, idPoolsInstance);
+        Optional<IdPools> idPoolsOptional;
+        while (true) {
+            try {
+                idPoolsOptional = singleTxDB.syncReadOptional(LogicalDatastoreType.CONFIGURATION, idPoolsInstance);
+                break;
+            } catch (ReadFailedException e) {
+                LOG.error("Failed to read the id pools due to error. Retrying again...", e);
+            }
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                LOG.error("Thread got interrupted while sleeping");
+            }
+        }
         if (!idPoolsOptional.isPresent()) {
             return;
         }
