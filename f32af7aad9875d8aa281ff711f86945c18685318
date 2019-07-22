@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "46d75ba7_4b10decf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2019-07-22T07:21:20Z",
+      "side": 1,
+      "message": "Please remove this as well as this is also redundant.",
+      "revId": "f32af7aad9875d8aa281ff711f86945c18685318",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
