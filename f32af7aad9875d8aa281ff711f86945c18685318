@@ -16,6 +16,23 @@
       "revId": "f32af7aad9875d8aa281ff711f86945c18685318",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "255b8c99_962d37c3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2019-07-22T09:02:21Z",
+      "side": 1,
+      "message": "This is part of IFM code flow. Let\u0027s not touch it as part of itm cleanup.",
+      "revId": "f32af7aad9875d8aa281ff711f86945c18685318",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
