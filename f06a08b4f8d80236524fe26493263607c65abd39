@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "cca80444_7a42f52b",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2019-07-22T06:39:20Z",
+      "side": 1,
+      "message": "We don\u0027t want any service dependent on IdManager to come up until IdManager is up. Anyway, there is a timeout value of 5 mins for blueprint, so if IdManager doesn\u0027t come up within 5 mins, blueprint will timeout.",
+      "parentUuid": "46c53cee_375830ed",
+      "revId": "f06a08b4f8d80236524fe26493263607c65abd39",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "404aed9e_157bfa69",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 1
