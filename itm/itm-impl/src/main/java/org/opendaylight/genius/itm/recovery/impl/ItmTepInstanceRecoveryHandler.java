@@ -49,7 +49,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.srm.types.rev180626.GeniusItmTep;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -148,7 +149,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             if (oldTz != null) {
                 LOG.trace("Deleting transportzone {}", tzName);
                 ItmTepRemoveWorker tepRemoveWorker = new ItmTepRemoveWorker(tepsToRecover, null, oldTz,
-                        imdsalApiManager, itmInternalTunnelDeleteWorker, dpntePsInfoCache, txRunner, itmConfig);
+                    imdsalApiManager, itmInternalTunnelDeleteWorker, dpntePsInfoCache, txRunner);
                 jobCoordinator.enqueueJob(tzName, tepRemoveWorker);
                 AtomicInteger eventCallbackCount = new AtomicInteger(0);
                 AtomicInteger eventRegistrationCount = new AtomicInteger(0);
@@ -201,25 +202,27 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             return null;
         }
 
-        String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+        for (Subnets sub : transportZone.nonnullSubnets()) {
+            if (sub.getVteps() == null || sub.getVteps().isEmpty()) {
+                LOG.error("Transport Zone {} subnet {} has no vteps", transportZone.getZoneName(), sub.getPrefix());
+            }
+            for (Vteps vtep : sub.nonnullVteps()) {
+                if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
 
-        for (Vteps vtep : transportZone.getVteps()) {
-            if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
+                    List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);
+                    LOG.trace("Transportzone {} found match for tep {} to be recovered", transportZone.getZoneName(),
+                            ipAddress);
 
-                List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);
-                LOG.trace("Transportzone {} found match for tep {} to be recovered", transportZone.getZoneName(),
-                        ipAddress);
+                    //OfTunnels is false byDefault
+                    TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(vtep.getDpnId(),
+                        IpAddressBuilder.getDefaultInstance(ipAddress), vtep.getPortname(), false, sub.getVlanId(),
+                            sub.getPrefix(), sub.getGatewayIp(), zones,transportZone.getTunnelType(),
+                            itmConfig.getDefaultTunnelTos());
 
-                //OfTunnels is false byDefault
-                TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(vtep.getDpnId(),
-                        IpAddressBuilder.getDefaultInstance(ipAddress), portName, false,
-                        vlanId, zones, transportZone.getTunnelType(),
-                        itmConfig.getDefaultTunnelTos());
-
-                List<TunnelEndPoints> teps = new ArrayList<>();
-                teps.add(tunnelEndPoints);
-                return ItmUtils.createDPNTepInfo(vtep.getDpnId(), teps);
+                    List<TunnelEndPoints> teps = new ArrayList<>();
+                    teps.add(tunnelEndPoints);
+                    return ItmUtils.createDPNTepInfo(vtep.getDpnId(), teps);
+                }
             }
         }
         return null;

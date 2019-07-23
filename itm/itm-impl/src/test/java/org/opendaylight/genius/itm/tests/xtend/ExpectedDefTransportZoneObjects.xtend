@@ -9,7 +9,8 @@
 package org.opendaylight.genius.itm.tests.xtend;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsBuilder;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeGre;
@@ -39,14 +40,24 @@ class ExpectedDefTransportZoneObjects {
         new TransportZoneBuilder >> [
             zoneName = ITMConstants.DEFAULT_TRANSPORT_ZONE
             tunnelType = TunnelTypeVxlan
-            vteps = #[
-                new VtepsBuilder >> [
-                    dpnId = ItmTestConstants.INT_DEF_BR_DPID
-                    ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.DEF_TZ_TEP_IP)
-                    optionOfTunnel = false
+
+            subnets = #[
+                new SubnetsBuilder >> [
+                gatewayIp = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP)
+                prefix = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX)
+                vlanId = ITMConstants.DUMMY_VLANID
+
+                    vteps = #[
+                        new VtepsBuilder >> [
+                            dpnId = ItmTestConstants.INT_DEF_BR_DPID
+                            ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.DEF_TZ_TEP_IP)
+                            portname = ITMConstants.DUMMY_PORT
+                            weight = 1
+                            optionOfTunnel = false
+                        ]
+                    ]
                 ]
             ]
-
         ]
     }
 
@@ -54,12 +65,22 @@ class ExpectedDefTransportZoneObjects {
         new TransportZoneBuilder >> [
             zoneName = ITMConstants.DEFAULT_TRANSPORT_ZONE
             tunnelType = TunnelTypeVxlan
-            vteps = #[
-                    new VtepsBuilder >> [
-                        dpnId = ItmTestConstants.INT_DEF_BR_DPID
-                        ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NB_TZ_TEP_IP)
-                        optionOfTunnel = false
+            subnets = #[
+                new SubnetsBuilder >> [
+                gatewayIp = IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_GATEWAY_IP)
+                prefix = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX)
+                vlanId = ITMConstants.DUMMY_VLANID
+
+                vteps = #[
+                        new VtepsBuilder >> [
+                            dpnId = ItmTestConstants.INT_DEF_BR_DPID
+                            ipAddress = IpAddressBuilder.getDefaultInstance(ItmTestConstants.NB_TZ_TEP_IP)
+                            portname = ITMConstants.DUMMY_PORT
+                            weight = 1
+                            optionOfTunnel = false
+                        ]
                     ]
+                ]
             ]
         ]
     }

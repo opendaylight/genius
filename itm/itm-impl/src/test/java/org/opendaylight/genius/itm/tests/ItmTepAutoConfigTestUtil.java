@@ -25,8 +25,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Subnets;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.SubnetsKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.subnets.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class ItmTepAutoConfigTestUtil {
@@ -55,20 +57,21 @@ public final class ItmTepAutoConfigTestUtil {
     /* utility methods */
     public static InstanceIdentifier<TransportZone> getTzIid(String tzName) {
         InstanceIdentifier<TransportZone> tzoneIid =
-                InstanceIdentifier.builder(TransportZones.class)
-                        .child(TransportZone.class, new TransportZoneKey(tzName))
-                        .build();
+            InstanceIdentifier.builder(TransportZones.class)
+                .child(TransportZone.class, new TransportZoneKey(tzName))
+                .build();
 
         return tzoneIid;
     }
 
     public static InstanceIdentifier<Vteps> getTepIid(IpPrefix subnetMaskObj, String tzName,
         BigInteger dpnId, String portName) {
-        VtepsKey vtepkey = new VtepsKey(dpnId);
+        SubnetsKey subnetsKey = new SubnetsKey(subnetMaskObj);
+        VtepsKey vtepkey = new VtepsKey(dpnId, portName);
 
         InstanceIdentifier<Vteps> vtepIid = InstanceIdentifier.builder(TransportZones.class)
             .child(TransportZone.class, new TransportZoneKey(tzName))
-            .child(Vteps.class, vtepkey).build();
+            .child(Subnets.class, subnetsKey).child(Vteps.class, vtepkey).build();
 
         return vtepIid;
     }
