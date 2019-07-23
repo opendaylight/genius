@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class OvsInterfaceConfigRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigRemoveHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
@@ -120,6 +121,7 @@ public final class OvsInterfaceConfigRemoveHelper {
 
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, tx);
         BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
+        EVENT_LOGGER.debug("IFM-OvsInterfaceConfig,REMOVE {}", interfaceName);
         FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
 
         interfaceManagerCommonUtils.deleteParentInterfaceEntry(parentRefs.getParentInterface());
