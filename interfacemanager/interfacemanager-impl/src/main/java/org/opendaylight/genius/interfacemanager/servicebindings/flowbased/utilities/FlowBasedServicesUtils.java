@@ -92,6 +92,7 @@ import org.slf4j.LoggerFactory;
 
 public final class FlowBasedServicesUtils {
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesUtils.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
     private static final int DEFAULT_DISPATCHER_PRIORITY = 10;
 
     private FlowBasedServicesUtils() {
@@ -252,6 +253,7 @@ public final class FlowBasedServicesUtils {
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
 
         writeTransaction.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
+        EVENT_LOGGER.debug("IFM,InstallFlow {}", flow.getId());
     }
 
     private static Node buildInventoryDpnNode(BigInteger dpnId) {
@@ -546,6 +548,7 @@ public final class FlowBasedServicesUtils {
                 .build();
 
         writeTransaction.delete(flowInstanceId);
+        EVENT_LOGGER.debug("IFM,removeFlow {}", flowRef);
     }
 
     public static void removeEgressDispatcherFlows(BigInteger dpId, String iface,
@@ -568,6 +571,7 @@ public final class FlowBasedServicesUtils {
                 .build();
 
         writeTransaction.delete(flowInstanceId);
+        EVENT_LOGGER.debug("IFM,removeFlow {}", flowRef);
     }
 
     public static void removeEgressSplitHorizonDispatcherFlow(BigInteger dpId, String iface,

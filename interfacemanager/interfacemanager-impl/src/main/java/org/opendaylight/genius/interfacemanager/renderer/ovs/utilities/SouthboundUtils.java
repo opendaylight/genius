@@ -82,6 +82,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class SouthboundUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SouthboundUtils.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private static final String BFD_PARAM_ENABLE = "enable";
     private static final String BFD_PARAM_MIN_TX = "min_tx";
@@ -203,7 +204,7 @@ public class SouthboundUtils {
     private void addTunnelPortToBridge(IfTunnel ifTunnel, InstanceIdentifier<?> bridgeIid, Interface iface,
             String portName) {
         LOG.debug("adding tunnel port {} to bridge {}", portName, bridgeIid);
-
+        EVENT_LOGGER.debug("IFM-OvsInterfaceConfig,ADD Tunnelport {} Bridgeid {}", portName, bridgeIid);
         Class<? extends InterfaceTypeBase> type = TUNNEL_TYPE_MAP.get(ifTunnel.getTunnelInterfaceType());
 
         if (type == null) {

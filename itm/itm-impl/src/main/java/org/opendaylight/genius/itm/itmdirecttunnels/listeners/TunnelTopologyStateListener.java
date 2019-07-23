@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeChangeListener<OvsdbBridgeAugmentation> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelTopologyStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final JobCoordinator coordinator;
     private final ManagedNewTransactionRunner txRunner;
@@ -72,6 +73,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
     @Override
     public void remove(@NonNull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                        @NonNull OvsdbBridgeAugmentation bridgeOld) {
+        EVENT_LOGGER.debug("ITM-TunnelTopologyState, REMOVE DTCN received");
         if (directTunnelUtils.isEntityOwner()) {
             LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeOld);
@@ -85,6 +87,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
     @Override
     public void update(@NonNull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                        @NonNull OvsdbBridgeAugmentation bridgeOld, @NonNull OvsdbBridgeAugmentation bridgeNew) {
+        EVENT_LOGGER.debug("ITM-TunnelTopologyState, UPDATE DTCN received");
 
         if (!directTunnelUtils.isEntityOwner()) {
             return;
@@ -110,6 +113,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
     @Override
     public void add(@NonNull InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                     @NonNull OvsdbBridgeAugmentation bridgeNew) {
+        EVENT_LOGGER.debug("ITM-TunnelTopologyState, ADD DTCN received");
         if (directTunnelUtils.isEntityOwner()) {
             LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                     identifier, bridgeNew);
@@ -159,6 +163,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         }
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
             LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeOld, dpnId);
+            EVENT_LOGGER.debug("ITM-TunnelTopologyState, REMOVE {} completed", bridgeOld.getBridgeName().getValue());
             //delete bridge reference entry in interface meta operational DS
             deleteOvsBridgeRefEntry(dpnId, tx);
 
@@ -225,6 +230,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
                     LOG.debug("Interface {} not found in config DS", portName);
                 }
             }
+            EVENT_LOGGER.debug("ITM-TunnelTopologyState, ADD port on {} completed", bridgeName);
         }
     }
 
@@ -249,6 +255,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
 
             BigInteger dpnId = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
             LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
+            EVENT_LOGGER.debug("TunnelTopologyState, ADD bridge {} for {}", bridgeNew.getBridgeName(), dpnId);
 
             // create bridge reference entry in interface meta operational DS
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {

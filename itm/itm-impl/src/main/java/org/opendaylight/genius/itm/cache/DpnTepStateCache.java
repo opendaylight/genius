@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DpnTepStateCache.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final JobCoordinator coordinator;
@@ -152,6 +153,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 TunnelStateAddWorkerForNodeConnector ifStateAddWorker =
                     new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
                         tunnelStateInfoNew);
+                EVENT_LOGGER.debug("ITM-DpnTepStateCache,ADD {}", remoteDpns.getTunnelName());
                 coordinator.enqueueJob(remoteDpns.getTunnelName(), ifStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
             }
         }

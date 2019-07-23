@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class OvsInterfaceTopologyStateUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceTopologyStateUpdateHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
@@ -106,6 +107,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                     .getInterfaceStateFromOperDS(terminationPointNew.getName());
             if (interfaceState != null && interfaceState.getOperStatus() != Interface.OperStatus.Unknown
                     && interfaceState.getOperStatus() != interfaceBfdStatus) {
+                EVENT_LOGGER.debug("IFM-OvsInterfaceTopologyState,UPDATE {} to STATUS {}", interfaceName,
+                        interfaceState.getOperStatus());
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName, interfaceBfdStatus);
                 return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     tx -> InterfaceManagerCommonUtils.updateOpState(tx, interfaceName, interfaceBfdStatus)));
