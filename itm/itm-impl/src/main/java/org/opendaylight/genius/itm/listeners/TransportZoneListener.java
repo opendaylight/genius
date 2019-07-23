@@ -89,6 +89,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransportZoneListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final JobCoordinator jobCoordinator;
@@ -163,6 +164,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     public void remove(@NonNull InstanceIdentifier<TransportZone> instanceIdentifier,
                        @NonNull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
+        EVENT_LOGGER.debug("ITM-Transportzone,REMOVE {}", transportZone.getZoneName());
         boolean allowTunnelDeletion;
 
         // check if TZ received for removal is default-transport-zone,
@@ -188,6 +190,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (allowTunnelDeletion) {
             //TODO : DPList code can be refactor with new specific class
             // which implement TransportZoneValidator
+            EVENT_LOGGER.debug("ITM-Transportzone,TunnelDeletion {}", transportZone.getZoneName());
             List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
             List<HwVtep> hwVtepList = createhWVteps(transportZone);
             LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
@@ -219,6 +222,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                        @NonNull TransportZone originalTransportZone, @NonNull TransportZone updatedTransportZone) {
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                   updatedTransportZone);
+        EVENT_LOGGER.debug("ITM-Transportzone,UPDATE {}", updatedTransportZone.getZoneName());
         List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
         List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
         List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
@@ -284,6 +288,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     @Override
     public void add(@NonNull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Add Event: {}", transportZone);
+        EVENT_LOGGER.debug("ITM-Transportzone,ADD {}", transportZone.getZoneName());
         List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
         //avoiding adding duplicates from nothosted to new dpnlist.
         List<DPNTEPsInfo> duplicateFound = new ArrayList<>();
@@ -429,7 +434,6 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone) {
-
         Map<BigInteger, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> dpnTepInfo = new ArrayList<>();
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(transportZone.getZoneName());
@@ -456,6 +460,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                         LOG.trace("DpnID: {}, port: {}, ipAddress: {}", dpnID, port, ipAddress);
                         TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(dpnID, ipAddress, port,
                             useOfTunnel, vlanID,  ipPrefix, gatewayIP, zones, tunnelType, tos);
+                        EVENT_LOGGER.debug("ITM-createDPNTepInfo for {} {}",dpnID,
+                                ipAddress.getIpv4Address().getValue());
                         List<TunnelEndPoints> tunnelEndPointsList = mapDPNToTunnelEndpt.get(dpnID);
                         if (tunnelEndPointsList != null) {
                             LOG.trace("Existing DPN info list in the Map: {} ", dpnID);
