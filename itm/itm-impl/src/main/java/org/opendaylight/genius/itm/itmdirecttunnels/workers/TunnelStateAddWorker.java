@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 public final class TunnelStateAddWorker {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelStateAddWorker.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DirectTunnelUtils directTunnelUtils;
     private final ManagedNewTransactionRunner txRunner;
@@ -70,9 +71,11 @@ public final class TunnelStateAddWorker {
         String interfaceName = tunnelName;
 
         long portNo = DirectTunnelUtils.getPortNumberFromNodeConnectorId(nodeConnectorId);
+        EVENT_LOGGER.debug("ITM-TunnelState, ADD to oper DS {}", interfaceName);
         if (portNo == ITMConstants.INVALID_PORT_NO) {
             LOG.error("Cannot derive port number, not proceeding with Interface State addition for interface: {}",
                 interfaceName);
+            EVENT_LOGGER.debug("ITM-TunnelState,ADD Table 0 flow for {} completed", interfaceName);
             return Collections.emptyList();
         }
 
