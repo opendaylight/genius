@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DPNTEPsInfoCache.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DirectTunnelUtils directTunnelUtils;
     private final JobCoordinator coordinator;
@@ -136,6 +137,7 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                         .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
                         .setSrcDpnTepsInfo(srcDpnTepsInfo).setDstDpnTepsInfo(dstDpnTepsInfo).build();
                     LOG.debug("Queueing TunnelStateAddWorker to DJC for tunnel {}", interfaceName);
+                    EVENT_LOGGER.debug("ITM-DpnTepsInfoCache,ADD {}", interfaceName);
                     coordinator.enqueueJob(interfaceName,
                         new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
                             tunnelStateInfoNew), ITMConstants.JOB_MAX_RETRIES);

@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class OvsVlanMemberConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigUpdateHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
@@ -63,6 +64,8 @@ public class OvsVlanMemberConfigUpdateHelper {
             IfL2vlan ifL2vlanNew, Interface interfaceNew) {
         LOG.info("updating interface configuration for vlan memeber {} with parent-interface {}", interfaceNew
             .getName(), parentRefsNew.getParentInterface());
+        EVENT_LOGGER.debug("IFM-OVSVlanMemberConfig,UPDATE Parent {},Child {}", parentRefsNew.getParentInterface(),
+                interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         ParentRefs parentRefsOld = interfaceOld.augmentation(ParentRefs.class);
 

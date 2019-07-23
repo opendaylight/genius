@@ -46,6 +46,7 @@ public class TerminationPointStateListener
         extends AbstractClusteredSyncDataTreeChangeListener<OvsdbTerminationPointAugmentation> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
@@ -93,6 +94,7 @@ public class TerminationPointStateListener
             LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (DirectTunnelUtils.changeInBfdMonitoringDetected(tpOld, tpNew)
                     || DirectTunnelUtils.ifBfdStatusNotEqual(tpOld, tpNew)) {
+                EVENT_LOGGER.debug("ITM-TerminationPointState,UPDATE {}", tpNew.getName());
                 LOG.info("Bfd Status changed for ovsdb termination point identifier: {},  old: {}, new: {}",
                         identifier, tpOld, tpNew);
                 RendererTunnelStateUpdateWorker rendererStateAddWorker = new RendererTunnelStateUpdateWorker(tpNew);
@@ -108,6 +110,7 @@ public class TerminationPointStateListener
                 && dpnTepStateCache.isInternal(tpNew.getName())) {
             LOG.debug("Received add DataChange Notification for ovsdb termination point {}", tpNew.getName());
             if (tpNew.getInterfaceBfdStatus() != null  && !tpNew.getInterfaceBfdStatus().isEmpty()) {
+                EVENT_LOGGER.debug("ITM-TerminationPointState,ADD {}", tpNew.getName());
                 LOG.debug("Received termination point added notification with bfd status values {}", tpNew.getName());
                 RendererTunnelStateUpdateWorker rendererStateUpdateWorker = new RendererTunnelStateUpdateWorker(tpNew);
                 coordinator.enqueueJob(tpNew.getName(), rendererStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);
