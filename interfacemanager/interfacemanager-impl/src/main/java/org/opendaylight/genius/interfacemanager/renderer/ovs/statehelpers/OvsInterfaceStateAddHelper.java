@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class OvsInterfaceStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceStateAddHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
@@ -129,9 +130,10 @@ public final class OvsInterfaceStateAddHelper {
                         ifState.getIfIndex());
                 futures.add(FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, iface,
                         Long.toString(portNo), interfaceName, ifState.getIfIndex()));
+                EVENT_LOGGER.debug("IFM-OvsInterfaceState, ADD, IngressFlow {}", interfaceName);
             }
         }));
-
+        EVENT_LOGGER.debug("IFM-OvsInterfaceState,ADD {}", interfaceName);
         return futures;
     }
 
@@ -139,6 +141,7 @@ public final class OvsInterfaceStateAddHelper {
             Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
+        EVENT_LOGGER.debug("IFM-OvsInterfaceState,ADD,TunnelIngressFlow {}", interfaceName);
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(

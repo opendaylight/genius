@@ -60,6 +60,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(FlowBasedServicesConfigListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private ListenerRegistration<FlowBasedServicesConfigListener> listenerRegistration;
     private final DataBroker dataBroker;
@@ -258,6 +259,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
             futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                 BoundServicesState boundServicesState = FlowBasedServicesUtils
                         .getBoundServicesState(tx, interfaceName, serviceMode);
+                EVENT_LOGGER.debug("IFM-ServiceBindingConfig, BIND {}, {}", interfaceName,
+                        boundServicesNew.getServiceName());
                 // if service-binding state is not present, construct the same using ifstate
                 if (boundServicesState == null) {
                     Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
@@ -309,6 +312,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
                 if (boundServicesList == null || boundServicesList.isEmpty()) {
                     FlowBasedServicesUtils.removeBoundServicesState(tx, interfaceName, serviceMode);
                 }
+                EVENT_LOGGER.debug("IFM-ServiceBindingConfig, UNBIND {}, {}", interfaceName,
+                        boundServicesNew.getServiceName());
                 flowBasedServicesConfigRemovable.unbindService(futures, interfaceName, boundServicesNew,
                         boundServicesList, boundServiceState);
             }));

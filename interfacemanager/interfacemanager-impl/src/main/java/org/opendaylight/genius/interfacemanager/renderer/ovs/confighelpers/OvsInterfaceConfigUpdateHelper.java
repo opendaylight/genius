@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class OvsInterfaceConfigUpdateHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsInterfaceConfigUpdateHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final JobCoordinator coordinator;
@@ -102,6 +103,7 @@ public class OvsInterfaceConfigUpdateHelper {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> handleTunnelMonitorUpdates(tx, interfaceNew, interfaceOld)));
         } else if (!Objects.equals(interfaceNew.isEnabled(), interfaceOld.isEnabled())) {
+            EVENT_LOGGER.debug("IFM-OvsInterfaceConfig,UPDATE {}", interfaceNew.getName());
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                 tx -> handleInterfaceAdminStateUpdates(tx, interfaceNew, ifState)));
         }
