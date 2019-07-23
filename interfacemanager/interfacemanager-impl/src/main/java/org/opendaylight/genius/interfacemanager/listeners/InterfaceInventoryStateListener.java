@@ -79,6 +79,8 @@ public class InterfaceInventoryStateListener
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
+
     private final DataBroker dataBroker;
     private final ManagedNewTransactionRunner txRunner;
     private final IdManagerService idManager;
@@ -144,6 +146,7 @@ public class InterfaceInventoryStateListener
     protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         String interfaceName = flowCapableNodeConnectorOld.getName();
+        EVENT_LOGGER.debug("IFM-InterfaceInventoryState,REMOVE {}", interfaceName);
         if (interfacemgrProvider.isItmDirectTunnelsEnabled()
             && InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
@@ -162,6 +165,8 @@ public class InterfaceInventoryStateListener
             .getId();
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
+        EVENT_LOGGER.debug("IFM-InterfaceInventoryState Entity Owner,REMOVE {},{}", portName,
+                nodeConnectorId.getValue());
 
         remove(nodeConnectorId, null, flowCapableNodeConnectorOld, portName, true);
     }
@@ -172,6 +177,7 @@ public class InterfaceInventoryStateListener
                 nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName,
                 isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
+        EVENT_LOGGER.debug("Job Submitted to Sequencer portStateRemoveWorker for {}", portName);
         LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
         portNameCache.remove(nodeConnectorIdNew.getValue());
     }
@@ -180,6 +186,8 @@ public class InterfaceInventoryStateListener
     protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
         FlowCapableNodeConnector fcNodeConnectorNew) {
         String interfaceName = fcNodeConnectorNew.getName();
+        EVENT_LOGGER.debug("IFM-InterfaceInventoryState,UPDATE {},{}", fcNodeConnectorNew.getName(),
+                fcNodeConnectorNew.getReason());
         if (interfacemgrProvider.isItmDirectTunnelsEnabled()
             && InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
@@ -199,6 +207,8 @@ public class InterfaceInventoryStateListener
         NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
                 fcNodeConnectorNew.getName());
+        EVENT_LOGGER.debug("IFM-InterfaceInventoryState Entity Owner,UPDATE {},{}", portName,
+                nodeConnectorId.getValue());
 
         InterfaceStateUpdateWorker portStateUpdateWorker = new InterfaceStateUpdateWorker(key, fcNodeConnectorOld,
             fcNodeConnectorNew, portName);
@@ -208,6 +218,7 @@ public class InterfaceInventoryStateListener
     @Override
     protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
         String interfaceName = fcNodeConnectorNew.getName();
+        EVENT_LOGGER.debug("IFM-InterfaceInventoryState,ADD {}", interfaceName);
         if (interfacemgrProvider.isItmDirectTunnelsEnabled()
             && InterfaceManagerCommonUtils.isTunnelPort(interfaceName)
             && interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName) == null) {
@@ -230,6 +241,7 @@ public class InterfaceInventoryStateListener
         portNameCache.put(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
+        EVENT_LOGGER.debug("IFM-InterfaceInventoryState Entity Owner,ADD {},{}", portName, nodeConnectorId.getValue());
 
         if (InterfaceManagerCommonUtils.isNovaPort(portName) || InterfaceManagerCommonUtils.isK8SPort(portName)) {
             NodeConnectorId nodeConnectorIdOld =
@@ -247,6 +259,7 @@ public class InterfaceInventoryStateListener
                     LOG.warn("Port number update detected for {}", fcNodeConnectorNew.getName());
                 }
                 //VM Migration or Port Number Update: Delete existing interface entry for older DPN
+                EVENT_LOGGER.debug("IFM-VMMigration,{}", portName);
                 LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName,
                     nodeConnectorId, nodeConnectorIdOld);
                 remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
@@ -412,6 +425,7 @@ public class InterfaceInventoryStateListener
                             fcNodeConnectorOld,
                             operTx);
                     } else {
+                        EVENT_LOGGER.debug("IFM-OvsInterfaceState,REMOVE {}", interfaceName);
                         InterfaceManagerCommonUtils.deleteStateEntry(operTx, interfaceName);
                         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
                             .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
@@ -432,6 +446,7 @@ public class InterfaceInventoryStateListener
                             FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
                             IfmUtil.unbindService(txRunner, coordinator, iface.getName(),
                                     FlowBasedServicesUtils.buildDefaultServiceId(iface.getName()));
+                            EVENT_LOGGER.debug("IFM-InterfaceState, REMOVE, IngressFlow {}", interfaceName);
                         }
                         // Delete the Vpn Interface from DpnToInterface Op DS.
                         InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
