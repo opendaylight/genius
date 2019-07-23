@@ -67,6 +67,7 @@ public class TunnelInventoryStateListener extends
     AbstractClusteredSyncDataTreeChangeListener<FlowCapableNodeConnector> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TunnelInventoryStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final JobCoordinator coordinator;
     private final ManagedNewTransactionRunner txRunner;
@@ -104,6 +105,8 @@ public class TunnelInventoryStateListener extends
                        @NonNull FlowCapableNodeConnector flowCapableNodeConnector) {
         String portName = flowCapableNodeConnector.getName();
         LOG.debug("InterfaceInventoryState Remove for {}", portName);
+        EVENT_LOGGER.debug("ITM-TunnelInventoryState,REMOVE DTCN received for {}",
+                flowCapableNodeConnector.getName());
         // ITM Direct Tunnels Return if its not tunnel port and if its not Internal
         if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Remove - {} Interface is not a tunnel I/f, so no-op", portName);
@@ -129,7 +132,10 @@ public class TunnelInventoryStateListener extends
 
     private void remove(NodeConnectorId nodeConnectorId,
                         FlowCapableNodeConnector fcNodeConnectorNew, String portName) {
+        LOG.debug("TunnelInventoryState REMOVE for {}", portName);
         LOG.debug("InterfaceInventoryState REMOVE for {}", portName);
+        EVENT_LOGGER.debug("ITM-TunnelInventoryState Entity Owner, REMOVE {} {}", nodeConnectorId.getValue(),
+                portName);
         TunnelInterfaceStateRemoveWorker portStateRemoveWorker = new TunnelInterfaceStateRemoveWorker(nodeConnectorId,
                 fcNodeConnectorNew, portName);
         coordinator.enqueueJob(portName, portStateRemoveWorker, ITMConstants.JOB_MAX_RETRIES);
@@ -139,6 +145,7 @@ public class TunnelInventoryStateListener extends
     public void update(@NonNull InstanceIdentifier<FlowCapableNodeConnector> key,
                        @NonNull FlowCapableNodeConnector fcNodeConnectorOld,
                        @NonNull FlowCapableNodeConnector fcNodeConnectorNew) {
+        EVENT_LOGGER.debug("ITM-TunnelInventoryState,UPDATE DTCN received for {}", fcNodeConnectorOld.getName());
         String portName = fcNodeConnectorNew.getName();
         if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
             LOG.debug("Node Connector Update - {} Interface is not a tunnel I/f, so no-op", portName);
@@ -154,6 +161,8 @@ public class TunnelInventoryStateListener extends
 
         TunnelInterfaceStateUpdateWorker portStateUpdateWorker =
                 new TunnelInterfaceStateUpdateWorker(key, fcNodeConnectorOld, fcNodeConnectorNew, portName);
+        EVENT_LOGGER.debug("ITM-TunnelInventoryState Entity Owner, UPDATE {} {} Reason {}",
+                fcNodeConnectorNew.getName(), portName, fcNodeConnectorNew.getReason());
         coordinator.enqueueJob(portName, portStateUpdateWorker, ITMConstants.JOB_MAX_RETRIES);
     }
 
@@ -161,6 +170,7 @@ public class TunnelInventoryStateListener extends
     public void add(@NonNull InstanceIdentifier<FlowCapableNodeConnector> key,
                     @NonNull FlowCapableNodeConnector fcNodeConnectorNew) {
         LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
+        EVENT_LOGGER.debug("ITM-TunnelInventoryState,ADD DTCN received for {}", fcNodeConnectorNew.getName());
         String portName = fcNodeConnectorNew.getName();
         // Return if its not tunnel port and if its not Internal
         if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
@@ -212,6 +222,10 @@ public class TunnelInventoryStateListener extends
 
         if (tunnelEndPtInfo != null && tunnelStateInfo.getSrcDpnTepsInfo() != null
             && tunnelStateInfo.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
+            NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
+                    .getId();
+            EVENT_LOGGER.debug("ITM-TunnelInventoryState Entity Owner,ADD {} {}",
+                    nodeConnectorId.getValue(), portName);
             coordinator.enqueueJob(portName,
                 new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
                     tunnelStateInfo), ITMConstants.JOB_MAX_RETRIES);
@@ -261,14 +275,15 @@ public class TunnelInventoryStateListener extends
                 // modify the attributes in interface operational DS
                 handleInterfaceStateUpdates(tx, dpnTepInfo, true, interfaceName, flowCapableNodeConnectorNew.getName(),
                         operStatusNew);
-
+                EVENT_LOGGER.debug("ITM-TunnelInventoryState, UPDATE {} CHGED {} completed", interfaceName,
+                        operStatusNew.getName());
             }));
         } else {
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // modify the attributes in interface operational DS
                 handleInterfaceStateUpdates(tx, dpnTepInfo, false, interfaceName,
                         flowCapableNodeConnectorNew.getName(), operStatusNew);
-
+                EVENT_LOGGER.debug("ITM-TunnelInventoryState, UPDATE {} completed", interfaceName);
             }));
         }
     }
@@ -342,6 +357,7 @@ public class TunnelInventoryStateListener extends
                     directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
                     directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
                     directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
+                    EVENT_LOGGER.debug("ITM-TunnelInventoryState,REMOVE Table 0 flow for {} completed", interfaceName);
                 }));
             } else {
                 LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
