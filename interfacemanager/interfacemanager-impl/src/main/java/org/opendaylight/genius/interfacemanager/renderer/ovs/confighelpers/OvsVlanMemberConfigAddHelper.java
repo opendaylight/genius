@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class OvsVlanMemberConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(OvsVlanMemberConfigAddHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final ManagedNewTransactionRunner txRunner;
     private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
@@ -43,6 +44,8 @@ public class OvsVlanMemberConfigAddHelper {
 
     public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
         LOG.info("adding vlan member configuration for interface {}", interfaceNew.getName());
+        EVENT_LOGGER.debug("IFM-OVSVlanMemberConfig,ADD Parent {},Child {}", parentRefs.getParentInterface(),
+                interfaceNew.getName());
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> interfaceManagerCommonUtils.createInterfaceChildEntry(tx, parentRefs.getParentInterface(),
