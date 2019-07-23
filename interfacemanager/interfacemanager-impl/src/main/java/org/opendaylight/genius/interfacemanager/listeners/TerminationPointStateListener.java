@@ -42,6 +42,7 @@ public class TerminationPointStateListener extends
         AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener>
         implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final InterfacemgrProvider interfaceMgrProvider;
     private final DataBroker dataBroker;
@@ -106,6 +107,7 @@ public class TerminationPointStateListener extends
         }
         if (tpOld.getInterfaceBfdStatus() != null) {
             LOG.debug("Received termination point removed notification with bfd status values {}", tpOld.getName());
+            EVENT_LOGGER.debug("IFM-TerminationPointState,REMOVE {}", tpOld.getName());
             RendererStateRemoveWorker rendererStateRemoveWorker = new RendererStateRemoveWorker(tpOld);
             coordinator.enqueueJob(tpOld.getName(), rendererStateRemoveWorker);
         }
@@ -125,7 +127,7 @@ public class TerminationPointStateListener extends
 
 
         LOG.debug("Received Update DataChange Notification for ovsdb termination point {}", tpNew.getName());
-
+        EVENT_LOGGER.debug("IFM-TerminationPointState,UPDATE {}", tpNew.getName());
         if (org.opendaylight.genius.interfacemanager.renderer.ovs.utilities
                 .SouthboundUtils.changeInBfdMonitoringDetected(tpOld, tpNew)
                 || org.opendaylight.genius.interfacemanager.renderer.ovs.utilities

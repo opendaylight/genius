@@ -104,6 +104,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public final class InterfaceManagerCommonUtils {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceManagerCommonUtils.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private static final String NOVA_PORT_REGEX = "(tap|vhu)[0-9a-f]{8}-[0-9a-f]{2}";
     private static final String TUNNEL_PORT_REGEX = "tun[0-9a-f]{11}";
@@ -441,6 +442,7 @@ public final class InterfaceManagerCommonUtils {
                     + "interface-state is available", interfaceName);
             return;
         }
+        EVENT_LOGGER.debug("IFM-OvsInterfaceConfig,Interface-State,ADD {}", interfaceName);
         LOG.debug("adding interface state for {}", interfaceName);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus operStatus = ifState

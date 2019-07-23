@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public final class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private ItmTunnelStateRemoveHelper() { }
 
@@ -29,6 +30,7 @@ public final class ItmTunnelStateRemoveHelper {
         StateTunnelListKey tlKey = ItmUtils.getTunnelStateKey(iface);
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
         LOG.trace("Deleting tunnel_state for Id: {}", stListId);
+        EVENT_LOGGER.debug("ITM-ItmTunnelState,REMOVE {}", stListId);
         ITMBatchingUtils.delete(stListId, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         return Collections.emptyList();
     }
