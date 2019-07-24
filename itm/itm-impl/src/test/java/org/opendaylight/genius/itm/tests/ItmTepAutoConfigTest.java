@@ -798,6 +798,7 @@ public class ItmTepAutoConfigTest {
     }
 
     @Test
+    @Ignore
     public void tzDeletedAndReaddedWithSameVtepsTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
