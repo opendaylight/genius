@@ -279,10 +279,13 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                         continue;
                     }
                 } else {
-                    LOG.trace("PortUuid is not found for portname {}. Skipping IFM counters publish for this port.",
+                    LOG.trace("PortUuid is not present for portname {}. Skipping IFM counters publish for this port.",
                         portName.get());
                     continue;
                 }
+            } else {
+                LOG.trace("Port {} not found in PortName Cache.", portNameInCache);
+                continue;
             }
 
             Counter counter = getCounter(CounterConstants.IFM_PORT_COUNTER_OFPORT_DURATION, dpid, port, portUuid,null);
