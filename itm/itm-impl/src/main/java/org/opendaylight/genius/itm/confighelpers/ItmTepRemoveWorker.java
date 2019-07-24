@@ -20,6 +20,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
@@ -40,13 +41,15 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
     private final ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
     private final ManagedNewTransactionRunner txRunner;
+    private final ItmConfig itmConfig;
 
     private Collection<DPNTEPsInfo> meshedDpnList ;
 
     public ItmTepRemoveWorker(List<DPNTEPsInfo> delDpnList, List<HwVtep> delHwList, TransportZone originalTZone,
                               IMdsalApiManager mdsalManager,
                               ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker,
-                              DPNTEPsInfoCache dpnTEPsInfoCache, ManagedNewTransactionRunner txRunner) {
+                              DPNTEPsInfoCache dpnTEPsInfoCache, ManagedNewTransactionRunner txRunner,
+                              ItmConfig itmConfig) {
         this.delDpnList = delDpnList;
         this.mdsalManager = mdsalManager;
         this.cfgdHwVteps = delHwList;
@@ -54,6 +57,7 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
         this.itmInternalTunnelDeleteWorker = itmInternalTunnelDeleteWorker;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
         this.txRunner = txRunner;
+        this.itmConfig = itmConfig;
         LOG.trace("ItmTepRemoveWorker initialized with  DpnList {}", delDpnList);
         LOG.trace("ItmTepRemoveWorker initialized with  cfgdHwTeps {}", delHwList);
     }
@@ -79,7 +83,8 @@ public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>
             }
         ));
         futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-            tx -> ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(delDpnList, cfgdHwVteps, this.originalTZone, tx)));
+            tx -> ItmExternalTunnelDeleteWorker.deleteHwVtepsTunnels(delDpnList, cfgdHwVteps, this.originalTZone, tx,
+                    itmConfig)));
         return futures;
     }
 
