@@ -39,6 +39,30 @@
       "revId": "131ae238918939cd116f404ac4b87a57f4aa1135",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f65edb97_42849e5d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/pmcounters/NodeConnectorStatsImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 7970
+      },
+      "writtenOn": "2019-07-24T10:08:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "cbea8b79_98054e10",
+      "range": {
+        "startLine": 152,
+        "startChar": 8,
+        "endLine": 152,
+        "endChar": 107
+      },
+      "revId": "131ae238918939cd116f404ac4b87a57f4aa1135",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
