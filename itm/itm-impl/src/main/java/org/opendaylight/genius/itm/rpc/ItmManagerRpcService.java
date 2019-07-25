@@ -43,6 +43,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
+import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -154,7 +155,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelOutput;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.Computes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.get.dpn.info.output.ComputesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -360,30 +360,52 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public ListenableFuture<RpcResult<SetBfdParamOnTunnelOutput>> setBfdParamOnTunnel(
             SetBfdParamOnTunnelInput input) {
-        BigInteger srcDpnId = new BigInteger(input.getSourceNode());
-        BigInteger destDpnId = new BigInteger(input.getDestinationNode());
+        final BigInteger srcDpnId = new BigInteger(input.getSourceNode());
+        final BigInteger destDpnId = new BigInteger(input.getDestinationNode());
+        LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
+        final SettableFuture<RpcResult<SetBfdParamOnTunnelOutput>> result = SettableFuture.create();
+        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
+            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
+        });
+
+        future.addCallback(new FutureCallback<Void>() {
+            @Override
+            public void onSuccess(Void voidInstance) {
+                result.set(RpcResultBuilder.<SetBfdParamOnTunnelOutput>success().build());
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                String msg = "Unable to remove external tunnel from DPN";
+                LOG.error("remove ext tunnel failed. {}.", msg, error);
+                result.set(RpcResultBuilder.<SetBfdParamOnTunnelOutput>failed()
+                        .withError(RpcError.ErrorType.APPLICATION, msg, error).build());
+            }
+        }, MoreExecutors.directExecutor());
+        return result;
+    }
+
+    private void enableBFD(TypedWriteTransaction<Datastore.Configuration> tx, BigInteger srcDpnId, BigInteger destDpnId,
+                           final Boolean enabled, final Integer interval) throws ReadFailedException {
         DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
-        return fromListenableFuture(LOG, input,
-            () -> Futures.transform(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-                java.util.Objects.requireNonNull(dpnTepInterfaceInfo, "dpnTepInterfaceInfo");
-                RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
-                remoteDpnsBuilder.withKey(new RemoteDpnsKey(destDpnId));
-                remoteDpnsBuilder.setDestinationDpnId(destDpnId);
-                remoteDpnsBuilder.setTunnelName(dpnTepInterfaceInfo.getTunnelName());
-                remoteDpnsBuilder.setInternal(dpnTepInterfaceInfo.isInternal());
-                if (input.isMonitoringEnabled() && input.getMonitoringInterval() != null) {
-                    remoteDpnsBuilder.setMonitoringInterval(input.getMonitoringInterval());
-                }
-                remoteDpnsBuilder.setMonitoringEnabled(input.isMonitoringEnabled());
-                RemoteDpns remoteDpn = remoteDpnsBuilder.build();
-                Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(srcDpnId);
-                directTunnelUtils.updateBfdConfiguration(srcDpnId, remoteDpn, ovsBridgeRefEntry);
-                InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class)
-                        .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
-                        .child(RemoteDpns.class,
-                                new RemoteDpnsKey(destDpnId)).build();
-                tx.merge(LogicalDatastoreType.CONFIGURATION, iid, remoteDpn);
-            }), unused -> new SetBfdParamOnTunnelOutputBuilder().build(), MoreExecutors.directExecutor())).build();
+        RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
+        remoteDpnsBuilder.withKey(new RemoteDpnsKey(destDpnId)).setDestinationDpnId(destDpnId)
+                .setTunnelName(dpnTepInterfaceInfo.getTunnelName()).setInternal(dpnTepInterfaceInfo.isInternal())
+                .setMonitoringEnabled(enabled);
+        if (enabled && interval != null) {
+            remoteDpnsBuilder.setMonitoringInterval(interval);
+        }
+        RemoteDpns remoteDpn = remoteDpnsBuilder.build();
+        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(srcDpnId);
+        LOG.debug("setBfdParamOnTunnel TunnelName: {}, ovsBridgeRefEntry: {}", dpnTepInterfaceInfo.getTunnelName(),
+                ovsBridgeRefEntry);
+        directTunnelUtils.updateBfdConfiguration(srcDpnId, remoteDpn, ovsBridgeRefEntry);
+        InstanceIdentifier<RemoteDpns> iid = InstanceIdentifier.builder(DpnTepsState.class)
+                .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
+                .child(RemoteDpns.class,
+                        new RemoteDpnsKey(destDpnId)).build();
+        tx.merge(iid, remoteDpn, true);
     }
 
     @Override
