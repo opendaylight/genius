@@ -136,7 +136,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 }
 
                 if (tunnelStateInfoNew.getDstDpnTepsInfo() == null) {
-                    String dstDpnId = tunnelStateInfo.getTunnelEndPointInfo().getDstEndPointInfo();
+                    String dstDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getDstEndPointInfo();
                     try (Acquired lock = directTunnelUtils.lockTunnel(dstDpnId)) {
                         LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                             remoteDpns.getTunnelName(), dstDpnId);
