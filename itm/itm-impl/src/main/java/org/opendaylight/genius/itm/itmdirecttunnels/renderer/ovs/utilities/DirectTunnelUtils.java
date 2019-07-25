@@ -129,6 +129,9 @@ public final class DirectTunnelUtils {
     private static final String BFD_PARAM_ENABLE = "enable";
     private static final String BFD_PARAM_MIN_TX = "min_tx";
     private static final String BFD_PARAM_FORWARDING_IF_RX = "forwarding_if_rx";
+    private static final String BFD_PARAM_REMOTE_DST_MAC = "bfd_remote_dst_mac";
+    private static final String BFD_PARAM_LOCAL_SRC_MAC = "bfd_local_src_mac";
+    private static final String BFD_PARAM_LOCAL_DST_MAC = "bfd_local_dst_mac";
     // BFD parameters
     private static final String BFD_ENABLE_KEY = "enable";
     private static final String BFD_ENABLE_VALUE = "true";
@@ -136,6 +139,9 @@ public final class DirectTunnelUtils {
     public static final String BFD_STATE_UP = "up";
     private static final String BFD_MIN_TX_VAL = "100";
     private static final String BFD_FORWARDING_IF_RX_VAL = "true";
+    private static final String BFD_REMOTE_DST_MAC_VAL = "de:ad:be:ef:00:00";
+    private static final String BFD_LOCAL_SRC_MAC_VAL = "de:ad:be:ef:00:01";
+    private static final String BFD_LOCAL_DST_MAC_VAL = "de:ad:be:ef:00:00";
 
     // Tunnel options
     public static final String TUNNEL_OPTIONS_KEY = "key";
@@ -285,6 +291,10 @@ public final class DirectTunnelUtils {
         bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, ifTunnel != null &&  ifTunnel.getMonitorInterval() != null
                 ? ifTunnel.getMonitorInterval().toString() : BFD_MIN_TX_VAL));
         bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_REMOTE_DST_MAC, BFD_REMOTE_DST_MAC_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_LOCAL_SRC_MAC, BFD_LOCAL_SRC_MAC_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_LOCAL_DST_MAC, BFD_LOCAL_DST_MAC_VAL));
+        LOG.debug("getBfdParams {}", bfdParams);
         return bfdParams;
     }
 
@@ -295,6 +305,10 @@ public final class DirectTunnelUtils {
         bfdParams.add(getIfBfdObj(BFD_PARAM_MIN_TX, remoteDpn != null && remoteDpn.getMonitoringInterval() != null
             ? remoteDpn.getMonitoringInterval().toString() : BFD_MIN_TX_VAL));
         bfdParams.add(getIfBfdObj(BFD_PARAM_FORWARDING_IF_RX, BFD_FORWARDING_IF_RX_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_REMOTE_DST_MAC, BFD_REMOTE_DST_MAC_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_LOCAL_SRC_MAC, BFD_LOCAL_SRC_MAC_VAL));
+        bfdParams.add(getIfBfdObj(BFD_PARAM_LOCAL_DST_MAC, BFD_LOCAL_DST_MAC_VAL));
+        LOG.debug("getBfdParams {}", bfdParams);
         LOG.debug("getBfdParams {}", bfdParams);
         return bfdParams;
     }
