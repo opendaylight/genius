@@ -227,7 +227,7 @@ public class TepCommandHelperTest {
                         .PhysAddress.getDefaultInstance("AA:AA:AA:AA:AA:AA"))
                 .setIfIndex(100).setLowerLayerIf(lowerLayerIfList).setType(L2vlan.class).build();
         interfaceTestNew = ItmUtils.buildTunnelInterface(dpId1, tunnelInterfaceName, destinationDevice, enabled,
-                TunnelTypeVxlan.class, ipAddress1, ipAddress2, enabled,monitorProtocol,
+                TunnelTypeVxlan.class, ipAddress1, ipAddress2, true, enabled,monitorProtocol,
                 interval, false, null);
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();

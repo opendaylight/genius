@@ -292,7 +292,7 @@ public class ItmManagerRpcServiceTest {
                 .setTunnelType(tunnelType1).setDestinationNode(destinationDevice).setSourceNode(sourceDevice).build();
         iface = ItmUtils.buildTunnelInterface(dpId1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(tunnelType1), "Trunk Interface"),true,tunnelType1,
-                tunnelEndPointsVxlan.getIpAddress(),ipAddress1, false,
+                tunnelEndPointsVxlan.getIpAddress(),ipAddress1, false, false,
                 monitorProtocol,null, false, null);
 
         transportZone = new TransportZoneBuilder().setZoneName(transportZone1)
