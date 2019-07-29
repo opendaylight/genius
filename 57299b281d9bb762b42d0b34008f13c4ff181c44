@@ -16,6 +16,24 @@
       "revId": "57299b281d9bb762b42d0b34008f13c4ff181c44",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "31f1e7f6_6c4e8536",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/ItmTepInstanceRecoveryHandler.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2019-07-29T11:08:05Z",
+      "side": 1,
+      "message": "yes it can be",
+      "parentUuid": "a43889e1_6e85f0cd",
+      "revId": "57299b281d9bb762b42d0b34008f13c4ff181c44",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
