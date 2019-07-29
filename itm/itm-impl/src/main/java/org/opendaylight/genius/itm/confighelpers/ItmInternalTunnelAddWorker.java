@@ -254,7 +254,7 @@ public final class ItmInternalTunnelAddWorker {
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
-                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(),
+                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), true,
                 isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug(" Trunk Interface builder - {} ", iface);
         InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
@@ -344,7 +344,7 @@ public final class ItmInternalTunnelAddWorker {
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 String.format("%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
-                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(),
+                true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), true,
                 isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug("Trunk Interface builder - {} ", iface);
 

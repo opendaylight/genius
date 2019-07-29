@@ -352,20 +352,20 @@ public final class ItmUtils {
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
                                                  Class<? extends TunnelTypeBase> tunType, IpAddress localIp,
-                                                 IpAddress remoteIp,
+                                                 IpAddress remoteIp, boolean internal,
                                                  Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                                                  Integer monitorInterval, boolean useOfTunnel,
                                                  List<TunnelOptions> tunOptions) {
 
-        return buildTunnelInterface(dpn, ifName, desc, enabled, tunType, localIp, remoteIp,
+        return buildTunnelInterface(dpn, ifName, desc, enabled, tunType, localIp, remoteIp, internal,
                 monitorEnabled, monitorProtocol, monitorInterval,  useOfTunnel, null,
                 tunOptions);
     }
 
     public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
                                                  Class<? extends TunnelTypeBase> tunType, IpAddress localIp,
-                                                 IpAddress remoteIp,
+                                                 IpAddress remoteIp, boolean internal,
                                                  Boolean monitorEnabled,
                                                  Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                                                  Integer monitorInterval, boolean useOfTunnel, String parentIfaceName,
@@ -387,7 +387,7 @@ public final class ItmUtils {
                 .setTunnelSource(localIp).setTunnelInterfaceType(tunType)
                 .setMonitorEnabled(monitorEnabled).setMonitorProtocol(monitorProtocol)
                 .setMonitorInterval(monitoringInterval).setTunnelRemoteIpFlow(useOfTunnel)
-                .setTunnelOptions(tunnelOptions)
+                .setTunnelOptions(tunnelOptions).setInternal(internal)
                 .build();
         builder.addAugmentation(IfTunnel.class, tunnel);
         return builder.build();

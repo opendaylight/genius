@@ -77,7 +77,7 @@ public class ItmExternalTunnelAddWorker {
                         interfaceName, firstEndPt.getIpAddress(), extIp, gwyIpAddress);
                 Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
                         String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
-                        true, tunType, firstEndPt.getIpAddress(), extIp, false,
+                        true, tunType, firstEndPt.getIpAddress(), extIp, false, false,
                         ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
 
                 LOG.debug(" Trunk Interface builder - {} ", iface);
@@ -301,7 +301,7 @@ public class ItmExternalTunnelAddWorker {
                 dstIp, gwyIpAddress);
         Interface extTunnelIf = ItmUtils.buildTunnelInterface(dpnId, tunnelIfName,
                 String.format("%s %s", tunType.getName(), "Trunk Interface"), true, tunType, srcIp, dstIp,
-                monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow, null);
+                false, monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow, null);
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
                 new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, extTunnelIf);

@@ -281,7 +281,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     String.format("%s %s", ItmUtils.convertTunnelTypetoString(dpnTepInfo.getTunnelType()),
                             "Trunk Interface"), true, dpnTepInfo.getTunnelType(),
                     srcDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).getIpAddress(),
-                    dstDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).getIpAddress(),
+                    dstDpnTEPsInfo.get(0).getTunnelEndPoints().get(0).getIpAddress(),true,
                     dpnTepInfo.isMonitoringEnabled(), TunnelMonitoringTypeBfd.class,
                     monitoringInt, true, null);
         }

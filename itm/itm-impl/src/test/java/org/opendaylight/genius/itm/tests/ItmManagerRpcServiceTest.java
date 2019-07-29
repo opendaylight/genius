@@ -246,7 +246,7 @@ public class ItmManagerRpcServiceTest {
         iface = ItmUtils.buildTunnelInterface(ItmTestConstants.DP_ID_1,trunkInterfaceName, String.format("%s %s",
                 ItmUtils.convertTunnelTypetoString(ItmTestConstants.TUNNEL_TYPE_VXLAN), "Trunk Interface"),
                 true,ItmTestConstants.TUNNEL_TYPE_VXLAN,tunnelEndPointsVxlan.getIpAddress(),
-                ItmTestConstants.IP_ADDRESS_3,false, ItmTestConstants.MONITOR_PROTOCOL,null, false, null);
+                ItmTestConstants.IP_ADDRESS_3,false,false, ItmTestConstants.MONITOR_PROTOCOL,null, false, null);
 
         transportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
