@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3eb56845_7ff13f44",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DpnTepStateCache.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-30T09:31:22Z",
+      "side": 1,
+      "message": "Is unprocessedNCCache could have dpn or tunnelName as keys ?",
+      "revId": "e9339ba454c642ab1de13b2b25cc11cc2b86366d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1afebded_6a81453f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelAddWorker.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2019-07-30T09:31:22Z",
+      "side": 1,
+      "message": "Can we not use tunnelName here ? Will be consistent",
+      "revId": "e9339ba454c642ab1de13b2b25cc11cc2b86366d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
