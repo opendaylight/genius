@@ -286,6 +286,9 @@ public class InterfaceInventoryStateListener
                     interfaceName, fcNodeConnectorNew);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                if (InterfaceManagerCommonUtils.isTunnelPort(interfaceChildEntry.getChildInterface())) {
+                    continue;
+                }
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
                         nodeConnectorId, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
                 coordinator.enqueueJob(interfaceName, interfaceStateAddWorker);
@@ -322,6 +325,9 @@ public class InterfaceInventoryStateListener
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                if (InterfaceManagerCommonUtils.isTunnelPort(interfaceChildEntry.getChildInterface())) {
+                    continue;
+                }
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
                         fcNodeConnectorOld, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
                 coordinator.enqueueJob(interfaceName, interfaceStateUpdateWorker);
@@ -379,6 +385,9 @@ public class InterfaceInventoryStateListener
             for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
                 // Fetch all interfaces on this port and trigger remove worker
                 // for each of them
+                if (InterfaceManagerCommonUtils.isTunnelPort(interfaceChildEntry.getChildInterface())) {
+                    continue;
+                }
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
                         nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorOld,
                         interfaceChildEntry.getChildInterface(), isNetworkEvent, false);
