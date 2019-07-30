@@ -153,14 +153,18 @@ public class InterfaceInventoryStateListener
             return;
         }
 
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
+                .getId();
+        LOG.trace("Removing entry for port id {} from map",nodeConnectorId.getValue());
+        portNameCache.remove(nodeConnectorId.getValue());
+
+
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnectorOld);
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
-            .getId();
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             flowCapableNodeConnectorOld.getName());
 
@@ -173,8 +177,6 @@ public class InterfaceInventoryStateListener
                 nodeConnectorIdNew, nodeConnectorIdOld, fcNodeConnectorNew, portName,
                 isNetworkEvent, true);
         coordinator.enqueueJob(portName, portStateRemoveWorker, IfmConstants.JOB_MAX_RETRIES);
-        LOG.trace("Removing entry for port id {} from map",nodeConnectorIdNew.getValue());
-        portNameCache.remove(nodeConnectorIdNew.getValue());
     }
 
     @Override
@@ -217,18 +219,17 @@ public class InterfaceInventoryStateListener
             return;
         }
 
-
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
+                .getId();
+        LOG.trace("Adding entry for portid {} portname {} in map", nodeConnectorId.getValue(),
+                fcNodeConnectorNew.getName());
+        portNameCache.put(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
         if (!entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
                 IfmConstants.INTERFACE_CONFIG_ENTITY)) {
             return;
         }
 
         LOG.debug("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
-            .getId();
-        LOG.trace("Adding entry for portid {} portname {} in map", nodeConnectorId.getValue(),
-                fcNodeConnectorNew.getName());
-        portNameCache.put(nodeConnectorId.getValue(),fcNodeConnectorNew.getName());
         String portName = InterfaceManagerCommonUtils.getPortNameForInterface(nodeConnectorId,
             fcNodeConnectorNew.getName());
 
@@ -256,6 +257,8 @@ public class InterfaceInventoryStateListener
                     LOG.warn("Port number update detected for {}", fcNodeConnectorNew.getName());
                 }
                 //VM Migration or Port Number Update: Delete existing interface entry for older DPN
+                LOG.trace("Removing entry for port id {} from map",nodeConnectorIdOld.getValue());
+                portNameCache.remove(nodeConnectorIdOld.getValue());
                 LOG.debug("Triggering NodeConnector Remove Event for the interface: {}, {}, {}", portName,
                     nodeConnectorId, nodeConnectorIdOld);
                 remove(nodeConnectorId, nodeConnectorIdOld, fcNodeConnectorNew, portName, false);
