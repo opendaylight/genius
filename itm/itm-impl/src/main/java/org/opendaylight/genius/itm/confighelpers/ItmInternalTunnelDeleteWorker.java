@@ -247,7 +247,7 @@ public class ItmInternalTunnelDeleteWorker {
                             }
                         }
                     }
-                    if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                    if (interfaceManager.isItmDirectTunnelsEnabled() && !itmConfig.isUseOfTunnels()) {
                         // SF419 Remove the DPNSTEPs DS
                         LOG.debug("Deleting TEP Interface information from Config datastore with DPNs-Teps "
                                 + "for source Dpn {}", srcDpn.getDPNID());
@@ -464,17 +464,13 @@ public class ItmInternalTunnelDeleteWorker {
                     ofEndPointCache.remove(dpId);
                 }
             }
-
+            // delete tunnel ingress flow
+            removeTunnelIngressFlow(tx, interfaceName, dpId);
             deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
             // IfIndex needs to be removed only during State Clean up not Config
+            cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
+            directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
         }
-
-        directTunnelUtils.deleteTunnelStateEntry(interfaceName);
-        // delete tunnel ingress flow
-        removeTunnelIngressFlow(tx, interfaceName, dpId);
-        directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
-        directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
     }
 
     private OvsdbBridgeRef getOvsdbBridgeRef(BigInteger dpId) throws ReadFailedException {
