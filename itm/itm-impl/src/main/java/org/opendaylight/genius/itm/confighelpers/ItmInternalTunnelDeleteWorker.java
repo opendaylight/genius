@@ -247,7 +247,7 @@ public class ItmInternalTunnelDeleteWorker {
                             }
                         }
                     }
-                    if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                    if (interfaceManager.isItmDirectTunnelsEnabled() && !itmConfig.isUseOfTunnels()) {
                         // SF419 Remove the DPNSTEPs DS
                         LOG.debug("Deleting TEP Interface information from Config datastore with DPNs-Teps "
                                 + "for source Dpn {}", srcDpn.getDPNID());
@@ -391,7 +391,7 @@ public class ItmInternalTunnelDeleteWorker {
         // ITM DIRECT TUNNELS -- Call the OVS Worker directly
         if (iface != null) {
             try {
-                removeConfiguration(tx, iface, parentRefs);
+                removeConfiguration(tx, iface, parentRefs, srcDpnId);
             } catch (ExecutionException | InterruptedException | OperationFailedException e) {
                 LOG.error("Cannot Delete Tunnel {} as OVS Bridge Entry is NULL ", iface.getName(), e);
             }
@@ -406,7 +406,7 @@ public class ItmInternalTunnelDeleteWorker {
         if (iface != null) {
             try {
                 LOG.trace("Removing Reverse Trunk Interface {}", trunkRevIfName);
-                removeConfiguration(tx, iface, parentRefs);
+                removeConfiguration(tx, iface, parentRefs, srcDpnId);
             } catch (ExecutionException | InterruptedException | OperationFailedException e) {
                 LOG.error("Cannot Delete Tunnel {} as OVS Bridge Entry is NULL ", iface.getName(), e);
             }
@@ -422,16 +422,17 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeConfiguration(TypedReadWriteTransaction<Configuration> tx, Interface interfaceOld,
-        ParentRefs parentRefs) throws ExecutionException, InterruptedException, OperationFailedException {
+        ParentRefs parentRefs, BigInteger srcDpnId)
+            throws ExecutionException, InterruptedException, OperationFailedException {
         IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             // Check if the same transaction can be used across Config and operational shards
-            removeTunnelConfiguration(tx, parentRefs, interfaceOld.getName(), ifTunnel);
+            removeTunnelConfiguration(tx, parentRefs, interfaceOld.getName(), ifTunnel, srcDpnId);
         }
     }
 
     private void removeTunnelConfiguration(TypedReadWriteTransaction<Configuration> tx, ParentRefs parentRefs,
-        String interfaceName, IfTunnel ifTunnel)
+        String interfaceName, IfTunnel ifTunnel, BigInteger srcDpnId)
             throws ExecutionException, InterruptedException, OperationFailedException {
 
         LOG.info("removing tunnel configuration for {}", interfaceName);
@@ -444,43 +445,13 @@ public class ItmInternalTunnelDeleteWorker {
             return;
         }
 
-        OvsdbBridgeRef ovsdbBridgeRef = getOvsdbBridgeRef(dpId);
-        Optional<OvsBridgeEntry> ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
+        LOG.info("remove tunnel configuration for source dpId: {}", dpId);
 
-        // delete bridge to tunnel interface mappings
-        OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
-        InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid =
-                DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
-
-
-        if (ovsBridgeEntryOptional.isPresent()) {
-            List<OvsBridgeTunnelEntry> bridgeTunnelEntries = ovsBridgeEntryOptional.get().nonnullOvsBridgeTunnelEntry();
-
-            if (ovsdbBridgeRef != null) {
-                if (!itmConfig.isUseOfTunnels()) {
-                    removeTerminationEndPoint(ovsdbBridgeRef.getValue(), interfaceName);
-                } else if (bridgeTunnelEntries.size() <= 1) {
-                    removeTerminationEndPoint(ovsdbBridgeRef.getValue(), ofEndPointCache.get(dpId));
-                    ofEndPointCache.remove(dpId);
-                }
-            }
-
-            deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
-            // IfIndex needs to be removed only during State Clean up not Config
-        }
-
-        directTunnelUtils.deleteTunnelStateEntry(interfaceName);
-        // delete tunnel ingress flow
-        removeTunnelIngressFlow(tx, interfaceName, dpId);
-        directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
-        directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
-    }
-
-    private OvsdbBridgeRef getOvsdbBridgeRef(BigInteger dpId) throws ReadFailedException {
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOptional = ovsBridgeRefEntryCache.get(dpId);
-        Optional<OvsBridgeEntry> ovsBridgeEntryOptional;
+        Optional<OvsBridgeEntry> ovsBridgeEntryOptional = null;
         OvsdbBridgeRef ovsdbBridgeRef = null;
+        //List<OvsBridgeTunnelEntry> bridgeTunnelEntries = null;
+
         if (ovsBridgeRefEntryOptional.isPresent()) {
             ovsdbBridgeRef = ovsBridgeRefEntryOptional.get().getOvsBridgeReference();
         } else {
@@ -489,7 +460,35 @@ public class ItmInternalTunnelDeleteWorker {
                 ovsdbBridgeRef = ovsBridgeEntryOptional.get().getOvsBridgeReference();
             }
         }
-        return ovsdbBridgeRef;
+
+        if (ovsdbBridgeRef != null) {
+            if (!itmConfig.isUseOfTunnels()) {
+                removeTerminationEndPoint(ovsdbBridgeRef.getValue(), interfaceName);
+            } else if (dpId.intValue() == srcDpnId.intValue() && ofEndPointCache.get(dpId) != null) {
+                LOG.debug("of tunnel removing termination point for dpId {}",dpId);
+                removeTerminationEndPoint(ovsdbBridgeRef.getValue(), ofEndPointCache.get(dpId));
+                ofEndPointCache.remove(dpId);
+            }
+        }
+
+        // delete tunnel ingress flow
+        removeTunnelIngressFlow(tx, interfaceName, dpId);
+
+        // delete bridge to tunnel interface mappings
+        OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
+        InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid =
+                DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
+
+        ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
+        if (ovsBridgeEntryOptional.isPresent()) {
+            List<OvsBridgeTunnelEntry> bridgeTunnelEntries = ovsBridgeEntryOptional.get().nonnullOvsBridgeTunnelEntry();
+            deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
+            // IfIndex needs to be removed only during State Clean up not Config
+            // TunnelMetaUtils.removeLportTagInterfaceMap(idManager, defaultOperationalShardTransaction, interfaceName);
+            cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
+            directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
+        }
+        LOG.debug("of tunnel REMOVED flows point for dpId {} interface {}",dpId, interfaceName);
     }
 
     private void removeTerminationEndPoint(InstanceIdentifier<?> bridgeIid, String interfaceName) {
