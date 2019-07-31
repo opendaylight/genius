@@ -403,9 +403,10 @@ public final class ItmInternalTunnelAddWorker {
         // create bridge on switch, if switch is connected
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpId);
         LOG.info("adding tunnel port configuration for tunnelName: {}", tunnelName);
+        DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
         if (createTunnelPort(dpId)) {
             LOG.debug("creating dpn tunnel mapping  for dpn: {} tunnelName: {}", dpId, tunnelName);
-            DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
+
             if (ofTunnelPortName != null) {
                 ofEndPointCache.add(dpId, tunnelName);
             }
