@@ -469,10 +469,8 @@ public class ItmInternalTunnelDeleteWorker {
             // IfIndex needs to be removed only during State Clean up not Config
         }
 
-        directTunnelUtils.deleteTunnelStateEntry(interfaceName);
         // delete tunnel ingress flow
         removeTunnelIngressFlow(tx, interfaceName, dpId);
-        directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
         directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
     }
