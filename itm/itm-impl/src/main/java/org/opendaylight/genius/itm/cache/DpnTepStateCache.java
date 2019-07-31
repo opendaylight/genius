@@ -305,4 +305,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     public void removeFromTunnelEndPointMap(String tunnelName) {
         tunnelEndpointMap.remove(tunnelName);
     }
+
+    public void removeFromDpnTepInterfaceMap(BigInteger srcId, BigInteger dstId) {
+        dpnTepInterfaceMap.remove(getDpnId(srcId, dstId));
+    }
 }

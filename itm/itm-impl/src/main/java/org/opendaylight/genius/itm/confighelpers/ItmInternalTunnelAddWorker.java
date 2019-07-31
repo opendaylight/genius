@@ -405,7 +405,7 @@ public final class ItmInternalTunnelAddWorker {
         LOG.info("adding tunnel port configuration for tunnelName: {}", tunnelName);
         if (createTunnelPort(dpId)) {
             LOG.debug("creating dpn tunnel mapping  for dpn: {} tunnelName: {}", dpId, tunnelName);
-            DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
+            DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, tunnelName);
             if (ofTunnelPortName != null) {
                 ofEndPointCache.add(dpId, tunnelName);
             }
