@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -402,11 +403,52 @@ public class TunnelInventoryStateListener extends
 
         } else {
             LOG.debug("removing interface state for interface: {}", interfaceName);
-            // removing interfaces are already done in delete worker
-            meshedMap.remove(dpId.toString());
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
+                if (interfaceName.startsWith("of")) {
+                    for (Map.Entry<String, NodeConnectorInfo> entry : meshedMap.entrySet()) {
+                        if (!dpId.toString().equals(entry.getKey())) {
+                            String fwdTunnel = dpnTepStateCache.getDpnTepInterface(dpId, new BigInteger(entry.getKey()))
+                                    .getTunnelName();
+                            directTunnelUtils.deleteTunnelStateEntry(interfaceName);
+                            dpnTepStateCache.removeFromTunnelEndPointMap(fwdTunnel);
+                            dpnTepStateCache.removeFromDpnTepInterfaceMap(dpId, new BigInteger(entry.getKey()));
+                            String bwdTunnel = dpnTepStateCache.getDpnTepInterface(new BigInteger(entry.getKey()), dpId)
+                                    .getTunnelName();
+                            directTunnelUtils.deleteTunnelStateEntry(interfaceName);
+                            dpnTepStateCache.removeFromTunnelEndPointMap(bwdTunnel);
+                            dpnTepStateCache.removeFromDpnTepInterfaceMap(new BigInteger(entry.getKey()), dpId);
+                        }
+                    }
+                    meshedMap.remove(dpId.toString());
+                    //try {
+                    dpnTepStateCache.removeTepFromDpnTepInterfaceConfigDS(dpId);
+                    //} catch (TransactionCommitFailedException e) {
+                    //   LOG.error("removing tep from DpnTepInterfaceConfigDS failed. Reason: {}", e.getMessage());
+                    //}
+                } else {
+                    directTunnelUtils.deleteTunnelStateEntry(interfaceName);
+                }
+            }));
         }
         return futures;
     }
+
+    /*private void cleanupStatusLportTagAndFlows(String interfaceName,
+                                               TypedReadWriteTransaction<Datastore.Configuration> tx, BigInteger dpId)
+            throws InterruptedException, ExecutionException, OperationFailedException {
+        directTunnelUtils.deleteTunnelStateEntry(interfaceName);
+        *//*DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+        if (dpnTepInfo != null) {
+            // futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
+            // Do if-index and ingress flow clean-up only for tunnel-interfaces
+            directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
+            directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+            directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
+            // }));
+        } else {
+            LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
+        }*//*
+    }*/
 
     private class TunnelInterfaceStateUpdateWorker implements Callable {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
