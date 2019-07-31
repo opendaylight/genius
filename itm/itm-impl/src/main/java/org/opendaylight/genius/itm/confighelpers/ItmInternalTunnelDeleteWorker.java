@@ -247,7 +247,7 @@ public class ItmInternalTunnelDeleteWorker {
                             }
                         }
                     }
-                    if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                    if (interfaceManager.isItmDirectTunnelsEnabled() && !itmConfig.isUseOfTunnels()) {
                         // SF419 Remove the DPNSTEPs DS
                         LOG.debug("Deleting TEP Interface information from Config datastore with DPNs-Teps "
                                 + "for source Dpn {}", srcDpn.getDPNID());
@@ -391,7 +391,7 @@ public class ItmInternalTunnelDeleteWorker {
         // ITM DIRECT TUNNELS -- Call the OVS Worker directly
         if (iface != null) {
             try {
-                removeConfiguration(tx, iface, parentRefs);
+                removeConfiguration(tx, iface, parentRefs, srcDpnId);
             } catch (ExecutionException | InterruptedException | OperationFailedException e) {
                 LOG.error("Cannot Delete Tunnel {} as OVS Bridge Entry is NULL ", iface.getName(), e);
             }
@@ -406,7 +406,7 @@ public class ItmInternalTunnelDeleteWorker {
         if (iface != null) {
             try {
                 LOG.trace("Removing Reverse Trunk Interface {}", trunkRevIfName);
-                removeConfiguration(tx, iface, parentRefs);
+                removeConfiguration(tx, iface, parentRefs, srcDpnId);
             } catch (ExecutionException | InterruptedException | OperationFailedException e) {
                 LOG.error("Cannot Delete Tunnel {} as OVS Bridge Entry is NULL ", iface.getName(), e);
             }
@@ -422,16 +422,17 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeConfiguration(TypedReadWriteTransaction<Configuration> tx, Interface interfaceOld,
-        ParentRefs parentRefs) throws ExecutionException, InterruptedException, OperationFailedException {
+        ParentRefs parentRefs, BigInteger srcDpn)
+            throws ExecutionException, InterruptedException, OperationFailedException {
         IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             // Check if the same transaction can be used across Config and operational shards
-            removeTunnelConfiguration(tx, parentRefs, interfaceOld.getName(), ifTunnel);
+            removeTunnelConfiguration(tx, parentRefs, interfaceOld.getName(), ifTunnel, srcDpn);
         }
     }
 
     private void removeTunnelConfiguration(TypedReadWriteTransaction<Configuration> tx, ParentRefs parentRefs,
-        String interfaceName, IfTunnel ifTunnel)
+        String interfaceName, IfTunnel ifTunnel, BigInteger srcDpn)
             throws ExecutionException, InterruptedException, OperationFailedException {
 
         LOG.info("removing tunnel configuration for {}", interfaceName);
@@ -459,9 +460,9 @@ public class ItmInternalTunnelDeleteWorker {
             if (ovsdbBridgeRef != null) {
                 if (!itmConfig.isUseOfTunnels()) {
                     removeTerminationEndPoint(ovsdbBridgeRef.getValue(), interfaceName);
-                } else if (bridgeTunnelEntries.size() <= 1) {
-                    removeTerminationEndPoint(ovsdbBridgeRef.getValue(), ofEndPointCache.get(dpId));
-                    ofEndPointCache.remove(dpId);
+                } else if (ofEndPointCache.get(srcDpn) != null) {
+                    removeTerminationEndPoint(ovsdbBridgeRef.getValue(), ofEndPointCache.get(srcDpn));
+                    ofEndPointCache.remove(srcDpn);
                 }
             }
 
@@ -469,10 +470,8 @@ public class ItmInternalTunnelDeleteWorker {
             // IfIndex needs to be removed only during State Clean up not Config
         }
 
-        directTunnelUtils.deleteTunnelStateEntry(interfaceName);
         // delete tunnel ingress flow
         removeTunnelIngressFlow(tx, interfaceName, dpId);
-        directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
         directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
     }
