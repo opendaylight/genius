@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -71,6 +72,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
     private final IMdsalApiManager imdsalApiManager;
     private final DataTreeEventCallbackRegistrar eventCallbacks;
     private final ManagedNewTransactionRunner txRunner;
+    private final TombstonedNodeManager tombstonedNodeManager;
 
     @Inject
     public ItmTepInstanceRecoveryHandler(DataBroker dataBroker,
@@ -86,7 +88,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                                          ServiceRecoveryRegistry serviceRecoveryRegistry,
                                          EntityOwnershipUtils entityOwnershipUtils,
                                          OfEndPointCache ofEndPointCache,
-                                         DataTreeEventCallbackRegistrar eventCallbacks) {
+                                         DataTreeEventCallbackRegistrar eventCallbacks,
+                                         TombstonedNodeManager tombstonedNodeManager) {
         this.dataBroker = dataBroker;
         this.itmConfig = itmConfig;
         this.imdsalApiManager = imdsalApiMgr;
@@ -94,6 +97,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         this.dpntePsInfoCache = dpntePsInfoCache;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.eventCallbacks = eventCallbacks;
+        this.tombstonedNodeManager = tombstonedNodeManager;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager,
@@ -102,7 +106,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
-                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, ofEndPointCache, itmConfig);
+                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, ofEndPointCache, itmConfig,
+                tombstonedNodeManager);
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(getServiceRegistryKey(), this);
     }
 

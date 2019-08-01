@@ -27,6 +27,7 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
@@ -122,6 +123,7 @@ public class ItmInternalTunnelDeleteTest {
     @Mock IInterfaceManager interfaceManager;
     @Mock ItmConfig itmConfig;
     @Mock TunnelMonitoringConfig tunnelMonitoringConfig;
+    @Mock TombstonedNodeManager tombstonedNodeManager;
     DirectTunnelUtils directTunnelUtils;
     ItmInternalTunnelDeleteWorker itmInternalTunnelDeleteWorker;
     UnprocessedNodeConnectorCache unprocessedNodeConnectorCache;
@@ -170,7 +172,7 @@ public class ItmInternalTunnelDeleteTest {
             new OvsBridgeEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
-            directTunnelUtils, ofEndPointCache, itmConfig);
+            directTunnelUtils, ofEndPointCache, itmConfig, tombstonedNodeManager);
     }
 
     @After
