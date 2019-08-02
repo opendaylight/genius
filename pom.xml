@@ -32,7 +32,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html INTERNAL -->
     <module>commons</module>
     <module>interfacemanager</module>
     <module>itm</module>
-    <module>cloudscaler</module>
     <module>lockmanager</module>
     <module>mdsalutil</module>
     <module>arputil</module>
