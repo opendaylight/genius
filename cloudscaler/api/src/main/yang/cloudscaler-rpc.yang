@@ -1,0 +1,86 @@
+module cloudscaler-rpc {
+    namespace "urn:opendaylight:genius:cloudscaler:rpcs";
+    prefix "cloudscaler";
+
+    import yang-ext {prefix ext; revision-date "2013-07-09";}
+
+    import ietf-inet-types {
+        prefix inet;
+        revision-date "2013-07-15";
+    }
+    import ietf-yang-types {
+        prefix yang;
+    }
+
+    revision "2017-12-20" {
+        description "ODL Specific Scalein Rpcs Module";
+    }
+
+    container compute-nodes {
+        description
+           "stores compute node related details (nodeid, dpnid etc ) learned from operational ovsdb node";
+
+        list compute-node {
+            max-elements "unbounded";
+            min-elements "0";
+            key "compute-name";
+            leaf compute-name {
+                type string;
+                description "The name of the compute node";
+            }
+            leaf nodeid {
+                type  string;
+                description "ovsdb br-int bridge node id";
+            }
+            leaf dpnid {
+                type uint64;
+                description "datapath node identifier";
+            }
+            leaf tombstoned {
+                type boolean;
+                description "indicates if scalein is started for this node or not";
+            }
+        }
+    }
+
+    rpc scalein-computes-start {
+        description "To trigger start of scale in the given dpns";
+        input {
+            leaf-list scalein-compute-names {
+                type string;
+            }
+        }
+    }
+
+    rpc scalein-computes-tep-delete {
+        description "To delete the tep endpoints of the scaled in dpns";
+        input {
+            leaf-list scalein-compute-names {
+                type string;
+            }
+        }
+    }
+
+    rpc scalein-computes-end {
+        description "To end the scale in of the given dpns output DONE/INPROGRESS";
+        input {
+            leaf-list scalein-compute-names {
+                type string;
+            }
+        }
+        output {
+            leaf status {
+                type string;
+            }
+        }
+    }
+
+    rpc scalein-computes-recover {
+        description "To recover the dpns which are marked for scale in";
+        input {
+            leaf-list recover-compute-names {
+                type string;
+            }
+        }
+    }
+}
