@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "774d8f9d_3d33316c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2019-08-12T09:08:26Z",
+      "side": 0,
+      "message": "eventloggers are merged already, No need to replace",
+      "revId": "f96c0205259ef8bef1807300f110d93697e0c7f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "98f38af9_e31e27b0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 7622
+      },
+      "writtenOn": "2019-08-12T09:08:26Z",
+      "side": 0,
+      "message": "same as before, no need to replace it",
+      "revId": "f96c0205259ef8bef1807300f110d93697e0c7f2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
