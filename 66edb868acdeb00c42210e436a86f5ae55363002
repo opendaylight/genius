@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a4c76d6f_b2a63b03",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 2759
+      },
+      "writtenOn": "2019-08-21T14:28:22Z",
+      "side": 1,
+      "message": "This is overly verbose you can stop at the first \"Sodium\" as we can already tell it\u0027s for the stable/sodium branch.",
+      "range": {
+        "startLine": 7,
+        "startChar": 29,
+        "endLine": 7,
+        "endChar": 16
+      },
+      "revId": "66edb868acdeb00c42210e436a86f5ae55363002",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
