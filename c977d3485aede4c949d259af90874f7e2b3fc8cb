@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ba1f61a0_6d7a18be",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5433
+      },
+      "writtenOn": "2017-09-25T20:55:24Z",
+      "side": 1,
+      "message": "Please use more meaningful name other than ACL_REFLECTION",
+      "revId": "c977d3485aede4c949d259af90874f7e2b3fc8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_0d70bcda",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NwConstants.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 5433
+      },
+      "writtenOn": "2017-09-25T20:55:24Z",
+      "side": 1,
+      "message": "Please use more meaningful name other than ACL_REFLECTION",
+      "revId": "c977d3485aede4c949d259af90874f7e2b3fc8cb",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
