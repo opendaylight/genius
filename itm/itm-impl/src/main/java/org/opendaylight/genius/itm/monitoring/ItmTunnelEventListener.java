@@ -23,14 +23,17 @@ import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
+import org.opendaylight.genius.itm.utils.TunnelEndPointInfo;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
@@ -49,13 +52,19 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     private final ManagedNewTransactionRunner txRunner;
     private JMXAlarmAgent alarmAgent;
     private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
+    protected final DpnTepStateCache dpnTepStateCache;
+    private final IInterfaceManager interfaceManager;
 
     @Inject
     public ItmTunnelEventListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
-                                  UnprocessedTunnelsStateCache unprocessedTunnelsStateCache) {
+                                  UnprocessedTunnelsStateCache unprocessedTunnelsStateCache,
+				  final DpnTepStateCache dpnTepStateCache,
+                                  final IInterfaceManager interfaceManager) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.create(TunnelsState.class).child(StateTunnelList.class));
         this.broker = dataBroker;
+	this.dpnTepStateCache = dpnTepStateCache;
+        this.interfaceManager = interfaceManager;
         this.jobCoordinator = jobCoordinator;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.unprocessedTunnelsStateCache = unprocessedTunnelsStateCache;
@@ -216,37 +225,48 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         @Override
         public List<ListenableFuture<Void>> call() {
             String ifName = add.getTunnelInterfaceName();
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
-            if (internalTunnel != null) {
-                Uint64 srcDpId = internalTunnel.getSourceDPN();
-                Uint64 dstDpId = internalTunnel.getDestinationDPN();
-                String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                if (!isTunnelInterfaceUp(add)) {
-                    LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: "
-                                      + "{}", srcDpId, dstDpId, tunnelType);
-                    String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
-                    raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
+            Uint64 srcDpnId ;
+            Uint64 dstDpnId;
+            String tunnelTypeStr = null;
+            String srcDpnIdStr = null;
+            String dstDpnIdStr = null;
+            boolean isInternal = true;
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(ifName);
+                if (tunnelEndPointInfo != null) {
+                    srcDpnIdStr = tunnelEndPointInfo.getSrcEndPointInfo();
+                    dstDpnIdStr = tunnelEndPointInfo.getDstEndPointInfo();
+                    DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getTunnelFromCache(ifName);
+                    if (dpnTepInterfaceInfo != null) {
+                        tunnelTypeStr = ItmUtils.convertTunnelTypetoString(dpnTepInterfaceInfo.getTunnelType());
+                    } else {
+                        LOG.error("Could not get tunnel type for Tunnel Interface {}. Can not proceed further.",
+                                ifName);
+                        return null;
+                    }
+                } else {
+                    isInternal = false;
                 }
+
             } else {
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
-                if (externalTunnel != null) {
-                    String srcNode = externalTunnel.getSourceDevice();
-                    String dstNode = externalTunnel.getDestinationDevice();
-                    if (!srcNode.contains("hwvtep")) {
-                        srcNode = "openflow:" + externalTunnel.getSourceDevice();
-                    }
-                    if (!dstNode.contains("hwvtep")) {
-                        dstNode = "openflow:" + externalTunnel.getDestinationDevice();
-                    }
-                    String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    if (!isTunnelInterfaceUp(add)) {
-                        LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcNode: {} and dstNode: {} for "
-                                          + "tunnelType: {}", srcNode, dstNode, tunnelType);
-                        String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
-                        raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
-                    }
+		InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
+                if (internalTunnel != null) {
+                    srcDpnId = internalTunnel.getSourceDPN();
+                    dstDpnId = internalTunnel.getDestinationDPN();
+                    srcDpnIdStr = srcDpnId.toString();
+                    dstDpnIdStr = dstDpnId.toString();
+                    tunnelTypeStr = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
+                } else {
+                    isInternal = false;
                 }
             }
+            if (!isTunnelInterfaceUp(add) && isInternal) {
+                LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: {}",
+                        srcDpnIdStr, dstDpnIdStr, tunnelTypeStr);
+                String alarmText = getInternalAlarmText(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr);
+                raiseInternalDataPathAlarm(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr, alarmText);
+            }
+
             return null;
         }
     }
@@ -261,26 +281,49 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         @Override
         public List<ListenableFuture<Void>> call() {
             String ifName = del.getTunnelInterfaceName();
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
-            if (internalTunnel != null) {
-                Uint64 srcDpId = internalTunnel.getSourceDPN();
-                Uint64 dstDpId = internalTunnel.getDestinationDPN();
-                String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId,
-                          tunnelType);
-                String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
-                clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-            } else {
-                ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName, broker);
-                if (externalTunnel != null) {
-                    String srcNode = externalTunnel.getSourceDevice();
-                    String dstNode = externalTunnel.getDestinationDevice();
-                    String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    LOG.trace("ITM Tunnel removed b/w srcNode: {} and dstNode: {} for tunnelType: {}", srcNode, dstNode,
-                              tunnelType);
-                    String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
-                    clearExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
+            Uint64 srcDpnId;
+            Uint64 dstDpnId;
+            boolean isInternal = true;
+            String tunnelTypeStr = null;
+            String srcDpnIdStr = null;
+            String dstDpnIdStr = null;
+
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(ifName);
+                if (tunnelEndPointInfo != null) {
+                    srcDpnIdStr = tunnelEndPointInfo.getSrcEndPointInfo();
+                    dstDpnIdStr = tunnelEndPointInfo.getDstEndPointInfo();
+                    DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getTunnelFromCache(ifName);
+                    if (dpnTepInterfaceInfo != null) {
+                        tunnelTypeStr = ItmUtils.convertTunnelTypetoString(dpnTepInterfaceInfo.getTunnelType());
+                    } else {
+                        LOG.error("Could not get tunnel type for Tunnel Interface {}. Can not proceed further.",
+                                ifName);
+                        return null;
+                    }
+                } else {
+                    isInternal = false;
                 }
+            } else {
+                InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
+                if (internalTunnel != null) {
+                    srcDpnId = internalTunnel.getSourceDPN();
+                    dstDpnId = internalTunnel.getDestinationDPN();
+                    String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
+                    LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}",
+                            srcDpnId, dstDpnId, tunnelType);
+                    String alarmText = getInternalAlarmText(srcDpnId.toString(), dstDpnId.toString(), tunnelType);
+                    clearInternalDataPathAlarm(srcDpnId.toString(), dstDpnId.toString(), tunnelType, alarmText);
+                } else {
+                    isInternal = false;
+                }
+            }
+            if (isInternal && !isTunnelInterfaceUp(del)) {
+                // If the deleted interface was down, need to clear the alarm
+                LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}",
+                        srcDpnIdStr, dstDpnIdStr, tunnelTypeStr);
+                String alarmText = getInternalAlarmText(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr);
+                clearInternalDataPathAlarm(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr, alarmText);
             }
             return null;
         }
@@ -298,61 +341,56 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         @Override
         public List<ListenableFuture<Void>> call() {
             String ifName = update.getTunnelInterfaceName();
-            InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
-            if (internalTunnel != null) {
-                Uint64 srcDpId = internalTunnel.getSourceDPN();
-                Uint64 dstDpId = internalTunnel.getDestinationDPN();
-                String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
-                              isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
-                }
-                switch (update.getOperState()) {
-                    case Up: {
-                        LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ", srcDpId,
-                                dstDpId, tunnelType);
-                        String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
-                        clearInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-                        break;
-                    }
-                    case Down: {
-                        LOG.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}", srcDpId, dstDpId);
-                        String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
-                        raiseInternalDataPathAlarm(srcDpId.toString(), dstDpId.toString(), tunnelType, alarmText);
-                        break;
-                    }
-                    case Unknown:
-                    default:
+            boolean isInternal = true;
+            String tunnelTypeStr = null;
+            String srcDpnIdStr = null;
+            String dstDpnIdStr = null;
+
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
+                        isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
+            }
+            if (update.getOperState().equals(TunnelOperStatus.Unknown)) {
+                return null;
+            }
+            if (interfaceManager.isItmDirectTunnelsEnabled()) {
+                TunnelEndPointInfo tunnelEndPointInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(ifName);
+                if (tunnelEndPointInfo != null) {
+                    srcDpnIdStr = tunnelEndPointInfo.getSrcEndPointInfo();
+                    dstDpnIdStr = tunnelEndPointInfo.getDstEndPointInfo();
+                    DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getTunnelFromCache(ifName);
+                    if (dpnTepInterfaceInfo != null) {
+                        tunnelTypeStr = ItmUtils.convertTunnelTypetoString(dpnTepInterfaceInfo.getTunnelType());
+                    } else {
+                        LOG.error("Could not get tunnel type for Tunnel Interface {}. Can not proceed further.",
+                                ifName);
                         return null;
+                    }
+                } else {
+                    isInternal = false;
+                }
+            } else {
+                InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
+                if (internalTunnel != null) {
+                    srcDpnIdStr = internalTunnel.getSourceDPN().toString();
+                    dstDpnIdStr = internalTunnel.getDestinationDPN().toString();
+                    tunnelTypeStr = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
+                } else {
+                    isInternal = false;
                 }
             }
-             /*else{
-                    // TODO: Uncomment this when tunnel towards DC gateway or HwVtep is supported
-                    ExternalTunnel externalTunnel = ItmUtils.getExternalTunnel(ifName,broker);
-                    if (externalTunnel != null) {
-                        String srcNode = externalTunnel.getSourceDevice();
-                        String dstNode = externalTunnel.getDestinationDevice();
-                        if (!srcNode.contains("hwvtep")){
-                            srcNode = "openflow:" + externalTunnel.getSourceDevice();
-                        }
-                        if (!dstNode.contains("hwvtep")){
-                            dstNode = "openflow:" + externalTunnel.getDestinationDevice();
-                        }
-                        String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                        logger.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
-                         isTunnelInterfaceUp(original), isTunnelInterfaceUp(update), ifName);
-                        if (isTunnelInterfaceUp(update)) {
-                            logger.trace("ITM Tunnel State is UP b/w srcNode: {} and dstNode: {} for tunnelType: {}",
-                             srcNode, dstNode, tunnelType);
-                            String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
-                            clearExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
-                        }else {
-                            logger.trace("ITM Tunnel State is DOWN b/w srcNode: {} and dstNode: {}", srcNode, dstNode);
-                            String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
-                            raiseExternalDataPathAlarm(srcNode, dstNode, tunnelType, alarmText);
-                        }
-                    }
-                }*/
+            if (isInternal) {
+                String alarmText = getInternalAlarmText(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr);
+                if (update.getOperState() == TunnelOperStatus.Up) {
+                    LOG.trace("ITM Tunnel State is UP b/w srcDpn: {} and dstDpn: {} for tunnelType {} ",
+                            srcDpnIdStr, dstDpnIdStr, tunnelTypeStr);
+                    clearInternalDataPathAlarm(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr, alarmText);
+                } else if (update.getOperState() == TunnelOperStatus.Down) {
+                    LOG.trace("ITM Tunnel State is DOWN b/w srcDpn: {} and dstDpn: {}",
+                            srcDpnIdStr, dstDpnIdStr);
+                    raiseInternalDataPathAlarm(srcDpnIdStr, dstDpnIdStr, tunnelTypeStr, alarmText);
+                }
+            }
             return null;
         }
     }
