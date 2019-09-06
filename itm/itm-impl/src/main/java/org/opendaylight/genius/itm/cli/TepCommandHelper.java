@@ -268,8 +268,8 @@ public class TepCommandHelper {
             result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", monitorEnabled ? "On" : "Off"));
             result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval));
             result.add(System.lineSeparator());
-            result.add(String.format("%-16s  %-16s  %-16s  %-12s  %-12s %-12s %-16s %-12s", "TransportZone",
-                    "TunnelType", "SubnetMask", "GatewayIP", "VlanID", "DpnID", "IPAddress", "PortName"));
+            result.add(String.format("%-16s  %-16s %-12s %-16s", "TransportZone",
+                    "TunnelType", "DpnID", "IPAddress"));
             result.add("---------------------------------------------------------------------------------------------"
                     + "---------------------------------");
             for (TransportZone tz : transportZones.getTransportZone()) {
