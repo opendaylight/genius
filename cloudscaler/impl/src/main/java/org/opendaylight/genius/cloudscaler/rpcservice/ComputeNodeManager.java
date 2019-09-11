@@ -106,36 +106,43 @@ public class ComputeNodeManager {
 
     public void add(@NonNull Node node) throws TransactionCommitFailedException {
         OvsdbBridgeAugmentation bridgeAugmentation = node.augmentation(OvsdbBridgeAugmentation.class);
-        if (bridgeAugmentation != null && bridgeAugmentation.getBridgeOtherConfigs() != null) {
-            BigInteger datapathid = getDpnIdFromBridge(bridgeAugmentation);
-            Optional<BridgeOtherConfigs> otherConfigOptional = bridgeAugmentation.getBridgeOtherConfigs()
-                    .stream()
-                    .filter(otherConfig -> otherConfig.getBridgeOtherConfigKey().equals("dp-desc"))
-                    .findFirst();
-            if (!otherConfigOptional.isPresent()) {
-                LOG.error("ComputeNodeManager Compute node name is not present in bridge {}", node.getNodeId());
-                return;
-            }
-            String computeName = otherConfigOptional.get().getBridgeOtherConfigValue();
-            String nodeId = node.getNodeId().getValue();
-            InstanceIdentifier<ComputeNode> computeIid = buildComputeNodeIid(computeName);
-            ComputeNode computeNode = new ComputeNodeBuilder()
-                    .setComputeName(computeName)
-                    .setDpnid(datapathid)
-                    .setNodeid(nodeId)
-                    .build();
-            com.google.common.base.Optional<ComputeNode> computeNodeOptional = com.google.common.base.Optional.absent();
-            try {
-                computeNodeOptional = computeNodeCache.get(computeIid);
-            } catch (ReadFailedException e) {
-                LOG.error("ComputeNodeManager Failed to read {}", computeIid);
-            }
-            if (computeNodeOptional.isPresent()) {
-                logErrorIfComputeNodeIsAlreadyTaken(datapathid, nodeId, computeNodeOptional);
-            } else {
-                LOG.info("ComputeNodeManager add ovsdb node {}", node.getNodeId());
-                putComputeDetailsInConfigDatastore(computeIid, computeNode);
-            }
+        if (bridgeAugmentation == null || bridgeAugmentation.getBridgeOtherConfigs() == null) {
+            LOG.warn("ComputeNodeManager There was no configs in bridge {}.", node.getNodeId());
+            return;
+        }
+
+        if (bridgeAugmentation.getDatapathId() == null || bridgeAugmentation.getDatapathId().getValue() == null) {
+            LOG.error("ComputeNodeManager Compute node datapathId is null in bridge {}.", node.getNodeId());
+            return;
+        }
+        BigInteger datapathid = getDpnIdFromBridge(bridgeAugmentation);
+        Optional<BridgeOtherConfigs> otherConfigOptional = bridgeAugmentation.getBridgeOtherConfigs()
+                .stream()
+                .filter(otherConfig -> otherConfig.getBridgeOtherConfigKey().equals("dp-desc"))
+                .findFirst();
+        if (!otherConfigOptional.isPresent()) {
+            LOG.error("ComputeNodeManager Compute node name is not present in bridge {}", node.getNodeId());
+            return;
+        }
+        String computeName = otherConfigOptional.get().getBridgeOtherConfigValue();
+        String nodeId = node.getNodeId().getValue();
+        InstanceIdentifier<ComputeNode> computeIid = buildComputeNodeIid(computeName);
+        ComputeNode computeNode = new ComputeNodeBuilder()
+                .setComputeName(computeName)
+                .setDpnid(datapathid)
+                .setNodeid(nodeId)
+                .build();
+        com.google.common.base.Optional<ComputeNode> computeNodeOptional = com.google.common.base.Optional.absent();
+        try {
+            computeNodeOptional = computeNodeCache.get(computeIid);
+        } catch (ReadFailedException e) {
+            LOG.error("ComputeNodeManager Failed to read {}", computeIid);
+        }
+        if (computeNodeOptional.isPresent()) {
+            logErrorIfComputeNodeIsAlreadyTaken(datapathid, nodeId, computeNodeOptional);
+        } else {
+            LOG.info("ComputeNodeManager add ovsdb node {}", node.getNodeId());
+            putComputeDetailsInConfigDatastore(computeIid, computeNode);
         }
     }
 
@@ -163,11 +170,13 @@ public class ComputeNodeManager {
                                                      com.google.common.base.Optional<ComputeNode> optional) {
         ComputeNode existingNode = optional.get();
         if (!Objects.equals(existingNode.getNodeid(), nodeId)) {
-            LOG.error("ComputeNodeManager Compute is already connected by compute {}", existingNode);
+            LOG.error("ComputeNodeManager Compute is already taken by {}, Except node id is different.",
+                    existingNode.getComputeName());
             return;
         }
         if (!Objects.equals(existingNode.getDpnid(), datapathid)) {
-            LOG.error("ComputeNodeManager Compute is already connected by compute {}", existingNode);
+            LOG.error("ComputeNodeManager Compute is already taken by {}, Except datapath id is different.",
+                    existingNode.getComputeName());
         }
     }
 
