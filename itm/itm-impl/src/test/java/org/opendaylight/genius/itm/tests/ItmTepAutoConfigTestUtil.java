@@ -30,8 +30,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class ItmTepAutoConfigTestUtil {
+    private ItmTepAutoConfigTestUtil() {
 
-    private ItmTepAutoConfigTestUtil() { }
+    }
 
     /* transaction methods */
     public static ListenableFuture<Void> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,

@@ -39,7 +39,9 @@ public final class MetaDataUtil {
     public static final int REG6_START_INDEX = 0;
     public static final int REG6_END_INDEX = 31;
 
-    private MetaDataUtil() { }
+    private MetaDataUtil() {
+
+    }
 
     public static BigInteger getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
         return getServiceIndexMetaData(serviceIndex).or(getLportTagMetaData(lportTag));

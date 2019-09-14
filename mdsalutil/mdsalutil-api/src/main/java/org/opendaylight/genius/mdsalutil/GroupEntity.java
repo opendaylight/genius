@@ -21,7 +21,9 @@ public abstract class GroupEntity extends AbstractSwitchEntity {
 
     // This is required as it will cause the code generation by @Immutable.org to implement Builder,
     // which is required Xtend sources can use the XtendBuilderExtensions.operator_doubleGreaterThan
-    public abstract static class Builder implements org.opendaylight.yangtools.concepts.Builder<GroupEntity> {}
+    public abstract static class Builder implements org.opendaylight.yangtools.concepts.Builder<GroupEntity> {
+
+    }
 
     private transient GroupBuilder groupBuilder;
 

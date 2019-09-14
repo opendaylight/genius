@@ -21,7 +21,9 @@ public final class SystemPropertyReader {
         }
     }
 
-    private SystemPropertyReader() { }
+    private SystemPropertyReader() {
+
+    }
 
     // Returns max retries to be tried with DataStoreJobCoordinator calls
     public static int getDataStoreJobCoordinatorMaxRetries() {

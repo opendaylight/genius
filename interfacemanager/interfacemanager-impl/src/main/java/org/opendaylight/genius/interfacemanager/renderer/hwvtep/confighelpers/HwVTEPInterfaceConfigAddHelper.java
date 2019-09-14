@@ -36,7 +36,9 @@ import org.slf4j.LoggerFactory;
 public final class HwVTEPInterfaceConfigAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(HwVTEPInterfaceConfigAddHelper.class);
 
-    private HwVTEPInterfaceConfigAddHelper() { }
+    private HwVTEPInterfaceConfigAddHelper() {
+
+    }
 
     public static List<ListenableFuture<Void>> addConfiguration(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,

@@ -19,7 +19,9 @@ import java.lang.reflect.Type;
  */
 public final class SuperTypeUtil {
 
-    private SuperTypeUtil() { }
+    private SuperTypeUtil() {
+
+    }
 
     @SuppressWarnings("unchecked")
     public static <U> Class<U> getTypeParameter(Class<?> klass, int index) {

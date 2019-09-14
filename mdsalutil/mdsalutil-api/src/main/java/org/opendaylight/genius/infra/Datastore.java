@@ -20,9 +20,13 @@ public abstract class Datastore {
     /** Class representing the operational datastore. */
     public static final Class<Operational> OPERATIONAL = Operational.class;
 
-    public static final class Configuration extends Datastore {}
+    public static final class Configuration extends Datastore {
 
-    public static final class Operational extends Datastore {}
+    }
+
+    public static final class Operational extends Datastore {
+
+    }
 
     /**
      * Returns the logical datastore type corresponding to the given datastore class.
@@ -58,5 +62,7 @@ public abstract class Datastore {
         }
     }
 
-    private Datastore() {}
+    private Datastore() {
+
+    }
 }
