@@ -54,8 +54,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * Utility class to related to Hardware VTEP devices.
  */
 public final class HwvtepUtils {
+    private HwvtepUtils() {
 
-    private HwvtepUtils() { }
+    }
 
     // TODO: (eperefr) Move this to HwvtepSouthboundUtils when in place.
     public static InstanceIdentifier<LocalUcastMacs> getWildCardPathForLocalUcastMacs() {

@@ -77,7 +77,9 @@ public final class SouthboundUtils {
     private static final String BFD_CPATH_DOWN_VAL = "false";
     private static final String BFD_CHECK_TNL_KEY_VAL = "false";
 
-    private SouthboundUtils() { }
+    private SouthboundUtils() {
+
+    }
 
     public static InstanceIdentifier<Node> createPhysicalSwitchInstanceIdentifier(String psNodeIdString) {
         NodeId physicalSwitchNodeId = new NodeId(psNodeIdString);

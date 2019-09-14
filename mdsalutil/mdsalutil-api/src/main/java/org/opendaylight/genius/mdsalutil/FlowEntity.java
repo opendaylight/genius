@@ -26,7 +26,9 @@ public abstract class FlowEntity extends AbstractSwitchEntity {
 
     // This is required as it will cause the code generation by @Immutable.org to implement Builder,
     // which is required Xtend sources can use the XtendBuilderExtensions.operator_doubleGreaterThan
-    public abstract static class Builder implements org.opendaylight.yangtools.concepts.Builder<FlowEntity> {}
+    public abstract static class Builder implements org.opendaylight.yangtools.concepts.Builder<FlowEntity> {
+
+    }
 
     // This was done because MDSALManager has this hard-coded like this, upon MDSALManager.installFlow()
     @Default

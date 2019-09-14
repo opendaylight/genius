@@ -41,7 +41,9 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class OvsdbTestUtil {
-    private OvsdbTestUtil() { }
+    private OvsdbTestUtil() {
+
+    }
 
     /* methods */
     public static ConnectionInfo getConnectionInfo(int port, String strIpAddress) {

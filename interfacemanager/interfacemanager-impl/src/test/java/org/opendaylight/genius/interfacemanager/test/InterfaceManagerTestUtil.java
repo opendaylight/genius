@@ -98,7 +98,9 @@ public final class InterfaceManagerTestUtil {
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
     public static final NodeKey NODE_KEY = new NodeKey(new NodeId("openflow:1"));
 
-    private InterfaceManagerTestUtil() { }
+    private InterfaceManagerTestUtil() {
+
+    }
 
     static org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
         buildStateInterface(String ifName, String dpnId, String portNo, String phyAddress,

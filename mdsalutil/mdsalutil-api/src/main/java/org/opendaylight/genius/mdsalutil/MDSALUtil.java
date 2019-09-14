@@ -113,7 +113,9 @@ public class MDSALUtil {
             new ArrayList<>()).build();
     private static final Match EMPTY_MATCHES = new MatchBuilder().build();
 
-    private MDSALUtil() { }
+    private MDSALUtil() {
+
+    }
 
     public static FlowEntity buildFlowEntity(BigInteger dpnId, short tableId, String flowId, int priority,
             String flowName, int idleTimeOut, int hardTimeOut, BigInteger cookie,

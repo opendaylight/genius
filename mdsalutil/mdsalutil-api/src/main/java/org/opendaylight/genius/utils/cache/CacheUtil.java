@@ -42,7 +42,9 @@ public final class CacheUtil {
     // package local instead of private for CacheTestUtil
     static final ConcurrentMap<String, ConcurrentMap<?, ?>> MAP_OF_MAP = new ConcurrentHashMap<>();
 
-    private CacheUtil() { }
+    private CacheUtil() {
+
+    }
 
     public static ConcurrentMap<?, ?> getCache(String cacheName) {
         return MAP_OF_MAP.get(cacheName);

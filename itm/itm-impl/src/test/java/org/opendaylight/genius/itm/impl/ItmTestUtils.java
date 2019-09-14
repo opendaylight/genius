@@ -13,8 +13,9 @@ package org.opendaylight.genius.itm.impl;
  * @author Michael Vorburger
  */
 public final class ItmTestUtils {
+    private ItmTestUtils() {
 
-    private ItmTestUtils() { }
+    }
 
     public static void clearAllItmCaches() {
         ItmUtils.ITM_CACHE.clear();

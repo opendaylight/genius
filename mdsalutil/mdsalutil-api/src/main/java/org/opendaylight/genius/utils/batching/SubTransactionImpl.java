@@ -14,7 +14,9 @@ public class SubTransactionImpl implements SubTransaction {
     private InstanceIdentifier identifier;
     private short action;
 
-    public SubTransactionImpl() { }
+    public SubTransactionImpl() {
+
+    }
 
     @Override
     public void setInstance(Object instance) {

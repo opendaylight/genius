@@ -48,7 +48,9 @@ public final class OvsdbTepAddConfigHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddConfigHelper.class);
 
-    private OvsdbTepAddConfigHelper() { }
+    private OvsdbTepAddConfigHelper() {
+
+    }
 
     /**
      * Adds the TEP into ITM configuration/operational Datastore in one of the following cases.

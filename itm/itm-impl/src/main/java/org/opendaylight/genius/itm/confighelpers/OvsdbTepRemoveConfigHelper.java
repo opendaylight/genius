@@ -42,7 +42,9 @@ public final class OvsdbTepRemoveConfigHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepRemoveConfigHelper.class);
 
-    private OvsdbTepRemoveConfigHelper() { }
+    private OvsdbTepRemoveConfigHelper() {
+
+    }
 
     /**
      * Removes the TEP from ITM configuration/operational Datastore in one of the following cases.

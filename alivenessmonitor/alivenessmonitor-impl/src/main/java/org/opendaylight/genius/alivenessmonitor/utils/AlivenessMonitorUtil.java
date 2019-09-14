@@ -33,8 +33,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
 
 public final class AlivenessMonitorUtil {
+    private AlivenessMonitorUtil() {
 
-    private AlivenessMonitorUtil() {}
+    }
 
     public static InstanceIdentifier<MonitoringState> getMonitorStateId(String keyId) {
         return InstanceIdentifier.builder(MonitoringStates.class)

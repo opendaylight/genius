@@ -22,7 +22,9 @@ import org.slf4j.LoggerFactory;
 public final class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
 
-    private ItmTunnelStateRemoveHelper() { }
+    private ItmTunnelStateRemoveHelper() {
+
+    }
 
     public static List<ListenableFuture<Void>> removeTunnel(Interface iface) throws Exception {
         LOG.debug("Invoking removeTunnel for Interface {}", iface);
