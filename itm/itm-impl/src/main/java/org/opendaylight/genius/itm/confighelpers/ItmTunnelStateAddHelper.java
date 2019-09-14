@@ -25,7 +25,9 @@ import org.slf4j.LoggerFactory;
 public final class ItmTunnelStateAddHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateAddHelper.class);
 
-    private ItmTunnelStateAddHelper() { }
+    private ItmTunnelStateAddHelper() {
+
+    }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static List<ListenableFuture<Void>> addTunnel(Interface iface, IInterfaceManager ifaceManager,

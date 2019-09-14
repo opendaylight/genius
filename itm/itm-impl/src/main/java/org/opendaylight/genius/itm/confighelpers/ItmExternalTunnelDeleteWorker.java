@@ -40,7 +40,9 @@ import org.slf4j.LoggerFactory;
 public final class ItmExternalTunnelDeleteWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmExternalTunnelDeleteWorker.class);
 
-    private ItmExternalTunnelDeleteWorker() { }
+    private ItmExternalTunnelDeleteWorker() {
+
+    }
 
     public static void deleteTunnels(Collection<DPNTEPsInfo> dpnTepsList, Collection<DPNTEPsInfo> meshedDpnList,
                                      IpAddress extIp, Class<? extends TunnelTypeBase> tunType,

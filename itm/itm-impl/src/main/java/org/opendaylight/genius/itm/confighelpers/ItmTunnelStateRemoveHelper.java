@@ -23,7 +23,9 @@ public final class ItmTunnelStateRemoveHelper {
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelStateRemoveHelper.class);
     private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
-    private ItmTunnelStateRemoveHelper() { }
+    private ItmTunnelStateRemoveHelper() {
+
+    }
 
     public static List<ListenableFuture<Void>> removeTunnel(Interface iface) throws Exception {
         LOG.debug("Invoking removeTunnel for Interface {}", iface);

@@ -18,8 +18,9 @@ import org.apache.commons.lang3.StringUtils;
  * The Utility class for ITM CLI.
  */
 public final class ItmCliUtils {
+    private ItmCliUtils() {
 
-    private ItmCliUtils() { }
+    }
 
     /**
      * Construct dpn id list.

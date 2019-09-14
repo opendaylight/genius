@@ -41,7 +41,9 @@ public final class NWUtil {
     private static byte[] HIGH_128_BITS = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
     private static BigInteger HIGH_128_INT = new BigInteger(HIGH_128_BITS);
 
-    private NWUtil() { }
+    private NWUtil() {
+
+    }
 
     public static  long convertInetAddressToLong(InetAddress address) {
         byte[] ipAddressRaw = address.getAddress();

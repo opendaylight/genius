@@ -24,7 +24,9 @@ public final class ServiceIndex {
 
     private static Map<String, Short> serviceIndexMap = new ConcurrentHashMap<>();
 
-    private ServiceIndex() { }
+    private ServiceIndex() {
+
+    }
 
     public static short getIndex(String serviceName, short defaultValue) {
         if (serviceIndexMap.containsKey(serviceName)) {

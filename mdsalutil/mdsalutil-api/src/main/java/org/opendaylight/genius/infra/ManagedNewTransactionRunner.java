@@ -109,7 +109,7 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      * in subsequent transactions in the chain <strong>not</strong> being submitted.
      *
      * @param chainConsumer The {@link InterruptibleCheckedFunction} that will build transactions in the transaction
-     * chain.
+     *                      chain.
      * @param <R> The type of result returned by the function.
      * @return The result of the function call.
      */
