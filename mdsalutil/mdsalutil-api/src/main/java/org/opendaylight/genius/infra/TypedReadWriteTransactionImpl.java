@@ -33,4 +33,9 @@ class TypedReadWriteTransactionImpl<D extends Datastore>
     public <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path) {
         return FluentFuture.from(delegate.read(getDatastoreType(), path));
     }
+
+    @Override
+    public FluentFuture<Boolean> exists(InstanceIdentifier<?> path) {
+        return FluentFuture.from(delegate.exists(getDatastoreType(), path));
+    }
 }
