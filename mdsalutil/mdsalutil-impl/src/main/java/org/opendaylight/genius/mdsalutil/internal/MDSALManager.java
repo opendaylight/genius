@@ -648,7 +648,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     private static boolean groupExists(TypedReadTransaction<Configuration> tx, Node nodeDpn, long groupId)
            throws ExecutionException, InterruptedException {
-        return tx.read(buildGroupInstanceIdentifier(groupId, nodeDpn)).get().isPresent();
+        return tx.exists(buildGroupInstanceIdentifier(groupId, nodeDpn)).get();
     }
 
     private static InstanceIdentifier<Group> buildGroupInstanceIdentifier(long groupId, Node nodeDpn) {

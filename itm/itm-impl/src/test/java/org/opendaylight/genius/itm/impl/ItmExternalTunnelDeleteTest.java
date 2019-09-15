@@ -298,18 +298,19 @@ public class ItmExternalTunnelDeleteTest {
 
         doReturn(FluentFutures.immediateFluentFuture(optionalTransportZone))
                 .when(typedReadWriteTransaction).read(transportZoneIdentifier);
-        doReturn(FluentFutures.immediateFluentFuture(exTunnels))
-                .when(typedReadWriteTransaction).read(externalTunnelIdentifier1);
-        doReturn(FluentFutures.immediateFluentFuture(exTunnels))
-                .when(typedReadWriteTransaction).read(externalTunnelIdentifier2);
-        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier3);
-        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier4);
-        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier5);
-        doReturn(FluentFutures.immediateFluentFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier6);
+        doReturn(FluentFutures.immediateTrueFluentFuture())
+                .when(typedReadWriteTransaction).exists(externalTunnelIdentifier1);
+        doReturn(FluentFutures.immediateTrueFluentFuture())
+                .when(typedReadWriteTransaction).exists(externalTunnelIdentifier2);
+        doReturn(FluentFutures.immediateTrueFluentFuture()).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier3);
+        doReturn(FluentFutures.immediateTrueFluentFuture()).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier4);
+        doReturn(FluentFutures.immediateTrueFluentFuture()).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier5);
+        doReturn(FluentFutures.immediateTrueFluentFuture()).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier6);
+
         try {
             ItmExternalTunnelDeleteWorker
                     .deleteHwVtepsTunnels(dpnTepsList, cfgdHwVtepsList, transportZone, typedReadWriteTransaction,
