@@ -35,4 +35,15 @@ public interface TypedReadTransaction<D extends Datastore>
      * @return A future providing access to the result of the read, when it’s available, or any error encountered.
      */
     <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path);
+
+    /**
+     * Determines if an object exists at the given path.
+     *
+     * @see ReadTransaction#exists(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
+     * InstanceIdentifier)
+     *
+     * @param path The path to read from.
+     * @return A future providing access to the result of the check, when it’s available, or any error encountered.
+     */
+    FluentFuture<Boolean> exists(InstanceIdentifier<?> path);
 }
