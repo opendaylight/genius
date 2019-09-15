@@ -150,5 +150,13 @@ public final class TransactionAdapter {
             return Futures.makeChecked(delegate.read(path),
                 e -> new ReadFailedException("Error reading from the datastore", e));
         }
+
+        @Override
+        public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
+                InstanceIdentifier<?> path) {
+            checkStore(store);
+            return Futures.makeChecked(delegate.exists(path),
+                e -> new ReadFailedException("Error reading from the datastore", e));
+        }
     }
 }

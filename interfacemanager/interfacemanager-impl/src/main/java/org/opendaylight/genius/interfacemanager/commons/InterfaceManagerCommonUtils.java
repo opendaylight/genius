@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -161,7 +160,7 @@ public final class InterfaceManagerCommonUtils {
         NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(nodeID)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).checkedGet().isPresent();
+        return tx.exists(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).checkedGet();
     }
 
     public static InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
