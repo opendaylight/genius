@@ -29,4 +29,10 @@ class WriteTrackingReadWriteTransaction extends WriteTrackingWriteTransaction im
             InstanceIdentifier<T> path) {
         return ((ReadWriteTransaction) delegate()).read(store, path);
     }
+
+    @Override
+    public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
+            InstanceIdentifier<?> path) {
+        return ((ReadWriteTransaction) delegate()).exists(store, path);
+    }
 }

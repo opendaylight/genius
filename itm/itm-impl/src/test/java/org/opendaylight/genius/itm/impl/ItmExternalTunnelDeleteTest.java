@@ -299,18 +299,20 @@ public class ItmExternalTunnelDeleteTest {
 
         doReturn(Futures.immediateCheckedFuture(optionalTransportZone))
                 .when(typedReadWriteTransaction).read(transportZoneIdentifier);
-        doReturn(Futures.immediateCheckedFuture(exTunnels))
-                .when(typedReadWriteTransaction).read(externalTunnelIdentifier1);
-        doReturn(Futures.immediateCheckedFuture(exTunnels))
-                .when(typedReadWriteTransaction).read(externalTunnelIdentifier2);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier3);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier4);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier5);
-        doReturn(Futures.immediateCheckedFuture(exTunnels)).when(typedReadWriteTransaction)
-                .read(externalTunnelIdentifier6);
+
+        doReturn(Futures.immediateCheckedFuture(true))
+                .when(typedReadWriteTransaction).exists(externalTunnelIdentifier1);
+        doReturn(Futures.immediateCheckedFuture(true))
+                .when(typedReadWriteTransaction).exists(externalTunnelIdentifier2);
+        doReturn(Futures.immediateCheckedFuture(true)).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier3);
+        doReturn(Futures.immediateCheckedFuture(true)).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier4);
+        doReturn(Futures.immediateCheckedFuture(true)).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier5);
+        doReturn(Futures.immediateCheckedFuture(true)).when(typedReadWriteTransaction)
+                .exists(externalTunnelIdentifier6);
+
         try {
             ItmExternalTunnelDeleteWorker
                     .deleteHwVtepsTunnels(dpnTepsList, cfgdHwVtepsList, transportZone, typedReadWriteTransaction);
