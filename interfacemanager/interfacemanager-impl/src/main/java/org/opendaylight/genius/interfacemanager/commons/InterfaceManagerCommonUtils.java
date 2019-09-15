@@ -160,7 +160,7 @@ public final class InterfaceManagerCommonUtils {
         NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(nodeID)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).checkedGet().isPresent();
+        return tx.exists(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).checkedGet();
     }
 
     public static InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {

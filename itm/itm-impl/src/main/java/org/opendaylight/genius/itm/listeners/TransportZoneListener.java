@@ -146,8 +146,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private void initializeTZNode() {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.create(TransportZones.class);
         txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.CONFIGURATION, tx -> {
-            FluentFuture<Optional<TransportZones>> tzones = tx.read(path);
-            if (!tzones.get().isPresent()) {
+            FluentFuture<Boolean> tzones = tx.exists(path);
+            if (!tzones.get()) {
                 TransportZonesBuilder tzb = new TransportZonesBuilder();
                 tx.put(path, tzb.build());
             }

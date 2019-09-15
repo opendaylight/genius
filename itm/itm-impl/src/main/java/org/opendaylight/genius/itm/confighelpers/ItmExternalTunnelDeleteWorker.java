@@ -283,6 +283,6 @@ public final class ItmExternalTunnelDeleteWorker {
             throws ExecutionException, InterruptedException {
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, ItmUtils.getExternalTunnelKey(dstDpnOrNode, srcDpnOrNode, tunType));
-        return tx.read(path).get().isPresent();
+        return tx.exists(path).get();
     }
 }

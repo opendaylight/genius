@@ -132,8 +132,8 @@ public class LockManagerServiceImpl implements LockManagerService {
     private ListenableFuture<Void> unlock(final String lockName,
         final InstanceIdentifier<Lock> lockInstanceIdentifier, final int retry) {
         ListenableFuture<Void> future = txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-            Optional<Lock> result = tx.read(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
-            if (!result.isPresent()) {
+            Boolean result = tx.exists(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+            if (!result) {
                 LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
             } else {
                 tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
