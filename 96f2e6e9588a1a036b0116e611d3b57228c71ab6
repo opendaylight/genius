@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5d238fbc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2019-09-17T20:22:31Z",
+      "side": 1,
+      "message": "You are suggesting to wire it and expose via blueprint right?",
+      "parentUuid": "7a6b29fe_9d8d27d6",
+      "revId": "96f2e6e9588a1a036b0116e611d3b57228c71ab6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_ddc2ffe7",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/utils/hwvtep/HwvtepHACache.java",
         "patchSetId": 11
