@@ -108,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a214ff4c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 620,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2019-09-17T20:22:31Z",
+      "side": 1,
+      "message": "I think we should read mdsal if not present in cache as peri suggested.\nCache miss does not mean , the data is not there, it could also mean the thread which is supposed to fill the cache was not yet scheduled or still busy with previous operations.\nIn those scenarios reading from actual backend makes sense.\nOne will hit into these scenarios upon cluster reboots.",
+      "parentUuid": "fafc7978_d51eaa62",
+      "revId": "96450a62baccce20286dc9b1fbfcb2a641459f98",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_3a172553",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/InterfacemgrProvider.java",
         "patchSetId": 3
