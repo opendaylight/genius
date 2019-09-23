@@ -159,6 +159,7 @@ public class TunnelInventoryStateListener extends
             LOG.debug("Node Connector Update {} Interface is not a internal tunnel I/f, so no-op", portName);
             return;
         }
+
         if (fcNodeConnectorNew.getReason() == PortReason.Delete || !directTunnelUtils.isEntityOwner()) {
             return;
         }
@@ -177,9 +178,15 @@ public class TunnelInventoryStateListener extends
         LOG.info("Received NodeConnector Add Event: {}, {}", key, fcNodeConnectorNew);
         EVENT_LOGGER.debug("ITM-TunnelInventoryState,ADD DTCN received for {}", fcNodeConnectorNew.getName());
         String portName = fcNodeConnectorNew.getName();
+
         // Return if its not tunnel port and if its not Internal
         if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && !portName.startsWith("of")) {
             LOG.debug("Node Connector Add {} Interface is not a tunnel I/f, so no-op", portName);
+            return;
+        }
+
+        if (!directTunnelUtils.isEntityOwner()) {
+            LOG.debug("Not an entity owner.");
             return;
         }
 
@@ -220,7 +227,6 @@ public class TunnelInventoryStateListener extends
         } else {
             addTunnelState(nodeConnectorInfo, portName);
         }
-
     }
 
     private void addTunnelState(NodeConnectorInfo nodeConnectorInfo, String portName) {
@@ -239,6 +245,21 @@ public class TunnelInventoryStateListener extends
                 LOG.debug("{} Interface is not a internal tunnel I/f, so no-op", portName);
                 return;
             }
+        }
+
+        // Check if tunnels State has an entry for this interface.
+        // If so, then this Inventory Add is due to compute re-connection. Then, ONLY update the state
+        // to UP as previously the compute would have disconnected and so the state will be UNKNOWN.
+        try {
+            long portNo = tunnelStateCache.getNodeConnectorIdFromInterface(portName);
+            if (portNo != ITMConstants.INVALID_PORT_NO) {
+                coordinator.enqueueJob(portName,
+                        new TunnelInterfaceNodeReconnectWorker(portName), ITMConstants.JOB_MAX_RETRIES);
+                return;
+            }
+        } catch (ReadFailedException e) {
+            LOG.error("Exception occurred in reconnect, reason: {}. Continuing with ADD for port {}",
+                    e.getMessage(), portName);
         }
 
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
@@ -479,5 +500,39 @@ public class TunnelInventoryStateListener extends
             return "TunnelInterfaceStateRemoveWorker{nodeConnectorId=" + nodeConnectorId + ", fcNodeConnector"
                     + flowCapableNodeConnector + ", interfaceName='" + interfaceName + '\'' + '}';
         }
+    }
+
+    private class TunnelInterfaceNodeReconnectWorker implements Callable<List<ListenableFuture<Void>>> {
+        private final String tunnelName;
+
+        TunnelInterfaceNodeReconnectWorker(String tunnelName) {
+            this.tunnelName = tunnelName;
+        }
+
+        @Override
+        public List<ListenableFuture<Void>> call() throws Exception {
+            // If another renderer(for eg : OVS) needs to be supported, check can be performed here
+            // to call the respective helpers.
+            EVENT_LOGGER.debug("ITM-TunnelInventoryState, Compute Re-connected, ADD received for {} ", tunnelName);
+
+            return handleInterfaceStateOnReconnect(tunnelName);
+        }
+
+        @Override
+        public String toString() {
+            return "TunnelInterfaceNodeReconnectWorker{tunnelName=" + tunnelName + '\'' + '}';
+        }
+    }
+
+    private List<ListenableFuture<Void>> handleInterfaceStateOnReconnect(String interfaceName) {
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
+            DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+
+            handleInterfaceStateUpdates(tx, dpnTepInfo, true, interfaceName, interfaceName,
+                    Interface.OperStatus.Up);
+        }));
+        return futures;
     }
 }
