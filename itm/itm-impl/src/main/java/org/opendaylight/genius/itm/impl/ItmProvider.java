@@ -37,6 +37,7 @@ import org.opendaylight.genius.itm.listeners.TransportZoneListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorChangeListener;
 import org.opendaylight.genius.itm.listeners.TunnelMonitorIntervalListener;
 import org.opendaylight.genius.itm.monitoring.ItmTunnelEventListener;
+import org.opendaylight.genius.itm.recovery.impl.EosChangeEventHandler;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
@@ -96,7 +97,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     private final ItmProvider.ItmProviderEOSListener itmProviderEOSListener;
     public  Integer batchSize;
     public  Integer batchInterval;
-
+    private EosChangeEventHandler eosChangeEventHandler;
 
     @Inject
     public ItmProvider(DataBroker dataBroker,
@@ -115,7 +116,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                        final ItmDiagStatusProvider itmDiagStatusProvider,
                        final TunnelStateCache tunnelStateCache,
                        final ItmConfig itmConfig,
-                       final JobCoordinator jobCoordinator) {
+                       final JobCoordinator jobCoordinator,
+                       final EosChangeEventHandler eosChangeEventHandler) {
         LOG.info("ItmProvider Before register MBean");
         this.dataBroker = dataBroker;
         this.idManager = idManagerService;
@@ -132,6 +134,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         this.dpnTepStateCache = dpnTepStateCache;
         this.itmStatusProvider = itmDiagStatusProvider;
         this.tunnelStateCache = tunnelStateCache;
+        this.eosChangeEventHandler = eosChangeEventHandler;
 
         this.itmConfig = itmConfig;
         this.jobCoordinator = jobCoordinator;
@@ -373,6 +376,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         if (ownershipChange.getState().isOwner()) {
             LOG.info("*This* instance of provider is set as a MASTER instance");
             createDefaultTransportZone(itmConfig);
+            eosChangeEventHandler.recoverUnknownTunnelsOnEosSwitch();
         } else {
             LOG.info("*This* instance of provider is set as a SLAVE instance");
         }
