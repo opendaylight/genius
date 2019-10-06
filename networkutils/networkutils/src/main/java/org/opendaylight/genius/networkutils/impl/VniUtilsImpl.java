@@ -9,12 +9,10 @@ package org.opendaylight.genius.networkutils.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -42,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.networkutils.config.rev181129.NetworkConfig;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,15 +64,13 @@ public class VniUtilsImpl implements VniUtils {
     }
 
     @Override
-    public BigInteger getVNI(String vniKey) throws ExecutionException, InterruptedException {
+    public Uint64 getVNI(String vniKey) throws ExecutionException, InterruptedException {
         AllocateIdInput getIdInput = new AllocateIdInputBuilder().setPoolName(NwConstants.ODL_VNI_POOL_NAME)
                 .setIdKey(vniKey).build();
         Future<RpcResult<AllocateIdOutput>> result = idManagerService.allocateId(getIdInput);
         RpcResult<AllocateIdOutput> rpcResult = result.get();
-        if (rpcResult.isSuccessful()) {
-            return BigInteger.valueOf(rpcResult.getResult().getIdValue());
-        }
-        return BigInteger.valueOf(-1);
+
+        return rpcResult.isSuccessful() ? Uint64.valueOf(rpcResult.getResult().getIdValue()) : null;
     }
 
     @Override
@@ -87,6 +84,7 @@ public class VniUtilsImpl implements VniUtils {
         }
     }
 
+    @Override
     public Optional<IdPool> getVxlanVniPool() throws ReadFailedException {
         return SingleTransactionDataBroker.syncReadOptional(dataBroker,
                 LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_VNI_POOL_NAME));
@@ -115,8 +113,8 @@ public class VniUtilsImpl implements VniUtils {
                 buildIdPoolInstanceIdentifier(NwConstants.ODL_VNI_POOL_NAME));
         if (existingIdPool.isPresent()) {
             IdPool odlVniIdPool = existingIdPool.get();
-            long currentStartLimit = odlVniIdPool.getAvailableIdsHolder().getStart();
-            long currentEndLimit = odlVniIdPool.getAvailableIdsHolder().getEnd();
+            long currentStartLimit = odlVniIdPool.getAvailableIdsHolder().getStart().toJava();
+            long currentEndLimit = odlVniIdPool.getAvailableIdsHolder().getEnd().toJava();
 
             if (lowLimit == currentStartLimit && highLimit == currentEndLimit) {
                 LOG.debug("validateAndCreateVxlanVniPool : OpenDaylight VXLAN VNI range pool already exists "

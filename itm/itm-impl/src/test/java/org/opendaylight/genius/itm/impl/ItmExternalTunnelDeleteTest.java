@@ -16,7 +16,6 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -75,6 +74,8 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmExternalTunnelDeleteTest {
@@ -96,7 +97,7 @@ public class ItmExternalTunnelDeleteTest {
     IpAddress gtwyIp1 = null;
     IpAddress gtwyIp2 = null;
     IpPrefix ipPrefixTest = null;
-    BigInteger dpId2 = BigInteger.valueOf(1);
+    Uint64 dpId2 = Uint64.ONE;
     DPNTEPsInfo dpntePsInfoVxlan = null;
     TunnelEndPoints tunnelEndPointsVxlan = null;
     HwVtep hwVtep1  = null;
@@ -258,7 +259,7 @@ public class ItmExternalTunnelDeleteTest {
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
         doReturn("phy0").when(itmConfig).getPortname();
-        doReturn(100).when(itmConfig).getVlanId();
+        doReturn(Uint16.valueOf(100)).when(itmConfig).getVlanId();
     }
 
     @Test

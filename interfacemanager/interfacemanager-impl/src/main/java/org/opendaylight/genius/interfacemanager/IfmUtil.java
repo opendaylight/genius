@@ -19,12 +19,12 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.regex.Pattern;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
@@ -98,12 +98,13 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class IfmUtil {
-
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
+    private static final Pattern GENERATE_MAC_PATTERN = Pattern.compile("(.{2})");
     private static final int INVALID_ID = 0;
 
     private IfmUtil() {
@@ -117,8 +118,8 @@ public final class IfmUtil {
             .put(TunnelTypeLogicalGroup.class, LOGICAL_GROUP_INTERFACE)
             .build();
 
-    public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
-        return new BigInteger(getDpnStringFromNodeConnectorId(portId));
+    public static Uint64 getDpnFromNodeConnectorId(NodeConnectorId portId) {
+        return Uint64.valueOf(getDpnStringFromNodeConnectorId(portId));
     }
 
     public static String getDpnStringFromNodeConnectorId(NodeConnectorId portId) {
@@ -128,7 +129,7 @@ public final class IfmUtil {
         return portId.getValue().split(IfmConstants.OF_URI_SEPARATOR)[1];
     }
 
-    public static BigInteger getDpnFromInterface(
+    public static Uint64 getDpnFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
         NodeConnectorId ncId = getNodeConnectorIdFromInterface(ifState);
@@ -156,7 +157,7 @@ public final class IfmUtil {
         return IfmConstants.INVALID_PORT_NO;
     }
 
-    public static NodeId buildDpnNodeId(BigInteger dpnId) {
+    public static NodeId buildDpnNodeId(Uint64 dpnId) {
         return new NodeId(IfmConstants.OF_URI_PREFIX + dpnId);
     }
 
@@ -328,7 +329,7 @@ public final class IfmUtil {
             case VXLAN_TRUNK_INTERFACE:
                 if (!isDefaultEgress) {
                     if (tunnelKey != null) {
-                        result.add(new ActionSetFieldTunnelId(actionKeyStart++, BigInteger.valueOf(tunnelKey)));
+                        result.add(new ActionSetFieldTunnelId(actionKeyStart++, Uint64.valueOf(tunnelKey)));
                     }
                 } else {
                     // For OF Tunnels default egress actions need to set tunnelIps
@@ -350,7 +351,7 @@ public final class IfmUtil {
                     boolean isVlanTransparent = false;
                     int vlanVid = 0;
                     if (vlanIface != null) {
-                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue();
+                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().toJava();
                         isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
                     }
                     if (vlanVid != 0 && !isVlanTransparent) {
@@ -388,9 +389,9 @@ public final class IfmUtil {
         return new NodeId(ncId.getValue().substring(0, ncId.getValue().lastIndexOf(':')));
     }
 
-    public static BigInteger[] mergeOpenflowMetadataWriteInstructions(List<Instruction> instructions) {
-        BigInteger metadata = new BigInteger("0", 16);
-        BigInteger metadataMask = new BigInteger("0", 16);
+    public static Uint64[] mergeOpenflowMetadataWriteInstructions(List<Instruction> instructions) {
+        Uint64 metadata = Uint64.ZERO;
+        Uint64 metadataMask = Uint64.ZERO;
         if (instructions != null && !instructions.isEmpty()) {
             // check if metadata write instruction is present
             for (Instruction instruction : instructions) {
@@ -400,12 +401,13 @@ public final class IfmUtil {
                 if (actualInstruction instanceof WriteMetadataCase) {
                     WriteMetadataCase writeMetaDataInstruction = (WriteMetadataCase) actualInstruction;
                     WriteMetadata availableMetaData = writeMetaDataInstruction.getWriteMetadata();
-                    metadata = metadata.or(availableMetaData.getMetadata());
-                    metadataMask = metadataMask.or(availableMetaData.getMetadataMask());
+                    metadata = Uint64.fromLongBits(metadata.longValue() | availableMetaData.getMetadata().longValue());
+                    metadataMask = Uint64.fromLongBits(metadataMask.longValue()
+                        | availableMetaData.getMetadataMask().longValue());
                 }
             }
         }
-        return new BigInteger[] { metadata, metadataMask };
+        return new Uint64[] { metadata, metadataMask };
     }
 
     public static Integer allocateId(IdManagerService idManager, String poolName, String idKey) {
@@ -437,12 +439,12 @@ public final class IfmUtil {
         }
     }
 
-    public static BigInteger getDpnId(DatapathId datapathId) {
+    public static Uint64 getDpnId(DatapathId datapathId) {
         if (datapathId != null) {
             // Adding logs for a random issue spotted during datapath id
             // conversion
             String dpIdStr = datapathId.getValue().replace(":", "");
-            return new BigInteger(dpIdStr, 16);
+            return Uint64.valueOf(dpIdStr, 16);
         }
         return null;
     }
@@ -477,7 +479,7 @@ public final class IfmUtil {
         return interfaceType;
     }
 
-    public static VlanInterfaceInfo getVlanInterfaceInfo(Interface iface, BigInteger dpId) {
+    public static VlanInterfaceInfo getVlanInterfaceInfo(Interface iface, Uint64 dpId) {
         short vlanId = 0;
         String portName = null;
         IfL2vlan vlanIface = iface.augmentation(IfL2vlan.class);
@@ -505,18 +507,20 @@ public final class IfmUtil {
         return vlanInterfaceInfo;
     }
 
-    public static BigInteger getDeadBeefBytesForMac() {
-        return new BigInteger("FFFFFFFF", 16).and(new BigInteger(IfmConstants.DEAD_BEEF_MAC_PREFIX, 16)).shiftLeft(16);
+    public static Uint64 getDeadBeefBytesForMac() {
+        final long raw = IfmConstants.DEAD_BEEF_MAC_PREFIX.longValue() & 0xFFFFFFFFL;
+        return Uint64.fromLongBits(raw << 16);
     }
 
-    public static BigInteger fillPortNumberToMac(long portNumber) {
-        return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portNumber));
+    public static Uint64 fillPortNumberToMac(long portNumber) {
+        return Uint64.fromLongBits(portNumber & 0xFFFF);
     }
 
     public static String generateMacAddress(long portNo) {
-        String unformattedMAC = getDeadBeefBytesForMac().or(fillPortNumberToMac(portNo)).toString(16);
-        return unformattedMAC.replaceAll("(.{2})", "$1" + IfmConstants.MAC_SEPARATOR).substring(0,
-                IfmConstants.MAC_STRING_LENGTH);
+        final long raw = getDeadBeefBytesForMac().longValue() | fillPortNumberToMac(portNo).longValue();
+        return GENERATE_MAC_PATTERN.matcher(Long.toUnsignedString(raw))
+                .replaceAll("$1" + IfmConstants.MAC_SEPARATOR)
+                .substring(0, IfmConstants.MAC_STRING_LENGTH);
     }
 
     public static PhysAddress getPhyAddress(long portNo, FlowCapableNodeConnector flowCapableNodeConnector) {
@@ -552,7 +556,7 @@ public final class IfmUtil {
         BoundServices serviceInfo, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
-            serviceInfo.getServicePriority(), interfaceName, serviceMode);
+            serviceInfo.getServicePriority().toJava(), interfaceName, serviceMode);
         tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
     }
 

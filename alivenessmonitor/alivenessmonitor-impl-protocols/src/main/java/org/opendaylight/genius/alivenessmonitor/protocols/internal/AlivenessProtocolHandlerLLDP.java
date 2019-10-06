@@ -12,7 +12,6 @@ import static org.opendaylight.infrautils.utils.concurrent.LoggingFutures.addErr
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -49,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,7 +159,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
                 return;
             }
             TransmitPacketInput transmitPacketInput = MDSALUtil.getPacketOut(actions, ethenetLLDPPacket.serialize(),
-                    nodeId, MDSALUtil.getNodeConnRef(BigInteger.valueOf(nodeId), "0xfffffffd"));
+                    nodeId, MDSALUtil.getNodeConnRef(Uint64.valueOf(nodeId), "0xfffffffd"));
             addErrorLogging(packetProcessingService.transmitPacket(transmitPacketInput),
                     LOG, "transmitPacket() failed: {}", transmitPacketInput);
         } catch (InterruptedException | ExecutionException | PacketException e) {
@@ -197,7 +197,7 @@ public class AlivenessProtocolHandlerLLDP extends AbstractAlivenessProtocolHandl
         List<ActionInfo> actionInfos = new ArrayList<>();
         // Set the LLDP service Id which is 0
         if (Tunnel.class.equals(intfType)) {
-            actionInfos.add(new ActionSetFieldTunnelId(BigInteger.ZERO));
+            actionInfos.add(new ActionSetFieldTunnelId(Uint64.ZERO));
         }
         actionInfos.add(new ActionOutput(new Uri(Long.toString(portNum))));
         return actionInfos;

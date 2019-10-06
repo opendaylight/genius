@@ -220,8 +220,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
             return null;
         }
 
-        String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+        String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
+        int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
         for (Vteps vtep : transportZone.getVteps()) {
             if (ipAddress.equals(vtep.getIpAddress().stringValue())) {

@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.List;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -23,6 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.re
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
                                                     List<BoundServices> allServices, Interface ifState);
 
     @Override
-    public abstract void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, BigInteger dpnId,
+    public abstract void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, Uint64 dpnId,
                                                      String ifaceName);
 }
 

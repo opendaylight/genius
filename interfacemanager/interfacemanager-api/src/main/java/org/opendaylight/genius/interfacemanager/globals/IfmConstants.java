@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
-import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 
 public final class  IfmConstants {
@@ -25,7 +25,6 @@ public final class  IfmConstants {
     public static final int FLOW_TABLE_MISS_PRIORITY = 0;
     public static final int DEFAULT_ARP_FLOW_PRIORITY = 100;
     public static final int INVALID_PORT_NO = -1;
-    public static final BigInteger INVALID_DPID = new BigInteger("-1");
 
     // Id pool
     public static final String IFM_IDPOOL_NAME = "interfaces";
@@ -40,8 +39,8 @@ public final class  IfmConstants {
     // Table
     public static final long DELAY_TIME_IN_MILLISECOND = 10000;
     // Cookies
-    public static final BigInteger COOKIE_L3_BASE = new BigInteger("8000000", 16);
-    public static final BigInteger COOKIE_EGRESS_DISPATCHER_TABLE = new BigInteger("1300000", 16);
+    public static final Uint64 COOKIE_L3_BASE = Uint64.valueOf("8000000", 16).intern();
+    public static final Uint64 COOKIE_EGRESS_DISPATCHER_TABLE = Uint64.valueOf("1300000", 16).intern();
     // Tunnel Monitoring
     public static final int DEFAULT_MONITOR_INTERVAL = 10000;
 

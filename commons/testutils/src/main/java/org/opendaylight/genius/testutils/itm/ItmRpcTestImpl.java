@@ -9,10 +9,8 @@ package org.opendaylight.genius.testutils.itm;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
@@ -64,28 +62,30 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.S
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class ItmRpcTestImpl implements ItmRpcService {
 
-    private final Map<BigInteger, IpAddress> tepIps = new ConcurrentHashMap<>();
-    private final Map<BigInteger, Map<String, String>> interfaceNames = new ConcurrentHashMap<>();
-    private final Map<BigInteger, Map<String, String>> externalInterfaceNames = new ConcurrentHashMap<>();
+    // FIXME: access is complete synchronized, why are these ConcurrentHashMaps???
+    private final Map<Uint64, IpAddress> tepIps = new ConcurrentHashMap<>();
+    private final Map<Uint64, Map<String, String>> interfaceNames = new ConcurrentHashMap<>();
+    private final Map<Uint64, Map<String, String>> externalInterfaceNames = new ConcurrentHashMap<>();
 
-    public synchronized void addDpn(BigInteger dpnId, String tepIp) {
+    public synchronized void addDpn(Uint64 dpnId, String tepIp) {
         tepIps.put(dpnId, IpAddressBuilder.getDefaultInstance(tepIp));
     }
 
-    public synchronized void addInterface(BigInteger dpnId, String dstTep, String interfaceName) {
+    public synchronized void addInterface(Uint64 dpnId, String dstTep, String interfaceName) {
         interfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
         interfaceNames.get(dpnId).put(dstTep, interfaceName);
     }
 
-    public synchronized void addL2GwInterface(BigInteger dpnId, String nodeId, String interfaceName) {
+    public synchronized void addL2GwInterface(Uint64 dpnId, String nodeId, String interfaceName) {
         externalInterfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
         externalInterfaceNames.get(dpnId).put(nodeId, interfaceName);
     }
 
-    public synchronized void addExternalInterface(BigInteger dpnId, String dstTep, String interfaceName) {
+    public synchronized void addExternalInterface(Uint64 dpnId, String dstTep, String interfaceName) {
         //dstTep = IpAddressBuilder.getDefaultInstance(dstTep).toString();
         externalInterfaceNames.putIfAbsent(dpnId, new ConcurrentHashMap<>());
         externalInterfaceNames.get(dpnId).put(dstTep, interfaceName);
@@ -162,7 +162,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     @Override
     public synchronized ListenableFuture<RpcResult<GetExternalTunnelInterfaceNameOutput>>
             getExternalTunnelInterfaceName(GetExternalTunnelInterfaceNameInput input) {
-        String interfaceName = externalInterfaceNames.get(new BigInteger(input.getSourceNode(), 10))
+        String interfaceName = externalInterfaceNames.get(Uint64.valueOf(input.getSourceNode()))
                 .get(input.getDestinationNode());
         GetExternalTunnelInterfaceNameOutput output = new GetExternalTunnelInterfaceNameOutputBuilder()
                 .setInterfaceName(interfaceName)

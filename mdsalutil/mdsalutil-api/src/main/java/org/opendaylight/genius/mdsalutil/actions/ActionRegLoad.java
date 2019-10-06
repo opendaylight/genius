@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
@@ -18,6 +17,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Action to load an NXM register.
@@ -52,7 +52,7 @@ public class ActionRegLoad extends ActionInfo {
                 .setStart(start)
                 .setEnd(end)
                 .build();
-        NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder().setDst(dst).setValue(BigInteger.valueOf(load));
+        NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder().setDst(dst).setValue(Uint64.valueOf(load));
 
         return new ActionBuilder()
                 .setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder().setNxRegLoad(

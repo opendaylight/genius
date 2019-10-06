@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.NxLearnBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.nx.learn.FlowMods;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.nx.learn.FlowModsBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Learn action.
@@ -38,19 +38,19 @@ public class ActionLearn extends ActionInfo {
     private final int idleTimeout;
     private final int hardTimeout;
     private final int priority;
-    private final BigInteger cookie;
+    private final Uint64 cookie;
     private final int flags;
     private final short tableId;
     private final int finIdleTimeout;
     private final int finHardTimeout;
     private final List<FlowMod> flowMods = new ArrayList<>();
 
-    public ActionLearn(int idleTimeout, int hardTimeout, int priority, BigInteger cookie, int flags, short tableId,
+    public ActionLearn(int idleTimeout, int hardTimeout, int priority, Uint64 cookie, int flags, short tableId,
         int finIdleTimeout, int finHardTimeout, List<FlowMod> flowMods) {
         this(0, idleTimeout, hardTimeout, priority, cookie, flags, tableId, finIdleTimeout, finHardTimeout, flowMods);
     }
 
-    public ActionLearn(int actionKey, int idleTimeout, int hardTimeout, int priority, BigInteger cookie, int flags,
+    public ActionLearn(int actionKey, int idleTimeout, int hardTimeout, int priority, Uint64 cookie, int flags,
         short tableId, int finIdleTimeout, int finHardTimeout, List<FlowMod> flowMods) {
         super(actionKey);
         this.idleTimeout = idleTimeout;
@@ -103,7 +103,7 @@ public class ActionLearn extends ActionInfo {
         return priority;
     }
 
-    public BigInteger getCookie() {
+    public Uint64 getCookie() {
         return cookie;
     }
 

@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -17,20 +16,29 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxTunIpv4DstCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.group.buckets.bucket.action.action.NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.Dst;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Set tunnel destination IP action.
  */
 public class ActionSetTunnelDestinationIp extends ActionInfo {
+    private static final Dst NX_REGEX_LOAD_DST = new DstBuilder()
+            .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Empty.getInstance()).build())
+            .setStart(Uint16.ZERO)
+            .setEnd(Uint16.valueOf(31).intern())
+            .build();
 
-    private final BigInteger destIp;
+
+    private final Uint64 destIp;
     private final boolean groupBucket;
 
-    public ActionSetTunnelDestinationIp(BigInteger destIp) {
+    public ActionSetTunnelDestinationIp(Uint64 destIp) {
         this(0, destIp);
     }
 
@@ -38,7 +46,7 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
         this(0, destIp);
     }
 
-    public ActionSetTunnelDestinationIp(int actionKey, BigInteger destIp) {
+    public ActionSetTunnelDestinationIp(int actionKey, Uint64 destIp) {
         super(actionKey);
         this.destIp = destIp;
         this.groupBucket = false;
@@ -48,7 +56,7 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
         this(actionKey, MDSALUtil.getBigIntIpFromIpAddress(destIp));
     }
 
-    public BigInteger getDestIp() {
+    public Uint64 getDestIp() {
         return destIp;
     }
 
@@ -63,24 +71,20 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
 
     @Override
     public Action buildAction(int newActionKey) {
-        NxRegLoadBuilder nxRegLoadBuilder = new NxRegLoadBuilder();
-        Dst dst = new DstBuilder()
-            .setDstChoice(new DstNxTunIpv4DstCaseBuilder().setNxTunIpv4Dst(Empty.getInstance()).build())
-            .setStart(0)
-            .setEnd(31)
-            .build();
-        nxRegLoadBuilder.setDst(dst);
-        nxRegLoadBuilder.setValue(destIp);
-        ActionBuilder ab = new ActionBuilder();
+        // FIXME: this should be a constant
+        NxRegLoad nxRegLoad = new NxRegLoadBuilder()
+                .setDst(NX_REGEX_LOAD_DST)
+                .setValue(destIp)
+                .build();
 
+        ActionBuilder ab = new ActionBuilder().withKey(new ActionKey(newActionKey));
         if (groupBucket) {
             ab.setAction(new NxActionRegLoadNodesNodeGroupBucketsBucketActionsCaseBuilder()
-                .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                .setNxRegLoad(nxRegLoad).build());
         } else {
             ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
-                .setNxRegLoad(nxRegLoadBuilder.build()).build());
+                .setNxRegLoad(nxRegLoad).build());
         }
-        ab.withKey(new ActionKey(newActionKey));
         return ab.build();
     }
 

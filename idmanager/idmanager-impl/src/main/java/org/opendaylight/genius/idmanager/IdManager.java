@@ -87,6 +87,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,16 +178,17 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     public boolean updateLocalIdPoolCache(IdPool idPool, String parentPoolName) {
         AvailableIdsHolder availableIdsHolder = idPool.getAvailableIdsHolder();
-        AvailableIdHolder availableIdHolder = new AvailableIdHolder(idUtils, availableIdsHolder.getStart(),
-                availableIdsHolder.getEnd());
+        AvailableIdHolder availableIdHolder = new AvailableIdHolder(idUtils, availableIdsHolder.getStart().toJava(),
+                availableIdsHolder.getEnd().toJava());
         availableIdHolder.setCur(availableIdsHolder.getCursor());
         ReleasedIdsHolder releasedIdsHolder = idPool.getReleasedIdsHolder();
-        ReleasedIdHolder releasedIdHolder = new ReleasedIdHolder(idUtils, releasedIdsHolder.getDelayedTimeSec());
-        releasedIdHolder.setAvailableIdCount(releasedIdsHolder.getAvailableIdCount());
+        ReleasedIdHolder releasedIdHolder = new ReleasedIdHolder(idUtils,
+                                                        releasedIdsHolder.getDelayedTimeSec().toJava());
+        releasedIdHolder.setAvailableIdCount(releasedIdsHolder.getAvailableIdCount().toJava());
         List<DelayedIdEntry> delayedIdEntryInCache = releasedIdsHolder.nonnullDelayedIdEntries()
                 .stream()
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
-                        .getId(), delayedIdEntry.getReadyTimeSec()))
+                        .getId().toJava(), delayedIdEntry.getReadyTimeSec().toJava()))
                 .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
                 .collect(toCollection(ArrayList::new));
 
@@ -205,8 +207,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     @Override
     public ListenableFuture<RpcResult<CreateIdPoolOutput>> createIdPool(CreateIdPoolInput input) {
         LOG.info("createIdPool called with input {}", input);
-        long low = input.getLow();
-        long high = input.getHigh();
+        long low = input.getLow().toJava();
+        long high = input.getHigh().toJava();
         long blockSize = idUtils.computeBlockSize(low, high);
         return FutureRpcResults.fromListenableFuture(LOG, "createIdPool", input, () -> {
             String poolName = input.getPoolName().intern();
@@ -234,13 +236,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return FutureRpcResults.fromBuilder(LOG, "allocateId", input, () -> {
             String localPoolName = idUtils.getLocalPoolName(poolName);
             // allocateIdFromLocalPool method returns a list of IDs with one element. This element is obtained by get(0)
-            long newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0);
+            long newIdValue = allocateIdFromLocalPool(poolName, localPoolName, idKey, 1).get(0).toJava();
             return new AllocateIdOutputBuilder().setIdValue(newIdValue);
         }).onFailure(e -> completeExceptionallyIfPresent(poolName, idKey, e)).build();
     }
 
     private void completeExceptionallyIfPresent(String poolName, String idKey, Throwable exception) {
-        CompletableFuture<List<Long>> completableFuture =
+        CompletableFuture<List<Uint32>> completableFuture =
                 idUtils.removeAllocatedIds(idUtils.getUniqueKey(poolName, idKey));
         if (completableFuture != null) {
             completableFuture.completeExceptionally(exception);
@@ -251,11 +253,11 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     public ListenableFuture<RpcResult<AllocateIdRangeOutput>> allocateIdRange(AllocateIdRangeInput input) {
         String idKey = input.getIdKey();
         String poolName = input.getPoolName();
-        long size = input.getSize();
+        long size = input.getSize().toJava();
         String localPoolName = idUtils.getLocalPoolName(poolName);
         AllocateIdRangeOutputBuilder output = new AllocateIdRangeOutputBuilder();
         return FutureRpcResults.fromBuilder(LOG, "allocateIdRange", input, () -> {
-            List<Long> newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
+            List<Uint32> newIdValuesList = allocateIdFromLocalPool(poolName, localPoolName, idKey, size);
             Collections.sort(newIdValuesList);
             output.setIdValues(newIdValuesList);
             return output;
@@ -301,12 +303,12 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 }).build();
     }
 
-    private List<Long> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
+    private List<Uint32> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
             String idKey, long size) throws OperationFailedException, IdManagerException {
         LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
-        CompletableFuture<List<Long>> futureIdValues = new CompletableFuture<>();
-        CompletableFuture<List<Long>> existingFutureIdValue =
+        CompletableFuture<List<Uint32>> futureIdValues = new CompletableFuture<>();
+        CompletableFuture<List<Uint32>> existingFutureIdValue =
                 idUtils.putAllocatedIdsIfAbsent(uniqueIdKey, futureIdValues);
         if (existingFutureIdValue != null) {
             try {
@@ -318,7 +320,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             }
         }
         try {
-            List<Long> newIdValuesList = checkForIdInIdEntries(parentPoolName, idKey, uniqueIdKey, futureIdValues,
+            List<Uint32> newIdValuesList = checkForIdInIdEntries(parentPoolName, idKey, uniqueIdKey, futureIdValues,
                     false);
             if (!newIdValuesList.isEmpty()) {
                 return newIdValuesList;
@@ -330,7 +332,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             localPoolName = localPoolName.intern();
             if (size == 1) {
                 newIdValue = getIdFromLocalPoolCache(localIdPool, parentPoolName);
-                newIdValuesList.add(newIdValue);
+                newIdValuesList.add(Uint32.valueOf(newIdValue));
             } else {
                 getRangeOfIds(parentPoolName, localPoolName, size, newIdValuesList, localIdPool, newIdValue);
             }
@@ -418,13 +420,19 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private long allocateIdBlockFromParentPool(IdLocalPool localPoolCache, IdPool parentIdPool,
             TypedWriteTransaction<Configuration> confTx)
             throws OperationFailedException, IdManagerException {
-        long idCount;
+
+        long idCount = allocateIdBlockFromAvailableIdsHolder(localPoolCache, parentIdPool, confTx);
+        if (idCount > 0) {
+            return idCount;
+        }
+
         ReleasedIdsHolderBuilder releasedIdsBuilderParent = IdUtils.getReleaseIdsHolderBuilder(parentIdPool);
+        final List<DelayedIdEntries> delayedEntries = releasedIdsBuilderParent.getDelayedIdEntries();
+        if (delayedEntries != null) {
+            releasedIdsBuilderParent.setDelayedIdEntries(new ArrayList<>(delayedEntries));
+        }
+
         while (true) {
-            idCount = allocateIdBlockFromAvailableIdsHolder(localPoolCache, parentIdPool, confTx);
-            if (idCount > 0) {
-                return idCount;
-            }
             idCount = allocateIdBlockFromReleasedIdsHolder(localPoolCache, releasedIdsBuilderParent, parentIdPool,
                     confTx);
             if (idCount > 0) {
@@ -437,6 +445,11 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 }
                 throw new IdManagerException(String.format("Ids exhausted for pool : %s", parentIdPool.getPoolName()));
             }
+
+            idCount = allocateIdBlockFromAvailableIdsHolder(localPoolCache, parentIdPool, confTx);
+            if (idCount > 0) {
+                return idCount;
+            }
         }
     }
 
@@ -448,7 +461,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         childPoolsList.sort(comparing(ChildPools::getLastAccessTime));
         long currentTime = System.currentTimeMillis() / 1000;
         for (ChildPools childPools : childPoolsList) {
-            if (childPools.getLastAccessTime() + DEFAULT_IDLE_TIME > currentTime) {
+            if (childPools.getLastAccessTime().toJava() + DEFAULT_IDLE_TIME > currentTime) {
                 break;
             }
             if (!Objects.equals(childPools.getChildPoolName(), idUtils.getLocalPoolName(parentIdPool.getPoolName()))) {
@@ -475,7 +488,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
                 long totalAvailableIdCount = releasedIds.getDelayedIdEntries().size()
                         + idUtils.getAvailableIdsCount(availableIds);
-                long count = releasedIdsBuilderParent.getAvailableIdCount() + totalAvailableIdCount;
+                long count = releasedIdsBuilderParent.getAvailableIdCount().toJava() + totalAvailableIdCount;
                 releasedIdsBuilderParent.setDelayedIdEntries(delayedIdEntriesParent).setAvailableIdCount(count);
                 singleTxDB.syncUpdate(LogicalDatastoreType.CONFIGURATION, idPoolInstanceIdentifier,
                         new IdPoolBuilder().withKey(new IdPoolKey(otherChildPool.getPoolName()))
@@ -490,19 +503,19 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     private long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool,
             ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool,
             TypedWriteTransaction<Configuration> confTx) {
-        if (releasedIdsBuilderParent.getAvailableIdCount() == 0) {
+        if (releasedIdsBuilderParent.getAvailableIdCount().toJava() == 0) {
             LOG.debug("Ids unavailable in releasedIds of parent pool {}", parentIdPool);
             return 0;
         }
         List<DelayedIdEntries> delayedIdEntriesParent = releasedIdsBuilderParent.getDelayedIdEntries();
-        int idCount = Math.min(delayedIdEntriesParent.size(), parentIdPool.getBlockSize());
+        int idCount = Math.min(delayedIdEntriesParent.size(), parentIdPool.getBlockSize().toJava());
         List<DelayedIdEntries> idEntriesToBeRemoved = delayedIdEntriesParent.subList(0, idCount);
         ReleasedIdHolder releasedIds = (ReleasedIdHolder) localIdPool.getReleasedIds();
         List<DelayedIdEntry> delayedIdEntriesLocalCache = releasedIds.getDelayedEntries();
         List<DelayedIdEntry> delayedIdEntriesFromParentPool = idEntriesToBeRemoved
                 .stream()
                 .map(delayedIdEntry -> new DelayedIdEntry(delayedIdEntry
-                        .getId(), delayedIdEntry.getReadyTimeSec()))
+                        .getId().toJava(), delayedIdEntry.getReadyTimeSec().toJava()))
                 .sorted(comparing(DelayedIdEntry::getReadyTimeSec))
                 .collect(toCollection(ArrayList::new));
         delayedIdEntriesFromParentPool.addAll(delayedIdEntriesLocalCache);
@@ -514,7 +527,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         InstanceIdentifier<ReleasedIdsHolder> releasedIdsHolderInstanceIdentifier = InstanceIdentifier
                 .builder(IdPools.class).child(IdPool.class,
                         new IdPoolKey(parentIdPool.getPoolName())).child(ReleasedIdsHolder.class).build();
-        releasedIdsBuilderParent.setAvailableIdCount(releasedIdsBuilderParent.getAvailableIdCount() - idCount);
+        releasedIdsBuilderParent.setAvailableIdCount(releasedIdsBuilderParent.getAvailableIdCount().toJava() - idCount);
         LOG.debug("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
         confTx.merge(releasedIdsHolderInstanceIdentifier, releasedIdsBuilderParent.build(), CREATE_MISSING_PARENTS);
         return idCount;
@@ -524,7 +537,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             TypedWriteTransaction<Configuration> confTx) {
         long idCount = 0;
         AvailableIdsHolderBuilder availableIdsBuilderParent = idUtils.getAvailableIdsHolderBuilder(parentIdPool);
-        long end = availableIdsBuilderParent.getEnd();
+        long end = availableIdsBuilderParent.getEnd().toJava();
         long cur = availableIdsBuilderParent.getCursor();
         if (!idUtils.isIdAvailable(availableIdsBuilderParent)) {
             if (LOG.isDebugEnabled()) {
@@ -533,7 +546,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             return idCount;
         }
         // Update availableIdsHolder of Local Pool
-        idCount = Math.min(end - cur, parentIdPool.getBlockSize());
+        idCount = Math.min(end - cur, parentIdPool.getBlockSize().toJava());
         AvailableIdHolder availableIds = new AvailableIdHolder(idUtils, cur + 1, cur + idCount);
         localIdPool.setAvailableIds(availableIds);
         // Update availableIdsHolder of Global Pool
@@ -581,15 +594,15 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     idKey, parentPoolName));
         }
         IdEntries existingIdEntry = existingIdEntryObject.get();
-        List<Long> idValuesList = nonnull(existingIdEntry.getIdValue());
+        List<Uint32> idValuesList = nonnull(existingIdEntry.getIdValue());
         IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
-        boolean isRemoved = idEntries.remove(existingIdEntry);
+        boolean isRemoved = idEntries.contains(existingIdEntry);
         LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
         updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
         IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), txRunner,
                 idUtils);
         jobCoordinator.enqueueJob(localPoolName, poolSyncJob, IdUtils.RETRY_COUNT);
-        scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize());
+        scheduleCleanUpTask(localIdPoolCache, parentPoolName, parentIdPool.getBlockSize().toJava());
         LOG.debug("Released id ({}, {}) from pool {}", idKey, idValuesList, localPoolName);
         // Updating id entries in the parent pool. This will be used for restart scenario
         UpdateIdEntryJob job = new UpdateIdEntryJob(parentPoolName, localPoolName, idKey, null, txRunner, idUtils,
@@ -645,7 +658,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         String parentPool = idPool.getPoolName();
         localPool.put(parentPool, idLocalPool);
         LocalPoolCreateJob job = new LocalPoolCreateJob(idLocalPool, txRunner, idPool.getPoolName(),
-                idPool.getBlockSize(), idUtils);
+                idPool.getBlockSize().toJava(), idUtils);
         jobCoordinator.enqueueJob(localPoolName, job, IdUtils.RETRY_COUNT);
         return idLocalPool;
     }
@@ -664,21 +677,21 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         }
     }
 
-    private void updateDelayedEntriesInLocalCache(List<Long> idsList, String parentPoolName,
+    private void updateDelayedEntriesInLocalCache(List<Uint32> idsList, String parentPoolName,
             IdLocalPool localPoolCache) {
-        for (long idValue : idsList) {
-            localPoolCache.getReleasedIds().addId(idValue);
+        for (Uint32 idValue : idsList) {
+            localPoolCache.getReleasedIds().addId(idValue.toJava());
         }
         localPool.put(parentPoolName, localPoolCache);
     }
 
-    private List<Long> checkForIdInIdEntries(String parentPoolName, String idKey, String uniqueIdKey,
-            CompletableFuture<List<Long>> futureIdValues, boolean hasExistingFutureIdValues)
+    private List<Uint32> checkForIdInIdEntries(String parentPoolName, String idKey, String uniqueIdKey,
+            CompletableFuture<List<Uint32>> futureIdValues, boolean hasExistingFutureIdValues)
             throws IdManagerException, ReadFailedException {
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
         idUtils.lock(lockManager, uniqueIdKey);
-        List<Long> newIdValuesList = new ArrayList<>();
+        List<Uint32> newIdValuesList = new ArrayList<>();
         Optional<IdEntries> existingIdEntry =
                 singleTxDB.syncReadOptional(LogicalDatastoreType.CONFIGURATION, existingId);
         if (existingIdEntry.isPresent()) {
@@ -744,7 +757,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return localIdPool;
     }
 
-    private void getRangeOfIds(String parentPoolName, String localPoolName, long size, List<Long> newIdValuesList,
+    private void getRangeOfIds(String parentPoolName, String localPoolName, long size, List<Uint32> newIdValuesList,
             IdLocalPool localIdPool, long newIdValue) throws ReadFailedException, IdManagerException {
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier1 = idUtils.getIdPoolInstance(parentPoolName);
         IdPool parentIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, parentIdPoolInstanceIdentifier1);
@@ -752,7 +765,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                 + localIdPool.getReleasedIds().getAvailableIdCount();
         AvailableIdsHolderBuilder availableParentIds = idUtils.getAvailableIdsHolderBuilder(parentIdPool);
         ReleasedIdsHolderBuilder releasedParentIds = IdUtils.getReleaseIdsHolderBuilder(parentIdPool);
-        totalAvailableIdCount = totalAvailableIdCount + releasedParentIds.getAvailableIdCount()
+        totalAvailableIdCount = totalAvailableIdCount + releasedParentIds.getAvailableIdCount().toJava()
                 + idUtils.getAvailableIdsCount(availableParentIds);
         if (totalAvailableIdCount > size) {
             while (size > 0) {
@@ -768,7 +781,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     // available IDs.
                     updateDelayedEntriesInLocalCache(newIdValuesList, parentPoolName, localIdPool);
                 }
-                newIdValuesList.add(newIdValue);
+                newIdValuesList.add(Uint32.valueOf(newIdValue));
                 size--;
             }
         } else {

@@ -8,8 +8,8 @@
 package org.opendaylight.genius.mdsalutil.matches;
 
 import com.google.common.testing.EqualsTester;
-import java.math.BigInteger;
 import org.junit.Test;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class MatchInPortTest {
 
@@ -22,11 +22,11 @@ public class MatchInPortTest {
     }
 
     private MatchInPort newMatchInPort1() {
-        return new MatchInPort(BigInteger.ONE, 123);
+        return new MatchInPort(Uint64.ONE, 123);
     }
 
     private MatchInPort newMatchInPort2() {
-        return new MatchInPort(BigInteger.TEN, 456);
+        return new MatchInPort(Uint64.valueOf(10), 456);
     }
 
 }

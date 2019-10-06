@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
-import java.math.BigInteger;
 import java.util.List;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class LogicalGroupInterfaceInfo extends InterfaceInfo {
     private static final long serialVersionUID = 1L;
@@ -16,7 +16,7 @@ public class LogicalGroupInterfaceInfo extends InterfaceInfo {
     // interface between a pair of DPNs
     private final List<String> parentInterfaceNames;
 
-    public LogicalGroupInterfaceInfo(String portName, BigInteger srcDpId, List<String> parentInterfaces) {
+    public LogicalGroupInterfaceInfo(String portName, Uint64 srcDpId, List<String> parentInterfaces) {
         super(srcDpId, portName);
         this.parentInterfaceNames = parentInterfaces;
     }

@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -63,6 +62,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint32;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,11 +157,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         batchSize = ITMConstants.BATCH_SIZE;
         LOG.info("entered initialse");
         if (itmConfig.getBatchSize() != null) {
-            batchSize = itmConfig.getBatchSize();
+            batchSize = itmConfig.getBatchSize().toJava();
         }
         batchInterval = ITMConstants.PERIODICITY;
         if (itmConfig.getBatchInterval() != null) {
-            batchInterval = itmConfig.getBatchInterval();
+            batchInterval = itmConfig.getBatchInterval().toJava();
         }
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker,this.batchSize,this.batchInterval);
     }
@@ -222,7 +223,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         CreateIdPoolInput createPool = new CreateIdPoolInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
                 .setLow(ITMConstants.ITM_IDPOOL_START)
-                .setHigh(new BigInteger(ITMConstants.ITM_IDPOOL_SIZE).longValue())
+                .setHigh(Uint32.valueOf(ITMConstants.ITM_IDPOOL_SIZE))
                 .build();
         try {
             ListenableFuture<RpcResult<CreateIdPoolOutput>> result = idManager.createIdPool(createPool);
@@ -258,8 +259,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @Override
-    public void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-        String gatewayIp, String transportZone) {
+    public void createLocalCache(Uint64 dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
+            String gatewayIp, String transportZone) {
         if (tepCommandHelper != null) {
             try {
                 tepCommandHelper.createLocalCache(dpnId, ipAddress, transportZone);
@@ -316,8 +317,8 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @Override
-    public void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
-        String gatewayIp, String transportZone) {
+    public void deleteVtep(Uint64 dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
+            String gatewayIp, String transportZone) {
         try {
             tepCommandHelper.deleteVtep(dpnId, ipAddress, transportZone);
         } catch (TepException e) {

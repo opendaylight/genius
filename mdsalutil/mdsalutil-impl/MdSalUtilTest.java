@@ -46,6 +46,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
@@ -149,27 +150,27 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
 
     // Methods to test the install Flow and Group
     public FlowEntity createFlowEntity(String dpnId, String tableId) {
-        BigInteger dpId;
+        Uint64 dpId;
         final int serviceId = 0;
 
         List<ActionInfo> listActionInfo = new ArrayList<>();
         listActionInfo.add(new ActionPuntToController());
 
-        dpId = new BigInteger(dpnId.split(":")[1]);
+        dpId = Uint64.valueOf(dpnId.split(":")[1]);
 
         List<MatchInfo> mkMatches = new ArrayList<>();
         final BigInteger cookie = new BigInteger("9000000", 16);
 
         short shortTableId = Short.parseShort(tableId);
 
-        mkMatches.add(new MatchTunnelId(new BigInteger("0000000000000000", 16)));
+        mkMatches.add(new MatchTunnelId(Uint64.ZERO));
 
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         mkInstructions.add(new InstructionWriteActions(listActionInfo));
 
         FlowEntity terminatingServiceTableFlowEntity = MDSALUtil.buildFlowEntity(dpId, shortTableId,
                 getFlowRef(shortTableId, serviceId), 5, "Terminating Service Flow Entry: " + serviceId, 0, 0,
-                cookie.add(BigInteger.valueOf(serviceId)), null, null);
+                Uint64.valueOf(cookie.add(BigInteger.valueOf(serviceId))), null, null);
 
         return terminatingServiceTableFlowEntity;
     }
@@ -189,7 +190,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         listBucketInfo.add(new BucketInfo(listActionInfo));
 
         String groupName = "Test Group";
-        BigInteger dpnId = new BigInteger(nodeid.split(":")[1]);
+        Uint64 dpnId = Uint64.valueOf(nodeid.split(":")[1]);
 
         long id = getUniqueValue(nodeid, inport);
         return MDSALUtil.buildGroupEntity(dpnId, id, groupName, GroupTypes.GroupIndirect, listBucketInfo);

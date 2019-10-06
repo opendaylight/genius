@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
@@ -17,21 +16,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * NX load metadata action.
  */
 public class ActionNxLoadMetadata extends ActionInfo {
 
-    private final BigInteger value;
+    private final Uint64 value;
     private final Integer startBit;
     private final Integer endBit;
 
-    public ActionNxLoadMetadata(BigInteger value, Integer startBit, Integer endBit) {
+    public ActionNxLoadMetadata(Uint64 value, Integer startBit, Integer endBit) {
         this(0, value, startBit, endBit);
     }
 
-    public ActionNxLoadMetadata(int actionKey, BigInteger value, Integer startBit, Integer endBit) {
+    public ActionNxLoadMetadata(int actionKey, Uint64 value, Integer startBit, Integer endBit) {
         super(actionKey);
         this.value = value;
         this.startBit = startBit;
@@ -60,7 +60,7 @@ public class ActionNxLoadMetadata extends ActionInfo {
             .build();
     }
 
-    public BigInteger getValue() {
+    public Uint64 getValue() {
         return value;
     }
 

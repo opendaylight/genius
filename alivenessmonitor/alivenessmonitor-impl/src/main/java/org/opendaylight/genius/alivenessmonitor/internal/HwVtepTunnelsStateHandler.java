@@ -70,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -256,7 +257,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
             return;
         }
         MonitorProfile profile;
-        long profileId = monitorInfo.getProfileId();
+        Uint32 profileId = monitorInfo.getProfileId();
         java.util.Optional<MonitorProfile> optProfile = alivenessMonitor.getMonitorProfile(profileId);
         if (optProfile.isPresent()) {
             profile = optProfile.get();
@@ -320,10 +321,12 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
 
     private void fillBfdParams(List<BfdParams> bfdParams, MonitorProfile profile) {
         setBfdParamForEnable(bfdParams, true);
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_RX, Long.toString(profile.getMinRx())));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_TX, Long.toString(profile.getMinTx())));
-        bfdParams.add(
-                getBfdParams(AlivenessMonitorConstants.BFD_PARAM_DECAY_MIN_RX, Long.toString(profile.getDecayMinRx())));
+        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_RX,
+                Long.toString(profile.getMinRx().toJava())));
+        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_TX,
+                Long.toString(profile.getMinTx().toJava())));
+        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_DECAY_MIN_RX,
+                Long.toString(profile.getDecayMinRx().toJava())));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_FORWARDING_IF_RX, profile.getForwardingIfRx()));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CPATH_DOWN, profile.getCpathDown()));
         bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CHECK_TNL_KEY, profile.getCheckTnlKey()));

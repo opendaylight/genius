@@ -12,6 +12,7 @@ import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,8 @@ public class TepDelete extends OsgiCommandSupport {
                     + "gatewayIp transportZone");
             return null;
         }
-        itmProvider.deleteVtep(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp, transportZone);
+        itmProvider.deleteVtep(Uint64.valueOf(dpnId), portName, vlanId, ipAddress, subnetMask, gatewayIp,
+            transportZone);
         LOG.trace("Executing delete TEP command");
 
         return null;

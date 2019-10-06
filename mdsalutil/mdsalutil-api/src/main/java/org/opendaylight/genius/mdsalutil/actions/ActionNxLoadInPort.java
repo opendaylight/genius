@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
@@ -17,19 +16,21 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * NX load in port action.
  */
 public class ActionNxLoadInPort extends ActionInfo {
 
-    private final BigInteger value;
+    private final Uint64 value;
 
-    public ActionNxLoadInPort(BigInteger value) {
+    public ActionNxLoadInPort(Uint64 value) {
         this(0, value);
     }
 
-    public ActionNxLoadInPort(int actionKey, BigInteger value) {
+    public ActionNxLoadInPort(int actionKey, Uint64 value) {
         super(actionKey);
         this.value = value;
     }
@@ -46,7 +47,7 @@ public class ActionNxLoadInPort extends ActionInfo {
                 .setNxRegLoad(new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
                         .setDstChoice(new DstNxOfInPortCaseBuilder().setOfInPort(Empty.getInstance()).build())
-                        .setStart(0)
+                        .setStart(Uint16.ZERO)
                         .setEnd(15)
                         .build())
                     .setValue(value)
@@ -56,7 +57,7 @@ public class ActionNxLoadInPort extends ActionInfo {
             .build();
     }
 
-    public BigInteger getValue() {
+    public Uint64 getValue() {
         return value;
     }
 
