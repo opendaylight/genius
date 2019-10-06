@@ -104,6 +104,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmManagerRpcServiceTest {
@@ -138,7 +139,7 @@ public class ItmManagerRpcServiceTest {
     List<TransportZone> transportZoneList = new ArrayList<>() ;
     List<DeviceVteps> deviceVtepsList = new ArrayList<>();
     List<String> stringList = new ArrayList<>();
-    List<BigInteger> dpId1List = new ArrayList<>();
+    List<Uint64> dpId1List = new ArrayList<>();
     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(ipAddress1, sourceDevice);
     AddExternalTunnelEndpointInput addExternalTunnelEndpointInput = null;
     GetInternalOrExternalInterfaceNameInput getInternalOrExternalInterfaceNameInput = null;
@@ -244,7 +245,7 @@ public class ItmManagerRpcServiceTest {
                 .setNodeId(sourceDevice).setTopologyId(destinationDevice).build();
         deviceVtepsList.add(deviceVteps);
         stringList.add(sourceDevice);
-        dpId1List.add(dpId1);
+        dpId1List.add(Uint64.valueOf(dpId1));
         stringList.add("def");
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(tunnelInterfaceName, ipAddress1.stringValue(),
             ipAddress1.stringValue(), tunnelType1.getName());

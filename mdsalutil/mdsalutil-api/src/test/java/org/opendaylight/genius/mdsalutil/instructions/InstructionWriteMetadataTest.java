@@ -17,6 +17,7 @@ import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test for {@link InstructionWriteMetadata}.
@@ -37,8 +38,8 @@ public class InstructionWriteMetadataTest {
         assertTrue(instruction.getInstruction() instanceof WriteMetadataCase);
         WriteMetadataCase writeMetadataCase = (WriteMetadataCase) instruction.getInstruction();
         WriteMetadata writeMetadata = writeMetadataCase.getWriteMetadata();
-        assertEquals(BigInteger.ONE, writeMetadata.getMetadata());
-        assertEquals(BigInteger.TEN, writeMetadata.getMetadataMask());
+        assertEquals(Uint64.valueOf(BigInteger.ONE), writeMetadata.getMetadata());
+        assertEquals(Uint64.valueOf(BigInteger.TEN), writeMetadata.getMetadataMask());
     }
 
     @Test

@@ -119,7 +119,7 @@ public final class OvsdbTepRemoveConfigHelper {
             if (vtepFound) {
                 // vtep is found, update it with tep-ip
                 LOG.trace("Remove TEP from vtep list in subnet list of transport-zone.");
-                dpnId = oldVtep.getDpnId();
+                dpnId = oldVtep.getDpnId().toJava();
                 String name = tzName;
                 BigInteger id = dpnId;
                 futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,

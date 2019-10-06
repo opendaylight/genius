@@ -105,6 +105,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public class AlivenessMonitorTest {
 
@@ -410,7 +411,7 @@ public class AlivenessMonitorTest {
         doReturn(CommitInfo.emptyFluentFuture()).when(readWriteTx).commit();
         RpcResult<MonitorProfileCreateOutput> output = alivenessMonitor
                 .monitorProfileCreate(input).get();
-        return output.getResult().getProfileId();
+        return output.getResult().getProfileId().toJava();
     }
 
     private MonitorProfile getTestMonitorProfile() {
@@ -422,7 +423,7 @@ public class AlivenessMonitorTest {
     private InterfaceMonitorEntry getInterfaceMonitorEntry() {
         return new InterfaceMonitorEntryBuilder()
                 .setInterfaceName("test-interface")
-                .setMonitorIds(Arrays.asList(1L, 2L)).build();
+                .setMonitorIds(Arrays.asList(Uint32.valueOf(1L), Uint32.valueOf(2L))).build();
     }
 
     private Interface getInterface(String ipAddress) {

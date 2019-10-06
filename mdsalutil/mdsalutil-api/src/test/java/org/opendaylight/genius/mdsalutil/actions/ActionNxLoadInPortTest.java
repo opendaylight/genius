@@ -20,6 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test for {@link ActionNxLoadInPort}.
@@ -45,7 +46,7 @@ public class ActionNxLoadInPortTest {
         assertEquals(Empty.getInstance(),dstNxOfInPortCase.getOfInPort());
         assertEquals(0, nxRegLoad.getDst().getStart().intValue());
         assertEquals(15, nxRegLoad.getDst().getEnd().intValue());
-        assertEquals(VALUE, nxRegLoad.getValue());
+        assertEquals(Uint64.valueOf(VALUE), nxRegLoad.getValue());
     }
 
     @Test

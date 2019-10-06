@@ -34,7 +34,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -158,6 +157,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Component tests for interface manager.
@@ -206,7 +206,7 @@ public class InterfaceManagerConfigurationTest {
         OvsdbSouthboundTestUtil.deleteBridge(dataBroker);
         InterfaceManagerTestUtil.waitTillOperationCompletes("bridge deletion",
                 coordinatorEventsWaiter,2, asyncEventsWaiter);
-        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromOperationalDS(DPN_ID_1), null);
+        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromOperationalDS(DPN_ID_1.toJava()), null);
     }
 
     private void setupAndAssertBridgeCreation() throws InterruptedException, TransactionCommitFailedException {
@@ -394,7 +394,7 @@ public class InterfaceManagerConfigurationTest {
         // Verify if DPN-ID is updated in corresponding DS and cache
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
             .orNull();
-        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_2), bridgeRefEntry);
+        assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_2.toJava()), bridgeRefEntry);
 
         // 1. Given
         // 2. When
@@ -830,14 +830,14 @@ public class InterfaceManagerConfigurationTest {
 
         // 1. fetch get all ports on bridge
         assertEqualBeans(ExpectedTerminationPoint.newTerminationPointList(),
-            interfaceManager.getPortsOnBridge(DPN_ID_2));
+            interfaceManager.getPortsOnBridge(DPN_ID_2.toJava()));
 
         // 2. fetch get all tunnel ports on bridge
         assertEqualBeans(ExpectedTerminationPoint.newTerminationPointList(),
-            interfaceManager.getTunnelPortsOnBridge(DPN_ID_2));
+            interfaceManager.getTunnelPortsOnBridge(DPN_ID_2.toJava()));
 
         // 3. fetch tunnel end point ip for DPN
-        assertEqualBeans("2.2.2.2", interfaceManager.getEndpointIpForDpn(DPN_ID_2));
+        assertEqualBeans("2.2.2.2", interfaceManager.getEndpointIpForDpn(DPN_ID_2.toJava()));
 
         // 4. get list of vxlan interfaces
         assertEqualBeans(1, interfaceManager.getVxlanInterfaces().size());
@@ -926,7 +926,7 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(ExpectedInterfaceListFromDpn.checkDpnToInterfaceList(), actualDpnInterfaceList.get(0));
     }
 
-    private void createDpnToInterface(BigInteger dpId, String infName,
+    private void createDpnToInterface(Uint64 dpId, String infName,
                                       Class<? extends InterfaceType> interfaceType) throws  Exception {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);

@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,6 +140,8 @@ public class ResourceBatchingManager implements AutoCloseable {
         pendingModificationByResourceType.get(resoureType).add(iid);
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+        justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void afterModification(String resoureType, InstanceIdentifier<?> iid) {
         pendingModificationByResourceType.get(resoureType).remove(iid);
     }

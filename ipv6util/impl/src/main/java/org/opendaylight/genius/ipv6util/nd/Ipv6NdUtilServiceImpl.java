@@ -74,8 +74,8 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
                 checkNotNull(portResult);
-                dpnId = portResult.getDpid();
-                Long portid = portResult.getPortno();
+                dpnId = portResult.getDpid().toJava();
+                Long portid = portResult.getPortno().toJava();
                 checkArgument(null != dpnId && BigInteger.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);
 
                 NodeConnectorRef nodeRef = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
@@ -126,8 +126,8 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
     public ListenableFuture<RpcResult<SendNeighborSolicitationToOfGroupOutput>> sendNeighborSolicitationToOfGroup(
             SendNeighborSolicitationToOfGroupInput ndInput) {
         RpcResultBuilder<SendNeighborSolicitationToOfGroupOutput> successBuilder = RpcResultBuilder.success();
-        ipv6NsHelper.transmitNeighborSolicitationToOfGroup(ndInput.getDpId(), ndInput.getSourceLlAddress(),
-                ndInput.getSourceIpv6(), ndInput.getTargetIpAddress(), ndInput.getOfGroupId());
+        ipv6NsHelper.transmitNeighborSolicitationToOfGroup(ndInput.getDpId().toJava(), ndInput.getSourceLlAddress(),
+                ndInput.getSourceIpv6(), ndInput.getTargetIpAddress(), ndInput.getOfGroupId().toJava());
 
         return  successBuilder.buildFuture();
     }

@@ -185,7 +185,7 @@ public class InterfaceConfigListener
     private String getSynchronizationKey(Interface theInterface, ParentRefs theParentRefs) {
         if (InterfaceManagerCommonUtils.isOfTunnelInterface(theInterface)) {
             return SouthboundUtils.generateOfTunnelName(
-                    theParentRefs.getDatapathNodeIdentifier(),
+                    theParentRefs.getDatapathNodeIdentifier().toJava(),
                     theInterface.augmentation(IfTunnel.class));
         } else if (InterfaceManagerCommonUtils.isTunnelInterface(theInterface)) {
             return theInterface.getName();

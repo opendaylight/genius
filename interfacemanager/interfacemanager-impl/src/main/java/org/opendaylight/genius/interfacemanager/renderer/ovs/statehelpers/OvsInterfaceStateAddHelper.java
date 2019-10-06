@@ -169,7 +169,7 @@ public final class OvsInterfaceStateAddHelper {
         BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
             ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
-            if (!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier())) {
+            if (!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier().toJava())) {
                 LOG.warn(
                         "Received tunnel state add notification for tunnel {} from dpn {} where as "
                                 + "the northbound configured dpn is {}",

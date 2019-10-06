@@ -117,6 +117,7 @@ public final class IfmUtil {
             .put(TunnelTypeLogicalGroup.class, LOGICAL_GROUP_INTERFACE)
             .build();
 
+    // FIXME: this should be returning Uint64
     public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
         return new BigInteger(getDpnStringFromNodeConnectorId(portId));
     }
@@ -128,6 +129,7 @@ public final class IfmUtil {
         return portId.getValue().split(IfmConstants.OF_URI_SEPARATOR)[1];
     }
 
+    // FIXME: this should be returning Uint64
     public static BigInteger getDpnFromInterface(
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState) {
@@ -350,7 +352,7 @@ public final class IfmUtil {
                     boolean isVlanTransparent = false;
                     int vlanVid = 0;
                     if (vlanIface != null) {
-                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue();
+                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().toJava();
                         isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
                     }
                     if (vlanVid != 0 && !isVlanTransparent) {
@@ -388,6 +390,7 @@ public final class IfmUtil {
         return new NodeId(ncId.getValue().substring(0, ncId.getValue().lastIndexOf(':')));
     }
 
+    // FIXME: this should operate on Uint64
     public static BigInteger[] mergeOpenflowMetadataWriteInstructions(List<Instruction> instructions) {
         BigInteger metadata = new BigInteger("0", 16);
         BigInteger metadataMask = new BigInteger("0", 16);
@@ -400,8 +403,8 @@ public final class IfmUtil {
                 if (actualInstruction instanceof WriteMetadataCase) {
                     WriteMetadataCase writeMetaDataInstruction = (WriteMetadataCase) actualInstruction;
                     WriteMetadata availableMetaData = writeMetaDataInstruction.getWriteMetadata();
-                    metadata = metadata.or(availableMetaData.getMetadata());
-                    metadataMask = metadataMask.or(availableMetaData.getMetadataMask());
+                    metadata = metadata.or(availableMetaData.getMetadata().toJava());
+                    metadataMask = metadataMask.or(availableMetaData.getMetadataMask().toJava());
                 }
             }
         }
@@ -437,6 +440,7 @@ public final class IfmUtil {
         }
     }
 
+    // FIXME: this should return Uint64
     public static BigInteger getDpnId(DatapathId datapathId) {
         if (datapathId != null) {
             // Adding logs for a random issue spotted during datapath id
@@ -505,10 +509,12 @@ public final class IfmUtil {
         return vlanInterfaceInfo;
     }
 
+    // FIXME: this should return a constant (interned) Uint64
     public static BigInteger getDeadBeefBytesForMac() {
         return new BigInteger("FFFFFFFF", 16).and(new BigInteger(IfmConstants.DEAD_BEEF_MAC_PREFIX, 16)).shiftLeft(16);
     }
 
+    // FIXME: this should return Uint64
     public static BigInteger fillPortNumberToMac(long portNumber) {
         return new BigInteger("FFFF", 16).and(BigInteger.valueOf(portNumber));
     }
@@ -552,7 +558,7 @@ public final class IfmUtil {
         BoundServices serviceInfo, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
-            serviceInfo.getServicePriority(), interfaceName, serviceMode);
+            serviceInfo.getServicePriority().toJava(), interfaceName, serviceMode);
         tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
     }
 

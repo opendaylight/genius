@@ -557,7 +557,7 @@ public class TepCommandHelper {
                 InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
         Optional<TunnelMonitorInterval> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path,
                 dataBroker);
-        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
+        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval().toJava() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,

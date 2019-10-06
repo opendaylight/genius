@@ -524,7 +524,7 @@ public final class InterfaceManagerCommonUtils {
             //logical tunnel group doesn't have OF port
             ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
             if (parentRefs != null) {
-                BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+                BigInteger dpId = parentRefs.getDatapathNodeIdentifier().toJava();
                 String lowref = MDSALUtil.NODE_PREFIX + MDSALUtil.SEPARATOR + dpId + MDSALUtil.SEPARATOR + 0;
                 childLowerLayerIfList.add(0, lowref);
             }
