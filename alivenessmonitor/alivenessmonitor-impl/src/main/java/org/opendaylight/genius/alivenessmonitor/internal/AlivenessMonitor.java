@@ -26,6 +26,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -122,6 +123,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,10 +177,10 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     private final IdManagerService idManager;
     private final NotificationPublishService notificationPublishService;
     private final AlivenessProtocolHandlerRegistry alivenessProtocolHandlerRegistry;
-    private final ConcurrentMap<Long, ScheduledFuture<?>> monitoringTasks = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Uint32, ScheduledFuture<?>> monitoringTasks = new ConcurrentHashMap<>();
     private final ScheduledExecutorService monitorService;
     private final ExecutorService callbackExecutorService;
-    private final LoadingCache<Long, String> monitorIdKeyCache;
+    private final LoadingCache<Uint32, String> monitorIdKeyCache;
     private final ConcurrentMap<String, Semaphore> lockMap = new ConcurrentHashMap<>();
 
     @Inject
@@ -197,13 +199,14 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         callbackExecutorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE, "Aliveness Callback Handler", LOG);
 
         createIdPool();
-        monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Long, String>() {
+        monitorIdKeyCache = CacheBuilder.newBuilder().build(new CacheLoader<Uint32, String>() {
             @Override
-            public String load(@NonNull Long monitorId) {
+            public String load(Uint32 monitorId) {
                 try {
                     return txRunner.<Operational, ExecutionException, Optional<MonitoridKeyEntry>>
                         applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
-                            tx -> tx.read(getMonitorMapId(monitorId)).get()).map(MonitoridKeyEntry::getMonitorKey)
+                            tx -> tx.read(getMonitorMapId(monitorId)).get())
+                                        .map(MonitoridKeyEntry::getMonitorKey)
                         .orElse(null);
                 } catch (InterruptedException | ExecutionException e) {
                     LOG.error("Error reading monitor {}", monitorId, e);
@@ -450,7 +453,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     public ListenableFuture<RpcResult<MonitorStartOutput>> monitorStart(MonitorStartInput input) {
         RpcResultBuilder<MonitorStartOutput> rpcResultBuilder;
         final Config in = input.getConfig();
-        Long profileId = in.getProfileId();
+        Uint32 profileId = in.getProfileId();
         LOG.debug("Monitor Start invoked with Config: {}, Profile Id: {}", in, profileId);
 
         try {
@@ -465,7 +468,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                         tx -> tx.read(getMonitorProfileId(profileId)).get());
             final MonitorProfile profile;
             if (!optProfile.isPresent()) {
-                String errMsg = String.format("No monitoring profile associated with Id: %d", profileId);
+                String errMsg = "No monitoring profile associated with Id: " + profileId;
                 LOG.error("Monitor start failed. {}", errMsg);
                 throw new RuntimeException(errMsg);
             } else {
@@ -497,7 +500,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 destEndpointType = in.getDestination().getEndpointType();
             }
             String idKey = getUniqueKey(interfaceName, protocolType.toString(), srcEndpointType, destEndpointType);
-            final long monitorId = getUniqueId(idKey);
+            final Uint32 monitorId = Uint32.valueOf(getUniqueId(idKey));
             Optional<MonitoringInfo> optKey =
                 txRunner.<Operational, ExecutionException, Optional<MonitoringInfo>>
                     applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
@@ -576,7 +579,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         return Futures.immediateFuture(rpcResultBuilder.build());
     }
 
-    private void associateMonitorIdWithInterface(final Long monitorId, final String interfaceName) {
+    private void associateMonitorIdWithInterface(final Uint32 monitorId, final String interfaceName) {
         LOG.debug("associate monitor Id {} with interface {}", monitorId, interfaceName);
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         FluentFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
@@ -584,7 +587,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         FluentFuture<? extends CommitInfo> updateFuture = readFuture.transformAsync(optEntry -> {
             if (optEntry.isPresent()) {
                 InterfaceMonitorEntry entry = optEntry.get();
-                List<Long> monitorIds1 =
+                List<Uint32> monitorIds1 =
                     entry.getMonitorIds() != null ? new ArrayList<>(entry.getMonitorIds()) : new ArrayList<>();
                 monitorIds1.add(monitorId);
                 InterfaceMonitorEntry newEntry1 = new InterfaceMonitorEntryBuilder()
@@ -594,7 +597,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     // Create new monitor entry
                 LOG.debug("Adding new interface-monitor association for interface {} with id {}", interfaceName,
                             monitorId);
-                List<Long> monitorIds2 = new ArrayList<>();
+                List<Uint32> monitorIds2 = new ArrayList<>();
                 monitorIds2.add(monitorId);
                 InterfaceMonitorEntry newEntry2 = new InterfaceMonitorEntryBuilder()
                             .setInterfaceName(interfaceName).setMonitorIds(monitorIds2).build();
@@ -605,14 +608,16 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }, callbackExecutorService);
 
         Futures.addCallback(updateFuture, new FutureCallbackImpl(
-                String.format("Association of monitorId %d with Interface %s", monitorId, interfaceName)),
+                "Association of monitorId " + monitorId + " with Interface " + interfaceName),
                 MoreExecutors.directExecutor());
     }
 
-    private void scheduleMonitoringTask(MonitoringInfo monitoringInfo, long monitorInterval) {
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private void scheduleMonitoringTask(MonitoringInfo monitoringInfo, Uint32 monitorInterval) {
         AlivenessMonitorTask monitorTask = new AlivenessMonitorTask(monitoringInfo);
         ScheduledFuture<?> scheduledFutureResult = monitorService.scheduleAtFixedRate(monitorTask, NO_DELAY,
-                monitorInterval, TimeUnit.MILLISECONDS);
+                monitorInterval.toJava(), TimeUnit.MILLISECONDS);
         monitoringTasks.put(monitoringInfo.getId(), scheduledFutureResult);
     }
 
@@ -620,7 +625,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     public ListenableFuture<RpcResult<MonitorPauseOutput>> monitorPause(MonitorPauseInput input) {
         LOG.debug("Monitor Pause operation invoked for monitor id: {}", input.getMonitorId());
         SettableFuture<RpcResult<MonitorPauseOutput>> result = SettableFuture.create();
-        final Long monitorId = input.getMonitorId();
+        final Uint32 monitorId = input.getMonitorId();
 
         // Set the monitoring status to Paused
         updateMonitorStatusTo(monitorId, MonitorStatus.Paused, currentStatus -> currentStatus == MonitorStatus.Started);
@@ -628,8 +633,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         if (stopMonitoringTask(monitorId)) {
             result.set(RpcResultBuilder.<MonitorPauseOutput>success().build());
         } else {
-            String errorMsg = String.format("No Monitoring Task availble to pause for the given monitor id : %d",
-                    monitorId);
+            String errorMsg = "No Monitoring Task availble to pause for the given monitor id : " + monitorId;
             LOG.error("Monitor Pause operation failed- {}", errorMsg);
             result.set(RpcResultBuilder.<MonitorPauseOutput>failed()
                     .withError(ErrorType.APPLICATION, errorMsg).build());
@@ -643,7 +647,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         LOG.debug("Monitor Unpause operation invoked for monitor id: {}", input.getMonitorId());
         final SettableFuture<RpcResult<MonitorUnpauseOutput>> result = SettableFuture.create();
 
-        final Long monitorId = input.getMonitorId();
+        final Uint32 monitorId = input.getMonitorId();
         final ReadTransaction tx = dataBroker.newReadOnlyTransaction();
         FluentFuture<Optional<MonitoringInfo>> readInfoResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitoringInfoId(monitorId));
@@ -653,7 +657,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             @Override
             public void onFailure(Throwable error) {
                 tx.close();
-                String msg = String.format("Unable to read monitoring info associated with monitor id %d", monitorId);
+                String msg = "Unable to read monitoring info associated with monitor id " + monitorId;
                 LOG.error("Monitor unpause Failed. {}", msg, error);
                 result.set(RpcResultBuilder.<MonitorUnpauseOutput>failed()
                         .withError(ErrorType.APPLICATION, msg, error).build());
@@ -670,8 +674,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                         @Override
                         public void onFailure(Throwable error) {
                             tx.close();
-                            String msg = String.format("Unable to read Monitoring profile associated with id %d",
-                                    info.getProfileId());
+                            String msg = "Unable to read Monitoring profile associated with id " + info.getProfileId();
                             LOG.warn("Monitor unpause Failed. {}", msg, error);
                             result.set(RpcResultBuilder.<MonitorUnpauseOutput>failed()
                                     .withError(ErrorType.APPLICATION, msg, error).build());
@@ -696,7 +699,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                                 }
                                 result.set(RpcResultBuilder.<MonitorUnpauseOutput>success().build());
                             } else {
-                                String msg = String.format("Monitoring profile associated with id %d is not present",
+                                String msg = String.format("Monitoring profile associated with id %s is not present",
                                         info.getProfileId());
                                 LOG.warn("Monitor unpause Failed. {}", msg);
                                 result.set(
@@ -707,7 +710,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     }, callbackExecutorService);
                 } else {
                     tx.close();
-                    String msg = String.format("Monitoring info associated with id %d is not present", monitorId);
+                    String msg = String.format("Monitoring info associated with id %s is not present", monitorId);
                     LOG.warn("Monitor unpause Failed. {}", msg);
                     result.set(RpcResultBuilder.<MonitorUnpauseOutput>failed()
                             .withError(ErrorType.APPLICATION, msg).build());
@@ -718,11 +721,11 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         return result;
     }
 
-    private boolean stopMonitoringTask(Long monitorId) {
+    private boolean stopMonitoringTask(Uint32 monitorId) {
         return stopMonitoringTask(monitorId, INTERRUPT_TASK);
     }
 
-    private boolean stopMonitoringTask(Long monitorId, boolean interruptTask) {
+    private boolean stopMonitoringTask(Uint32 monitorId, boolean interruptTask) {
         Optional<MonitoringInfo> optInfo;
         try {
             optInfo = txRunner.applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
@@ -759,7 +762,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         return false;
     }
 
-    Optional<MonitorProfile> getMonitorProfile(Long profileId) {
+    Optional<MonitorProfile> getMonitorProfile(Uint32 profileId) {
         try {
             return txRunner.applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
                 tx -> tx.read(getMonitorProfileId(profileId))).get();
@@ -801,9 +804,11 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void sendMonitorPacket(final MonitoringInfo monitoringInfo) {
         // TODO: Handle interrupts
-        final Long monitorId = monitoringInfo.getId();
+        final Uint32 monitorId = monitoringInfo.getId();
         final String monitorKey = monitorIdKeyCache.getUnchecked(monitorId);
         if (monitorKey == null) {
             LOG.warn("No monitor Key associated with id {} to send the monitor packet", monitorId);
@@ -834,19 +839,19 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 MonitoringState state = optState.get();
 
                 // Increase the request count
-                Long requestCount = state.getRequestCount() + 1;
+                Long requestCount = state.getRequestCount().toJava() + 1;
 
                 // Check with the monitor window
                 LivenessState currentLivenessState = state.getState();
 
                 // Increase the pending response count
-                long responsePendingCount = state.getResponsePendingCount();
-                if (responsePendingCount < profile.getMonitorWindow()) {
+                long responsePendingCount = state.getResponsePendingCount().toJava();
+                if (responsePendingCount < profile.getMonitorWindow().toJava()) {
                     responsePendingCount = responsePendingCount + 1;
                 }
 
                 // Check with the failure threshold
-                if (responsePendingCount >= profile.getFailureThreshold()) {
+                if (responsePendingCount >= profile.getFailureThreshold().toJava()) {
                     // Change the state to down and notify
                     if (currentLivenessState != LivenessState.Down) {
                         LOG.debug("Response pending Count: {}, Failure threshold: {} for monitorId {}",
@@ -872,7 +877,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 // Close the transaction
                 tx.commit();
                 String errorMsg = String.format(
-                        "Monitoring State associated with id %d is not present to send packet out.", monitorId);
+                        "Monitoring State associated with id %s is not present to send packet out.", monitorId);
                 return Futures.immediateFailedFuture(new RuntimeException(errorMsg));
             }
         }, callbackExecutorService);
@@ -899,7 +904,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }, callbackExecutorService);
     }
 
-    void publishNotification(final Long monitorId, final LivenessState state) {
+    void publishNotification(final Uint32 monitorId, final LivenessState state) {
         LOG.debug("Sending notification for id {}  - state {}", monitorId, state);
         EventData data = new EventDataBuilder().setMonitorId(monitorId).setMonitorState(state).build();
         MonitorEvent event = new MonitorEventBuilder().setEventData(data).build();
@@ -923,12 +928,12 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         LOG.debug("Monitor Profile Create operation - {}", input.getProfile());
         final SettableFuture<RpcResult<MonitorProfileCreateOutput>> returnFuture = SettableFuture.create();
         Profile profile = input.getProfile();
-        final Long failureThreshold = profile.getFailureThreshold();
-        final Long monitorInterval = profile.getMonitorInterval();
-        final Long monitorWindow = profile.getMonitorWindow();
+        final Uint32 failureThreshold = profile.getFailureThreshold();
+        final Uint32 monitorInterval = profile.getMonitorInterval();
+        final Uint32 monitorWindow = profile.getMonitorWindow();
         final MonitorProtocolType protocolType = profile.getProtocolType();
         String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, protocolType);
-        final Long profileId = (long) getUniqueId(idKey);
+        final Uint32 profileId = Uint32.valueOf(getUniqueId(idKey));
 
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         FluentFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
@@ -1004,9 +1009,9 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         org.opendaylight.yang.gen.v1.urn.opendaylight.genius
             .alivenessmonitor.rev160411.monitor.profile.get.input.Profile profile = input
                 .getProfile();
-        final Long failureThreshold = profile.getFailureThreshold();
-        final Long monitorInterval = profile.getMonitorInterval();
-        final Long monitorWindow = profile.getMonitorWindow();
+        final Uint32 failureThreshold = profile.getFailureThreshold();
+        final Uint32 monitorInterval = profile.getMonitorInterval();
+        final Uint32 monitorWindow = profile.getMonitorWindow();
         final MonitorProtocolType protocolType = profile.getProtocolType();
         LOG.debug("getExistingProfileId for profile : {}", input.getProfile());
         String idKey = getUniqueProfileKey(failureThreshold, monitorInterval, monitorWindow, protocolType);
@@ -1014,7 +1019,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         return (long) getUniqueId(idKey);
     }
 
-    private String getUniqueProfileKey(Long failureThreshold, Long monitorInterval, Long monitorWindow,
+    private String getUniqueProfileKey(Uint32 failureThreshold, Uint32 monitorInterval, Uint32 monitorWindow,
             MonitorProtocolType protocolType) {
         return String.valueOf(failureThreshold) + AlivenessMonitorConstants.SEPERATOR + monitorInterval
                 + AlivenessMonitorConstants.SEPERATOR + monitorWindow + AlivenessMonitorConstants.SEPERATOR
@@ -1026,7 +1031,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             final MonitorProfileDeleteInput input) {
         LOG.debug("Monitor Profile delete for Id: {}", input.getProfileId());
         final SettableFuture<RpcResult<MonitorProfileDeleteOutput>> result = SettableFuture.create();
-        final Long profileId = input.getProfileId();
+        final Uint32 profileId = input.getProfileId();
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         FluentFuture<Optional<MonitorProfile>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitorProfileId(profileId));
@@ -1037,7 +1042,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                         tx.commit().addCallback(new FutureCallback<CommitInfo>() {
                             @Override
                             public void onFailure(Throwable error) {
-                                String msg = String.format("Error when removing monitor profile %d from datastore",
+                                String msg = String.format("Error when removing monitor profile %s from datastore",
                                         profileId);
                                 LOG.error("Error when removing monitor profile {} from datastore", profileId, error);
                                 result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>failed()
@@ -1056,7 +1061,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                             }
                         }, callbackExecutorService);
                     } else {
-                        String msg = String.format("Monitor profile with Id: %d does not exist", profileId);
+                        String msg = String.format("Monitor profile with Id: %s does not exist", profileId);
                         LOG.info(msg);
                         result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>success()
                                 .withWarning(ErrorType.PROTOCOL, "invalid-value", msg).build());
@@ -1068,7 +1073,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
             @Override
             public void onFailure(Throwable error) {
-                String msg = String.format("Error when removing monitor profile %d from datastore", profileId);
+                String msg = String.format("Error when removing monitor profile %s from datastore", profileId);
                 LOG.error("Error when removing monitor profile {} from datastore", profileId, error);
                 result.set(RpcResultBuilder.<MonitorProfileDeleteOutput>failed()
                         .withError(ErrorType.APPLICATION, msg, error).build());
@@ -1087,7 +1092,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         LOG.debug("Monitor Stop operation for monitor id - {}", input.getMonitorId());
         SettableFuture<RpcResult<MonitorStopOutput>> result = SettableFuture.create();
 
-        final Long monitorId = input.getMonitorId();
+        final Uint32 monitorId = input.getMonitorId();
         Optional<MonitoringInfo> optInfo;
         try {
             optInfo = txRunner.applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
@@ -1106,14 +1111,14 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 if (monitorKey != null) {
                     tx.delete(getMonitorStateId(monitorKey));
-                    monitorIdKeyCache.invalidate(monitorId);
+                    monitorIdKeyCache.invalidate(monitorId.toJava());
                 }
 
                 tx.delete(getMonitoringInfoId(monitorId));
 
                 //Remove monitorid-key-map
                 tx.delete(getMonitorMapId(monitorId));
-            }).addCallback(new FutureCallbackImpl(String.format("Delete monitor state with Id %d", monitorId)),
+            }).addCallback(new FutureCallbackImpl("Delete monitor state with Id " + monitorId),
                     MoreExecutors.directExecutor());
 
             MonitoringInfo info = optInfo.get();
@@ -1129,7 +1134,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
             result.set(RpcResultBuilder.<MonitorStopOutput>success().build());
         } else {
-            String errorMsg = String.format("Do not have monitoring information associated with key %d", monitorId);
+            String errorMsg = "Do not have monitoring information associated with key " + monitorId;
             LOG.error("Delete monitoring operation Failed - {}", errorMsg);
             result.set(RpcResultBuilder.<MonitorStopOutput>failed().withError(ErrorType.APPLICATION, errorMsg).build());
         }
@@ -1137,7 +1142,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         return result;
     }
 
-    private void removeMonitorIdFromInterfaceAssociation(final Long monitorId, final String interfaceName) {
+    private void removeMonitorIdFromInterfaceAssociation(final Uint32 monitorId, final String interfaceName) {
         LOG.debug("Remove monitorId {} from Interface association {}", monitorId, interfaceName);
         final ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         FluentFuture<Optional<InterfaceMonitorEntry>> readFuture = tx.read(LogicalDatastoreType.OPERATIONAL,
@@ -1145,7 +1150,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         FluentFuture<? extends CommitInfo> updateFuture = readFuture.transformAsync(optEntry -> {
             if (optEntry.isPresent()) {
                 InterfaceMonitorEntry entry = optEntry.get();
-                List<Long> monitorIds =
+                List<Uint32> monitorIds =
                     entry.getMonitorIds() != null ? new ArrayList<>(entry.getMonitorIds()) : new ArrayList<>();
                 monitorIds.remove(monitorId);
                 if (monitorIds.isEmpty()) {
@@ -1165,12 +1170,12 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }, MoreExecutors.directExecutor());
 
         updateFuture.addCallback(new FutureCallbackImpl(
-                String.format("Dis-association of monitorId %d with Interface %s", monitorId, interfaceName)),
+                String.format("Dis-association of monitorId %s with Interface %s", monitorId, interfaceName)),
                 MoreExecutors.directExecutor());
     }
 
     private void releaseIdForMonitoringInfo(MonitoringInfo info) {
-        Long monitorId = info.getId();
+        Uint32 monitorId = info.getId();
         EndpointType source = info.getSource().getEndpointType();
         String interfaceName = getInterfaceName(source);
         if (!Strings.isNullOrEmpty(interfaceName)) {
@@ -1202,7 +1207,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         return interfaceName;
     }
 
-    private void stopMonitoring(long monitorId) {
+    private void stopMonitoring(Uint32 monitorId) {
         updateMonitorStatusTo(monitorId, MonitorStatus.Stopped,
             currentStatus -> currentStatus != MonitorStatus.Stopped);
         if (!stopMonitoringTask(monitorId)) {
@@ -1210,7 +1215,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         }
     }
 
-    private void updateMonitorStatusTo(final Long monitorId, final MonitorStatus newStatus,
+    private void updateMonitorStatusTo(final Uint32 monitorId, final MonitorStatus newStatus,
             final Predicate<MonitorStatus> isValidStatus) {
         final String monitorKey = monitorIdKeyCache.getUnchecked(monitorId);
         if (monitorKey == null) {
@@ -1240,12 +1245,11 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             return tx.commit();
         }, MoreExecutors.directExecutor());
 
-        writeResult.addCallback(new FutureCallbackImpl(
-                String.format("Monitor status update for %d to %s", monitorId, newStatus.toString())),
+        writeResult.addCallback(new FutureCallbackImpl("Monitor status update for " + monitorId + " to " + newStatus),
                 MoreExecutors.directExecutor());
     }
 
-    private void resumeMonitoring(final long monitorId) {
+    private void resumeMonitoring(final Uint32 monitorId) {
         final ReadTransaction tx = dataBroker.newReadOnlyTransaction();
         FluentFuture<Optional<MonitoringInfo>> readInfoResult = tx.read(LogicalDatastoreType.OPERATIONAL,
                 getMonitoringInfoId(monitorId));
@@ -1254,7 +1258,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
             @Override
             public void onFailure(Throwable error) {
-                String msg = String.format("Unable to read monitoring info associated with monitor id %d", monitorId);
+                String msg = "Unable to read monitoring info associated with monitor id " + monitorId;
                 LOG.error("Monitor resume Failed. {}", msg, error);
                 tx.close();
             }
@@ -1269,8 +1273,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
                         @Override
                         public void onFailure(Throwable error) {
-                            String msg = String.format("Unable to read Monitoring profile associated with id %d",
-                                    info.getProfileId());
+                            String msg = "Unable to read Monitoring profile associated with id " + info.getProfileId();
                             LOG.warn("Monitor resume Failed. {}", msg, error);
                             tx.close();
                         }
@@ -1285,7 +1288,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                                 LOG.debug("Monitor Resume - Scheduling monitoring task for Id: {}", monitorId);
                                 scheduleMonitoringTask(info, profile.getMonitorInterval());
                             } else {
-                                String msg = String.format("Monitoring profile associated with id %d is not present",
+                                String msg = String.format("Monitoring profile associated with id %s is not present",
                                         info.getProfileId());
                                 LOG.warn("Monitor resume Failed. {}", msg);
                             }
@@ -1293,7 +1296,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     }, MoreExecutors.directExecutor());
                 } else {
                     tx.close();
-                    String msg = String.format("Monitoring info associated with id %d is not present", monitorId);
+                    String msg = String.format("Monitoring info associated with id %s is not present", monitorId);
                     LOG.warn("Monitor resume Failed. {}", msg);
                 }
             }
@@ -1302,12 +1305,12 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
     @Override
     public void onInterfaceStateUp(String interfaceName) {
-        List<Long> monitorIds = getMonitorIds(interfaceName);
+        List<Uint32> monitorIds = getMonitorIds(interfaceName);
         if (monitorIds.isEmpty()) {
             LOG.warn("Could not get monitorId for interface: {}", interfaceName);
             return;
         }
-        for (Long monitorId : monitorIds) {
+        for (Uint32 monitorId : monitorIds) {
             LOG.debug("Resume monitoring on interface: {} with monitorId: {}", interfaceName, monitorId);
             resumeMonitoring(monitorId);
         }
@@ -1315,18 +1318,18 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
 
     @Override
     public void onInterfaceStateDown(String interfaceName) {
-        List<Long> monitorIds = getMonitorIds(interfaceName);
+        List<Uint32> monitorIds = getMonitorIds(interfaceName);
         if (monitorIds.isEmpty()) {
             LOG.warn("Could not get monitorIds for interface: {}", interfaceName);
             return;
         }
-        for (Long monitorId : monitorIds) {
+        for (Uint32 monitorId : monitorIds) {
             LOG.debug("Suspend monitoring on interface: {} with monitorId: {}", interfaceName, monitorId);
             stopMonitoring(monitorId);
         }
     }
 
-    private List<Long> getMonitorIds(String interfaceName) {
+    private List<Uint32> getMonitorIds(String interfaceName) {
         try {
             return txRunner.applyInterruptiblyWithNewReadOnlyTransactionAndClose(OPERATIONAL,
                 tx -> tx.read(getInterfaceMonitorMapId(interfaceName))).get().map(
@@ -1341,7 +1344,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     @Override
     public void remove(@NonNull InstanceIdentifier<MonitoringState> instanceIdentifier,
                        @NonNull MonitoringState removedDataObject) {
-        final Long monitorId = removedDataObject.getMonitorId();
+        final Uint32 monitorId = removedDataObject.getMonitorId();
         LOG.debug("Monitor State remove listener invoked for monitor id: {}", monitorId);
 
         if (removedDataObject.getStatus() != MonitorStatus.Paused) {
@@ -1358,7 +1361,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
     public void update(@NonNull InstanceIdentifier<MonitoringState> instanceIdentifier,
                        @NonNull MonitoringState originalDataObject,
                        @NonNull MonitoringState updatedDataObject) {
-        final Long monitorId = updatedDataObject.getMonitorId();
+        final Uint32 monitorId = updatedDataObject.getMonitorId();
         LOG.debug("Monitor State update listener invoked for monitor id: {}", monitorId);
 
         if (updatedDataObject.getStatus() == MonitorStatus.Paused

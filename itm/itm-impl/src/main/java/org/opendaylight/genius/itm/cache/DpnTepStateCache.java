@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.itm.cache;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -47,11 +46,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
+public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DpnTepStateCache.class);
     private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
@@ -96,7 +96,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                 .setIsInternal(remoteDpns.isInternal())
                 .setTunnelType(dpnsTeps.getTunnelType())
-                .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
+                .setRemoteDPN(remoteDpns.getDestinationDpnId().toJava()).build();
             dpnTepInterfaceMap.put(dpn, value);
 
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(), dpnsTeps.getSourceDpnId().toString(),
@@ -171,10 +171,10 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     }
 
     private DpnTepInterfaceInfo getDpnTepInterface(String srcDpnId, String dstDpnId) {
-        return getDpnTepInterface(new BigInteger(srcDpnId), new BigInteger(dstDpnId));
+        return getDpnTepInterface(Uint64.valueOf(srcDpnId), Uint64.valueOf(dstDpnId));
     }
 
-    public DpnTepInterfaceInfo getDpnTepInterface(BigInteger srcDpnId, BigInteger dstDpnId) {
+    public DpnTepInterfaceInfo getDpnTepInterface(Uint64 srcDpnId, Uint64 dstDpnId) {
         DpnTepInterfaceInfo  dpnTepInterfaceInfo = dpnTepInterfaceMap.get(getDpnId(srcDpnId, dstDpnId));
         if (dpnTepInterfaceInfo == null) {
             try {
@@ -187,7 +187,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                                 .setIsInternal(remoteDpns.isInternal())
                                 .setTunnelType(teps.getTunnelType())
-                                .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
+                                .setRemoteDPN(remoteDpns.getDestinationDpnId().toJava()).build();
                         dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId()), value);
                         addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                                 teps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
@@ -201,7 +201,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         return dpnTepInterfaceMap.get(getDpnId(srcDpnId, dstDpnId));
     }
 
-    public void removeTepFromDpnTepInterfaceConfigDS(BigInteger srcDpnId) throws TransactionCommitFailedException {
+    public void removeTepFromDpnTepInterfaceConfigDS(Uint64 srcDpnId) throws TransactionCommitFailedException {
         Collection<DpnsTeps> dpnsTeps = this.getAllPresent();
         for (DpnsTeps dpnTep : dpnsTeps) {
             if (!Objects.equals(dpnTep.getSourceDpnId(), srcDpnId)) {
@@ -220,17 +220,18 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 }
             } else {
                 // The source DPn id is the one to be removed
-                InstanceIdentifier<DpnsTeps> dpnsTepsII = buildDpnsTepsInstanceIdentifier(dpnTep.getSourceDpnId());
+                InstanceIdentifier<DpnsTeps> dpnsTepsII
+                    = buildDpnsTepsInstanceIdentifier(dpnTep.getSourceDpnId());
                 SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, dpnsTepsII);
             }
         }
     }
 
-    private InstanceIdentifier<DpnsTeps> buildDpnsTepsInstanceIdentifier(BigInteger srcDpnId) {
+    private static InstanceIdentifier<DpnsTeps> buildDpnsTepsInstanceIdentifier(Uint64 srcDpnId) {
         return InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class, new DpnsTepsKey(srcDpnId)).build();
     }
 
-    private InstanceIdentifier<RemoteDpns> buildRemoteDpnsInstanceIdentifier(BigInteger srcDpnId, BigInteger dstDpnId) {
+    private static InstanceIdentifier<RemoteDpns> buildRemoteDpnsInstanceIdentifier(Uint64 srcDpnId, Uint64 dstDpnId) {
         DpnsTepsKey dpnsTepsKey = new DpnsTepsKey(srcDpnId);
         RemoteDpnsKey remoteDpnsKey = new RemoteDpnsKey(dstDpnId);
         return InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class, dpnsTepsKey)
@@ -263,14 +264,14 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
         return getDpnTepInterface(endPointInfo.getSrcEndPointInfo(), endPointInfo.getDstEndPointInfo());
     }
 
-    private String getDpnId(BigInteger src, BigInteger dst) {
+    private String getDpnId(Uint64 src, Uint64 dst) {
         return src + ":" + dst;
     }
 
     public Interface getInterfaceFromCache(String tunnelName) {
         TunnelEndPointInfo endPointInfo = getTunnelEndPointInfoFromCache(tunnelName);
-        BigInteger srcDpnId = new BigInteger(endPointInfo.getSrcEndPointInfo());
-        BigInteger dstDpnId = new BigInteger(endPointInfo.getDstEndPointInfo());
+        Uint64 srcDpnId = Uint64.valueOf(endPointInfo.getSrcEndPointInfo());
+        Uint64 dstDpnId = Uint64.valueOf(endPointInfo.getDstEndPointInfo());
         Interface iface = null ;
         int monitoringInt = 1000;
         DpnTepInterfaceInfo dpnTepInfo = getDpnTepInterface(srcDpnId, dstDpnId);

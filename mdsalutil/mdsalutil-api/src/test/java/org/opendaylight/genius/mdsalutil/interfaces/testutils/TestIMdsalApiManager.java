@@ -20,7 +20,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.Futures;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,23 +190,23 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         return ImmutableList.copyOf(flows.values());
     }
 
-    private synchronized void deleteFlow(BigInteger dpId, String flowId, short tableId) {
+    private synchronized void deleteFlow(Uint64 dpId, String flowId, short tableId) {
         flows.remove(new InternalFlowKey(dpId, flowId, tableId));
     }
 
-    private synchronized void storeGroup(BigInteger dpnId, Group group) {
-        groups.put(new InternalGroupKey(dpnId, group.key().getGroupId().getValue()), group);
+    private synchronized void storeGroup(Uint64 dpnId, Group group) {
+        groups.put(new InternalGroupKey(dpnId, group.key().getGroupId().getValue().toJava()), group);
     }
 
-    private synchronized void deleteGroup(BigInteger dpnId, long groupId) {
+    private synchronized void deleteGroup(Uint64 dpnId, long groupId) {
         groups.remove(new InternalGroupKey(dpnId, groupId));
     }
 
-    private synchronized void storeBucket(BigInteger dpnId, long groupId, Bucket bucket) {
-        buckets.put(new InternalBucketKey(dpnId, groupId, bucket.getBucketId().getValue()), bucket);
+    private synchronized void storeBucket(Uint64 dpnId, long groupId, Bucket bucket) {
+        buckets.put(new InternalBucketKey(dpnId, groupId, bucket.getBucketId().getValue().toJava()), bucket);
     }
 
-    private synchronized void deleteBucket(BigInteger dpnId, long groupId, long bucketId) {
+    private synchronized void deleteBucket(Uint64 dpnId, long groupId, long bucketId) {
         buckets.remove(new InternalBucketKey(dpnId, groupId, bucketId));
     }
 
@@ -216,13 +216,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void addFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
+    public void addFlow(TypedWriteTransaction<Configuration> tx, Uint64 dpId, Flow flow) {
         throw new UnsupportedOperationException("addFlow(..., BigInteger, Flow) isn't supported yet");
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
-        removeFlow(tx, dpId, flow.key(), flow.getTableId());
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, Flow flow) {
+        removeFlow(tx, dpId, flow.key(), flow.getTableId().toJava());
     }
 
     @Override
@@ -231,13 +231,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey,
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, FlowKey flowKey,
             short tableId) {
         deleteFlow(dpId, flowKey.getId().getValue(), tableId);
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId,
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, String flowId,
             short tableId) {
         deleteFlow(dpId, flowId, tableId);
     }
@@ -248,28 +248,28 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public void addGroup(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+    public void addGroup(TypedWriteTransaction<Configuration> tx, Uint64 dpId, Group group) {
         storeGroup(dpId, group);
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
-        deleteGroup(dpId, group.getGroupId().getValue());
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, Group group) {
+        deleteGroup(dpId, group.getGroupId().getValue().toJava());
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId) {
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId) {
         deleteGroup(dpId, groupId);
     }
 
     @Override
-    public void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
+    public void addBucket(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId,
             Bucket bucket) {
         storeBucket(dpId, groupId, bucket);
     }
 
     @Override
-    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId,
+    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId,
             long bucketId) {
         deleteBucket(dpId, groupId, bucketId);
     }
@@ -281,18 +281,18 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId,
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId,
             FlowEntity flowEntity) {
         // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         return installFlow(flowEntity);
     }
 
     private static final class InternalFlowKey {
-        private final BigInteger dpnId;
+        private final Uint64 dpnId;
         private final String flowId;
         private final short tableId;
 
-        private InternalFlowKey(BigInteger dpnId, String flowId, short tableId) {
+        private InternalFlowKey(Uint64 dpnId, String flowId, short tableId) {
             this.dpnId = dpnId;
             this.flowId = flowId;
             this.tableId = tableId;
@@ -317,10 +317,10 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     private static final class InternalGroupKey {
-        private final BigInteger dpnId;
+        private final Uint64 dpnId;
         private final long groupId;
 
-        private InternalGroupKey(BigInteger dpnId, long groupId) {
+        private InternalGroupKey(Uint64 dpnId, long groupId) {
             this.dpnId = dpnId;
             this.groupId = groupId;
         }
@@ -344,11 +344,11 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     private static final class InternalBucketKey {
-        private final BigInteger dpnId;
+        private final Uint64 dpnId;
         private final long groupId;
         private final long bucketId;
 
-        private InternalBucketKey(BigInteger dpnId, long groupId, long bucketId) {
+        private InternalBucketKey(Uint64 dpnId, long groupId, long bucketId) {
             this.dpnId = dpnId;
             this.groupId = groupId;
             this.bucketId = bucketId;

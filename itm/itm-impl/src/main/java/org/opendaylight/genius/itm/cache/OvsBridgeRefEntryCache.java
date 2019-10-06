@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.itm.cache;
 
-import java.math.BigInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -18,9 +17,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.O
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @Singleton
-public class OvsBridgeRefEntryCache extends DataObjectCache<BigInteger, OvsBridgeRefEntry> {
+public class OvsBridgeRefEntryCache extends DataObjectCache<Uint64, OvsBridgeRefEntry> {
 
     @Inject
     public OvsBridgeRefEntryCache(DataBroker dataBroker, CacheProvider cacheProvider) {

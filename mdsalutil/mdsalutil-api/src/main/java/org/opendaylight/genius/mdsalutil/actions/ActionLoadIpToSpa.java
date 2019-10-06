@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import com.google.common.net.InetAddresses;
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
@@ -18,6 +17,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Load IP Address to SPA (Sender Protocol Address).
@@ -52,10 +53,10 @@ public class ActionLoadIpToSpa extends ActionInfo {
                 .setNxRegLoad(new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
                         .setDstChoice(new DstOfArpSpaCaseBuilder().setOfArpSpa(Empty.getInstance()).build())
-                        .setStart(0)
+                        .setStart(Uint16.ZERO)
                         .setEnd(31)
                         .build())
-                    .setValue(BigInteger.valueOf(
+                    .setValue(Uint64.valueOf(
                         InetAddresses.coerceToInteger(InetAddresses.forString(address)) & 0xffffffffL))
                     .build())
                 .build())

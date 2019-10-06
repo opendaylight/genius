@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
 import static org.opendaylight.genius.alivenessmonitor.protocols.AlivenessMonitorAndProtocolsConstants.SEPERATOR;
@@ -16,7 +15,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +51,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.ipv6.nd.util.rev1702
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.ipv6.nd.util.rev170210.interfaces.InterfaceAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,10 +98,10 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
             LOG.warn("Failed to decode IPv6 NA packet={}", data, e);
             return null;
         }
-        short tableId = packetReceived.getTableId().getValue();
+        short tableId = packetReceived.getTableId().getValue().toJava();
         LOG.trace("packet: {}, tableId {}, ipv6Type {}", packetReceived, tableId, naPacket.getIcmp6Type());
 
-        BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();
+        Uint64 metadata = packetReceived.getMatch().getMetadata().getMetadata();
         int portTag = MetaDataUtil.getLportFromMetadata(metadata).intValue();
         String interfaceName = null;
 
@@ -131,7 +130,6 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
         return null;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void startMonitoringTask(MonitoringInfo monitorInfo) {
         EndpointType source = monitorInfo.getSource().getEndpointType();

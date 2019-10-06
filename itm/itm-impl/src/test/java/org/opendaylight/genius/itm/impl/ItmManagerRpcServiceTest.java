@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -104,6 +103,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmManagerRpcServiceTest {
@@ -121,8 +121,8 @@ public class ItmManagerRpcServiceTest {
     IpAddress ipAddress1 = IpAddressBuilder.getDefaultInstance(tepIp1);
     IpAddress gtwyIp1 = IpAddressBuilder.getDefaultInstance(gwyIp1);
     IpPrefix ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
-    BigInteger dpId1 = BigInteger.valueOf(1);
-    BigInteger dpId2 = BigInteger.valueOf(2);
+    Uint64 dpId1 = Uint64.ONE;
+    Uint64 dpId2 = Uint64.valueOf(2);
     ExternalTunnel externalTunnel = null;
     ExternalTunnel externalTunnelNew = null;
     InternalTunnel internalTunnel = null;
@@ -138,7 +138,7 @@ public class ItmManagerRpcServiceTest {
     List<TransportZone> transportZoneList = new ArrayList<>() ;
     List<DeviceVteps> deviceVtepsList = new ArrayList<>();
     List<String> stringList = new ArrayList<>();
-    List<BigInteger> dpId1List = new ArrayList<>();
+    List<Uint64> dpId1List = new ArrayList<>();
     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(ipAddress1, sourceDevice);
     AddExternalTunnelEndpointInput addExternalTunnelEndpointInput = null;
     GetInternalOrExternalInterfaceNameInput getInternalOrExternalInterfaceNameInput = null;

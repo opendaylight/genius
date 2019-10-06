@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.api;
 
 import com.google.common.base.Optional;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +17,11 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface IITMProvider {
     // APIs used by i
-    void createLocalCache(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
+    void createLocalCache(Uint64 dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
             String gatewayIp, String transportZone);
 
     void commitTeps();
@@ -36,7 +36,7 @@ public interface IITMProvider {
 
     void showCache(String cacheName);
 
-    void deleteVtep(BigInteger dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
+    void deleteVtep(Uint64 dpnId, String portName, Integer vlanId, String ipAddress, String subnetMask,
             String gatewayIp, String transportZone);
 
     void configureTunnelType(String transportZone, String tunnelType);

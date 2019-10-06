@@ -13,7 +13,6 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,6 +74,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,8 +180,7 @@ public final class ItmInternalTunnelAddWorker {
                     if (!ItmUtils.getIntersection(srcte.nonnullTzMembership(),
                             dstte.nonnullTzMembership()).isEmpty()) {
                         // wire them up
-                        wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
-                                mdsalManager);
+                        wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(), mdsalManager);
                         if (!ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
                             // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
                             break;
@@ -193,8 +192,8 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private void wireUpBidirectionalTunnel(TypedReadWriteTransaction<Configuration> tx, TunnelEndPoints srcte,
-        TunnelEndPoints dstte, BigInteger srcDpnId, BigInteger dstDpnId, IMdsalApiManager mdsalManager)
-        throws ExecutionException, InterruptedException, OperationFailedException {
+            TunnelEndPoints dstte, Uint64 srcDpnId, Uint64 dstDpnId, IMdsalApiManager mdsalManager)
+                    throws ExecutionException, InterruptedException, OperationFailedException {
         // Setup the flow for LLDP monitoring -- PUNT TO CONTROLLER
 
         if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
@@ -214,8 +213,8 @@ public final class ItmInternalTunnelAddWorker {
     }
 
     private boolean wireUp(TypedWriteTransaction<Configuration> tx, TunnelEndPoints srcte, TunnelEndPoints dstte,
-        BigInteger srcDpnId, BigInteger dstDpnId)
-        throws ExecutionException, InterruptedException, OperationFailedException {
+            Uint64 srcDpnId, Uint64 dstDpnId)
+                    throws ExecutionException, InterruptedException, OperationFailedException {
         // Wire Up logic
         LOG.trace("Wiring between source tunnel end points {}, destination tunnel end points {}", srcte, dstte);
         String interfaceName = srcte.getInterfaceName();
@@ -241,7 +240,7 @@ public final class ItmInternalTunnelAddWorker {
         return true;
     }
 
-    private void createTunnelInterface(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
+    private void createTunnelInterface(TunnelEndPoints srcte, TunnelEndPoints dstte, Uint64 srcDpnId,
             Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName, String parentInterfaceName) {
         String gateway = srcte.getIpAddress().getIpv4Address() != null ? "0.0.0.0" : "::";
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance(gateway);
@@ -265,17 +264,8 @@ public final class ItmInternalTunnelAddWorker {
         ItmUtils.ITM_CACHE.addInterface(iface);
     }
 
-    private static void createLogicalTunnelInterface(BigInteger srcDpnId,
-            Class<? extends TunnelTypeBase> tunType, String interfaceName) {
-        Interface iface = ItmUtils.buildLogicalTunnelInterface(srcDpnId, interfaceName,
-                String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Interface"), true);
-        InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(interfaceName);
-        ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        ItmUtils.ITM_CACHE.addInterface(iface);
-    }
-
-    private static void createInternalTunnel(TypedWriteTransaction<Configuration> tx, BigInteger srcDpnId,
-        BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName) {
+    private static void createInternalTunnel(TypedWriteTransaction<Configuration> tx, Uint64 srcDpnId,
+            Uint64 dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName) {
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
         InternalTunnel tnl = ItmUtils.buildInternalTunnel(srcDpnId, dstDpnId, tunType, trunkInterfaceName);
@@ -286,7 +276,7 @@ public final class ItmInternalTunnelAddWorker {
         ItmUtils.ITM_CACHE.addInternalTunnel(tnl);
     }
 
-    private String createLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId) {
+    private String createLogicalGroupTunnel(Uint64 srcDpnId, Uint64 dstDpnId) {
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {
             return null;
@@ -301,11 +291,11 @@ public final class ItmInternalTunnelAddWorker {
     private static class ItmTunnelAggregationWorker implements Callable<List<ListenableFuture<Void>>> {
 
         private final String logicTunnelGroupName;
-        private final BigInteger srcDpnId;
-        private final BigInteger dstDpnId;
+        private final Uint64 srcDpnId;
+        private final Uint64 dstDpnId;
         private final ManagedNewTransactionRunner txRunner;
 
-        ItmTunnelAggregationWorker(String logicGroupName, BigInteger srcDpnId, BigInteger dstDpnId, DataBroker broker) {
+        ItmTunnelAggregationWorker(String logicGroupName, Uint64 srcDpnId, Uint64 dstDpnId, DataBroker broker) {
             this.logicTunnelGroupName = logicGroupName;
             this.srcDpnId = srcDpnId;
             this.dstDpnId = dstDpnId;
@@ -328,11 +318,20 @@ public final class ItmInternalTunnelAddWorker {
                 }
             }));
         }
+
+        private static void createLogicalTunnelInterface(Uint64 srcDpnId,
+                Class<? extends TunnelTypeBase> tunType, String interfaceName) {
+            Interface iface = ItmUtils.buildLogicalTunnelInterface(srcDpnId, interfaceName,
+                    String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Interface"), true);
+            InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(interfaceName);
+            ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+            ItmUtils.ITM_CACHE.addInterface(iface);
+        }
     }
 
-    private void createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte, BigInteger srcDpnId,
-        BigInteger dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
-        String parentInterfaceName) throws OperationFailedException {
+    private void createInternalDirectTunnels(TunnelEndPoints srcte, TunnelEndPoints dstte, Uint64 srcDpnId,
+            Uint64 dstDpnId, Class<? extends TunnelTypeBase> tunType, String trunkInterfaceName,
+            String parentInterfaceName) throws OperationFailedException {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
         IpAddress gwyIpAddress = gatewayIpObj;
         LOG.debug("Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {}, source IP - {},"
@@ -359,7 +358,7 @@ public final class ItmInternalTunnelAddWorker {
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
         if (useOfTunnel) {
             String tunnelType = ItmUtils.convertTunnelTypetoString(srcte.getTunnelType());
-            ofTunnelPortName = directTunnelUtils.generateOfPortName(srcDpnId, tunnelType);
+            ofTunnelPortName = DirectTunnelUtils.generateOfPortName(srcDpnId, tunnelType);
             dpnsTepsBuilder.setOfTunnel(ofTunnelPortName);
         }
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
@@ -393,7 +392,7 @@ public final class ItmInternalTunnelAddWorker {
             return;
         }
 
-        BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+        Uint64 dpId = parentRefs.getDatapathNodeIdentifier();
         if (dpId == null) {
             LOG.warn("dpid for interface: {} Not Found. No DPID provided. Creation of OF-Port not supported.",
                     iface.getName());
@@ -448,11 +447,11 @@ public final class ItmInternalTunnelAddWorker {
         }
     }
 
-    private boolean createTunnelPort(BigInteger dpId) {
+    private boolean createTunnelPort(Uint64 dpId) {
         if (!itmCfg.isUseOfTunnels()) {
             return true;
         }
-        return (ofEndPointCache.get(dpId) == null);
+        return ofEndPointCache.get(dpId) == null;
     }
 
     private void addPortToBridgeOnCallback(Interface iface, String portName, OvsBridgeRefEntry bridgeRefEntry) {

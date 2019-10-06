@@ -15,6 +15,7 @@ import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +39,11 @@ public class ShowOvsPorts extends OsgiCommandSupport {
     @Override
     protected Object doExecute() {
         LOG.debug("Executing show ovs-ports command");
-        List<OvsdbTerminationPointAugmentation> ports = interfaceManager.getPortsOnBridge(dpnId);
+        final Uint64 id = Uint64.valueOf(dpnId);
+        List<OvsdbTerminationPointAugmentation> ports = interfaceManager.getPortsOnBridge(id);
 
         if (!ports.isEmpty()) {
-            IfmCLIUtil.showBridgePortsHeader(session, dpnId);
+            IfmCLIUtil.showBridgePortsHeader(session, id);
         }
         for (OvsdbTerminationPointAugmentation port: ports) {
             IfmCLIUtil.showBridgePortsOutput(session, port);

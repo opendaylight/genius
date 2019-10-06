@@ -28,13 +28,11 @@ import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRE
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import com.google.common.base.Optional;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -158,6 +156,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Component tests for interface manager.
@@ -281,7 +280,7 @@ public class InterfaceManagerConfigurationTest {
 
         // c) check expected flow entries were created in Interface Ingress
         // Table
-        BigInteger dpnId = BigInteger.valueOf(1);
+        Uint64 dpnId = Uint64.ONE;
         String ingressFlowRef = FlowBasedServicesUtils.getFlowRef(VLAN_INTERFACE_INGRESS_TABLE, dpnId, INTERFACE_NAME);
         FlowKey ingressFlowKey = new FlowKey(new FlowId(ingressFlowRef));
         Node nodeDpn = InterfaceManagerTestUtil.buildInventoryDpnNode(dpnId);
@@ -578,7 +577,7 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(PARENT_INTERFACE, interfaceInfo.augmentation(ParentRefs.class).getParentInterface());
 
         // 3. fetch dpn-id corresponding to an interface
-        BigInteger dpnId = interfaceManager.getDpnForInterface(INTERFACE_NAME);
+        Uint64 dpnId = interfaceManager.getDpnForInterface(INTERFACE_NAME);
         Assert.assertEquals(DPN_ID_1, dpnId);
 
         // 4. fetch parent-interface corresponding to an interface
@@ -926,7 +925,7 @@ public class InterfaceManagerConfigurationTest {
         assertEqualBeans(ExpectedInterfaceListFromDpn.checkDpnToInterfaceList(), actualDpnInterfaceList.get(0));
     }
 
-    private void createDpnToInterface(BigInteger dpId, String infName,
+    private void createDpnToInterface(Uint64 dpId, String infName,
                                       Class<? extends InterfaceType> interfaceType) throws  Exception {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);

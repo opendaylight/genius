@@ -13,6 +13,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPoolsBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntriesBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -39,19 +40,19 @@ class ExpectedAllocateIdMultipleRequestsFromAvailableIds {
                 new IdEntriesBuilder >> [
                     idKey = "test-key10"
                     idValue = #[
-                        1L
+                        Uint32.valueOf(1L)
                     ]
                 ],
                 new IdEntriesBuilder >> [
                     idKey = "test-key12"
                     idValue = #[
-                        0L
+                        Uint32.valueOf(0L)
                     ]
                 ],
                 new IdEntriesBuilder >> [
                     idKey = "test-key11"
                     idValue = #[
-                        2L
+                        Uint32.valueOf(2L)
                     ]
                 ]
             ]

@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.cloudscaler.rpcservice;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -28,6 +26,7 @@ import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ComputeNodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.compute.nodes.ComputeNode;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,11 +37,12 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
 
     private final DataBroker dataBroker;
     private final CacheProvider cacheProvider;
-    private final Set<Function<BigInteger, Void>> callbacks = ConcurrentHashMap.newKeySet();
+    private final Set<Function<Uint64, Void>> callbacks = ConcurrentHashMap.newKeySet();
     private final ComputeNodeManager computeNodeManager;
 
     private InstanceIdDataObjectCache<ComputeNode> computeNodeCache;
-    private ExecutorService executorService = Executors.newSingleThreadExecutor("tombstone-node-manager", LOG);
+    // FIXME: this service is never shut down
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor("tombstone-node-manager", LOG);
 
     @Inject
     public TombstonedNodeManagerImpl(DataBroker dataBroker,
@@ -55,7 +55,7 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
     }
 
     void init() {
-        this.computeNodeCache = new InstanceIdDataObjectCache<ComputeNode>(ComputeNode.class, dataBroker,
+        this.computeNodeCache = new InstanceIdDataObjectCache<>(ComputeNode.class, dataBroker,
                 LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(ComputeNodes.class).child(ComputeNode.class).build(),
                 cacheProvider) {
@@ -78,7 +78,7 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
     }
 
     @Override
-    public boolean isDpnTombstoned(BigInteger dpnId) throws ReadFailedException {
+    public boolean isDpnTombstoned(Uint64 dpnId) throws ReadFailedException {
         if (dpnId == null) {
             return false;
         }
@@ -90,12 +90,12 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
     }
 
     @Override
-    public void addOnRecoveryCallback(Function<BigInteger, Void> callback) {
+    public void addOnRecoveryCallback(Function<Uint64, Void> callback) {
         callbacks.add(callback);
     }
 
     @Override
-    public List<BigInteger> filterTombStoned(List<BigInteger> dpns) throws ReadFailedException {
+    public List<Uint64> filterTombStoned(List<Uint64> dpns) throws ReadFailedException {
         return dpns.stream().filter((dpn) -> {
             try {
                 return !isDpnTombstoned(dpn);

@@ -19,7 +19,6 @@ import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +69,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,8 +91,8 @@ public class TepCommandHelperTest {
     private final String sourceDevice = "hwvtep://192.168.101.30:6640/physicalswitch/s3";
     private final String destinationDevice = "hwvtep:1";
     private final String transportZone1 = "TZA" ;
-    private final BigInteger dpId1 = BigInteger.valueOf(1);
-    private final BigInteger dpId2 = BigInteger.valueOf(2);
+    private final Uint64 dpId1 = Uint64.ONE;
+    private final Uint64 dpId2 = Uint64.valueOf(2);
     private final IpAddress ipAddress1 = IpAddressBuilder.getDefaultInstance(tepIp1);
     private final IpAddress ipAddress2 = IpAddressBuilder.getDefaultInstance(tepIp2);
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -312,10 +312,16 @@ public class TepCommandHelperTest {
         doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
-        tepCommandHelper.configureTunnelType(transportZone1,"VXLAN");
+        tepCommandHelper.configureTunnelType(transportZone1, "VXLAN");
 
-        verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZones,true);
+        verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION, transportZoneIdentifier);
+
+        final List<TransportZone> newList = new ArrayList<>(transportZoneList);
+        newList.add(new TransportZoneBuilder().withKey(new TransportZoneKey(transportZone1))
+            .setTunnelType(TunnelTypeVxlan.class).build());
+
+        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, transportZonesIdentifier,
+            new TransportZonesBuilder().setTransportZone(newList).build(),true);
     }
 
     @Test
@@ -484,8 +490,8 @@ public class TepCommandHelperTest {
     public void testIsInCache() {
 
         try {
-            tepCommandHelper.createLocalCache(dpId1,tepIp1,transportZone1);
-            tepCommandHelper.isInCache(dpId1,tepIp1,transportZone1);
+            tepCommandHelper.createLocalCache(dpId1, tepIp1, transportZone1);
+            tepCommandHelper.isInCache(dpId1, tepIp1 ,transportZone1);
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }

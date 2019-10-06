@@ -7,11 +7,11 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public abstract class AbstractSwitchEntity {
 
-    public abstract BigInteger getDpnId();
+    public abstract Uint64 getDpnId();
 
     // Force subclasses to implement hashCode() & equals() WITH m_dpnId!
     @Override

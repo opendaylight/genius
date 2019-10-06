@@ -8,7 +8,6 @@
 
 package org.opendaylight.genius.ipv6util.nd;
 
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -40,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Pa
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,17 +110,17 @@ public class Ipv6NsHelper {
     }
 
     private byte[] fillNeighborSolicitationPacket(NeighborSolicitationPacket pdu) {
-        ByteBuffer buf = ByteBuffer.allocate(Ipv6Constants.ICMPV6_OFFSET + pdu.getIpv6Length());
+        ByteBuffer buf = ByteBuffer.allocate(Ipv6Constants.ICMPV6_OFFSET + pdu.getIpv6Length().toJava());
 
         buf.put(Ipv6Util.convertEthernetHeaderToByte(pdu), 0, 14);
         buf.put(Ipv6Util.convertIpv6HeaderToByte(pdu), 0, 40);
-        buf.put(icmp6NsPayloadtoByte(pdu), 0, pdu.getIpv6Length());
+        buf.put(icmp6NsPayloadtoByte(pdu), 0, pdu.getIpv6Length().toJava());
         int checksum = Ipv6Util.calculateIcmpv6Checksum(buf.array(), pdu);
         buf.putShort(Ipv6Constants.ICMPV6_OFFSET + 2, (short) checksum);
         return buf.array();
     }
 
-    public boolean transmitNeighborSolicitation(BigInteger dpnId, NodeConnectorRef nodeRef, MacAddress srcMacAddress,
+    public boolean transmitNeighborSolicitation(Uint64 dpnId, NodeConnectorRef nodeRef, MacAddress srcMacAddress,
             Ipv6Address srcIpv6Address, Ipv6Address targetIpv6Address) {
         byte[] txPayload = frameNeighborSolicitationRequest(srcMacAddress, srcIpv6Address, targetIpv6Address);
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
@@ -135,7 +135,7 @@ public class Ipv6NsHelper {
         return true;
     }
 
-    public void transmitNeighborSolicitationToOfGroup(BigInteger dpId, MacAddress srcMacAddress,
+    public void transmitNeighborSolicitationToOfGroup(Uint64 dpId, MacAddress srcMacAddress,
             Ipv6Address srcIpv6Address, Ipv6Address targetIpv6Address, long ofGroupId) {
         byte[] txPayload = frameNeighborSolicitationRequest(srcMacAddress, srcIpv6Address, targetIpv6Address);
         List<ActionInfo> lstActionInfo = new ArrayList<>();

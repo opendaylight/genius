@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.NWUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -19,6 +18,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Load MAC address to SHA (Sender Hardware Address).
@@ -53,10 +54,10 @@ public class ActionLoadMacToSha extends ActionInfo {
                 .setNxRegLoad(new NxRegLoadBuilder()
                     .setDst(new DstBuilder()
                         .setDstChoice(new DstNxArpShaCaseBuilder().setNxArpSha(Empty.getInstance()).build())
-                        .setStart(0)
+                        .setStart(Uint16.ZERO)
                         .setEnd(47)
                         .build())
-                    .setValue(BigInteger.valueOf(NWUtil.macToLong(address)))
+                    .setValue(Uint64.valueOf(NWUtil.macToLong(address)))
                     .build())
                 .build())
             .withKey(new ActionKey(newActionKey))
