@@ -127,7 +127,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         LOG.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
         scheduledResult = portStatExecutorService.scheduleWithFixedDelay(portStatRequestTask,
-                ifmConfig.getIfmStatsDefPollInterval(), ifmConfig.getIfmStatsDefPollInterval(), TimeUnit.MINUTES);
+                ifmConfig.getIfmStatsDefPollInterval().toJava(), ifmConfig.getIfmStatsDefPollInterval().toJava(), TimeUnit.MINUTES);
     }
 
     /*
@@ -289,7 +289,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             }
 
             Counter counter = getCounter(CounterConstants.IFM_PORT_COUNTER_OFPORT_DURATION, dpid, port, portUuid,null);
-            long ofPortDuration = ncStatsAndPortMap.getDuration().getSecond().getValue();
+            long ofPortDuration = ncStatsAndPortMap.getDuration().getSecond().getValue().toJava();
             updateCounter(counter, ofPortDuration);
 
             counter = getCounter(CounterConstants.IFM_PORT_COUNTER_OFPORT_PKT_RECVDROP, dpid, port, portUuid, null);
@@ -332,7 +332,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         List<FlowAndStatisticsMapList> flowTableAndStatisticsMapList =
             flowStatsOutput.nonnullFlowAndStatisticsMapList();
         for (FlowAndStatisticsMapList flowAndStatisticsMap : flowTableAndStatisticsMapList) {
-            short tableId = flowAndStatisticsMap.getTableId();
+            short tableId = flowAndStatisticsMap.getTableId().toJava();
             // populate map to maintain flow count per table
             flowTableMap.computeIfAbsent(tableId, key -> new AtomicInteger(0)).incrementAndGet();
         }
@@ -422,7 +422,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             }
         }
         if (nodes.size() > 0) {
-            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval() / nodes.size();
+            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval().toJava() / nodes.size();
         } else {
             stopPortStatRequestTask();
             delayStatsQuery = 0;
@@ -444,7 +444,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                 return;
             }
             nodes.add(dpId);
-            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval() / nodes.size();
+            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval().toJava() / nodes.size();
             if (nodes.size() == 1) {
                 schedulePortStatRequestTask();
             }

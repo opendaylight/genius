@@ -156,11 +156,11 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         batchSize = ITMConstants.BATCH_SIZE;
         LOG.info("entered initialse");
         if (itmConfig.getBatchSize() != null) {
-            batchSize = itmConfig.getBatchSize();
+            batchSize = itmConfig.getBatchSize().toJava();
         }
         batchInterval = ITMConstants.PERIODICITY;
         if (itmConfig.getBatchInterval() != null) {
-            batchInterval = itmConfig.getBatchInterval();
+            batchInterval = itmConfig.getBatchInterval().toJava();
         }
         ITMBatchingUtils.registerWithBatchManager(this.dataBroker,this.batchSize,this.batchInterval);
     }

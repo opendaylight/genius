@@ -123,7 +123,7 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
             throws ReadFailedException, InterruptedException, ExecutionException {
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
-        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());
+        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId().toJava());
         for (RemoteDpns remoteDpn : dpnTeps.nonnullRemoteDpns()) {
             if (enabled != null) {
                 LOG.debug("toggleMonitoring: tunnelInterfaceName: {}, monitorEnable = {} ",
@@ -137,9 +137,9 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
             }
             remoteDpnTepNewList.add(remoteDpnNew);
             LOG.debug("toggleMonitoring: RemoteDpnNew {}", remoteDpnNew);
-            directTunnelUtils.updateBfdConfiguration(dpnTeps.getSourceDpnId(), remoteDpnNew, ovsBridgeRefEntry);
+            directTunnelUtils.updateBfdConfiguration(dpnTeps.getSourceDpnId().toJava(), remoteDpnNew, ovsBridgeRefEntry);
         }
-        updateMonitoringDS(dpnTeps.getSourceDpnId(), remoteDpnTepNewList, tx);
+        updateMonitoringDS(dpnTeps.getSourceDpnId().toJava(), remoteDpnTepNewList, tx);
     }
 
     public void updateMonitoringDS(BigInteger sourceDpnId,List<RemoteDpns> remoteDpnTepNewList,

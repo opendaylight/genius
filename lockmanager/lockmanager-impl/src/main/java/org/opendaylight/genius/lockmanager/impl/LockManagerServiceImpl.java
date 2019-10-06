@@ -94,7 +94,7 @@ public class LockManagerServiceImpl implements LockManagerService {
         String lockName = input.getLockName();
         String owner = lockManagerUtils.getUniqueID();
         LOG.debug("Locking {}, owner {}" , lockName, owner);
-        long waitTime = input.getTime() == null ? DEFAULT_WAIT_TIME_IN_MILLIS * DEFAULT_RETRY_COUNT : input.getTime();
+        long waitTime = input.getTime() == null ? DEFAULT_WAIT_TIME_IN_MILLIS * DEFAULT_RETRY_COUNT : input.getTime().toJava();
         TimeUnit timeUnit = input.getTimeUnit() == null ? TimeUnit.MILLISECONDS
                 : lockManagerUtils.convertToTimeUnit(input.getTimeUnit());
         waitTime = timeUnit.toMillis(waitTime);

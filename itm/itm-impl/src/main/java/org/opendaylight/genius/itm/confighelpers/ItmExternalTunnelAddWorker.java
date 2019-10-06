@@ -42,6 +42,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class ItmExternalTunnelAddWorker {
                 LOG.debug(" Creating Trunk Interface with parameters trunk I/f Name - {}, parent I/f name - {},"
                                 + " source IP - {}, DC Gateway IP - {} gateway IP - {}", trunkInterfaceName,
                         interfaceName, firstEndPt.getIpAddress(), extIp, gwyIpAddress);
-                Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
+                Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID().toJava(), trunkInterfaceName,
                         String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
                         true, tunType, firstEndPt.getIpAddress(), extIp, false, false,
                         ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
@@ -96,7 +97,7 @@ public class ItmExternalTunnelAddWorker {
         }
     }
 
-    public void buildTunnelsFromDpnToExternalEndPoint(List<BigInteger> dpnId, IpAddress extIp,
+    public void buildTunnelsFromDpnToExternalEndPoint(List<Uint64> dpnId, IpAddress extIp,
                                                       Class<? extends TunnelTypeBase> tunType,
                                                       TypedWriteTransaction<Configuration> tx) {
         Collection<DPNTEPsInfo> cfgDpnList = dpnId == null ? dpnTEPsInfoCache.getAllPresent()
@@ -156,7 +157,7 @@ public class ItmExternalTunnelAddWorker {
             //do we need to check tunnel type?
             if (transportZone.getDeviceVteps() != null && !transportZone.getDeviceVteps().isEmpty()) {
                 String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
                 for (DeviceVteps hwVtepDS : transportZone.getDeviceVteps()) {
                     //dont mesh if hwVteps and OVS-tep have same ip-address
                     if (Objects.equals(hwVtepDS.getIpAddress(), tep.getIpAddress())) {
@@ -166,7 +167,7 @@ public class ItmExternalTunnelAddWorker {
                     String nodeId = hwVtepDS.getNodeId();
                     boolean useOfTunnel = ItmUtils.falseIfNull(tep.isOptionOfTunnel());
                     LOG.trace("wire up {} and {}",tep, hwVtepDS);
-                    if (!wireUp(dpn.getDPNID(), portName, vlanId, tep.getIpAddress(), useOfTunnel, nodeId,
+                    if (!wireUp(dpn.getDPNID().toJava(), portName, vlanId, tep.getIpAddress(), useOfTunnel, nodeId,
                             hwVtepDS.getIpAddress(), transportZone.getTunnelType(), false,
                             monitorInterval, monitorProtocol, tx)) {
                         LOG.error("Unable to build tunnel {} -- {}",
@@ -196,7 +197,7 @@ public class ItmExternalTunnelAddWorker {
         if (transportZoneOptional.isPresent()) {
             TransportZone tzone = transportZoneOptional.get();
             String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-            int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+            int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
             //do we need to check tunnel type?
             if (tzone.getDeviceVteps() != null && !tzone.getDeviceVteps().isEmpty()) {
                 for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
@@ -239,7 +240,7 @@ public class ItmExternalTunnelAddWorker {
                 //OVS-TOR
                 LOG.trace("wire up {} and {}", vtep,hwTep);
                 boolean useOfTunnel = ItmUtils.falseIfNull(vtep.isOptionOfTunnel());
-                if (!wireUp(vtep.getDpnId(), portName, vlanId, vtep.getIpAddress(),
+                if (!wireUp(vtep.getDpnId().toJava(), portName, vlanId, vtep.getIpAddress(),
                         useOfTunnel, hwTep.getNodeId(),hwTep.getHwIp(),
                         tunType, false,
                         monitorInterval, monitorProtocol, tx)) {

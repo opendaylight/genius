@@ -125,6 +125,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -441,10 +442,10 @@ public final class ItmUtils {
                 .replace("-", "");
     }
 
-    public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DPNTEPsInfoCache dpnTEPsInfoCache, List<BigInteger> dpnIds) {
+    public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DPNTEPsInfoCache dpnTEPsInfoCache, List<Uint64> dpnIds) {
         Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
-        for (BigInteger dpnId : dpnIds) {
+        for (Uint64 dpnId : dpnIds) {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 if (dpnId.equals(teps.getDPNID())) {
                     cfgDpnList.add(teps);
@@ -1120,7 +1121,7 @@ public final class ItmUtils {
                 List<Vteps> vtepsList = transportZone.getVteps();
                 if (vtepsList != null && !vtepsList.isEmpty()) {
                     for (Vteps vtep : vtepsList) {
-                        listOfDpId.add(vtep.getDpnId());
+                        listOfDpId.add(vtep.getDpnId().toJava());
                     }
                 }
             }

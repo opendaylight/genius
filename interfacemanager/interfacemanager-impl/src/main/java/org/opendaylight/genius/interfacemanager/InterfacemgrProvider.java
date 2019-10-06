@@ -204,7 +204,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             RpcResult<GetPortFromInterfaceOutput> port = output.get();
             if (port.isSuccessful()) {
-                return port.getResult().getPortno();
+                return port.getResult().getPortno().toJava();
             }
         } catch (NullPointerException | InterruptedException | ExecutionException e) {
             LOG.warn("Exception when getting port for interface", e);
@@ -219,7 +219,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             RpcResult<GetPortFromInterfaceOutput> port = output.get();
             if (port.isSuccessful()) {
-                return port.getResult().getPortno();
+                return port.getResult().getPortno().toJava();
             }
         } catch (NullPointerException | InterruptedException | ExecutionException e) {
             LOG.warn("Exception when getting port for interface", e);
@@ -475,7 +475,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo) {
         IfmUtil.unbindService(txRunner, coordinator, interfaceName,
-                FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
+                FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority().toJava(), serviceMode));
     }
 
     @Override
@@ -490,7 +490,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             RpcResult<GetDpidFromInterfaceOutput> dpn = output.get();
             if (dpn.isSuccessful()) {
-                return dpn.getResult().getDpid();
+                return dpn.getResult().getDpid().toJava();
             }
         } catch (NullPointerException | InterruptedException | ExecutionException e) {
             LOG.warn("Exception when getting port for interface", e);

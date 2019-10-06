@@ -27,6 +27,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
+import org.opendaylight.yangtools.yang.common.Uint32;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +62,7 @@ public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
     @Override
     public void onMonitorEvent(MonitorEvent notification) {
         ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
-            Long monitorId = notification.getEventData().getMonitorId();
+            Uint32 monitorId = notification.getEventData().getMonitorId();
             String tunnelInterface = AlivenessMonitorUtils.getInterfaceFromMonitorId(tx, monitorId);
             if (tunnelInterface == null) {
                 LOG.debug("Either monitoring for interface not started by Interfacemgr or it is not LLDP monitoring");

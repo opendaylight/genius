@@ -74,7 +74,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                             UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
         super(DpnsTeps.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class).build(), cacheProvider,
-            (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId(),
+            (iid, dpnsTeps) -> dpnsTeps.getSourceDpnId().toJava(),
             sourceDpnId -> InstanceIdentifier.builder(DpnTepsState.class)
                     .child(DpnsTeps.class, new DpnsTepsKey(sourceDpnId)).build());
         this.dataBroker = dataBroker;
@@ -90,13 +90,13 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         String srcOfTunnel = dpnsTeps.getOfTunnel();
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
-            final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
+            final String dpn = getDpnId(dpnsTeps.getSourceDpnId().toJava(), remoteDpns.getDestinationDpnId().toJava());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                 .setTunnelName(remoteDpns.getTunnelName())
                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                 .setIsInternal(remoteDpns.isInternal())
                 .setTunnelType(dpnsTeps.getTunnelType())
-                .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
+                .setRemoteDPN(remoteDpns.getDestinationDpnId().toJava()).build();
             dpnTepInterfaceMap.put(dpn, value);
 
             addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(), dpnsTeps.getSourceDpnId().toString(),
@@ -124,8 +124,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                     .setNodeConnectorInfo(tunnelStateInfo.getNodeConnectorInfo()).setDpnTepInterfaceInfo(value)
                     .setTunnelEndPointInfo(tunnelEndPtInfo);
 
-                dpnTepsInfoCache.getDPNTepFromDPNId(dpnsTeps.getSourceDpnId()).ifPresent(builder::setSrcDpnTepsInfo);
-                dpnTepsInfoCache.getDPNTepFromDPNId(remoteDpns.getDestinationDpnId())
+                dpnTepsInfoCache.getDPNTepFromDPNId(dpnsTeps.getSourceDpnId().toJava()).ifPresent(builder::setSrcDpnTepsInfo);
+                dpnTepsInfoCache.getDPNTepFromDPNId(remoteDpns.getDestinationDpnId().toJava())
                     .ifPresent(builder::setDstDpnTepsInfo);
 
                 tunnelStateInfoNew = builder.build();
@@ -162,10 +162,10 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
     @Override
     protected void removed(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
-            String fwkey = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
+            String fwkey = getDpnId(dpnsTeps.getSourceDpnId().toJava(), remoteDpns.getDestinationDpnId().toJava());
             dpnTepInterfaceMap.remove(fwkey);
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
-            String revkey = getDpnId(remoteDpns.getDestinationDpnId(), dpnsTeps.getSourceDpnId());
+            String revkey = getDpnId(remoteDpns.getDestinationDpnId().toJava(), dpnsTeps.getSourceDpnId().toJava());
             dpnTepInterfaceMap.remove(revkey);
         }
     }
@@ -187,8 +187,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
                                 .setIsInternal(remoteDpns.isInternal())
                                 .setTunnelType(teps.getTunnelType())
-                                .setRemoteDPN(remoteDpns.getDestinationDpnId()).build();
-                        dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId()), value);
+                                .setRemoteDPN(remoteDpns.getDestinationDpnId().toJava()).build();
+                        dpnTepInterfaceMap.putIfAbsent(getDpnId(srcDpnId, remoteDpns.getDestinationDpnId().toJava()), value);
                         addTunnelEndPointInfoToCache(remoteDpns.getTunnelName(),
                                 teps.getSourceDpnId().toString(), remoteDpns.getDestinationDpnId().toString());
                         }
@@ -211,8 +211,8 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                         // This will be reflected in cache by the ClusteredDTCN. Not removing it here !
                         //Caution :- Batching Delete !!
                         InstanceIdentifier<RemoteDpns> remoteDpnII =
-                                buildRemoteDpnsInstanceIdentifier(dpnTep.getSourceDpnId(),
-                                        remoteDpns.getDestinationDpnId());
+                                buildRemoteDpnsInstanceIdentifier(dpnTep.getSourceDpnId().toJava(),
+                                        remoteDpns.getDestinationDpnId().toJava());
                         SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION,
                                 remoteDpnII);
                         break;
@@ -220,7 +220,7 @@ public class DpnTepStateCache extends DataObjectCache<BigInteger, DpnsTeps> {
                 }
             } else {
                 // The source DPn id is the one to be removed
-                InstanceIdentifier<DpnsTeps> dpnsTepsII = buildDpnsTepsInstanceIdentifier(dpnTep.getSourceDpnId());
+                InstanceIdentifier<DpnsTeps> dpnsTepsII = buildDpnsTepsInstanceIdentifier(dpnTep.getSourceDpnId().toJava());
                 SingleTransactionDataBroker.syncDelete(dataBroker, LogicalDatastoreType.CONFIGURATION, dpnsTepsII);
             }
         }

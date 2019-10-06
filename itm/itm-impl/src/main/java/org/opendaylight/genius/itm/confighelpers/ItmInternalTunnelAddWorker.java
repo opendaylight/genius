@@ -180,7 +180,7 @@ public final class ItmInternalTunnelAddWorker {
                     if (!ItmUtils.getIntersection(srcte.nonnullTzMembership(),
                             dstte.nonnullTzMembership()).isEmpty()) {
                         // wire them up
-                        wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID(), dstDpn.getDPNID(),
+                        wireUpBidirectionalTunnel(tx, srcte, dstte, srcDpn.getDPNID().toJava(), dstDpn.getDPNID().toJava(),
                                 mdsalManager);
                         if (!ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
                             // CHECK THIS -- Assumption -- One end point per Dpn per transport zone
@@ -393,7 +393,7 @@ public final class ItmInternalTunnelAddWorker {
             return;
         }
 
-        BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+        BigInteger dpId = parentRefs.getDatapathNodeIdentifier().toJava();
         if (dpId == null) {
             LOG.warn("dpid for interface: {} Not Found. No DPID provided. Creation of OF-Port not supported.",
                     iface.getName());

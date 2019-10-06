@@ -60,7 +60,7 @@ public final class IfmCLIUtil {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
-        int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue() : 0 : 0;
+        int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue().toJava() : 0 : 0;
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1,
                 iface.getName()));
         sb.setLength(0);

@@ -56,7 +56,7 @@ public final class ItmExternalTunnelDeleteWorker {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             // The membership in the listener will always be 1, to get the actual membership
             // read from the DS
-            List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt, teps.getDPNID(),
+            List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt, teps.getDPNID().toJava(),
                     meshedDpnList);
             if (originalTzMembership.size() == 1) {
                 String interfaceName = firstEndPt.getInterfaceName();
@@ -161,13 +161,13 @@ public final class ItmExternalTunnelDeleteWorker {
 
                     String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT
                             : itmConfig.getPortname();
-                    int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                    int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
                     for (Vteps vtep : originalTZone.getVteps()) {
                         // TOR-OVS
                         LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
-                        String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), portName, vlanId);
-                        deleteTrunksOvsTor(vtep.getDpnId(), parentIf,
+                        String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId().toJava(), portName, vlanId);
+                        deleteTrunksOvsTor(vtep.getDpnId().toJava(), parentIf,
                                 vtep.getIpAddress(), hwTep.getTopoId(), hwTep.getNodeId(), hwTep.getHwIp(),
                                 originalTZone.getTunnelType(), tx);
                     }
@@ -188,7 +188,7 @@ public final class ItmExternalTunnelDeleteWorker {
             if (tzone.getDeviceVteps() != null) {
                 for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
                     // OVS-TOR-OVS
-                    deleteTrunksOvsTor(dpn.getDPNID(), srcTep.getInterfaceName(),
+                    deleteTrunksOvsTor(dpn.getDPNID().toJava(), srcTep.getInterfaceName(),
                             srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),
                             hwVtepDS.getIpAddress(), tzone.getTunnelType(), tx);
                 }
@@ -196,7 +196,7 @@ public final class ItmExternalTunnelDeleteWorker {
 
             if (cfgdhwVteps != null && !cfgdhwVteps.isEmpty()) {
                 for (HwVtep hwVtep : cfgdhwVteps) {
-                    deleteTrunksOvsTor(dpn.getDPNID(), srcTep.getInterfaceName(),
+                    deleteTrunksOvsTor(dpn.getDPNID().toJava(), srcTep.getInterfaceName(),
                             srcTep.getIpAddress(), hwVtep.getTopoId(), hwVtep.getNodeId(), hwVtep.getHwIp(),
                             TunnelTypeVxlan.class, tx);
                 }

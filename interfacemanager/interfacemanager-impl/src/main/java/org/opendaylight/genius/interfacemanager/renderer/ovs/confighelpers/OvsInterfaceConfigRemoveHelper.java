@@ -147,7 +147,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
         BigInteger dpId = null;
         if (parentRefs != null) {
-            dpId = parentRefs.getDatapathNodeIdentifier();
+            dpId = parentRefs.getDatapathNodeIdentifier().toJava();
         }
 
         if (dpId == null) {

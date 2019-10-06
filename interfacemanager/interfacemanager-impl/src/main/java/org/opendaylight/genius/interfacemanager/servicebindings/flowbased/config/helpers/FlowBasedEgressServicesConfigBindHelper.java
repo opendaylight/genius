@@ -47,7 +47,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
     @Override
     protected void bindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                           List<BoundServices> allServices, BoundServicesState boundServiceState) {
-        BigInteger dpId = boundServiceState.getDpid();
+        BigInteger dpId = boundServiceState.getDpid().toJava();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             Interface iface =
                     interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName());
@@ -59,7 +59,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                 // some value since this is the only service bound.
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew,
                         boundServiceState.getInterfaceName(), tx, boundServiceState.getIfIndex(),
-                        NwConstants.DEFAULT_SERVICE_INDEX, (short) (boundServiceNew.getServicePriority() + 1), iface);
+                        NwConstants.DEFAULT_SERVICE_INDEX, (short) (boundServiceNew.getServicePriority().toJava() + 1), iface);
                 return;
             }
             allServices.remove(boundServiceNew);
@@ -73,24 +73,24 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX); // dummy service
             // index
             if (low != null) {
-                nextServiceIndex = low.getServicePriority();
+                nextServiceIndex = low.getServicePriority().toJava();
                 if (low.equals(highest)) {
                     // In this case the match criteria of existing service should be
                     // changed.
                     BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, low)[0];
-                    short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
-                            : low.getServicePriority() + 1);
+                    short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority().toJava()
+                            : low.getServicePriority().toJava() + 1);
                     LOG.trace("Installing egress dispatcher table entry for existing service {} service match on "
                                     + "service index {} update with service index {}",
                             low, low.getServicePriority(), lowerServiceIndex);
                     FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, boundServiceState.getInterfaceName(),
-                            tx, boundServiceState.getIfIndex(), low.getServicePriority(), lowerServiceIndex, iface);
+                            tx, boundServiceState.getIfIndex(), low.getServicePriority().toJava(), lowerServiceIndex, iface);
                 } else {
-                    currentServiceIndex = boundServiceNew.getServicePriority();
+                    currentServiceIndex = boundServiceNew.getServicePriority().toJava();
                 }
             }
             if (high != null) {
-                currentServiceIndex = boundServiceNew.getServicePriority();
+                currentServiceIndex = boundServiceNew.getServicePriority().toJava();
                 if (high.equals(highest)) {
                     LOG.trace("Installing egress dispatcher table entry for existing service {} service match on "
                                     + "service index {} update with service index {}",
@@ -104,7 +104,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                             high, high.getServicePriority(), currentServiceIndex);
                     FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high,
                             boundServiceState.getInterfaceName(), tx, boundServiceState.getIfIndex(),
-                            high.getServicePriority(), currentServiceIndex, iface);
+                            high.getServicePriority().toJava(), currentServiceIndex, iface);
                 }
             }
             LOG.trace("Installing egress dispatcher table entry "

@@ -50,8 +50,8 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
-        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
-                : highestPriority.getServicePriority() + 1);
+        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority().toJava()
+                : highestPriority.getServicePriority().toJava() + 1);
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface = interfaceManagerCommonUtils
                 .getInterfaceFromConfigDS(ifState.getName());
@@ -61,13 +61,13 @@ public class FlowBasedEgressServicesStateBindHelper extends AbstractFlowBasedSer
         for (BoundServices boundService : allServices) {
             if (prev != null) {
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), tx,
-                        ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority(), iface);
+                        ifState.getIfIndex(), prev.getServicePriority().toJava(), boundService.getServicePriority().toJava(), iface);
             }
             prev = boundService;
         }
         if (prev != null) {
             FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, prev, ifState.getName(), tx,
-                    ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority() + 1),
+                    ifState.getIfIndex(), prev.getServicePriority().toJava(), (short) (prev.getServicePriority().toJava() + 1),
                     iface);
         }
     }

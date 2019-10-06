@@ -226,8 +226,8 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
             GetTunnelInterfaceNameInput input) {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
-        BigInteger sourceDpn = input.getSourceDpid();
-        BigInteger destinationDpn = input.getDestinationDpid();
+        BigInteger sourceDpn = input.getSourceDpid().toJava();
+        BigInteger destinationDpn = input.getDestinationDpid().toJava();
         Optional<InternalTunnel> optTunnel = Optional.absent();
 
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -307,7 +307,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             return  settableFuture;
         } else {
             return fromListenableFuture(LOG, input, () -> getEgressActionsForInternalTunnels(input.getIntfName(),
-                    input.getTunnelKey(), input.getActionKey())).onFailureLogLevel(ERROR).build();
+                    input.getTunnelKey().toJava(), input.getActionKey())).onFailureLogLevel(ERROR).build();
         }
     }
 
@@ -365,8 +365,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
         final SettableFuture<RpcResult<SetBfdParamOnTunnelOutput>> result = SettableFuture.create();
         FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
-            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
+            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
+            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
         });
 
         future.addCallback(new FutureCallback<Void>() {
@@ -566,7 +566,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         LOG.info("create terminatingServiceAction on DpnId = {} for service id {} and instructions {}",
                 input.getDpnId() , input.getServiceId(), input.getInstruction());
         final SettableFuture<RpcResult<CreateTerminatingServiceActionsOutput>> result = SettableFuture.create();
-        int serviceId = input.getServiceId() ;
+        int serviceId = input.getServiceId().toJava() ;
         final List<MatchInfo> mkMatches = getTunnelMatchesForServiceId(serviceId);
 
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
@@ -575,7 +575,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(serviceId)),mkMatches, input.getInstruction());
 
         ListenableFuture<Void> installFlowResult = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-            tx -> mdsalManager.addFlow(tx, input.getDpnId(), terminatingServiceTableFlow));
+            tx -> mdsalManager.addFlow(tx, input.getDpnId().toJava(), terminatingServiceTableFlow));
         Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
 
             @Override
@@ -604,8 +604,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         final SettableFuture<RpcResult<RemoveTerminatingServiceActionsOutput>> result = SettableFuture.create();
 
         ListenableFuture<Void> removeFlowResult = txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-            tx -> mdsalManager.removeFlow(tx, input.getDpnId(),
-                        getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId()),
+            tx -> mdsalManager.removeFlow(tx, input.getDpnId().toJava(),
+                        getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId().toJava()),
                         NwConstants.INTERNAL_TUNNEL_TABLE));
         Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
 
@@ -646,7 +646,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<GetInternalOrExternalInterfaceNameOutput>> getInternalOrExternalInterfaceName(
             GetInternalOrExternalInterfaceNameInput input) {
         RpcResultBuilder<GetInternalOrExternalInterfaceNameOutput> resultBld = failed();
-        BigInteger srcDpn = input.getSourceDpid() ;
+        BigInteger srcDpn = input.getSourceDpid().toJava() ;
         IpAddress dstIp = input.getDestinationIp() ;
         InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class,
@@ -671,7 +671,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     Optional<InternalTunnel> optTunnel = Optional.absent();
                     if (interfaceManager.isItmDirectTunnelsEnabled()) {
                         DpnTepInterfaceInfo interfaceInfo =
-                                dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID());
+                                dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID().toJava());
                         if (interfaceInfo != null) {
                             resultBld = RpcResultBuilder.success();
                             resultBld.withResult(new GetInternalOrExternalInterfaceNameOutputBuilder()
@@ -681,12 +681,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                     }
 
                     if (ItmUtils.isTunnelAggregationUsed(input.getTunnelType())) {
-                        optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
+                        optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID().toJava(),
                                 TunnelTypeLogicalGroup.class, dataBroker);
                         LOG.debug("MULTIPLE_VxLAN_TUNNELS: getInternalOrExternalInterfaceName {}", optTunnel);
                     }
                     if (!optTunnel.isPresent()) {
-                        optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID(),
+                        optTunnel = ItmUtils.getInternalTunnelFromDS(srcDpn, teps.getDPNID().toJava(),
                                 input.getTunnelType(), dataBroker);
                     }
                     if (optTunnel.isPresent()) {
@@ -1048,7 +1048,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     @Override
     public ListenableFuture<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
-        BigInteger srcDpn = input.getSourceDpid() ;
+        BigInteger srcDpn = input.getSourceDpid().toJava() ;
         RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = failed();
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
@@ -1102,11 +1102,11 @@ public class ItmManagerRpcService implements ItmRpcService {
         for (TransportZone transportZone : transportZones.getTransportZone()) {
             for (Vteps vtep : transportZone.getVteps()) {
                 if (dpnIds.contains(vtep.getDpnId())) {
-                    result.putIfAbsent(vtep.getDpnId(),
+                    result.putIfAbsent(vtep.getDpnId().toJava(),
                             new ComputesBuilder()
                                     .setZoneName(transportZone.getZoneName())
                                     .setDpnId(vtep.getDpnId())
-                                    .setNodeId(getNodeId(vtep.getDpnId()))
+                                    .setNodeId(getNodeId(vtep.getDpnId().toJava()))
                                     .setTepIp(Collections.singletonList(vtep.getIpAddress())));
                 }
             }

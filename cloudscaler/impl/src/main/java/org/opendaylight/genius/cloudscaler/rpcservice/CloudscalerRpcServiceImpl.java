@@ -175,7 +175,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                     LOG.warn("Cloudscaler Failed to find the compute {} for scale in end ", computeName);
                     return Futures.immediateFuture(DONE_RPC_RESPONSE);
                 }
-                Long tepDeletedTimeStamp = tepDeleteTimeStamp.get(computeNode.getDpnid());
+                Long tepDeletedTimeStamp = tepDeleteTimeStamp.get(computeNode.getDpnid().toJava());
                 Long currentTime = System.currentTimeMillis();
                 if ((currentTime - tepDeletedTimeStamp) > DELETE_DELAY * 1000L) {
                     scaleinComputesEnd2(input);
@@ -357,7 +357,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
 
         @Override
         protected void remove(InstanceIdentifier<Vteps> instanceIdentifier, Vteps tep) {
-            tepDeleteTimeStamp.put(tep.getDpnId(), System.currentTimeMillis());
+            tepDeleteTimeStamp.put(tep.getDpnId().toJava(), System.currentTimeMillis());
         }
 
         @Override

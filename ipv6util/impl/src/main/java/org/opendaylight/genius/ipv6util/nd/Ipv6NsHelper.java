@@ -110,11 +110,11 @@ public class Ipv6NsHelper {
     }
 
     private byte[] fillNeighborSolicitationPacket(NeighborSolicitationPacket pdu) {
-        ByteBuffer buf = ByteBuffer.allocate(Ipv6Constants.ICMPV6_OFFSET + pdu.getIpv6Length());
+        ByteBuffer buf = ByteBuffer.allocate(Ipv6Constants.ICMPV6_OFFSET + pdu.getIpv6Length().toJava());
 
         buf.put(Ipv6Util.convertEthernetHeaderToByte(pdu), 0, 14);
         buf.put(Ipv6Util.convertIpv6HeaderToByte(pdu), 0, 40);
-        buf.put(icmp6NsPayloadtoByte(pdu), 0, pdu.getIpv6Length());
+        buf.put(icmp6NsPayloadtoByte(pdu), 0, pdu.getIpv6Length().toJava());
         int checksum = Ipv6Util.calculateIcmpv6Checksum(buf.array(), pdu);
         buf.putShort(Ipv6Constants.ICMPV6_OFFSET + 2, (short) checksum);
         return buf.array();

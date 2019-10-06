@@ -159,7 +159,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     private static void writeFlowInternal(BigInteger dpId, Flow flow,
             TypedWriteTransaction<Datastore.Configuration> tx) {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
-        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId(), flowKey);
+        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId().toJava(), flowKey);
         tx.put(flowInstanceId, flow, true);
     }
 
@@ -216,7 +216,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> {
                 FlowKey flowKey = new FlowKey(flowEntity.getId());
-                short tableId = flowEntity.getTableId();
+                short tableId = flowEntity.getTableId().toJava();
                 deleteFlow(dpnId, tableId, flowKey, tx);
             });
     }
@@ -315,7 +315,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
 
         private void executeNotifyTaskIfRequired(BigInteger dpId, Group group) {
-            GroupInfoKey groupKey = new GroupInfoKey(dpId, group.getGroupId().getValue());
+            GroupInfoKey groupKey = new GroupInfoKey(dpId, group.getGroupId().getValue().toJava());
             Runnable notifyTask = groupMap.remove(groupKey);
             if (notifyTask == null) {
                 return;
@@ -360,7 +360,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
 
         private void notifyTaskIfRequired(BigInteger dpId, Flow flow) {
-            FlowInfoKey flowKey = new FlowInfoKey(dpId, flow.getTableId(), flow.getMatch(), flow.getId().getValue());
+            FlowInfoKey flowKey = new FlowInfoKey(dpId, flow.getTableId().toJava(), flow.getMatch(), flow.getId().getValue());
             Runnable notifyTask = flowMap.remove(flowKey);
             if (notifyTask == null) {
                 return;
@@ -501,7 +501,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @Override
     public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow)
             throws ExecutionException, InterruptedException {
-        removeFlow(tx, dpId, flow.key(), flow.getTableId());
+        removeFlow(tx, dpId, flow.key(), flow.getTableId().toJava());
     }
 
     @Override
@@ -533,7 +533,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @Override
     public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group)
             throws ExecutionException, InterruptedException {
-        removeGroup(tx, dpId, group.getGroupId().getValue());
+        removeGroup(tx, dpId, group.getGroupId().getValue().toJava());
     }
 
     @Override
@@ -585,7 +585,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
     @Override
     public void addFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
-        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId(), flow.key());
+        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId().toJava(), flow.key());
         tx.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
     }
 
@@ -597,7 +597,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @Override
     public void addGroup(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
         Node nodeDpn = buildDpnNode(dpId);
-        long groupId = group.getGroupId().getValue();
+        long groupId = group.getGroupId().getValue().toJava();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
         tx.put(groupInstanceId, group, CREATE_MISSING_PARENTS);
     }
@@ -608,7 +608,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         Node nodeDpn = buildDpnNode(dpId);
         if (groupExists(tx, nodeDpn, groupId)) {
             InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
-                bucket.getBucketId().getValue(), nodeDpn);
+                bucket.getBucketId().getValue().toJava(), nodeDpn);
             tx.put(bucketInstanceId, bucket);
         }
     }

@@ -259,7 +259,7 @@ public final class InterfaceManagerTestUtil {
             interfaceInfo = InterfaceManagerTestUtil.buildInterface(ifaceName, ifaceName, true, ifType,
                     parentRefs.getParentInterface(), IfL2vlan.L2vlanMode.Trunk);
         } else {
-            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier(),ifaceName, ifaceName,
+            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier().toJava(),ifaceName, ifaceName,
                     true, TunnelTypeVxlan.class, "1.1.1.1", "2.2.2.2");
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);

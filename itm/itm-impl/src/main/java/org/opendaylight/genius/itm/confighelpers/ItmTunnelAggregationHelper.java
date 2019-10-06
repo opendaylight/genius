@@ -191,7 +191,7 @@ public class ItmTunnelAggregationHelper {
         if (listActionInfo.isEmpty()) {
             LOG.warn("MULTIPLE_VxLAN_TUNNELS: could not build Egress bucket for {}", interfaceName);
         }
-        Integer portWeight = ifTunnel.getWeight() != null ? ifTunnel.getWeight() : DEFAULT_WEIGHT;
+        Integer portWeight = ifTunnel.getWeight() != null ? ifTunnel.getWeight().toJava() : DEFAULT_WEIGHT;
         return MDSALUtil.buildBucket(MDSALUtil.buildActions(listActionInfo), portWeight, bucketId,
                                      portNumber, MDSALUtil.WATCH_GROUP);
     }
@@ -208,7 +208,7 @@ public class ItmTunnelAggregationHelper {
         InterfaceInfo ifLogicTunnel = interfaceManager.getInterfaceInfoFromOperationalDataStore(logicTunnelName);
         long groupId = ifLogicTunnel != null
                 ? interfaceManager.getLogicalTunnelSelectGroupId(ifLogicTunnel.getInterfaceTag()) : INVALID_ID;
-        BigInteger srcDpnId = logicInternalTunnel.getSourceDPN();
+        BigInteger srcDpnId = logicInternalTunnel.getSourceDPN().toJava();
         List<Bucket> listBuckets = new ArrayList<>();
         List<InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null || interfaceChildEntries.isEmpty()) {

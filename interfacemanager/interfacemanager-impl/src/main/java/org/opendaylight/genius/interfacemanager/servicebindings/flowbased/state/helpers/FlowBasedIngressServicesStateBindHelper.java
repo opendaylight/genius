@@ -72,8 +72,8 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
         for (BoundServices boundService : allServices) {
             if (!boundService.equals(highestPriorityBoundService)) {
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, boundService, ifState.getName(),
-                        tx, ifState.getIfIndex(), boundService.getServicePriority(),
-                        (short) (boundService.getServicePriority() + 1));
+                        tx, ifState.getIfIndex(), boundService.getServicePriority().toJava(),
+                        (short) (boundService.getServicePriority().toJava() + 1));
             }
         }
     }
@@ -85,21 +85,21 @@ public class FlowBasedIngressServicesStateBindHelper extends AbstractFlowBasedSe
         BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         allServices.sort(Comparator.comparing(BoundServices::getServicePriority));
         BoundServices highestPriority = allServices.remove(0);
-        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority()
-                : highestPriority.getServicePriority() + 1);
+        short nextServiceIndex = (short) (allServices.size() > 0 ? allServices.get(0).getServicePriority().toJava()
+                : highestPriority.getServicePriority().toJava() + 1);
         FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, highestPriority, ifState.getName(), tx,
                 ifState.getIfIndex(), NwConstants.DEFAULT_SERVICE_INDEX, nextServiceIndex);
         BoundServices prev = null;
         for (BoundServices boundService : allServices) {
             if (prev != null) {
                 FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, prev, ifState.getName(), tx,
-                        ifState.getIfIndex(), prev.getServicePriority(), boundService.getServicePriority());
+                        ifState.getIfIndex(), prev.getServicePriority().toJava(), boundService.getServicePriority().toJava());
             }
             prev = boundService;
         }
         if (prev != null) {
             FlowBasedServicesUtils.installLPortDispatcherFlow(dpId, prev, ifState.getName(), tx,
-                    ifState.getIfIndex(), prev.getServicePriority(), (short) (prev.getServicePriority() + 1));
+                    ifState.getIfIndex(), prev.getServicePriority().toJava(), (short) (prev.getServicePriority().toJava() + 1));
         }
     }
 

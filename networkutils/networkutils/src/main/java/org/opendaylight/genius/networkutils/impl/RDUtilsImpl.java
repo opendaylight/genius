@@ -92,7 +92,7 @@ public class RDUtilsImpl implements RDUtils {
         Future<RpcResult<AllocateIdOutput>> result = idManagerService.allocateId(getIdInput);
         RpcResult<AllocateIdOutput> rpcResult = result.get();
         if (rpcResult.isSuccessful()) {
-            String rd = convertIdValuetoRD(rpcResult.getResult().getIdValue());
+            String rd = convertIdValuetoRD(rpcResult.getResult().getIdValue().toJava());
             return rd;
         }
         return null;
@@ -116,7 +116,7 @@ public class RDUtilsImpl implements RDUtils {
 
     private void validateAndCreateRDPool() throws ReadFailedException {
         long lowLimit = 0L;
-        long highLimit = networkConfig.getOpendaylightRdCount();
+        long highLimit = networkConfig.getOpendaylightRdCount().toJava();
         if (highLimit == 0L) {
             highLimit = NwConstants.RD_DEFAULT_COUNT;
         }
@@ -125,8 +125,8 @@ public class RDUtilsImpl implements RDUtils {
                 buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
         if (existingIdPool.isPresent()) {
             IdPool odlRDPool = existingIdPool.get();
-            long currentStartLimit = odlRDPool.getAvailableIdsHolder().getStart();
-            long currentEndLimit = odlRDPool.getAvailableIdsHolder().getEnd();
+            long currentStartLimit = odlRDPool.getAvailableIdsHolder().getStart().toJava();
+            long currentEndLimit = odlRDPool.getAvailableIdsHolder().getEnd().toJava();
 
             if (lowLimit == currentStartLimit && highLimit == currentEndLimit) {
                 LOG.debug("validateAndCreateRDPool : OpenDaylight RD pool already exists "

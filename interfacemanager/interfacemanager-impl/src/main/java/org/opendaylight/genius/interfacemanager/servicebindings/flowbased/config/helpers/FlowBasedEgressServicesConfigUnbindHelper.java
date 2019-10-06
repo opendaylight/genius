@@ -51,7 +51,7 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             Interface iface =
                     interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServicesState.getInterfaceName());
-            BigInteger dpId = boundServicesState.getDpid();
+            BigInteger dpId = boundServicesState.getDpid().toJava();
             if (boundServices.isEmpty()) {
                 // Remove default entry from Lport Dispatcher Table.
                 FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, boundServicesState.getInterfaceName(),
@@ -73,10 +73,10 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
                     LOG.trace("Deleting egress dispatcher table entry for lower service {}, match service index {}",
                             low, low.getServicePriority());
                     FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, boundServicesState.getInterfaceName(),
-                            tx, low.getServicePriority());
+                            tx, low.getServicePriority().toJava());
                     BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(boundServices, low)[0];
-                    short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
-                            : low.getServicePriority() + 1);
+                    short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority().toJava()
+                            : low.getServicePriority().toJava()+ 1);
                     LOG.trace("Installing new egress dispatcher table entry for lower service {}, match service index "
                                     + "{}, update service index {}",
                             low, NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex);
@@ -86,11 +86,11 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
                 }
             } else {
                 LOG.trace("Deleting egress dispatcher table entry for service {}, match service index {}",
-                        boundServiceOld, boundServiceOld.getServicePriority());
+                        boundServiceOld, boundServiceOld.getServicePriority().toJava());
                 FlowBasedServicesUtils.removeEgressDispatcherFlows(dpId, boundServicesState.getInterfaceName(),
-                        tx, boundServiceOld.getServicePriority());
-                short lowerServiceIndex = (short) (low != null ? low.getServicePriority()
-                        : boundServiceOld.getServicePriority() + 1);
+                        tx, boundServiceOld.getServicePriority().toJava());
+                short lowerServiceIndex = (short) (low != null ? low.getServicePriority().toJava()
+                        : boundServiceOld.getServicePriority().toJava()+ 1);
                 BoundServices highest = FlowBasedServicesUtils.getHighestPriorityService(boundServices);
                 if (high.equals(highest)) {
                     LOG.trace("Update the existing higher service {}, match service index {}, update service index {}",
@@ -100,10 +100,10 @@ public class FlowBasedEgressServicesConfigUnbindHelper extends AbstractFlowBased
                             NwConstants.DEFAULT_SERVICE_INDEX, lowerServiceIndex, iface);
                 } else {
                     LOG.trace("Update the existing higher service {}, match service index {}, update service index {}",
-                            high, high.getServicePriority(), lowerServiceIndex);
+                            high, high.getServicePriority().toJava(), lowerServiceIndex);
                     FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high,
                             boundServicesState.getInterfaceName(), tx, boundServicesState.getIfIndex(),
-                            high.getServicePriority(), lowerServiceIndex, iface);
+                            high.getServicePriority().toJava(), lowerServiceIndex, iface);
                 }
             }
         }));

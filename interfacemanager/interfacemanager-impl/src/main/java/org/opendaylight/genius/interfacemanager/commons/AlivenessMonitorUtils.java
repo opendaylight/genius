@@ -63,6 +63,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeLldp;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint32;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,14 +95,14 @@ public final class AlivenessMonitorUtils {
                                     .build())
                             .setMode(MonitoringMode.OneOne)
                             .setProfileId(allocateProfile(FAILURE_THRESHOLD,
-                                    ifTunnel.getMonitorInterval(), MONITORING_WINDOW, MonitorProtocolType.Lldp))
+                                    ifTunnel.getMonitorInterval().toJava(), MONITORING_WINDOW, MonitorProtocolType.Lldp))
                             .build())
                     .build();
             try {
                 Future<RpcResult<MonitorStartOutput>> result = alivenessMonitorService.monitorStart(lldpMonitorInput);
                 RpcResult<MonitorStartOutput> rpcResult = result.get();
                 if (rpcResult.isSuccessful()) {
-                    long monitorId = rpcResult.getResult().getMonitorId();
+                    long monitorId = rpcResult.getResult().getMonitorId().toJava();
                     ListenableFutures.addErrorLogging(
                         txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                             createOrUpdateInterfaceMonitorIdMap(tx, trunkInterfaceName, monitorId);
@@ -122,12 +124,12 @@ public final class AlivenessMonitorUtils {
         }
         LOG.debug("stop LLDP monitoring for {}", trunkInterface);
         ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
-            List<Long> monitorIds = getMonitorIdForInterface(tx, trunkInterface);
+            List<Uint32> monitorIds = getMonitorIdForInterface(tx, trunkInterface);
             if (monitorIds == null) {
                 LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
                 return;
             }
-            for (Long monitorId : monitorIds) {
+            for (Uint32 monitorId : monitorIds) {
                 String interfaceName = getInterfaceFromMonitorId(tx, monitorId);
                 if (interfaceName != null) {
                     MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
@@ -143,14 +145,14 @@ public final class AlivenessMonitorUtils {
         }), LOG, "Error stopping LLDP monitoring for {}", trunkInterface);
     }
 
-    public static String getInterfaceFromMonitorId(TypedReadTransaction<Operational> tx, Long monitorId)
+    public static String getInterfaceFromMonitorId(TypedReadTransaction<Operational> tx, Uint32 monitorId)
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
         return tx.read(id).get().toJavaUtil().map(MonitorIdInterface::getInterfaceName).orElse(null);
     }
 
-    private void removeMonitorIdInterfaceMap(TypedReadWriteTransaction<Operational> tx, long monitorId)
+    private void removeMonitorIdInterfaceMap(TypedReadWriteTransaction<Operational> tx, Uint32 monitorId)
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
@@ -160,13 +162,13 @@ public final class AlivenessMonitorUtils {
     }
 
     private void removeMonitorIdFromInterfaceMonitorIdMap(TypedReadWriteTransaction<Operational> tx, String infName,
-        long monitorId) throws ExecutionException, InterruptedException {
+        Uint32 monitorId) throws ExecutionException, InterruptedException {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
         Optional<InterfaceMonitorId> interfaceMonitorIdMap = tx.read(id).get();
         if (interfaceMonitorIdMap.isPresent()) {
             InterfaceMonitorId interfaceMonitorIdInstance = interfaceMonitorIdMap.get();
-            List<Long> existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
+            List<Uint32> existingMonitorIds = interfaceMonitorIdInstance.getMonitorId();
             if (existingMonitorIds != null && existingMonitorIds.contains(monitorId)) {
                 existingMonitorIds.remove(monitorId);
                 InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
@@ -203,7 +205,7 @@ public final class AlivenessMonitorUtils {
             IfTunnel ifTunnelOld = interfaceOld.augmentation(IfTunnel.class);
             if (!Objects.equals(ifTunnelNew.getMonitorInterval(), ifTunnelOld.getMonitorInterval())) {
                 LOG.debug("deleting older monitor profile for interface {}", interfaceName);
-                long profileId = allocateProfile(FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval(), MONITORING_WINDOW,
+                Uint32 profileId = allocateProfile(FAILURE_THRESHOLD, ifTunnelOld.getMonitorInterval().toJava(), MONITORING_WINDOW,
                         MonitorProtocolType.Lldp);
                 MonitorProfileDeleteInput profileDeleteInput = new MonitorProfileDeleteInputBuilder()
                         .setProfileId(profileId).build();
@@ -218,7 +220,7 @@ public final class AlivenessMonitorUtils {
     private static void createOrUpdateInterfaceMonitorIdMap(TypedReadWriteTransaction<Operational> tx, String infName,
         long monitorId) throws ExecutionException, InterruptedException {
         InterfaceMonitorId interfaceMonitorIdInstance;
-        List<Long> existingMonitorIds;
+        List<Uint32> existingMonitorIds;
         InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
@@ -229,15 +231,15 @@ public final class AlivenessMonitorUtils {
             if (existingMonitorIds == null) {
                 existingMonitorIds = new ArrayList<>();
             }
-            if (!existingMonitorIds.contains(monitorId)) {
-                existingMonitorIds.add(monitorId);
+            if (!existingMonitorIds.contains(Uint32.valueOf(monitorId))) {
+                existingMonitorIds.add(Uint32.valueOf(monitorId));
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.withKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
                 tx.merge(id, interfaceMonitorIdInstance, CREATE_MISSING_PARENTS);
             }
         } else {
             existingMonitorIds = new ArrayList<>();
-            existingMonitorIds.add(monitorId);
+            existingMonitorIds.add(Uint32.valueOf(monitorId));
             interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setMonitorId(existingMonitorIds)
                     .withKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
             tx.merge(id, interfaceMonitorIdInstance, CREATE_MISSING_PARENTS);
@@ -267,14 +269,14 @@ public final class AlivenessMonitorUtils {
         }
     }
 
-    private static List<Long> getMonitorIdForInterface(TypedReadTransaction<Operational> tx, String infName)
+    private static List<Uint32> getMonitorIdForInterface(TypedReadTransaction<Operational> tx, String infName)
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
         return tx.read(id).get().toJavaUtil().map(InterfaceMonitorId::getMonitorId).orElse(null);
     }
 
-    public long createMonitorProfile(MonitorProfileCreateInput monitorProfileCreateInput) {
+    public Uint32 createMonitorProfile(MonitorProfileCreateInput monitorProfileCreateInput) {
         try {
             Future<RpcResult<MonitorProfileCreateOutput>> result = alivenessMonitorService
                     .monitorProfileCreate(monitorProfileCreateInput);
@@ -286,8 +288,8 @@ public final class AlivenessMonitorUtils {
                         rpcResult.getErrors());
                 Profile createProfile = monitorProfileCreateInput.getProfile();
                 Future<RpcResult<MonitorProfileGetOutput>> existingProfile = alivenessMonitorService.monitorProfileGet(
-                        buildMonitorGetProfile(createProfile.getMonitorInterval(), createProfile.getMonitorWindow(),
-                                createProfile.getFailureThreshold(), createProfile.getProtocolType()));
+                        buildMonitorGetProfile(createProfile.getMonitorInterval().toJava(), createProfile.getMonitorWindow().toJava(),
+                                createProfile.getFailureThreshold().toJava(), createProfile.getProtocolType()));
                 RpcResult<MonitorProfileGetOutput> rpcGetResult = existingProfile.get();
                 if (rpcGetResult.isSuccessful()) {
                     return rpcGetResult.getResult().getProfileId();
@@ -298,7 +300,7 @@ public final class AlivenessMonitorUtils {
         } catch (InterruptedException | ExecutionException e) {
             LOG.warn("Exception when allocating profile Id", e);
         }
-        return 0;
+        return Uint32.valueOf(0);
     }
 
     private static MonitorProfileGetInput buildMonitorGetProfile(long monitorInterval, long monitorWindow,
@@ -317,7 +319,7 @@ public final class AlivenessMonitorUtils {
         return buildGetProfile.build();
     }
 
-    public long allocateProfile(long failureThreshold, long monitoringInterval, long monitoringWindow,
+    public Uint32 allocateProfile(long failureThreshold, long monitoringInterval, long monitoringWindow,
             MonitorProtocolType protoType) {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder().setProfile(
                 new ProfileBuilder().setFailureThreshold(failureThreshold).setMonitorInterval(monitoringInterval)

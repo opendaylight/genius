@@ -25,6 +25,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +39,13 @@ public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> 
     private final String parentPoolName;
     private final String localPoolName;
     private final String idKey;
-    private final List<Long> newIdValues = new ArrayList<>();
+    private final List<Uint32> newIdValues = new ArrayList<>();
     private final ManagedNewTransactionRunner txRunner;
     private final IdUtils idUtils;
     private final LockManagerService lockManager;
 
     public UpdateIdEntryJob(String parentPoolName, String localPoolName, String idKey,
-            List<Long> newIdValues, ManagedNewTransactionRunner txRunner, IdUtils idUtils,
+            List<Uint32> newIdValues, ManagedNewTransactionRunner txRunner, IdUtils idUtils,
             LockManagerService lockManager) {
         this.parentPoolName = parentPoolName;
         this.localPoolName = localPoolName;
