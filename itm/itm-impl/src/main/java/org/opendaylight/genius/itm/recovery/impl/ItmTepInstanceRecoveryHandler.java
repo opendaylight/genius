@@ -221,7 +221,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         }
 
         String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
         for (Vteps vtep : transportZone.getVteps()) {
             if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
@@ -231,14 +231,14 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                         ipAddress);
 
                 //OfTunnels is false byDefault
-                TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(vtep.getDpnId(),
+                TunnelEndPoints tunnelEndPoints = ItmUtils.createTunnelEndPoints(vtep.getDpnId().toJava(),
                         IpAddressBuilder.getDefaultInstance(ipAddress), portName, false,
                         vlanId, zones, transportZone.getTunnelType(),
                         itmConfig.getDefaultTunnelTos());
 
                 List<TunnelEndPoints> teps = new ArrayList<>();
                 teps.add(tunnelEndPoints);
-                return ItmUtils.createDPNTepInfo(vtep.getDpnId(), teps);
+                return ItmUtils.createDPNTepInfo(vtep.getDpnId().toJava(), teps);
             }
         }
         return null;

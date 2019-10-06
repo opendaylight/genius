@@ -86,6 +86,7 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmExternalTunnelAddTest {
@@ -132,7 +133,7 @@ public class ItmExternalTunnelAddTest {
     Interface iface = null;
     List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
-    List<BigInteger> bigIntegerList = new ArrayList<>();
+    List<Uint64> bigIntegerList = new ArrayList<>();
     List<HwVtep> cfgdHwVtepsList = new ArrayList<>();
     List<DeviceVteps> deviceVtepsList = new ArrayList<>();
     List<Vteps> vtepsList = new ArrayList<>();
@@ -223,7 +224,7 @@ public class ItmExternalTunnelAddTest {
         hwVtep1.setIpPrefix(ipPrefixTest);
         cfgdDpnListVxlan.add(dpntePsInfoVxlan);
         cfgdHwVtepsList.add(hwVtep1);
-        bigIntegerList.add(dpId1);
+        bigIntegerList.add(Uint64.valueOf(dpId1));
         deviceVtepsList.add(deviceVteps1);
         deviceVtepsList.add(deviceVteps2);
         vtepsTest = new VtepsBuilder().setDpnId(dpId1).setIpAddress(ipAddress3).withKey(new

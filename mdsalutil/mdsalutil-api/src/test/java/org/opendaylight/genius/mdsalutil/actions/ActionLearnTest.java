@@ -27,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionLearnNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.NxLearn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.nx.learn.FlowMods;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test class for {@link ActionRegLoad}.
@@ -49,7 +50,7 @@ public class ActionLearnTest {
         assertEquals(IDLE_TIMEOUT, nxLearn.getIdleTimeout().intValue());
         assertEquals(HARD_TIMEOUT, nxLearn.getHardTimeout().intValue());
         assertEquals(PRIORITY, nxLearn.getPriority().intValue());
-        assertEquals(COOKIE, nxLearn.getCookie());
+        assertEquals(Uint64.valueOf(COOKIE), nxLearn.getCookie());
         assertEquals(FLAGS, nxLearn.getFlags().intValue());
         assertEquals(TABLE_ID, nxLearn.getTableId().shortValue());
         assertEquals(FIN_IDLE_TIMEOUT, nxLearn.getFinIdleTimeout().intValue());

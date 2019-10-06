@@ -26,7 +26,7 @@ public class OvsBridgeEntryCache extends DataObjectCache<BigInteger, OvsBridgeEn
     public OvsBridgeEntryCache(DataBroker dataBroker, CacheProvider cacheProvider) {
         super(OvsBridgeEntry.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
             InstanceIdentifier.builder(BridgeTunnelInfo.class).child(OvsBridgeEntry.class).build(), cacheProvider,
-            (iid, ovsBridgeEntry) -> ovsBridgeEntry.key().getDpid(),
+            (iid, ovsBridgeEntry) -> ovsBridgeEntry.key().getDpid().toJava(),
             dpId -> InstanceIdentifier.builder(BridgeTunnelInfo.class)
                     .child(OvsBridgeEntry.class, new OvsBridgeEntryKey(dpId)).build());
     }

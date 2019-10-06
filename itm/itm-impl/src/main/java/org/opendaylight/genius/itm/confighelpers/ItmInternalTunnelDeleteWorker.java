@@ -130,7 +130,8 @@ public class ItmInternalTunnelDeleteWorker {
             for (DPNTEPsInfo srcDpn : dpnTepsList) {
                 LOG.trace("Processing srcDpn {}", srcDpn);
 
-                List<TunnelEndPoints> meshedEndPtCache = ItmUtils.getTEPsForDpn(srcDpn.getDPNID(), meshedDpnList);
+                List<TunnelEndPoints> meshedEndPtCache = ItmUtils.getTEPsForDpn(srcDpn.getDPNID().toJava(),
+                                                                                    meshedDpnList);
                 if (meshedEndPtCache == null) {
                     LOG.debug("No Tunnel End Point configured for this DPN {}", srcDpn.getDPNID());
                     continue;
@@ -150,27 +151,29 @@ public class ItmInternalTunnelDeleteWorker {
                             for (TunnelEndPoints dstTep : dstDpn.nonnullTunnelEndPoints()) {
                                 if (!ItmUtils.getIntersection(dstTep.nonnullTzMembership(), srcTZones).isEmpty()) {
                                     List<TzMembership> originalTzMembership =
-                                            ItmUtils.getOriginalTzMembership(srcTep, srcDpn.getDPNID(), meshedDpnList);
+                                            ItmUtils.getOriginalTzMembership(srcTep, srcDpn.getDPNID().toJava(),
+                                                        meshedDpnList);
                                     if (ItmUtils.getIntersection(dstTep.getTzMembership(),
                                             originalTzMembership).size() == 1) {
                                         if (interfaceManager.isItmDirectTunnelsEnabled()) {
-                                            if (checkIfTepInterfaceExists(dstDpn.getDPNID(), srcDpn.getDPNID())) {
+                                            if (checkIfTepInterfaceExists(dstDpn.getDPNID().toJava(),
+                                                    srcDpn.getDPNID().toJava())) {
                                                 // remove all trunk interfaces
                                                 LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                         + "Destination TEP {} " ,srcTep , dstTep);
-                                                removeTunnelInterfaceFromOvsdb(tx, srcTep, dstTep, srcDpn.getDPNID(),
-                                                        dstDpn.getDPNID());
+                                                removeTunnelInterfaceFromOvsdb(tx, srcTep, dstTep,
+                                                        srcDpn.getDPNID().toJava(), dstDpn.getDPNID().toJava());
 
                                             }
 
                                         } else {
-                                            if (checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(),
-                                                    srcTep.getTunnelType(), dataBroker)) {
+                                            if (checkIfTrunkExists(dstDpn.getDPNID().toJava(),
+                                                    srcDpn.getDPNID().toJava(), srcTep.getTunnelType(), dataBroker)) {
                                                 // remove all trunk interfaces
                                                 LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                         + "Destination TEP {} ", srcTep, dstTep);
-                                                removeTrunkInterface(tx, srcTep, dstTep, srcDpn.getDPNID(),
-                                                        dstDpn.getDPNID());
+                                                removeTrunkInterface(tx, srcTep, dstTep, srcDpn.getDPNID().toJava(),
+                                                        dstDpn.getDPNID().toJava());
                                             }
                                         }
                                     }
@@ -230,7 +233,7 @@ public class ItmInternalTunnelDeleteWorker {
                             // remove dpn if no vteps exist on dpn
                             if (monitorProtocol.isAssignableFrom(TunnelMonitoringTypeLldp.class)) {
                                 LOG.debug("Removing Terminating Service Table Flow ");
-                                ItmUtils.removeTerminatingServiceTable(tx, srcDpn.getDPNID(), mdsalManager);
+                                ItmUtils.removeTerminatingServiceTable(tx, srcDpn.getDPNID().toJava(), mdsalManager);
                             }
                             LOG.trace("DPN Removal from DPNTEPSINFO CONFIG DS {}", srcDpn.getDPNID());
                             tx.delete(dpnPath);
@@ -252,7 +255,7 @@ public class ItmInternalTunnelDeleteWorker {
                         LOG.debug("Deleting TEP Interface information from Config datastore with DPNs-Teps "
                                 + "for source Dpn {}", srcDpn.getDPNID());
                         // Clean up the DPN TEPs State DS
-                        dpnTepStateCache.removeTepFromDpnTepInterfaceConfigDS(srcDpn.getDPNID());
+                        dpnTepStateCache.removeTepFromDpnTepInterfaceConfigDS(srcDpn.getDPNID().toJava());
                     }
                 }
             }
@@ -437,7 +440,7 @@ public class ItmInternalTunnelDeleteWorker {
         LOG.info("removing tunnel configuration for {}", interfaceName);
         BigInteger dpId = null;
         if (parentRefs != null) {
-            dpId = parentRefs.getDatapathNodeIdentifier();
+            dpId = parentRefs.getDatapathNodeIdentifier().toJava();
         }
 
         if (dpId == null) {

@@ -64,15 +64,16 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.S
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.SetBfdParamOnTunnelOutput;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class ItmRpcTestImpl implements ItmRpcService {
 
-    private final Map<BigInteger, IpAddress> tepIps = new ConcurrentHashMap<>();
+    private final Map<Uint64, IpAddress> tepIps = new ConcurrentHashMap<>();
     private final Map<BigInteger, Map<String, String>> interfaceNames = new ConcurrentHashMap<>();
     private final Map<BigInteger, Map<String, String>> externalInterfaceNames = new ConcurrentHashMap<>();
 
     public synchronized void addDpn(BigInteger dpnId, String tepIp) {
-        tepIps.put(dpnId, IpAddressBuilder.getDefaultInstance(tepIp));
+        tepIps.put(Uint64.valueOf(dpnId), IpAddressBuilder.getDefaultInstance(tepIp));
     }
 
     public synchronized void addInterface(BigInteger dpnId, String dstTep, String interfaceName) {
@@ -146,7 +147,7 @@ public final class ItmRpcTestImpl implements ItmRpcService {
     @Override
     public synchronized ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
             GetTunnelInterfaceNameInput input) {
-        String interfaceName = interfaceNames.get(input.getSourceDpid())
+        String interfaceName = interfaceNames.get(input.getSourceDpid().toJava())
                 .get(tepIps.get(input.getDestinationDpid()).stringValue());
         GetTunnelInterfaceNameOutput output =
                 new GetTunnelInterfaceNameOutputBuilder().setInterfaceName(interfaceName).build();

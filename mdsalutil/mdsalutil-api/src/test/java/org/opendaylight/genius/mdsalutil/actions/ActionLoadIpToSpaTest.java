@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import com.google.common.net.InetAddresses;
-import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
@@ -21,7 +20,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
 import org.opendaylight.yangtools.yang.common.Empty;
-
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test for {@link ActionLoadIpToSpa}.
@@ -48,7 +47,7 @@ public class ActionLoadIpToSpaTest {
         assertEquals(0, nxRegLoad.getDst().getStart().intValue());
         assertEquals(31, nxRegLoad.getDst().getEnd().intValue());
         assertEquals(
-            BigInteger.valueOf(InetAddresses.coerceToInteger(InetAddresses.forString(IP_ADDRESS)) & 0xffffffffL),
+            Uint64.valueOf(InetAddresses.coerceToInteger(InetAddresses.forString(IP_ADDRESS)) & 0xffffffffL),
             nxRegLoad.getValue());
     }
 
