@@ -19,6 +19,7 @@ import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,20 +49,22 @@ public class TepShowBridges extends OsgiCommandSupport {
 
     @Override
     protected Object doExecute() {
+        final Uint64 id = dpnId == null ? null : Uint64.valueOf(dpnId);
+
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             Collection<OvsBridgeRefEntry> ovsBridgeRefEntries = ovsBridgeRefEntryCache.getAllPresent();
             itmProvider.showBridges(ovsBridgeRefEntries.stream()
-                    .filter(dpnId == null
+                    .filter(id == null
                             ? ovsBridgeRefEntry -> true
-                            : ovsBridgeRefEntry -> ovsBridgeRefEntry.getDpid().equals(dpnId))
+                            : ovsBridgeRefEntry -> id.equals(ovsBridgeRefEntry.getDpid()))
                     .collect(Collectors.toMap(ovsBridgeRefEntry -> ovsBridgeRefEntry.getDpid(),
                         ovsBridgeRefEntry -> ovsBridgeRefEntry.getOvsBridgeReference())));
         } else {
-            Map<BigInteger, BridgeRefEntry> bridgeRefEntryMap = interfaceManager.getBridgeRefEntryMap();
+            Map<Uint64, BridgeRefEntry> bridgeRefEntryMap = interfaceManager.getBridgeRefEntryMap();
             itmProvider.showBridges(bridgeRefEntryMap.keySet().stream()
-                    .filter(dpnId == null
+                    .filter(id == null
                             ? key -> true
-                            : key -> key.equals(dpnId))
+                            : key -> id.equals(key))
                     .collect(Collectors.toMap(key -> key,
                         key -> bridgeRefEntryMap.get(key).getBridgeReference())));
         }

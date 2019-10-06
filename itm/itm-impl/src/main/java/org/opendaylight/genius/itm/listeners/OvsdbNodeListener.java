@@ -8,7 +8,6 @@
 
 package org.opendaylight.genius.itm.listeners;
 
-import java.math.BigInteger;
 import java.time.Duration;
 import java.util.List;
 import javax.inject.Inject;
@@ -43,6 +42,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,13 +222,14 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
              */
             if (isTzChanged) {
                 IpAddress tepIpAddress = IpAddressBuilder.getDefaultInstance(newLocalIp);
-                BigInteger dpnId = MDSALUtil.getDpnId(strNewDpnId);
+                Uint64 dpnId = MDSALUtil.getDpnId(strNewDpnId);
                 String tos = itmConfig.getDefaultTunnelTos();
                 Class<? extends TunnelTypeBase> tunnelType  = TunnelTypeVxlan.class;
                 List<TzMembership> zones = ItmUtils.createTransportZoneMembership(oldTzName);
 
-                String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
+                int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()
+                                                             : ITMConstants.DUMMY_VLANID;
 
                 TunnelEndPoints tunnelEndPoints = ItmUtils.createDummyTunnelEndPoints(dpnId, tepIpAddress, newOfTunnel,
                         tos, zones, tunnelType, portName, vlanId);

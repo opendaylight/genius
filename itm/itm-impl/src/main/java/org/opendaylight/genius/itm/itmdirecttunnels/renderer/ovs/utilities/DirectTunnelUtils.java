@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,6 +117,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,19 +206,19 @@ public final class DirectTunnelUtils {
         return tunnelLocks.acquire(tunnelName);
     }
 
-    public BigInteger getDpnId(DatapathId datapathId) {
+    public Uint64 getDpnId(DatapathId datapathId) {
         if (datapathId != null) {
             String dpIdStr = datapathId.getValue().replace(":", "");
-            return new BigInteger(dpIdStr, 16);
+            return Uint64.valueOf(dpIdStr, 16);
         }
         return null;
     }
 
-    public static BigInteger getDpnFromNodeConnectorId(NodeConnectorId portId) {
+    public static Uint64 getDpnFromNodeConnectorId(NodeConnectorId portId) {
         /*
          * NodeConnectorId is of form 'openflow:dpnid:portnum'
          */
-        return new BigInteger(portId.getValue().split(ITMConstants.OF_URI_SEPARATOR)[1]);
+        return Uint64.valueOf(portId.getValue().split(ITMConstants.OF_URI_SEPARATOR)[1]);
     }
 
     public static long getPortNumberFromNodeConnectorId(NodeConnectorId portId) {
@@ -262,7 +262,7 @@ public final class DirectTunnelUtils {
                 .child(OvsBridgeRefEntry.class, bridgeRefEntryKey).build();
     }
 
-    public static InstanceIdentifier<DpnsTeps> createDpnTepsInstanceIdentifier(BigInteger sourceDpnId) {
+    public static InstanceIdentifier<DpnsTeps> createDpnTepsInstanceIdentifier(Uint64 sourceDpnId) {
         return InstanceIdentifier.builder(DpnTepsState.class).child(DpnsTeps.class,
             new DpnsTepsKey(sourceDpnId)).build();
     }
@@ -360,7 +360,7 @@ public final class DirectTunnelUtils {
         }
     }
 
-    public static void createBridgeTunnelEntryInConfigDS(BigInteger dpId, String childInterface) {
+    public static void createBridgeTunnelEntryInConfigDS(Uint64 dpId, String childInterface) {
         OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
         OvsBridgeTunnelEntryKey bridgeTunnelEntryKey = new OvsBridgeTunnelEntryKey(childInterface);
         InstanceIdentifier<OvsBridgeTunnelEntry> bridgeTunnelEntryIid =
@@ -370,7 +370,7 @@ public final class DirectTunnelUtils {
         ITMBatchingUtils.write(bridgeTunnelEntryIid, entryBuilder.build(), ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpnId, long portNo,
+    public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, Uint64 dpnId, long portNo,
                                      String interfaceName, int ifIndex, Ipv4Address ipAddress) {
         LOG.debug("Adding tunnel ingress flow for {}", interfaceName);
         List<MatchInfoBase> matches = new ArrayList<>();
@@ -380,8 +380,9 @@ public final class DirectTunnelUtils {
         if (itmConfig.isUseOfTunnels()) {
             matches.add(new NxMatchTunnelSourceIp(ipAddress));
         }
-        mkInstructions.add(new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex)
-            .or(BigInteger.ONE), MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
+        mkInstructions.add(new InstructionWriteMetadata(
+            Uint64.fromLongBits(MetaDataUtil.getLportTagMetaData(ifIndex).longValue() | 1L),
+            MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
         short tableId = NwConstants.INTERNAL_TUNNEL_TABLE;
         mkInstructions.add(new InstructionGotoTable(tableId));
 
@@ -394,7 +395,7 @@ public final class DirectTunnelUtils {
         mdsalApiManager.addFlow(tx, flowEntity);
     }
 
-    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpnId,
+    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpnId,
         String interfaceName) throws ExecutionException, InterruptedException {
         LOG.debug("Removing tunnel ingress flow for {}", interfaceName);
         String flowRef =
@@ -403,7 +404,7 @@ public final class DirectTunnelUtils {
         mdsalApiManager.removeFlow(tx, dpnId, flowRef, NwConstants.VLAN_INTERFACE_INGRESS_TABLE);
     }
 
-    public void addTunnelEgressFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpnId, String portNo,
+    public void addTunnelEgressFlow(TypedWriteTransaction<Configuration> tx, Uint64 dpnId, String portNo,
                                     int dstId, String interfaceName, IpAddress dstIp) {
         LOG.debug("add tunnel egress flow for {}", interfaceName);
         List<MatchInfoBase> matches = new ArrayList<>();
@@ -422,7 +423,7 @@ public final class DirectTunnelUtils {
         mdsalApiManager.addFlow(tx, dpnId, egressFlow);
     }
 
-    public void removeTunnelEgressFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpnId,
+    public void removeTunnelEgressFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpnId,
                                        String interfaceName) throws ExecutionException, InterruptedException {
         LOG.debug("remove tunnel egress flow for {}", interfaceName);
         String flowRef =
@@ -430,7 +431,7 @@ public final class DirectTunnelUtils {
         mdsalApiManager.removeFlow(tx, dpnId, flowRef, NwConstants.EGRESS_TUNNEL_TABLE);
     }
 
-    private String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
+    private String getTunnelInterfaceFlowRef(Uint64 dpnId, short tableId, String ifName) {
         return String.valueOf(dpnId) + tableId + ifName;
     }
 
@@ -449,7 +450,7 @@ public final class DirectTunnelUtils {
         int vlanId = 0;
         IfL2vlan ifL2vlan = iface.augmentation(IfL2vlan.class);
         if (ifL2vlan != null && ifL2vlan.getVlanId() != null) {
-            vlanId = ifL2vlan.getVlanId().getValue();
+            vlanId = ifL2vlan.getVlanId().getValue().toJava();
         }
 
         Builder<String, String> options = new ImmutableMap.Builder<>();
@@ -567,7 +568,7 @@ public final class DirectTunnelUtils {
         ITMBatchingUtils.delete(stateTnlId, ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
-    public void updateBfdConfiguration(BigInteger srcDpnId, RemoteDpns remoteDpn,
+    public void updateBfdConfiguration(Uint64 srcDpnId, RemoteDpns remoteDpn,
                                        com.google.common.base.@NonNull Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
         if (ovsBridgeRefEntry.isPresent()) {
             LOG.debug("creating bridge interface on dpn {}", srcDpnId);
@@ -597,7 +598,7 @@ public final class DirectTunnelUtils {
         return entityOwnershipUtils.isEntityOwner(ITMConstants.ITM_CONFIG_ENTITY, ITMConstants.ITM_CONFIG_ENTITY);
     }
 
-    public static String generateOfPortName(BigInteger dpId, String tunnelType) {
+    public static String generateOfPortName(Uint64 dpId, String tunnelType) {
         String trunkInterfaceName = String.format("%s:%s", dpId.toString(), tunnelType);
         String uuidStr = UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
                 .substring(0, 12).replace("-", "");

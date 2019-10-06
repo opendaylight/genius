@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.itm.tests;
 
-import java.math.BigInteger;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -17,12 +16,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface ItmTestConstants {
 
     String EXT_TUNNEL_INTERFACE_NAME = "tunfdeecc7cb4d";
-    BigInteger DP_ID_1 = BigInteger.valueOf(1);
-    BigInteger DP_ID_2 = BigInteger.valueOf(2);
+    Uint64 DP_ID_1 = Uint64.ONE;
+    Uint64 DP_ID_2 = Uint64.valueOf(2);
     int VLAN_ID = 100 ;
     String PORT_NAME_1 = "phy0";
     String PARENT_INTERFACE_NAME = "1:phy0:100";
@@ -52,16 +52,16 @@ public interface ItmTestConstants {
 
     String DEF_BR_NAME = "br-int";
     String DEF_BR_DPID = "00:00:00:00:00:00:00:01";
-    BigInteger INT_DEF_BR_DPID = BigInteger.valueOf(1);
+    Uint64 INT_DEF_BR_DPID = Uint64.ONE;
 
     String BR2_NAME = "br2";
     String BR2_DPID = "00:00:00:00:00:00:00:02";
-    BigInteger INT_BR2_DPID = BigInteger.valueOf(2);
+    Uint64 INT_BR2_DPID = Uint64.valueOf(2);
 
     //not hosted tz constants
     String NOT_HOSTED_TZ_TEP_IP = "192.168.10.20";
     String NOT_HOSTED_TZ_TEPDPN_ID = "0";
-    BigInteger NOT_HOSTED_INT_TZ_TEPDPN_ID = BigInteger.valueOf(0);
+    Uint64 NOT_HOSTED_INT_TZ_TEPDPN_ID = Uint64.ZERO;
     String NOT_HOSTED_TZ_NAME = "NotHostedTZ";
     Boolean OF_TUNNEL = false;
     String NOT_HOSTED_DEF_BR_DPID = "00:00:00:00:00:00:00:00";

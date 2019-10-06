@@ -11,15 +11,12 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -46,6 +43,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,7 +186,7 @@ public class InterfaceTopologyStateListener
                 LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
                 return Collections.emptyList();
             }
-            BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+            Uint64 dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
             LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
             // create bridge reference entry in interface meta operational DS
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
@@ -218,7 +216,7 @@ public class InterfaceTopologyStateListener
 
         @Override
         public List<ListenableFuture<Void>> call() {
-            BigInteger dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+            Uint64 dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
 
             if (dpnId == null) {
                 LOG.warn("Got Null DPID for Bridge: {}", bridgeNew);

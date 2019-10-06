@@ -69,8 +69,8 @@ public final class Ipv6Util {
         checksum += getSummation(ip6Hdr.getDestinationIpv6());
         checksum = normalizeChecksum(checksum);
 
-        checksum += ip6Hdr.getIpv6Length();
-        checksum += ip6Hdr.getNextHeader();
+        checksum += ip6Hdr.getIpv6Length().toJava();
+        checksum += ip6Hdr.getNextHeader().toJava();
 
         int icmp6Offset = Ipv6Constants.ICMPV6_OFFSET;
         long value = (packet[icmp6Offset] & 0xff) << 8 | packet[icmp6Offset + 1] & 0xff;
@@ -147,7 +147,8 @@ public final class Ipv6Util {
         Arrays.fill(data, (byte) 0);
 
         ByteBuffer buf = ByteBuffer.wrap(data);
-        long flowLabel = (long) (ip6Pdu.getVersion() & 0x0f) << 28 | ip6Pdu.getFlowLabel() & 0x0fffffff;
+        long flowLabel = (long) (ip6Pdu.getVersion().toJava() & 0x0f) << 28
+                                    | ip6Pdu.getFlowLabel().toJava() & 0x0fffffff;
         buf.putInt((int) flowLabel);
         buf.putShort((short) ip6Pdu.getIpv6Length().intValue());
         buf.put((byte) ip6Pdu.getNextHeader().shortValue());

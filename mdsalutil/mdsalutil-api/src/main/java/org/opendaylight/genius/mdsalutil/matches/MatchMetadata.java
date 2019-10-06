@@ -7,20 +7,20 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Metadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Metadata match.
  */
 public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
+    // FIXME: just use WriteMetadata
+    private final Uint64 metadata;
+    private final Uint64 mask;
 
-    private final BigInteger metadata;
-    private final BigInteger mask;
-
-    public MatchMetadata(BigInteger metadata, BigInteger mask) {
+    public MatchMetadata(Uint64 metadata, Uint64 mask) {
         this.metadata = metadata;
         this.mask = mask;
     }
@@ -35,11 +35,11 @@ public class MatchMetadata extends MatchInfoHelper<Metadata, MetadataBuilder> {
         builder.setMetadata(metadata).setMetadataMask(mask);
     }
 
-    public BigInteger getMetadata() {
+    public Uint64 getMetadata() {
         return metadata;
     }
 
-    public BigInteger getMask() {
+    public Uint64 getMask() {
         return mask;
     }
 
