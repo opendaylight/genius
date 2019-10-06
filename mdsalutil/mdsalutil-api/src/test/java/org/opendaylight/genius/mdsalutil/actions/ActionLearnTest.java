@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.actions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
@@ -27,6 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionLearnNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.NxLearn;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.learn.grouping.nx.learn.FlowMods;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test class for {@link ActionRegLoad}.
@@ -35,7 +35,7 @@ public class ActionLearnTest {
     private static final int IDLE_TIMEOUT = 2;
     private static final int HARD_TIMEOUT = 3;
     private static final int PRIORITY = 4;
-    private static final BigInteger COOKIE = BigInteger.valueOf(5);
+    private static final Uint64 COOKIE = Uint64.valueOf(5);
     private static final int FLAGS = 6;
     private static final short TABLE_ID = (short) 7;
     private static final int FIN_IDLE_TIMEOUT = 8;

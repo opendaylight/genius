@@ -10,11 +10,8 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
-import com.google.common.base.Function;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import com.google.common.util.concurrent.MoreExecutors;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +21,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -61,6 +57,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,12 +251,12 @@ public class InterfaceInventoryStateListener
                 nodeConnectorIdOld = new NodeConnectorId(ofportIds.get(0));
             }
             if (nodeConnectorIdOld != null && !nodeConnectorId.equals(nodeConnectorIdOld)) {
-                BigInteger dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
-                BigInteger dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                Uint64 dpnIdOld = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorIdOld);
+                Uint64 dpnIdNew = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 if (!Objects.equals(dpnIdOld, dpnIdNew)) {
-                    if ((fcNodeConnectorNew.getReason() != PortReason.Add)
-                            && (interfaceState.getOperStatus()
-                            != Interface.OperStatus.Unknown)) {
+                    if (fcNodeConnectorNew.getReason() != PortReason.Add
+                            && interfaceState.getOperStatus()
+                            != Interface.OperStatus.Unknown) {
                         LOG.error("Dropping Port update event for {}, as DPN id is changed from {} to {}",
                             fcNodeConnectorNew.getName(), dpnIdOld, dpnIdNew);
                         return;
@@ -418,7 +415,7 @@ public class InterfaceInventoryStateListener
             NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null
                     && !nodeConnectorIdNew.equals(nodeConnectorIdOld) ? nodeConnectorIdOld : nodeConnectorIdNew;
             // delete the port entry from interface operational DS
-            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
 
             futures.add(txRunner.applyWithNewTransactionChainAndClose(txChain ->
                 txChain.applyWithNewReadWriteTransactionAndSubmit(OPERATIONAL, operTx -> {
@@ -463,22 +460,18 @@ public class InterfaceInventoryStateListener
                         InterfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
                     }
                     return Optional.empty();
-                }).transform(new Function<Optional<?>, Void>() {
-                    @Nullable
-                    @Override
-                    public Void apply(@Nullable Optional<?> optionalJob) {
-                        if (optionalJob != null && optionalJob.isPresent()) {
-                            txChain.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-                                (InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>, ?
-                                    extends Exception>) optionalJob.get());
-                        }
-                        return null;
+                }).transform((@Nullable Optional<?> optionalJob) -> {
+                    if (optionalJob != null && optionalJob.isPresent()) {
+                        txChain.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+                            (InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>, ?
+                                extends Exception>) optionalJob.get());
                     }
+                    return null;
                 }, MoreExecutors.directExecutor())));
             return futures;
         }
 
-        private void handleTunnelMonitoringRemoval(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId,
+        private void handleTunnelMonitoringRemoval(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId,
             String removedInterfaceName, IfTunnel ifTunnel) throws ExecutionException, InterruptedException {
             interfaceManagerCommonUtils.removeTunnelIngressFlow(tx, ifTunnel, dpId, removedInterfaceName);
 

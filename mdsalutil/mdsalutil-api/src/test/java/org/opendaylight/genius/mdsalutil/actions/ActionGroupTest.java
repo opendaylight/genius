@@ -28,7 +28,7 @@ public class ActionGroupTest {
         Action action = actionInfo.buildAction();
         assertTrue(action.getAction() instanceof GroupActionCase);
         GroupActionCase actionCase = (GroupActionCase) action.getAction();
-        assertEquals(123L, (long) actionCase.getGroupAction().getGroupId());
+        assertEquals(123L, actionCase.getGroupAction().getGroupId().toJava());
     }
 
     @Test

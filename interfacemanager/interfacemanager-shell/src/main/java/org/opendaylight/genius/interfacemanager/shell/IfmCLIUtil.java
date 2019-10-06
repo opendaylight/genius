@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.shell;
 
-import java.math.BigInteger;
 import java.util.Formatter;
 import org.apache.felix.service.command.CommandSession;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
@@ -19,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.Options;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class IfmCLIUtil {
     private static final String VLAN_OUTPUT_FORMAT_LINE1 = "%-55s";
@@ -60,7 +60,7 @@ public final class IfmCLIUtil {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
-        int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue() : 0 : 0;
+        int vlanId = l2vlan != null ? l2vlan.getVlanId() != null ? l2vlan.getVlanId().getValue().toJava() : 0 : 0;
         session.getConsole().println(fmt.format(VLAN_OUTPUT_FORMAT_LINE1,
                 iface.getName()));
         sb.setLength(0);
@@ -166,7 +166,7 @@ public final class IfmCLIUtil {
         fmt.close();
     }
 
-    static void showBridgePortsHeader(CommandSession session, BigInteger dpnId) {
+    static void showBridgePortsHeader(CommandSession session, Uint64 dpnId) {
         StringBuilder sb = new StringBuilder();
         Formatter fmt = new Formatter(sb);
         session.getConsole().println(fmt

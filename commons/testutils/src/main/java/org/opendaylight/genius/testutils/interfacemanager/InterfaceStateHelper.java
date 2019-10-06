@@ -8,11 +8,8 @@
 package org.opendaylight.genius.testutils.interfacemanager;
 
 import com.google.common.collect.Lists;
-import java.math.BigInteger;
-
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
@@ -26,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class InterfaceStateHelper {
 
@@ -40,9 +38,9 @@ public final class InterfaceStateHelper {
     }
 
     public static Interface buildStateFromInterfaceInfo(InterfaceInfo interfaceInfo) {
-        BigInteger dpId = interfaceInfo.getDpId();
+        Uint64 dpId = interfaceInfo.getDpId();
         int portno = interfaceInfo.getPortNo();
-        NodeConnectorId nodeConnectorId = new NodeConnectorId("openflow:" + dpId.toString() + ":" + portno);
+        NodeConnectorId nodeConnectorId = new NodeConnectorId("openflow:" + dpId + ":" + portno);
         return new InterfaceBuilder()
                 .setType(Other.class)
                 .setIfIndex(interfaceInfo.getInterfaceTag())

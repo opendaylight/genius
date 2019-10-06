@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.listeners;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,6 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,14 +61,14 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
 
     @Override
     public void add(@NonNull InstanceIdentifier<Node> instanceIdentifier, @NonNull Node node) {
-        final BigInteger dpId = getDpnID(node);
+        final Uint64 dpId = getDpnID(node);
         if (dpId == null) {
             return;
         }
         bindServicesOnTunnelType(dpId);
     }
 
-    private void bindServicesOnTunnelType(final BigInteger dpId) {
+    private void bindServicesOnTunnelType(final Uint64 dpId) {
         LOG.debug("Received node add event for {}", dpId);
         for (final Class<?extends ServiceModeBase> serviceMode : FlowBasedServicesUtils.SERVICE_MODE_MAP.values()) {
             for (final String interfaceName : FlowBasedServicesUtils.INTERFACE_TYPE_BASED_SERVICE_BINDING_KEYWORDS) {
@@ -84,11 +84,11 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
 
     private static class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
         private final String iface;
-        final BigInteger dpnId;
+        final Uint64 dpnId;
         final FlowBasedServicesStateAddable flowBasedServicesStateAddable;
 
         RendererStateInterfaceBindWorker(final FlowBasedServicesStateAddable flowBasedServicesStateAddable,
-                                         final BigInteger dpnId,
+                                         final Uint64 dpnId,
                                          final String iface) {
             this.flowBasedServicesStateAddable = flowBasedServicesStateAddable;
             this.dpnId = dpnId;
@@ -103,12 +103,12 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
         }
     }
 
-    private BigInteger getDpnID(final Node id) {
+    private static Uint64 getDpnID(final Node id) {
         final String[] node =  id.getId().getValue().split(":");
         if (node.length < 2) {
             LOG.warn("Unexpected nodeId {}", id.getId().getValue());
             return null;
         }
-        return new BigInteger(node[1]);
+        return Uint64.valueOf(node[1]);
     }
 }

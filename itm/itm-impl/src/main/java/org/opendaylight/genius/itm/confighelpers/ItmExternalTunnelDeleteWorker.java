@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.base.Optional;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +33,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +56,8 @@ public final class ItmExternalTunnelDeleteWorker {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             // The membership in the listener will always be 1, to get the actual membership
             // read from the DS
-            List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt, teps.getDPNID(),
-                    meshedDpnList);
+            List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt,
+                    teps.getDPNID(), meshedDpnList);
             if (originalTzMembership.size() == 1) {
                 String interfaceName = firstEndPt.getInterfaceName();
                 String trunkInterfaceName = ItmUtils.getTrunkInterfaceName(interfaceName,
@@ -159,9 +159,10 @@ public final class ItmExternalTunnelDeleteWorker {
                 }
                 if (originalTZone.getVteps() != null) {
 
-                    String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT
+                    String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT
                             : itmConfig.getPortname();
-                    int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                    int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()
+                                                                 : ITMConstants.DUMMY_VLANID;
 
                     for (Vteps vtep : originalTZone.getVteps()) {
                         // TOR-OVS
@@ -177,8 +178,8 @@ public final class ItmExternalTunnelDeleteWorker {
     }
 
     private static void deleteTunnelsInTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints srcTep,
-                                                  List<HwVtep> cfgdhwVteps, TypedReadWriteTransaction<Configuration> tx)
-            throws InterruptedException, ExecutionException {
+            List<HwVtep> cfgdhwVteps, TypedReadWriteTransaction<Configuration> tx)
+                    throws InterruptedException, ExecutionException {
         InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(zoneName)).build();
         Optional<TransportZone> tz = tx.read(tzonePath).get();
@@ -204,7 +205,7 @@ public final class ItmExternalTunnelDeleteWorker {
         }
     }
 
-    private static void deleteTrunksOvsTor(BigInteger dpnid, String interfaceName, IpAddress cssIpAddress,
+    private static void deleteTrunksOvsTor(Uint64 dpnid, String interfaceName, IpAddress cssIpAddress,
                       String topologyId, String nodeId, IpAddress hwIpAddress, Class<? extends TunnelTypeBase> tunType,
                       TypedReadWriteTransaction<Configuration> tx) throws ExecutionException, InterruptedException {
         // OVS-TOR

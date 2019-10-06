@@ -14,13 +14,11 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -37,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.Fl
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +124,7 @@ public final class OvsInterfaceStateAddHelper {
             if (InterfaceManagerCommonUtils.isVlanInterface(iface) && iface.isEnabled() && ifState
                     .getOperStatus() == org.opendaylight.yang.gen.v1.urn
                     .ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Up) {
-                BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+                Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
                 FlowBasedServicesUtils.installLportIngressFlow(dpId, portNo, iface, futures, txRunner,
                         ifState.getIfIndex());
                 futures.add(FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, iface,
@@ -142,7 +141,7 @@ public final class OvsInterfaceStateAddHelper {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         EVENT_LOGGER.debug("IFM-OvsInterfaceState,ADD,TunnelIngressFlow {}", interfaceName);
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(
                 tx, interfaceInfo.augmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
@@ -157,7 +156,7 @@ public final class OvsInterfaceStateAddHelper {
             }
 
             @Override
-            public void onFailure(@NonNull Throwable throwable) {
+            public void onFailure(Throwable throwable) {
                 LOG.error("Unable to add tunnel monitoring", throwable);
             }
         }, MoreExecutors.directExecutor());
@@ -166,7 +165,7 @@ public final class OvsInterfaceStateAddHelper {
     public static boolean validateTunnelPortAttributes(NodeConnectorId nodeConnectorId,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.Interface iface) {
-        BigInteger currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        Uint64 currentDpnId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         if (iface != null) {
             ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
             if (!currentDpnId.equals(parentRefs.getDatapathNodeIdentifier())) {

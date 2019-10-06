@@ -7,21 +7,21 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
 import java.util.Map;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * In port match.
  */
 public class MatchInPort extends MatchInfo {
 
-    private final BigInteger dpId;
+    private final Uint64 dpId;
     private final long portNumber;
 
-    public MatchInPort(BigInteger dpId, long portNumber) {
+    public MatchInPort(Uint64 dpId, long portNumber) {
         this.dpId = dpId;
         this.portNumber = portNumber;
     }
@@ -37,7 +37,7 @@ public class MatchInPort extends MatchInfo {
         matchBuilder.setInPort(new NodeConnectorId(nodeConnectorId));
     }
 
-    public BigInteger getDpId() {
+    public Uint64 getDpId() {
         return dpId;
     }
 

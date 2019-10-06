@@ -11,7 +11,6 @@ import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CR
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.concurrent.Future;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
@@ -97,6 +95,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,7 +203,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             RpcResult<GetPortFromInterfaceOutput> port = output.get();
             if (port.isSuccessful()) {
-                return port.getResult().getPortno();
+                return port.getResult().getPortno().toJava();
             }
         } catch (NullPointerException | InterruptedException | ExecutionException e) {
             LOG.warn("Exception when getting port for interface", e);
@@ -219,7 +218,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             RpcResult<GetPortFromInterfaceOutput> port = output.get();
             if (port.isSuccessful()) {
-                return port.getResult().getPortno();
+                return port.getResult().getPortno().toJava();
             }
         } catch (NullPointerException | InterruptedException | ExecutionException e) {
             LOG.warn("Exception when getting port for interface", e);
@@ -249,11 +248,13 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 interfaceManagerCommonUtils);
         InterfaceInfo.InterfaceType interfaceType = IfmUtil.getInterfaceType(intf);
         InterfaceInfo interfaceInfo = new InterfaceInfo(interfaceName);
-        BigInteger dpId = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_DPID;
         Integer portNo = org.opendaylight.genius.interfacemanager.globals.IfmConstants.INVALID_PORT_NO;
+        final Uint64 dpId;
         if (ncId != null) {
             dpId = IfmUtil.getDpnFromNodeConnectorId(ncId);
             portNo = Integer.parseInt(IfmUtil.getPortNoFromNodeConnectorId(ncId));
+        } else {
+            dpId = null;
         }
         if (interfaceType == InterfaceInfo.InterfaceType.VLAN_INTERFACE) {
             interfaceInfo = IfmUtil.getVlanInterfaceInfo(intf, dpId);
@@ -380,7 +381,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
+    public void createVLANInterface(String interfaceName, String portName, Uint64 dpId, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
         createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode);
     }
@@ -392,7 +393,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId,
+    public void createVLANInterface(String interfaceName, String portName, Uint64 dpId, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal)
             throws InterfaceAlreadyExistsException {
         createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode, isExternal);
@@ -422,7 +423,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (isExternal) {
             interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
         }
-        InstanceIdentifier<Interface> interfaceIId = interfaceManagerCommonUtils
+        InstanceIdentifier<Interface> interfaceIId = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> tx.put(interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS));
@@ -475,16 +476,17 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public void unbindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo) {
         IfmUtil.unbindService(txRunner, coordinator, interfaceName,
-                FlowBasedServicesUtils.buildServiceId(interfaceName, serviceInfo.getServicePriority(), serviceMode));
+                FlowBasedServicesUtils.buildServiceId(interfaceName,
+                    serviceInfo.getServicePriority().toJava(), serviceMode));
     }
 
     @Override
-    public BigInteger getDpnForInterface(Interface intrf) {
+    public Uint64 getDpnForInterface(Interface intrf) {
         return getDpnForInterface(intrf.getName());
     }
 
     @Override
-    public BigInteger getDpnForInterface(String ifName) {
+    public Uint64 getDpnForInterface(String ifName) {
         GetDpidFromInterfaceInput input = new GetDpidFromInterfaceInputBuilder().setIntfName(ifName).build();
         Future<RpcResult<GetDpidFromInterfaceOutput>> output = interfaceManagerRpcService.getDpidFromInterface(input);
         try {
@@ -499,7 +501,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public String getEndpointIpForDpn(BigInteger dpnId) {
+    public String getEndpointIpForDpn(Uint64 dpnId) {
         GetEndpointIpForDpnInput input = new GetEndpointIpForDpnInputBuilder().setDpid(dpnId).build();
         Future<RpcResult<GetEndpointIpForDpnOutput>> output = interfaceManagerRpcService.getEndpointIpForDpn(input);
         try {
@@ -665,7 +667,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public String getDpidForInterface(String interfaceName, InstanceIdentifier<Node> nodeInstanceId) {
         OvsdbBridgeAugmentation bridge = getBridgeForInterface(interfaceName, nodeInstanceId);
         if (bridge != null) {
-            BigInteger dpid = IfmUtil.getDpnId(bridge.getDatapathId());
+            Uint64 dpid = IfmUtil.getDpnId(bridge.getDatapathId());
             if (dpid != null && dpid.longValue() != 0) {
                 return String.valueOf(dpid);
             }
@@ -811,7 +813,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      * @return If the data at the supplied path exists, returns a list of all termination point
      *         Augmentations
      */
-    public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId) {
+    public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(Uint64 dpnId) {
         List<OvsdbTerminationPointAugmentation> ports = new ArrayList<>();
         List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         for (TerminationPoint ovsPort : portList) {
@@ -833,7 +835,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      *         Augmentations of type tunnel
      */
     @Override
-    public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId) {
+    public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(Uint64 dpnId) {
         List<OvsdbTerminationPointAugmentation> tunnelPorts = new ArrayList<>();
         List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         for (TerminationPoint ovsPort : portList) {
@@ -859,7 +861,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      */
     @Override
     public Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>>
-        getPortsOnBridgeByType(BigInteger dpnId) {
+        getPortsOnBridgeByType(Uint64 dpnId) {
 
         Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>> portMap;
         portMap = new ConcurrentHashMap<>();

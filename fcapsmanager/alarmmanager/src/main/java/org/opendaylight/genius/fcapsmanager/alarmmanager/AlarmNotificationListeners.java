@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.fcapsmanager.alarmmanager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.management.ManagementFactory;
 import java.util.Set;
 import java.util.TreeSet;
@@ -46,6 +47,8 @@ public class AlarmNotificationListeners implements Runnable {
      * Platform dependent bundle injects its handle and it is retrieved in the
      * method.
      */
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private AlarmServiceFacade getAlarmServiceSPI() {
         AlarmServiceFacade service = null;
         if (context != null) {

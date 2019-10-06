@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.impl;
 
 import static org.mockito.Mockito.doReturn;
@@ -13,7 +12,6 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -72,6 +70,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -81,8 +80,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest(ITMBatchingUtils.class)
 public class ItmInternalTunnelAddTest {
 
-    BigInteger dpId1 = BigInteger.valueOf(1);
-    BigInteger dpId2 = BigInteger.valueOf(2);
+    Uint64 dpId1 = Uint64.ONE;
+    Uint64 dpId2 = Uint64.valueOf(2);
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     int vlanId = 100 ;

@@ -5,11 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager;
 
-import java.math.BigInteger;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
+// FIXME: rename this to IfmImplConstants
+// FIXME: this should be a final utility class
 public interface IfmConstants {
     String IFM_IDPOOL_NAME = "interfaces";
     long IFM_ID_POOL_START = 1L;
@@ -25,9 +26,9 @@ public interface IfmConstants {
     long VLAN_GROUP_START = 1000;
     long TRUNK_GROUP_START = 20000;
     long LOGICAL_GROUP_START = 100000;
-    BigInteger COOKIE_VM_LFIB_TABLE = new BigInteger("8000002", 16);
+    Uint64 COOKIE_VM_LFIB_TABLE = Uint64.valueOf("8000002", 16).intern();
     String TUNNEL_TABLE_FLOWID_PREFIX = "TUNNEL.";
-    BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
+    Uint64 TUNNEL_TABLE_COOKIE = Uint64.valueOf("9000000", 16).intern();
     int FLOW_HIGH_PRIORITY = 10;
     int FLOW_PRIORITY_FOR_UNTAGGED_VLAN = 4;
 

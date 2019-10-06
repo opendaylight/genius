@@ -12,11 +12,12 @@ import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceA
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceOpState
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType
 import org.opendaylight.genius.interfacemanager.globals.VlanInterfaceInfo
+import org.opendaylight.yangtools.yang.common.Uint64
 
 class ExpectedInterfaceInfo {
     static def newInterfaceInfo(Integer lportTag, String ifaceName, String parentInterface,
     InterfaceInfo.InterfaceType ifaceType) {
-        new InterfaceInfo(1bi, parentInterface) => [
+        new InterfaceInfo(Uint64.ONE, parentInterface) => [
             adminState = InterfaceAdminState.ENABLED
             interfaceName = ifaceName
             interfaceTag = 1
@@ -29,7 +30,7 @@ class ExpectedInterfaceInfo {
     }
 
     static def newVlanInterfaceInfo() {
-        new VlanInterfaceInfo(1bi, "tap23701c04-7e", 0 as short) => [
+        new VlanInterfaceInfo(Uint64.ONE, "tap23701c04-7e", 0 as short) => [
             adminState = InterfaceAdminState.ENABLED
             interfaceName = "23701c04-7e58-4c65-9425-78a80d49a218"
             interfaceTag = 1

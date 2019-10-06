@@ -7,15 +7,13 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.Configuration;
-
 import com.google.common.base.Optional;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -43,6 +41,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +95,7 @@ public class ItmExternalTunnelAddWorker {
         }
     }
 
-    public void buildTunnelsFromDpnToExternalEndPoint(List<BigInteger> dpnId, IpAddress extIp,
+    public void buildTunnelsFromDpnToExternalEndPoint(List<Uint64> dpnId, IpAddress extIp,
                                                       Class<? extends TunnelTypeBase> tunType,
                                                       TypedWriteTransaction<Configuration> tx) {
         Collection<DPNTEPsInfo> cfgDpnList = dpnId == null ? dpnTEPsInfoCache.getAllPresent()
@@ -155,8 +154,9 @@ public class ItmExternalTunnelAddWorker {
             TransportZone transportZone = transportZoneOptional.get();
             //do we need to check tunnel type?
             if (transportZone.getDeviceVteps() != null && !transportZone.getDeviceVteps().isEmpty()) {
-                String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
+                int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()
+                                                             : ITMConstants.DUMMY_VLANID;
                 for (DeviceVteps hwVtepDS : transportZone.getDeviceVteps()) {
                     //dont mesh if hwVteps and OVS-tep have same ip-address
                     if (Objects.equals(hwVtepDS.getIpAddress(), tep.getIpAddress())) {
@@ -195,8 +195,8 @@ public class ItmExternalTunnelAddWorker {
         Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
         if (transportZoneOptional.isPresent()) {
             TransportZone tzone = transportZoneOptional.get();
-            String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-            int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+            String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
+            int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
             //do we need to check tunnel type?
             if (tzone.getDeviceVteps() != null && !tzone.getDeviceVteps().isEmpty()) {
                 for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
@@ -284,7 +284,7 @@ public class ItmExternalTunnelAddWorker {
     }
 
     //for tunnels from OVS
-    private boolean wireUp(BigInteger dpnId, String portname, Integer vlanId, IpAddress srcIp, Boolean remoteIpFlow,
+    private boolean wireUp(Uint64 dpnId, String portname, Integer vlanId, IpAddress srcIp, Boolean remoteIpFlow,
                            String dstNodeId, IpAddress dstIp,
                            Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Integer monitorInterval,
                            Class<? extends TunnelMonitoringTypeBase> monitorProtocol,

@@ -29,6 +29,7 @@ public final class ItmCliUtils {
      *            the dpn ids
      * @return the list
      */
+    // FIXME: this seems to be completely unused
     public static List<BigInteger> constructDpnIdList(final String dpnIds) {
         final List<BigInteger> lstDpnIds = new ArrayList<>();
         if (StringUtils.isNotBlank(dpnIds)) {

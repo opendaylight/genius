@@ -15,7 +15,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.math.BigInteger;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,7 +22,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -58,6 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -143,7 +142,7 @@ public final class OvsInterfaceConfigAddHelper {
             return;
         }
 
-        BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+        Uint64 dpId = parentRefs.getDatapathNodeIdentifier();
         if (dpId == null) {
             LOG.warn("dpid for interface: {} Not Found. No DPID provided. " + "Creation of OF-Port not supported.",
                     interfaceNew.getName());
@@ -215,7 +214,7 @@ public final class OvsInterfaceConfigAddHelper {
     }
 
     private long createLogicalTunnelSelectGroup(TypedWriteTransaction<Configuration> tx,
-        BigInteger srcDpnId, String interfaceName, int lportTag) {
+            Uint64 srcDpnId, String interfaceName, int lportTag) {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
         Group group = MDSALUtil.buildGroup(groupId, interfaceName, GroupTypes.GroupSelect,
                                            MDSALUtil.buildBucketLists(Collections.emptyList()));
@@ -243,7 +242,7 @@ public final class OvsInterfaceConfigAddHelper {
     }
 
     private void setupTunnelFlowsAndMonitoring(Interface interfaceNew, TypedWriteTransaction<Configuration> confTx,
-                                               IfTunnel ifTunnel, BigInteger dpId,
+                                               IfTunnel ifTunnel, Uint64 dpId,
                                                List<ListenableFuture<Void>> futures) {
         // if TEP is already configured on switch, start LLDP monitoring and
         // program tunnel ingress flow
@@ -268,7 +267,7 @@ public final class OvsInterfaceConfigAddHelper {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Throwable throwable) {
+                    public void onFailure(Throwable throwable) {
                         LOG.error("Unable to add tunnel monitoring", throwable);
                     }
                 }, MoreExecutors.directExecutor());

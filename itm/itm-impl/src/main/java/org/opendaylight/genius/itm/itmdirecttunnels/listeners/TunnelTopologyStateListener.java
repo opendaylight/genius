@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -40,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,13 +129,15 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
      * This code is used to handle only a dpnId change scenario for a particular change,
      * which is not expected to happen in usual cases.
      */
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private List<ListenableFuture<Void>> updateOvsBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                                                OvsdbBridgeAugmentation bridgeNew,
-                                                                OvsdbBridgeAugmentation bridgeOld) {
+                                                                 OvsdbBridgeAugmentation bridgeNew,
+                                                                 OvsdbBridgeAugmentation bridgeOld) {
 
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
-            BigInteger dpnIdNew = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
-            BigInteger dpnIdOld = directTunnelUtils.getDpnId(bridgeOld.getDatapathId());
+            Uint64 dpnIdNew = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
+            Uint64 dpnIdOld = directTunnelUtils.getDpnId(bridgeOld.getDatapathId());
 
             LOG.debug("updating bridge references for bridge: {}, dpnNew: {}, dpnOld: {}", bridgeNew,
                     dpnIdNew, dpnIdOld);
@@ -153,10 +156,9 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         }));
     }
 
-    public List<ListenableFuture<Void>> removePortFromBridge(InstanceIdentifier<OvsdbBridgeAugmentation>
-                                                                            bridgeIid,
-                                                                    OvsdbBridgeAugmentation bridgeOld) {
-        BigInteger dpnId = directTunnelUtils.getDpnId(bridgeOld.getDatapathId());
+    public List<ListenableFuture<Void>> removePortFromBridge(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+                                                             OvsdbBridgeAugmentation bridgeOld) {
+        Uint64 dpnId = directTunnelUtils.getDpnId(bridgeOld.getDatapathId());
         if (dpnId == null) {
             LOG.warn("Got Null DPID for Bridge: {}", bridgeOld);
             return Collections.emptyList();
@@ -173,8 +175,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         }));
     }
 
-    private void createOvsBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid,
-                                               WriteTransaction tx) {
+    private void createOvsBridgeRefEntry(Uint64 dpnId, InstanceIdentifier<?> bridgeIid, WriteTransaction tx) {
         LOG.debug("Creating bridge ref entry for dpn: {} bridge: {}",
                 dpnId, bridgeIid);
         OvsBridgeRefEntryKey bridgeRefEntryKey = new OvsBridgeRefEntryKey(dpnId);
@@ -186,8 +187,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), true);
     }
 
-    private void deleteOvsBridgeRefEntry(BigInteger dpnId,
-                                               WriteTransaction tx) {
+    private void deleteOvsBridgeRefEntry(Uint64 dpnId, WriteTransaction tx) {
         LOG.debug("Deleting bridge ref entry for dpn: {}",
                 dpnId);
         OvsBridgeRefEntryKey bridgeRefEntryKey = new OvsBridgeRefEntryKey(dpnId);
@@ -196,7 +196,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         tx.delete(LogicalDatastoreType.OPERATIONAL, bridgeEntryId);
     }
 
-    private void addBridgeRefToBridgeTunnelEntry(BigInteger dpId, OvsdbBridgeRef ovsdbBridgeRef, WriteTransaction tx) {
+    private void addBridgeRefToBridgeTunnelEntry(Uint64 dpId, OvsdbBridgeRef ovsdbBridgeRef, WriteTransaction tx) {
         OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
         InstanceIdentifier<OvsBridgeEntry> bridgeEntryInstanceIdentifier =
                 DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
@@ -253,7 +253,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
                 return Collections.emptyList();
             }
 
-            BigInteger dpnId = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
+            Uint64 dpnId = directTunnelUtils.getDpnId(bridgeNew.getDatapathId());
             LOG.debug("adding bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
             EVENT_LOGGER.debug("TunnelTopologyState, ADD bridge {} for {}", bridgeNew.getBridgeName(), dpnId);
 

@@ -71,7 +71,7 @@ public class VniUtilsImpl implements VniUtils {
         Future<RpcResult<AllocateIdOutput>> result = idManagerService.allocateId(getIdInput);
         RpcResult<AllocateIdOutput> rpcResult = result.get();
         if (rpcResult.isSuccessful()) {
-            return BigInteger.valueOf(rpcResult.getResult().getIdValue());
+            return BigInteger.valueOf(rpcResult.getResult().getIdValue().toJava());
         }
         return BigInteger.valueOf(-1);
     }
@@ -115,8 +115,8 @@ public class VniUtilsImpl implements VniUtils {
                 buildIdPoolInstanceIdentifier(NwConstants.ODL_VNI_POOL_NAME));
         if (existingIdPool.isPresent()) {
             IdPool odlVniIdPool = existingIdPool.get();
-            long currentStartLimit = odlVniIdPool.getAvailableIdsHolder().getStart();
-            long currentEndLimit = odlVniIdPool.getAvailableIdsHolder().getEnd();
+            long currentStartLimit = odlVniIdPool.getAvailableIdsHolder().getStart().toJava();
+            long currentEndLimit = odlVniIdPool.getAvailableIdsHolder().getEnd().toJava();
 
             if (lowLimit == currentStartLimit && highLimit == currentEndLimit) {
                 LOG.debug("validateAndCreateVxlanVniPool : OpenDaylight VXLAN VNI range pool already exists "

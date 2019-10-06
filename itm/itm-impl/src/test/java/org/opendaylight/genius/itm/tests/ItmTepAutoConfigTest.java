@@ -13,7 +13,6 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -54,6 +53,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Component tests for ITM TEP Auto Config feature.
@@ -942,9 +942,9 @@ public class ItmTepAutoConfigTest {
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get().getUnknownVteps();
         //modifing the dpnid and keeping the ip same.
         for (UnknownVteps unknownVtep:unknownVtepsList) {
-            Vteps vteps = new VtepsBuilder().setDpnId(new BigInteger("10"))
+            Vteps vteps = new VtepsBuilder().setDpnId(Uint64.valueOf(10))
                     .setIpAddress(unknownVtep.getIpAddress())
-                    .withKey(new VtepsKey(new BigInteger("10"))).build();
+                    .withKey(new VtepsKey(Uint64.valueOf(10))).build();
             vtepsList.add(vteps);
         }
 

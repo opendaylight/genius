@@ -10,12 +10,10 @@ package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -33,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatus;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +70,8 @@ public class OvsInterfaceTopologyStateUpdateHelper {
                                                              OvsdbBridgeAugmentation bridgeNew,
                                                              OvsdbBridgeAugmentation bridgeOld) {
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
-            BigInteger dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
-            BigInteger dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
+            Uint64 dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
+            Uint64 dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());
 
             LOG.debug("updating bridge references for bridge: {}, dpnNew: {}, dpnOld: {}", bridgeNew,
                     dpnIdNew, dpnIdOld);

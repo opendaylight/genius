@@ -7,15 +7,14 @@
  */
 package org.opendaylight.genius.itm.globals;
 
-import java.math.BigInteger;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface ITMConstants {
     String ITM_SERVICE_NAME = "ITM";
-    BigInteger COOKIE_ITM = new BigInteger("9000000", 16);
-    BigInteger COOKIE_ITM_EXTERNAL = new BigInteger("9050000", 16);
+    Uint64 COOKIE_ITM = Uint64.valueOf("9000000", 16).intern();
+    Uint64 COOKIE_ITM_EXTERNAL = Uint64.valueOf("9050000", 16).intern();
 
     String ITM_IDPOOL_NAME = "Itmservices";
     long ITM_IDPOOL_START = 1L;

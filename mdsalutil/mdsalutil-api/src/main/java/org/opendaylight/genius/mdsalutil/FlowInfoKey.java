@@ -7,17 +7,17 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.Match;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class FlowInfoKey {
 
-    private final BigInteger dpId;
+    private final Uint64 dpId;
     private final short tableId;
     private final Match matches;
     private final String flowId;
 
-    public FlowInfoKey(BigInteger dpId, short tableId, Match matches, String flowId) {
+    public FlowInfoKey(Uint64 dpId, short tableId, Match matches, String flowId) {
         this.dpId = dpId;
         this.tableId = tableId;
         this.matches = matches;
@@ -32,7 +32,7 @@ public final class FlowInfoKey {
         return matches;
     }
 
-    public BigInteger getDpId() {
+    public Uint64 getDpId() {
         return dpId;
     }
 
