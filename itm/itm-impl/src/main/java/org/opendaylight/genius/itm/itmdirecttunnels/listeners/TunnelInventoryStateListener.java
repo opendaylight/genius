@@ -10,7 +10,7 @@ package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -59,6 +58,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,8 +196,8 @@ public class TunnelInventoryStateListener extends
                 return;
             } else {
                 for (Map.Entry<String, NodeConnectorInfo> entry : meshedMap.entrySet()) {
-                    DpnTepInterfaceInfo infInfoForward = dpnTepStateCache.getDpnTepInterface(new BigInteger(srcDpn),
-                            new BigInteger(entry.getKey()));
+                    DpnTepInterfaceInfo infInfoForward = dpnTepStateCache.getDpnTepInterface(Uint64.valueOf(srcDpn),
+                        Uint64.valueOf(entry.getKey()));
                     if (infInfoForward == null) {
                         unprocessedNCCache.add(srcDpn + ":" + entry.getKey(),
                                 new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo).build());
@@ -206,7 +206,7 @@ public class TunnelInventoryStateListener extends
                     }
 
                     DpnTepInterfaceInfo infInfoReverse = dpnTepStateCache.getDpnTepInterface(
-                            new BigInteger(entry.getKey()), new BigInteger(srcDpn));
+                        Uint64.valueOf(entry.getKey()), Uint64.valueOf(srcDpn));
 
                     if (infInfoReverse == null) {
                         unprocessedNCCache.add(entry.getKey() + ":" + srcDpn,
@@ -244,9 +244,9 @@ public class TunnelInventoryStateListener extends
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
             tunnelEndPtInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(portName);
             TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo);
-            dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getSrcEndPointInfo()))
+            dpntePsInfoCache.getDPNTepFromDPNId(Uint64.valueOf(tunnelEndPtInfo.getSrcEndPointInfo()))
                 .ifPresent(builder::setSrcDpnTepsInfo);
-            dpntePsInfoCache.getDPNTepFromDPNId(new BigInteger(tunnelEndPtInfo.getDstEndPointInfo()))
+            dpntePsInfoCache.getDPNTepFromDPNId(Uint64.valueOf(tunnelEndPtInfo.getDstEndPointInfo()))
                 .ifPresent(builder::setDstDpnTepsInfo);
             tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
                 .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
@@ -276,6 +276,8 @@ public class TunnelInventoryStateListener extends
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private List<ListenableFuture<Void>> updateState(String interfaceName,
         FlowCapableNodeConnector flowCapableNodeConnectorNew,
         FlowCapableNodeConnector flowCapableNodeConnectorOld) {
@@ -376,6 +378,8 @@ public class TunnelInventoryStateListener extends
         return !dpnTepInterfaceInfo.isMonitoringEnabled() && modifyOpState(dpnTepInterfaceInfo, opStateModified);
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private List<ListenableFuture<Void>> removeInterfaceStateConfiguration(NodeConnectorId nodeConnectorId,
                                                                            String interfaceName,
                                                                            FlowCapableNodeConnector
@@ -383,7 +387,7 @@ public class TunnelInventoryStateListener extends
 
 
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
+        Uint64 dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
         // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
         // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
         // scenario, and should be treated as port removal.
@@ -395,12 +399,12 @@ public class TunnelInventoryStateListener extends
                 LOG.debug("Received remove state for dpid {}", dpId.intValue());
                 for (Map.Entry<String, NodeConnectorInfo> entry : meshedMap.entrySet()) {
                     if (!dpId.toString().equals(entry.getKey())) {
-                        String fwdTunnel = dpnTepStateCache.getDpnTepInterface(dpId, new BigInteger(entry.getKey()))
+                        String fwdTunnel = dpnTepStateCache.getDpnTepInterface(dpId, Uint64.valueOf(entry.getKey()))
                                 .getTunnelName();
                         LOG.debug("Fwd Tunnel name for {} : {} is {}", dpId.intValue(), entry.getKey(), fwdTunnel);
                         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                             tx -> updateInterfaceStateOnNodeRemove(tx, fwdTunnel, flowCapableNodeConnector)));
-                        String bwdTunnel = dpnTepStateCache.getDpnTepInterface(new BigInteger(entry.getKey()), dpId)
+                        String bwdTunnel = dpnTepStateCache.getDpnTepInterface(Uint64.valueOf(entry.getKey()), dpId)
                                 .getTunnelName();
                         LOG.debug("Bwd Tunnel name for {} : {} is {}", entry.getKey(), dpId.intValue(), bwdTunnel);
                         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
@@ -421,7 +425,7 @@ public class TunnelInventoryStateListener extends
         return futures;
     }
 
-    private class TunnelInterfaceStateUpdateWorker implements Callable {
+    private class TunnelInterfaceStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
@@ -437,7 +441,7 @@ public class TunnelInventoryStateListener extends
         }
 
         @Override
-        public Object call() {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return updateState(interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
@@ -450,7 +454,7 @@ public class TunnelInventoryStateListener extends
         }
     }
 
-    private class TunnelInterfaceStateRemoveWorker implements Callable {
+    private class TunnelInterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final NodeConnectorId nodeConnectorId;
         private final FlowCapableNodeConnector flowCapableNodeConnector;
         private final String interfaceName;
@@ -464,7 +468,7 @@ public class TunnelInventoryStateListener extends
         }
 
         @Override
-        public Object call() {
+        public List<ListenableFuture<Void>> call() {
             // If another renderer(for eg : OVS) needs to be supported, check can be performed here
             // to call the respective helpers.
             return removeInterfaceStateConfiguration(nodeConnectorId, interfaceName, flowCapableNodeConnector);

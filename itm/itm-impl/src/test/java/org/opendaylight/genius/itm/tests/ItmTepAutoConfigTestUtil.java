@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.tests;
 
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -28,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class ItmTepAutoConfigTestUtil {
     private ItmTepAutoConfigTestUtil() {
@@ -64,7 +64,7 @@ public final class ItmTepAutoConfigTestUtil {
     }
 
     public static InstanceIdentifier<Vteps> getTepIid(IpPrefix subnetMaskObj, String tzName,
-        BigInteger dpnId, String portName) {
+            Uint64 dpnId, String portName) {
         VtepsKey vtepkey = new VtepsKey(dpnId);
 
         InstanceIdentifier<Vteps> vtepIid = InstanceIdentifier.builder(TransportZones.class)

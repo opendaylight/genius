@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.util.List;
 import org.eclipse.jdt.annotation.Nullable;
 import org.immutables.value.Value.Default;
@@ -19,10 +18,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.ta
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowCookie;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.FlowModFlags;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @Immutable
 @OpenDaylightImmutableStyle
 public abstract class FlowEntity extends AbstractSwitchEntity {
+    protected static final Uint64 DEFAULT_COOKIE = Uint64.valueOf("0110000", 16).intern();
 
     // This is required as it will cause the code generation by @Immutable.org to implement Builder,
     // which is required Xtend sources can use the XtendBuilderExtensions.operator_doubleGreaterThan
@@ -32,8 +33,8 @@ public abstract class FlowEntity extends AbstractSwitchEntity {
 
     // This was done because MDSALManager has this hard-coded like this, upon MDSALManager.installFlow()
     @Default
-    public BigInteger getCookie() {
-        return new BigInteger("0110000", 16);
+    public Uint64 getCookie() {
+        return DEFAULT_COOKIE;
     }
 
     public abstract String getFlowId();

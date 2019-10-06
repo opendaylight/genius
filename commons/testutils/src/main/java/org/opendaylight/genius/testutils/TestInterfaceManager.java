@@ -9,7 +9,6 @@ package org.opendaylight.genius.testutils;
 
 import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrException;
 
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,6 +23,7 @@ import org.opendaylight.genius.testutils.interfacemanager.InterfaceHelper;
 import org.opendaylight.genius.testutils.interfacemanager.InterfaceStateHelper;
 import org.opendaylight.genius.testutils.interfacemanager.TunnelInterfaceDetails;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * IInterfaceManager implementation for tests.
@@ -147,13 +147,13 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
     }
 
     @Override
-    public BigInteger getDpnForInterface(String interfaceName) {
-        return interfaceInfos.get(interfaceName).getDpId();
+    public Uint64 getDpnForInterface(String interfaceName) {
+        return Uint64.valueOf(interfaceInfos.get(interfaceName).getDpId());
     }
 
     @Override
-    public BigInteger getDpnForInterface(Interface intrface) {
-        return interfaceInfos.get(intrface.getName()).getDpId();
+    public Uint64 getDpnForInterface(Interface intrface) {
+        return Uint64.valueOf(interfaceInfos.get(intrface.getName()).getDpId());
     }
 
     @Override

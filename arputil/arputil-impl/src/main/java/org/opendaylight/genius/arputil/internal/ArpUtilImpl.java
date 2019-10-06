@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.arputil.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -17,10 +16,9 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,7 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.arputil.api.ArpConstants;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -99,6 +96,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,7 +214,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     @Override
     public ListenableFuture<RpcResult<SendArpRequestOutput>> sendArpRequest(SendArpRequestInput arpReqInput) {
         LOG.trace("rpc sendArpRequest invoked for ip {}", arpReqInput.getIpaddress());
-        BigInteger dpnId;
+        Uint64 dpnId;
         byte[] payload;
         String interfaceName = null;
         byte[] srcIpBytes;
@@ -243,8 +241,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
                 checkNotNull(portResult);
                 dpnId = portResult.getDpid();
-                Long portid = portResult.getPortno();
-                checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId),
+                Long portid = portResult.getPortno().toJava();
+                checkArgument(null != dpnId && !Uint64.ZERO.equals(dpnId),
                     ArpConstants.DPN_NOT_FOUND_ERROR, interfaceName);
 
                 NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
@@ -292,7 +290,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     public ListenableFuture<RpcResult<TransmitPacketOutput>> sendPacketOut(
-            BigInteger dpnId, byte[] payload, NodeConnectorRef ref) {
+            Uint64 dpnId, byte[] payload, NodeConnectorRef ref) {
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         return packetProcessingService.transmitPacket(new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
@@ -301,7 +299,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private Future<RpcResult<TransmitPacketOutput>> sendPacketOutWithActions(
-            BigInteger dpnId, byte[] payload, NodeConnectorRef ref, List<Action> actions) {
+            Uint64 dpnId, byte[] payload, NodeConnectorRef ref, List<Action> actions) {
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         TransmitPacketInput transmitPacketInput = new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
@@ -340,7 +338,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     @Override
     public ListenableFuture<RpcResult<SendArpResponseOutput>> sendArpResponse(SendArpResponseInput input) {
         LOG.trace("sendArpResponse rpc invoked");
-        BigInteger dpnId;
+        Uint64 dpnId;
         byte[] payload;
         byte[] srcMac;
 
@@ -349,9 +347,9 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
             checkNotNull(portResult);
             dpnId = portResult.getDpid();
-            Long portid = portResult.getPortno();
+            Long portid = portResult.getPortno().toJava();
             NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
-            checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId),
+            checkArgument(null != dpnId && !Uint64.ZERO.equals(dpnId),
                 ArpConstants.DPN_NOT_FOUND_ERROR, interfaceName);
             checkNotNull(ref, ArpConstants.NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
 
@@ -360,7 +358,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             byte[] srcIpBytes = getIpAddressBytes(input.getSrcIpaddress());
             byte[] dstIpBytes = getIpAddressBytes(input.getDstIpaddress());
             if (input.getSrcMacaddress() == null) {
-                srcMac = portResult.getPhyAddress().getBytes("UTF-8");
+                srcMac = portResult.getPhyAddress().getBytes(StandardCharsets.UTF_8);
             } else {
                 String macAddr = input.getSrcMacaddress().getValue();
                 srcMac = HexEncode.bytesFromHexString(macAddr);
@@ -375,8 +373,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                     input.getSrcIpaddress().getIpv4Address().getValue(), HexEncode.bytesToHexStringFormat(srcMac),
                     HexEncode.bytesToHexStringFormat(dstMac), input.getDstIpaddress().getIpv4Address().getValue(),
                     dpnId);
-        } catch (UnknownHostException | PacketException | InterruptedException | UnsupportedEncodingException
-                | ExecutionException e) {
+        } catch (UnknownHostException | PacketException | InterruptedException | ExecutionException e) {
             LOG.error("failed to send arp response for {}: ", input.getSrcIpaddress(), e);
             return RpcResultBuilder.<SendArpResponseOutput>failed()
                     .withError(ErrorType.APPLICATION, e.getMessage(), e).buildFuture();
@@ -392,8 +389,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
         if (pktInReason == SendToController.class) {
             try {
-                BigInteger dpnId = extractDpnId(packetReceived);
-                int tableId = packetReceived.getTableId().getValue();
+                Uint64 dpnId = extractDpnId(packetReceived);
+                int tableId = packetReceived.getTableId().getValue().toJava();
 
                 byte[] data = packetReceived.getPayload();
                 Ethernet ethernet = new Ethernet();
@@ -452,7 +449,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         LOG.debug("metadata received is {} ", metadata);
 
         GetInterfaceFromIfIndexInputBuilder ifIndexInputBuilder = new GetInterfaceFromIfIndexInputBuilder();
-        BigInteger lportTag = MetaDataUtil.getLportFromMetadata(metadata.getMetadata());
+        Uint64 lportTag = MetaDataUtil.getLportFromMetadata(metadata.getMetadata());
 
         ifIndexInputBuilder.setIfIndex(lportTag.intValue());
         GetInterfaceFromIfIndexInput input = ifIndexInputBuilder.build();
@@ -501,7 +498,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
-            BigInteger dpnId, int tableId, BigInteger metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
+            Uint64 dpnId, int tableId, Uint64 metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
                     throws InterruptedException {
         arpRespRecvd.mark();
 
@@ -530,7 +527,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpReqRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMac,
-            InetAddress dstInetAddr, BigInteger dpnId, int tableId, BigInteger metadata) throws InterruptedException {
+            InetAddress dstInetAddr, Uint64 dpnId, int tableId, Uint64 metadata) throws InterruptedException {
         arpReqRecvd.mark();
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
@@ -568,7 +565,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
     }
 
-    private BigInteger extractDpnId(PacketReceived packetReceived) {
+    private Uint64 extractDpnId(PacketReceived packetReceived) {
         NodeKey nodeKey = packetReceived.getIngress().getValue().firstKeyOf(Node.class);
         String nodeKeyString = nodeKey.getId().getValue();
 
@@ -577,6 +574,6 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             return null;
         }
 
-        return new BigInteger(nodeKeyString.substring(OPENFLOW_PFX.length()));
+        return Uint64.valueOf(nodeKeyString.substring(OPENFLOW_PFX.length()));
     }
 }

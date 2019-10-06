@@ -326,7 +326,7 @@ public class IdManagerTest {
                         new AllocateIdInputBuilder().setPoolName(ID_POOL_NAME).setIdKey(idKey).build());
                 try {
                     if (result.get().isSuccessful()) {
-                        Long idValue = result.get().getResult().getIdValue();
+                        Long idValue = result.get().getResult().getIdValue().toJava();
                         idSet.add(idValue);
                         if (idValue > ID_LOW + BLOCK_SIZE) {
                             exceptionInExecutorAtomic.set(new AssertionFailedError("idValue <= ID_LOW + BLOCK_SIZE"));

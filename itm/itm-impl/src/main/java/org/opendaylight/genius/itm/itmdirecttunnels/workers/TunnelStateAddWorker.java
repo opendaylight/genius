@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.itmdirecttunnels.workers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,8 +93,9 @@ public final class TunnelStateAddWorker {
         if (stateTnl != null) {
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> {
-                    BigInteger dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
-                    directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName, stateTnl.getIfIndex(),
+                    Uint64 dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
+                    directTunnelUtils.addTunnelIngressFlow(tx, dpId, portNo, interfaceName,
+                        stateTnl.getIfIndex().toJava(),
                         tunnelStateInfo.getDstDpnTepsInfo().getTunnelEndPoints().get(0).getIpAddress()
                             .getIpv4Address());
                     directTunnelUtils.addTunnelEgressFlow(tx, dpId, String.valueOf(portNo),

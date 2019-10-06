@@ -13,6 +13,7 @@ import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,8 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
         LOG.info("Scheduling port statistics request");
         PortStatRequestTask portStatRequestTask = new PortStatRequestTask();
         scheduledResult = portStatExecutorService.scheduleWithFixedDelay(portStatRequestTask,
-                ifmConfig.getIfmStatsDefPollInterval(), ifmConfig.getIfmStatsDefPollInterval(), TimeUnit.MINUTES);
+                ifmConfig.getIfmStatsDefPollInterval().toJava(), ifmConfig.getIfmStatsDefPollInterval().toJava(),
+                TimeUnit.MINUTES);
     }
 
     /*
@@ -252,6 +254,8 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      * - creates/updates new OF Port counters using Infrautils metrics API
      * - set counter with values fetched from NodeConnectorStatistics
      */
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void processNodeConnectorStatistics(GetNodeConnectorStatisticsOutput nodeConnectorStatisticsOutput,
                                                 String dpid) {
         String port = "";
@@ -289,7 +293,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             }
 
             Counter counter = getCounter(CounterConstants.IFM_PORT_COUNTER_OFPORT_DURATION, dpid, port, portUuid,null);
-            long ofPortDuration = ncStatsAndPortMap.getDuration().getSecond().getValue();
+            long ofPortDuration = ncStatsAndPortMap.getDuration().getSecond().getValue().toJava();
             updateCounter(counter, ofPortDuration);
 
             counter = getCounter(CounterConstants.IFM_PORT_COUNTER_OFPORT_PKT_RECVDROP, dpid, port, portUuid, null);
@@ -326,13 +330,15 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
      * - creates/updates Flow table counters using Infrautils metrics API
      * - set counter with values fetched from FlowStatistics
      */
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void processFlowStatistics(GetFlowStatisticsOutput flowStatsOutput, String dpid) {
         Map<Short, AtomicInteger> flowTableMap = new HashMap<>();
         // Get all flows for node from RPC result
         List<FlowAndStatisticsMapList> flowTableAndStatisticsMapList =
             flowStatsOutput.nonnullFlowAndStatisticsMapList();
         for (FlowAndStatisticsMapList flowAndStatisticsMap : flowTableAndStatisticsMapList) {
-            short tableId = flowAndStatisticsMap.getTableId();
+            short tableId = flowAndStatisticsMap.getTableId().toJava();
             // populate map to maintain flow count per table
             flowTableMap.computeIfAbsent(tableId, key -> new AtomicInteger(0)).incrementAndGet();
         }
@@ -422,7 +428,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
             }
         }
         if (nodes.size() > 0) {
-            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval() / nodes.size();
+            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval().toJava() / nodes.size();
         } else {
             stopPortStatRequestTask();
             delayStatsQuery = 0;
@@ -444,7 +450,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                 return;
             }
             nodes.add(dpId);
-            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval() / nodes.size();
+            delayStatsQuery = ifmConfig.getIfmStatsDefPollInterval().toJava() / nodes.size();
             if (nodes.size() == 1) {
                 schedulePortStatRequestTask();
             }

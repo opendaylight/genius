@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public final class OvsdbTepAddConfigHelper {
                                                                        boolean ofTunnel, DataBroker dataBroker,
                                                                        ManagedNewTransactionRunner txRunner) {
         List<ListenableFuture<Void>> futures = new ArrayList<>();
-        BigInteger dpnId = BigInteger.valueOf(0);
+        Uint64 dpnId = Uint64.ZERO;
 
         if (strDpnId != null && !strDpnId.isEmpty()) {
             dpnId = MDSALUtil.getDpnId(strDpnId);
@@ -102,7 +102,7 @@ public final class OvsdbTepAddConfigHelper {
         }
 
 
-        final BigInteger id = dpnId;
+        final Uint64 id = dpnId;
         final String name = tzName;
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> addConfig(name, id, tepIpAddress, ofTunnel, tx)));
@@ -121,7 +121,7 @@ public final class OvsdbTepAddConfigHelper {
      * @param tx TypedWriteTransaction object
      */
     public static void addVtepInITMConfigDS(List<Vteps> updatedVtepList, IpAddress tepIpAddress, String tzName,
-                                            BigInteger dpid, boolean ofTunnel,
+                                            Uint64 dpid, boolean ofTunnel,
                                             TypedWriteTransaction<Datastore.Configuration> tx) {
         //Create TZ node path
         InstanceIdentifier<TransportZone> tranzportZonePath =
@@ -130,7 +130,7 @@ public final class OvsdbTepAddConfigHelper {
 
         // this check is needed to reuse same function from TransportZoneListener
         // when VTEP is moved from TepsNotHosted list to TZ configured from Northbound.
-        if (dpid.compareTo(BigInteger.ZERO) > 0) {
+        if (dpid.compareTo(Uint64.ZERO) > 0) {
             // create vtep
             VtepsKey vtepkey = new VtepsKey(dpid);
             Vteps vtepObj =
@@ -173,7 +173,7 @@ public final class OvsdbTepAddConfigHelper {
      * @param tx TypedWriteTransaction object
      */
     protected static void addUnknownTzTepIntoTepsNotHosted(String tzName, IpAddress tepIpAddress,
-                                                           BigInteger dpid, boolean ofTunnel, DataBroker dataBroker,
+                                                           Uint64 dpid, boolean ofTunnel, DataBroker dataBroker,
                                                            TypedWriteTransaction<Datastore.Operational> tx) {
         List<UnknownVteps> vtepList;
         TepsInNotHostedTransportZone tepsInNotHostedTransportZone =
@@ -243,7 +243,7 @@ public final class OvsdbTepAddConfigHelper {
         tx.merge(tepsInNotHostedTransportZoneIid, updatedTzone, true);
     }
 
-    private static void addConfig(String tzName, BigInteger dpnId, IpAddress ipAdd,
+    private static void addConfig(String tzName, Uint64 dpnId, IpAddress ipAdd,
                                   boolean ofTunnel, TypedWriteTransaction<Datastore.Configuration> tx) {
         List<Vteps> vtepList = new ArrayList<>();
 
@@ -252,14 +252,14 @@ public final class OvsdbTepAddConfigHelper {
     }
 
     private static List<ListenableFuture<Void>> addUnknownTzTepIntoTepsNotHostedAndReturnFutures(String tzName,
-                                                         IpAddress tepIpAddress, BigInteger id, boolean ofTunnel,
+                                                         IpAddress tepIpAddress, Uint64 id, boolean ofTunnel,
                                                          DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
             tx -> addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, id, ofTunnel, dataBroker, tx)));
     }
 
     private static List<UnknownVteps> addVtepToUnknownVtepsList(List<UnknownVteps> updatedVtepList,
-                                                                IpAddress tepIpAddress, BigInteger dpid,
+                                                                IpAddress tepIpAddress, Uint64 dpid,
                                                                 boolean ofTunnel) {
         // create vtep
         UnknownVtepsKey vtepkey = new UnknownVtepsKey(dpid);

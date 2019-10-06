@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.interfaces.testutils.tests;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.testing.EqualsTester;
-import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowEntityBuilder;
@@ -17,6 +16,7 @@ import org.opendaylight.genius.mdsalutil.instructions.InstructionClearActions;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionGotoTable;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchArpSpa;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Unit test for {@link TestIMdsalApiManager}.
@@ -42,11 +42,11 @@ public class TestIMdsalApiManagerTest {
         mdsalApiManager.assertFlowsInAnyOrder(ImmutableList.of(getNewFlow2(), getNewFlow1()));
     }
 
-    private FlowEntity getNewFlow1() {
+    private static FlowEntity getNewFlow1() {
         return new FlowEntityBuilder()
-            .setDpnId(BigInteger.valueOf(123))
+            .setDpnId(Uint64.valueOf(123))
             .setTableId((short) 1)
-            .setCookie(BigInteger.valueOf(456789))
+            .setCookie(Uint64.valueOf(456789))
             .setFlowId("ThisIsFlow1")
             .setHardTimeOut(456)
             .setIdleTimeOut(789)
@@ -59,11 +59,11 @@ public class TestIMdsalApiManagerTest {
         .build();
     }
 
-    private FlowEntity getNewFlow2() {
+    private static FlowEntity getNewFlow2() {
         return new FlowEntityBuilder()
-                .setDpnId(BigInteger.valueOf(321))
+                .setDpnId(Uint64.valueOf(321))
                 .setTableId((short) 2)
-                .setCookie(BigInteger.valueOf(987654))
+                .setCookie(Uint64.valueOf(987654))
                 .setFlowId("ThisIsFlow2")
                 .setHardTimeOut(654)
                 .setIdleTimeOut(987)

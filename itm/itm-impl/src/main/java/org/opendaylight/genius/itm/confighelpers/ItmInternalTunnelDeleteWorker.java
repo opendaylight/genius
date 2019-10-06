@@ -12,7 +12,6 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +69,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,7 +165,7 @@ public class ItmInternalTunnelDeleteWorker {
 
                                         } else {
                                             if (checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(),
-                                                    srcTep.getTunnelType(), dataBroker)) {
+                                                srcTep.getTunnelType(), dataBroker)) {
                                                 // remove all trunk interfaces
                                                 LOG.trace("Invoking removeTrunkInterface between source TEP {} , "
                                                         + "Destination TEP {} ", srcTep, dstTep);
@@ -260,7 +260,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeTrunkInterface(TypedWriteTransaction<Configuration> tx, TunnelEndPoints srcTep,
-        TunnelEndPoints dstTep, BigInteger srcDpnId, BigInteger dstDpnId) {
+            TunnelEndPoints dstTep, Uint64 srcDpnId, Uint64 dstDpnId) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 srcTep.getIpAddress().stringValue(),
                 dstTep.getIpAddress().stringValue(),
@@ -306,14 +306,14 @@ public class ItmInternalTunnelDeleteWorker {
         removeLogicalGroupTunnel(dstDpnId, srcDpnId);
     }
 
-    private static boolean checkIfTrunkExists(BigInteger srcDpnId, BigInteger dstDpnId,
+    private static boolean checkIfTrunkExists(Uint64 srcDpnId, Uint64 dstDpnId,
                                               Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
         return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
     }
 
-    private void removeLogicalGroupTunnel(BigInteger srcDpnId, BigInteger dstDpnId) {
+    private void removeLogicalGroupTunnel(Uint64 srcDpnId, Uint64 dstDpnId) {
         boolean tunnelAggregationEnabled = ItmTunnelAggregationHelper.isTunnelAggregationEnabled();
         if (!tunnelAggregationEnabled) {
             return;
@@ -327,11 +327,11 @@ public class ItmInternalTunnelDeleteWorker {
     private static class ItmTunnelAggregationDeleteWorker implements Callable<List<ListenableFuture<Void>>> {
 
         private final String logicTunnelName;
-        private final BigInteger srcDpnId;
-        private final BigInteger dstDpnId;
+        private final Uint64 srcDpnId;
+        private final Uint64 dstDpnId;
         private final ManagedNewTransactionRunner txRunner;
 
-        ItmTunnelAggregationDeleteWorker(String groupName, BigInteger srcDpnId, BigInteger dstDpnId, DataBroker db) {
+        ItmTunnelAggregationDeleteWorker(String groupName, Uint64 srcDpnId, Uint64 dstDpnId, DataBroker db) {
             this.logicTunnelName = groupName;
             this.srcDpnId = srcDpnId;
             this.dstDpnId = dstDpnId;
@@ -380,7 +380,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeTunnelInterfaceFromOvsdb(TypedReadWriteTransaction<Configuration> tx, TunnelEndPoints srcTep,
-        TunnelEndPoints dstTep, BigInteger srcDpnId, BigInteger dstDpnId) {
+        TunnelEndPoints dstTep, Uint64 srcDpnId, Uint64 dstDpnId) {
         String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
                 srcTep.getIpAddress().getIpv4Address().getValue(),
                 dstTep.getIpAddress().getIpv4Address().getValue(),
@@ -413,8 +413,8 @@ public class ItmInternalTunnelDeleteWorker {
         }
     }
 
-    private boolean checkIfTepInterfaceExists(BigInteger srcDpnId, BigInteger dstDpnId) {
-        DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId,dstDpnId);
+    private boolean checkIfTepInterfaceExists(Uint64 srcDpnId, Uint64 dstDpnId) {
+        DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, dstDpnId);
         if (dpnTepInterfaceInfo != null) {
             return dpnTepInterfaceInfo.getTunnelName() != null;
         }
@@ -422,7 +422,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeConfiguration(TypedReadWriteTransaction<Configuration> tx, Interface interfaceOld,
-        ParentRefs parentRefs) throws ExecutionException, InterruptedException, OperationFailedException {
+            ParentRefs parentRefs) throws ExecutionException, InterruptedException, OperationFailedException {
         IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
         if (ifTunnel != null) {
             // Check if the same transaction can be used across Config and operational shards
@@ -435,7 +435,7 @@ public class ItmInternalTunnelDeleteWorker {
             throws ExecutionException, InterruptedException, OperationFailedException {
 
         LOG.info("removing tunnel configuration for {}", interfaceName);
-        BigInteger dpId = null;
+        Uint64 dpId = null;
         if (parentRefs != null) {
             dpId = parentRefs.getDatapathNodeIdentifier();
         }
@@ -477,7 +477,7 @@ public class ItmInternalTunnelDeleteWorker {
         directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
     }
 
-    private OvsdbBridgeRef getOvsdbBridgeRef(BigInteger dpId) throws ReadFailedException {
+    private OvsdbBridgeRef getOvsdbBridgeRef(Uint64 dpId) throws ReadFailedException {
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOptional = ovsBridgeRefEntryCache.get(dpId);
         Optional<OvsBridgeEntry> ovsBridgeEntryOptional;
         OvsdbBridgeRef ovsdbBridgeRef = null;
@@ -500,7 +500,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, String interfaceName,
-        BigInteger dpId) throws ExecutionException, InterruptedException {
+            Uint64 dpId) throws ExecutionException, InterruptedException {
         directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
     }
 

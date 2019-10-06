@@ -165,6 +165,7 @@ import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -226,8 +227,8 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<GetTunnelInterfaceNameOutput>> getTunnelInterfaceName(
             GetTunnelInterfaceNameInput input) {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
-        BigInteger sourceDpn = input.getSourceDpid();
-        BigInteger destinationDpn = input.getDestinationDpid();
+        Uint64 sourceDpn = input.getSourceDpid();
+        Uint64 destinationDpn = input.getDestinationDpid();
         Optional<InternalTunnel> optTunnel = Optional.absent();
 
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
@@ -307,7 +308,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             return  settableFuture;
         } else {
             return fromListenableFuture(LOG, input, () -> getEgressActionsForInternalTunnels(input.getIntfName(),
-                    input.getTunnelKey(), input.getActionKey())).onFailureLogLevel(ERROR).build();
+                    input.getTunnelKey().toJava(), input.getActionKey())).onFailureLogLevel(ERROR).build();
         }
     }
 
@@ -360,13 +361,13 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public ListenableFuture<RpcResult<SetBfdParamOnTunnelOutput>> setBfdParamOnTunnel(
             SetBfdParamOnTunnelInput input) {
-        final BigInteger srcDpnId = new BigInteger(input.getSourceNode());
-        final BigInteger destDpnId = new BigInteger(input.getDestinationNode());
+        final Uint64 srcDpnId = Uint64.valueOf(input.getSourceNode());
+        final Uint64 destDpnId = Uint64.valueOf(input.getDestinationNode());
         LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
         final SettableFuture<RpcResult<SetBfdParamOnTunnelOutput>> result = SettableFuture.create();
         FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
-            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
+            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
+            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
         });
 
         future.addCallback(new FutureCallback<Void>() {
@@ -386,7 +387,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         return result;
     }
 
-    private void enableBFD(TypedWriteTransaction<Datastore.Configuration> tx, BigInteger srcDpnId, BigInteger destDpnId,
+    private void enableBFD(TypedWriteTransaction<Datastore.Configuration> tx, Uint64 srcDpnId, Uint64 destDpnId,
                            final Boolean enabled, final Integer interval) throws ReadFailedException {
         DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
         RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
@@ -566,13 +567,15 @@ public class ItmManagerRpcService implements ItmRpcService {
         LOG.info("create terminatingServiceAction on DpnId = {} for service id {} and instructions {}",
                 input.getDpnId() , input.getServiceId(), input.getInstruction());
         final SettableFuture<RpcResult<CreateTerminatingServiceActionsOutput>> result = SettableFuture.create();
-        int serviceId = input.getServiceId() ;
+        int serviceId = input.getServiceId().toJava() ;
         final List<MatchInfo> mkMatches = getTunnelMatchesForServiceId(serviceId);
 
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
                 getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE,serviceId), 5,
-                String.format("%s:%d","ITM Flow Entry ",serviceId), 0, 0,
-                ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(serviceId)),mkMatches, input.getInstruction());
+                String.format("%s:%d", "ITM Flow Entry ", serviceId), 0, 0,
+                // FIXME: this can be done more efficiently
+                Uint64.valueOf(ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(serviceId))), mkMatches,
+                input.getInstruction());
 
         ListenableFuture<Void> installFlowResult = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> mdsalManager.addFlow(tx, input.getDpnId(), terminatingServiceTableFlow));
@@ -605,7 +608,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         ListenableFuture<Void> removeFlowResult = txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
             tx -> mdsalManager.removeFlow(tx, input.getDpnId(),
-                        getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId()),
+                        getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId().toJava()),
                         NwConstants.INTERNAL_TUNNEL_TABLE));
         Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
 
@@ -633,7 +636,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         final List<MatchInfo> mkMatches = new ArrayList<>();
 
         // Matching metadata
-        mkMatches.add(new MatchTunnelId(BigInteger.valueOf(serviceId)));
+        mkMatches.add(new MatchTunnelId(Uint64.valueOf(serviceId)));
 
         return mkMatches;
     }
@@ -646,7 +649,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<GetInternalOrExternalInterfaceNameOutput>> getInternalOrExternalInterfaceName(
             GetInternalOrExternalInterfaceNameInput input) {
         RpcResultBuilder<GetInternalOrExternalInterfaceNameOutput> resultBld = failed();
-        BigInteger srcDpn = input.getSourceDpid() ;
+        Uint64 srcDpn = input.getSourceDpid();
         IpAddress dstIp = input.getDestinationIp() ;
         InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class,
@@ -1048,7 +1051,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
     @Override
     public ListenableFuture<RpcResult<GetDpnEndpointIpsOutput>> getDpnEndpointIps(GetDpnEndpointIpsInput input) {
-        BigInteger srcDpn = input.getSourceDpid() ;
+        BigInteger srcDpn = input.getSourceDpid().toJava() ;
         RpcResultBuilder<GetDpnEndpointIpsOutput> resultBld = failed();
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
@@ -1081,9 +1084,9 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     private GetDpnInfoOutput getDpnInfoInternal(GetDpnInfoInput input) throws ReadFailedException {
-        Map<String, BigInteger> computeNamesVsDpnIds
+        Map<String, Uint64> computeNamesVsDpnIds
                 = getDpnIdByComputeNodeNameFromOpInventoryNodes(input.getComputeNames());
-        Map<BigInteger, ComputesBuilder> dpnIdVsVtepsComputes
+        Map<Uint64, ComputesBuilder> dpnIdVsVtepsComputes
                 = getTunnelEndPointByDpnIdFromTranPortZone(computeNamesVsDpnIds.values());
         List<Computes> computes = computeNamesVsDpnIds.entrySet().stream()
                 .map(entry -> dpnIdVsVtepsComputes.get(entry.getValue()).setComputeName(entry.getKey()).build())
@@ -1091,14 +1094,14 @@ public class ItmManagerRpcService implements ItmRpcService {
         return new GetDpnInfoOutputBuilder().setComputes(computes).build();
     }
 
-    private Map<BigInteger, ComputesBuilder> getTunnelEndPointByDpnIdFromTranPortZone(Collection<BigInteger> dpnIds)
+    private Map<Uint64, ComputesBuilder> getTunnelEndPointByDpnIdFromTranPortZone(Collection<Uint64> dpnIds)
             throws ReadFailedException {
         TransportZones transportZones = singleTransactionDataBroker.syncRead(
                 LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.builder(TransportZones.class).build());
         if (transportZones.getTransportZone() == null || transportZones.getTransportZone().isEmpty()) {
             throw new IllegalStateException("Failed to find transport zones in config datastore");
         }
-        Map<BigInteger, ComputesBuilder> result = new HashMap<>();
+        Map<Uint64, ComputesBuilder> result = new HashMap<>();
         for (TransportZone transportZone : transportZones.getTransportZone()) {
             for (Vteps vtep : transportZone.getVteps()) {
                 if (dpnIds.contains(vtep.getDpnId())) {
@@ -1106,12 +1109,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                             new ComputesBuilder()
                                     .setZoneName(transportZone.getZoneName())
                                     .setDpnId(vtep.getDpnId())
-                                    .setNodeId(getNodeId(vtep.getDpnId()))
+                                    .setNodeId(getNodeId(vtep.getDpnId().toJava()))
                                     .setTepIp(Collections.singletonList(vtep.getIpAddress())));
                 }
             }
         }
-        for (BigInteger dpnId : dpnIds) {
+        for (Uint64 dpnId : dpnIds) {
             if (!result.containsKey(dpnId)) {
                 throw new IllegalStateException("Failed to find dpn id " + dpnId + " in transport zone");
             }
@@ -1119,19 +1122,19 @@ public class ItmManagerRpcService implements ItmRpcService {
         return result;
     }
 
-    private Map<String, BigInteger> getDpnIdByComputeNodeNameFromOpInventoryNodes(List<String> nodeNames)
+    private Map<String, Uint64> getDpnIdByComputeNodeNameFromOpInventoryNodes(List<String> nodeNames)
             throws ReadFailedException {
         Nodes operInventoryNodes = singleTransactionDataBroker.syncRead(
                 LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(Nodes.class).build());
         if (operInventoryNodes.getNode() == null || operInventoryNodes.getNode().isEmpty()) {
             throw new IllegalStateException("Failed to find operational inventory nodes datastore");
         }
-        Map<String, BigInteger> result = new HashMap<>();
+        Map<String, Uint64> result = new HashMap<>();
         for (Node node : operInventoryNodes.getNode()) {
             String name = node.augmentation(FlowCapableNode.class).getDescription();
             if (nodeNames.contains(name)) {
                 String[] nodeId = node.getId().getValue().split(":");
-                result.put(name, new BigInteger(nodeId[1]));
+                result.put(name, Uint64.valueOf(nodeId[1]));
             }
         }
         for (String nodeName : nodeNames) {
@@ -1182,7 +1185,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         long regValue = MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(dstId);
         int actionKeyStart = actionKey == null ? 0 : actionKey;
         result.add(new ActionSetFieldTunnelId(actionKeyStart++,
-                BigInteger.valueOf(tunnelKey != null ? tunnelKey : 0L)));
+                Uint64.valueOf(tunnelKey != null ? tunnelKey : 0L)));
         result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, MetaDataUtil.REG6_START_INDEX,
                 MetaDataUtil.REG6_END_INDEX, regValue));
         result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_TUNNEL_TABLE));
@@ -1198,7 +1201,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
         future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
             @Override
-            public void onSuccess(@NonNull  Optional<DcGatewayIpList> optional) {
+            public void onSuccess(@NonNull Optional<DcGatewayIpList> optional) {
                 try {
                     Optional<DcGatewayIpList> opt = future.get();
                     if (opt.isPresent()) {

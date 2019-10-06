@@ -9,12 +9,11 @@
 package org.opendaylight.genius.ipv6util.nd;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -37,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.Tr
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.TransmitPacketInputBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class Ipv6NsHelperTest {
     private Ipv6NsHelper instance;
@@ -56,7 +56,7 @@ public class Ipv6NsHelperTest {
         doReturn(RpcResultBuilder.status(true).buildFuture()).when(pktProcessService)
             .transmitPacket(any(TransmitPacketInput.class));
 
-        BigInteger dpnId = BigInteger.valueOf(1);
+        Uint64 dpnId = Uint64.ONE;
         String macAddr = "08:00:27:FE:8F:95";
         boolean retValue;
         Ipv6Address srcIpv6Address = new Ipv6Address("2001:db8::1");
@@ -98,7 +98,7 @@ public class Ipv6NsHelperTest {
         doReturn(RpcResultBuilder.status(true).buildFuture()).when(pktProcessService)
             .transmitPacket(any(TransmitPacketInput.class));
 
-        BigInteger dpnId = BigInteger.valueOf(1);
+        Uint64 dpnId = Uint64.ONE;
         String macAddr = "08:00:27:FE:8F:95";
         boolean retValue;
         Ipv6Address srcIpv6Address = new Ipv6Address("2001:db8::1");
@@ -164,7 +164,7 @@ public class Ipv6NsHelperTest {
         doReturn(RpcResultBuilder.status(true).buildFuture()).when(pktProcessService)
                 .transmitPacket(any(TransmitPacketInput.class));
 
-        BigInteger dpnId = BigInteger.valueOf(1);
+        Uint64 dpnId = Uint64.ONE;
         MacAddress srcMacAddress = new MacAddress("08:00:27:FE:8F:95");
         Ipv6Address srcIpv6Address = new Ipv6Address("2001:db8::1");
         Ipv6Address targetIpv6Address = new Ipv6Address("2001:db8::2");
@@ -180,7 +180,7 @@ public class Ipv6NsHelperTest {
         doReturn(RpcResultBuilder.status(true).buildFuture()).when(pktProcessService)
                 .transmitPacket(any(TransmitPacketInput.class));
 
-        BigInteger dpnId = BigInteger.valueOf(1);
+        Uint64 dpnId = Uint64.ONE;
         MacAddress srcMacAddress = new MacAddress("08:00:27:FE:8F:95");
         Ipv6Address srcIpv6Address = new Ipv6Address("2001:db8::1");
         Ipv6Address targetIpv6Address = new Ipv6Address("2001:db8::2");

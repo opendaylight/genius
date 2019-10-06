@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,12 +137,13 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
             }
             remoteDpnTepNewList.add(remoteDpnNew);
             LOG.debug("toggleMonitoring: RemoteDpnNew {}", remoteDpnNew);
-            directTunnelUtils.updateBfdConfiguration(dpnTeps.getSourceDpnId(), remoteDpnNew, ovsBridgeRefEntry);
+            directTunnelUtils.updateBfdConfiguration(dpnTeps.getSourceDpnId(),
+                                                        remoteDpnNew, ovsBridgeRefEntry);
         }
         updateMonitoringDS(dpnTeps.getSourceDpnId(), remoteDpnTepNewList, tx);
     }
 
-    public void updateMonitoringDS(BigInteger sourceDpnId,List<RemoteDpns> remoteDpnTepNewList,
+    public void updateMonitoringDS(Uint64 sourceDpnId, List<RemoteDpns> remoteDpnTepNewList,
                                    TypedWriteTransaction<Datastore.Configuration> tx) {
         InstanceIdentifier<DpnsTeps> iid = DirectTunnelUtils.createDpnTepsInstanceIdentifier(sourceDpnId);
         DpnsTepsBuilder builder = new DpnsTepsBuilder().withKey(new DpnsTepsKey(sourceDpnId))

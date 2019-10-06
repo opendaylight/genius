@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface NwConstants {
 
@@ -94,28 +94,29 @@ public interface NwConstants {
     String INGRESS_COUNTERS_SERVICE_NAME = "INGRESS_COUNTERS_SERVICE";
     String EGRESS_COUNTERS_SERVICE_NAME = "EGRESS_COUNTERS_SERVICE";
 
-    BigInteger COOKIE_IPV6_TABLE = new BigInteger("4000000", 16);
-    BigInteger COOKIE_QOS_TABLE = new BigInteger("4000001", 16);
-    BigInteger VLAN_TABLE_COOKIE = new BigInteger("8000000", 16);
-    BigInteger COOKIE_VM_INGRESS_TABLE = new BigInteger("8000001", 16);
-    BigInteger COOKIE_VM_LFIB_TABLE = new BigInteger("8000002", 16);
-    BigInteger COOKIE_VM_FIB_TABLE =  new BigInteger("8000003", 16);
-    BigInteger COOKIE_DNAT_TABLE = new BigInteger("8000004", 16);
-    BigInteger COOKIE_TS_TABLE = new BigInteger("8000005", 16);
-    BigInteger COOKIE_SNAT_TABLE = new BigInteger("8000006", 16);
-    BigInteger EGRESS_DISPATCHER_TABLE_COOKIE = new BigInteger("8000007", 16);
-    BigInteger COOKIE_OUTBOUND_NAPT_TABLE = new BigInteger("8000008", 16);
-    BigInteger COOKIE_L3_GW_MAC_TABLE = new BigInteger("8000009", 16);
-    BigInteger COOKIE_SUBNET_ROUTE_TABLE_MISS = new BigInteger("8000010", 16);
-    BigInteger EGRESS_POLICY_CLASSIFIER_COOKIE = new BigInteger("8000230", 16);
-    BigInteger EGRESS_POLICY_ROUTING_COOKIE = new BigInteger("8000231", 16);
-    BigInteger COOKIE_VXLAN_TRUNK_L2_TABLE = new BigInteger("1200000", 16);
-    BigInteger COOKIE_GRE_TRUNK_L2_TABLE = new BigInteger("1400000", 16);
-    BigInteger COOKIE_ELAN_INGRESS_TABLE = new BigInteger("8040000", 16);
-    BigInteger TUNNEL_TABLE_COOKIE = new BigInteger("9000000", 16);
-    BigInteger COOKIE_ARP_RESPONDER = new BigInteger("8220000", 16);
-    BigInteger COOKIE_COE_KUBE_PROXY_TABLE = new BigInteger("8230000", 16);
-    BigInteger COOKIE_ITM_EGRESS_TUNNEL_TABLE = new BigInteger("8000000", 16);
+    // FIXME: There are more efficient ways to express these constants
+    Uint64 COOKIE_IPV6_TABLE = Uint64.valueOf("4000000", 16).intern();
+    Uint64 COOKIE_QOS_TABLE = Uint64.valueOf("4000001", 16).intern();
+    Uint64 VLAN_TABLE_COOKIE = Uint64.valueOf("8000000", 16).intern();
+    Uint64 COOKIE_VM_INGRESS_TABLE = Uint64.valueOf("8000001", 16).intern();
+    Uint64 COOKIE_VM_LFIB_TABLE = Uint64.valueOf("8000002", 16).intern();
+    Uint64 COOKIE_VM_FIB_TABLE = Uint64.valueOf("8000003", 16).intern();
+    Uint64 COOKIE_DNAT_TABLE = Uint64.valueOf("8000004", 16).intern();
+    Uint64 COOKIE_TS_TABLE = Uint64.valueOf("8000005", 16).intern();
+    Uint64 COOKIE_SNAT_TABLE = Uint64.valueOf("8000006", 16).intern();
+    Uint64 EGRESS_DISPATCHER_TABLE_COOKIE = Uint64.valueOf("8000007", 16).intern();
+    Uint64 COOKIE_OUTBOUND_NAPT_TABLE = Uint64.valueOf("8000008", 16).intern();
+    Uint64 COOKIE_L3_GW_MAC_TABLE = Uint64.valueOf("8000009", 16).intern();
+    Uint64 COOKIE_SUBNET_ROUTE_TABLE_MISS = Uint64.valueOf("8000010", 16).intern();
+    Uint64 EGRESS_POLICY_CLASSIFIER_COOKIE = Uint64.valueOf("8000230", 16).intern();
+    Uint64 EGRESS_POLICY_ROUTING_COOKIE = Uint64.valueOf("8000231", 16).intern();
+    Uint64 COOKIE_VXLAN_TRUNK_L2_TABLE = Uint64.valueOf("1200000", 16).intern();
+    Uint64 COOKIE_GRE_TRUNK_L2_TABLE = Uint64.valueOf("1400000", 16).intern();
+    Uint64 COOKIE_ELAN_INGRESS_TABLE = Uint64.valueOf("8040000", 16).intern();
+    Uint64 TUNNEL_TABLE_COOKIE = Uint64.valueOf("9000000", 16).intern();
+    Uint64 COOKIE_ARP_RESPONDER = Uint64.valueOf("8220000", 16).intern();
+    Uint64 COOKIE_COE_KUBE_PROXY_TABLE = Uint64.valueOf("8230000", 16).intern();
+    Uint64 COOKIE_ITM_EGRESS_TUNNEL_TABLE = Uint64.valueOf("8000000", 16).intern();
 
     //Table IDs
     short VLAN_INTERFACE_INGRESS_TABLE = 0;
