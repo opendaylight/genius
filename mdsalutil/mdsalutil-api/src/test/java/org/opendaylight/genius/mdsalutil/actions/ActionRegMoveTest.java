@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowjava.nx.match.rev14
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstOfMplsLabelCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegMoveNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.move.grouping.NxRegMove;
+import org.opendaylight.yangtools.yang.common.Uint16;
 
 /**
  * Test for {@link ActionRegMove}.
@@ -35,8 +36,8 @@ public class ActionRegMoveTest {
             = (NxActionRegMoveNodesNodeTableFlowApplyActionsCase) action.getAction();
         NxRegMove nxRegMove = actionsCase.getNxRegMove();
         assertTrue(nxRegMove.getDst().getDstChoice() instanceof DstOfMplsLabelCase);
-        assertEquals((Integer) 0, nxRegMove.getDst().getStart());
-        assertEquals((Integer) 31, nxRegMove.getDst().getEnd());
+        assertEquals(Uint16.valueOf(0), nxRegMove.getDst().getStart());
+        assertEquals(Uint16.valueOf(31), nxRegMove.getDst().getEnd());
     }
 
     @Test

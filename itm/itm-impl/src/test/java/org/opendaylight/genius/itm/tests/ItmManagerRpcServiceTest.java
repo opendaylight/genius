@@ -13,7 +13,6 @@ import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertE
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -103,6 +102,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class ItmManagerRpcServiceTest {
 
@@ -128,7 +128,7 @@ public class ItmManagerRpcServiceTest {
     List<TransportZone> transportZoneList = new ArrayList<>();
     List<DeviceVteps> deviceVtepsList = new ArrayList<>();
     List<String> stringList = new ArrayList<>();
-    List<BigInteger> dpId1List = new ArrayList<>();
+    List<Uint64> dpId1List = new ArrayList<>();
     DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(ItmTestConstants.IP_ADDRESS_3, ItmTestConstants.SOURCE_DEVICE);
     DeviceVtepsKey deviceVtep2Key = new DeviceVtepsKey(ItmTestConstants.IP_ADDRESS_3, ItmTestConstants.SOURCE_DEVICE_2);
     AddExternalTunnelEndpointInput addExternalTunnelEndpointInput;
@@ -180,7 +180,7 @@ public class ItmManagerRpcServiceTest {
             .setNodeId(ItmTestConstants.SOURCE_DEVICE).setTopologyId(ItmTestConstants.DESTINATION_DEVICE).build();
         deviceVtepsList.add(deviceVteps);
         stringList.add(ItmTestConstants.SOURCE_DEVICE);
-        dpId1List.add(ItmTestConstants.DP_ID_1);
+        dpId1List.add(Uint64.valueOf(ItmTestConstants.DP_ID_1));
         stringList.add(ItmTestConstants.SOURCE_DEVICE_2);
 
         trunkInterfaceName = ItmUtils.getTrunkInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME,

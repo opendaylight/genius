@@ -20,6 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ni
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test for {@link ActionNxLoadMetadata}.
@@ -45,9 +47,9 @@ public class ActionNxLoadMetadataTest {
         assertTrue(nxRegLoad.getDst().getDstChoice() instanceof DstOfMetadataCase);
         DstOfMetadataCase dstOfMetadataCase = (DstOfMetadataCase) nxRegLoad.getDst().getDstChoice();
         assertEquals(Empty.getInstance(),dstOfMetadataCase.getOfMetadata());
-        assertEquals(START, nxRegLoad.getDst().getStart());
-        assertEquals(END, nxRegLoad.getDst().getEnd());
-        assertEquals(VALUE, nxRegLoad.getValue());
+        assertEquals(Uint16.valueOf(START), nxRegLoad.getDst().getStart());
+        assertEquals(Uint16.valueOf(END), nxRegLoad.getDst().getEnd());
+        assertEquals(Uint64.valueOf(VALUE), nxRegLoad.getValue());
     }
 
     @Test

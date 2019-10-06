@@ -140,7 +140,7 @@ public final class InterfaceMetaUtils {
 
     public BridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo) {
         ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
-        BigInteger dpn = parentRefs.getDatapathNodeIdentifier();
+        BigInteger dpn = parentRefs.getDatapathNodeIdentifier().toJava();
         return getBridgeRefEntryFromOperDS(dpn);
     }
 
@@ -176,7 +176,7 @@ public final class InterfaceMetaUtils {
     }
 
     public BridgeEntry getBridgeEntryFromConfigDS(InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier) {
-        BigInteger dpnId = bridgeEntryInstanceIdentifier.firstKeyOf(BridgeEntry.class).getDpid();
+        BigInteger dpnId = bridgeEntryInstanceIdentifier.firstKeyOf(BridgeEntry.class).getDpid().toJava();
         return getBridgeEntryFromConfigDS(dpnId);
     }
 
@@ -414,7 +414,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void addBridgeEntryToCache(BridgeEntry bridgeEntry) {
-        addBridgeEntryToCache(bridgeEntry.key().getDpid(), bridgeEntry);
+        addBridgeEntryToCache(bridgeEntry.key().getDpid().toJava(), bridgeEntry);
     }
 
     public void removeFromBridgeEntryCache(BigInteger dpnId) {
@@ -422,7 +422,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void removeFromBridgeEntryCache(BridgeEntry bridgeEntry) {
-        removeFromBridgeEntryCache(bridgeEntry.key().getDpid());
+        removeFromBridgeEntryCache(bridgeEntry.key().getDpid().toJava());
     }
 
     public BridgeEntry getBridgeEntryFromCache(BigInteger dpnId) {
@@ -436,7 +436,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void addBridgeRefEntryToCache(BridgeRefEntry bridgeRefEntry) {
-        addBridgeRefEntryToCache(bridgeRefEntry.key().getDpid(), bridgeRefEntry);
+        addBridgeRefEntryToCache(bridgeRefEntry.key().getDpid().toJava(), bridgeRefEntry);
     }
 
     public void removeFromBridgeRefEntryCache(BigInteger dpnId) {
@@ -444,7 +444,7 @@ public final class InterfaceMetaUtils {
     }
 
     public void removeFromBridgeRefEntryCache(BridgeRefEntry bridgeRefEntry) {
-        removeFromBridgeRefEntryCache(bridgeRefEntry.key().getDpid());
+        removeFromBridgeRefEntryCache(bridgeRefEntry.key().getDpid().toJava());
     }
 
     public BridgeRefEntry getBridgeRefEntryFromCache(BigInteger dpnId) {

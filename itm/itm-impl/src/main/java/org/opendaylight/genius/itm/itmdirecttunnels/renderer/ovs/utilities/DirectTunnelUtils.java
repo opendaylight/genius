@@ -449,7 +449,7 @@ public final class DirectTunnelUtils {
         int vlanId = 0;
         IfL2vlan ifL2vlan = iface.augmentation(IfL2vlan.class);
         if (ifL2vlan != null && ifL2vlan.getVlanId() != null) {
-            vlanId = ifL2vlan.getVlanId().getValue();
+            vlanId = ifL2vlan.getVlanId().getValue().toJava();
         }
 
         Builder<String, String> options = new ImmutableMap.Builder<>();

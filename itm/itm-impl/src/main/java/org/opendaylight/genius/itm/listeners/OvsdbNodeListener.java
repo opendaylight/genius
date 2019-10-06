@@ -228,7 +228,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 List<TzMembership> zones = ItmUtils.createTransportZoneMembership(oldTzName);
 
                 String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava()
+                                                             : ITMConstants.DUMMY_VLANID;
 
                 TunnelEndPoints tunnelEndPoints = ItmUtils.createDummyTunnelEndPoints(dpnId, tepIpAddress, newOfTunnel,
                         tos, zones, tunnelType, portName, vlanId);

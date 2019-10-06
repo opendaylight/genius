@@ -76,7 +76,7 @@ public class TunnelMonitoringConfig implements AutoCloseable {
         try {
             Optional<TunnelMonitorInterval> maybeTunnelInterval =
                     tunnelMonitorIntervalCache.get(TUNNEL_MONITOR_INTERVAL_PATH);
-            return maybeTunnelInterval.isPresent() ? maybeTunnelInterval.get().getInterval()
+            return maybeTunnelInterval.isPresent() ? maybeTunnelInterval.get().getInterval().toJava()
                     : ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
         } catch (ReadFailedException e) {
             LOG.warn("Read of {} failed", TUNNEL_MONITOR_INTERVAL_PATH, e);

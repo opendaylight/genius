@@ -69,13 +69,13 @@ public class Ipv6NaDecoder {
         naPdu.setTargetAddress(Ipv6Address.getDefaultInstance(
                 InetAddress.getByAddress(BitBufferHelper.getBits(data, bitOffset, 128)).getHostAddress()));
 
-        if (naPdu.getIpv6Length() > Ipv6Constants.ICMPV6_NA_LENGTH_WO_OPTIONS) {
+        if (naPdu.getIpv6Length().toJava() > Ipv6Constants.ICMPV6_NA_LENGTH_WO_OPTIONS) {
             bitOffset = bitOffset + 128;
             naPdu.setOptionType(BitBufferHelper.getShort(BitBufferHelper.getBits(data, bitOffset, 8)));
             bitOffset = bitOffset + 8;
             naPdu.setTargetAddrLength(BitBufferHelper.getShort(BitBufferHelper.getBits(data, bitOffset, 8)));
             bitOffset = bitOffset + 8;
-            if (naPdu.getOptionType() == Ipv6Constants.ICMP_V6_OPTION_TARGET_LLA) {
+            if (naPdu.getOptionType().toJava() == Ipv6Constants.ICMP_V6_OPTION_TARGET_LLA) {
                 naPdu.setTargetLlAddress(new MacAddress(
                         Ipv6Util.bytesToHexString(BitBufferHelper.getBits(data, bitOffset, 48))));
             }

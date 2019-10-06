@@ -161,7 +161,7 @@ public final class FlowBasedServicesUtils {
         int vlanId = 0;
         IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         if (l2vlan != null) {
-            vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
+            vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue().toJava();
         }
         if (vlanId >= 0  && l2vlan.getL2vlanMode() != IfL2vlan.L2vlanMode.Transparent) {
             matches.add(new MatchVlanVid(vlanId));
@@ -199,7 +199,7 @@ public final class FlowBasedServicesUtils {
         int vlanId = 0;
         IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         if (l2vlan != null && l2vlan.getVlanId() != null) {
-            vlanId = l2vlan.getVlanId().getValue();
+            vlanId = l2vlan.getVlanId().getValue().toJava();
         }
         if (vlanId != 0) {
             // incrementing instructionSize and using it as actionKey. Because
@@ -210,7 +210,7 @@ public final class FlowBasedServicesUtils {
 
         if (lportTag != 0L) {
             BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(instructions);
-            short index = boundServiceNew.getServicePriority();
+            short index = boundServiceNew.getServicePriority().toJava();
             BigInteger metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag, ++index, metadataValues[0],
                     isExternal(iface));
             BigInteger metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher(
@@ -238,10 +238,10 @@ public final class FlowBasedServicesUtils {
 
         String serviceRef = boundServiceNew.getServiceName();
         String flowRef = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, iface.getName(),
-                boundServiceNew.getServicePriority());
+                boundServiceNew.getServicePriority().toJava());
         StypeOpenflow stypeOpenflow = boundServiceNew.augmentation(StypeOpenflow.class);
-        Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority(), serviceRef, 0, 0,
-                stypeOpenflow.getFlowCookie(), matches, instructionSet);
+        Flow ingressFlow = MDSALUtil.buildFlowNew(tableId, flowRef, stypeOpenflow.getFlowPriority().toJava(),
+                serviceRef, 0, 0, stypeOpenflow.getFlowCookie().toJava(), matches, instructionSet);
         installFlow(dpId, ingressFlow, tx);
     }
 
@@ -301,7 +301,7 @@ public final class FlowBasedServicesUtils {
         String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName,
                 currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
-                DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches,
+                DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie().toJava(), matches,
                 instructions);
         LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
             interfaceName, flowRef);
@@ -319,7 +319,7 @@ public final class FlowBasedServicesUtils {
         // this flow drops traffic targeted to external interfaces if they
         // arrived
         // from an external interface (marked with the SH bit)
-        if (boundService.getServicePriority() == ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+        if (boundService.getServicePriority().toJava() == ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
             installEgressDispatcherSplitHorizonFlow(dpId, boundService, interfaceName, tx, interfaceTag,
                     currentServiceIndex, iface);
@@ -343,7 +343,7 @@ public final class FlowBasedServicesUtils {
         // build the final instruction for LPort Dispatcher table flow entry
         List<Action> finalApplyActions = new ArrayList<>();
         List<Instruction> instructions = new ArrayList<>();
-        if (boundService.getServicePriority() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+        if (boundService.getServicePriority().toJava() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
             BigInteger[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
             BigInteger metadataMask = MetaDataUtil.getWriteMetaDataMaskForEgressDispatcherTable();
@@ -380,8 +380,8 @@ public final class FlowBasedServicesUtils {
         String flowRef = getFlowRef(dpId, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, interfaceName,
                 currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
-                boundService.getServicePriority(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie(), matches,
-                instructions);
+                boundService.getServicePriority().toJava(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie().toJava(),
+                matches, instructions);
         LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", interfaceName, flowRef);
         installFlow(dpId, egressFlow, tx);
     }
@@ -413,10 +413,11 @@ public final class FlowBasedServicesUtils {
                 shFlagSet);
         String serviceRef = boundService.getServiceName();
         // This must be higher priority than the egress flow
-        int splitHorizonFlowPriority = boundService.getServicePriority() + 1;
+        int splitHorizonFlowPriority = boundService.getServicePriority().toJava() + 1;
         StypeOpenflow stypeOpenFlow = boundService.augmentation(StypeOpenflow.class);
         Flow egressSplitHorizonFlow = MDSALUtil.buildFlow(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
-                splitHorizonFlowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), shMatches, shInstructions);
+                splitHorizonFlowPriority, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie().toJava(),
+                shMatches, shInstructions);
 
         installFlow(dpId, egressSplitHorizonFlow, tx);
     }
@@ -520,7 +521,7 @@ public final class FlowBasedServicesUtils {
     public static void removeIngressFlow(String name, BoundServices serviceOld, BigInteger dpId,
             TypedWriteTransaction<Configuration> writeTransaction) {
         String flowKeyStr = getFlowRef(dpId, NwConstants.VLAN_INTERFACE_INGRESS_TABLE, name,
-                serviceOld.getServicePriority());
+                serviceOld.getServicePriority().toJava());
         LOG.debug("Removing Ingress Flow {}", flowKeyStr);
         FlowKey flowKey = new FlowKey(new FlowId(flowKeyStr));
         Node nodeDpn = buildInventoryDpnNode(dpId);
@@ -630,7 +631,7 @@ public final class FlowBasedServicesUtils {
         List<BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
         availableServiceInfos.sort(Comparator.comparing(BoundServices::getServicePriority));
         for (BoundServices availableServiceInfo : availableServiceInfos) {
-            if (currentServiceInfo.getServicePriority() < availableServiceInfo.getServicePriority()) {
+            if (currentServiceInfo.getServicePriority().toJava() < availableServiceInfo.getServicePriority().toJava()) {
                 lower = availableServiceInfo;
                 break;
             } else {
@@ -648,7 +649,8 @@ public final class FlowBasedServicesUtils {
         BoundServices highPriorityService = availableServiceInfos.get(0);
         availableServiceInfos.remove(0);
         for (BoundServices availableServiceInfo : availableServiceInfos) {
-            if (availableServiceInfo.getServicePriority() < highPriorityService.getServicePriority()) {
+            if (availableServiceInfo.getServicePriority().toJava()
+                    < highPriorityService.getServicePriority().toJava()) {
                 highPriorityService = availableServiceInfo;
             }
         }
@@ -662,7 +664,7 @@ public final class FlowBasedServicesUtils {
 
         IfL2vlan l2vlan = iface.augmentation(IfL2vlan.class);
         if (l2vlan != null) {
-            vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue();
+            vlanId = l2vlan.getVlanId() == null ? 0 : l2vlan.getVlanId().getValue().toJava();
             isVlanTransparent = l2vlan.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
         }
         int instructionKey = 0;
