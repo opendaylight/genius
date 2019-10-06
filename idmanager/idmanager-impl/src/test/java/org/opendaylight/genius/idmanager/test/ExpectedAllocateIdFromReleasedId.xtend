@@ -14,6 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntriesBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntriesBuilder
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -40,13 +41,13 @@ class ExpectedAllocateIdFromReleasedId {
                 new IdEntriesBuilder >> [
                     idKey = "test-key1"
                     idValue = #[
-                        1L
+                        Uint32.valueOf(1L)
                     ]
                 ],
                 new IdEntriesBuilder >> [
                     idKey = "test-key2"
                     idValue = #[
-                        0L
+                        Uint32.valueOf(0L)
                     ]
                 ]
             ]

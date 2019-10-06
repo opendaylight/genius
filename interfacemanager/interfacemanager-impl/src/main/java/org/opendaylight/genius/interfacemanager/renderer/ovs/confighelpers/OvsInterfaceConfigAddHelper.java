@@ -143,7 +143,7 @@ public final class OvsInterfaceConfigAddHelper {
             return;
         }
 
-        BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+        BigInteger dpId = parentRefs.getDatapathNodeIdentifier().toJava();
         if (dpId == null) {
             LOG.warn("dpid for interface: {} Not Found. No DPID provided. " + "Creation of OF-Port not supported.",
                     interfaceNew.getName());

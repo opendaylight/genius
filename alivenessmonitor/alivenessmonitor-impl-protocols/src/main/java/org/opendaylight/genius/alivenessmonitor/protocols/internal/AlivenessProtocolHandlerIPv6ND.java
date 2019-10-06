@@ -99,10 +99,10 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
             LOG.warn("Failed to decode IPv6 NA packet={}", data, e);
             return null;
         }
-        short tableId = packetReceived.getTableId().getValue();
+        short tableId = packetReceived.getTableId().getValue().toJava();
         LOG.trace("packet: {}, tableId {}, ipv6Type {}", packetReceived, tableId, naPacket.getIcmp6Type());
 
-        BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();
+        BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata().toJava();
         int portTag = MetaDataUtil.getLportFromMetadata(metadata).intValue();
         String interfaceName = null;
 

@@ -67,7 +67,7 @@ public class ComputeNodeManager {
             @Override
             protected void added(InstanceIdentifier<ComputeNode> path, ComputeNode computeNode) {
                 LOG.info("ComputeNodeManager add compute {}", computeNode);
-                dpnIdVsComputeNode.put(computeNode.getDpnid(), computeNode);
+                dpnIdVsComputeNode.put(computeNode.getDpnid().toJava(), computeNode);
             }
 
             @Override
@@ -155,7 +155,7 @@ public class ComputeNodeManager {
         ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         tx.put(LogicalDatastoreType.CONFIGURATION, computeIid, computeNode);
         tx.submit().checkedGet();
-        dpnIdVsComputeNode.put(computeNode.getDpnid(), computeNode);
+        dpnIdVsComputeNode.put(computeNode.getDpnid().toJava(), computeNode);
         //LOG.info("Write comute node details {}", computeNode);
     }
 

@@ -112,7 +112,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
         }
         if (Tunnel.class.equals(interfaceInfo.getType())) {
             ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
-            dpId = parentRefs.getDatapathNodeIdentifier();
+            dpId = parentRefs.getDatapathNodeIdentifier().toJava();
         } else {
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                 .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
@@ -154,7 +154,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     public ListenableFuture<GetEgressInstructionsForInterfaceOutput> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
-                input.getTunnelKey(), interfaceManagerCommonUtils, false);
+                input.getTunnelKey().toJava(), interfaceManagerCommonUtils, false);
         return Futures.immediateFuture(
                 new GetEgressInstructionsForInterfaceOutputBuilder().setInstruction(instructions).build());
     }
@@ -194,8 +194,8 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     @Override
     public ListenableFuture<GetEgressActionsForInterfaceOutput> getEgressActionsForInterface(
             GetEgressActionsForInterfaceInput input) {
-        List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(), input.getTunnelKey(),
-                input.getActionKey(), interfaceManagerCommonUtils, false);
+        List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
+                input.getTunnelKey().toJava(), input.getActionKey(), interfaceManagerCommonUtils, false);
         // TODO as above, simplify the success case later, as we have the failure case below
         return Futures
                 .immediateFuture(new GetEgressActionsForInterfaceOutputBuilder().setAction(actionsList).build());
@@ -262,7 +262,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
 
     @Override
     public ListenableFuture<GetDpnInterfaceListOutput> getDpnInterfaceList(GetDpnInterfaceListInput input) {
-        BigInteger dpnid = input.getDpid();
+        BigInteger dpnid = input.getDpid().toJava();
         InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, new DpnToInterfaceKey(dpnid)).build();
         Optional<DpnToInterface> entry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);

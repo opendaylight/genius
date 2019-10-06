@@ -203,8 +203,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             String ifName = add.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
-                BigInteger srcDpId = internalTunnel.getSourceDPN();
-                BigInteger dstDpId = internalTunnel.getDestinationDPN();
+                BigInteger srcDpId = internalTunnel.getSourceDPN().toJava();
+                BigInteger dstDpId = internalTunnel.getDestinationDPN().toJava();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 if (!isTunnelInterfaceUp(add)) {
                     LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: "
@@ -248,8 +248,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             String ifName = del.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
-                BigInteger srcDpId = internalTunnel.getSourceDPN();
-                BigInteger dstDpId = internalTunnel.getDestinationDPN();
+                BigInteger srcDpId = internalTunnel.getSourceDPN().toJava();
+                BigInteger dstDpId = internalTunnel.getDestinationDPN().toJava();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId,
                           tunnelType);
@@ -285,8 +285,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             String ifName = update.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
-                BigInteger srcDpId = internalTunnel.getSourceDPN();
-                BigInteger dstDpId = internalTunnel.getDestinationDPN();
+                BigInteger srcDpId = internalTunnel.getSourceDPN().toJava();
+                BigInteger dstDpId = internalTunnel.getDestinationDPN().toJava();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",

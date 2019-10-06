@@ -195,7 +195,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     private synchronized void storeGroup(BigInteger dpnId, Group group) {
-        groups.put(new InternalGroupKey(dpnId, group.key().getGroupId().getValue()), group);
+        groups.put(new InternalGroupKey(dpnId, group.key().getGroupId().getValue().toJava()), group);
     }
 
     private synchronized void deleteGroup(BigInteger dpnId, long groupId) {
@@ -203,7 +203,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     private synchronized void storeBucket(BigInteger dpnId, long groupId, Bucket bucket) {
-        buckets.put(new InternalBucketKey(dpnId, groupId, bucket.getBucketId().getValue()), bucket);
+        buckets.put(new InternalBucketKey(dpnId, groupId, bucket.getBucketId().getValue().toJava()), bucket);
     }
 
     private synchronized void deleteBucket(BigInteger dpnId, long groupId, long bucketId) {
@@ -222,7 +222,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     @Override
     public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
-        removeFlow(tx, dpId, flow.key(), flow.getTableId());
+        removeFlow(tx, dpId, flow.key(), flow.getTableId().toJava());
     }
 
     @Override
@@ -254,7 +254,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
 
     @Override
     public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
-        deleteGroup(dpId, group.getGroupId().getValue());
+        deleteGroup(dpId, group.getGroupId().getValue().toJava());
     }
 
     @Override

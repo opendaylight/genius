@@ -242,8 +242,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
                 checkNotNull(portResult);
-                dpnId = portResult.getDpid();
-                Long portid = portResult.getPortno();
+                dpnId = portResult.getDpid().toJava();
+                Long portid = portResult.getPortno().toJava();
                 checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId),
                     ArpConstants.DPN_NOT_FOUND_ERROR, interfaceName);
 
@@ -348,8 +348,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             String interfaceName = input.getInterface();
             GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
             checkNotNull(portResult);
-            dpnId = portResult.getDpid();
-            Long portid = portResult.getPortno();
+            dpnId = portResult.getDpid().toJava();
+            Long portid = portResult.getPortno().toJava();
             NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
             checkArgument(null != dpnId && !BigInteger.ZERO.equals(dpnId),
                 ArpConstants.DPN_NOT_FOUND_ERROR, interfaceName);
@@ -393,7 +393,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         if (pktInReason == SendToController.class) {
             try {
                 BigInteger dpnId = extractDpnId(packetReceived);
-                int tableId = packetReceived.getTableId().getValue();
+                int tableId = packetReceived.getTableId().getValue().toJava();
 
                 byte[] data = packetReceived.getPayload();
                 Ethernet ethernet = new Ethernet();
@@ -418,10 +418,10 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 macsDB.put(interfaceName + "-" + srcInetAddr.getHostAddress(), NWUtil.toStringMacAddress(srcMac));
                 if (arp.getOpCode() == ArpConstants.ARP_REQUEST_OP) {
                     fireArpReqRecvdNotification(interfaceName, srcInetAddr, srcMac, dstInetAddr, dpnId, tableId,
-                            metadata.getMetadata());
+                            metadata.getMetadata().toJava());
                 } else {
                     fireArpRespRecvdNotification(interfaceName, srcInetAddr, srcMac, dpnId, tableId,
-                                                 metadata.getMetadata(), dstInetAddr, dstMac);
+                                                 metadata.getMetadata().toJava(), dstInetAddr, dstMac);
                 }
                 if (macAddrs.get(srcInetAddr.getHostAddress()) != null) {
                     threadPool.execute(new MacResponderTask(arp));
@@ -452,7 +452,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         LOG.debug("metadata received is {} ", metadata);
 
         GetInterfaceFromIfIndexInputBuilder ifIndexInputBuilder = new GetInterfaceFromIfIndexInputBuilder();
-        BigInteger lportTag = MetaDataUtil.getLportFromMetadata(metadata.getMetadata());
+        BigInteger lportTag = MetaDataUtil.getLportFromMetadata(metadata.getMetadata().toJava());
 
         ifIndexInputBuilder.setIfIndex(lportTag.intValue());
         GetInterfaceFromIfIndexInput input = ifIndexInputBuilder.build();

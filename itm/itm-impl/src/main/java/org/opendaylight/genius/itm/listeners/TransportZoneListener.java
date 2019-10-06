@@ -327,10 +327,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<Vteps> vtepsList = new ArrayList<>();
         if (unVtepsLst != null && !unVtepsLst.isEmpty()) {
             for (UnknownVteps vteps : unVtepsLst) {
-                BigInteger dpnID = vteps.getDpnId();
+                BigInteger dpnID = vteps.getDpnId().toJava();
                 IpAddress ipAddress = vteps.getIpAddress();
                 String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava()
+                                                             : ITMConstants.DUMMY_VLANID;
                 boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOfTunnel());
                 String tos = vteps.getOptionTunnelTos();
                 if (tos == null) {
@@ -429,11 +430,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<Vteps> vtepsList = transportZone.getVteps();
 
         String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
         if (vtepsList != null && !vtepsList.isEmpty()) {
             for (Vteps vteps : vtepsList) {
-                BigInteger dpnID = vteps.getDpnId();
+                BigInteger dpnID = vteps.getDpnId().toJava();
                 IpAddress ipAddress = vteps.getIpAddress();
                 boolean useOfTunnel = itmConfig.isUseOfTunnels();
                 String tos = vteps.getOptionTunnelTos();

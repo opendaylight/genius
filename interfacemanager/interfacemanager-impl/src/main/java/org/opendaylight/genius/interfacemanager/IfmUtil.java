@@ -350,7 +350,7 @@ public final class IfmUtil {
                     boolean isVlanTransparent = false;
                     int vlanVid = 0;
                     if (vlanIface != null) {
-                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue();
+                        vlanVid = vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().toJava();
                         isVlanTransparent = vlanIface.getL2vlanMode() == IfL2vlan.L2vlanMode.Transparent;
                     }
                     if (vlanVid != 0 && !isVlanTransparent) {
@@ -400,8 +400,8 @@ public final class IfmUtil {
                 if (actualInstruction instanceof WriteMetadataCase) {
                     WriteMetadataCase writeMetaDataInstruction = (WriteMetadataCase) actualInstruction;
                     WriteMetadata availableMetaData = writeMetaDataInstruction.getWriteMetadata();
-                    metadata = metadata.or(availableMetaData.getMetadata());
-                    metadataMask = metadataMask.or(availableMetaData.getMetadataMask());
+                    metadata = metadata.or(availableMetaData.getMetadata().toJava());
+                    metadataMask = metadataMask.or(availableMetaData.getMetadataMask().toJava());
                 }
             }
         }
@@ -552,7 +552,7 @@ public final class IfmUtil {
         BoundServices serviceInfo, Class<? extends ServiceModeBase> serviceMode) {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
-            serviceInfo.getServicePriority(), interfaceName, serviceMode);
+            serviceInfo.getServicePriority().toJava(), interfaceName, serviceMode);
         tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
     }
 

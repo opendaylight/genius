@@ -52,6 +52,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockOutput;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public class IdUtils {
     private static final int DEFAULT_BLOCK_SIZE_DIFF = 10;
     public static final int RETRY_COUNT = 6;
 
-    private final ConcurrentHashMap<String, CompletableFuture<List<Long>>> allocatedIdMap = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, CompletableFuture<List<Uint32>>> allocatedIdMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, CountDownLatch> releaseIdLatchMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, AtomicInteger> poolUpdatedMap = new ConcurrentHashMap<>();
 
@@ -75,12 +76,12 @@ public class IdUtils {
         bladeId = InetAddresses.coerceToInteger(InetAddress.getLocalHost());
     }
 
-    public CompletableFuture<List<Long>> removeAllocatedIds(String uniqueIdKey) {
+    public CompletableFuture<List<Uint32>> removeAllocatedIds(String uniqueIdKey) {
         return allocatedIdMap.remove(uniqueIdKey);
     }
 
-    public CompletableFuture<List<Long>> putAllocatedIdsIfAbsent(String uniqueIdKey,
-            CompletableFuture<List<Long>> futureIdValues) {
+    public CompletableFuture<List<Uint32>> putAllocatedIdsIfAbsent(String uniqueIdKey,
+            CompletableFuture<List<Uint32>> futureIdValues) {
         return allocatedIdMap.putIfAbsent(uniqueIdKey, futureIdValues);
     }
 
@@ -102,7 +103,7 @@ public class IdUtils {
         return idEntriesBuilder.build();
     }
 
-    public IdEntries createIdEntries(String idKey, List<Long> newIdVals) {
+    public IdEntries createIdEntries(String idKey, List<Uint32> newIdVals) {
         return new IdEntriesBuilder().withKey(new IdEntriesKey(idKey))
                 .setIdKey(idKey).setIdValue(newIdVals).build();
     }
@@ -150,7 +151,7 @@ public class IdUtils {
 
     protected boolean isIdAvailable(AvailableIdsHolderBuilder availableIds) {
         if (availableIds.getCursor() != null && availableIds.getEnd() != null) {
-            return availableIds.getCursor() < availableIds.getEnd();
+            return availableIds.getCursor() < availableIds.getEnd().toJava();
         }
         return false;
     }
@@ -203,7 +204,7 @@ public class IdUtils {
                     .setReadyTimeSec(System.currentTimeMillis() / 1000).build();
             existingDelayedIdEntriesInParent.add(delayedIdEntries);
         }
-        long availableIdCountParent = releasedIdsParent.getAvailableIdCount();
+        long availableIdCountParent = releasedIdsParent.getAvailableIdCount().toJava();
         releasedIdsParent.setDelayedIdEntries(existingDelayedIdEntriesInParent)
                 .setAvailableIdCount(availableIdCountParent + idCountToBeFreed);
     }
@@ -235,7 +236,7 @@ public class IdUtils {
 
     public long getAvailableIdsCount(AvailableIdsHolderBuilder availableIds) {
         if (availableIds != null && isIdAvailable(availableIds)) {
-            return availableIds.getEnd() - availableIds.getCursor();
+            return availableIds.getEnd().toJava() - availableIds.getCursor();
         }
         return 0;
     }
