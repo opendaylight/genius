@@ -14,7 +14,6 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -76,6 +75,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,8 +91,8 @@ public final class InterfaceManagerTestUtil {
     public static final String TUNNEL_INTERFACE_NAME = "tun414a856a7a4";
     public static final String TRUNK_INTERFACE_NAME = "23701c04-7e58-4c65-9425-78a80d49a219";
 
-    public static final BigInteger DPN_ID_1 = BigInteger.valueOf(1);
-    public static final BigInteger DPN_ID_2 = BigInteger.valueOf(2);
+    public static final Uint64 DPN_ID_1 = Uint64.ONE;
+    public static final Uint64 DPN_ID_2 = Uint64.valueOf(2);
     public static final long PORT_NO_1 = 2;
 
     public static final TopologyId OVSDB_TOPOLOGY_ID = new TopologyId(new Uri("ovsdb:1"));
@@ -126,7 +126,7 @@ public final class InterfaceManagerTestUtil {
         return ifaceBuilder.build();
     }
 
-    static Node buildInventoryDpnNode(BigInteger dpnId) {
+    static Node buildInventoryDpnNode(Uint64 dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
         Node nodeDpn = new NodeBuilder().setId(nodeId).withKey(new NodeKey(nodeId)).build();
 
@@ -154,16 +154,16 @@ public final class InterfaceManagerTestUtil {
         return fcNodeConnector.build();
     }
 
-    static NodeConnectorId buildNodeConnectorId(BigInteger dpn, long portNo) {
+    static NodeConnectorId buildNodeConnectorId(Uint64 dpn, long portNo) {
         return new NodeConnectorId(buildNodeConnectorString(dpn, portNo));
     }
 
-    static String buildNodeConnectorString(BigInteger dpn, long portNo) {
+    static String buildNodeConnectorString(Uint64 dpn, long portNo) {
         return IfmConstants.OF_URI_PREFIX + dpn + IfmConstants.OF_URI_SEPARATOR + portNo;
     }
 
     static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector>
-        buildNodeConnectorInstanceIdentifier(BigInteger dpn, long portNo) {
+        buildNodeConnectorInstanceIdentifier(Uint64 dpn, long portNo) {
         NodeConnectorId nodeConnectorId = buildNodeConnectorId(dpn, portNo);
         NodeId nodeId = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector>
@@ -259,7 +259,7 @@ public final class InterfaceManagerTestUtil {
             interfaceInfo = InterfaceManagerTestUtil.buildInterface(ifaceName, ifaceName, true, ifType,
                     parentRefs.getParentInterface(), IfL2vlan.L2vlanMode.Trunk);
         } else {
-            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier(),ifaceName, ifaceName,
+            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier().toJava(),ifaceName, ifaceName,
                     true, TunnelTypeVxlan.class, "1.1.1.1", "2.2.2.2");
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
@@ -282,7 +282,7 @@ public final class InterfaceManagerTestUtil {
                                                Class<? extends InterfaceType> ifType)
             throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
+        Uint64 dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
                 .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, true);
@@ -293,7 +293,7 @@ public final class InterfaceManagerTestUtil {
     static void updateFlowCapableNodeConnectorState(DataBroker dataBroker, String interfaceName,
             Class<? extends InterfaceType> ifType, boolean isLive) throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
+        Uint64 dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
             .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, isLive);
@@ -304,7 +304,7 @@ public final class InterfaceManagerTestUtil {
     static void removeFlowCapableNodeConnectorState(DataBroker dataBroker, Class<? extends InterfaceType> ifType)
             throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        BigInteger dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
+        Uint64 dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         tx.delete(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo));
         tx.submit().checkedGet();
@@ -314,7 +314,7 @@ public final class InterfaceManagerTestUtil {
     static void removeNode(DataBroker dataBroker) throws TransactionCommitFailedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
-            .child(Node.class, new NodeKey(IfmUtil.buildDpnNodeId(DPN_ID_2))).build();
+            .child(Node.class, new NodeKey(IfmUtil.buildDpnNodeId(DPN_ID_2.toJava()))).build();
         tx.delete(OPERATIONAL,nodeInstanceIdentifier);
         tx.submit().checkedGet();
     }
@@ -355,7 +355,7 @@ public final class InterfaceManagerTestUtil {
     }
 
     static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
-                                                 BigInteger cookie, List<Instruction> instructions) {
+                                          Uint64 cookie, List<Instruction> instructions) {
         StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority)
             .setInstruction(instructions);
         return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)

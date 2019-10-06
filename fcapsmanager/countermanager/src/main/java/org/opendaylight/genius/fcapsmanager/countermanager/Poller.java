@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.fcapsmanager.countermanager;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.lang.management.ManagementFactory;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
@@ -46,6 +47,8 @@ public class Poller {
     /**
      * Platform dependent bundle injects its handle and it is retrieved in the method.
      */
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private PMServiceFacade getPMServiceSPI() {
         PMServiceFacade service = null;
         if (bundleContext != null) {

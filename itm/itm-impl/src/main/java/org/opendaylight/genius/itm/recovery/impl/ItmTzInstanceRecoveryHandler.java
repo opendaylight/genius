@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.itm.recovery.impl;
 
-import java.math.BigInteger;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,6 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.serviceutils.srm.types.rev180626.GeniusItmTz;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +102,7 @@ public class ItmTzInstanceRecoveryHandler extends
         List<String> tunnelList = new ArrayList<>();
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             Collection<DpnsTeps> dpnsTeps = dpnTepStateCache.getAllPresent();
-            List<BigInteger> listOfDpnIds = ItmUtils.getDpIdFromTransportzone(dataBroker, entityId);
+            List<Uint64> listOfDpnIds = ItmUtils.getDpIdFromTransportzone(dataBroker, entityId);
             for (DpnsTeps dpnTep : dpnsTeps) {
                 List<RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
                 for (RemoteDpns remoteDpn : rmtdpns) {

@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.impl;
 
 import static org.mockito.Mockito.doReturn;
@@ -15,7 +14,6 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -86,11 +84,13 @@ import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmExternalTunnelAddTest {
 
-    BigInteger dpId1 = BigInteger.valueOf(1);
+    Uint64 dpId1 = Uint64.ONE;
     int vlanId = 100 ;
     int interval = 1000;
     String portName1 = "phy0";
@@ -132,7 +132,7 @@ public class ItmExternalTunnelAddTest {
     Interface iface = null;
     List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
-    List<BigInteger> bigIntegerList = new ArrayList<>();
+    List<Uint64> bigIntegerList = new ArrayList<>();
     List<HwVtep> cfgdHwVtepsList = new ArrayList<>();
     List<DeviceVteps> deviceVtepsList = new ArrayList<>();
     List<Vteps> vtepsList = new ArrayList<>();
@@ -286,7 +286,7 @@ public class ItmExternalTunnelAddTest {
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
         doReturn("phy0").when(itmConfig).getPortname();
-        doReturn(100).when(itmConfig).getVlanId();
+        doReturn(Uint16.valueOf(100)).when(itmConfig).getVlanId();
     }
 
     @Test

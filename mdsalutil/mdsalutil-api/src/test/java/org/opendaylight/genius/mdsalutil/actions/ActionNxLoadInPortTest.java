@@ -12,22 +12,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
-import java.math.BigInteger;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.genius.mdsalutil.tests.UintXtendBeanGenerator;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.dst.choice.grouping.dst.choice.DstNxOfInPortCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nodes.node.table.flow.instructions.instruction.instruction.apply.actions._case.apply.actions.action.action.NxActionRegLoadNodesNodeTableFlowApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoad;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test for {@link ActionNxLoadInPort}.
  */
 public class ActionNxLoadInPortTest {
-    private static final BigInteger VALUE = BigInteger.TEN;
+    private static final Uint64 VALUE = Uint64.valueOf(10).intern();
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new UintXtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
@@ -52,6 +53,6 @@ public class ActionNxLoadInPortTest {
     public void generateAction() {
         ActionInfo actionInfo = new ActionNxLoadInPort(VALUE);
         assertEquals(
-            "new ActionNxLoadInPort(0, " + VALUE + "bi)", generator.getExpression(actionInfo));
+            "new ActionNxLoadInPort(0, (u64)" + VALUE + ")", generator.getExpression(actionInfo));
     }
 }

@@ -12,7 +12,6 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -66,6 +65,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +111,7 @@ public class TepCommandHelper {
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public void createLocalCache(BigInteger dpnId, String ipAddress,
+    public void createLocalCache(Uint64 dpnId, String ipAddress,
                                  String transportZone) throws TepException {
 
         CHECK.incrementAndGet();
@@ -165,7 +165,7 @@ public class TepCommandHelper {
     }
 
 
-    public boolean checkTepPerTzPerDpn(String tzone, BigInteger dpnId) {
+    public boolean checkTepPerTzPerDpn(String tzone, Uint64 dpnId) {
         // check in local cache
         if (transportZonesHashMap.containsKey(tzone)) {
             List<Vteps> vtepList = transportZonesHashMap.get(tzone);
@@ -328,7 +328,7 @@ public class TepCommandHelper {
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public void deleteVtep(BigInteger dpnId, String ipAddress,
+    public void deleteVtep(Uint64 dpnId, String ipAddress,
                            String transportZone) throws TepException {
 
         final VtepsKey vtepkey = new VtepsKey(dpnId);
@@ -446,7 +446,7 @@ public class TepCommandHelper {
     }
 
     // Show DPN-ID and Bridge mapping
-    public void showBridges(Map<BigInteger, OvsdbBridgeRef> dpnIdBridgeRefMap) {
+    public void showBridges(Map<Uint64, OvsdbBridgeRef> dpnIdBridgeRefMap) {
         System.out.println(String.format("%-16s  %-16s  %-36s%n", "DPN-ID", "Bridge-Name", "Bridge-UUID")
                 + "------------------------------------------------------------------------");
         dpnIdBridgeRefMap.forEach((dpnId, ovsdbBridgeRef) -> {
@@ -458,7 +458,7 @@ public class TepCommandHelper {
     }
 
     // deletes from ADD-cache if it exists.
-    public boolean isInCache(BigInteger dpnId, String ipAddress,
+    public boolean isInCache(Uint64 dpnId, String ipAddress,
                              String transportZone) throws TepException {
         boolean exists = false;
         final VtepsKey vtepkey = new VtepsKey(dpnId);
@@ -508,19 +508,18 @@ public class TepCommandHelper {
         tunnelType = StringUtils.upperCase(tunnelType);
         tunType = ItmUtils.TUNNEL_TYPE_MAP.get(tunnelType);
 
-        List<TransportZone> tzList = null;
+
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> tzones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
         TransportZone tzone = new TransportZoneBuilder().withKey(new TransportZoneKey(transportZoneName))
                 .setTunnelType(tunType).build();
+        List<TransportZone> tzList = new ArrayList<>();
         if (tzones.isPresent()) {
-            tzList = tzones.get().getTransportZone();
-            if (tzList == null || tzList.isEmpty()) {
-                tzList = new ArrayList<>();
+            final List<TransportZone> lst = tzones.get().getTransportZone();
+            if (lst != null) {
+                tzList.addAll(lst);
             }
-        } else {
-            tzList = new ArrayList<>();
         }
         tzList.add(tzone);
         TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
@@ -557,7 +556,7 @@ public class TepCommandHelper {
                 InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
         Optional<TunnelMonitorInterval> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path,
                 dataBroker);
-        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
+        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval().toJava() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,

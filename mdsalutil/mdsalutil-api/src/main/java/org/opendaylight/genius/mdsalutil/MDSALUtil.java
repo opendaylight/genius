@@ -5,12 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.mdsalutil;
 
 import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -90,6 +88,8 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier.InstanceIdentifierBuilder;
 import org.opendaylight.yangtools.yang.common.Empty;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,8 +115,8 @@ public class MDSALUtil {
 
     }
 
-    public static FlowEntity buildFlowEntity(BigInteger dpnId, short tableId, String flowId, int priority,
-            String flowName, int idleTimeOut, int hardTimeOut, BigInteger cookie,
+    public static FlowEntity buildFlowEntity(Uint64 dpnId, short tableId, String flowId, int priority,
+            String flowName, int idleTimeOut, int hardTimeOut, Uint64 cookie,
             List<? extends MatchInfoBase> listMatchInfoBase, List<InstructionInfo> listInstructionInfo) {
 
         FlowEntityBuilder builder = new FlowEntityBuilder()
@@ -139,14 +139,18 @@ public class MDSALUtil {
 
     // TODO: CHECK IF THIS IS USED
     public static Flow buildFlow(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase> listMatchInfoBase,
+            int hardTimeOut, Uint64 cookie, List<? extends MatchInfoBase> listMatchInfoBase,
             List<InstructionInfo> listInstructionInfo) {
-        return MDSALUtil.buildFlow(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
+        return buildFlow(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
                 listMatchInfoBase, listInstructionInfo, true);
     }
 
+    // FIXME: priority -> Uint16
+    // FIXME: tableId -> Uint8
+    // FIXME: idleHardOut -> Uint16
+    // FIXME: idleTiemOut -> Uint16
     public static Flow buildFlow(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
+            int hardTimeOut, Uint64 cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
             List<InstructionInfo> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
         return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).withKey(key)
@@ -161,14 +165,14 @@ public class MDSALUtil {
     }
 
     public static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-            int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase> listMatchInfoBase,
+            int hardTimeOut, Uint64 cookie, List<? extends MatchInfoBase> listMatchInfoBase,
             List<Instruction> listInstructionInfo) {
         return MDSALUtil.buildFlowNew(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
                 listMatchInfoBase, listInstructionInfo, true);
     }
 
     private static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
-                                  int hardTimeOut, BigInteger cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
+                                  int hardTimeOut, Uint64 cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
                                   List<Instruction> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
         return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).withKey(key)
@@ -179,7 +183,7 @@ public class MDSALUtil {
                 .setCookie(new FlowCookie(cookie)).build();
     }
 
-    public static GroupEntity buildGroupEntity(BigInteger dpnId, long groupId, String groupName, GroupTypes groupType,
+    public static GroupEntity buildGroupEntity(Uint64 dpnId, long groupId, String groupName, GroupTypes groupType,
             List<BucketInfo> listBucketInfo) {
 
         GroupEntityBuilder groupEntity = new GroupEntityBuilder();
@@ -198,7 +202,7 @@ public class MDSALUtil {
     }
 
     public static TransmitPacketInput getPacketOutDefault(List<ActionInfo> actionInfos, byte[] payload,
-            BigInteger dpnId) {
+            Uint64 dpnId) {
         return new TransmitPacketInputBuilder()
                 .setAction(buildActions(actionInfos))
                 .setPayload(payload)
@@ -230,13 +234,13 @@ public class MDSALUtil {
                 .setIngress(ingress).setEgress(ingress).build();
     }
 
-    public static TransmitPacketInput getPacketOut(List<ActionInfo> actionInfos, byte[] payload, BigInteger dpnId,
+    public static TransmitPacketInput getPacketOut(List<ActionInfo> actionInfos, byte[] payload, Uint64 dpnId,
             NodeConnectorRef nodeConnRef) {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public static TransmitPacketInput getPacketOut(List<Action> actions, byte[] payload, BigInteger dpnId) {
+    public static TransmitPacketInput getPacketOut(List<Action> actions, byte[] payload, Uint64 dpnId) {
         NodeConnectorRef ncRef = getDefaultNodeConnRef(dpnId);
         return new TransmitPacketInputBuilder()
                 .setAction(actions)
@@ -247,7 +251,7 @@ public class MDSALUtil {
                 .setIngress(ncRef).setEgress(ncRef).build();
     }
 
-    public static Action retrieveSetTunnelIdAction(BigInteger tunnelId, int actionKey) {
+    public static Action retrieveSetTunnelIdAction(Uint64 tunnelId, int actionKey) {
         return new ActionBuilder().setAction(
                 new SetFieldCaseBuilder().setSetField(new SetFieldBuilder().setTunnel(new TunnelBuilder()
                 .setTunnelId(tunnelId).build()).build())
@@ -270,10 +274,10 @@ public class MDSALUtil {
                + (mask == 0 ? "" : "/" + mask);
     }
 
-    public static BigInteger getBigIntIpFromIpAddress(IpAddress ipAddr) {
+    public static Uint64 getBigIntIpFromIpAddress(IpAddress ipAddr) {
         String ipString = ipAddr.getIpv4Address().getValue();
         int ipInt = InetAddresses.coerceToInteger(InetAddresses.forString(ipString));
-        return BigInteger.valueOf(ipInt & 0xffffffffL);
+        return Uint64.valueOf(ipInt & 0xffffffffL);
     }
 
 
@@ -347,11 +351,11 @@ public class MDSALUtil {
     }
 
     // TODO: Check the port const
-    public static NodeConnectorRef getDefaultNodeConnRef(BigInteger dpId) {
+    public static NodeConnectorRef getDefaultNodeConnRef(Uint64 dpId) {
         return getNodeConnRef(NODE_PREFIX + SEPARATOR + dpId, "0xfffffffd");
     }
 
-    public static NodeConnectorRef getNodeConnRef(BigInteger dpId, String port) {
+    public static NodeConnectorRef getNodeConnRef(Uint64 dpId, String port) {
         return getNodeConnRef(NODE_PREFIX + SEPARATOR + dpId, port);
     }
 
@@ -375,13 +379,13 @@ public class MDSALUtil {
         return nodeConnectorRef;
     }
 
-    public static BigInteger getDpnIdFromNodeName(NodeId nodeId) {
+    public static Uint64 getDpnIdFromNodeName(NodeId nodeId) {
         return getDpnIdFromNodeName(nodeId.getValue());
     }
 
-    public static BigInteger getDpnIdFromNodeName(String mdsalNodeName) {
+    public static Uint64 getDpnIdFromNodeName(String mdsalNodeName) {
         String dpId = mdsalNodeName.substring(mdsalNodeName.lastIndexOf(':') + 1);
-        return new BigInteger(dpId);
+        return Uint64.valueOf(dpId);
     }
 
     public static long getOfPortNumberFromPortName(NodeConnectorId nodeConnectorId) {
@@ -407,13 +411,8 @@ public class MDSALUtil {
         }
     }
 
-    public static BigInteger getDpnId(String datapathId) {
-        if (datapathId != null) {
-            String dpIdStr = datapathId.replace(":", "");
-            BigInteger dpnId =  new BigInteger(dpIdStr, 16);
-            return dpnId;
-        }
-        return null;
+    public static Uint64 getDpnId(String datapathId) {
+        return datapathId == null ? null : Uint64.valueOf(datapathId.replace(":", ""), 16);
     }
 
     public static Instruction buildAndGetPopVlanActionInstruction(int actionKey, int instructionKey) {
@@ -443,7 +442,7 @@ public class MDSALUtil {
                 .setEnd(endOffSet)
                 .build();
         nxRegLoadBuilder.setDst(dst);
-        nxRegLoadBuilder.setValue(new BigInteger(Long.toString(value)));
+        nxRegLoadBuilder.setValue(Uint64.valueOf(value));
         ActionBuilder ab = new ActionBuilder();
         ab.setAction(new NxActionRegLoadNodesNodeTableFlowApplyActionsCaseBuilder()
                 .setNxRegLoad(nxRegLoadBuilder.build()).build());
@@ -522,13 +521,15 @@ public class MDSALUtil {
         return buildWriteActionsInstruction(listAction, instructionKey);
     }
 
-    public static Instruction buildAndGetWriteMetadaInstruction(BigInteger metadata,
-                                                                BigInteger mask, int instructionKey) {
+    public static Instruction buildAndGetWriteMetadaInstruction(Uint64 metadata, Uint64 mask, int instructionKey) {
         return new InstructionBuilder()
-                .setInstruction(
-                        new WriteMetadataCaseBuilder().setWriteMetadata(
-                                new WriteMetadataBuilder().setMetadata(metadata).setMetadataMask(mask).build())
-                                .build()).withKey(new InstructionKey(instructionKey)).build();
+                .setInstruction(new WriteMetadataCaseBuilder()
+                    .setWriteMetadata(new WriteMetadataBuilder()
+                        .setMetadata(metadata)
+                        .setMetadataMask(mask)
+                        .build())
+                    .build())
+                .withKey(new InstructionKey(instructionKey)).build();
     }
 
     public static Instruction buildAndGetGotoTableInstruction(short tableId, int instructionKey) {
@@ -649,8 +650,8 @@ public class MDSALUtil {
         NxRegLoad regLoad = new NxRegLoadBuilder()
                 .setDst(new DstBuilder().setDstChoice(new DstNxOfInPortCaseBuilder()
                         .setOfInPort(Empty.getInstance()).build())
-                        .setStart(0).setEnd(15).build())
-                .setValue(BigInteger.valueOf(inPortVal)).build();
+                        .setStart(Uint16.ZERO).setEnd(15).build())
+                .setValue(Uint64.valueOf(inPortVal)).build();
         ActionBuilder abExt = new ActionBuilder();
         abExt.withKey(new ActionKey(actionKey));
         abExt.setOrder(actionKey);

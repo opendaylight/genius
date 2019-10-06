@@ -11,7 +11,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -32,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
         Ipv6Address srcIpv6Address;
         String interfaceName = null;
         String macAddr = null;
-        BigInteger dpnId;
+        Uint64 dpnId;
         int localErrorCount = 0;
 
         targetIpv6Address = ndInput.getTargetIpAddress();
@@ -75,8 +75,8 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
                 checkNotNull(portResult);
                 dpnId = portResult.getDpid();
-                Long portid = portResult.getPortno();
-                checkArgument(null != dpnId && BigInteger.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);
+                Long portid = portResult.getPortno().toJava();
+                checkArgument(null != dpnId && Uint64.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);
 
                 NodeConnectorRef nodeRef = MDSALUtil.getNodeConnRef(dpnId, portid.toString());
                 checkNotNull(nodeRef, NODE_CONNECTOR_NOT_FOUND_ERROR, interfaceName);
@@ -127,7 +127,7 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
             SendNeighborSolicitationToOfGroupInput ndInput) {
         RpcResultBuilder<SendNeighborSolicitationToOfGroupOutput> successBuilder = RpcResultBuilder.success();
         ipv6NsHelper.transmitNeighborSolicitationToOfGroup(ndInput.getDpId(), ndInput.getSourceLlAddress(),
-                ndInput.getSourceIpv6(), ndInput.getTargetIpAddress(), ndInput.getOfGroupId());
+                ndInput.getSourceIpv6(), ndInput.getTargetIpAddress(), ndInput.getOfGroupId().toJava());
 
         return  successBuilder.buildFuture();
     }

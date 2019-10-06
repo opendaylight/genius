@@ -11,7 +11,6 @@ import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CR
 
 import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.BooleanUtils;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -76,6 +74,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +124,7 @@ public class SouthboundUtils {
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
     private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
-        TUNNEL_TYPE_MAP = new HashMap<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>() {
+        TUNNEL_TYPE_MAP = new HashMap<>() {
             {
                 put(TunnelTypeGre.class, InterfaceTypeGre.class);
                 put(TunnelTypeMplsOverGre.class, InterfaceTypeGre.class);
@@ -215,7 +214,7 @@ public class SouthboundUtils {
         int vlanId = 0;
         IfL2vlan ifL2vlan = iface.augmentation(IfL2vlan.class);
         if (ifL2vlan != null && ifL2vlan.getVlanId() != null) {
-            vlanId = ifL2vlan.getVlanId().getValue();
+            vlanId = ifL2vlan.getVlanId().getValue().toJava();
         }
 
         Map<String, String> options = Maps.newHashMap();
@@ -389,8 +388,8 @@ public class SouthboundUtils {
 
     public static boolean ifBfdStatusNotEqual(OvsdbTerminationPointAugmentation tpOld,
                                            OvsdbTerminationPointAugmentation tpNew) {
-        return (tpNew.getInterfaceBfdStatus() != null
-                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus())));
+        return tpNew.getInterfaceBfdStatus() != null
+                && (tpOld == null || !tpNew.getInterfaceBfdStatus().equals(tpOld.getInterfaceBfdStatus()));
     }
 
     public static boolean changeInBfdMonitoringDetected(OvsdbTerminationPointAugmentation tpOld,
@@ -426,7 +425,7 @@ public class SouthboundUtils {
     }
 
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
-    public static String generateOfTunnelName(BigInteger dpId, IfTunnel ifTunnel) {
+    public static String generateOfTunnelName(Uint64 dpId, IfTunnel ifTunnel) {
         String sourceKey = ifTunnel.getTunnelSource().stringValue();
         String remoteKey = ifTunnel.getTunnelDestination().stringValue();
         if (ifTunnel.isTunnelSourceIpFlow() != null) {

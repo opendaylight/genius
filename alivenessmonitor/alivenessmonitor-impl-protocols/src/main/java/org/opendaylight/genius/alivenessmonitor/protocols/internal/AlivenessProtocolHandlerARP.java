@@ -17,7 +17,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -49,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.OdlInterfaceRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketReceived;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     @Override
     @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
     public String handlePacketIn(ARP packet, PacketReceived packetReceived) {
-        short tableId = packetReceived.getTableId().getValue();
+        short tableId = packetReceived.getTableId().getValue().toJava();
         int arpType = packet.getOpCode();
 
         if (LOG.isTraceEnabled()) {
@@ -91,7 +91,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
                 LOG.trace("packet: {}", packetReceived);
             }
 
-            BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();
+            Uint64 metadata = packetReceived.getMatch().getMetadata().getMetadata();
             int portTag = MetaDataUtil.getLportFromMetadata(metadata).intValue();
             String interfaceName = null;
 

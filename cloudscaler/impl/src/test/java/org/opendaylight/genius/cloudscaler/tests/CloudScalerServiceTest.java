@@ -14,16 +14,13 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
-
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionFactory;
 import org.junit.Before;
@@ -68,6 +65,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,10 +77,10 @@ public class CloudScalerServiceTest {
     private static final String NODEID2  = "ovsdb://uuid/2de70a99-29a5-4f2a-b87e-96d6ed57e412/bridge/br-int";
     private static final String NODEID3  = "ovsdb://uuid/2de70a99-29a5-4f2a-b87e-96d6ed57e413/bridge/br-int";
 
-    private static final BigInteger DPN1 = new BigInteger("1");
-    private static final BigInteger DPN2 = new BigInteger("2");
-    private static final BigInteger DPN3 = new BigInteger("3");
-    private static final BigInteger DPN4 = new BigInteger("4");
+    private static final Uint64 DPN1 = Uint64.ONE;
+    private static final Uint64 DPN2 = Uint64.valueOf(2);
+    private static final Uint64 DPN3 = Uint64.valueOf(3);
+    private static final Uint64 DPN4 = Uint64.valueOf(4);
 
     private static final String DPN1_DATAPATHID = new String("00:00:00:00:00:00:00:01");
     private static final String DPN2_DATAPATHID = new String("00:00:00:00:00:00:00:02");
@@ -147,7 +145,7 @@ public class CloudScalerServiceTest {
     }
 
     private InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node>
-        buildOpenflowNodeIid(BigInteger dpnid) {
+        buildOpenflowNodeIid(Uint64 dpnid) {
         return InstanceIdentifier.builder(Nodes.class)
                 .child(org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node.class,
                         new org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey(
@@ -156,7 +154,7 @@ public class CloudScalerServiceTest {
     }
 
     private org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node buildOpenflowNode(
-            BigInteger dpnId) {
+            Uint64 dpnId) {
         org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder nodeBuilder
                 = new org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder();
         nodeBuilder.setId(new org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId(
@@ -237,7 +235,7 @@ public class CloudScalerServiceTest {
             throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
 
         testScaleinComputesStartRpc();
-        List<BigInteger> filtered = tombstonedNodeManager.filterTombStoned(Lists.newArrayList(DPN1, DPN2, DPN3, DPN4));
+        List<Uint64> filtered = tombstonedNodeManager.filterTombStoned(Lists.newArrayList(DPN1, DPN2, DPN3, DPN4));
         assertTrue("Dpn 1 and 2 should be filtered ",
                 Sets.difference(Sets.newHashSet(DPN3, DPN4), Sets.newHashSet(filtered)).isEmpty());
     }
@@ -245,7 +243,7 @@ public class CloudScalerServiceTest {
     @Test public void testRecoveryCallback()
             throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
 
-        Set<BigInteger> nodesRecoverd = new HashSet<>();
+        Set<Uint64> nodesRecoverd = new HashSet<>();
         tombstonedNodeManager.addOnRecoveryCallback((dpnId) -> {
             nodesRecoverd.add(dpnId);
             return null;
@@ -254,7 +252,7 @@ public class CloudScalerServiceTest {
         AWAITER.until(() -> nodesRecoverd.contains(DPN1));
     }
 
-    private BridgeRefEntry buildBridgeRefEntry(BigInteger dpnId, String nodeId) {
+    private BridgeRefEntry buildBridgeRefEntry(Uint64 dpnId, String nodeId) {
         return new BridgeRefEntryBuilder()
             .setDpid(dpnId)
             .setBridgeReference(new OvsdbBridgeRef(buildNodeIid(nodeId)))
