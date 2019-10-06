@@ -5,10 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.mdsalutil.actions;
-
-import java.math.BigInteger;
 
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
@@ -17,21 +14,22 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class ActionSetFieldMeta extends ActionInfo {
 
-    private final BigInteger metadataValue;
+    private final Uint64 metadataValue;
 
-    public ActionSetFieldMeta(BigInteger metadataValue) {
+    public ActionSetFieldMeta(Uint64 metadataValue) {
         this(0, metadataValue);
     }
 
-    public ActionSetFieldMeta(int actionKey, BigInteger metadataValue) {
+    public ActionSetFieldMeta(int actionKey, Uint64 metadataValue) {
         super(actionKey);
         this.metadataValue = metadataValue;
     }
 
-    public BigInteger getMetadataValue() {
+    public Uint64 getMetadataValue() {
         return metadataValue;
     }
 

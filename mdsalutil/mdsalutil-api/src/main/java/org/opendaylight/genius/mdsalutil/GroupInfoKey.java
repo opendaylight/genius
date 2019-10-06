@@ -7,14 +7,14 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import java.math.BigInteger;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class GroupInfoKey {
 
-    private final BigInteger dpId;
+    private final Uint64 dpId;
     private final long groupId;
 
-    public GroupInfoKey(BigInteger dpId, long groupId) {
+    public GroupInfoKey(Uint64 dpId, long groupId) {
         this.dpId = dpId;
         this.groupId = groupId;
     }
@@ -23,7 +23,7 @@ public final class GroupInfoKey {
         return groupId;
     }
 
-    public BigInteger getDpId() {
+    public Uint64 getDpId() {
         return dpId;
     }
 

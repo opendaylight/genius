@@ -10,11 +10,9 @@ package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.confi
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -26,6 +24,7 @@ import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +46,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
     @Override
     protected void bindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
                                           List<BoundServices> allServices, BoundServicesState boundServiceState) {
-        BigInteger dpId = boundServiceState.getDpid();
+        Uint64 dpId = boundServiceState.getDpid();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             Interface iface =
                     interfaceManagerCommonUtils.getInterfaceFromConfigDS(boundServiceState.getInterfaceName());
@@ -59,7 +58,8 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                 // some value since this is the only service bound.
                 FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, boundServiceNew,
                         boundServiceState.getInterfaceName(), tx, boundServiceState.getIfIndex(),
-                        NwConstants.DEFAULT_SERVICE_INDEX, (short) (boundServiceNew.getServicePriority() + 1), iface);
+                        NwConstants.DEFAULT_SERVICE_INDEX, (short) (boundServiceNew.getServicePriority().toJava() + 1),
+                        iface);
                 return;
             }
             allServices.remove(boundServiceNew);
@@ -73,24 +73,25 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX); // dummy service
             // index
             if (low != null) {
-                nextServiceIndex = low.getServicePriority();
+                nextServiceIndex = low.getServicePriority().toJava();
                 if (low.equals(highest)) {
                     // In this case the match criteria of existing service should be
                     // changed.
                     BoundServices lower = FlowBasedServicesUtils.getHighAndLowPriorityService(allServices, low)[0];
-                    short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority()
-                            : low.getServicePriority() + 1);
+                    short lowerServiceIndex = (short) (lower != null ? lower.getServicePriority().toJava()
+                            : low.getServicePriority().toJava() + 1);
                     LOG.trace("Installing egress dispatcher table entry for existing service {} service match on "
                                     + "service index {} update with service index {}",
                             low, low.getServicePriority(), lowerServiceIndex);
                     FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, low, boundServiceState.getInterfaceName(),
-                            tx, boundServiceState.getIfIndex(), low.getServicePriority(), lowerServiceIndex, iface);
+                            tx, boundServiceState.getIfIndex(), low.getServicePriority().toJava(),
+                            lowerServiceIndex, iface);
                 } else {
-                    currentServiceIndex = boundServiceNew.getServicePriority();
+                    currentServiceIndex = boundServiceNew.getServicePriority().toJava();
                 }
             }
             if (high != null) {
-                currentServiceIndex = boundServiceNew.getServicePriority();
+                currentServiceIndex = boundServiceNew.getServicePriority().toJava();
                 if (high.equals(highest)) {
                     LOG.trace("Installing egress dispatcher table entry for existing service {} service match on "
                                     + "service index {} update with service index {}",
@@ -104,7 +105,7 @@ public class FlowBasedEgressServicesConfigBindHelper extends AbstractFlowBasedSe
                             high, high.getServicePriority(), currentServiceIndex);
                     FlowBasedServicesUtils.installEgressDispatcherFlows(dpId, high,
                             boundServiceState.getInterfaceName(), tx, boundServiceState.getIfIndex(),
-                            high.getServicePriority(), currentServiceIndex, iface);
+                            high.getServicePriority().toJava(), currentServiceIndex, iface);
                 }
             }
             LOG.trace("Installing egress dispatcher table entry "

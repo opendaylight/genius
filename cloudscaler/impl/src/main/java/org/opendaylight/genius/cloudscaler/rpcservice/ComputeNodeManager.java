@@ -8,8 +8,6 @@
 package org.opendaylight.genius.cloudscaler.rpcservice;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import java.math.BigInteger;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -39,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.TopologyKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,10 +47,11 @@ public class ComputeNodeManager {
 
     private final DataBroker dataBroker;
 
-    private InstanceIdDataObjectCache<ComputeNode> computeNodeCache;
-    private InstanceIdDataObjectCache<Node> ovsdbTopologyNodeCache;
-    private Map<BigInteger, ComputeNode> dpnIdVsComputeNode;
-    private ExecutorService executorService = Executors.newSingleThreadExecutor("compute-node-manager", LOG);
+    private final InstanceIdDataObjectCache<ComputeNode> computeNodeCache;
+    private final InstanceIdDataObjectCache<Node> ovsdbTopologyNodeCache;
+    private final Map<Uint64, ComputeNode> dpnIdVsComputeNode;
+    // FIXME: this service is never shut down
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor("compute-node-manager", LOG);
 
     @Inject
     @SuppressFBWarnings({"URF_UNREAD_FIELD", "NP_LOAD_OF_KNOWN_NULL_VALUE"})
@@ -60,7 +59,7 @@ public class ComputeNodeManager {
                               CacheProvider cacheProvider) {
         this.dataBroker = dataBroker;
         this.dpnIdVsComputeNode = new ConcurrentHashMap<>();
-        this.computeNodeCache = new InstanceIdDataObjectCache<ComputeNode>(ComputeNode.class, dataBroker,
+        this.computeNodeCache = new InstanceIdDataObjectCache<>(ComputeNode.class, dataBroker,
                 LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(ComputeNodes.class).child(ComputeNode.class).build(),
                 cacheProvider) {
@@ -76,7 +75,7 @@ public class ComputeNodeManager {
                 dpnIdVsComputeNode.remove(computeNode.getDpnid());
             }
         };
-        this.ovsdbTopologyNodeCache = new InstanceIdDataObjectCache<Node>(Node.class, dataBroker,
+        this.ovsdbTopologyNodeCache = new InstanceIdDataObjectCache<>(Node.class, dataBroker,
                 LogicalDatastoreType.OPERATIONAL,
                 getWildcardPath(),
                 cacheProvider) {
@@ -107,7 +106,7 @@ public class ComputeNodeManager {
     public void add(@NonNull Node node) throws TransactionCommitFailedException {
         OvsdbBridgeAugmentation bridgeAugmentation = node.augmentation(OvsdbBridgeAugmentation.class);
         if (bridgeAugmentation != null && bridgeAugmentation.getBridgeOtherConfigs() != null) {
-            BigInteger datapathid = getDpnIdFromBridge(bridgeAugmentation);
+            Uint64 datapathid = getDpnIdFromBridge(bridgeAugmentation);
             Optional<BridgeOtherConfigs> otherConfigOptional = bridgeAugmentation.getBridgeOtherConfigs()
                     .stream()
                     .filter(otherConfig -> otherConfig.getBridgeOtherConfigKey().equals("dp-desc"))
@@ -145,9 +144,9 @@ public class ComputeNodeManager {
                 .build();
     }
 
-    private BigInteger getDpnIdFromBridge(OvsdbBridgeAugmentation bridgeAugmentation) {
+    private Uint64 getDpnIdFromBridge(OvsdbBridgeAugmentation bridgeAugmentation) {
         String datapathIdStr = bridgeAugmentation.getDatapathId().getValue().replace(":", "");
-        return new BigInteger(datapathIdStr, 16);
+        return Uint64.valueOf(datapathIdStr, 16);
     }
 
     public void putComputeDetailsInConfigDatastore(InstanceIdentifier<ComputeNode> computeIid,
@@ -159,7 +158,7 @@ public class ComputeNodeManager {
         //LOG.info("Write comute node details {}", computeNode);
     }
 
-    private void logErrorIfComputeNodeIsAlreadyTaken(BigInteger datapathid, String nodeId,
+    private void logErrorIfComputeNodeIsAlreadyTaken(Uint64 datapathid, String nodeId,
                                                      com.google.common.base.Optional<ComputeNode> optional) {
         ComputeNode existingNode = optional.get();
         if (!Objects.equals(existingNode.getNodeid(), nodeId)) {
@@ -178,7 +177,7 @@ public class ComputeNodeManager {
                 .child(Node.class);
     }
 
-    public ComputeNode getComputeNode(BigInteger dpnId) {
+    public ComputeNode getComputeNode(Uint64 dpnId) {
         return dpnIdVsComputeNode.get(dpnId);
     }
 }

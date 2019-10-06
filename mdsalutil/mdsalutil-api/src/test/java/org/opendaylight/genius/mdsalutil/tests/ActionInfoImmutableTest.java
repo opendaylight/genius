@@ -9,7 +9,6 @@ package org.opendaylight.genius.mdsalutil.tests;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -18,18 +17,19 @@ import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowEntityBuilder;
 import org.opendaylight.genius.mdsalutil.actions.ActionNxConntrack;
 import org.opendaylight.genius.mdsalutil.instructions.InstructionApplyActions;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class ActionInfoImmutableTest {
 
     @Test
     public void actionInfoActionKeyDoesNotMagicallyChangeOnFlowEntityGetFlowBuilder() {
         FlowEntityBuilder flowEntityBuilder = new FlowEntityBuilder()
-            .setDpnId(BigInteger.valueOf(123L))
+            .setDpnId(Uint64.valueOf(123L))
             .setTableId((short) 1)
             .setPriority(2)
             .setFlowName("TEST-NAME")
             .setFlowId("TEST-ID")
-            .setCookie(BigInteger.valueOf(110100480L));
+            .setCookie(Uint64.valueOf(110100480L));
         ActionInfo actionInfo = new ActionNxConntrack(27, 1, 0, 0, (short) 255);
         List<ActionInfo> actionInfos = new ArrayList<>();
         actionInfos.add(actionInfo);
@@ -49,8 +49,8 @@ public class ActionInfoImmutableTest {
 
     @Test
     public void testDefaultCookie() {
-        assertEquals(new BigInteger("0110000", 16), new FlowEntityBuilder()
-                .setDpnId(BigInteger.valueOf(123L))
+        assertEquals(Uint64.valueOf("0110000", 16), new FlowEntityBuilder()
+                .setDpnId(Uint64.valueOf(123L))
                 .setTableId((short) 1)
                 .setPriority(2)
                 .setFlowName("TEST-NAME")

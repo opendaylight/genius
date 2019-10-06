@@ -12,6 +12,7 @@ import org.apache.karaf.shell.commands.Argument;
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.itm.api.IITMProvider;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class TepAdd extends OsgiCommandSupport {
             LOG.debug("Executing create TEP command dpnId={}, portName={}, vlanId={}, ipAddress={},"
                             + " subnetMask={}, gatewayIp={}, transportZone={}", dpnId, portName, vlanId, ipAddress,
                     subnetMask, gatewayIp, transportZone);
-            itmProvider.createLocalCache(dpnId, portName, vlanId, ipAddress, subnetMask, gatewayIp,
+            itmProvider.createLocalCache(Uint64.valueOf(dpnId), portName, vlanId, ipAddress, subnetMask, gatewayIp,
                     transportZone);
         } catch (Exception e) {
             LOG.error("Exception occurred during execution of command \"tep-add\"", e);

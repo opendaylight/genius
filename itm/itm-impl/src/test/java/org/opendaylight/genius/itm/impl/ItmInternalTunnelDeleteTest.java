@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.impl;
 
 import static org.mockito.Mockito.doReturn;
@@ -14,7 +13,6 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
@@ -69,12 +67,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmInternalTunnelDeleteTest {
 
-    BigInteger dpId1 = BigInteger.valueOf(1);
-    BigInteger dpId2 = BigInteger.valueOf(2);
+    Uint64 dpId1 = Uint64.ONE;
+    Uint64 dpId2 = Uint64.valueOf(2);
     int vlanId = 100 ;
     int interval = 1000;
     String portName1 = "phy0";
@@ -110,8 +109,8 @@ public class ItmInternalTunnelDeleteTest {
             InstanceIdentifier.create(TunnelMonitorInterval.class);
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = TunnelMonitoringTypeBfd.class;
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifier = InstanceIdentifier.builder(TunnelList.class)
-            .child(InternalTunnel.class, new InternalTunnelKey(new BigInteger("1"),
-                    new BigInteger("2"), tunnelType1)).build();
+            .child(InternalTunnel.class, new InternalTunnelKey(Uint64.ONE, Uint64.valueOf(2), tunnelType1))
+            .build();
 
     @Mock DataBroker dataBroker;
     @Mock ReadOnlyTransaction mockReadTx;

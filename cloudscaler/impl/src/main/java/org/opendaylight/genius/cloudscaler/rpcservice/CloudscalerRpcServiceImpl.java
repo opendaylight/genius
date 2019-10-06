@@ -15,13 +15,10 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-
-import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -59,6 +56,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +81,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
     private static RpcResult<ScaleinComputesEndOutput> DONE_RPC_RESPONSE = RpcResultBuilder
             .<ScaleinComputesEndOutput>success().withResult(DONE).build();
 
-    private DataBroker dataBroker;
+    private final DataBroker dataBroker;
     private final ComputeNodeManager computeNodeManager;
     private final ManagedNewTransactionRunner txRunner;
     private final ItmTepClusteredListener itmTepClusteredListener;
@@ -91,15 +89,16 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
     //The following timestamp is not persisted across reboots
     //upon reboot the timestamp will have a default value of that system timestamp
     //this way scalein end that is triggered after cluster reboot will still honour the 2 min delay
-    private LoadingCache<BigInteger, Long> tepDeleteTimeStamp = CacheBuilder.newBuilder()
+    private final LoadingCache<Uint64, Long> tepDeleteTimeStamp = CacheBuilder.newBuilder()
             .expireAfterWrite(60, TimeUnit.MINUTES)
-            .build(new CacheLoader<BigInteger, Long>() {
-                public Long load(BigInteger dpnId) {
+            .build(new CacheLoader<Uint64, Long>() {
+                @Override
+                public Long load(Uint64 dpnId) {
                     return System.currentTimeMillis();
                 }
             });
 
-    public static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<Void>() {
+    public static final FutureCallback<Void> DEFAULT_CALLBACK = new FutureCallback<>() {
         @Override
         public void onSuccess(Void result) {
             LOG.debug("Success in Datastore operation");
@@ -177,7 +176,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                 }
                 Long tepDeletedTimeStamp = tepDeleteTimeStamp.get(computeNode.getDpnid());
                 Long currentTime = System.currentTimeMillis();
-                if ((currentTime - tepDeletedTimeStamp) > DELETE_DELAY * 1000L) {
+                if (currentTime - tepDeletedTimeStamp > DELETE_DELAY * 1000L) {
                     scaleinComputesEnd2(input);
                 } else {
                     return Futures.immediateFuture(IN_PROGRESS_RPC_RESPONSE);

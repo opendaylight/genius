@@ -31,15 +31,15 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class NWUtil {
-
     private static final Logger LOG = LoggerFactory.getLogger(NWUtil.class);
-
-    private static byte[] HIGH_128_BITS = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-    private static BigInteger HIGH_128_INT = new BigInteger(HIGH_128_BITS);
+    private static final BigInteger HIGH_128_INT = new BigInteger(new byte[] {
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
+    });
 
     private NWUtil() {
 
@@ -161,8 +161,8 @@ public final class NWUtil {
     /**
      * Returns the ids of the currently operative DPNs.
      */
-    public static List<BigInteger> getOperativeDPNs(DataBroker dataBroker) {
-        List<BigInteger> result = new LinkedList<>();
+    public static List<Uint64> getOperativeDPNs(DataBroker dataBroker) {
+        List<Uint64> result = new LinkedList<>();
         InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
         Optional<Nodes> nodesOptional = MDSALUtil.read(dataBroker, LogicalDatastoreType.OPERATIONAL,
                                                        nodesInstanceIdentifier);
@@ -172,7 +172,7 @@ public final class NWUtil {
         for (Node node : nodesOptional.get().nonnullNode()) {
             NodeId nodeId = node.getId();
             if (nodeId != null) {
-                BigInteger dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
+                Uint64 dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
                 result.add(dpnId);
             }
         }

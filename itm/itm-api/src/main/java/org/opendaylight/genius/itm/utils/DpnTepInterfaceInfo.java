@@ -7,10 +7,10 @@
  */
 package org.opendaylight.genius.itm.utils;
 
-import java.math.BigInteger;
 import org.immutables.value.Value;
 import org.opendaylight.genius.infra.OpenDaylightImmutableStyle;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 @Value.Immutable
 @OpenDaylightImmutableStyle
@@ -24,5 +24,5 @@ public interface DpnTepInterfaceInfo {
 
     boolean isInternal();
 
-    BigInteger getRemoteDPN();
+    Uint64 getRemoteDPN();
 }

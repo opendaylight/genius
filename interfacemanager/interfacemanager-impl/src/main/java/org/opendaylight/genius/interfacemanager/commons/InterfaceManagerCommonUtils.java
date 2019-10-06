@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager.commons;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
@@ -13,7 +12,6 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -98,6 +96,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.No
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,7 +279,7 @@ public final class InterfaceManagerCommonUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orNull();
     }
 
-    public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, IfTunnel tunnel, BigInteger dpnId,
+    public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, IfTunnel tunnel, Uint64 dpnId,
         long portNo, String interfaceName, int ifIndex) {
         if (isTunnelWithoutIngressFlow(tunnel)) {
             return;
@@ -298,7 +297,8 @@ public final class InterfaceManagerCommonUtils {
 
         List<InstructionInfo> mkInstructions = new ArrayList<>();
         mkInstructions.add(
-                new InstructionWriteMetadata(MetaDataUtil.getLportTagMetaData(ifIndex).or(BigInteger.ONE),
+                new InstructionWriteMetadata(
+                    Uint64.fromLongBits(MetaDataUtil.getLportTagMetaData(ifIndex).longValue() | 1L),
                         MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG));
         short tableId = tunnel.getTunnelInterfaceType().isAssignableFrom(TunnelTypeMplsOverGre.class)
                 ? NwConstants.L3_LFIB_TABLE
@@ -308,7 +308,7 @@ public final class InterfaceManagerCommonUtils {
         mdsalApiManager.addFlow(tx, buildTunnelIngressFlowEntity(dpnId, interfaceName, matches, mkInstructions));
     }
 
-    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, IfTunnel tunnel, BigInteger dpnId,
+    public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> tx, IfTunnel tunnel, Uint64 dpnId,
         String interfaceName) throws ExecutionException, InterruptedException {
         if (isTunnelWithoutIngressFlow(tunnel)) {
             return;
@@ -324,7 +324,7 @@ public final class InterfaceManagerCommonUtils {
     }
 
     @NonNull
-    private static FlowEntity buildTunnelIngressFlowEntity(BigInteger dpnId, String interfaceName,
+    private static FlowEntity buildTunnelIngressFlowEntity(Uint64 dpnId, String interfaceName,
             List<MatchInfoBase> matches, List<InstructionInfo> mkInstructions) {
         String flowRef = InterfaceManagerCommonUtils.getTunnelInterfaceFlowRef(dpnId,
                 NwConstants.VLAN_INTERFACE_INGRESS_TABLE, interfaceName);
@@ -333,7 +333,7 @@ public final class InterfaceManagerCommonUtils {
                 mkInstructions);
     }
 
-    public static String getTunnelInterfaceFlowRef(BigInteger dpnId, short tableId, String ifName) {
+    public static String getTunnelInterfaceFlowRef(Uint64 dpnId, short tableId, String ifName) {
         return String.valueOf(dpnId) + tableId + ifName;
     }
 
@@ -480,7 +480,7 @@ public final class InterfaceManagerCommonUtils {
         tx.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
 
         // install ingress flow
-        BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+        Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         if (interfaceInfo != null && interfaceInfo.isEnabled() && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn
@@ -524,7 +524,7 @@ public final class InterfaceManagerCommonUtils {
             //logical tunnel group doesn't have OF port
             ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
             if (parentRefs != null) {
-                BigInteger dpId = parentRefs.getDatapathNodeIdentifier();
+                Uint64 dpId = parentRefs.getDatapathNodeIdentifier();
                 String lowref = MDSALUtil.NODE_PREFIX + MDSALUtil.SEPARATOR + dpId + MDSALUtil.SEPARATOR + 0;
                 childLowerLayerIfList.add(0, lowref);
             }
@@ -547,7 +547,7 @@ public final class InterfaceManagerCommonUtils {
             tx.put(ifStateId, ifState, CREATE_MISSING_PARENTS);
         }
         if (nodeConnectorId != null) {
-            BigInteger dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
+            Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
             // Update the DpnToInterfaceList OpDS
             createOrUpdateDpnToInterface(dpId, interfaceName, interfaceType);
         }
@@ -711,7 +711,7 @@ public final class InterfaceManagerCommonUtils {
         return matcher.matches();
     }
 
-    public void createOrUpdateDpnToInterface(BigInteger dpId, String infName,
+    public void createOrUpdateDpnToInterface(Uint64 dpId, String infName,
                                              Class<? extends InterfaceType> interfaceType) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
@@ -727,7 +727,7 @@ public final class InterfaceManagerCommonUtils {
         batchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
-    public List<InterfaceNameEntry> getAllInterfaces(BigInteger dpnId) {
+    public List<InterfaceNameEntry> getAllInterfaces(Uint64 dpnId) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpnId);
         InstanceIdentifier<DpnToInterface> dpninterfaceListId =
             InstanceIdentifier.builder(DpnToInterfaceList.class).child(DpnToInterface.class, dpnToInterfaceKey).build();
@@ -739,8 +739,8 @@ public final class InterfaceManagerCommonUtils {
         return null;
     }
 
-    public static void deleteDpnToInterface(BigInteger dpId, String infName, TypedReadWriteTransaction<Operational> tx)
-        throws ExecutionException, InterruptedException {
+    public static void deleteDpnToInterface(Uint64 dpId, String infName, TypedReadWriteTransaction<Operational> tx)
+            throws ExecutionException, InterruptedException {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpId);
         InstanceIdentifier<DpnToInterface> dpnToInterfaceId = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, dpnToInterfaceKey).build();

@@ -8,7 +8,7 @@
 package org.opendaylight.genius.itm.monitoring;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +35,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     private final JobCoordinator jobCoordinator;
     private final ManagedNewTransactionRunner txRunner;
     private JMXAlarmAgent alarmAgent;
-    private UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
+    private final UnprocessedTunnelsStateCache unprocessedTunnelsStateCache;
 
     @Inject
     public ItmTunnelEventListener(DataBroker dataBroker, JobCoordinator jobCoordinator,
@@ -125,6 +126,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void raiseInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
         source.append("srcDpn=openflow:").append(srcDpnId).append("-dstDpn=openflow:").append(dstDpnId)
@@ -137,6 +140,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void clearInternalDataPathAlarm(String srcDpnId, String dstDpnId, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
 
@@ -149,6 +154,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void raiseExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
 
         StringBuilder source = new StringBuilder();
@@ -162,6 +169,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void clearExternalDataPathAlarm(String srcDevice, String dstDevice, String tunnelType, String alarmText) {
         StringBuilder source = new StringBuilder();
         source.append("srcDevice=").append(srcDevice).append("-dstDevice=").append(dstDevice).append("-tunnelType")
@@ -173,18 +182,24 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private boolean isTunnelInterfaceUp(StateTunnelList intf) {
-        return (intf.getOperState() == TunnelOperStatus.Up);
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private static boolean isTunnelInterfaceUp(StateTunnelList intf) {
+        return intf.getOperState() == TunnelOperStatus.Up;
     }
 
-    private String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private static String getInternalAlarmText(String srcDpId, String dstDpId, String tunnelType) {
         StringBuilder alarmText = new StringBuilder();
         alarmText.append("Data Path Connectivity is lost between ").append("openflow:").append(srcDpId)
                 .append(" and openflow:").append(dstDpId).append(" for tunnelType:").append(tunnelType);
         return alarmText.toString();
     }
 
-    private String getExternalAlarmText(String srcNode, String dstNode, String tunnelType) {
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private static String getExternalAlarmText(String srcNode, String dstNode, String tunnelType) {
         StringBuilder alarmText = new StringBuilder();
         alarmText.append("Data Path Connectivity is lost between ").append(srcNode).append(" and ").append(dstNode)
                 .append(" for tunnelType:").append(tunnelType);
@@ -203,8 +218,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             String ifName = add.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
-                BigInteger srcDpId = internalTunnel.getSourceDPN();
-                BigInteger dstDpId = internalTunnel.getDestinationDPN();
+                Uint64 srcDpId = internalTunnel.getSourceDPN();
+                Uint64 dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 if (!isTunnelInterfaceUp(add)) {
                     LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: "
@@ -248,8 +263,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             String ifName = del.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
-                BigInteger srcDpId = internalTunnel.getSourceDPN();
-                BigInteger dstDpId = internalTunnel.getDestinationDPN();
+                Uint64 srcDpId = internalTunnel.getSourceDPN();
+                Uint64 dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 LOG.trace("ITM Tunnel removed b/w srcDpn: {} and dstDpn: {} for tunnelType: {}", srcDpId, dstDpId,
                           tunnelType);
@@ -285,8 +300,8 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             String ifName = update.getTunnelInterfaceName();
             InternalTunnel internalTunnel = ItmUtils.getInternalTunnel(ifName, broker);
             if (internalTunnel != null) {
-                BigInteger srcDpId = internalTunnel.getSourceDPN();
-                BigInteger dstDpId = internalTunnel.getDestinationDPN();
+                Uint64 srcDpId = internalTunnel.getSourceDPN();
+                Uint64 dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
                 if (LOG.isTraceEnabled()) {
                     LOG.trace("ITM Tunnel state event changed from :{} to :{} for Tunnel Interface - {}",
@@ -343,10 +358,10 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
     }
 
     private static class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<ListenableFuture<Void>>> {
-        private InstanceIdentifier<StateTunnelList> identifier;
-        private StateTunnelList add;
-        private TunnelOperStatus operStatus;
-        private ManagedNewTransactionRunner txRunner;
+        private final InstanceIdentifier<StateTunnelList> identifier;
+        private final StateTunnelList add;
+        private final TunnelOperStatus operStatus;
+        private final ManagedNewTransactionRunner txRunner;
 
         ItmTunnelStatusOutOfOrderEventWorker(InstanceIdentifier<StateTunnelList> identifier, StateTunnelList add,
                                              TunnelOperStatus operStatus,

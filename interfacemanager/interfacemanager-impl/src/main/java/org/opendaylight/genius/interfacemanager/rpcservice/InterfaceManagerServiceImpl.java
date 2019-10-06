@@ -5,19 +5,16 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager.rpcservice;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -77,6 +74,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpc
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.get.dpn._interface.list.output.InterfacesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +101,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     @Override
     public ListenableFuture<GetDpidFromInterfaceOutput> getDpidFromInterface(GetDpidFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
-        BigInteger dpId;
+        Uint64 dpId;
         InterfaceKey interfaceKey = new InterfaceKey(interfaceName);
         Interface interfaceInfo = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
         if (interfaceInfo == null) {
@@ -154,7 +152,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     public ListenableFuture<GetEgressInstructionsForInterfaceOutput> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
-                input.getTunnelKey(), interfaceManagerCommonUtils, false);
+                input.getTunnelKey().toJava(), interfaceManagerCommonUtils, false);
         return Futures.immediateFuture(
                 new GetEgressInstructionsForInterfaceOutputBuilder().setInstruction(instructions).build());
     }
@@ -194,8 +192,8 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     @Override
     public ListenableFuture<GetEgressActionsForInterfaceOutput> getEgressActionsForInterface(
             GetEgressActionsForInterfaceInput input) {
-        List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(), input.getTunnelKey(),
-                input.getActionKey(), interfaceManagerCommonUtils, false);
+        List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
+                input.getTunnelKey().toJava(), input.getActionKey(), interfaceManagerCommonUtils, false);
         // TODO as above, simplify the success case later, as we have the failure case below
         return Futures
                 .immediateFuture(new GetEgressActionsForInterfaceOutputBuilder().setAction(actionsList).build());
@@ -204,7 +202,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     @Override
     public ListenableFuture<GetPortFromInterfaceOutput> getPortFromInterface(GetPortFromInterfaceInput input) {
         String interfaceName = input.getIntfName();
-        BigInteger dpId = null;
+        Uint64 dpId = null;
         long portNo = 0;
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface ifState = interfaceManagerCommonUtils
@@ -262,7 +260,7 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
 
     @Override
     public ListenableFuture<GetDpnInterfaceListOutput> getDpnInterfaceList(GetDpnInterfaceListInput input) {
-        BigInteger dpnid = input.getDpid();
+        Uint64 dpnid = input.getDpid();
         InstanceIdentifier<DpnToInterface> id = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, new DpnToInterfaceKey(dpnid)).build();
         Optional<DpnToInterface> entry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, id, dataBroker);

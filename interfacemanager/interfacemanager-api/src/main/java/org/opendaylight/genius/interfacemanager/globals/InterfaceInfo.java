@@ -9,8 +9,9 @@ package org.opendaylight.genius.interfacemanager.globals;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.Serializable;
-import java.math.BigInteger;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public class InterfaceInfo implements Serializable {
 
@@ -48,7 +49,7 @@ public class InterfaceInfo implements Serializable {
 
     protected InterfaceType interfaceType;
     protected int interfaceTag;
-    protected BigInteger dpId = IfmConstants.INVALID_DPID;
+    protected Uint64 dpId;
     protected InterfaceAdminState adminState = InterfaceAdminState.ENABLED;
     protected InterfaceOpState opState;
     protected long groupId;
@@ -59,7 +60,7 @@ public class InterfaceInfo implements Serializable {
     protected boolean isUntaggedVlan;
     protected String macAddress;
 
-    public InterfaceInfo(BigInteger dpId, String portName) {
+    public InterfaceInfo(Uint64 dpId, String portName) {
         this.dpId = dpId;
         this.portName = portName;
     }
@@ -104,14 +105,14 @@ public class InterfaceInfo implements Serializable {
         return isUntaggedVlan;
     }
 
-    // "Confusing to have methods getDpId() and BridgeEntryBuilder.getDpid" - BridgeEntryBuilder is generated so can't
-    // change it.
-    @SuppressFBWarnings("NM_CONFUSING")
-    public BigInteger getDpId() {
+    @SuppressFBWarnings(value = "NM_CONFUSING",
+            justification = "'Confusing to have methods getDpId() and BridgeEntryBuilder.getDpid'"
+                    + " - BridgeEntryBuilder is generated so cannot change it.")
+    public @Nullable Uint64 getDpId() {
         return dpId;
     }
 
-    public void setDpId(BigInteger dpId) {
+    public void setDpId(Uint64 dpId) {
         this.dpId = dpId;
     }
 

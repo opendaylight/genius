@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.tests;
 import static org.junit.Assert.assertEquals;
 
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
-import java.math.BigInteger;
 import java.util.Arrays;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -19,6 +18,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.genius.mdsalutil.actions.ActionLearn;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Test to check that we no longer need a builder for
@@ -32,7 +32,7 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
  */
 public class ActionInfoBuilderTest {
 
-    XtendBeanGenerator generator = new XtendBeanGenerator();
+    XtendBeanGenerator generator = new UintXtendBeanGenerator();
 
     @Test
     public void noActionValues() {
@@ -58,20 +58,20 @@ public class ActionInfoBuilderTest {
 
     @Test
     public void set_field_tunnel_idActionWithBigActionValues() {
-        ActionInfo actionInfo = new ActionSetFieldTunnelId(BigInteger.valueOf(123));
-        assertEquals("new ActionSetFieldTunnelId(0, 123bi)", generator.getExpression(actionInfo));
+        ActionInfo actionInfo = new ActionSetFieldTunnelId(Uint64.valueOf(123));
+        assertEquals("new ActionSetFieldTunnelId(0, (u64)123)", generator.getExpression(actionInfo));
     }
 
     @Test
     public void set_field_tunnel_idActionWithBigActionValuesWithActionKey() {
-        ActionInfo actionInfo = new ActionSetFieldTunnelId(69, BigInteger.valueOf(123));
-        assertEquals("new ActionSetFieldTunnelId(69, 123bi)", generator.getExpression(actionInfo));
+        ActionInfo actionInfo = new ActionSetFieldTunnelId(69, Uint64.valueOf(123));
+        assertEquals("new ActionSetFieldTunnelId(69, (u64)123)", generator.getExpression(actionInfo));
     }
 
     @Test
     @Ignore("Needs to be rewritten")
     public void learnActionValuesMatrix() {
-        ActionInfo actionInfo = new ActionLearn(1, 2, 3, BigInteger.valueOf(4), 5, (short) 6, 7, 8,
+        ActionInfo actionInfo = new ActionLearn(1, 2, 3, Uint64.valueOf(4), 5, (short) 6, 7, 8,
                 Arrays.asList(
                         new ActionLearn.CopyFromValue(2, 3, 4),
                         new ActionLearn.OutputToPort(4, 5)));

@@ -7,22 +7,22 @@
  */
 package org.opendaylight.genius.mdsalutil.instructions;
 
-import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadataBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Write metadata instruction.
  */
 public class InstructionWriteMetadata extends AbstractInstructionInfoImpl {
+    private final Uint64 metadata;
+    private final Uint64 mask;
 
-    private final BigInteger metadata;
-    private final BigInteger mask;
-
-    public InstructionWriteMetadata(BigInteger metadata, BigInteger mask) {
+    // FIXME: this should take and WriteMetadata instance
+    public InstructionWriteMetadata(Uint64 metadata, Uint64 mask) {
         this.metadata = metadata;
         this.mask = mask;
     }
@@ -42,11 +42,11 @@ public class InstructionWriteMetadata extends AbstractInstructionInfoImpl {
                 .build();
     }
 
-    public BigInteger getMetadata() {
+    public Uint64 getMetadata() {
         return metadata;
     }
 
-    public BigInteger getMask() {
+    public Uint64 getMask() {
         return mask;
     }
 

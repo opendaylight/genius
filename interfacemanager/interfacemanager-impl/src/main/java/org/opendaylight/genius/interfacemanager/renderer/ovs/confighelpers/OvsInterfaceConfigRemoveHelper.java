@@ -11,14 +11,12 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -50,6 +48,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,7 +119,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         }
 
         cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, null, tx);
-        BigInteger dpId = IfmUtil.getDpnFromInterface(ifState);
+        Uint64 dpId = IfmUtil.getDpnFromInterface(ifState);
         EVENT_LOGGER.debug("IFM-OvsInterfaceConfig,REMOVE {}", interfaceName);
         FlowBasedServicesUtils.removeIngressFlow(interfaceName, dpId, txRunner, futures);
 
@@ -145,7 +144,7 @@ public final class OvsInterfaceConfigRemoveHelper {
             TypedWriteTransaction<Operational> operTx, TypedReadWriteTransaction<Configuration> confTx)
             throws ExecutionException, InterruptedException {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
-        BigInteger dpId = null;
+        Uint64 dpId = null;
         if (parentRefs != null) {
             dpId = parentRefs.getDatapathNodeIdentifier();
         }
@@ -206,7 +205,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     public void removeTunnelIngressFlow(TypedReadWriteTransaction<Configuration> confTx,
-        String interfaceName, IfTunnel ifTunnel, BigInteger dpId) throws ExecutionException, InterruptedException {
+        String interfaceName, IfTunnel ifTunnel, Uint64 dpId) throws ExecutionException, InterruptedException {
         NodeConnectorId ncId = FlowBasedServicesUtils.getNodeConnectorIdFromInterface(interfaceName,
                 interfaceManagerCommonUtils);
         if (ncId == null) {
@@ -240,13 +239,13 @@ public final class OvsInterfaceConfigRemoveHelper {
     private static class VlanMemberStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
         private final ManagedNewTransactionRunner txRunner;
         private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
-        private final BigInteger dpId;
+        private final Uint64 dpId;
         private final String interfaceName;
         private final InterfaceParentEntry interfaceParentEntry;
 
         VlanMemberStateRemoveWorker(ManagedNewTransactionRunner txRunner,
                 InterfaceManagerCommonUtils interfaceManagerCommonUtils,
-                BigInteger dpId, String interfaceName, InterfaceParentEntry interfaceParentEntry) {
+                Uint64 dpId, String interfaceName, InterfaceParentEntry interfaceParentEntry) {
             this.txRunner = txRunner;
             this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
             this.dpId = dpId;
@@ -280,14 +279,14 @@ public final class OvsInterfaceConfigRemoveHelper {
     }
 
     private void removeLogicalTunnelSelectGroup(TypedReadWriteTransaction<Configuration> tx,
-        BigInteger srcDpnId, String interfaceName, int lportTag) throws ExecutionException, InterruptedException {
+            Uint64 srcDpnId, String interfaceName, int lportTag) throws ExecutionException, InterruptedException {
         long groupId = IfmUtil.getLogicalTunnelSelectGroupId(lportTag);
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} removed for {} srcDpnId {}",
                 groupId, interfaceName, srcDpnId);
         mdsalApiManager.removeGroup(tx, srcDpnId, groupId);
     }
 
-    private void removeLogicalTunnelGroup(BigInteger dpnId, String ifaceName, int lportTag,
+    private void removeLogicalTunnelGroup(Uint64 dpnId, String ifaceName, int lportTag,
             TypedWriteTransaction<Operational> operTx, TypedReadWriteTransaction<Configuration> confTx)
             throws ExecutionException, InterruptedException {
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: unbind & delete Interface State for logic tunnel group {}", ifaceName);

@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.mdsalutil.actions;
 
-import java.math.BigInteger;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
@@ -16,28 +15,29 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Set tunnel id field action.
  */
 public class ActionSetFieldTunnelId extends ActionInfo {
 
-    private final BigInteger tunnelId;
-    @Nullable private final BigInteger tunnelMask;
+    private final Uint64 tunnelId;
+    private final @Nullable Uint64 tunnelMask;
 
-    public ActionSetFieldTunnelId(BigInteger tunnelId) {
+    public ActionSetFieldTunnelId(Uint64 tunnelId) {
         this(0, tunnelId);
     }
 
-    public ActionSetFieldTunnelId(int actionKey, BigInteger tunnelId) {
+    public ActionSetFieldTunnelId(int actionKey, Uint64 tunnelId) {
         this(actionKey, tunnelId, null);
     }
 
-    public ActionSetFieldTunnelId(BigInteger tunnelId, BigInteger tunnelMask) {
+    public ActionSetFieldTunnelId(Uint64 tunnelId, Uint64 tunnelMask) {
         this(0, tunnelId, tunnelMask);
     }
 
-    public ActionSetFieldTunnelId(int actionKey, BigInteger tunnelId, BigInteger tunnelMask) {
+    public ActionSetFieldTunnelId(int actionKey, Uint64 tunnelId, Uint64 tunnelMask) {
         super(actionKey);
         this.tunnelId = tunnelId;
         this.tunnelMask = tunnelMask;
@@ -67,12 +67,11 @@ public class ActionSetFieldTunnelId extends ActionInfo {
             .build();
     }
 
-    public BigInteger getTunnelId() {
+    public Uint64 getTunnelId() {
         return tunnelId;
     }
 
-    @Nullable
-    public BigInteger getTunnelMask() {
+    public @Nullable Uint64 getTunnelMask() {
         return tunnelMask;
     }
 
@@ -109,5 +108,4 @@ public class ActionSetFieldTunnelId extends ActionInfo {
         return "ActionSetFieldTunnelId [tunnelId=" + tunnelId + ", tunnelMask=" + tunnelMask + ", getActionKey()="
                 + getActionKey() + "]";
     }
-
 }

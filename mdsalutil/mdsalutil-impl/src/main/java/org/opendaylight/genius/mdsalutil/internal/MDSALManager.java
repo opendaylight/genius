@@ -19,7 +19,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
-import java.math.BigInteger;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -68,6 +68,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.N
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.packet.service.rev130709.PacketProcessingService;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +143,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
                 tx -> writeFlowEntityInternal(flowEntity, tx)));
     }
 
-    private FluentFuture<Void> installFlowInternal(BigInteger dpId, Flow flow) {
+    private FluentFuture<Void> installFlowInternal(Uint64 dpId, Flow flow) {
         return txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> writeFlowInternal(dpId, flow, tx));
     }
@@ -156,10 +157,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         tx.put(flowInstanceId, flowbld.build(), true);
     }
 
-    private static void writeFlowInternal(BigInteger dpId, Flow flow,
+    private static void writeFlowInternal(Uint64 dpId, Flow flow,
             TypedWriteTransaction<Datastore.Configuration> tx) {
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
-        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId(), flowKey);
+        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId,
+                                                            flow.getTableId().toJava(), flowKey);
         tx.put(flowInstanceId, flow, true);
     }
 
@@ -186,13 +188,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     private void deleteFlowEntityInternal(FlowEntity flowEntity, TypedWriteTransaction<Datastore.Configuration> tx) {
-        BigInteger dpId = flowEntity.getDpnId();
+        Uint64 dpId = flowEntity.getDpnId();
         short tableId = flowEntity.getTableId();
         FlowKey flowKey = new FlowKey(new FlowId(flowEntity.getFlowId()));
         deleteFlow(dpId, tableId, flowKey, tx);
     }
 
-    private void deleteFlow(BigInteger dpId, short tableId, FlowKey flowKey, WriteTransaction tx) {
+    private void deleteFlow(Uint64 dpId, short tableId, FlowKey flowKey, WriteTransaction tx) {
         if (flowExists(dpId, tableId, flowKey)) {
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
             tx.delete(LogicalDatastoreType.CONFIGURATION, flowInstanceId);
@@ -201,7 +203,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private void deleteFlow(BigInteger dpId, short tableId, FlowKey flowKey,
+    private void deleteFlow(Uint64 dpId, short tableId, FlowKey flowKey,
                             TypedWriteTransaction<Datastore.Configuration> tx) {
         if (flowExists(dpId, tableId, flowKey)) {
             InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
@@ -211,24 +213,24 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private FluentFuture<Void> removeFlowNewInternal(BigInteger dpnId, Flow flowEntity) {
+    private FluentFuture<Void> removeFlowNewInternal(Uint64 dpnId, Flow flowEntity) {
         LOG.debug("Remove flow {}", flowEntity);
         return txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> {
                 FlowKey flowKey = new FlowKey(flowEntity.getId());
-                short tableId = flowEntity.getTableId();
+                short tableId = flowEntity.getTableId().toJava();
                 deleteFlow(dpnId, tableId, flowKey, tx);
             });
     }
 
     @VisibleForTesting
-    FluentFuture<Void> removeGroupInternal(BigInteger dpnId, long groupId) {
+    FluentFuture<Void> removeGroupInternal(Uint64 dpnId, long groupId) {
         return addCallBackForInstallGroupAndReturn(txRunner
             .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> removeGroupInternal(dpnId, groupId, tx)));
     }
 
-    private void removeGroupInternal(BigInteger dpnId, long groupId,
+    private void removeGroupInternal(Uint64 dpnId, long groupId,
                                      TypedWriteTransaction<Datastore.Configuration> tx) {
         Node nodeDpn = buildDpnNode(dpnId);
         if (groupExists(nodeDpn, groupId)) {
@@ -239,19 +241,19 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private static Node buildDpnNode(BigInteger dpnId) {
+    private static Node buildDpnNode(Uint64 dpnId) {
         NodeId nodeId = new NodeId("openflow:" + dpnId);
         Node nodeDpn = new NodeBuilder().setId(nodeId).withKey(new NodeKey(nodeId)).build();
 
         return nodeDpn;
     }
 
-    private static String getGroupKey(long groupId, BigInteger dpId) {
+    private static String getGroupKey(long groupId, Uint64 dpId) {
         String synchronizingKey = "group-key-" + groupId + dpId;
         return synchronizingKey.intern();
     }
 
-    private static String getFlowKey(BigInteger dpId, short tableId, FlowKey flowKey) {
+    private static String getFlowKey(Uint64 dpId, short tableId, FlowKey flowKey) {
         String synchronizingKey = "flow-key-" + dpId + tableId + flowKey;
         return synchronizingKey.intern();
     }
@@ -263,7 +265,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         Flow flow = flowEntity.getFlowBuilder().build();
         String flowId = flowEntity.getFlowId();
         short tableId = flowEntity.getTableId();
-        BigInteger dpId = flowEntity.getDpnId();
+        Uint64 dpId = flowEntity.getDpnId();
         FlowKey flowKey = new FlowKey(new FlowId(flowId));
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
 
@@ -285,7 +287,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             LOG.trace("syncSetUpGroup for groupEntity {} ", groupEntity);
         }
         Group group = groupEntity.getGroupBuilder().build();
-        BigInteger dpId = groupEntity.getDpnId();
+        Uint64 dpId = groupEntity.getDpnId();
         long groupId = groupEntity.getGroupId();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, buildDpnNode(dpId));
 
@@ -310,12 +312,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void remove(InstanceIdentifier<Group> identifier, Group del) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, del);
         }
 
-        private void executeNotifyTaskIfRequired(BigInteger dpId, Group group) {
-            GroupInfoKey groupKey = new GroupInfoKey(dpId, group.getGroupId().getValue());
+        private void executeNotifyTaskIfRequired(Uint64 dpId, Group group) {
+            GroupInfoKey groupKey = new GroupInfoKey(dpId, group.getGroupId().getValue().toJava());
             Runnable notifyTask = groupMap.remove(groupKey);
             if (notifyTask == null) {
                 return;
@@ -325,13 +327,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void update(InstanceIdentifier<Group> identifier, Group original, Group update) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, update);
         }
 
         @Override
         protected void add(InstanceIdentifier<Group> identifier, Group add) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, add);
         }
 
@@ -355,12 +357,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             notifyTaskIfRequired(dpId, del);
         }
 
-        private void notifyTaskIfRequired(BigInteger dpId, Flow flow) {
-            FlowInfoKey flowKey = new FlowInfoKey(dpId, flow.getTableId(), flow.getMatch(), flow.getId().getValue());
+        private void notifyTaskIfRequired(Uint64 dpId, Flow flow) {
+            FlowInfoKey flowKey = new FlowInfoKey(dpId, flow.getTableId().toJava(),
+                                                  flow.getMatch(), flow.getId().getValue());
             Runnable notifyTask = flowMap.remove(flowKey);
             if (notifyTask == null) {
                 return;
@@ -374,7 +377,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             notifyTaskIfRequired(dpId, add);
         }
 
@@ -399,7 +402,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             flowLog.trace("FlowId {} deleted from Table {} on DPN {}",
                 del.getId().getValue(), del.getTableId(), dpId);
         }
@@ -410,7 +413,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
 
         @Override
         protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
-            BigInteger dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
+            Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             flowLog.debug("FlowId {} added to Table {} on DPN {}",
                 add.getId().getValue(), add.getTableId(), dpId);
         }
@@ -427,9 +430,11 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private static BigInteger getDpnFromString(String dpnString) {
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private static Uint64 getDpnFromString(String dpnString) {
         String[] split = dpnString.split(":");
-        return new BigInteger(split[1]);
+        return Uint64.valueOf(split[1]);
     }
 
     @Override
@@ -439,19 +444,19 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId, Flow flowEntity) {
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId, Flow flowEntity) {
         return Futures.makeChecked(installFlowInternal(dpId, flowEntity),
             t -> new TransactionCommitFailedException("installFlow failed", t));
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(BigInteger dpId, FlowEntity flowEntity) {
+    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId, FlowEntity flowEntity) {
         return Futures.makeChecked(installFlowInternal(dpId, flowEntity.getFlowBuilder().build()),
             t -> new TransactionCommitFailedException("installFlow failed", t));
     }
 
     @Override
-    public ListenableFuture<Void> removeFlow(BigInteger dpId, short tableId, FlowId flowId) {
+    public ListenableFuture<Void> removeFlow(Uint64 dpId, short tableId, FlowId flowId) {
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
             tx -> deleteFlow(dpId, tableId, new FlowKey(flowId), tx));
 
@@ -481,7 +486,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(BigInteger dpId, Flow flowEntity) {
+    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(Uint64 dpId, Flow flowEntity) {
         return Futures.makeChecked(removeFlowNewInternal(dpId, flowEntity),
             t -> new TransactionCommitFailedException("removeFlow failed", t));
     }
@@ -499,19 +504,19 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow)
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, Flow flow)
             throws ExecutionException, InterruptedException {
-        removeFlow(tx, dpId, flow.key(), flow.getTableId());
+        removeFlow(tx, dpId, flow.key(), flow.getTableId().toJava());
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, String flowId, short tableId)
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, String flowId, short tableId)
             throws ExecutionException, InterruptedException {
         removeFlow(tx, dpId, new FlowKey(new FlowId(flowId)), tableId);
     }
 
     @Override
-    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, FlowKey flowKey,
+    public void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, FlowKey flowKey,
             short tableId) throws ExecutionException, InterruptedException {
         InstanceIdentifier<Flow> flowInstanceIdentifier = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
         if (tx.read(flowInstanceIdentifier).get().isPresent()) {
@@ -531,13 +536,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, Group group)
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, Group group)
             throws ExecutionException, InterruptedException {
-        removeGroup(tx, dpId, group.getGroupId().getValue());
+        removeGroup(tx, dpId, group.getGroupId().getValue().toJava());
     }
 
     @Override
-    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId)
+    public void removeGroup(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId)
             throws ExecutionException, InterruptedException {
         Node nodeDpn = buildDpnNode(dpId);
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
@@ -584,8 +589,9 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void addFlow(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Flow flow) {
-        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, flow.getTableId(), flow.key());
+    public void addFlow(TypedWriteTransaction<Configuration> tx, Uint64 dpId, Flow flow) {
+        InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId,
+                                                            flow.getTableId().toJava(), flow.key());
         tx.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
     }
 
@@ -595,26 +601,26 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public void addGroup(TypedWriteTransaction<Configuration> tx, BigInteger dpId, Group group) {
+    public void addGroup(TypedWriteTransaction<Configuration> tx, Uint64 dpId, Group group) {
         Node nodeDpn = buildDpnNode(dpId);
-        long groupId = group.getGroupId().getValue();
+        long groupId = group.getGroupId().getValue().toJava();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
         tx.put(groupInstanceId, group, CREATE_MISSING_PARENTS);
     }
 
     @Override
-    public void addBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId, Bucket bucket)
+    public void addBucket(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId, Bucket bucket)
             throws ExecutionException, InterruptedException {
         Node nodeDpn = buildDpnNode(dpId);
         if (groupExists(tx, nodeDpn, groupId)) {
             InstanceIdentifier<Bucket> bucketInstanceId = buildBucketInstanceIdentifier(groupId,
-                bucket.getBucketId().getValue(), nodeDpn);
+                bucket.getBucketId().getValue().toJava(), nodeDpn);
             tx.put(bucketInstanceId, bucket);
         }
     }
 
     @Override
-    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, BigInteger dpId, long groupId, long bucketId)
+    public void removeBucket(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId, long bucketId)
             throws ExecutionException, InterruptedException {
         Node nodeDpn = buildDpnNode(dpId);
         if (groupExists(tx, nodeDpn, groupId)) {
@@ -626,7 +632,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public boolean groupExists(BigInteger dpId, long groupId) {
+    public boolean groupExists(Uint64 dpId, long groupId) {
         return groupExists(buildDpnNode(dpId), groupId);
     }
 
@@ -652,7 +658,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return groupInstanceId;
     }
 
-    private boolean flowExists(BigInteger dpId, short tableId, FlowKey flowKey) {
+    private boolean flowExists(Uint64 dpId, short tableId, FlowKey flowKey) {
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId, tableId, flowKey);
         try {
             Optional<Flow> flowOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
@@ -664,7 +670,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return false;
     }
 
-    private static InstanceIdentifier<Flow> buildFlowInstanceIdentifier(BigInteger dpnId, short tableId,
+    private static InstanceIdentifier<Flow> buildFlowInstanceIdentifier(Uint64 dpnId, short tableId,
             FlowKey flowKey) {
         InstanceIdentifier<Flow> flowInstanceId = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, buildDpnNode(dpnId).key()).augmentation(FlowCapableNode.class)

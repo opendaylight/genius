@@ -5,11 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager.globals;
 
 import com.google.common.base.Optional;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public final class InterfaceServiceUtil {
 
@@ -55,7 +54,7 @@ public final class InterfaceServiceUtil {
      */
     @Deprecated
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
-            BigInteger cookie, List<Instruction> instructions) {
+            Uint64 cookie, List<Instruction> instructions) {
         return buildServiceInfo(serviceName, servicePriority);
     }
 
@@ -66,7 +65,7 @@ public final class InterfaceServiceUtil {
      */
     @Deprecated
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
-            BigInteger cookie) {
+            Uint64 cookie) {
         return buildServiceInfo(serviceName, servicePriority);
     }
 
@@ -79,7 +78,7 @@ public final class InterfaceServiceUtil {
     }
 
     public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
-            BigInteger cookie, List<Instruction> instructions) {
+            Uint64 cookie, List<Instruction> instructions) {
         StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority)
                 .setInstruction(instructions);
         return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
@@ -87,7 +86,7 @@ public final class InterfaceServiceUtil {
                 .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
     }
 
-    public static List<MatchInfo> getMatchInfoForVlanLPort(BigInteger dpId, long portNo, long vlanId,
+    public static List<MatchInfo> getMatchInfoForVlanLPort(Uint64 dpId, long portNo, long vlanId,
             boolean isVlanTransparent) {
         List<MatchInfo> matches = new ArrayList<>();
         matches.add(new MatchInPort(dpId, portNo));
@@ -112,9 +111,9 @@ public final class InterfaceServiceUtil {
             if (match2 instanceof MatchMetadata) {
                 if (match instanceof MatchMetadata) {
                     MatchMetadata metadataMatch = (MatchMetadata) match;
-                    BigInteger value = MetaDataUtil.mergeMetadataValues(((MatchMetadata) match2).getMetadata(),
+                    Uint64 value = MetaDataUtil.mergeMetadataValues(((MatchMetadata) match2).getMetadata(),
                             metadataMatch.getMetadata());
-                    BigInteger mask = MetaDataUtil.mergeMetadataMask(((MatchMetadata) match2).getMask(),
+                    Uint64 mask = MetaDataUtil.mergeMetadataMask(((MatchMetadata) match2).getMask(),
                             metadataMatch.getMask());
                     match = new MatchMetadata(value, mask);
                     iter.remove();
@@ -136,7 +135,7 @@ public final class InterfaceServiceUtil {
         return -1;
     }
 
-    public static Set<Object> getStatRequestKeys(BigInteger dpId, short tableId, List<MatchInfo> matches, String flowId,
+    public static Set<Object> getStatRequestKeys(Uint64 dpId, short tableId, List<MatchInfo> matches, String flowId,
             long groupId) {
         Set<Object> statRequestKeys = new HashSet<>();
         statRequestKeys.add(getFlowStatisticsKey(dpId, tableId, matches, flowId));
@@ -144,11 +143,11 @@ public final class InterfaceServiceUtil {
         return statRequestKeys;
     }
 
-    public static GroupInfoKey getGroupStatisticsKey(BigInteger dpId, long groupId) {
+    public static GroupInfoKey getGroupStatisticsKey(Uint64 dpId, long groupId) {
         return new GroupInfoKey(dpId, groupId);
     }
 
-    public static FlowInfoKey getFlowStatisticsKey(BigInteger dpId, short tableId, List<MatchInfo> matches,
+    public static FlowInfoKey getFlowStatisticsKey(Uint64 dpId, short tableId, List<MatchInfo> matches,
             String flowId) {
         return new FlowInfoKey(dpId, tableId, MDSALUtil.buildMatches(matches), flowId);
     }

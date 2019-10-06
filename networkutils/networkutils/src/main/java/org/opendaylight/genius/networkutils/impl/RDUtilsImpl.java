@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -41,6 +40,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.networkutils.config.rev181129.NetworkConfig;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +79,7 @@ public class RDUtilsImpl implements RDUtils {
         }
         long baseAsNum = Long.parseLong(configureRDSplit[0]);
         long baseValue = Long.parseLong(configureRDSplit[1]);
-        baseAsNum = baseAsNum + ((baseValue + idValue) / NwConstants.RD_MAX_VALUE_FIELD) ;
+        baseAsNum = baseAsNum + (baseValue + idValue) / NwConstants.RD_MAX_VALUE_FIELD ;
         baseValue = (baseValue + idValue) % NwConstants.RD_MAX_VALUE_FIELD ;
 
         return String.valueOf(baseAsNum) + ":" + String.valueOf(baseValue);
@@ -92,7 +92,7 @@ public class RDUtilsImpl implements RDUtils {
         Future<RpcResult<AllocateIdOutput>> result = idManagerService.allocateId(getIdInput);
         RpcResult<AllocateIdOutput> rpcResult = result.get();
         if (rpcResult.isSuccessful()) {
-            String rd = convertIdValuetoRD(rpcResult.getResult().getIdValue());
+            String rd = convertIdValuetoRD(rpcResult.getResult().getIdValue().toJava());
             return rd;
         }
         return null;
@@ -109,6 +109,7 @@ public class RDUtilsImpl implements RDUtils {
         }
     }
 
+    @Override
     public Optional<IdPool> getRDPool() throws ReadFailedException {
         return SingleTransactionDataBroker.syncReadOptional(dataBroker,
                 LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
@@ -116,7 +117,8 @@ public class RDUtilsImpl implements RDUtils {
 
     private void validateAndCreateRDPool() throws ReadFailedException {
         long lowLimit = 0L;
-        long highLimit = networkConfig.getOpendaylightRdCount();
+        Uint32 highConfig = networkConfig.getOpendaylightRdCount();
+        long highLimit = highConfig == null ? 0 : highConfig.toJava();
         if (highLimit == 0L) {
             highLimit = NwConstants.RD_DEFAULT_COUNT;
         }
@@ -125,8 +127,8 @@ public class RDUtilsImpl implements RDUtils {
                 buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
         if (existingIdPool.isPresent()) {
             IdPool odlRDPool = existingIdPool.get();
-            long currentStartLimit = odlRDPool.getAvailableIdsHolder().getStart();
-            long currentEndLimit = odlRDPool.getAvailableIdsHolder().getEnd();
+            long currentStartLimit = odlRDPool.getAvailableIdsHolder().getStart().toJava();
+            long currentEndLimit = odlRDPool.getAvailableIdsHolder().getEnd().toJava();
 
             if (lowLimit == currentStartLimit && highLimit == currentEndLimit) {
                 LOG.debug("validateAndCreateRDPool : OpenDaylight RD pool already exists "

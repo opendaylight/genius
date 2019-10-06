@@ -7,15 +7,17 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
-import java.math.BigInteger;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
+// FIXME: This class should follow builder pattern to support proper lifecycle
 public class VlanInterfaceInfo extends InterfaceInfo {
-
     private static final long serialVersionUID = 1L;
+
     private short vlanId;
+
     private boolean isVlanTransparent;
 
-    public VlanInterfaceInfo(BigInteger dpId, String portName, short vlanId) {
+    public VlanInterfaceInfo(Uint64 dpId, String portName, short vlanId) {
         super(dpId, portName);
         this.vlanId = vlanId;
     }
