@@ -11,12 +11,12 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
-import java.math.BigInteger;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowEntityBuilder;
 import org.opendaylight.genius.mdsalutil.matches.MatchIpv4Source;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Tests non-regression of FlowEntity related assertions.
@@ -28,10 +28,10 @@ public class FlowEntityAssertBeansTest {
     // FLOW1 & FLOW2 differ by a minor variance in their MatchIpv4Source (NB .1 vs .2)
     private static final FlowEntity FLOW1 = new FlowEntityBuilder()
             .addMatchInfoList(new MatchIpv4Source("10.0.0.1", "32")).setFlowId("A").setTableId((short) 1)
-            .setDpnId(BigInteger.ONE).build();
+            .setDpnId(Uint64.ONE).build();
     private static final FlowEntity FLOW2 = new FlowEntityBuilder()
             .addMatchInfoList(new MatchIpv4Source("10.0.0.2", "32")).setFlowId("A").setTableId((short) 1)
-            .setDpnId(BigInteger.ONE).build();
+            .setDpnId(Uint64.ONE).build();
 
     @Test(expected = ComparisonFailure.class)
     public void testFlowEntityAssertEqualBeans() {
@@ -40,10 +40,10 @@ public class FlowEntityAssertBeansTest {
 
     @Test
     public void testXtendBeanGenerator() {
-        XtendBeanGenerator generator = new XtendBeanGenerator();
+        XtendBeanGenerator generator = new UintXtendBeanGenerator();
         assertThat(generator.getExpression(FLOW1)).isEqualTo("(new FlowEntityBuilder => [\n"
-                + "    cookie = 1114112bi\n"
-                + "    dpnId = 1bi\n"
+                + "    cookie = (u64)1114112\n"
+                + "    dpnId = (u64)1\n"
                 + "    flowId = \"A\"\n"
                 + "    hardTimeOut = 0\n"
                 + "    idleTimeOut = 0\n"

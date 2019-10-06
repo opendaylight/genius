@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.commons;
 
 import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
-import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
@@ -66,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,8 +75,8 @@ public final class InterfaceMetaUtils {
     private final DataBroker dataBroker;
     private final IdManagerService idManager;
     private final BatchingUtils batchingUtils;
-    private final ConcurrentMap<BigInteger, BridgeEntry> bridgeEntryMap = new ConcurrentHashMap<>();
-    private final ConcurrentMap<BigInteger, BridgeRefEntry> bridgeRefEntryMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Uint64, BridgeEntry> bridgeEntryMap = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Uint64, BridgeRefEntry> bridgeRefEntryMap = new ConcurrentHashMap<>();
 
     @Inject
     public InterfaceMetaUtils(@Reference DataBroker dataBroker,
@@ -95,7 +94,7 @@ public final class InterfaceMetaUtils {
         return bridgeRefEntryInstanceIdentifierBuilder.build();
     }
 
-    public BridgeRefEntry getBridgeRefEntryFromOperationalDS(BigInteger dpId) {
+    public BridgeRefEntry getBridgeRefEntryFromOperationalDS(Uint64 dpId) {
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
@@ -107,7 +106,7 @@ public final class InterfaceMetaUtils {
         return bridgeRefEntry;
     }
 
-    public BridgeRefEntry getBridgeRefEntryFromOperDS(BigInteger dpId) {
+    public BridgeRefEntry getBridgeRefEntryFromOperDS(Uint64 dpId) {
         BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromCache(dpId);
         if (bridgeRefEntry != null) {
             return bridgeRefEntry;
@@ -122,7 +121,7 @@ public final class InterfaceMetaUtils {
         return bridgeRefEntry;
     }
 
-    public OvsdbBridgeRef getOvsdbBridgeRef(BigInteger dpId) {
+    public OvsdbBridgeRef getOvsdbBridgeRef(Uint64 dpId) {
 
         BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromOperDS(dpId);
 
@@ -140,7 +139,7 @@ public final class InterfaceMetaUtils {
 
     public BridgeRefEntry getBridgeReferenceForInterface(Interface interfaceInfo) {
         ParentRefs parentRefs = interfaceInfo.augmentation(ParentRefs.class);
-        BigInteger dpn = parentRefs.getDatapathNodeIdentifier();
+        Uint64 dpn = parentRefs.getDatapathNodeIdentifier();
         return getBridgeRefEntryFromOperDS(dpn);
     }
 
@@ -159,7 +158,7 @@ public final class InterfaceMetaUtils {
         return bridgeEntryIdBuilder.build();
     }
 
-    public BridgeEntry getBridgeEntryFromConfigDS(BigInteger dpnId) {
+    public BridgeEntry getBridgeEntryFromConfigDS(Uint64 dpnId) {
         BridgeEntry bridgeEntry = getBridgeEntryFromCache(dpnId);
         if (bridgeEntry != null) {
             return bridgeEntry;
@@ -176,7 +175,7 @@ public final class InterfaceMetaUtils {
     }
 
     public BridgeEntry getBridgeEntryFromConfigDS(InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier) {
-        BigInteger dpnId = bridgeEntryInstanceIdentifier.firstKeyOf(BridgeEntry.class).getDpid();
+        Uint64 dpnId = bridgeEntryInstanceIdentifier.firstKeyOf(BridgeEntry.class).getDpid();
         return getBridgeEntryFromConfigDS(dpnId);
     }
 
@@ -193,7 +192,7 @@ public final class InterfaceMetaUtils {
 
     }
 
-    public void createBridgeInterfaceEntryInConfigDS(BigInteger dpId, String childInterface) {
+    public void createBridgeInterfaceEntryInConfigDS(Uint64 dpId, String childInterface) {
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey = new BridgeInterfaceEntryKey(childInterface);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
@@ -303,7 +302,7 @@ public final class InterfaceMetaUtils {
         return ifIndex;
     }
 
-    public static void addBridgeRefToBridgeInterfaceEntry(BigInteger dpId, OvsdbBridgeRef ovsdbBridgeRef,
+    public static void addBridgeRefToBridgeInterfaceEntry(Uint64 dpId, OvsdbBridgeRef ovsdbBridgeRef,
             TypedWriteTransaction<Configuration> tx) {
         BridgeEntryKey bridgeEntryKey = new BridgeEntryKey(dpId);
         InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier = getBridgeEntryIdentifier(bridgeEntryKey);
@@ -313,7 +312,7 @@ public final class InterfaceMetaUtils {
         tx.merge(bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), CREATE_MISSING_PARENTS);
     }
 
-    public static void createBridgeRefEntry(BigInteger dpnId, InstanceIdentifier<?> bridgeIid,
+    public static void createBridgeRefEntry(Uint64 dpnId, InstanceIdentifier<?> bridgeIid,
                                             TypedWriteTransaction<Operational> tx) {
         LOG.debug("Creating bridge ref entry for dpn: {} bridge: {}",
                 dpnId, bridgeIid);
@@ -326,7 +325,7 @@ public final class InterfaceMetaUtils {
         tx.put(bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), CREATE_MISSING_PARENTS);
     }
 
-    public static void deleteBridgeRefEntry(BigInteger dpnId, TypedWriteTransaction<Operational> tx) {
+    public static void deleteBridgeRefEntry(Uint64 dpnId, TypedWriteTransaction<Operational> tx) {
         LOG.debug("Deleting bridge ref entry for dpn: {}", dpnId);
         tx.delete(InterfaceMetaUtils.getBridgeRefEntryIdentifier(new BridgeRefEntryKey(dpnId)));
     }
@@ -390,7 +389,7 @@ public final class InterfaceMetaUtils {
         }
     }
 
-    public List<TerminationPoint> getTerminationPointsOnBridge(BigInteger dpnId) {
+    public List<TerminationPoint> getTerminationPointsOnBridge(Uint64 dpnId) {
         BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromOperDS(dpnId);
         if (bridgeRefEntry == null || bridgeRefEntry.getBridgeReference() == null) {
             LOG.debug("BridgeRefEntry for DPNID {} not found", dpnId);
@@ -409,7 +408,7 @@ public final class InterfaceMetaUtils {
     // Cache Util methods
 
     // Start: BridgeEntryCache
-    public void addBridgeEntryToCache(BigInteger dpnId, BridgeEntry bridgeEntry) {
+    public void addBridgeEntryToCache(Uint64 dpnId, BridgeEntry bridgeEntry) {
         bridgeEntryMap.put(dpnId, bridgeEntry);
     }
 
@@ -417,7 +416,7 @@ public final class InterfaceMetaUtils {
         addBridgeEntryToCache(bridgeEntry.key().getDpid(), bridgeEntry);
     }
 
-    public void removeFromBridgeEntryCache(BigInteger dpnId) {
+    public void removeFromBridgeEntryCache(Uint64 dpnId) {
         bridgeEntryMap.remove(dpnId);
     }
 
@@ -425,13 +424,13 @@ public final class InterfaceMetaUtils {
         removeFromBridgeEntryCache(bridgeEntry.key().getDpid());
     }
 
-    public BridgeEntry getBridgeEntryFromCache(BigInteger dpnId) {
+    public BridgeEntry getBridgeEntryFromCache(Uint64 dpnId) {
         return bridgeEntryMap.get(dpnId);
     }
     // End: Bridge Entry Cache
 
     //Start: BridgeRefEntry Cache
-    public void addBridgeRefEntryToCache(BigInteger dpnId, BridgeRefEntry bridgeRefEntry) {
+    public void addBridgeRefEntryToCache(Uint64 dpnId, BridgeRefEntry bridgeRefEntry) {
         bridgeRefEntryMap.put(dpnId, bridgeRefEntry);
     }
 
@@ -439,7 +438,7 @@ public final class InterfaceMetaUtils {
         addBridgeRefEntryToCache(bridgeRefEntry.key().getDpid(), bridgeRefEntry);
     }
 
-    public void removeFromBridgeRefEntryCache(BigInteger dpnId) {
+    public void removeFromBridgeRefEntryCache(Uint64 dpnId) {
         bridgeRefEntryMap.remove(dpnId);
     }
 
@@ -447,7 +446,7 @@ public final class InterfaceMetaUtils {
         removeFromBridgeRefEntryCache(bridgeRefEntry.key().getDpid());
     }
 
-    public BridgeRefEntry getBridgeRefEntryFromCache(BigInteger dpnId) {
+    public BridgeRefEntry getBridgeRefEntryFromCache(Uint64 dpnId) {
         return bridgeRefEntryMap.get(dpnId);
     }
 

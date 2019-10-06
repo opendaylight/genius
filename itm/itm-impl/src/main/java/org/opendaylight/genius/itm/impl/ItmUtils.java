@@ -127,7 +127,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,7 +154,7 @@ public final class ItmUtils {
     private ItmUtils() {
     }
 
-    public static final FutureCallback<Void> DEFAULT_WRITE_CALLBACK = new FutureCallback<Void>() {
+    public static final FutureCallback<Void> DEFAULT_WRITE_CALLBACK = new FutureCallback<>() {
         @Override
         public void onSuccess(Void result) {
             LOG.debug("Success in Datastore write operation");
@@ -248,7 +248,7 @@ public final class ItmUtils {
 
     //ITM cleanup:portname and vlanId are removed, causes change in generated
     //interface name: This has upgrade impact
-    public static String getInterfaceName(final BigInteger datapathid, final String portName, final Integer vlanId) {
+    public static String getInterfaceName(final Uint64 datapathid, final String portName, final Integer vlanId) {
         return String.format("%s:%s:%s", datapathid, portName, vlanId);
     }
 
@@ -282,7 +282,7 @@ public final class ItmUtils {
         LOG.trace("Releasing Id for trunkInterface - {}", trunkInterfaceName);
     }
 
-    public static String getLogicalTunnelGroupName(BigInteger srcDpnId, BigInteger destDpnId) {
+    public static String getLogicalTunnelGroupName(Uint64 srcDpnId, Uint64 destDpnId) {
         String tunnelTypeStr = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         String groupName = String.format("%s:%s:%s", srcDpnId.toString(), destDpnId.toString(), tunnelTypeStr);
         LOG.trace("logical tunnel group name is {}", groupName);
@@ -294,16 +294,16 @@ public final class ItmUtils {
         return IetfInetUtil.INSTANCE.inetAddressFor(ip);
     }
 
-    public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(BigInteger dpIdKey) {
+    public static InstanceIdentifier<DPNTEPsInfo> getDpnTepInstance(Uint64 dpIdKey) {
         return InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, new DPNTEPsInfoKey(dpIdKey))
                 .build();
     }
 
-    public static DPNTEPsInfo createDPNTepInfo(BigInteger dpId, List<TunnelEndPoints> endpoints) {
+    public static DPNTEPsInfo createDPNTepInfo(Uint64 dpId, List<TunnelEndPoints> endpoints) {
         return new DPNTEPsInfoBuilder().withKey(new DPNTEPsInfoKey(dpId)).setTunnelEndPoints(endpoints).build();
     }
 
-    public static TunnelEndPoints createTunnelEndPoints(BigInteger dpnId, IpAddress ipAddress, String portName,
+    public static TunnelEndPoints createTunnelEndPoints(Uint64 dpnId, IpAddress ipAddress, String portName,
                                                         boolean isOfTunnel, int vlanId, List<TzMembership> zones,
                                                         Class<? extends TunnelTypeBase>  tunnelType,
                                                         String tos) {
@@ -316,7 +316,7 @@ public final class ItmUtils {
                 .build();
     }
 
-    public static TunnelEndPoints createDummyTunnelEndPoints(BigInteger dpnID, IpAddress ipAddress, boolean ofTunnel,
+    public static TunnelEndPoints createDummyTunnelEndPoints(Uint64 dpnID, IpAddress ipAddress, boolean ofTunnel,
                                                              String tos, List<TzMembership> zones,
                                                              Class<? extends TunnelTypeBase>  tunnelType,
                                                              String port, int vlanID) {
@@ -335,7 +335,7 @@ public final class ItmUtils {
                 .child(Interface.class, new InterfaceKey(ifName)).augmentation(IfTunnel.class).build();
     }
 
-    public static Interface buildLogicalTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled) {
+    public static Interface buildLogicalTunnelInterface(Uint64 dpn, String ifName, String desc, boolean enabled) {
         InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
         ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
@@ -350,7 +350,7 @@ public final class ItmUtils {
         return builder.build();
     }
 
-    public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
+    public static Interface buildTunnelInterface(Uint64 dpn, String ifName, String desc, boolean enabled,
                                                  Class<? extends TunnelTypeBase> tunType, IpAddress localIp,
                                                  IpAddress remoteIp, boolean internal,
                                                  Boolean monitorEnabled,
@@ -363,7 +363,7 @@ public final class ItmUtils {
                 tunOptions);
     }
 
-    public static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
+    public static Interface buildTunnelInterface(Uint64 dpn, String ifName, String desc, boolean enabled,
                                                  Class<? extends TunnelTypeBase> tunType, IpAddress localIp,
                                                  IpAddress remoteIp, boolean internal,
                                                  Boolean monitorEnabled,
@@ -417,7 +417,7 @@ public final class ItmUtils {
         return builder.build();
     }
 
-    public static InternalTunnel buildInternalTunnel(BigInteger srcDpnId, BigInteger dstDpnId,
+    public static InternalTunnel buildInternalTunnel(Uint64 srcDpnId, Uint64 dstDpnId,
                                                      Class<? extends TunnelTypeBase> tunType,
                                                      String trunkInterfaceName) {
         return new InternalTunnelBuilder().withKey(new InternalTunnelKey(dstDpnId, srcDpnId, tunType))
@@ -441,10 +441,10 @@ public final class ItmUtils {
                 .replace("-", "");
     }
 
-    public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DPNTEPsInfoCache dpnTEPsInfoCache, List<BigInteger> dpnIds) {
+    public static List<DPNTEPsInfo> getDpnTepListFromDpnId(DPNTEPsInfoCache dpnTEPsInfoCache, List<Uint64> dpnIds) {
         Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
-        for (BigInteger dpnId : dpnIds) {
+        for (Uint64 dpnId : dpnIds) {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 if (dpnId.equals(teps.getDPNID())) {
                     cfgDpnList.add(teps);
@@ -457,7 +457,7 @@ public final class ItmUtils {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static void addTerminatingServiceTable(TypedReadWriteTransaction<Configuration> tx,
-                                                  BigInteger dpnId, IMdsalApiManager mdsalManager) {
+                                                  Uint64 dpnId, IMdsalApiManager mdsalManager) {
         LOG.trace("Installing PUNT to Controller flow in DPN {} ", dpnId);
         List<ActionInfo> listActionInfo = new ArrayList<>();
         listActionInfo.add(new ActionPuntToController());
@@ -465,7 +465,7 @@ public final class ItmUtils {
         try {
             List<MatchInfo> mkMatches = new ArrayList<>();
 
-            mkMatches.add(new MatchTunnelId(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)));
+            mkMatches.add(new MatchTunnelId(Uint64.valueOf(ITMConstants.LLDP_SERVICE_ID)));
 
             List<InstructionInfo> mkInstructions = new ArrayList<>();
             mkInstructions.add(new InstructionApplyActions(listActionInfo));
@@ -474,7 +474,9 @@ public final class ItmUtils {
                     .buildFlowEntity(dpnId, NwConstants.INTERNAL_TUNNEL_TABLE,
                             getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, ITMConstants.LLDP_SERVICE_ID),
                             5, String.format("%s:%d","ITM Flow Entry ", ITMConstants.LLDP_SERVICE_ID), 0, 0,
-                            ITMConstants.COOKIE_ITM.add(BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID)),
+                            // FIXME: this can be done more efficiently
+                            Uint64.valueOf(ITMConstants.COOKIE_ITM.add(
+                                BigInteger.valueOf(ITMConstants.LLDP_SERVICE_ID))),
                             mkMatches, mkInstructions);
             mdsalManager.addFlow(tx, terminatingServiceTableFlowEntity);
         } catch (Exception e) {
@@ -484,7 +486,7 @@ public final class ItmUtils {
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static void removeTerminatingServiceTable(TypedReadWriteTransaction<Configuration> tx,
-                                                     BigInteger dpnId, IMdsalApiManager mdsalManager) {
+                                                     Uint64 dpnId, IMdsalApiManager mdsalManager) {
         LOG.trace("Removing PUNT to Controller flow in DPN {} ", dpnId);
 
         try {
@@ -596,7 +598,7 @@ public final class ItmUtils {
         return new ExternalTunnelKey(dst, src, tunType);
     }
 
-    public static List<TunnelEndPoints> getTEPsForDpn(BigInteger srcDpn, Collection<DPNTEPsInfo> dpnList) {
+    public static List<TunnelEndPoints> getTEPsForDpn(Uint64 srcDpn, Collection<DPNTEPsInfo> dpnList) {
         for (DPNTEPsInfo dpn : dpnList) {
             if (Objects.equals(dpn.getDPNID(), srcDpn)) {
                 return new ArrayList<>(dpn.nonnullTunnelEndPoints());
@@ -650,7 +652,7 @@ public final class ItmUtils {
         if (externalTunnels !=  null) {
             for (ExternalTunnel tunnel : externalTunnels) {
                 String tunnelInterfaceName = tunnel.getTunnelInterfaceName();
-                if (tunnelInterfaceName != null && (tunnelInterfaceName.equalsIgnoreCase(interfaceName))) {
+                if (tunnelInterfaceName != null && tunnelInterfaceName.equalsIgnoreCase(interfaceName)) {
                     LOG.trace("getExternalTunnelFromDS tunnelInterfaceName: {} ", tunnelInterfaceName);
                     return tunnel;
                 }
@@ -918,7 +920,7 @@ public final class ItmUtils {
     }
 
     @NonNull
-    public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, BigInteger dpnId,
+    public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, Uint64 dpnId,
                                                              Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
         for (DPNTEPsInfo dstDpn : meshedDpnList) {
@@ -994,7 +996,7 @@ public final class ItmUtils {
     }
 
     @NonNull
-    public static  Optional<InternalTunnel> getInternalTunnelFromDS(BigInteger srcDpn, BigInteger destDpn,
+    public static  Optional<InternalTunnel> getInternalTunnelFromDS(Uint64 srcDpn, Uint64 destDpn,
                                                                     Class<? extends TunnelTypeBase> type,
                                                                     DataBroker dataBroker) {
         InstanceIdentifier<InternalTunnel> pathLogicTunnel = InstanceIdentifier.create(TunnelList.class)
@@ -1108,8 +1110,8 @@ public final class ItmUtils {
         return tunType ;
     }
 
-    public static List<BigInteger> getDpIdFromTransportzone(DataBroker dataBroker, String tzone) {
-        List<BigInteger> listOfDpId = new ArrayList<>();
+    public static List<Uint64> getDpIdFromTransportzone(DataBroker dataBroker, String tzone) {
+        List<Uint64> listOfDpId = new ArrayList<>();
         InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> transportZoneOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,

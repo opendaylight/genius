@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -118,6 +119,8 @@ public class TerminationPointStateListener
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private List<ListenableFuture<Void>> updateTunnelState(OvsdbTerminationPointAugmentation terminationPointNew) {
         final String interfaceName = terminationPointNew.getName();
         final Interface.OperStatus interfaceBfdStatus = getTunnelOpState(terminationPointNew);

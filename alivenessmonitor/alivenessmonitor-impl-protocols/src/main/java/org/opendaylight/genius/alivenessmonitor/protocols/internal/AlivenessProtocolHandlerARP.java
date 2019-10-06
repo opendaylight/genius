@@ -79,7 +79,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     @Override
     @SuppressFBWarnings("NP_NONNULL_RETURN_VIOLATION")
     public String handlePacketIn(ARP packet, PacketReceived packetReceived) {
-        short tableId = packetReceived.getTableId().getValue();
+        short tableId = packetReceived.getTableId().getValue().toJava();
         int arpType = packet.getOpCode();
 
         if (LOG.isTraceEnabled()) {
@@ -91,7 +91,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
                 LOG.trace("packet: {}", packetReceived);
             }
 
-            BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata();
+            BigInteger metadata = packetReceived.getMatch().getMetadata().getMetadata().toJava();
             int portTag = MetaDataUtil.getLportFromMetadata(metadata).intValue();
             String interfaceName = null;
 

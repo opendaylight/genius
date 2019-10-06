@@ -31,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitoring.states.MonitoringStateKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError;
+import org.opendaylight.yangtools.yang.common.Uint32;
 
 public final class AlivenessMonitorUtil {
     private AlivenessMonitorUtil() {
@@ -42,17 +43,17 @@ public final class AlivenessMonitorUtil {
                 .child(MonitoringState.class, new MonitoringStateKey(keyId)).build();
     }
 
-    public static InstanceIdentifier<MonitoringInfo> getMonitoringInfoId(Long monitorId) {
+    public static InstanceIdentifier<MonitoringInfo> getMonitoringInfoId(Uint32 monitorId) {
         return InstanceIdentifier.builder(MonitorConfigs.class)
                 .child(MonitoringInfo.class, new MonitoringInfoKey(monitorId)).build();
     }
 
-    public static InstanceIdentifier<MonitorProfile> getMonitorProfileId(Long profileId) {
+    public static InstanceIdentifier<MonitorProfile> getMonitorProfileId(Uint32 profileId) {
         return InstanceIdentifier.builder(MonitorProfiles.class)
                 .child(MonitorProfile.class, new MonitorProfileKey(profileId)).build();
     }
 
-    public  static InstanceIdentifier<MonitoridKeyEntry> getMonitorMapId(Long keyId) {
+    public  static InstanceIdentifier<MonitoridKeyEntry> getMonitorMapId(Uint32 keyId) {
         return InstanceIdentifier.builder(MonitoridKeyMap.class)
                 .child(MonitoridKeyEntry.class, new MonitoridKeyEntryKey(keyId)).build();
     }

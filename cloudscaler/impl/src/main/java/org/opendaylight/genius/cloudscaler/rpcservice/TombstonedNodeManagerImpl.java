@@ -64,7 +64,7 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
                 if (computeNode.isTombstoned() != null && !computeNode.isTombstoned()) {
                     executorService.execute(() -> {
                         callbacks.forEach(callback -> {
-                            callback.apply(computeNode.getDpnid());
+                            callback.apply(computeNode.getDpnid().toJava());
                         });
                     });
                 }

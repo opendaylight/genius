@@ -14,7 +14,7 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.Group
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +101,7 @@ public class ItmTunnelAggregationHelper {
     }
 
     public void createLogicalTunnelSelectGroup(TypedWriteTransaction<Configuration> tx,
-        BigInteger srcDpnId, String interfaceName, int lportTag) {
+            Uint64 srcDpnId, String interfaceName, int lportTag) {
         Group group = prepareLogicalTunnelSelectGroup(interfaceName, lportTag);
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: group id {} installed for {} srcDpnId {}",
                 group.getGroupId().getValue(), interfaceName, srcDpnId);
@@ -191,14 +192,15 @@ public class ItmTunnelAggregationHelper {
         if (listActionInfo.isEmpty()) {
             LOG.warn("MULTIPLE_VxLAN_TUNNELS: could not build Egress bucket for {}", interfaceName);
         }
-        Integer portWeight = ifTunnel.getWeight() != null ? ifTunnel.getWeight() : DEFAULT_WEIGHT;
+        Integer portWeight = ifTunnel.getWeight() != null ? ifTunnel.getWeight().toJava() : DEFAULT_WEIGHT;
         return MDSALUtil.buildBucket(MDSALUtil.buildActions(listActionInfo), portWeight, bucketId,
                                      portNumber, MDSALUtil.WATCH_GROUP);
     }
 
-    private void updateTunnelAggregationGroup(
-        TypedWriteTransaction<Configuration> tx,
-        InterfaceParentEntry parentEntry) {
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
+    private void updateTunnelAggregationGroup(TypedWriteTransaction<Configuration> tx,
+            InterfaceParentEntry parentEntry) {
         String logicTunnelName = parentEntry.getParentInterface();
         InternalTunnel logicInternalTunnel = ItmUtils.ITM_CACHE.getInternalTunnel(logicTunnelName);
         if (logicInternalTunnel == null) {
@@ -208,7 +210,7 @@ public class ItmTunnelAggregationHelper {
         InterfaceInfo ifLogicTunnel = interfaceManager.getInterfaceInfoFromOperationalDataStore(logicTunnelName);
         long groupId = ifLogicTunnel != null
                 ? interfaceManager.getLogicalTunnelSelectGroupId(ifLogicTunnel.getInterfaceTag()) : INVALID_ID;
-        BigInteger srcDpnId = logicInternalTunnel.getSourceDPN();
+        Uint64 srcDpnId = logicInternalTunnel.getSourceDPN();
         List<Bucket> listBuckets = new ArrayList<>();
         List<InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null || interfaceChildEntries.isEmpty()) {
@@ -249,6 +251,8 @@ public class ItmTunnelAggregationHelper {
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void updateTunnelAggregationGroupBucket(Interface ifaceState, IfTunnel ifTunnel,
                                                     ParentRefs parentRefs, InterfaceParentEntry groupParentEntry,
                                                     int action, TypedReadWriteTransaction<Configuration> tx)
@@ -277,7 +281,7 @@ public class ItmTunnelAggregationHelper {
         }
         String lowerLayerIf = ifaceState.getLowerLayerIf().get(0); // openflow:dpnid:portnum
         String[] split = lowerLayerIf.split(IfmConstants.OF_URI_SEPARATOR);
-        BigInteger srcDpnId = new BigInteger(split[1]);
+        Uint64 srcDpnId = Uint64.valueOf(split[1]);
         int portNumber = Integer.parseInt(split[2]);
         if (action == ADD_TUNNEL) {
             if (!mdsalManager.groupExists(srcDpnId, groupId)) {
@@ -292,6 +296,8 @@ public class ItmTunnelAggregationHelper {
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void updateLogicalTunnelGroupOperStatus(String logicalTunnelIfaceName, Interface ifaceState,
             InterfaceParentEntry parentEntry, TypedReadWriteTransaction<Operational> tx)
         throws ExecutionException, InterruptedException {
@@ -357,6 +363,8 @@ public class ItmTunnelAggregationHelper {
         tx.merge(idLogicGroup, ifaceBuilderChild.build(), CREATE_MISSING_PARENTS);
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void updateLogicalTunnelAdminStatus(String logicalTunnelName, Interface ifOrigin,
             Interface ifUpdated, InterfaceParentEntry parentEntry, TypedWriteTransaction<Operational> tx) {
 
@@ -374,6 +382,8 @@ public class ItmTunnelAggregationHelper {
         }
     }
 
+    @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
+            justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private void updateInterfaceAdminStatus(String logicalTunnelName, Interface ifState,
         TypedWriteTransaction<Operational> tx) {
         InterfaceInfo ifLogicTunnelInfo = interfaceManager.getInterfaceInfoFromOperationalDataStore(logicalTunnelName);

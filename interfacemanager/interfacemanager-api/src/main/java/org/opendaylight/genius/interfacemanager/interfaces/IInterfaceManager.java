@@ -5,14 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager.interfaces;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -30,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface IInterfaceManager {
 
@@ -37,11 +35,11 @@ public interface IInterfaceManager {
 
     Long getPortForInterface(Interface intf);
 
-    BigInteger getDpnForInterface(String ifName);
+    Uint64 getDpnForInterface(String ifName);
 
-    BigInteger getDpnForInterface(Interface intrf);
+    Uint64 getDpnForInterface(Interface intrf);
 
-    String getEndpointIpForDpn(BigInteger dpnId);
+    String getEndpointIpForDpn(Uint64 dpnId);
 
     List<ActionInfo> getInterfaceEgressActions(String ifName);
 
@@ -84,7 +82,7 @@ public interface IInterfaceManager {
      * @deprecated Use {@link #createVLANInterface(String, String, Integer, String, IfL2vlan.L2vlanMode)}.
      */
     @Deprecated
-    void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId, String description,
+    void createVLANInterface(String interfaceName, String portName, Uint64 dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
     ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
@@ -97,7 +95,7 @@ public interface IInterfaceManager {
      * @deprecated Use {@link #createVLANInterface(String, String, Integer, String, IfL2vlan.L2vlanMode, boolean)}.
      */
     @Deprecated
-    void createVLANInterface(String interfaceName, String portName, BigInteger dpId, Integer vlanId, String description,
+    void createVLANInterface(String interfaceName, String portName, Uint64 dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
     ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
@@ -176,12 +174,12 @@ public interface IInterfaceManager {
 
     OvsdbBridgeAugmentation getOvsdbBridgeForNodeIid(InstanceIdentifier<Node> nodeIid);
 
-    List<OvsdbTerminationPointAugmentation> getPortsOnBridge(BigInteger dpnId);
+    List<OvsdbTerminationPointAugmentation> getPortsOnBridge(Uint64 dpnId);
 
-    List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(BigInteger dpnId);
+    List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(Uint64 dpnId);
 
     Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>>
-        getPortsOnBridgeByType(BigInteger dpnId);
+        getPortsOnBridgeByType(Uint64 dpnId);
 
     void updateInterfaceParentRef(String interfaceName, String parentInterface);
 

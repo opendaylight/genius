@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.itm.cache;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acq
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +88,7 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                         // Check if the destination End Point has come
                         try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPointInfo.getDstEndPointInfo())) {
                             Optional<DPNTEPsInfo> dstInfoOpt = getDPNTepFromDPNId(
-                                    new BigInteger(tunnelEndPointInfo.getDstEndPointInfo()));
+                                    Uint64.valueOf(tunnelEndPointInfo.getDstEndPointInfo()));
                             if (dstInfoOpt.isPresent()) {
                                 dstDpnTepsInfo = dstInfoOpt.get();
                             } else {
@@ -111,7 +111,7 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                     if (srcDpnTepsInfo == null) {
                         try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPointInfo.getSrcEndPointInfo())) {
                             Optional<DPNTEPsInfo> srcInfoOpt = getDPNTepFromDPNId(
-                                    new BigInteger(tunnelEndPointInfo.getSrcEndPointInfo()));
+                                    Uint64.valueOf(tunnelEndPointInfo.getSrcEndPointInfo()));
                             if (srcInfoOpt.isPresent()) {
                                 srcDpnTepsInfo = srcInfoOpt.get();
                             } else {
@@ -146,10 +146,10 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
         }
     }
 
-    public List<DPNTEPsInfo> getDPNTepListFromDPNId(List<BigInteger> dpnIds) {
+    public List<DPNTEPsInfo> getDPNTepListFromDPNId(List<Uint64> dpnIds) {
         Collection<DPNTEPsInfo> meshedDpnList = this.getAllPresent() ;
         List<DPNTEPsInfo> cfgDpnList = new ArrayList<>();
-        for (BigInteger dpnId : dpnIds) {
+        for (Uint64 dpnId : dpnIds) {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 if (dpnId.equals(teps.getDPNID())) {
                     cfgDpnList.add(teps);
@@ -159,7 +159,7 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
         return cfgDpnList;
     }
 
-    public Optional<DPNTEPsInfo> getDPNTepFromDPNId(BigInteger dpnId) {
+    public Optional<DPNTEPsInfo> getDPNTepFromDPNId(Uint64 dpnId) {
         Collection<DPNTEPsInfo> meshedDpnList = this.getAllPresent() ;
         return meshedDpnList.stream().filter(info -> dpnId.equals(info.getDPNID())).findFirst();
     }

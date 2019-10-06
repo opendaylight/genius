@@ -7,25 +7,25 @@
  */
 package org.opendaylight.genius.mdsalutil.matches;
 
-import java.math.BigInteger;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.TunnelBuilder;
+import org.opendaylight.yangtools.yang.common.Uint64;
 
 /**
  * Tunnel identifier match.
  */
 public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
 
-    private final BigInteger tunnelId;
-    private final BigInteger tunnelMask;
+    private final Uint64 tunnelId;
+    private final Uint64 tunnelMask;
 
-    public MatchTunnelId(BigInteger tunnelId) {
+    public MatchTunnelId(Uint64 tunnelId) {
         this.tunnelId = tunnelId;
         this.tunnelMask = null;
     }
 
-    public MatchTunnelId(BigInteger tunnelId, BigInteger tunnelMask) {
+    public MatchTunnelId(Uint64 tunnelId, Uint64 tunnelMask) {
         this.tunnelId = tunnelId;
         this.tunnelMask = tunnelMask;
     }
@@ -43,11 +43,11 @@ public class MatchTunnelId extends MatchInfoHelper<Tunnel, TunnelBuilder> {
         }
     }
 
-    public BigInteger getTunnelId() {
+    public Uint64 getTunnelId() {
         return tunnelId;
     }
 
-    public BigInteger getTunnelMask() {
+    public Uint64 getTunnelMask() {
         return tunnelMask;
     }
 

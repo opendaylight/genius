@@ -10,7 +10,6 @@ package org.opendaylight.genius.itm.listeners;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FluentFuture;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +72,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -313,7 +313,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     }
 
     private List<DPNTEPsInfo> createDPNTepInfoFromNotHosted(TransportZone tzNew, List<DPNTEPsInfo> opDpnList) {
-        Map<BigInteger, List<TunnelEndPoints>> mapNotHostedDPNToTunnelEndpt = new ConcurrentHashMap<>();
+        Map<Uint64, List<TunnelEndPoints>> mapNotHostedDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> notHostedDpnTepInfo = new ArrayList<>();
         String newZoneName = tzNew.getZoneName();
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
@@ -327,10 +327,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<Vteps> vtepsList = new ArrayList<>();
         if (unVtepsLst != null && !unVtepsLst.isEmpty()) {
             for (UnknownVteps vteps : unVtepsLst) {
-                BigInteger dpnID = vteps.getDpnId();
+                Uint64 dpnID = vteps.getDpnId();
                 IpAddress ipAddress = vteps.getIpAddress();
-                String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-                int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+                String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
+                int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()
+                                                             : ITMConstants.DUMMY_VLANID;
                 boolean useOfTunnel = ItmUtils.falseIfNull(vteps.isOfTunnel());
                 String tos = vteps.getOptionTunnelTos();
                 if (tos == null) {
@@ -374,7 +375,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         jobCoordinator.enqueueJob(newZoneName, new ItmTepsNotHostedMoveWorker(vtepsList, newZoneName, txRunner));
 
         if (mapNotHostedDPNToTunnelEndpt.size() > 0) {
-            for (Entry<BigInteger, List<TunnelEndPoints>> entry: mapNotHostedDPNToTunnelEndpt.entrySet()) {
+            for (Entry<Uint64, List<TunnelEndPoints>> entry: mapNotHostedDPNToTunnelEndpt.entrySet()) {
                 DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(entry.getKey(), entry.getValue());
                 notHostedDpnTepInfo.add(newDpnTepsInfo);
             }
@@ -383,7 +384,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     }
 
-    private Vteps createVtepFromUnKnownVteps(BigInteger dpnID, IpAddress ipAddress) {
+    private Vteps createVtepFromUnKnownVteps(Uint64 dpnID, IpAddress ipAddress) {
         VtepsKey vtepkey = new VtepsKey(dpnID);
         Vteps vtepObj = new VtepsBuilder().setDpnId(dpnID).setIpAddress(ipAddress).withKey(vtepkey)
                 .build();
@@ -421,19 +422,19 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
     private List<DPNTEPsInfo> createDPNTepInfo(TransportZone transportZone) {
 
-        Map<BigInteger, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
+        Map<Uint64, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> dpnTepInfo = new ArrayList<>();
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(transportZone.getZoneName());
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
         LOG.trace("Transport Zone_name: {}", transportZone.getZoneName());
         List<Vteps> vtepsList = transportZone.getVteps();
 
-        String portName = (itmConfig.getPortname() == null) ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
-        int vlanId = (itmConfig.getVlanId() != null) ? itmConfig.getVlanId() : ITMConstants.DUMMY_VLANID;
+        String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
+        int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
         if (vtepsList != null && !vtepsList.isEmpty()) {
             for (Vteps vteps : vtepsList) {
-                BigInteger dpnID = vteps.getDpnId();
+                Uint64 dpnID = vteps.getDpnId();
                 IpAddress ipAddress = vteps.getIpAddress();
                 boolean useOfTunnel = itmConfig.isUseOfTunnels();
                 String tos = vteps.getOptionTunnelTos();
@@ -460,7 +461,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
         if (!mapDPNToTunnelEndpt.isEmpty()) {
             LOG.trace("List of dpns in the Map: {} ", mapDPNToTunnelEndpt.keySet());
-            for (Entry<BigInteger, List<TunnelEndPoints>> entry : mapDPNToTunnelEndpt.entrySet()) {
+            for (Entry<Uint64, List<TunnelEndPoints>> entry : mapDPNToTunnelEndpt.entrySet()) {
                 DPNTEPsInfo newDpnTepsInfo = ItmUtils.createDPNTepInfo(entry.getKey(), entry.getValue());
                 dpnTepInfo.add(newDpnTepsInfo);
             }

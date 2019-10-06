@@ -204,8 +204,8 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
              * and the functionality will remain same for all other applications as it was earlier.
              */
             if (boundServiceNew.getServicePriority() != null && (
-                boundServiceNew.getServicePriority() == NwConstants.ACL_SERVICE_INDEX
-                    || boundServiceNew.getServicePriority() == NwConstants.EGRESS_ACL_SERVICE_INDEX)
+                boundServiceNew.getServicePriority().toJava() == NwConstants.ACL_SERVICE_INDEX
+                    || boundServiceNew.getServicePriority().toJava() == NwConstants.EGRESS_ACL_SERVICE_INDEX)
                     && !Objects.equals(boundServiceOld, boundServiceNew)) {
                 LOG.info("Bound services flow update for service {}", boundServiceNew.getServiceName());
                 add(serviceKey, boundServiceNew, boundServicesList);
