@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2e56a4ee_57396478",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-10-07T16:16:06Z",
+      "side": 1,
+      "message": "This causes a checkstyle failure in https://jenkins.opendaylight.org/releng/view/integration/job/integration-multipatch-test-magnesium/19/:\n\n  [INFO] --- maven-checkstyle-plugin:3.1.0:check (default) @ ipv6util-api ---\n  [INFO] Starting audit...\n  [ERROR] /w/workspace/integration-multipatch-test-magnesium/patch_tester/genius/ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java:150: Line is longer than 120 characters (found 122). [LineLength]\n  Audit done.\n  [INFO] There is 1 error reported by Checkstyle 8.20 with odl_checks.xml ruleset.\n  [ERROR] src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java:[150] (sizes) LineLength: Line is longer than 120 characters (found 122).",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 122
+      },
+      "revId": "9fee3ec6a453c2237ec3b557d78897293029638e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
