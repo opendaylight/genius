@@ -22,6 +22,30 @@
       "revId": "9fee3ec6a453c2237ec3b557d78897293029638e",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "76b033e6_9d354341",
+        "filename": "ipv6util/api/src/main/java/org/opendaylight/genius/ipv6util/api/Ipv6Util.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-10-08T02:09:54Z",
+      "side": 1,
+      "message": "Not sure why these checkstyle issue are not popping locally with the mvn command.\n\n[INFO] --- maven-bundle-plugin:4.2.0:install (default-install) @ ipv6util-api ---\n[INFO] Installing org/opendaylight/genius/ipv6util-api/0.8.0-SNAPSHOT/ipv6util-api-0.8.0-SNAPSHOT.jar\n[INFO] Writing OBR metadata\n[INFO] ------------------------------------------------------------------------\n[INFO] BUILD SUCCESS\n[INFO] ------------------------------------------------------------------------\n[INFO] Total time:  33.684 s\n[INFO] Finished at: 2019-10-08T07:37:43+05:30\n[INFO] ------------------------------------------------------------------------\n\nstack@os-compute1-ubuntu16:~/magnesium-mri/genius/ipv6util/api$ mvn -Pq -settings ~/magnesium-mri/settings_mri.xml clean install -Dmaven.javadoc.skip\u003dfalse -Dcheckstyle.skip\u003dfalse -DskipTest\u003dfalse",
+      "parentUuid": "2e56a4ee_57396478",
+      "range": {
+        "startLine": 150,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 122
+      },
+      "revId": "9fee3ec6a453c2237ec3b557d78897293029638e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
