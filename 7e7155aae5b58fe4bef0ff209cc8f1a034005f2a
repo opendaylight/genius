@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a6436da5_94177d2e",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-10-10T08:45:00Z",
+      "side": 1,
+      "message": "This causes:\n\n 03:35:05.352 Caused by: java.lang.UnsupportedOperationException\n 03:35:05.353 \tat com.google.common.collect.ImmutableCollection.removeAll(ImmutableCollection.java:283)\n 03:35:05.353 \tat org.opendaylight.genius.idmanager.IdManager.allocateIdBlockFromReleasedIdsHolder(IdManager.java:514)\n 03:35:05.353 \tat org.opendaylight.genius.idmanager.IdManager.allocateIdBlockFromParentPool(IdManager.java:430)\n 03:35:05.353 \tat org.opendaylight.genius.idmanager.IdManager.lambda$getIdBlockFromParentPool$15(IdManager.java:407)\n 03:35:05.353 \tat org.opendaylight.genius.infra.ManagedTransactionFactoryImpl.applyWithNewTransactionAndSubmit(ManagedTransactionFactoryImpl.java:106)\n 03:35:05.353 \tat org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl.applyWithNewReadWriteTransactionAndSubmit(ManagedNewTransactionRunnerImpl.java:90)\n 03:35:05.353 \tat org.opendaylight.genius.idmanager.IdManager.getIdBlockFromParentPool(IdManager.java:404)",
+      "range": {
+        "startLine": 514,
+        "startChar": 8,
+        "endLine": 514,
+        "endChar": 63
+      },
+      "revId": "7e7155aae5b58fe4bef0ff209cc8f1a034005f2a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa971c4b_247ac05f",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 588,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2019-10-10T08:45:00Z",
+      "side": 1,
+      "message": "This causes:\n 03:35:05.360 Caused by: java.lang.UnsupportedOperationException\n 03:35:05.360 \tat com.google.common.collect.ImmutableCollection.remove(ImmutableCollection.java:257)\n 03:35:05.361 \tat org.opendaylight.genius.idmanager.IdManager.releaseIdFromLocalPool(IdManager.java:588)\n 03:35:05.361 \tat org.opendaylight.genius.idmanager.IdManager.lambda$releaseId$13(IdManager.java:292)\n 03:35:05.361 \tat org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.lambda$fromBuilder$0(FutureRpcResults.java:134)\n 03:35:05.361 \tat org.opendaylight.serviceutils.tools.rpc.FutureRpcResults$FutureRpcResultBuilder.build(FutureRpcResults.java:213)\n 03:35:05.361 \tat org.opendaylight.genius.idmanager.IdManager.releaseId(IdManager.java:303)\n 03:35:05.361 \tat org.opendaylight.genius.idmanager.test.IdManagerTest.testReleaseId(IdManagerTest.java:151)",
+      "range": {
+        "startLine": 588,
+        "startChar": 28,
+        "endLine": 588,
+        "endChar": 44
+      },
+      "revId": "7e7155aae5b58fe4bef0ff209cc8f1a034005f2a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
