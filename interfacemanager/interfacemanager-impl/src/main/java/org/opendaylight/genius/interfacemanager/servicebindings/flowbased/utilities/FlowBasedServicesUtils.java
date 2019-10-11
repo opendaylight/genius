@@ -475,7 +475,7 @@ public final class FlowBasedServicesUtils {
                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
             BoundServices
                     serviceInfo =
-                    getBoundServices(String.format("%s.%s", "default", interfaceName),
+                    getBoundServices(defaultInterfaceName(interfaceName),
                             ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
                             priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
@@ -489,11 +489,15 @@ public final class FlowBasedServicesUtils {
             NwConstants.DEFAULT_EGRESS_SERVICE_INDEX);
         BoundServices
             serviceInfo =
-            getBoundServices(String.format("%s.%s", "default", interfaceName),
+            getBoundServices(defaultInterfaceName(interfaceName),
                 ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                     NwConstants.DEFAULT_EGRESS_SERVICE_INDEX),
                 priority, NwConstants.EGRESS_DISPATCHER_TABLE_COOKIE, instructions);
         IfmUtil.bindService(tx, interfaceName, serviceInfo, ServiceModeEgress.class);
+    }
+
+    private static String defaultInterfaceName(final String interfaceName) {
+        return "default." + interfaceName;
     }
 
     public static void removeIngressFlow(String interfaceName, Uint64 dpId, ManagedNewTransactionRunner txRunner,
@@ -590,7 +594,7 @@ public final class FlowBasedServicesUtils {
     }
 
     public static String getFlowRef(short tableId, Uint64 dpnId, String infName) {
-        return String.format("%d:%s:%s", tableId, dpnId, infName);
+        return tableId + ":" + dpnId + ":" + infName;
     }
 
     private static String getFlowRef(Uint64 dpnId, short tableId, String iface, short currentServiceIndex) {

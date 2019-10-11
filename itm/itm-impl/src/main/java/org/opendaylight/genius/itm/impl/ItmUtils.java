@@ -133,7 +133,7 @@ import org.slf4j.LoggerFactory;
 public final class ItmUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmUtils.class);
-
+    private static final String ITM_LLDP_FLOW_ENTRY =  "ITM Flow Entry ::" + ITMConstants.LLDP_SERVICE_ID;
     private static final String TUNNEL = "tun";
     private static final IpPrefix DUMMY_IP_PREFIX = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX);
     private static final long DEFAULT_MONITORING_INTERVAL = 100L;
@@ -250,7 +250,7 @@ public final class ItmUtils {
     //ITM cleanup:portname and vlanId are removed, causes change in generated
     //interface name: This has upgrade impact
     public static String getInterfaceName(final Uint64 datapathid, final String portName, final Integer vlanId) {
-        return String.format("%s:%s:%s", datapathid, portName, vlanId);
+        return datapathid + ":" + portName + ":" + vlanId;
     }
 
     public static String getTrunkInterfaceName(String parentInterfaceName,
@@ -263,11 +263,10 @@ public final class ItmUtils {
         } else {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
-        String trunkInterfaceName = String.format("%s:%s:%s:%s", parentInterfaceName, localHostName,
-                remoteHostName, tunnelTypeStr);
+        String trunkInterfaceName = trunkInterfaceName(parentInterfaceName, localHostName, remoteHostName,
+            tunnelTypeStr);
         LOG.trace("trunk interface name is {}", trunkInterfaceName);
-        trunkInterfaceName = String.format("%s%s", TUNNEL, getUniqueIdString(trunkInterfaceName));
-        return trunkInterfaceName;
+        return TUNNEL + getUniqueIdString(trunkInterfaceName);
     }
 
     public static void releaseIdForTrunkInterfaceName(String parentInterfaceName,
@@ -278,17 +277,21 @@ public final class ItmUtils {
         } else {
             tunnelTypeStr = ITMConstants.TUNNEL_TYPE_VXLAN;
         }
-        String trunkInterfaceName = String.format("%s:%s:%s:%s", parentInterfaceName, localHostName,
-                remoteHostName, tunnelTypeStr);
-        LOG.trace("Releasing Id for trunkInterface - {}", trunkInterfaceName);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Releasing Id for trunkInterface - {}", trunkInterfaceName(parentInterfaceName, localHostName,
+                remoteHostName, tunnelTypeStr));
+        }
+    }
+
+    private static String trunkInterfaceName(String parentInterfaceName, String localHostName, String remoteHostName,
+            String tunnelType) {
+        return parentInterfaceName + ":" + localHostName + ":" + remoteHostName + ":" + tunnelType;
     }
 
     public static String getLogicalTunnelGroupName(Uint64 srcDpnId, Uint64 destDpnId) {
-        String tunnelTypeStr = ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
-        String groupName = String.format("%s:%s:%s", srcDpnId.toString(), destDpnId.toString(), tunnelTypeStr);
+        String groupName = srcDpnId + ":" + destDpnId + ":" + ITMConstants.TUNNEL_TYPE_LOGICAL_GROUP_VXLAN;
         LOG.trace("logical tunnel group name is {}", groupName);
-        groupName = String.format("%s%s", TUNNEL, getUniqueIdString(groupName));
-        return groupName;
+        return TUNNEL +  getUniqueIdString(groupName);
     }
 
     public static InetAddress getInetAddressFromIpAddress(IpAddress ip) {
@@ -474,7 +477,7 @@ public final class ItmUtils {
             FlowEntity terminatingServiceTableFlowEntity = MDSALUtil
                     .buildFlowEntity(dpnId, NwConstants.INTERNAL_TUNNEL_TABLE,
                             getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, ITMConstants.LLDP_SERVICE_ID),
-                            5, String.format("%s:%d","ITM Flow Entry :", ITMConstants.LLDP_SERVICE_ID), 0, 0,
+                            5, ITM_LLDP_FLOW_ENTRY, 0, 0,
                             COOKIE_ITM_LLD, mkMatches, mkInstructions);
             mdsalManager.addFlow(tx, terminatingServiceTableFlowEntity);
         } catch (Exception e) {
@@ -517,7 +520,7 @@ public final class ItmUtils {
     }
 
     public static String getHwParentIf(String topoId, String srcNodeid) {
-        return String.format("%s:%s", topoId, srcNodeid);
+        return topoId + ":" + srcNodeid;
     }
 
     /**
