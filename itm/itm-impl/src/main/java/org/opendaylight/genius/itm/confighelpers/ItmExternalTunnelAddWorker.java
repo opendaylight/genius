@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 public class ItmExternalTunnelAddWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmExternalTunnelAddWorker.class);
+    private static final IpAddress GATEWAY_IP_OBJ = IpAddressBuilder.getDefaultInstance("0.0.0.0");
 
     private final ItmConfig itmConfig;
     private final DPNTEPsInfoCache dpnTEPsInfoCache;
@@ -75,7 +76,7 @@ public class ItmExternalTunnelAddWorker {
                                 + " source IP - {}, DC Gateway IP - {} gateway IP - {}", trunkInterfaceName,
                         interfaceName, firstEndPt.getIpAddress(), extIp, gwyIpAddress);
                 Interface iface = ItmUtils.buildTunnelInterface(teps.getDPNID(), trunkInterfaceName,
-                        String.format("%s %s", ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
+                        trunkInterface(ItmUtils.convertTunnelTypetoString(tunType)),
                         true, tunType, firstEndPt.getIpAddress(), extIp, false, false,
                         ITMConstants.DEFAULT_MONITOR_PROTOCOL, null, useOfTunnel, tunOptions);
 
@@ -265,7 +266,7 @@ public class ItmExternalTunnelAddWorker {
                         + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
         Interface hwTunnelIf = ItmUtils.buildHwTunnelInterface(tunnelIfName,
-                String.format("%s %s", tunType.getName(), "Trunk Interface"), true, topoId, srcNodeid, tunType, srcIp,
+                trunkInterface(tunType), true, topoId, srcNodeid, tunType, srcIp,
                 dstIp, gwyIpAddress, monitorEnabled, monitorProtocol, monitorInterval);
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(tunnelIfName)).build();
@@ -289,8 +290,8 @@ public class ItmExternalTunnelAddWorker {
                            Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Integer monitorInterval,
                            Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                            TypedWriteTransaction<Configuration> tx) {
-        IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
-        IpAddress gwyIpAddress = gatewayIpObj;
+
+        IpAddress gwyIpAddress = GATEWAY_IP_OBJ;
 
         String parentIf = ItmUtils.getInterfaceName(dpnId, portname, vlanId);
         String tunTypeStr = tunType.getName();
@@ -300,7 +301,7 @@ public class ItmExternalTunnelAddWorker {
                         + "source IP - {}, destination IP - {} gateway IP - {}", tunnelIfName, parentIf, srcIp,
                 dstIp, gwyIpAddress);
         Interface extTunnelIf = ItmUtils.buildTunnelInterface(dpnId, tunnelIfName,
-                String.format("%s %s", tunType.getName(), "Trunk Interface"), true, tunType, srcIp, dstIp,
+                trunkInterface(tunType), true, tunType, srcIp, dstIp,
                 false, monitorEnabled, monitorProtocol, monitorInterval, remoteIpFlow, null);
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
                 new InterfaceKey(tunnelIfName)).build();
@@ -316,6 +317,14 @@ public class ItmExternalTunnelAddWorker {
         tx.merge(path, tnl, true);
         ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
         return true;
+    }
+
+    private static String trunkInterface(Class<? extends TunnelTypeBase> tunType) {
+        return trunkInterface(tunType.getName());
+    }
+
+    private static String trunkInterface(String tunType) {
+        return tunType + " Trunk Interface";
     }
 
     @SuppressFBWarnings("RV_CHECK_FOR_POSITIVE_INDEXOF")
