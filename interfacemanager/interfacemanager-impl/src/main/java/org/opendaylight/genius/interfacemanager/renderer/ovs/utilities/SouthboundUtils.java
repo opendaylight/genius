@@ -426,17 +426,21 @@ public class SouthboundUtils {
 
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     public static String generateOfTunnelName(Uint64 dpId, IfTunnel ifTunnel) {
-        String sourceKey = ifTunnel.getTunnelSource().stringValue();
-        String remoteKey = ifTunnel.getTunnelDestination().stringValue();
+        final String sourceKey;
         if (ifTunnel.isTunnelSourceIpFlow() != null) {
             sourceKey = "flow";
+        } else {
+            sourceKey = ifTunnel.getTunnelSource().stringValue();
         }
+        final String remoteKey;
         if (ifTunnel.isTunnelRemoteIpFlow() != null) {
             remoteKey = "flow";
+        } else {
+            remoteKey = ifTunnel.getTunnelDestination().stringValue();
         }
         String tunnelNameKey = dpId.toString() + sourceKey + remoteKey;
         String uuidStr = UUID.nameUUIDFromBytes(tunnelNameKey.getBytes()).toString().substring(0, 12).replace("-", "");
-        return String.format("%s%s", "tun", uuidStr);
+        return "tun" + uuidStr;
     }
 
     public static boolean isOfTunnel(IfTunnel ifTunnel) {
