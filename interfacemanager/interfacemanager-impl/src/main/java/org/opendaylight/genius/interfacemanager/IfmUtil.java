@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.apache.commons.lang3.BooleanUtils;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
@@ -159,6 +160,21 @@ public final class IfmUtil {
 
     public static NodeId buildDpnNodeId(Uint64 dpnId) {
         return new NodeId(IfmConstants.OF_URI_PREFIX + dpnId);
+    }
+
+    /**
+     * Extract the DPN ID from an inventory {@link NodeId}.
+     *
+     * @param nodeId Inventory node ID
+     * @return Extracted DPN ID
+     * @throws NullPointerException if {@code nodeId} is null
+     * @throws IndexOutOfBoundsException if {@code nodeId} value is too short
+     * @throws IllegalArgumentException if the DPN ID could not be parsed
+     */
+    // TODO: proliferate users of this method as much as possible
+    public static @NonNull Uint64 extractDpnId(final NodeId nodeId) {
+        // FIXME: we should assert NodeId starts with OF_URI_PREFIX
+        return Uint64.valueOf(nodeId.getValue().substring(IfmConstants.OF_URI_PREFIX.length()));
     }
 
     public static InstanceIdentifier<Interface> buildId(String interfaceName) {
