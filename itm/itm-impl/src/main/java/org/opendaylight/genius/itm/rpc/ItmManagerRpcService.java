@@ -572,7 +572,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         Flow terminatingServiceTableFlow = MDSALUtil.buildFlowNew(NwConstants.INTERNAL_TUNNEL_TABLE,
                 getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, serviceId), 5,
-                String.format("%s:%d", "ITM Flow Entry ", serviceId), 0, 0,
+                "ITM Flow Entry :" + serviceId, 0, 0,
                 Uint64.fromLongBits(ITMConstants.COOKIE_ITM.longValue() + serviceId.toJava()), mkMatches,
                 input.getInstruction());
 
