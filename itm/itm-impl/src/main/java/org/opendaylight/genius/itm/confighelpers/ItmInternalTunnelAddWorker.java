@@ -253,7 +253,7 @@ public final class ItmInternalTunnelAddWorker {
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
-                String.format("%s %s",ItmUtils.convertTunnelTypetoString(tunType), "Trunk Interface"),
+                trunkInterfaceDecription(ItmUtils.convertTunnelTypetoString(tunType)),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), true,
                 isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug(" Trunk Interface builder - {} ", iface);
@@ -262,6 +262,10 @@ public final class ItmInternalTunnelAddWorker {
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
         ITMBatchingUtils.update(trunkIdentifier, iface, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
         ItmUtils.ITM_CACHE.addInterface(iface);
+    }
+
+    private static String trunkInterfaceDecription(String type) {
+        return type + " Trunk Interface";
     }
 
     private static void createInternalTunnel(TypedWriteTransaction<Configuration> tx, Uint64 srcDpnId,
@@ -343,7 +347,7 @@ public final class ItmInternalTunnelAddWorker {
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
-                String.format("%s %s",ItmUtils.convertTunnelTypetoString(srcte.getTunnelType()), "Trunk Interface"),
+                trunkInterfaceDecription(ItmUtils.convertTunnelTypetoString(srcte.getTunnelType())),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), true,
                 isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
         LOG.debug("Trunk Interface builder - {} ", iface);

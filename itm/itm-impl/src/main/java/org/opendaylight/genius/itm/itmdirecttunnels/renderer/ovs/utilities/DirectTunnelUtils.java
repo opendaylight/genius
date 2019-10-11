@@ -599,9 +599,8 @@ public final class DirectTunnelUtils {
     }
 
     public static String generateOfPortName(Uint64 dpId, String tunnelType) {
-        String trunkInterfaceName = String.format("%s:%s", dpId.toString(), tunnelType);
-        String uuidStr = UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
+        String trunkInterfaceName = dpId + ":" + tunnelType;
+        return "of" + UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
                 .substring(0, 12).replace("-", "");
-        return String.format("%s%s", "of", uuidStr);
     }
 }
