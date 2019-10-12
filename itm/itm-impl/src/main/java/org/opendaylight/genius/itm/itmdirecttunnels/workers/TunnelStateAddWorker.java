@@ -118,9 +118,9 @@ public final class TunnelStateAddWorker {
         tunnelType = dpnTepInfo.getTunnelType();
 
         final SrcInfoBuilder srcInfoBuilder =
-                new SrcInfoBuilder().setTepDeviceId(tunnelStateInfo.getTunnelEndPointInfo().getSrcEndPointInfo());
+                new SrcInfoBuilder().setTepDeviceId(tunnelStateInfo.getTunnelEndPointInfo().getSrcEndPointName());
         final DstInfoBuilder dstInfoBuilder =
-                new DstInfoBuilder().setTepDeviceId(tunnelStateInfo.getTunnelEndPointInfo().getDstEndPointInfo());
+                new DstInfoBuilder().setTepDeviceId(tunnelStateInfo.getTunnelEndPointInfo().getDstEndPointName());
         LOG.trace("Source Dpn TEP Info {}",srcDpnTepsInfo);
         TunnelEndPoints srcEndPtInfo = srcDpnTepsInfo.getTunnelEndPoints().get(0);
         srcInfoBuilder.setTepIp(srcEndPtInfo.getIpAddress());
