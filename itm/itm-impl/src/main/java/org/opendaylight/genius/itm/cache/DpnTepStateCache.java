@@ -133,7 +133,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
 
                 tunnelStateInfoNew = builder.build();
                 if (tunnelStateInfoNew.getSrcDpnTepsInfo() == null) {
-                    String srcDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getSrcEndPointInfo();
+                    String srcDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getSrcEndPointName();
                     try (Acquired lock = directTunnelUtils.lockTunnel(srcDpnId)) {
                         LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                             remoteDpns.getTunnelName(), srcDpnId);
@@ -142,7 +142,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
                 }
 
                 if (tunnelStateInfoNew.getDstDpnTepsInfo() == null) {
-                    String dstDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getDstEndPointInfo();
+                    String dstDpnId = tunnelStateInfoNew.getTunnelEndPointInfo().getDstEndPointName();
                     try (Acquired lock = directTunnelUtils.lockTunnel(dstDpnId)) {
                         LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                             remoteDpns.getTunnelName(), dstDpnId);
@@ -169,10 +169,6 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
             dpnTepInterfaceMap.remove(new CacheKey(remoteDpns.getDestinationDpnId(), dpnsTeps.getSourceDpnId()));
         }
-    }
-
-    private DpnTepInterfaceInfo getDpnTepInterface(String srcDpnId, String dstDpnId) {
-        return getDpnTepInterface(Uint64.valueOf(srcDpnId), Uint64.valueOf(dstDpnId));
     }
 
     public DpnTepInterfaceInfo getDpnTepInterface(Uint64 srcDpnId, Uint64 dstDpnId) {
@@ -269,8 +265,8 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
 
     public Interface getInterfaceFromCache(String tunnelName) {
         TunnelEndPointInfo endPointInfo = getTunnelEndPointInfoFromCache(tunnelName);
-        Uint64 srcDpnId = Uint64.valueOf(endPointInfo.getSrcEndPointInfo());
-        Uint64 dstDpnId = Uint64.valueOf(endPointInfo.getDstEndPointInfo());
+        Uint64 srcDpnId = endPointInfo.getSrcEndPointInfo();
+        Uint64 dstDpnId = endPointInfo.getDstEndPointInfo();
         Interface iface = null ;
         int monitoringInt = 1000;
         DpnTepInterfaceInfo dpnTepInfo = getDpnTepInterface(srcDpnId, dstDpnId);
@@ -297,8 +293,8 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
 
     private static TunnelEndPointInfo getTunnelEndPointInfo(Uint64 srcEndPtInfo, Uint64 dstEndPtInfo) {
         return new TunnelEndPointInfoBuilder()
-                .setSrcEndPointInfo(srcEndPtInfo.toString())
-                .setDstEndPointInfo(dstEndPtInfo.toString())
+                .setSrcEndPointInfo(srcEndPtInfo)
+                .setDstEndPointInfo(dstEndPtInfo)
                 .build();
     }
 
