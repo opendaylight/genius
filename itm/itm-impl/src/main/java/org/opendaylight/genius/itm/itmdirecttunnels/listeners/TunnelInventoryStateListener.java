@@ -244,25 +244,27 @@ public class TunnelInventoryStateListener extends
         if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && dpnTepStateCache.isInternal(portName)) {
             tunnelEndPtInfo = dpnTepStateCache.getTunnelEndPointInfoFromCache(portName);
             TunnelStateInfoBuilder builder = new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo);
-            dpntePsInfoCache.getDPNTepFromDPNId(Uint64.valueOf(tunnelEndPtInfo.getSrcEndPointInfo()))
+            dpntePsInfoCache.getDPNTepFromDPNId(tunnelEndPtInfo.getSrcEndPointInfo())
                 .ifPresent(builder::setSrcDpnTepsInfo);
-            dpntePsInfoCache.getDPNTepFromDPNId(Uint64.valueOf(tunnelEndPtInfo.getDstEndPointInfo()))
+            dpntePsInfoCache.getDPNTepFromDPNId(tunnelEndPtInfo.getDstEndPointInfo())
                 .ifPresent(builder::setDstDpnTepsInfo);
             tunnelStateInfo = builder.setTunnelEndPointInfo(tunnelEndPtInfo)
                 .setDpnTepInterfaceInfo(dpnTepStateCache.getTunnelFromCache(portName)).build();
 
             if (tunnelStateInfo.getSrcDpnTepsInfo() == null) {
-                try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPtInfo.getSrcEndPointInfo())) {
+                final String srcEndpoint = tunnelEndPtInfo.getSrcEndPointName();
+                try (Acquired lock = directTunnelUtils.lockTunnel(srcEndpoint)) {
                     LOG.debug("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                         portName, tunnelEndPtInfo.getSrcEndPointInfo());
-                    unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getSrcEndPointInfo(), tunnelStateInfo);
+                    unprocessedNodeConnectorEndPointCache.add(srcEndpoint, tunnelStateInfo);
                 }
             }
             if (tunnelStateInfo.getDstDpnTepsInfo() == null) {
-                try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPtInfo.getDstEndPointInfo())) {
+                final String dstEndpoint = tunnelEndPtInfo.getDstEndPointName();
+                try (Acquired lock = directTunnelUtils.lockTunnel(dstEndpoint)) {
                     LOG.debug("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                         portName, tunnelEndPtInfo.getDstEndPointInfo());
-                    unprocessedNodeConnectorEndPointCache.add(tunnelEndPtInfo.getDstEndPointInfo(), tunnelStateInfo);
+                    unprocessedNodeConnectorEndPointCache.add(dstEndpoint, tunnelStateInfo);
                 }
             }
         }
