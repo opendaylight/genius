@@ -13,7 +13,8 @@ import org.opendaylight.genius.infra.OpenDaylightImmutableStyle;
 @Value.Immutable
 @OpenDaylightImmutableStyle
 public interface TunnelEndPointInfo {
-
+    // FIXME: we are converting these Strings to Uint64. It seems it would be better to keep them as Uint64 and/or
+    //        have a lazy String cache.
     String getSrcEndPointInfo();
 
     String getDstEndPointInfo();
