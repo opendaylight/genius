@@ -1289,9 +1289,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                     .builder(DpnEndpoints.class)
                     .child(DPNTEPsInfo.class, new DPNTEPsInfoKey(
                             // FIXME: the cache should be caching this value, not just as a String
-                            Uint64.valueOf(dpnTepStateCache.getTunnelEndPointInfoFromCache(
-                                    interfaceInfo.getTunnelName()).getDstEndPointInfo())))
-                    .build());
+                            dpnTepStateCache.getTunnelEndPointInfoFromCache(
+                                    interfaceInfo.getTunnelName()).getDstEndPointInfo())).build());
             Integer dstId;
             if (dpntePsInfoOptional.isPresent()) {
                 dstId = dpntePsInfoOptional.get().getDstId();
@@ -1311,6 +1310,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
             return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder()
                     .setAction(result.stream().map(ActionInfo::buildAction).collect(Collectors.toList())).build());
+
         }
     }
 
