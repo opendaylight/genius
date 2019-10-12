@@ -71,7 +71,6 @@ public class ActionSetTunnelDestinationIp extends ActionInfo {
 
     @Override
     public Action buildAction(int newActionKey) {
-        // FIXME: this should be a constant
         NxRegLoad nxRegLoad = new NxRegLoadBuilder()
                 .setDst(NX_REGEX_LOAD_DST)
                 .setValue(destIp)
