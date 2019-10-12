@@ -41,15 +41,19 @@ public final class MetaDataUtil {
     public static final int REG6_END_INDEX = 31;
 
     private static final Uint64 MASK_FOR_DISPATCHER = Uint64.valueOf("FFFFFFFFFFFFFFFE", 16).intern();
+    private static final Uint64 MASK_FOR_EGRESS_DISPATCHER = Uint64.valueOf("000000FFFFFFFFFE", 16).intern();
+    private static final long MASK_FOR_EGRESS_TUNNEL = REG6_MASK_REMOTE_DPN.longValue() >>> 32;
+    private static final long ELAN_MASK_FOR_REG = METADATA_MASK_SERVICE.longValue() >>> 24;
+    private static final long VPNID_MASK_FOR_REG = METADATA_MASK_VRFID.longValue() >> 1;
+    private static final long LPORT_TAG_MASK = METADATA_MASK_LPORT_TAG.longValue() >>> 32;
 
     private MetaDataUtil() {
 
     }
 
     public static Uint64 getMetaDataForLPortDispatcher(int lportTag, short serviceIndex) {
-        // FIXME: this can be done more efficiently
-        return Uint64.valueOf(getServiceIndexMetaData(serviceIndex).toJava().or(
-            getLportTagMetaData(lportTag).toJava()));
+        return Uint64.fromLongBits(getServiceIndexMetaData(serviceIndex).longValue()
+            | getLportTagMetaData(lportTag).longValue());
     }
 
     public static Uint64 getMetaDataForLPortDispatcher(int lportTag, short serviceIndex, Uint64 serviceMetaData) {
@@ -95,19 +99,16 @@ public final class MetaDataUtil {
     }
 
     public static Uint64 getLportFromMetadata(Uint64 metadata) {
-        // FIXME: this can be done more efficiently
-        return Uint64.valueOf(metadata.toJava().and(METADATA_MASK_LPORT_TAG.toJava())
-            .shiftRight(METADATA_LPORT_TAG_OFFSET));
+        return Uint64.fromLongBits(
+            (metadata.longValue() & METADATA_MASK_LPORT_TAG.longValue()) >>> METADATA_LPORT_TAG_OFFSET);
     }
 
     public static int getElanTagFromMetadata(Uint64 metadata) {
-        // FIXME: this can be done more efficiently
-        return metadata.toJava().and(MetaDataUtil.METADATA_MASK_SERVICE.toJava()).shiftRight(24).intValue();
+        return (int) ((metadata.longValue() & MetaDataUtil.METADATA_MASK_SERVICE.longValue()) >>> 24);
     }
 
     public static long getPolicyClassifierFromMetadata(Uint64 metadata) {
-        // FIXME: this can be done more efficiently
-        return metadata.toJava().and(METADATA_MASK_POLICY_CLASSIFER_ID.toJava()).shiftRight(1).longValue();
+        return (metadata.longValue() & METADATA_MASK_POLICY_CLASSIFER_ID.longValue()) >>> 1;
     }
 
     public static Uint64 getElanTagMetadata(long elanTag) {
@@ -115,9 +116,7 @@ public final class MetaDataUtil {
     }
 
     public static int getServiceTagFromMetadata(Uint64 metadata) {
-        // FIXME: this can be done more efficiently
-        return metadata.toJava().and(MetaDataUtil.METADATA_MASK_SERVICE_INDEX.toJava())
-                .shiftRight(60).intValue();
+        return (int) ((metadata.longValue() & MetaDataUtil.METADATA_MASK_SERVICE_INDEX.longValue()) >>> 60);
     }
 
     /**
@@ -147,14 +146,12 @@ public final class MetaDataUtil {
      * @return the acl conntrack classifier flag from meta data
      */
     public static Uint64 getAclConntrackClassifierTypeFromMetaData(Uint64 conntrackClassifierType) {
-        // FIXME: this can be done more efficiently
-        return Uint64.valueOf(METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE.toJava().and(conntrackClassifierType.toJava()
-            .shiftLeft(1)));
+        return Uint64.fromLongBits(
+            (METADATA_MASK_ACL_CONNTRACK_CLASSIFIER_TYPE.longValue() & conntrackClassifierType.longValue()) << 1);
     }
 
     public static Uint64 getAclDropMetaData(Uint64 dropFlag) {
-        // FIXME: this can be done more efficiently
-        return Uint64.valueOf(METADATA_MASK_ACL_DROP.toJava().and(dropFlag.toJava().shiftLeft(2)));
+        return Uint64.fromLongBits((METADATA_MASK_ACL_DROP.longValue() & dropFlag.longValue()) << 2);
     }
 
     public static Uint64 getVpnIdMetadata(long vrfId) {
@@ -162,8 +159,7 @@ public final class MetaDataUtil {
     }
 
     public static long getVpnIdFromMetadata(Uint64 metadata) {
-        // FIXME: this can be done more efficiently
-        return metadata.toJava().and(METADATA_MASK_VRFID.toJava()).shiftRight(1).longValue();
+        return (metadata.longValue() & METADATA_MASK_VRFID.longValue()) >>> 1;
     }
 
     public static Uint64 getWriteMetaDataMaskForDispatcherTable() {
@@ -171,8 +167,7 @@ public final class MetaDataUtil {
     }
 
     public static Uint64 getWriteMetaDataMaskForEgressDispatcherTable() {
-        // FIXME: make this an interned constant
-        return Uint64.valueOf("000000FFFFFFFFFE", 16);
+        return MASK_FOR_EGRESS_DISPATCHER;
     }
 
     public static Uint64 getLportTagForReg6(int lportTag) {
@@ -188,8 +183,7 @@ public final class MetaDataUtil {
     }
 
     public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex) {
-        // FIXME: this can be done more efficiently
-        return getServiceIndexForReg6(serviceIndex).toJava().or(getLportTagForReg6(lportTag).toJava()).longValue();
+        return getServiceIndexForReg6(serviceIndex).longValue() | getLportTagForReg6(lportTag).longValue();
     }
 
     /** Utility to fetch the register value for lport dispatcher table.
@@ -197,9 +191,8 @@ public final class MetaDataUtil {
      * and next 4 bits for interface-type
      */
     public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex, short interfaceType) {
-        // FIXME: this can be done more efficiently
-        return getServiceIndexForReg6(serviceIndex).toJava().or(getLportTagForReg6(lportTag).toJava()
-            .or(getInterfaceTypeForReg6(interfaceType).toJava())).longValue();
+        return getServiceIndexForReg6(serviceIndex).longValue() | getLportTagForReg6(lportTag).longValue()
+                | getInterfaceTypeForReg6(interfaceType).longValue();
     }
 
     public static long getRemoteDpnMetadatForEgressTunnelTable(long remoteDpnId) {
@@ -207,32 +200,26 @@ public final class MetaDataUtil {
     }
 
     public static long getRemoteDpnMaskForEgressTunnelTable() {
-        // FIXME: this can be done more efficiently
-        return REG6_MASK_REMOTE_DPN.toJava().shiftRight(32).longValue();
+        return MASK_FOR_EGRESS_TUNNEL;
     }
 
     public static long getLportTagMaskForReg6() {
-        // FIXME: this can be done more efficiently
-        return METADATA_MASK_LPORT_TAG.toJava().shiftRight(32).longValue();
+        return LPORT_TAG_MASK;
     }
 
     public static long getElanMaskForReg() {
-        // FIXME: this can be done more efficiently
-        return METADATA_MASK_SERVICE.toJava().shiftRight(24).longValue();
+        return ELAN_MASK_FOR_REG;
     }
 
     public static long getVpnIdMaskForReg() {
-        // FIXME: this can be done more efficiently
-        return METADATA_MASK_VRFID.toJava().shiftRight(1).longValue();
+        return VPNID_MASK_FOR_REG;
     }
 
     public static Uint64 mergeMetadataValues(Uint64 metadata, Uint64 metadata2) {
-        // FIXME: this can be done more efficiently
-        return Uint64.valueOf(metadata.toJava().or(metadata2.toJava()));
+        return Uint64.fromLongBits(metadata.longValue() | metadata2.longValue());
     }
 
     public static Uint64 mergeMetadataMask(Uint64 mask, Uint64 mask2) {
-        // FIXME: this can be done more efficiently
-        return Uint64.valueOf(mask.toJava().or(mask2.toJava()));
+        return Uint64.fromLongBits(mask.longValue() | mask2.longValue());
     }
 }
