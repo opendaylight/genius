@@ -86,9 +86,10 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                     dstDpnTepsInfo = tsInfo.getDstDpnTepsInfo();
                     if (dstDpnTepsInfo == null) {
                         // Check if the destination End Point has come
-                        try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPointInfo.getDstEndPointInfo())) {
+                        final String dstEndpoint = tunnelEndPointInfo.getDstEndPointName();
+                        try (Acquired lock = directTunnelUtils.lockTunnel(dstEndpoint)) {
                             Optional<DPNTEPsInfo> dstInfoOpt = getDPNTepFromDPNId(
-                                    Uint64.valueOf(tunnelEndPointInfo.getDstEndPointInfo()));
+                                    tunnelEndPointInfo.getDstEndPointInfo());
                             if (dstInfoOpt.isPresent()) {
                                 dstDpnTepsInfo = dstInfoOpt.get();
                             } else {
@@ -96,11 +97,11 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                                     .setNodeConnectorInfo(tsInfo.getNodeConnectorInfo())
                                     .setDpnTepInterfaceInfo(tsInfo.getDpnTepInterfaceInfo())
                                     .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
-                                    .setSrcDpnTepsInfo(srcDpnTepsInfo).build();
+                                    .setSrcDpnTepsInfo(srcDpnTepsInfo)
+                                    .build();
                                 LOG.trace("Destination DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
-                                        interfaceName, tunnelEndPointInfo.getDstEndPointInfo());
-                                unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo
-                                        .getDstEndPointInfo(), tunnelStateInfoNew);
+                                        interfaceName, dstEndpoint);
+                                unprocessedNodeConnectorEndPointCache.add(dstEndpoint, tunnelStateInfoNew);
                             }
                         }
                     }
@@ -109,22 +110,23 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
                     srcDpnTepsInfo = tsInfo.getSrcDpnTepsInfo();
                     // Check if the destination End Point has come
                     if (srcDpnTepsInfo == null) {
-                        try (Acquired lock = directTunnelUtils.lockTunnel(tunnelEndPointInfo.getSrcEndPointInfo())) {
+                        final String srcEndpoint = tunnelEndPointInfo.getSrcEndPointName();
+                        try (Acquired lock = directTunnelUtils.lockTunnel(srcEndpoint)) {
                             Optional<DPNTEPsInfo> srcInfoOpt = getDPNTepFromDPNId(
-                                    Uint64.valueOf(tunnelEndPointInfo.getSrcEndPointInfo()));
+                                    tunnelEndPointInfo.getSrcEndPointInfo());
                             if (srcInfoOpt.isPresent()) {
                                 srcDpnTepsInfo = srcInfoOpt.get();
                             } else {
-                                TunnelStateInfo tunnelStateInfoNew = new TunnelStateInfoBuilder().setNodeConnectorInfo(
-                                    tsInfo.getNodeConnectorInfo())
-                                    .setDpnTepInterfaceInfo(tsInfo.getDpnTepInterfaceInfo())
-                                    .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
-                                    .setDstDpnTepsInfo(dstDpnTepsInfo).build();
+                                TunnelStateInfo tunnelStateInfoNew = new TunnelStateInfoBuilder()
+                                        .setNodeConnectorInfo(tsInfo.getNodeConnectorInfo())
+                                        .setDpnTepInterfaceInfo(tsInfo.getDpnTepInterfaceInfo())
+                                        .setTunnelEndPointInfo(tsInfo.getTunnelEndPointInfo())
+                                        .setDstDpnTepsInfo(dstDpnTepsInfo)
+                                        .build();
                                 LOG.trace("Source DPNTepsInfo is null for tunnel {}. Hence Parking with key {}",
                                         interfaceName,
                                         tsInfo.getTunnelEndPointInfo().getSrcEndPointInfo());
-                                unprocessedNodeConnectorEndPointCache.add(tunnelEndPointInfo.getSrcEndPointInfo(),
-                                        tunnelStateInfoNew);
+                                unprocessedNodeConnectorEndPointCache.add(srcEndpoint, tunnelStateInfoNew);
                             }
                         }
                     }
