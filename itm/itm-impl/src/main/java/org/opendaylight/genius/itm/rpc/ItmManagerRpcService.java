@@ -1172,9 +1172,8 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         Optional<DPNTEPsInfo> dpntePsInfoOptional = dpnTEPsInfoCache.get(InstanceIdentifier.builder(DpnEndpoints.class)
                 .child(DPNTEPsInfo.class, new DPNTEPsInfoKey(
-                    // FIXME: the cache should be caching this value, not just as a String
-                    Uint64.valueOf(dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceInfo.getTunnelName())
-                        .getDstEndPointInfo())))
+                    dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceInfo.getTunnelName())
+                        .getDstEndPointInfo()))
                 .build());
         Integer dstId;
         if (dpntePsInfoOptional.isPresent()) {
