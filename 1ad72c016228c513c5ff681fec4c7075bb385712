@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "73752c40_5dedb948",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 644,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2019-10-18T12:15:37Z",
+      "side": 1,
+      "message": "availableServiceInfos still can’t be null here. Did you mean to check serviceInfos ?",
+      "revId": "1ad72c016228c513c5ff681fec4c7075bb385712",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
