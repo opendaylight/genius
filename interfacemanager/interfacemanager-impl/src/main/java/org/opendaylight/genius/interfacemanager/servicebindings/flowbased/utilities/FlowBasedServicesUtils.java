@@ -641,18 +641,19 @@ public final class FlowBasedServicesUtils {
 
     public static BoundServices getHighestPriorityService(List<BoundServices> serviceInfos) {
         List<BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
-        if (availableServiceInfos.isEmpty()) {
+        if (availableServiceInfos != null) {
+            BoundServices highPriorityService = availableServiceInfos.get(0);
+            availableServiceInfos.remove(0);
+            for (BoundServices availableServiceInfo : availableServiceInfos) {
+                if (availableServiceInfo.getServicePriority().toJava()
+                        < highPriorityService.getServicePriority().toJava()) {
+                    highPriorityService = availableServiceInfo;
+                }
+            }
+            return highPriorityService;
+        } else {
             return null;
         }
-        BoundServices highPriorityService = availableServiceInfos.get(0);
-        availableServiceInfos.remove(0);
-        for (BoundServices availableServiceInfo : availableServiceInfos) {
-            if (availableServiceInfo.getServicePriority().toJava()
-                    < highPriorityService.getServicePriority().toJava()) {
-                highPriorityService = availableServiceInfo;
-            }
-        }
-        return highPriorityService;
     }
 
     public static void installLportIngressFlow(Uint64 dpId, long portNo, Interface iface,
