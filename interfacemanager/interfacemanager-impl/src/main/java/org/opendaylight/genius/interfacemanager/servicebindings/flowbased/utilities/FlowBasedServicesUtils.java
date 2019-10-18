@@ -627,7 +627,9 @@ public final class FlowBasedServicesUtils {
         BoundServices lower = null;
 
         List<BoundServices> availableServiceInfos = new ArrayList<>(serviceInfos);
-        availableServiceInfos.sort(Comparator.comparing(BoundServices::getServicePriority));
+        if (availableServiceInfos != null) {
+            availableServiceInfos.sort(Comparator.comparing(BoundServices::getServicePriority));
+        }
         for (BoundServices availableServiceInfo : availableServiceInfos) {
             if (currentServiceInfo.getServicePriority().toJava() < availableServiceInfo.getServicePriority().toJava()) {
                 lower = availableServiceInfo;
