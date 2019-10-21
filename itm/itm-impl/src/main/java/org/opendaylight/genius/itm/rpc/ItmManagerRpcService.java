@@ -165,6 +165,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -308,7 +309,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             return  settableFuture;
         } else {
             return fromListenableFuture(LOG, input, () -> getEgressActionsForInternalTunnels(input.getIntfName(),
-                    input.getTunnelKey().toJava(), input.getActionKey())).onFailureLogLevel(LogLevel.ERROR).build();
+                    input.getTunnelKey() != null ? input.getTunnelKey().toJava() : null,
+                    input.getActionKey())).onFailureLogLevel(LogLevel.ERROR).build();
         }
     }
 
