@@ -152,7 +152,8 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     public ListenableFuture<GetEgressInstructionsForInterfaceOutput> getEgressInstructionsForInterface(
             GetEgressInstructionsForInterfaceInput input) {
         List<Instruction> instructions = IfmUtil.getEgressInstructionsForInterface(input.getIntfName(),
-                input.getTunnelKey().toJava(), interfaceManagerCommonUtils, false);
+                input.getTunnelKey() != null ? input.getTunnelKey().toJava() : null,
+                interfaceManagerCommonUtils, false);
         return Futures.immediateFuture(
                 new GetEgressInstructionsForInterfaceOutputBuilder().setInstruction(instructions).build());
     }
@@ -193,7 +194,8 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
     public ListenableFuture<GetEgressActionsForInterfaceOutput> getEgressActionsForInterface(
             GetEgressActionsForInterfaceInput input) {
         List<Action> actionsList = IfmUtil.getEgressActionsForInterface(input.getIntfName(),
-                input.getTunnelKey().toJava(), input.getActionKey(), interfaceManagerCommonUtils, false);
+                input.getTunnelKey() != null ? input.getTunnelKey().toJava() : null,
+                input.getActionKey(), interfaceManagerCommonUtils, false);
         // TODO as above, simplify the success case later, as we have the failure case below
         return Futures
                 .immediateFuture(new GetEgressActionsForInterfaceOutputBuilder().setAction(actionsList).build());

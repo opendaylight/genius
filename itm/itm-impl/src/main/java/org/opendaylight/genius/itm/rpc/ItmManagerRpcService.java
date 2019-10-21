@@ -308,7 +308,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             return  settableFuture;
         } else {
             return fromListenableFuture(LOG, input, () -> getEgressActionsForInternalTunnels(input.getIntfName(),
-                    input.getTunnelKey().toJava(), input.getActionKey())).onFailureLogLevel(LogLevel.ERROR).build();
+                    input.getTunnelKey() != null ? input.getTunnelKey().toJava() : null,
+                    input.getActionKey())).onFailureLogLevel(LogLevel.ERROR).build();
         }
     }
 
