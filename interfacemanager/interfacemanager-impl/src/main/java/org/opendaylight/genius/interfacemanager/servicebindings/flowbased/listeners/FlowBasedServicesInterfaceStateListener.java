@@ -135,7 +135,7 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
                             return Futures.immediateFuture(null);
                         }
 
-                        List<BoundServices> allServices = servicesInfo.getBoundServices();
+                        List<BoundServices> allServices = new ArrayList<>(servicesInfo.getBoundServices());
                         if (allServices == null || allServices.isEmpty()) {
                             LOG.trace("bound services is empty for interface {}", iface.getName());
                             return Futures.immediateFuture(null);

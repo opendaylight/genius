@@ -145,8 +145,12 @@ public class ComputeNodeManager {
     }
 
     private Uint64 getDpnIdFromBridge(OvsdbBridgeAugmentation bridgeAugmentation) {
-        String datapathIdStr = bridgeAugmentation.getDatapathId().getValue().replace(":", "");
-        return Uint64.valueOf(datapathIdStr, 16);
+        if (bridgeAugmentation.getDatapathId() == null) {
+            return Uint64.ZERO;
+        }
+        String datapathIdStr = bridgeAugmentation.getDatapathId().getValue() != null
+                ? bridgeAugmentation.getDatapathId().getValue().replace(":", "") : null;
+        return datapathIdStr != null ? Uint64.valueOf(datapathIdStr, 16) : Uint64.ZERO;
     }
 
     public void putComputeDetailsInConfigDatastore(InstanceIdentifier<ComputeNode> computeIid,
@@ -157,6 +161,7 @@ public class ComputeNodeManager {
         dpnIdVsComputeNode.put(computeNode.getDpnid(), computeNode);
         //LOG.info("Write comute node details {}", computeNode);
     }
+
 
     private void logErrorIfComputeNodeIsAlreadyTaken(Uint64 datapathid, String nodeId,
                                                      com.google.common.base.Optional<ComputeNode> optional) {
