@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
-import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
+import org.opendaylight.genius.utils.batching.ActionableResources;
 import org.opendaylight.genius.utils.batching.DefaultBatchHandler;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -67,29 +67,24 @@ public final class ITMBatchingUtils {
 
 
     public static <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.UPDATE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(data);
         LOG.debug("Adding to the Queue to batch the update DS Operation - Id {} data {}", path, data);
-        getQueue(entityType).add(actResource);
+        getQueue(entityType).add(ActionableResources.update(path, data));
     }
 
     public static <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.CREATE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(data);
         LOG.debug("Adding to the Queue to batch the write DS Operation - Id {} data {}", path, data);
-        getQueue(entityType).add(actResource);
+        getQueue(entityType).add(ActionableResources.create(path, data));
     }
 
     @NonNull
     public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
         switch (entityType) {
-            case DEFAULT_OPERATIONAL : return DEFAULT_OPERATIONAL_SHARD_BUFFER_Q;
-            case DEFAULT_CONFIG : return DEFAULT_CONFIG_SHARD_BUFFER_Q;
-            case TOPOLOGY_CONFIG: return TOPOLOGY_CONFIG_SHARD_BUFFER_Q;
+            case DEFAULT_OPERATIONAL:
+                return DEFAULT_OPERATIONAL_SHARD_BUFFER_Q;
+            case DEFAULT_CONFIG:
+                return DEFAULT_CONFIG_SHARD_BUFFER_Q;
+            case TOPOLOGY_CONFIG:
+                return TOPOLOGY_CONFIG_SHARD_BUFFER_Q;
             default:
                 throw new IllegalArgumentException(
                     "Entity type " + entityType + " is neither operational or config, getQueue operation failed");
@@ -97,11 +92,7 @@ public final class ITMBatchingUtils {
     }
 
     public static <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.DELETE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(null);
         LOG.debug("Adding to the Queue to batch the delete DS Operation - Id {}", path);
-        getQueue(entityType).add(actResource);
+        getQueue(entityType).add(ActionableResources.delete(path));
     }
 }

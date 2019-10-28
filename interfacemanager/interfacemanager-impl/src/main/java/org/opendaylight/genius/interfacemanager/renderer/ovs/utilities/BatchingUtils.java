@@ -13,12 +13,11 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
-import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
+import org.opendaylight.genius.utils.batching.ActionableResources;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -72,19 +71,11 @@ public class BatchingUtils implements AutoCloseable {
     }
 
     <T extends DataObject> void update(InstanceIdentifier<T> path, T data, EntityType entityType) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.UPDATE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(data);
-        getQueue(entityType).add(actResource);
+        getQueue(entityType).add(ActionableResources.update(path, data));
     }
 
     public <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.CREATE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(data);
-        getQueue(entityType).add(actResource);
+        getQueue(entityType).add(ActionableResources.create(path, data));
     }
 
     public BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
@@ -101,10 +92,6 @@ public class BatchingUtils implements AutoCloseable {
     }
 
     public <T extends DataObject> void delete(InstanceIdentifier<T> path, EntityType entityType) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.DELETE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(null);
-        getQueue(entityType).add(actResource);
+        getQueue(entityType).add(ActionableResources.delete(path));
     }
 }
