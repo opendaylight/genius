@@ -17,7 +17,7 @@ import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 class FlowBatchingUtils {
-    private final BlockingQueue<ActionableResource> inventoryConfigShardBufferQ = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ActionableResource<?>> inventoryConfigShardBufferQ = new LinkedBlockingQueue<>();
 
     public void registerWithBatchManager(ResourceHandler resourceHandler) {
         ResourceBatchingManager resBatchingManager = ResourceBatchingManager.getInstance();
