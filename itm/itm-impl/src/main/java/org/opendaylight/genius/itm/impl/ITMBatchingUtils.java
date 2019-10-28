@@ -26,10 +26,12 @@ public final class ITMBatchingUtils {
     private static final Logger LOG = LoggerFactory.getLogger(ITMBatchingUtils.class);
 
 
-    private static final BlockingQueue<ActionableResource> DEFAULT_OPERATIONAL_SHARD_BUFFER_Q
-            = new LinkedBlockingQueue<>();
-    private static final BlockingQueue<ActionableResource> DEFAULT_CONFIG_SHARD_BUFFER_Q = new LinkedBlockingQueue<>();
-    private static final BlockingQueue<ActionableResource> TOPOLOGY_CONFIG_SHARD_BUFFER_Q = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ActionableResource<?>> DEFAULT_OPERATIONAL_SHARD_BUFFER_Q =
+        new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ActionableResource<?>> DEFAULT_CONFIG_SHARD_BUFFER_Q =
+        new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ActionableResource<?>> TOPOLOGY_CONFIG_SHARD_BUFFER_Q =
+        new LinkedBlockingQueue<>();
 
     private static DataBroker dataBroker;
 
@@ -84,7 +86,7 @@ public final class ITMBatchingUtils {
     }
 
     @NonNull
-    public static BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
+    public static BlockingQueue<ActionableResource<?>> getQueue(EntityType entityType) {
         switch (entityType) {
             case DEFAULT_OPERATIONAL:
                 return DEFAULT_OPERATIONAL_SHARD_BUFFER_Q;

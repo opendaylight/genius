@@ -37,9 +37,9 @@ public class BatchingUtils implements AutoCloseable {
     private static final int DEFAULT_BATCH_SIZE = 1000;
     private static final int DEFAULT_BATCH_INTERVAL = 500;
 
-    private final BlockingQueue<ActionableResource> topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
-    private final BlockingQueue<ActionableResource> defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
-    private final BlockingQueue<ActionableResource> defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ActionableResource<?>> topologyConfigShardBufferQ = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ActionableResource<?>> defaultConfigShardBufferQ = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ActionableResource<?>> defaultOperationalShardBufferQ = new LinkedBlockingQueue<>();
 
     private final DataBroker dataBroker;
     private final ResourceBatchingManager resourceBatchingManager = ResourceBatchingManager.getInstance();
@@ -78,7 +78,7 @@ public class BatchingUtils implements AutoCloseable {
         getQueue(entityType).add(ActionableResources.create(path, data));
     }
 
-    public BlockingQueue<ActionableResource> getQueue(EntityType entityType) {
+    public BlockingQueue<ActionableResource<?>> getQueue(EntityType entityType) {
         switch (entityType) {
             case DEFAULT_CONFIG:
                 return defaultConfigShardBufferQ;
