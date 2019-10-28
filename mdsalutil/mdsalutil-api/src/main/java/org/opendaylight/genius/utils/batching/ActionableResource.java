@@ -25,7 +25,5 @@ public interface ActionableResource {
 
     short getAction();
 
-    String getKey();
-
     ListenableFuture<Void> getResultFuture();
 }
