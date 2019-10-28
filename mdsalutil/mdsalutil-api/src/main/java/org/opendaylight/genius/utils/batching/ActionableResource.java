@@ -19,22 +19,27 @@ public interface ActionableResource {
 
     InstanceIdentifier<?> getInstanceIdentifier();
 
+    @Deprecated
     void setInstanceIdentifier(InstanceIdentifier<?> identifier);
 
     Object getInstance();
 
+    @Deprecated
     void setInstance(Object instance);
 
     Object getOldInstance();
 
+    @Deprecated
     void setOldInstance(Object oldInstance);
 
     short getAction();
 
+    @Deprecated
     void setAction(short action);
 
     String getKey();
 
+    @Deprecated
     void setKey(String key);
 
     ListenableFuture<Void> getResultFuture();
