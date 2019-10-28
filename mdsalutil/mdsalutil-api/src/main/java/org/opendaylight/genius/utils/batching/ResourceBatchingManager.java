@@ -68,7 +68,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         CONFIG_INVENTORY(LogicalDatastoreType.CONFIGURATION),
         OPERATIONAL_INVENTORY(LogicalDatastoreType.OPERATIONAL);
 
-        BlockingQueue<ActionableResource> queue = new LinkedBlockingQueue<>();
+        BlockingQueue<ActionableResource<?>> queue = new LinkedBlockingQueue<>();
         LogicalDatastoreType datastoreType;
 
         ShardResource(LogicalDatastoreType datastoreType) {
@@ -79,12 +79,12 @@ public class ResourceBatchingManager implements AutoCloseable {
             return datastoreType;
         }
 
-        BlockingQueue<ActionableResource> getQueue() {
+        BlockingQueue<ActionableResource<?>> getQueue() {
             return queue;
         }
     }
 
-    private final ConcurrentHashMap<String, Pair<BlockingQueue<ActionableResource>, ResourceHandler>>
+    private final ConcurrentHashMap<String, Pair<BlockingQueue<ActionableResource<?>>, ResourceHandler>>
             resourceHandlerMapper = new ConcurrentHashMap<>();
 
     private final ConcurrentHashMap<String, ScheduledExecutorService>
@@ -108,8 +108,8 @@ public class ResourceBatchingManager implements AutoCloseable {
         resourceBatchingThreadMapper.values().forEach(ScheduledExecutorService::shutdown);
     }
 
-    public void registerBatchableResource(
-            String resourceType, final BlockingQueue<ActionableResource> resQueue, final ResourceHandler resHandler) {
+    public void registerBatchableResource(final String resourceType,
+            final BlockingQueue<ActionableResource<?>> resQueue, final ResourceHandler resHandler) {
         Preconditions.checkNotNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
         Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
 
@@ -160,7 +160,7 @@ public class ResourceBatchingManager implements AutoCloseable {
      */
     public <T extends DataObject> FluentFuture<Optional<T>> read(
             String resourceType, InstanceIdentifier<T> identifier) throws InterruptedException, ExecutionException {
-        BlockingQueue<ActionableResource> queue = getQueue(resourceType);
+        BlockingQueue<ActionableResource<?>> queue = getQueue(resourceType);
         if (queue != null) {
             if (pendingModificationByResourceType.get(resourceType).contains(identifier)) {
                 SettableFuture<Optional<T>> readFuture = SettableFuture.create();
@@ -180,10 +180,10 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier<?> identifier,
                                         DataObject updatedData) {
-        BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        BlockingQueue<ActionableResource<?>> queue = shardResource.getQueue();
         if (queue != null) {
             beforeModification(shardResource.name(), identifier);
-            ActionableResource actResource = new ActionableResourceImpl(
+            ActionableResource<?> actResource = new ActionableResourceImpl<>(
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
             return actResource.getResultFuture();
@@ -194,20 +194,20 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     public void merge(String resourceType, InstanceIdentifier<?> identifier, DataObject updatedData) {
-        BlockingQueue<ActionableResource> queue = getQueue(resourceType);
+        BlockingQueue<ActionableResource<?>> queue = getQueue(resourceType);
         if (queue != null) {
             beforeModification(resourceType, identifier);
-            ActionableResource actResource = new ActionableResourceImpl(
+            ActionableResource<?> actResource = new ActionableResourceImpl<>(
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
         }
     }
 
     public ListenableFuture<Void> delete(ShardResource shardResource, InstanceIdentifier<?> identifier) {
-        BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        BlockingQueue<ActionableResource<?>> queue = shardResource.getQueue();
         if (queue != null) {
             beforeModification(shardResource.name(), identifier);
-            ActionableResource actResource = new ActionableResourceImpl(
+            ActionableResource actResource = new ActionableResourceImpl<>(
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
             return actResource.getResultFuture();
@@ -218,10 +218,10 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     public void delete(String resourceType, InstanceIdentifier<?> identifier) {
-        BlockingQueue<ActionableResource> queue = getQueue(resourceType);
+        BlockingQueue<ActionableResource<?>> queue = getQueue(resourceType);
         if (queue != null) {
             beforeModification(resourceType, identifier);
-            ActionableResource actResource = new ActionableResourceImpl(
+            ActionableResource<?> actResource = new ActionableResourceImpl<>(
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
         }
@@ -229,10 +229,10 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     public ListenableFuture<Void> put(ShardResource shardResource, InstanceIdentifier<?> identifier,
                                       DataObject updatedData) {
-        BlockingQueue<ActionableResource> queue = shardResource.getQueue();
+        BlockingQueue<ActionableResource<?>> queue = shardResource.getQueue();
         if (queue != null) {
             beforeModification(shardResource.name(), identifier);
-            ActionableResource actResource = new ActionableResourceImpl(
+            ActionableResource<?> actResource = new ActionableResourceImpl<>(
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
             return actResource.getResultFuture();
@@ -243,16 +243,16 @@ public class ResourceBatchingManager implements AutoCloseable {
     }
 
     public void put(String resourceType, InstanceIdentifier<?> identifier, DataObject updatedData) {
-        BlockingQueue<ActionableResource> queue = getQueue(resourceType);
+        BlockingQueue<ActionableResource<?>> queue = getQueue(resourceType);
         if (queue != null) {
             beforeModification(resourceType, identifier);
-            ActionableResource actResource = new ActionableResourceImpl(
+            ActionableResource<?> actResource = new ActionableResourceImpl<>(
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
         }
     }
 
-    private BlockingQueue<ActionableResource> getQueue(String resourceType) {
+    private BlockingQueue<ActionableResource<?>> getQueue(String resourceType) {
         if (resourceHandlerMapper.containsKey(resourceType)) {
             return resourceHandlerMapper.get(resourceType).getLeft();
         }
@@ -464,7 +464,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         }
     }
 
-    private static class ActionableReadResource<T extends DataObject> extends ActionableResourceImpl {
+    private static class ActionableReadResource<T extends DataObject> extends ActionableResourceImpl<T> {
         private final SettableFuture<Optional<T>> readFuture;
 
         ActionableReadResource(InstanceIdentifier<T> identifier, SettableFuture<Optional<T>> readFuture) {
