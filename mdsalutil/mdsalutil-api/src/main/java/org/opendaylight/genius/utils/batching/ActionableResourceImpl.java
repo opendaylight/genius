@@ -32,7 +32,6 @@ public class ActionableResourceImpl implements ActionableResource {
         this.action = action;
     }
 
-    @Override
     public void setInstance(Object instance) {
         this.instance = instance;
     }
@@ -42,7 +41,6 @@ public class ActionableResourceImpl implements ActionableResource {
         return this.instance;
     }
 
-    @Override
     public void setOldInstance(Object oldInstance) {
         this.oldInstance = oldInstance;
     }
@@ -52,7 +50,6 @@ public class ActionableResourceImpl implements ActionableResource {
         return this.oldInstance;
     }
 
-    @Override
     public void setInstanceIdentifier(InstanceIdentifier instanceIdentifier) {
         this.identifier = instanceIdentifier;
     }
@@ -62,7 +59,6 @@ public class ActionableResourceImpl implements ActionableResource {
         return this.identifier;
     }
 
-    @Override
     public void setAction(short action) {
         this.action = action;
     }
@@ -72,7 +68,6 @@ public class ActionableResourceImpl implements ActionableResource {
         return action;
     }
 
-    @Override
     public void setKey(String key) {
         this.key = key;
     }
