@@ -14,18 +14,13 @@ import com.google.common.util.concurrent.SettableFuture;
 import org.opendaylight.yangtools.concepts.Identifier;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public class ActionableResourceImpl implements ActionableResource {
-    private Object instance;
-    private Object oldInstance;
-    private Object key;
-    private InstanceIdentifier identifier;
-    private short action;
+class ActionableResourceImpl implements ActionableResource {
+    private final Object instance;
+    private final Object oldInstance;
+    private final Object key;
+    private final InstanceIdentifier identifier;
+    private final short action;
     private final SettableFuture future = SettableFuture.create();
-
-    @Deprecated
-    public ActionableResourceImpl(String key) {
-        this.key = requireNonNull(key);
-    }
 
     ActionableResourceImpl(InstanceIdentifier identifier, short action, Object updatedData, Object oldData) {
         this.key = null;
@@ -44,27 +39,9 @@ public class ActionableResourceImpl implements ActionableResource {
         this.oldInstance = oldData;
     }
 
-    @Deprecated
-    public ActionableResourceImpl(String key, InstanceIdentifier identifier, short action, Object updatedData,
-            Object oldData) {
-        this.instance = updatedData;
-        this.oldInstance = oldData;
-        this.key = key;
-        this.identifier = identifier;
-        this.action = action;
-    }
-
-    public void setInstance(Object instance) {
-        this.instance = instance;
-    }
-
     @Override
     public Object getInstance() {
         return this.instance;
-    }
-
-    public void setOldInstance(Object oldInstance) {
-        this.oldInstance = oldInstance;
     }
 
     @Override
@@ -72,26 +49,14 @@ public class ActionableResourceImpl implements ActionableResource {
         return this.oldInstance;
     }
 
-    public void setInstanceIdentifier(InstanceIdentifier instanceIdentifier) {
-        this.identifier = instanceIdentifier;
-    }
-
     @Override
     public InstanceIdentifier getInstanceIdentifier() {
         return this.identifier;
     }
 
-    public void setAction(short action) {
-        this.action = action;
-    }
-
     @Override
     public short getAction() {
         return action;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     @Override
