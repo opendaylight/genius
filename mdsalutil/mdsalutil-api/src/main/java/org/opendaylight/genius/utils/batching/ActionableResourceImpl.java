@@ -12,60 +12,47 @@ import static java.util.Objects.requireNonNull;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import org.opendaylight.yangtools.concepts.Identifier;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-class ActionableResourceImpl implements ActionableResource {
+class ActionableResourceImpl<T extends DataObject> extends ActionableResource<T> {
+    private final SettableFuture future = SettableFuture.create();
     private final Object instance;
     private final Object oldInstance;
     private final Object key;
-    private final InstanceIdentifier identifier;
-    private final short action;
-    private final SettableFuture future = SettableFuture.create();
 
-    ActionableResourceImpl(InstanceIdentifier identifier, short action, Object updatedData, Object oldData) {
+    ActionableResourceImpl(InstanceIdentifier<T> path, short action, Object updatedData, Object oldData) {
+        super(path, action);
         this.key = null;
-        this.action = action;
-        this.identifier = requireNonNull(identifier);
         this.instance = updatedData;
         this.oldInstance = oldData;
     }
 
-    ActionableResourceImpl(Identifier key, InstanceIdentifier identifier, short action, Object updatedData,
+    ActionableResourceImpl(Identifier key, InstanceIdentifier<T> path, short action, Object updatedData,
             Object oldData) {
+        super(path, action);
         this.key = requireNonNull(key);
-        this.action = action;
-        this.identifier = requireNonNull(identifier);
         this.instance = updatedData;
         this.oldInstance = oldData;
     }
 
     @Override
-    public Object getInstance() {
+    final Object getInstance() {
         return this.instance;
     }
 
     @Override
-    public Object getOldInstance() {
+    final Object getOldInstance() {
         return this.oldInstance;
     }
 
     @Override
-    public InstanceIdentifier getInstanceIdentifier() {
-        return this.identifier;
-    }
-
-    @Override
-    public short getAction() {
-        return action;
-    }
-
-    @Override
-    public ListenableFuture<Void> getResultFuture() {
+    final ListenableFuture<Void> getResultFuture() {
         return future;
     }
 
     @Override
-    public String toString() {
-        return key != null ? key.toString() : identifier.toString();
+    public final String toString() {
+        return key != null ? key.toString() : getInstanceIdentifier().toString();
     }
 }
