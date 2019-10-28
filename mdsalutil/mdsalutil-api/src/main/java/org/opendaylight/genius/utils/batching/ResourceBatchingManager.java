@@ -178,7 +178,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
             beforeModification(shardResource.name(), identifier);
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+            ActionableResource actResource = new ActionableResourceImpl(
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
             return actResource.getResultFuture();
@@ -192,7 +192,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             beforeModification(resourceType, identifier);
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+            ActionableResource actResource = new ActionableResourceImpl(
                     identifier, ActionableResource.UPDATE, updatedData, null/*oldData*/);
             queue.add(actResource);
         }
@@ -202,7 +202,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
             beforeModification(shardResource.name(), identifier);
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+            ActionableResource actResource = new ActionableResourceImpl(
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
             return actResource.getResultFuture();
@@ -216,7 +216,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             beforeModification(resourceType, identifier);
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+            ActionableResource actResource = new ActionableResourceImpl(
                     identifier, ActionableResource.DELETE, null, null/*oldData*/);
             queue.add(actResource);
         }
@@ -227,7 +227,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         BlockingQueue<ActionableResource> queue = shardResource.getQueue();
         if (queue != null) {
             beforeModification(shardResource.name(), identifier);
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+            ActionableResource actResource = new ActionableResourceImpl(
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
             return actResource.getResultFuture();
@@ -241,7 +241,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             beforeModification(resourceType, identifier);
-            ActionableResource actResource = new ActionableResourceImpl(identifier.toString(),
+            ActionableResource actResource = new ActionableResourceImpl(
                     identifier, ActionableResource.CREATE, updatedData, null/*oldData*/);
             queue.add(actResource);
         }
@@ -375,7 +375,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                         break;
                     default:
                         LOG.error("Unable to determine Action for ResourceType {} with ResourceKey {}",
-                                resourceType, actResource.getKey());
+                                resourceType, actResource);
                 }
                 int endSize = transactionObjects.size();
                 if (endSize > startSize) {
@@ -456,7 +456,7 @@ public class ResourceBatchingManager implements AutoCloseable {
         private final SettableFuture<Optional<T>> readFuture;
 
         ActionableReadResource(InstanceIdentifier<T> identifier, SettableFuture<Optional<T>> readFuture) {
-            super(identifier.toString(), identifier, ActionableResource.READ, null, null);
+            super(identifier, ActionableResource.READ, null, null);
             this.readFuture = readFuture;
         }
 
