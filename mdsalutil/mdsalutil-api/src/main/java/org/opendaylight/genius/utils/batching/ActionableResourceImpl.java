@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -19,10 +21,20 @@ public class ActionableResourceImpl implements ActionableResource {
     private short action;
     private final SettableFuture future = SettableFuture.create();
 
+    @Deprecated
     public ActionableResourceImpl(String key) {
-        this.key = key;
+        this.key = requireNonNull(key);
     }
 
+    ActionableResourceImpl(InstanceIdentifier identifier, short action, Object updatedData, Object oldData) {
+        this.key = null;
+        this.action = action;
+        this.identifier = requireNonNull(identifier);
+        this.instance = updatedData;
+        this.oldInstance = oldData;
+    }
+
+    @Deprecated
     public ActionableResourceImpl(String key, InstanceIdentifier identifier, short action, Object updatedData,
             Object oldData) {
         this.instance = updatedData;
@@ -73,12 +85,15 @@ public class ActionableResourceImpl implements ActionableResource {
     }
 
     @Override
-    public String getKey() {
-        return this.key;
+    public ListenableFuture<Void> getResultFuture() {
+        return future;
     }
 
     @Override
-    public ListenableFuture<Void> getResultFuture() {
-        return future;
+    public String toString() {
+        if (key != null) {
+            return key;
+        }
+        return key != null ? key : identifier.toString();
     }
 }

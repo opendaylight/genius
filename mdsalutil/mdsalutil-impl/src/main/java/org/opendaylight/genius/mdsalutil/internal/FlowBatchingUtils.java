@@ -10,7 +10,7 @@ package org.opendaylight.genius.mdsalutil.internal;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.opendaylight.genius.utils.batching.ActionableResource;
-import org.opendaylight.genius.utils.batching.ActionableResourceImpl;
+import org.opendaylight.genius.utils.batching.ActionableResources;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
 import org.opendaylight.genius.utils.batching.ResourceHandler;
 import org.opendaylight.yangtools.yang.binding.DataObject;
@@ -26,26 +26,14 @@ class FlowBatchingUtils {
     }
 
     <T extends DataObject> void update(InstanceIdentifier<T> path, T data) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.UPDATE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(data);
-        inventoryConfigShardBufferQ.add(actResource);
+        inventoryConfigShardBufferQ.add(ActionableResources.update(path, data));
     }
 
     <T extends DataObject> void write(InstanceIdentifier<T> path, T data) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.CREATE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(data);
-        inventoryConfigShardBufferQ.add(actResource);
+        inventoryConfigShardBufferQ.add(ActionableResources.create(path, data));
     }
 
     <T extends DataObject> void delete(InstanceIdentifier<T> path) {
-        ActionableResourceImpl actResource = new ActionableResourceImpl(path.toString());
-        actResource.setAction(ActionableResource.DELETE);
-        actResource.setInstanceIdentifier(path);
-        actResource.setInstance(null);
-        inventoryConfigShardBufferQ.add(actResource);
+        inventoryConfigShardBufferQ.add(ActionableResources.delete(path));
     }
 }
