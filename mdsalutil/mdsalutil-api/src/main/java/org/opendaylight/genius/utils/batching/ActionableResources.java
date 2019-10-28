@@ -22,39 +22,39 @@ public final class ActionableResources {
 
     }
 
-    public static <T extends DataObject> @NonNull ActionableResource create(final InstanceIdentifier<T> path,
+    public static <T extends DataObject> @NonNull ActionableResource<T> create(final InstanceIdentifier<T> path,
             final T data) {
-        return new ActionableResourceImpl(path, ActionableResource.CREATE, requireNonNull(data), null);
+        return new ActionableResourceImpl<>(path, ActionableResource.CREATE, requireNonNull(data), null);
     }
 
-    public static <T extends DataObject> @NonNull ActionableResource create(final Identifier identifier,
+    public static <T extends DataObject> @NonNull ActionableResource<T> create(final Identifier identifier,
             final InstanceIdentifier<T> path, final T data) {
-        return new ActionableResourceImpl(identifier, path, ActionableResource.CREATE, requireNonNull(data), null);
+        return new ActionableResourceImpl<>(identifier, path, ActionableResource.CREATE, requireNonNull(data), null);
     }
 
-    public static <T extends DataObject> @NonNull ActionableResource update(final InstanceIdentifier<T> path,
+    public static <T extends DataObject> @NonNull ActionableResource<T> update(final InstanceIdentifier<T> path,
             final T newData) {
-        return new ActionableResourceImpl(path, ActionableResource.UPDATE, requireNonNull(newData), null);
+        return new ActionableResourceImpl<>(path, ActionableResource.UPDATE, requireNonNull(newData), null);
     }
 
-    public static <T extends DataObject> @NonNull ActionableResource update(final Identifier identifier,
+    public static <T extends DataObject> @NonNull ActionableResource<T> update(final Identifier identifier,
             final InstanceIdentifier<T> path, final T newData, final T oldData) {
-        return new ActionableResourceImpl(identifier, path, ActionableResource.UPDATE, requireNonNull(newData),
+        return new ActionableResourceImpl<>(identifier, path, ActionableResource.UPDATE, requireNonNull(newData),
             oldData);
     }
 
-    public static @NonNull ActionableResource delete(final InstanceIdentifier<?> path) {
-        return new ActionableResourceImpl(path, ActionableResource.DELETE, null, null);
+    public static @NonNull ActionableResource<?> delete(final InstanceIdentifier<?> path) {
+        return new ActionableResourceImpl<>(path, ActionableResource.DELETE, null, null);
     }
 
-    public static <T extends DataObject> @NonNull ActionableResource delete(final Identifier identifier,
+    public static <T extends DataObject> @NonNull ActionableResource<T> delete(final Identifier identifier,
             final InstanceIdentifier<T> path, final T data) {
-        return new ActionableResourceImpl(identifier, path, ActionableResource.DELETE, data, null);
+        return new ActionableResourceImpl<>(identifier, path, ActionableResource.DELETE, data, null);
     }
 
-    public static <T extends DataObject> @NonNull ActionableResource updateContainer(final
+    public static <T extends DataObject> @NonNull ActionableResource<T> updateContainer(final
         InstanceIdentifier<T> path, final T newData) {
-        return new ActionableResourceImpl(path, ActionableResource.UPDATECONTAINER, requireNonNull(newData),
+        return new ActionableResourceImpl<>(path, ActionableResource.UPDATECONTAINER, requireNonNull(newData),
                 null);
     }
 }

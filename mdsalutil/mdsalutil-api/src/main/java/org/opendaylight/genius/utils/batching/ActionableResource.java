@@ -7,25 +7,42 @@
  */
 package org.opendaylight.genius.utils.batching;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
+import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-public interface ActionableResource {
+public abstract class ActionableResource<T extends DataObject> {
 
-    short CREATE = 1;
-    short UPDATE = 2;
-    short DELETE = 3;
-    short READ = 4;
+    static final short CREATE = 1;
+    static final short UPDATE = 2;
+    static final short DELETE = 3;
+    static final short READ = 4;
     // MDSAL-534 Merge,Put with no create_missing_parents flag
-    short UPDATECONTAINER = 5;
+    static final short UPDATECONTAINER = 5;
 
-    InstanceIdentifier<?> getInstanceIdentifier();
+    private final InstanceIdentifier<T> path;
+    private final short action;
 
-    Object getInstance();
+    // Hidden to prevent subclassing outside of this package
+    ActionableResource(final InstanceIdentifier<T> path, final short action) {
+        this.path = requireNonNull(path);
+        this.action = action;
+    }
 
-    Object getOldInstance();
+    final short getAction() {
+        return action;
+    }
 
-    short getAction();
+    final @NonNull InstanceIdentifier<T> getInstanceIdentifier() {
+        return path;
+    }
 
-    ListenableFuture<Void> getResultFuture();
+    abstract Object getInstance();
+
+    abstract Object getOldInstance();
+
+    abstract ListenableFuture<Void> getResultFuture();
 }
