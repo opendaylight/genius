@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_7aceb4b5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-11-23T08:26:42Z",
+      "side": 1,
+      "message": "should nxmRegister be an attribute of ActionInfo? nxmRegister is a unique entity and it can be part of action as well as match...If ActionInfo is considered, already it should be a part of ActionType...",
+      "revId": "b35beb297e22753f663fca5c432e37bb43981e97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
