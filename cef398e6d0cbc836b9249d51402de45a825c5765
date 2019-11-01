@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "3a65312a_545c6825",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-24T11:23:53Z",
+      "side": 1,
+      "message": "1. please you must add this new field to hashCode, equals and toString of ActionInfo\n2. please make this new field final, like all the others.\n2a. please set this new field to null in constructors where you have no value for it\n3. please extend ActionInfoImmutableTest for this new field\n4. please amend ActionInfoBuilder accordingly",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_949f2050",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
         "patchSetId": 9
@@ -14,6 +31,24 @@
       "side": 1,
       "message": "Thanks! will make these changes in the next patch set.",
       "parentUuid": "3a65312a_545c6825",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_56cfb2b0",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T09:47:02Z",
+      "side": 1,
+      "message": "you\u0027ve still not added it to toString(), did you forget? ;-)",
+      "parentUuid": "3a65312a_949f2050",
       "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -38,6 +73,23 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_b4c5fc8f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-24T12:43:52Z",
+      "side": 1,
+      "message": "Is there any real use of this enum, or is it ONLY to map to the YANG gen. NxmNxReg* ?  I may be missing something, but have you considered just using NxmNxReg directly? I mean in ActionInfo, instead of having a NxmRegisters field and then a getNxmNxReg() method to map it to a Class\u003c? extends NxmNxReg\u003e, why just have a Class\u003c? extends NxmNxReg\u003e field in ActionInfo, and get rid of this intermediary NxmNxReg? Unless it serves another purpose, which I haven\u0027t understood yet.",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_1494b035",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
         "patchSetId": 9
@@ -56,6 +108,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_f6e6be43",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T09:47:02Z",
+      "side": 1,
+      "message": "I may be missing something, but seeing how ActionInfo has an Optional\u003cClass\u003c? extends NxmNxReg\u003e\u003e getNxmNxReg(), so is exposing NxmNxReg anyway, I don\u0027t really understand ..",
+      "parentUuid": "3a65312a_1494b035",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_392667bb",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
         "patchSetId": 9
@@ -68,6 +138,23 @@
       "side": 1,
       "message": "Now these methods are made with default access scope.",
       "parentUuid": "1a622d24_f6e6be43",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1452f012",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-24T11:23:53Z",
+      "side": 1,
+      "message": "make this field final (unless that\u0027s not possible in enum, I can\u0027t remember)",
       "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
