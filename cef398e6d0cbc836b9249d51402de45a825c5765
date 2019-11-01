@@ -1,0 +1,40 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_f91cef6c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:22:44Z",
+      "side": 1,
+      "message": "Yes :( added it now.",
+      "parentUuid": "1a622d24_56cfb2b0",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1494b035",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-24T13:13:18Z",
+      "side": 1,
+      "message": "Yes, It\u0027s just used only for mapping purpose. We did consider exposing NxmNxReg directly, but this will unnecessarily expose openflowjava-extension-nicira to the north. So this is done to make netvirt to depend only on mdsalutil-api for these actions.",
+      "parentUuid": "3a65312a_b4c5fc8f",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
