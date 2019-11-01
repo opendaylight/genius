@@ -16,6 +16,24 @@
       "revId": "b35beb297e22753f663fca5c432e37bb43981e97",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ba468c1f",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-23T08:42:47Z",
+      "side": 1,
+      "message": "nxmRegister is enum reference which gives flexibility for the caller to choose any registries (reg0-reg7) for load/move action. So this is needed in ActionInfo.",
+      "parentUuid": "3a65312a_7aceb4b5",
+      "revId": "b35beb297e22753f663fca5c432e37bb43981e97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
