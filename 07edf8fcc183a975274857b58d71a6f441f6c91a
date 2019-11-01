@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_50690a24",
+        "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/IfmCLIUtil.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-22T08:32:31Z",
+      "side": 1,
+      "message": "session ref is in org.apache.karaf.shell.console.AbstractAction. So you have to pass session as argument to showVlanHeaderOutput()and get console from it. It will fix this build errors as well.",
+      "revId": "07edf8fcc183a975274857b58d71a6f441f6c91a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
