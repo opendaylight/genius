@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_7259d159",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/confighelpers/FlowBasedIngressServicesConfigUnbindHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-07-13T07:09:53Z",
+      "side": 1,
+      "message": "move this check above wherever other checks are there to return linenumber:87\nsame applies everywhere else",
+      "revId": "5ccb36d10a331a80333717f7442313d304e7bc23",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
