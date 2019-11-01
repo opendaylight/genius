@@ -35,6 +35,24 @@
       "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_392667bb",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:22:44Z",
+      "side": 1,
+      "message": "Now these methods are made with default access scope.",
+      "parentUuid": "1a622d24_f6e6be43",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
