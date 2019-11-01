@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_2d506c5d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 120,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-24T06:25:08Z",
+      "side": 1,
+      "message": "why can\u0027t you have a method like handleError(String errorMessage, CommandSession session) get it used to avoid all these duplicated code.",
+      "revId": "85b407f6a84c10b7bd34091e2fc6a3d067353c93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cd61f83a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-24T06:25:08Z",
+      "side": 1,
+      "message": "use LOG.error instead of e.printStackTrace()",
+      "revId": "85b407f6a84c10b7bd34091e2fc6a3d067353c93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ad647c49",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-24T06:25:08Z",
+      "side": 1,
+      "message": "do it in all occurrences.",
+      "revId": "85b407f6a84c10b7bd34091e2fc6a3d067353c93",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
