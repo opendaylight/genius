@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_b671e679",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T09:47:02Z",
+      "side": 1,
+      "message": "something here doesn\u0027t seem right.. either this method should be renamed from getNxmNxReg() to getNxmRegisterName(), not NxmNx, because the body appears to return a getClassName() of NxmRegister OR the impl is wrong, and should return a Class instead of a Name? Probably best to have 2-3 lines of a very simply unit test for this as well, given the confusion.",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_592523aa",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
         "patchSetId": 11
@@ -108,6 +125,23 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_7658eefa",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T09:47:02Z",
+      "side": 1,
+      "message": "this looks like this really be called NxmRegister, without *s?  Because 1 enum of this type here is 1 register, right?",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_b939d7da",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
         "patchSetId": 11
@@ -120,6 +154,23 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "1a622d24_7658eefa",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d6baa209",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2016-11-28T09:47:02Z",
+      "side": 1,
+      "message": "please rename this from getClassName() to something without *Name but with *Class* .. you can\u0027t use getClass(), so maybe getNxmNxRegClass() ?  Because this does NOT return a \"name\" (\u003dString), but a class..",
       "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
