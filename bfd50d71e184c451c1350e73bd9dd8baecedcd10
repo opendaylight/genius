@@ -2,6 +2,24 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_592523aa",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T12:22:44Z",
+      "side": 1,
+      "message": "changed the method name to getNxmRegisterName()",
+      "parentUuid": "1a622d24_b671e679",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_b63e0628",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
         "patchSetId": 11
@@ -13,6 +31,24 @@
       "writtenOn": "2016-11-28T12:44:27Z",
       "side": 1,
       "message": "This ignores newActionKey.",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_59aa43d5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-28T13:03:06Z",
+      "side": 1,
+      "message": "have a look at getNxRegMoveAction and getNxLoadAction methods. actionKey is being used from actionInfo",
+      "parentUuid": "1a622d24_b63e0628",
       "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
