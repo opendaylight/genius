@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_6b3100ec",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-05T07:56:19Z",
+      "side": 1,
+      "message": "needs better wording to give idea on how to use it. Something like:\n\"Add flow to a batched transaction\n\nThis is used to batch multiple ConfigDS changes in a single transaction. e.g. Bulk addition of flows.\n\"\n\nSimilar wording for the rest too.",
+      "range": {
+        "startLine": 27,
+        "startChar": 7,
+        "endLine": 27,
+        "endChar": 55
+      },
+      "revId": "b8f2839080ac4b9c6fb38003811206a8fd0871c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_cb4dac74",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-05T07:56:19Z",
+      "side": 1,
+      "message": "Flow being added",
+      "range": {
+        "startLine": 30,
+        "startChar": 18,
+        "endLine": 30,
+        "endChar": 29
+      },
+      "revId": "b8f2839080ac4b9c6fb38003811206a8fd0871c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_ab52f810",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-05T07:56:19Z",
+      "side": 1,
+      "message": "batched transaction",
+      "range": {
+        "startLine": 32,
+        "startChar": 6,
+        "endLine": 32,
+        "endChar": 29
+      },
+      "revId": "b8f2839080ac4b9c6fb38003811206a8fd0871c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_2b3708e5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-05T07:56:19Z",
+      "side": 1,
+      "message": "typo: specific",
+      "range": {
+        "startLine": 39,
+        "startChar": 42,
+        "endLine": 39,
+        "endChar": 49
+      },
+      "revId": "b8f2839080ac4b9c6fb38003811206a8fd0871c4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
