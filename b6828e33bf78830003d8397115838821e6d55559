@@ -1,0 +1,129 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_0faf5d2b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepAdd.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "Since exception is thrown from here, why do we need two catches ? just catch Exception and do throw e;",
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6fa89120",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 549,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "use else if.",
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_af65891f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepConfigureTunnelType.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "rethrow the exception like you have done it before and use single catch.",
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8f6a4dec",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/VtepSchemaAdd.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "same comment as before.",
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ef6b01ef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/VtepSchemaDelete.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "same comment as before.",
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cf70c5de",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/VtepSchemaShow.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "same comment as before",
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2f7979c8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/VtepSchemaUpdate.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-26T05:00:47Z",
+      "side": 1,
+      "message": "same comment as before",
+      "range": {
+        "startLine": 86,
+        "startChar": 23,
+        "endLine": 86,
+        "endChar": 24
+      },
+      "revId": "b6828e33bf78830003d8397115838821e6d55559",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
