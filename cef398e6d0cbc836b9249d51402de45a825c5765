@@ -2,6 +2,24 @@
   "comments": [
     {
       "key": {
+        "uuid": "3a65312a_949f2050",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-24T13:13:18Z",
+      "side": 1,
+      "message": "Thanks! will make these changes in the next patch set.",
+      "parentUuid": "3a65312a_545c6825",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_f91cef6c",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionInfo.java",
         "patchSetId": 9
@@ -50,6 +68,24 @@
       "side": 1,
       "message": "Now these methods are made with default access scope.",
       "parentUuid": "1a622d24_f6e6be43",
+      "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_749b6467",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmRegisters.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-24T13:13:18Z",
+      "side": 1,
+      "message": "enum is final by dafult. will make this field as final.",
+      "parentUuid": "3a65312a_1452f012",
       "revId": "cef398e6d0cbc836b9249d51402de45a825c5765",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
