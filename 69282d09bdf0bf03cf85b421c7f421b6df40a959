@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_5cc5ca3a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-16T09:47:28Z",
+      "side": 1,
+      "message": "I think we should have one action type for each nx_load and nx_move for all registers. \nYou could have ActionInfo takes enum constant (for reg) along with start and end.\nIn enum, you could have Class\u003c? extends NxmNxReg\u003e getClass() which can be overridden by each reg constants.\n\nAfter this change, make sure you update netvirt since it is already using nx_load_reg_6.",
+      "revId": "69282d09bdf0bf03cf85b421c7f421b6df40a959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_bc869e11",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 864,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-16T09:47:28Z",
+      "side": 1,
+      "message": "you can create NxRegMove in a single stretch instead of invoking set methods in multiple lines.",
+      "revId": "69282d09bdf0bf03cf85b421c7f421b6df40a959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3c728e49",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 866,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-16T09:47:28Z",
+      "side": 1,
+      "message": "same comment as above.",
+      "revId": "69282d09bdf0bf03cf85b421c7f421b6df40a959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1c7d121d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 881,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-16T09:47:28Z",
+      "side": 1,
+      "message": "same comment as before.",
+      "revId": "69282d09bdf0bf03cf85b421c7f421b6df40a959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_fc777639",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 883,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-16T09:47:28Z",
+      "side": 1,
+      "message": "same comment as before.",
+      "revId": "69282d09bdf0bf03cf85b421c7f421b6df40a959",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
