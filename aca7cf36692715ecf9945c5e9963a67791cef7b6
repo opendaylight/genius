@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_ffce21b3",
+        "filename": "interfacemanager/interfacemanager-shell/src/main/java/org/opendaylight/genius/interfacemanager/shell/IfmCLIUtil.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-23T07:08:32Z",
+      "side": 1,
+      "message": "don\u0027t create commandSessionHolder object to get the session. Just get session passed from CLI classes.",
+      "revId": "aca7cf36692715ecf9945c5e9963a67791cef7b6",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
