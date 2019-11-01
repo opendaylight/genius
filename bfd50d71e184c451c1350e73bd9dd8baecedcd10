@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a622d24_b63e0628",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-28T12:44:27Z",
+      "side": 1,
+      "message": "This ignores newActionKey.",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_59f883e5",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
         "patchSetId": 11
@@ -14,6 +31,58 @@
       "side": 1,
       "message": "I know where the resulting ActionKey is taken from, but isn\u0027t buildAction() supposed to use newActionKey instead? Otherwise actions don\u0027t get the right key when a list of actions is built.",
       "parentUuid": "1a622d24_59aa43d5",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_963b0a38",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 643,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-28T12:44:27Z",
+      "side": 1,
+      "message": "This ignores newActionKey.",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_96914a55",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/ActionInfoImmutableTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-28T12:44:27Z",
+      "side": 1,
+      "message": "This doesn\u0027t appear to test anything...",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_99d97b86",
+        "filename": "mdsalutil/mdsalutil-api/src/test/java/org/opendaylight/genius/mdsalutil/tests/ActionInfoImmutableTest.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-28T13:12:52Z",
+      "side": 1,
+      "message": "Both really — all the test does in effect is build an ActionInfo instance and check that the contents are the same at the start and end of the test. The transformations that occur in between (if any) don\u0027t touch that part of the code so there\u0027s no failure mode.",
+      "parentUuid": "1a622d24_d9b5b332",
       "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
