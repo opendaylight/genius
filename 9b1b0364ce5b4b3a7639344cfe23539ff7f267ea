@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_b14fe0bd",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 578,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-18T05:21:51Z",
+      "side": 1,
+      "message": "have action types as nx_load_reg and nx_reg_move_mpls_label",
+      "revId": "9b1b0364ce5b4b3a7639344cfe23539ff7f267ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_31647048",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmNxRegister.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-18T05:21:51Z",
+      "side": 1,
+      "message": "Nit: Change the enum name into NxmRegisters",
+      "revId": "9b1b0364ce5b4b3a7639344cfe23539ff7f267ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_715ee877",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmNxRegister.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-18T05:21:51Z",
+      "side": 1,
+      "message": "Let us have enum type fields in upper case like REG0, REG1, REG2 etc.",
+      "revId": "9b1b0364ce5b4b3a7639344cfe23539ff7f267ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_51612c38",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmNxRegister.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-18T05:21:51Z",
+      "side": 1,
+      "message": "add other NxmNxReg constants",
+      "revId": "9b1b0364ce5b4b3a7639344cfe23539ff7f267ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d1541c56",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/NxmNxRegister.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-11-18T05:21:51Z",
+      "side": 1,
+      "message": "change it to private",
+      "revId": "9b1b0364ce5b4b3a7639344cfe23539ff7f267ea",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
