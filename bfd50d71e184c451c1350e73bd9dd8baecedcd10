@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_59f883e5",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/ActionType.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 4540
+      },
+      "writtenOn": "2016-11-28T13:12:52Z",
+      "side": 1,
+      "message": "I know where the resulting ActionKey is taken from, but isn\u0027t buildAction() supposed to use newActionKey instead? Otherwise actions don\u0027t get the right key when a list of actions is built.",
+      "parentUuid": "1a622d24_59aa43d5",
+      "revId": "bfd50d71e184c451c1350e73bd9dd8baecedcd10",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
