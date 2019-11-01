@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_902f61a1",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/interfaces/IMdsalApiManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-07-05T07:12:40Z",
+      "side": 1,
+      "message": "Are there any plans to remove these going forward? If yes, mark these as deprecated.",
+      "range": {
+        "startLine": 40,
+        "startChar": 4,
+        "endLine": 40,
+        "endChar": 50
+      },
+      "revId": "5a9d229906b85c79b588d52d800e1b1fbe851a1d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
