@@ -7,14 +7,6 @@ module itm-rpc {
         revision-date "2013-07-15";
     }
 
-    import ietf-yang-types {
-              prefix yang;
-      }
-
-    import ietf-interfaces {
-        prefix if; revision-date 2014-05-08;
-    }
-
     import odl-interface {
         prefix odlif;
         revision-date "2016-04-06";

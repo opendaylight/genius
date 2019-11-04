@@ -10,10 +10,6 @@ module odl-itm-meta {
         prefix southbound; revision-date "2015-01-05";
     }
 
-    import odl-interface {
-        prefix odlif; revision-date 2016-04-06;
-    }
-
     revision "2017-12-10" {
         description "ODL rendering specific ITM Meta Module";
     }

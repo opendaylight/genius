@@ -4,10 +4,6 @@ module ifm-config {
 
     prefix ifm-config;
 
-    import ietf-yang-types {
-        prefix yang;
-    }
-
     description "This YANG module defines interfacemanager configuration.";
     revision "2016-04-06";
 
