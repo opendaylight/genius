@@ -15,10 +15,6 @@ module odl-arputil {
         prefix yang;
     }
 
-    import opendaylight-inventory {
-        prefix inv; revision-date 2013-08-19;
-    }
-
     revision "2016-04-06" {
         description "Arp Util module";
     }
