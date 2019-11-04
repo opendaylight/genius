@@ -4,14 +4,6 @@ module itm-state {
 
       prefix itm-state;
 
-      import ietf-interfaces {
-          prefix if;
-      }
-
-      import ietf-yang-types {
-          prefix yang;
-      }
-
       import ietf-inet-types {
           prefix inet;
           revision-date "2013-07-15";

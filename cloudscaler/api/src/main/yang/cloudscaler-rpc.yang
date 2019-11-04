@@ -2,16 +2,6 @@ module cloudscaler-rpc {
     namespace "urn:opendaylight:genius:cloudscaler:rpcs";
     prefix "cloudscaler";
 
-    import yang-ext {prefix ext; revision-date "2013-07-09";}
-
-    import ietf-inet-types {
-        prefix inet;
-        revision-date "2013-07-15";
-    }
-    import ietf-yang-types {
-        prefix yang;
-    }
-
     revision "2017-12-20" {
         description "ODL Specific Scalein Rpcs Module";
     }
