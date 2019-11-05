@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_296107d3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 5987
+      },
+      "writtenOn": "2016-09-28T05:23:07Z",
+      "side": 1,
+      "message": "Why is this commented?\nPlease remove this code if it is not required anymore.",
+      "revId": "3976c10b273e59c1245e20420f2e8a42fd5ff202",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
