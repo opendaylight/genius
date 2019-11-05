@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_a7e4df3b",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-07-08T05:22:07Z",
+      "side": 1,
+      "message": "pls remove tabs",
+      "revId": "5387947326826c41b84f9161ed6e9dec1512c407",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_07d14b57",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-07-08T05:22:07Z",
+      "side": 1,
+      "message": "remove this..not allowed",
+      "revId": "5387947326826c41b84f9161ed6e9dec1512c407",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
