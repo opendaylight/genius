@@ -371,7 +371,15 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
          * genius.interfacemanager.entitycounter{entitytype=flowtable,switchid=value,flowtableid=value,name=counterName}
          */
         Counter counter = null;
-        if (port != null) {
+        if (tableId != null) {
+            Labeled<Labeled<Labeled<Labeled<Counter>>>> labeledCounter =
+                    metricProvider.newCounter(MetricDescriptor.builder().anchor(this).project("genius")
+                                    .module("interfacemanager").id(CounterConstants.CNT_TYPE_ENTITY_CNT_ID).build(),
+                            CounterConstants.LBL_KEY_ENTITY_TYPE, CounterConstants.LBL_KEY_SWITCHID,
+                            CounterConstants.LBL_KEY_FLOWTBLID, CounterConstants.LBL_KEY_COUNTER_NAME);
+            counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_FLOWTBL).label(switchId)
+                    .label(tableId).label(counterName);
+        } else if (port != null) {
             Labeled<Labeled<Labeled<Labeled<Labeled<Counter>>>>> labeledCounter =
                     metricProvider.newCounter(MetricDescriptor.builder().anchor(this).project("genius")
                         .module("interfacemanager").id(CounterConstants.CNT_TYPE_ENTITY_CNT_ID).build(),
@@ -380,15 +388,6 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                         CounterConstants.LBL_KEY_COUNTER_NAME);
             counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_PORT).label(switchId)
                     .label(port).label(aliasId).label(counterName);
-        }
-        if (tableId != null) {
-            Labeled<Labeled<Labeled<Labeled<Counter>>>> labeledCounter =
-                    metricProvider.newCounter(MetricDescriptor.builder().anchor(this).project("genius")
-                        .module("interfacemanager").id(CounterConstants.CNT_TYPE_ENTITY_CNT_ID).build(),
-                        CounterConstants.LBL_KEY_ENTITY_TYPE, CounterConstants.LBL_KEY_SWITCHID,
-                        CounterConstants.LBL_KEY_FLOWTBLID, CounterConstants.LBL_KEY_COUNTER_NAME);
-            counter = labeledCounter.label(CounterConstants.LBL_VAL_ENTITY_TYPE_FLOWTBL).label(switchId)
-                    .label(tableId).label(counterName);
         }
 
         // create counters set for node if absent.
