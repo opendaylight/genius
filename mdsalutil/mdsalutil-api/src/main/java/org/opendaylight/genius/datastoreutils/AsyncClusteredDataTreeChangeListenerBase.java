@@ -136,41 +136,51 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
         @Override
         public void run() {
             for (DataTreeModification<T> change : changes) {
-                final InstanceIdentifier<T> key = change.getRootPath().getRootIdentifier();
-                final DataObjectModification<T> mod = change.getRootNode();
+                try {
+                    processDataTreeModification(change);
+                } catch (IllegalStateException e) {
+                    LOG.error("Catch an IllegalStateException: ", e);
+                } catch (IllegalArgumentException e1) {
+                    LOG.error("Catch an IllegalArgumentException: ", e1);
+                }
+            }
+            chainingDelegate.notifyAfterOnDataTreeChanged(changes);
+        }
 
-                switch (mod.getModificationType()) {
-                    case DELETE:
+        private void processDataTreeModification(DataTreeModification<T> change) {
+            final InstanceIdentifier<T> key = change.getRootPath().getRootIdentifier();
+            final DataObjectModification<T> mod = change.getRootNode();
+
+            switch (mod.getModificationType()) {
+                case DELETE:
+                    if (dataStoreMetrics != null) {
+                        dataStoreMetrics.incrementDeleted();
+                    }
+                    remove(key, mod.getDataBefore());
+                    break;
+                case SUBTREE_MODIFIED:
+                    if (dataStoreMetrics != null) {
+                        dataStoreMetrics.incrementUpdated();
+                    }
+                    update(key, mod.getDataBefore(), mod.getDataAfter());
+                    break;
+                case WRITE:
+                    if (mod.getDataBefore() == null) {
                         if (dataStoreMetrics != null) {
-                            dataStoreMetrics.incrementDeleted();
+                            dataStoreMetrics.incrementAdded();
                         }
-                        remove(key, mod.getDataBefore());
-                        break;
-                    case SUBTREE_MODIFIED:
+                        add(key, mod.getDataAfter());
+                    } else {
                         if (dataStoreMetrics != null) {
                             dataStoreMetrics.incrementUpdated();
                         }
                         update(key, mod.getDataBefore(), mod.getDataAfter());
-                        break;
-                    case WRITE:
-                        if (mod.getDataBefore() == null) {
-                            if (dataStoreMetrics != null) {
-                                dataStoreMetrics.incrementAdded();
-                            }
-                            add(key, mod.getDataAfter());
-                        } else {
-                            if (dataStoreMetrics != null) {
-                                dataStoreMetrics.incrementUpdated();
-                            }
-                            update(key, mod.getDataBefore(), mod.getDataAfter());
-                        }
-                        break;
-                    default:
-                        // FIXME: May be not a good idea to throw.
-                        throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
-                }
+                    }
+                    break;
+                default:
+                    // FIXME: May be not a good idea to throw.
+                    throw new IllegalArgumentException("Unhandled modification type " + mod.getModificationType());
             }
-            chainingDelegate.notifyAfterOnDataTreeChanged(changes);
         }
     }
 }
