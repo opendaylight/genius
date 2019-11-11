@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_b541cdaa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 636,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-13T10:14:17Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "f751cb1d831475be372b022ecf07fd21596b3cd4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_953c8930",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 645,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-13T10:14:17Z",
+      "side": 1,
+      "message": "while you\u0027re at it, unrelated, just because this jump out, can you change this to be LOG.error(\"deleteOnCommit() failed\", e); instead plz? Tx.",
+      "revId": "f751cb1d831475be372b022ecf07fd21596b3cd4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b5fa6d72",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 848,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-13T10:14:17Z",
+      "side": 1,
+      "message": "remove commented out code",
+      "revId": "f751cb1d831475be372b022ecf07fd21596b3cd4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f5f07592",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 857,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-13T10:14:17Z",
+      "side": 1,
+      "message": "no no no, still as before..",
+      "revId": "f751cb1d831475be372b022ecf07fd21596b3cd4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d5ebb1a1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 876,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-13T10:14:17Z",
+      "side": 1,
+      "message": "no no no, as before",
+      "revId": "f751cb1d831475be372b022ecf07fd21596b3cd4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
