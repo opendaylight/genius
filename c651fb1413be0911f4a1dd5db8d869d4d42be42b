@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_7068a9ba",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-30T14:38:32Z",
+      "side": 1,
+      "message": "This very common utility is available in org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker as syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional() - please use that instead of codig it here (with a bug in the logging). If you copy/pasted this from somewhere else, please make the source of where you originally found it also use the SingleTransactionDataBroker.",
+      "revId": "c651fb1413be0911f4a1dd5db8d869d4d42be42b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
