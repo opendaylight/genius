@@ -172,6 +172,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_1d48d8b1",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "remove 3 newlines here",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_7dcac41b",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
         "patchSetId": 4
@@ -183,6 +200,23 @@
       "writtenOn": "2017-03-08T13:02:55Z",
       "side": 1,
       "message": "remove this newline",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5dcd4030",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "remove this newline, and same in all following @Test ..",
       "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
