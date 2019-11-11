@@ -47,6 +47,29 @@
       "revId": "049b72d10d610a89efe2e12d0cce1d5814a47da5",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_97040d4b",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "Is it possible to accommodate this via inject framework ?",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 65,
+        "endChar": 76
+      },
+      "revId": "049b72d10d610a89efe2e12d0cce1d5814a47da5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
