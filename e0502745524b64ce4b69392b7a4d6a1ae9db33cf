@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_261abb17",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T09:16:34Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "e0502745524b64ce4b69392b7a4d6a1ae9db33cf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
