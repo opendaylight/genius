@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_ca90eb50",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "please update it with short problem description and solution proposed.",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_008575ac",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 3
@@ -14,6 +31,23 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_aaac87a1",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_aaac87a1",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "check generated doc, \u003d\u003d\u003d should align with title",
       "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -44,6 +78,29 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_cac58b3e",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "captitalize all abbreviations in the doc",
+      "range": {
+        "startLine": 12,
+        "startChar": 57,
+        "endLine": 12,
+        "endChar": 59
+      },
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_408f7dcc",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 3
@@ -56,6 +113,23 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_eaca0f4e",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_eaca0f4e",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "explain first WHY is this feature required, followed by HOW it is achieved",
       "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -80,6 +154,40 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_4a8cfb35",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "100 chars per line everywhere is advised for easier review, even though RST generation would wrap it on its own.",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2a77f73b",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "can be made a numbered list.\n#.\n#.",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_80c045e1",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 3
@@ -92,6 +200,23 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_6a90df43",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6a90df43",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "put this in out of scope section",
       "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -116,6 +241,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_8a9d435c",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 194,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "detail the REST APIs inputs and outputs in the usage for all the combinations.\nUse this and REST API sections accordingly to specify these..",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_e0b79184",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 3
@@ -128,6 +270,23 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_2aaed785",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2aaed785",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "indicate it\u0027s a GET call everywhere\nreplace localhost with \u003ccontroller-ip\u003e",
       "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -152,6 +311,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_4aba3bc1",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "check if intended lines are really emphasized here..",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_20b1998f",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 3
@@ -170,6 +346,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_aab127e3",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 269,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "GET..",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_00ac5534",
         "filename": "docs/specs/counter-framework.rst",
         "patchSetId": 3
@@ -182,6 +375,40 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "fafc7978_8ab423d2",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_8ab423d2",
+        "filename": "docs/specs/counter-framework.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 273,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "ditto",
+      "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_0ac4b35d",
+        "filename": "docs/specs/index.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 8584
+      },
+      "writtenOn": "2019-11-11T18:10:40Z",
+      "side": 1,
+      "message": "can we arrange these alphabetically?",
       "revId": "55e0e7c8ff68e7c88e50a3f51808b58936259606",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
