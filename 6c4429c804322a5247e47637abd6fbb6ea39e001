@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_0bc1882e",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/NodeEventListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:31:23Z",
+      "side": 1,
+      "message": "space between the two params",
+      "revId": "6c4429c804322a5247e47637abd6fbb6ea39e001",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6bdd9c14",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:31:23Z",
+      "side": 1,
+      "message": "space between two params",
+      "revId": "6c4429c804322a5247e47637abd6fbb6ea39e001",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4be260d6",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:31:23Z",
+      "side": 1,
+      "message": "space",
+      "revId": "6c4429c804322a5247e47637abd6fbb6ea39e001",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_abe7b4e3",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/alarm/AlarmAgent.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:31:23Z",
+      "side": 1,
+      "message": "space",
+      "revId": "6c4429c804322a5247e47637abd6fbb6ea39e001",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
