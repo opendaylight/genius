@@ -1,0 +1,28 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_d2e5f338",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 4922
+      },
+      "writtenOn": "2017-01-11T09:56:46Z",
+      "side": 1,
+      "message": "Since NodeEvenListener is a generic class, not able to inject instance ref via blueprint",
+      "parentUuid": "1a622d24_97040d4b",
+      "range": {
+        "startLine": 65,
+        "startChar": 8,
+        "endLine": 65,
+        "endChar": 76
+      },
+      "revId": "049b72d10d610a89efe2e12d0cce1d5814a47da5",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
