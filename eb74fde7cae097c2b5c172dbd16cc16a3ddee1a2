@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_952349a6",
+        "filename": "itm/itm-api/src/main/yang/itm.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-10T15:29:29Z",
+      "side": 1,
+      "message": "this change will break the compilation in netvirt (E.g. TransportZoneNotificationUtil). make sure that you update the code according to your changes",
+      "revId": "eb74fde7cae097c2b5c172dbd16cc16a3ddee1a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f53b9dce",
+        "filename": "itm/itm-api/src/main/yang/itm.yang",
+        "patchSetId": 1
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-10T15:29:29Z",
+      "side": 1,
+      "message": "where is this list being used?",
+      "revId": "eb74fde7cae097c2b5c172dbd16cc16a3ddee1a2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
