@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_9c7fdfdf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-19T12:44:40Z",
+      "side": 1,
+      "message": "refactor:- this functionality is repeated in add method.You can extract a method out of it",
+      "revId": "c5801b932872c43b0ce10393e9e13398d9a4329a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_dc5cb77f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-19T12:44:40Z",
+      "side": 1,
+      "message": "spaces before and after \"\u003e\"",
+      "revId": "c5801b932872c43b0ce10393e9e13398d9a4329a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1c3d8f2b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-19T12:44:40Z",
+      "side": 1,
+      "message": "give new lines after method",
+      "revId": "c5801b932872c43b0ce10393e9e13398d9a4329a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
