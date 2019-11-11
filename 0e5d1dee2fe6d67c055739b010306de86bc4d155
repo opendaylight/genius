@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_6809fd2b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmTepsNotHostedMoveWorker.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2019-11-11T22:10:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_eb806a48",
+      "revId": "0e5d1dee2fe6d67c055739b010306de86bc4d155",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_8b8f3675",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2016-10-16T23:39:28Z",
       "side": 1,
       "message": "Isn\u0027t it enough to pass the Transport zone name ? Should the full TransportZone object be passed ?",
+      "revId": "0e5d1dee2fe6d67c055739b010306de86bc4d155",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2826e5ba",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/TransportZoneListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2019-11-11T22:10:25Z",
+      "side": 1,
+      "message": "We are using Transport zone name and tunnel type in the following method, if we will pass TZ name then we have to pass tunnel type also as a parameter.",
+      "parentUuid": "7a6b29fe_8b8f3675",
       "revId": "0e5d1dee2fe6d67c055739b010306de86bc4d155",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
