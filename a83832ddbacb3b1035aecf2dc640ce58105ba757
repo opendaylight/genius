@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_896b0db6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmInternalTunnelDeleteWorker.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-02T16:16:54Z",
+      "side": 1,
+      "message": "you can (and should) just use new ArrayList\u003c\u003e",
+      "revId": "a83832ddbacb3b1035aecf2dc640ce58105ba757",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e9a1f9f8",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-02T16:16:54Z",
+      "side": 1,
+      "message": "try to avoid this Thread.sleep() here, see also discussion in https://git.opendaylight.org/gerrit/#/c/50371/, or post on list if unclear, and I\u0027ll try to help",
+      "revId": "a83832ddbacb3b1035aecf2dc640ce58105ba757",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_49f3e509",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-02T16:19:01Z",
+      "side": 1,
+      "message": "again",
+      "revId": "a83832ddbacb3b1035aecf2dc640ce58105ba757",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_29f661f9",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTunnelAddDelTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 228,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-02T16:19:01Z",
+      "side": 1,
+      "message": "good",
+      "revId": "a83832ddbacb3b1035aecf2dc640ce58105ba757",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
