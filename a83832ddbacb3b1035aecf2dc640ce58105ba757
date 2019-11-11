@@ -36,6 +36,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_09ed5d26",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestUtil.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-02T16:19:01Z",
+      "side": 1,
+      "message": "don\u0027t do this. If you must, use the org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker BUT I now realize that it\u0027s better not to, and just pass the Future back, so the caller can decide if he wants to async wait for it",
+      "revId": "a83832ddbacb3b1035aecf2dc640ce58105ba757",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_49f3e509",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestUtil.java",
         "patchSetId": 3
