@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_aa00bb34",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-11T23:06:22Z",
+      "side": 1,
+      "message": "make this final",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0a91eff0",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-11T23:06:22Z",
+      "side": 1,
+      "message": "this looks like its missing @Inject (as it\u0027s @Singleton)",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ea8d93d4",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-01-11T23:06:22Z",
+      "side": 1,
+      "message": "please use org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker\u0027s syncReadOptional() instead of further copy/pasting this prevalent, but wrong, method.. The ReadFailedException has to be propagated to callers.  (PS: Not sure what this has to do with BP migration; best to raise small independent Gerrits.)",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
