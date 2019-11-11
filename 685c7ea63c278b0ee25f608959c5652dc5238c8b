@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_ec588158",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 6233
+      },
+      "writtenOn": "2017-12-14T20:52:15Z",
+      "side": 1,
+      "message": "keeping close() right after start() will help readability, \nas earlier pointed out by Michael in :\nhttps://git.opendaylight.org/gerrit/#/c/47426/6/resourcemanager/resourcemanager-impl/src/main/java/org/opendaylight/genius/resourcemanager/ResourceManager.java",
+      "range": {
+        "startLine": 88,
+        "startChar": 3,
+        "endLine": 92,
+        "endChar": 5
+      },
+      "revId": "685c7ea63c278b0ee25f608959c5652dc5238c8b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
