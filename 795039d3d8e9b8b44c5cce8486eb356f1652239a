@@ -1,0 +1,344 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_fd2874e3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 624,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "are you sure you want to do this? You\u0027re changing an async behaviour to a sync one here, in production code, for testing. This could have performance impacts.  You don\u0027t have to do this - just keep it async, you can even still have it add the ItmUtils.DEFAULT_CALLBACK as it is - but return the Future.  That way in your Test (not in the production code), you can do tepCommandHelper.deleteOnCommit().get(), to await it.. I would probably change the MDSALDataStoreUtils.asyncRemove to return the Future.",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3d1f9cb8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bdfd4c70",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 844,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "no no no.. ;-)",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fdfa3473",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 862,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "no no no.. ;-)",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_9d5cc87e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "this method should be called asyncUpdate, not sync - it\u0027s NOT synchronous!  Also, this is a general not ITM sepcific utility, which would fit nicely into SingleTransactionDataBroker .. do you want to contribute it there instead of here?",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5d7f00e0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "rename futures -\u003e future ?",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_fd56b45a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7d63e441",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "this is wrong - it should return an already completed Future in this case (because there is nothing to do)",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bd826cc5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 225,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "rename futures -\u003e future ?",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dd513063",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "remove this newline",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7dcac41b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "remove this newline",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3dfb1c48",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "when you use this pattern, you typically put a fail(\"expected Exception\"); into at the end of the try, before the catch",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7d98041c",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "it would be better to catch a more specific type than Exception here - I believe you would want to use TepException instead here",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ddff7032",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "why + ItmTestConstants.NEW_LINE in errorOutput and the assert? That\u0027s confusing, just remove it - it will do exactly the same thing..",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dd8650b8",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmCliTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 145,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "same comments as above here and in all following tests",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_3da95c24",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestConstants.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "are you sure you need this? As a test constant?",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bdb54c7f",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestConstants.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "all of these here in ItmTestConstants doesn\u0027t seem right... you probably should define these in ITMConstants (or if you don\u0027t like that because its in API, which isn\u0027t so nice, then intro a new ItmImplConstants?), and then use it in both the test and the TepCommandHelper, where I believe you copy/pasted this from?  Copy/paste is bad, always.",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7d66442b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "future not futures, and you could just return tx.submit():",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5d69c0f7",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTestUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "future not futures, and you could just return tx.submit():",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bd6c2c09",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTunnelAddDelTest.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-08T13:02:55Z",
+      "side": 1,
+      "message": "why do you have spaces (e.g. \" ;\") everywhere here?  (If you use Eclipse, you can just mark those lines and Ctrl-Shift-F for it to format it for you.)",
+      "revId": "795039d3d8e9b8b44c5cce8486eb356f1652239a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
