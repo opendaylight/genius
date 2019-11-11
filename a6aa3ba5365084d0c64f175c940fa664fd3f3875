@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_f161e8a9",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 7780
+      },
+      "writtenOn": "2019-11-11T22:33:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_ca037740",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_aa00bb34",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
         "patchSetId": 11
@@ -30,6 +48,24 @@
       "writtenOn": "2017-01-11T23:06:22Z",
       "side": 1,
       "message": "make this final",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_d164acba",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/FcapsProvider.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 7780
+      },
+      "writtenOn": "2019-11-11T22:33:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_aa00bb34",
       "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_315880f9",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 7780
+      },
+      "writtenOn": "2019-11-11T22:33:43Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_0a91eff0",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_ea8d93d4",
         "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
         "patchSetId": 11
@@ -64,6 +118,24 @@
       "writtenOn": "2017-01-11T23:06:22Z",
       "side": 1,
       "message": "please use org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker\u0027s syncReadOptional() instead of further copy/pasting this prevalent, but wrong, method.. The ReadFailedException has to be propagated to callers.  (PS: Not sure what this has to do with BP migration; best to raise small independent Gerrits.)",
+      "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_115bc4f6",
+        "filename": "fcapsapplication/fcapsapplication-impl/src/main/java/org/opendaylight/genius/fcapsapp/performancecounter/FlowNodeConnectorInventoryTranslatorImpl.java",
+        "patchSetId": 11
+      },
+      "lineNbr": 221,
+      "author": {
+        "id": 7780
+      },
+      "writtenOn": "2019-11-11T22:33:43Z",
+      "side": 1,
+      "message": "A seperate review will be raised",
+      "parentUuid": "1a622d24_ea8d93d4",
       "revId": "a6aa3ba5365084d0c64f175c940fa664fd3f3875",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
