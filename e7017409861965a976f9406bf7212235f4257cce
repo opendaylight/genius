@@ -20,6 +20,23 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_44ab18d6",
+        "filename": "idmanager/idmanager-impl/pom.xml",
+        "patchSetId": 4
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7865
+      },
+      "writtenOn": "2019-11-12T23:22:49Z",
+      "side": 1,
+      "message": "It would be useful to make this property-based ${daexim.version} so that version-bumping / changing would be easier",
+      "revId": "e7017409861965a976f9406bf7212235f4257cce",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_36a2b6ae",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 4
