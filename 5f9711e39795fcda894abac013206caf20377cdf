@@ -17,6 +17,23 @@
       "revId": "5f9711e39795fcda894abac013206caf20377cdf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_266e1797",
+        "filename": "idmanager/idmanager-shell/src/main/java/org/opendaylight/genius/idmanager/shell/IdManagerCacheCli.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 7865
+      },
+      "writtenOn": "2019-11-12T23:22:49Z",
+      "side": 1,
+      "message": "CacheUtil.getCache and iterating  - should this be synchronized ?",
+      "revId": "5f9711e39795fcda894abac013206caf20377cdf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
