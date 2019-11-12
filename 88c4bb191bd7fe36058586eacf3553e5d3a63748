@@ -38,6 +38,23 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_e1ec1192",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 7865
+      },
+      "writtenOn": "2019-11-12T23:22:49Z",
+      "side": 1,
+      "message": "Are we sure we want to do this ? This can eat up into system level FJ Pool. What is the typical size of idPoolList and how frequent is the call towards populateCache ?",
+      "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2108c92c",
         "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
         "patchSetId": 2
@@ -68,6 +85,23 @@
       "side": 1,
       "message": "I don\u0027t think it is required because deleteIdPool rpc is not invoked so often and it is just matter of deleting child pools from local cache and config DS.",
       "parentUuid": "7a6b29fe_2108c92c",
+      "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_41018538",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 7865
+      },
+      "writtenOn": "2019-11-12T23:22:49Z",
+      "side": 1,
+      "message": "Same question as above. There are many scenarios in which parallelstream can actually hurt\nhttps://dzone.com/articles/think-twice-using-java-8",
       "revId": "88c4bb191bd7fe36058586eacf3553e5d3a63748",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
