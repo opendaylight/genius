@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_01e3ed05",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/helper/ITMHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-04-18T00:59:44Z",
+      "side": 1,
+      "message": "Why is this API required? \n1. So far,other modules only use itm RPC, with this you are bringing in itm-api dependencies.\n2. Applications will listen in tunnel_state has the ip address information in the DCN, why would they need to fetch this?\n3. Multiple end points per DPN can be configured. So this cannot return single ipaddress. Anyways, with above point I don\u0027t see a need for this. Please clarify.",
+      "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
