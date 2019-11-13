@@ -16,6 +16,24 @@
       "revId": "406bfd98fab929d4d90cec910687fc0617959553",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4ca3614f",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done\nremoved TOR",
+      "parentUuid": "da01753e_51d5beb7",
+      "revId": "406bfd98fab929d4d90cec910687fc0617959553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
