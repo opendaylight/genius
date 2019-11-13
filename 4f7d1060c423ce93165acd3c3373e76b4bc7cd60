@@ -76,6 +76,80 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_18838357",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T16:40:24Z",
+      "side": 1,
+      "message": "Q: does this have to be public, or could be private?",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_98af73e3",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T16:40:24Z",
+      "side": 1,
+      "message": "buildIId() instead of buildIid(), NB upper/lower case i, would be a clearer for InstanceIDentifier ?",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f8a02ff6",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T16:40:24Z",
+      "side": 1,
+      "message": "MDSALUtil is deprecated and should not be used in new code (or was this copy/pasted from anywhere?), could you terribly mind using the new SingleTransactionDataBroker instead now?",
+      "range": {
+        "startLine": 44,
+        "startChar": 15,
+        "endLine": 44,
+        "endChar": 24
+      },
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_78ac3fee",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-16T16:40:24Z",
+      "side": 1,
+      "message": "TODO should ideally either be actioned or removed before merge, if that\u0027s possible?",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_d8b9eb2f",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
         "patchSetId": 8
