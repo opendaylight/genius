@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "da01753e_e6acffa2",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/helper/ITMHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-04-17T17:00:30Z",
+      "side": 1,
+      "message": "there is no API or RPC in ITM for this? if not, can\u0027t this be added to any existing utils class? also read() utility can be inside mdsalutil-api module..and can\u0027t we do without this illegal catch?",
+      "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_01e3ed05",
         "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/helper/ITMHelper.java",
         "patchSetId": 1
