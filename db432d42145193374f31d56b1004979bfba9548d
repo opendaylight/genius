@@ -2,6 +2,303 @@
   "comments": [
     {
       "key": {
+        "uuid": "ba1f61a0_b6758d65",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "No we cannot have a package \"genius.testutils\" in a teststubs artefact, given that we already have a testutils artefact which already uses this package.  But before you just rename it, the real question here is why this cannot just go into the existing testutils - something doesn\u0027t seem right here, I assume it\u0027s related to the suspected \"cyclic dependency\" you alluded to in c/62894, and I think we should fix that, instead of introducing a new project artefact...",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_041d07be",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK; it\u0027s now in the (existing) testutils instead of the (new) teststubs.",
+      "parentUuid": "ba1f61a0_951cbc6b",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d6e1212b",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "this class looks sufficiently different from (much simpler than, incl. e.g. does not use DataBroker) the \"real\" org.opendaylight.genius.idmanager.IdManager that I think it has value.\n\nBUT it\u0027s also a bit similar to the existing org.opendaylight.netvirt.aclservice.tests.AclServiceTestModule.TestIdManagerService.  In order to avoid the proliferation of too many similar test stubs, would you be willing to make this class be able to be a replacement for that existing one? I think all you are missing (I\u0027m not sure) may be an ability to initialize this from a Map like that org.opendaylight.netvirt.aclservice.tests.IdHelper ? And then you could raise a change (in netvirt) to drop that class and make it use this?\n\nAlso, would you be willing to have a unit test of this test stub here? In an ideal world, it would be cool if (at least parts of) the existing IdManagerTest could be run against both the real impl as well as this stub.  Note that in https://git.opendaylight.org/gerrit/#/c/61951/ the IdManagerTest is being rewritten - and once that is in, it should be easier to get this class tested by that new test as well (because it\u0027s Guice-based, so you can just replace the binding for the real implementation with your stub here).",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_647963fc",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK - still no test coverage for this new stub?",
+      "parentUuid": "ba1f61a0_d529148b",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b6c74d95",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "why? No need for empty constructors IMHO.",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_8488d7e8",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK, done.",
+      "parentUuid": "ba1f61a0_b6c74d95",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_76caf5a1",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "synchronized also, like you made the other methods?",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_16d7394c",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "synchronized also, like you made the other methods?",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_0474e7fb",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "synchronized also, like you made the other methods?",
+      "parentUuid": "ba1f61a0_16d7394c",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_96f7a9d2",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "Did you perhaps mean for this method to be private instead of public?\n\nIf must really be public (but I doubt it.. why would it return Long; a using @Test should have no interest in this?), assuming this non-Override public method is intended to be used by tests (is it?), then how about having a new interface TestableIdManagerService extends IdManagerService where you define this method on?  Then in tests using this you can bind that to this impl and @Inject TestableIdManagerService, which is clearer to read than IdManagerTestImpl, IMHO.",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_e453936a",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK, done.",
+      "parentUuid": "ba1f61a0_96f7a9d2",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_f6f1c595",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "this class is weird - isn\u0027t there a YANG gen. DataObject which already has all this? (If you\u0027re just trying to save on the respective *Builder, then just write a utility which takes the 7 params which your constructor below takes, and create the respective YANG DataObject from it?)\n\nBut if you remove InterfaceMgrTestImpl as suggested, then you\u0027ll remove this one as well anyway.",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_24fc8b3e",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK, can you reply to this instead of ignoring it and explain why this is really needed?",
+      "parentUuid": "ba1f61a0_f6f1c595",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_362fddf8",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "private x8 ? ;)",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_6495e3e3",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK, not done",
+      "parentUuid": "ba1f61a0_362fddf8",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_5638913c",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "this pattern in particular looks very strange - data value objects normally do not have references to services?",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_449a5f15",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK, done.",
+      "parentUuid": "ba1f61a0_5638913c",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_df2456c8",
         "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
         "patchSetId": 1
@@ -13,6 +310,163 @@
       "writtenOn": "2017-10-04T16:11:32Z",
       "side": 1,
       "message": "Do we need such a stub class, since component tests can bind directly to interfacemanager implementation?",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d6700142",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "This class somehow doesn\u0027t \"feel\" right to me.. it\u0027s a weird mix, seems to partly inspired by / copy pasted from (?) the existing org.opendaylight.genius.testutils.TestInterfaceManager, which it would have to be integrated with (we can\u0027t have 3 implementations of IInterfaceManager in genius; it\u0027s very confusing which is for what), YET it also uses a DataBroker like a real impl - so is this really still a Test Stub?  There are some method implementations missing below (where you return null), and it\u0027s already ca. 1/3 the size of the \"real\" org.opendaylight.genius.interfacemanager.InterfacemgrProvider implentation... won\u0027t this just end up looking very similar soon?  Don\u0027t you just want to bind the \"real\" InterfacemgrProvider in your component test (in c/62894) where you need this?  If the concern is that that impl needs a number of other services, then why not just e.g. subclass that one, and provide suitable stub implementations for its dependant services which you do not care about (I don\u0027t know if you do; that\u0027s for you to decide).",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_2493ebfb",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK, I\u0027m not clear about the conclusion here.. the comment above still does not convince me why this entire class is needed... on the contrary, when you see \"things are copied from actual impl is so that the flows/groups look like actual flows when we run odl.\" this seems to indicate to me that what you really want in your test is the real InterfacemgrProvider, so -again- why not just bind() that in the your Guice *TestModule?\n\nBUT in the current version of the change this class seems to have been removed?  But you\u0027ve just worked was was here into TestInterfaceManager?",
+      "parentUuid": "ba1f61a0_d577549e",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_36ba3dc1",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "never public (x2)",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a46d1b07",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK, done (in TestInterfaceManager)",
+      "parentUuid": "ba1f61a0_36ba3dc1",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_76e795e4",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "remove, because of newInstance with Mockito via MoreAnswers.realOrException will throw an UnstubbedMethodException)",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_047ea7ae",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK, as no longer present in TestInterfaceManager",
+      "parentUuid": "ba1f61a0_76e795e4",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_56ea51ac",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "remove, as above",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_644a0385",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "OK, as no longer present in TestInterfaceManager",
+      "parentUuid": "ba1f61a0_56ea51ac",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_b6d46dec",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-09-20T15:23:52Z",
+      "side": 1,
+      "message": "remove, as above",
       "revId": "db432d42145193374f31d56b1004979bfba9548d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
