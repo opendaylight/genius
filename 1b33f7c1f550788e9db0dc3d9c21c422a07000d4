@@ -33,6 +33,24 @@
       "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_e184e9d5",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/helper/ITMHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2019-09-17T20:22:31Z",
+      "side": 1,
+      "message": "1. Agree it can be made as an RPC.\n2. Instead of forcing applications to listen to tunnel state and infer the tep ip of dpn\u0027s and maintain them , this api can be used.\n3. Agree, may be this should return list of ip addr instead of single ip addr.",
+      "parentUuid": "da01753e_01e3ed05",
+      "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
