@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "ba1f61a0_951cbc6b",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2019-09-17T20:22:31Z",
+      "side": 1,
+      "message": "Yes Michael this is done to avoid cyclic dependency.\nLock manager depends on testutils.\nand also interface manger depends on testutils.",
+      "parentUuid": "ba1f61a0_b6758d65",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ba1f61a0_d6e1212b",
         "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
         "patchSetId": 1
@@ -66,6 +84,24 @@
       "side": 1,
       "message": "NOK - still no test coverage for this new stub?",
       "parentUuid": "ba1f61a0_d529148b",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d529148b",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2019-09-17T20:22:31Z",
+      "side": 1,
+      "message": "Yes This is a light implementation of id manager without the mdsal calls.\nThe actual depends on some other services like lock manager etc.\nWe better replace AclServiceTestModule.TestIdManagerService with this one.\nYes we will put some of the IdmanagerTests against this.",
+      "parentUuid": "ba1f61a0_d6e1212b",
       "revId": "db432d42145193374f31d56b1004979bfba9548d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -345,6 +381,24 @@
       "side": 1,
       "message": "NOK, I\u0027m not clear about the conclusion here.. the comment above still does not convince me why this entire class is needed... on the contrary, when you see \"things are copied from actual impl is so that the flows/groups look like actual flows when we run odl.\" this seems to indicate to me that what you really want in your test is the real InterfacemgrProvider, so -again- why not just bind() that in the your Guice *TestModule?\n\nBUT in the current version of the change this class seems to have been removed?  But you\u0027ve just worked was was here into TestInterfaceManager?",
       "parentUuid": "ba1f61a0_d577549e",
+      "revId": "db432d42145193374f31d56b1004979bfba9548d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ba1f61a0_d577549e",
+        "filename": "commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7785
+      },
+      "writtenOn": "2019-09-17T20:22:31Z",
+      "side": 1,
+      "message": "This is trying to stub the most heavily used methods of the interface manager from netvirt like getInterfaceInfo and getEgressActions. \nThe reason those things are copied from actual impl is so that the flows/groups look like actual flows when we run odl.\nSubclassing is an option , but that may be too much of work is what we felt as we not know all the parts of interfacemanager.\nThe idea is to get a more real life behavior from getInterfaceInfo and getEgressActions methods.\n\nIf faseela or some one from genius can take up subclassing or help with that would be great.",
+      "parentUuid": "ba1f61a0_d6700142",
       "revId": "db432d42145193374f31d56b1004979bfba9548d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
