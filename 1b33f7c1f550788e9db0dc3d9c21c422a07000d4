@@ -51,6 +51,42 @@
       "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_7c08a091",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/helper/ITMHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_e184e9d5",
+      "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_9c05847c",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/helper/ITMHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da01753e_01e3ed05",
+      "revId": "1b33f7c1f550788e9db0dc3d9c21c422a07000d4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
