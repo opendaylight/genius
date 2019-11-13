@@ -1,0 +1,344 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a245df4_24776b04",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/IdManagerTestImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "synchronized also, like you made the other methods?\n\nI understand it\u0027s not strictly needed (because it does not access the internal data structures, just return success), but it looks more consistent, and is safer in case it ever gets changed/extended in the future?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_df129657",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceActionsHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK - what is this supposed to be good for? (It\u0027s not used anywhere..)",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_5f26a6bb",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceActionsHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "public or private, that is the question, asked Shakespeare..",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3f2bf283",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceActionsHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "public or private, that is the question, asked Shakespeare..",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9f201e9d",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceActionsHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "public or private, that is the question, asked Shakespeare..",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_ff303aea",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceDetails.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "final on all of these fields?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_3f52d213",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceIidHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "InterfaceIIdHelper, with IId instead if Iid",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_7f256aaa",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceIidHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "InterfaceIidHelper not InterfaceMgrTestHelper (getLogger arg)",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9f577e02",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceIidHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "where is all this code from - copy/pasted from interfacemanager?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_64bcc36d",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK - what is this supposed to be good for? (It\u0027s not used anywhere..)",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_24580b56",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "but this private method isn\u0027t used anywhere - what are you doing here?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_4436df04",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "so.. this just delegate to the TestInterfaceManager.. what\u0027s the point?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_8440d757",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "empty - why?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a43b5bea",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "so.. this just delegate to the TestInterfaceManager.. what\u0027s the point?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_e42433c8",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "empty - why?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_bf3d22be",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceStateHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "where is all this code from - copy/pasted from interfacemanager?",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_9f6e5ec8",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/ItmRpcTestImpl.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "probably a good idea to make this and all other implemented methods here \"synchronized\" (because even if you use ConcurrentHashMap, you modify it twice)",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_44689ff5",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "NOK, see discussion in https://git.opendaylight.org/gerrit/#/c/63263/1/commons/teststubs/src/main/java/org/opendaylight/genius/testutils/InterfaceMgrTestImpl.java@53 ...",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_e476f3d7",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "never, ever, return null - it\u0027s a Cardinal Sin.  \n\nThrow a clear Exception instead, if you cannot provide return value.",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_c4fe4f38",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TunnelInterfaceDetails.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-10-04T13:00:32Z",
+      "side": 1,
+      "message": "private final all of this",
+      "revId": "17a1ed504d7158dee1b5c935530d3f24ad73bf82",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
