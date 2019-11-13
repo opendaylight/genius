@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da01753e_51d5beb7",
+        "filename": "itm/itm-api/src/main/yang/itm-rpc.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2017-04-19T10:31:45Z",
+      "side": 1,
+      "message": "does TOR make sense here ?",
+      "revId": "406bfd98fab929d4d90cec910687fc0617959553",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
