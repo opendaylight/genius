@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_092df746",
+        "filename": "commons/testutils/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_b88d177e",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_f8ee6f21",
         "filename": "commons/testutils/pom.xml",
         "patchSetId": 8
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_e93183a3",
+        "filename": "commons/testutils/pom.xml",
+        "patchSetId": 8
+      },
+      "lineNbr": 99,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_f8ee6f21",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_587dfb6d",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
         "patchSetId": 8
@@ -47,6 +83,24 @@
       "writtenOn": "2017-10-16T16:40:24Z",
       "side": 1,
       "message": "I\u0027m thinking that we should probably structure the genius.testuils package a bit before it will becoming too and messeed up, so just for clarity would you mind if I suggested we put this and what goes with it into a new sub-package, I propose testutils.interfacemanager ?",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_61092731",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_587dfb6d",
       "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -76,6 +130,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_a1031f0e",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_b8b6b73b",
+      "range": {
+        "startLine": 31,
+        "startChar": 9,
+        "endLine": 31,
+        "endChar": 10
+      },
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_18838357",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
         "patchSetId": 8
@@ -93,6 +171,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_89956742",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done -- Changed to rpivate",
+      "parentUuid": "9a245df4_18838357",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_98af73e3",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
         "patchSetId": 8
@@ -104,6 +200,24 @@
       "writtenOn": "2017-10-16T16:40:24Z",
       "side": 1,
       "message": "buildIId() instead of buildIid(), NB upper/lower case i, would be a clearer for InstanceIDentifier ?",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_a99cab6a",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done -- Changed to Caps",
+      "parentUuid": "9a245df4_98af73e3",
       "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -133,6 +247,30 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_c1061320",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_f8a02ff6",
+      "range": {
+        "startLine": 44,
+        "startChar": 15,
+        "endLine": 44,
+        "endChar": 24
+      },
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_78ac3fee",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
         "patchSetId": 8
@@ -144,6 +282,24 @@
       "writtenOn": "2017-10-16T16:40:24Z",
       "side": 1,
       "message": "TODO should ideally either be actioned or removed before merge, if that\u0027s possible?",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_2988bb1e",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_78ac3fee",
       "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -167,6 +323,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_49836f04",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_d8b9eb2f",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_3882c74f",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceStateHelper.java",
         "patchSetId": 8
@@ -178,6 +352,24 @@
       "writtenOn": "2017-10-16T16:40:24Z",
       "side": 1,
       "message": "testutils.interfacemanager",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_f4ff93ff",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceStateHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_3882c74f",
       "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -201,6 +393,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_d4040f17",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/InterfaceStateHelper.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_f8878f5f",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_98965393",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/ItmRpcTestImpl.java",
         "patchSetId": 8
@@ -218,6 +428,24 @@
     },
     {
       "key": {
+        "uuid": "9a245df4_340acb21",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/ItmRpcTestImpl.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_98965393",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a245df4_78939fa3",
         "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
         "patchSetId": 8
@@ -229,6 +457,24 @@
       "writtenOn": "2017-10-16T16:40:24Z",
       "side": 1,
       "message": "as this is already in root testutils, let\u0027s just leave it there, and then later move it into testutils.interfacemanager",
+      "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a245df4_140fc731",
+        "filename": "commons/testutils/src/main/java/org/opendaylight/genius/testutils/TestInterfaceManager.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 7902
+      },
+      "writtenOn": "2019-11-13T19:19:56Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9a245df4_78939fa3",
       "revId": "4f7d1060c423ce93165acd3c3373e76b4bc7cd60",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
