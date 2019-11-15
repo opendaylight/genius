@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_69bcd4dc",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "as part of table\u003d0 actions, ApplyActionInstrcution have two actions now(popvlan,load). So, setting actionkey\u003d0 for popvlan and actionkey\u003d1 for load action.\n\nAfter these action, metadata and goto instruction are added which doesn\u0027t depend on actionkey.",
+      "parentUuid": "7a6b29fe_75f02d67",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_55f53155",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 2
@@ -72,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_89b7b0f4",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Since, we are adding two instructions(portvlan and load) as part of ApplyActionInstruction, it was required to set with order for them.  Without this, we used to see issues like only popvlan action is added with missing load action. After adding setOrder, two actions where added to flow properly.",
+      "parentUuid": "7a6b29fe_55f53155",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_b5e645ae",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 2
@@ -83,6 +119,24 @@
       "writtenOn": "2016-09-12T04:13:27Z",
       "side": 1,
       "message": "remove this debug message.",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e9cf447d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 633,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "7a6b29fe_b5e645ae",
       "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
