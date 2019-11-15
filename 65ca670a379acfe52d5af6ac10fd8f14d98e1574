@@ -1,0 +1,263 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_a3f539ee",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "Constants should be all caps.",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 1
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_e3da9176",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "remove this comment. what is CR-100?",
+      "range": {
+        "startLine": 117,
+        "startChar": 12,
+        "endLine": 117,
+        "endChar": 32
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_43e6e544",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "What is purpose of this file and why is it using DS reads?",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_238ac963",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "We don\u0027t need CDTCL to be cluster aware application, it depends on what Listener does. Plugin code is already cluster aware. If listener is only going get notification and write data to MDSAL, we dont really need CDTCL. Only one node will get notification and populate datastore, doesn\u0027t matter who does it. However in this case it should be used for performance reasons.",
+      "parentUuid": "7a6b29fe_521875d2",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c35795c8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "Please revisit all the log messages.",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_63d68150",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "should be debug. every notification should\u0027t generate info log.",
+      "range": {
+        "startLine": 79,
+        "startChar": 12,
+        "endLine": 79,
+        "endChar": 16
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c3c955ad",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "debug",
+      "range": {
+        "startLine": 82,
+        "startChar": 12,
+        "endLine": 82,
+        "endChar": 16
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_03c7cd96",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "debug",
+      "range": {
+        "startLine": 85,
+        "startChar": 16,
+        "endLine": 85,
+        "endChar": 20
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_a3cc19bc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "debug",
+      "range": {
+        "startLine": 94,
+        "startChar": 24,
+        "endLine": 94,
+        "endChar": 28
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_435425c9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 331,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "Does this mean user configuration error or not? If it is not, should be debug. If it is, change the msg. Nothing to do is misleading to user.",
+      "range": {
+        "startLine": 331,
+        "startChar": 20,
+        "endLine": 331,
+        "endChar": 25
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_c3403509",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "debug",
+      "range": {
+        "startLine": 336,
+        "startChar": 16,
+        "endLine": 336,
+        "endChar": 20
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6364c1b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-09-26T13:46:33Z",
+      "side": 1,
+      "message": "errormsg should be meaningful to user/admin. Map is internal implementation. Should bedebug or change the msg.",
+      "range": {
+        "startLine": 361,
+        "startChar": 16,
+        "endLine": 361,
+        "endChar": 21
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
