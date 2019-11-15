@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_cd65f3e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 773,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "don\u0027t do this.. it\u0027s better to do this asynchronously, e.g. in the deleteTransportZoneFromConfigDS() below just do the delete and return the Future instead of void.  Alternatively, use the existing syncDelete() helper from the SingleTransactionDataBroker util, and propagate the TransactionCommitFailedException and handle it in the caller",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cd9333a1",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "no no no.. in a test, don\u0027t do any thing of this, you can just let the exception propagate, because your @Test method \"throws Exception\" anyway",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2d8f5f76",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "as above, and same everywhere else below, please..",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_4def431e",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 709,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6decc72a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 729,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "I thought you were going to either activate or remove this, as per discussion on previous change sets ?!",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6d3a079a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "make this return Optional\u003cItmConfig\u003e if you want to support that this sometimes will not find an ItmConfig (and make the calling code handle the missing Optional, not just blindly get() it",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_edc6f798",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "no, never catch Exception.. you could use checkedGet() and and catch ReadFailedException, or use get() and multi catch with | the 3 exceptions.  BUT instead of doing this yourself, use one of the syncRead.. methods from SingleTransactionDataBroker please.  The closest one to what you\u0027ve coded out here is syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional, if that\u0027s what you really want.. but are you sure? syncReadOptional() is better. syncRead if you are sure the entry must exist.",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_cdc17381",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "nope",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_2dbd9f02",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-09T15:45:06Z",
+      "side": 1,
+      "message": "no, never return null",
+      "revId": "ea505fb3a8de3aedd65757f28774c7b221bed157",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
