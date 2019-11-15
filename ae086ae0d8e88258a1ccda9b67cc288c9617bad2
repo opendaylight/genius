@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_0dc62968",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/OvsdbTepAddConfigHelper.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-23T09:16:58Z",
+      "side": 1,
+      "message": "It will be good to use the dummy port name from ITMConstants",
+      "revId": "ae086ae0d8e88258a1ccda9b67cc288c9617bad2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
