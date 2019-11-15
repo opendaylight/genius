@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_2b6422e4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-10-16T14:55:21Z",
+      "side": 1,
+      "message": "Why is this class named ListenerUtils - it has helper methods for the OvsDBTepAddWorker and OvsDBTepRemove Worker. Its more appropriate to place under confighelpers package than under listeners.",
+      "revId": "ab748f8794ded61168277f0fc99f851c8966084c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6bb57a30",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-10-16T14:55:21Z",
+      "side": 1,
+      "message": "Is this possible ? Isn\u0027t default transport zone created initially ? Is it ever deleted ?",
+      "revId": "ab748f8794ded61168277f0fc99f851c8966084c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cb812e4f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-10-16T14:55:21Z",
+      "side": 1,
+      "message": "Can we not re-use the existing methods to add / delete Teps  ?",
+      "revId": "ab748f8794ded61168277f0fc99f851c8966084c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
