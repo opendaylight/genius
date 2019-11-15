@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_cbcdd05f",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:46:13Z",
+      "side": 1,
+      "message": "there is a topic branch mentioned here, however the patch is not raised on that topic branch",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0bd8681c",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:46:13Z",
+      "side": 1,
+      "message": "is not supposed",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4b09c094",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:46:13Z",
+      "side": 1,
+      "message": "transport zone",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_abfe9469",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:46:13Z",
+      "side": 1,
+      "message": "whats the default monitoring interval?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_cbf4b089",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:46:13Z",
+      "side": 1,
+      "message": "interface-manager is also listening for network-topology operational DTCNs, will this cause race conditions?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_2bf2849a",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-12-01T06:46:13Z",
+      "side": 1,
+      "message": "ITM is currently tied to use DPNIds, with this model if bridgeUUID itself is available at ITM, why should we still use dpnId?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
