@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_3c67c7b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-16T12:30:38Z",
+      "side": 1,
+      "message": "should be debug.",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5c6a8381",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-16T12:30:38Z",
+      "side": 1,
+      "message": "This is not needed.",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_95fe4637",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 1142,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-23T07:52:55Z",
+      "side": 1,
+      "message": "Yeah, just make sure to add a FIXME for this. Don\u0027t want to lose track of it.",
+      "parentUuid": "fafc7978_35a15aaa",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_bc12b706",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 1300,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-16T12:30:38Z",
+      "side": 1,
+      "message": "might be better to use ImmutableMap for this.",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
