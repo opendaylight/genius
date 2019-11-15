@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_7b92504c",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
+        "patchSetId": 4
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-21T11:11:47Z",
+      "side": 1,
+      "message": "Nit: change it to split-horizon-enabled",
+      "range": {
+        "startLine": 129,
+        "startChar": 19,
+        "endLine": 129,
+        "endChar": 26
+      },
+      "revId": "9b5ae08e173799fe350c164173932ccff38cd5aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_fb9dc058",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 460,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-10-21T11:11:47Z",
+      "side": 1,
+      "message": "add this logic for tunnel port ingress table flow entry as well.",
+      "revId": "9b5ae08e173799fe350c164173932ccff38cd5aa",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
