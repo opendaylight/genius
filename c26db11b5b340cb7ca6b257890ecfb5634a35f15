@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_efcb1d1c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 16
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-02-12T02:06:32Z",
+      "side": 1,
+      "message": "Need to look at this processing being done in add/remove/update methods in the notification thread. As network topology is a critical datastore, any heavy processing on the notification thread can affect the overall performance.",
+      "revId": "c26db11b5b340cb7ca6b257890ecfb5634a35f15",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
