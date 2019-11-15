@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "fafc7978_8f3966f4",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 6
+      },
+      "lineNbr": 385,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2017-02-28T18:18:25Z",
+      "side": 1,
+      "message": "one concern here is interface-state population will be delayed more, as this method has a datastore read, and several flow writes in the same thread.. However I understand that we have to make this call before interface-state is populated as well :)",
+      "revId": "7f86b78c70d25a6524b4445e049c822527a1947e",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_0f7f36ac",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateAddHelper.java",
         "patchSetId": 6
