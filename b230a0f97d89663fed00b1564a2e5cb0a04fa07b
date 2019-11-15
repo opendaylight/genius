@@ -2,6 +2,76 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a6b29fe_75f02d67",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-12T04:13:27Z",
+      "side": 1,
+      "message": "setting lportTag into action key is dangerous since it leads to a chance of another action is getting overwritten by this one (or) vice versa. So it always better to get actionKey from the caller to maintain its uniqueness.",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_099a806d",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-13T06:24:26Z",
+      "side": 1,
+      "message": "Yes, The scope of action keys are within a instruction.",
+      "parentUuid": "7a6b29fe_69bcd4dc",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_55f53155",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-12T04:13:27Z",
+      "side": 1,
+      "message": "is order required ?",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_498f582a",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 631,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-13T06:24:26Z",
+      "side": 1,
+      "message": "Okay.",
+      "parentUuid": "7a6b29fe_89b7b0f4",
+      "revId": "b230a0f97d89663fed00b1564a2e5cb0a04fa07b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_b5e645ae",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 2
