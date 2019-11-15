@@ -334,6 +334,23 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_feb5ee31",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "since IpPrefix is immutable you can keep a single instance of it in a static member of the class",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_b401e03b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 10
@@ -351,6 +368,57 @@
         "endLine": 11,
         "endChar": 18
       },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_de6752e9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "add super.close() for cleaner behavior of case of unloading the bundle",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_beab76d5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "this trace is already printed as part of the creation of the otherConfig and can be removed",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1eb9ca2e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "this return can be added to \"if (ovsdbOtherConfigObj \u003d\u003d null)\"",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -397,6 +465,74 @@
         "endLine": 111,
         "endChar": 53
       },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_deae32e7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "in case when isTzChanged or isDpnBrChnaged are true you will not get to the remove section",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5e9b42c9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "this parameters are not used.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_fe5e8e11",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "instead of printing in each condition you can add a print of otherConfigInfoObj when you exit the for look",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_5e822253",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbOtherConfigInfo.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-10-27T20:10:59Z",
+      "side": 1,
+      "message": "consider adding a toString() to this class and use it when printing its members",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
