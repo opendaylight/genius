@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_5908a5d9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 1304,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-10T10:26:23Z",
+      "side": 1,
+      "message": "don\u0027t do this.. either propagate the TransactionCommitFailedException and handle it in the caller.  Or if you don\u0027t think that callers can gracefully handle it, then just LOG.error(\"deleteTransportZoneFromConfigDS({}) failed\", tzName, e); here, and don\u0027t rethrow.",
+      "revId": "2a449082896bade7abf6367de776a459acde0457",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_b9c1d181",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-10T10:26:23Z",
+      "side": 1,
+      "message": "this is curious, for a test - what if it\u0027s not present, don\u0027t you want the test to fail then?  So I would either put an Assert.fail into an else block, or just use get() without checking isPresent().  Note that in production code you should NEVER do that, that\u0027s the whole point of Optional, but in test code it\u0027s OK IMHO.",
+      "revId": "2a449082896bade7abf6367de776a459acde0457",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_19bd7d02",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-10T10:26:23Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "2a449082896bade7abf6367de776a459acde0457",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7943e912",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-10T10:26:23Z",
+      "side": 1,
+      "message": "don\u0027t you want to just use syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional instead here?  it does the same thing, but at least logs the problem nicely, which could be useful in production..",
+      "revId": "2a449082896bade7abf6367de776a459acde0457",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
