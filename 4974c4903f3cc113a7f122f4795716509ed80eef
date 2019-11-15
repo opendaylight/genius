@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_6abeffd5",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-12-15T08:32:35Z",
+      "side": 1,
+      "message": "Need to have listener for this and describe the functionality when the flag changes.",
+      "revId": "4974c4903f3cc113a7f122f4795716509ed80eef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_aa2497af",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2016-12-15T08:32:35Z",
+      "side": 1,
+      "message": "You need to specify that ITM tunnels are built for default Transport based on this flag - \"def-tz-auto-tunnel-enabled\".",
+      "revId": "4974c4903f3cc113a7f122f4795716509ed80eef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
