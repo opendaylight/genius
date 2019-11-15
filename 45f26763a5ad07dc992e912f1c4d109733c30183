@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b3712daa",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "we should try to avoid using Thread.sleep() like the plague, and only ressort to it when there really really is no other way, and it\u0027s much much more expensive to change some existing code to find another way.. in this particular case, I don\u0027t know much about ITM, but couldn\u0027t you e.g. block on a Future returned by TepCommandHelper?",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_9307c9c9",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -30,6 +47,23 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "don\u0027t use sleep() - you can avoid this if you return the Future from the deleteTep() and then await it with get(1, SECONDS)",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d30dd1e9",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "as above",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -70,6 +104,41 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_970af887",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-06T10:57:41Z",
+      "side": 1,
+      "message": "I see. You should be able to solve this, if you are interested and motivated, by using the (my) AsyncEventsWaiter infra... see the netvirt aclservice tests for how-to .. Basically, it is (should be, try...) \"just\" @Inject AsyncEventsWaiter asyncEventsWaiter into this Test, and hen instead of Thread.sleep() do asyncEventsWaiter.awaitEventsConsumption(); to wait for OvsdbNodeListener.  But you\u0027ll have to ALSO change OvsdbTestUtil.updateNode() method to return futures and doing get() on it, probably (?) BEFORE you awaitEventsConsumption() for the Listener.  NB In your GuiceRule, you\u0027ll have to use TestableDataTreeChangeListenerModule as well, for the implementation of the AsyncEventsWaiter to be bound.",
+      "parentUuid": "fafc7978_fc57ebc7",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_f3f735d1",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_5301e1ad",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -92,6 +161,23 @@
         "patchSetId": 12
       },
       "lineNbr": 439,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_733345ab",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 456,
       "author": {
         "id": 5867
       },
@@ -217,6 +303,74 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "return wrTx.submit(), so that the test can await get() Future",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_53ef21e9",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "just return tx.submit()",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_33ec1df3",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "don\u0027t do this.  If you must, use the org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker BUT I now realize that it\u0027s better not to, and just pass the Future back, so the caller can decide if he wants to async wait for it",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_93bce9dd",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "as above",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_738fc52a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-03-01T15:57:39Z",
+      "side": 1,
+      "message": "this looks scary - you are returning an object that you submitted into an async Tx (which is still executing as you return) - not a good idea.. either (1) if you don\u0027t have to return this ovsddbNode, then return return transaction.submit();  or (2) don\u0027t do the Tx/put/submit() here, but return the ovsdbNode so that the caller can put it as part of its Tx?",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
