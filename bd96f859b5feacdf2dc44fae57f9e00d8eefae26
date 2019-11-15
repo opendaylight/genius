@@ -25,6 +25,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_a6d5b81d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_bf2dbc48",
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_ff273462",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -96,6 +114,78 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_97f0a4ff",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_ff273462",
+      "range": {
+        "startLine": 64,
+        "startChar": 22,
+        "endLine": 64,
+        "endChar": 26
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f7f11802",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Yes, default is false, but on start-up, default-TZ would be created if and only if \u0027def-tz\u0027enabled\u0027 flag value is true. So, here intention is to describe default-transport-zone creation based on flag.",
+      "parentUuid": "1a622d24_dfafd892",
+      "range": {
+        "startLine": 64,
+        "startChar": 22,
+        "endLine": 64,
+        "endChar": 26
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9732645d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_b7b840c9",
+      "range": {
+        "startLine": 64,
+        "startChar": 22,
+        "endLine": 64,
+        "endChar": 26
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_9f30c09f",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -107,6 +197,30 @@
       "writtenOn": "2017-01-05T06:41:08Z",
       "side": 1,
       "message": "nitpick: whitespace",
+      "range": {
+        "startLine": 70,
+        "startChar": 75,
+        "endLine": 70,
+        "endChar": 76
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_e6db304d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_9f30c09f",
       "range": {
         "startLine": 70,
         "startChar": 75,
@@ -142,6 +256,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_c6e0b4fc",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_df2a382b",
+      "range": {
+        "startLine": 73,
+        "startChar": 82,
+        "endLine": 73,
+        "endChar": 86
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3f21ac4d",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -165,6 +303,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_26e9a8e6",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_3f21ac4d",
+      "range": {
+        "startLine": 78,
+        "startChar": 39,
+        "endLine": 78,
+        "endChar": 44
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_bfd49c20",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -176,6 +338,24 @@
       "writtenOn": "2017-01-05T06:41:08Z",
       "side": 1,
       "message": "formatting: This will also work better as a table.",
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_b78a0019",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_bfd49c20",
       "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -229,6 +409,54 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_f780f8f8",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "As discussed with Hema, such deprecation for parameters is under discussion whether they need to be deprecated or removed altogether. Once it is confirmed, I will reflect changes here in spec.",
+      "parentUuid": "1a622d24_9fd72023",
+      "range": {
+        "startLine": 86,
+        "startChar": 2,
+        "endLine": 86,
+        "endChar": 23
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f733d85f",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_97bd44ba",
+      "range": {
+        "startLine": 86,
+        "startChar": 2,
+        "endLine": 86,
+        "endChar": 23
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_dfe198ff",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -252,6 +480,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_66ef20ea",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_dfe198ff",
+      "range": {
+        "startLine": 166,
+        "startChar": 26,
+        "endLine": 166,
+        "endChar": 63
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_1fe31006",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -263,6 +515,30 @@
       "writtenOn": "2017-01-05T06:41:08Z",
       "side": 1,
       "message": "formatting: use ``ovs-vsctl``",
+      "range": {
+        "startLine": 333,
+        "startChar": 79,
+        "endLine": 333,
+        "endChar": 90
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_86c19c56",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_1fe31006",
       "range": {
         "startLine": 333,
         "startChar": 79,
@@ -315,6 +591,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_377ef019",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_3fcfec80",
+      "range": {
+        "startLine": 380,
+        "startChar": 24,
+        "endLine": 380,
+        "endChar": 28
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_9fbe00d3",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -326,6 +626,30 @@
       "writtenOn": "2017-01-05T06:41:08Z",
       "side": 1,
       "message": "formatting: This is not needed as specified in Dependencies.\n\nExplicitly mention that any runtime changes will not be applied till controller restart.",
+      "range": {
+        "startLine": 384,
+        "startChar": 0,
+        "endLine": 384,
+        "endChar": 2
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_c6b714f4",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_9fbe00d3",
       "range": {
         "startLine": 384,
         "startChar": 0,
@@ -361,6 +685,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_26d0881e",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 501,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_7ff204d3",
+      "range": {
+        "startLine": 501,
+        "startChar": 4,
+        "endLine": 501,
+        "endChar": 15
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_bfbbfce3",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -384,6 +732,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_66c6006a",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_bfbbfce3",
+      "range": {
+        "startLine": 585,
+        "startChar": 0,
+        "endLine": 585,
+        "endChar": 1
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_5fed88ee",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
@@ -395,6 +767,24 @@
       "writtenOn": "2017-01-05T06:41:08Z",
       "side": 1,
       "message": "would be good to have file name and parameter specified here.",
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_06946c41",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_5fed88ee",
       "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
