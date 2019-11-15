@@ -17,6 +17,23 @@
       "revId": "d03cb74a07e52f309fdb65ff01fd244743ac6250",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_df59c75c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 33
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Do we require updateInterfaceParentRefs() to be called only when parentRefs is not set.\n\nWhat if ParentRef is set(during custom-interface creation), but was not configured to have to prefix with dpnid(for ports other then nova/tunnel-ports). The earlier code used to take care to update it again. But, here such scenario is not handled and the new API-updateInterfaceParentRefs is only called when parentRefs is null.",
+      "revId": "d03cb74a07e52f309fdb65ff01fd244743ac6250",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
