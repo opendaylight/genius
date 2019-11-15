@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fea3f99b",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Moved to utility method and calling it",
+      "parentUuid": "7a6b29fe_74e70b13",
+      "revId": "7814663866580be122b42c2dcafe504a5eb653ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_f4bafbdf",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2016-08-11T10:03:35Z",
       "side": 1,
       "message": "can this string builder logic be a utility?",
+      "revId": "7814663866580be122b42c2dcafe504a5eb653ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7eb7e9d8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "A utility method is added to construct portName with dpnid prefixed",
+      "parentUuid": "7a6b29fe_f4bafbdf",
       "revId": "7814663866580be122b42c2dcafe504a5eb653ca",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
