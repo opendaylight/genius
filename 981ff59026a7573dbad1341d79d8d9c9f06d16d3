@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_f5bf74f9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 5802
+      },
+      "writtenOn": "2016-07-18T14:52:49Z",
+      "side": 1,
+      "message": "The interface state created by OvsInterfaceStateAddHelper.addState still gets created based on the port name only w/o DPN representation",
+      "range": {
+        "startLine": 161,
+        "startChar": 78,
+        "endLine": 161,
+        "endChar": 86
+      },
+      "revId": "981ff59026a7573dbad1341d79d8d9c9f06d16d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
