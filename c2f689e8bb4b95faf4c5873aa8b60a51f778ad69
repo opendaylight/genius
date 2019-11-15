@@ -25,6 +25,29 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_f4c35836",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "This should already be defined at a single generic place, use it from there. If not, this should be defined and used from ITMConstants.",
+      "range": {
+        "startLine": 50,
+        "startChar": 35,
+        "endLine": 50,
+        "endChar": 52
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_34ddd015",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -71,6 +94,29 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_74e748e5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "method says Config while this is operational. Why? Maybe a typo but can break logic. Has this been tested?",
+      "range": {
+        "startLine": 68,
+        "startChar": 73,
+        "endLine": 68,
+        "endChar": 84
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_54ecccc7",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -105,6 +151,40 @@
       "writtenOn": "2016-10-26T07:06:35Z",
       "side": 1,
       "message": "Avoid DS reads, esp on Config. ITM code already has listeners for TZ et al. So we should already be having access to this information and shouldn\u0027t need to add new read.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_54032c73",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "Would be good to have a Javadoc for all util methods. Purpose of this function is not clear from name, which makes it difficult to review if it is doing what it is supposed to do.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_94cdc460",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "check with Faseela, we may already have method to do this in IFM. If not add it in this file locally itself. You\u0027re doing the same again.",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -293,6 +373,29 @@
         "startChar": 16,
         "endLine": 94,
         "endChar": 32
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_f7f07acb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T09:19:39Z",
+      "side": 1,
+      "message": "We will see this a lot as this will be the case when bridge node is updated. Not a good idea to log.",
+      "range": {
+        "startLine": 110,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 53
       },
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
