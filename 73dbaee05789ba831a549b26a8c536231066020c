@@ -255,6 +255,29 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_eb76ccd7",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This doesn\u0027t translate well to generated document. Refer RST spec on how to reformat it in better way.\n\nSuggestion: explain in text and then give sample json of what configuration will look like.",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 37,
+        "endChar": 5
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_2b81e48f",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 2
@@ -552,6 +575,29 @@
       "side": 1,
       "message": "It is not. Signature and function name don\u0027t need to be on separate line. You can probably add a code block with method name and javadoc style comment detailing purpose and parameters.",
       "parentUuid": "1a622d24_254630c0",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_cb083030",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This is not needed. Spec has to capture changes, not re-document existing stuff. That will be covered in User Guide.",
+      "range": {
+        "startLine": 247,
+        "startChar": 0,
+        "endLine": 252,
+        "endChar": 20
+      },
       "revId": "73dbaee05789ba831a549b26a8c536231066020c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
