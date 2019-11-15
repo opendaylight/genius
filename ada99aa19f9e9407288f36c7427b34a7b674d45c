@@ -1,0 +1,22 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a682502_f54a3854",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-10-22T16:54:02Z",
+      "side": 1,
+      "message": "Not as separate instructions, but build the arraylist - no need to confuse logic between VLAN and split horizon IMO.\nAlso preferable to use a variable to indicate the action list key (I wonder why there isn\u0027t a util to do this already, instead of having the user deal with ordering)\n\nSomething like this should work without complicating things:\n\nint actionKey \u003d 0;\nList\u003cAction\u003e actions \u003d new ArrayList\u003c\u003e();\nif (vlanId !\u003d 0 \u0026\u0026 !isVlanTransparent) {\n\tactions.add(MDSALUtil.createPopVlanAction(actionKey++));\n}\nif (overrideSplitHorizonProtection) {\n\tactions.add(MDSALUtil.createNxOfInPortAction(actionKey++,0));\n}\ninstructions.add(actions,instructionKey++));",
+      "parentUuid": "5a682502_75574803",
+      "revId": "ada99aa19f9e9407288f36c7427b34a7b674d45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
