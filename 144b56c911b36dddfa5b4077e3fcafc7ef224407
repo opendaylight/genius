@@ -1,0 +1,61 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_9df12bd0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-30T10:55:23Z",
+      "side": 1,
+      "message": "What if none of fields are present in other_config on switch? you\u0027re defaulting them to \"\" and will end up processing them accordingly. If these are not present you shouldn\u0027t go ahead at all. Need to add some fast-fail logic for it.",
+      "revId": "144b56c911b36dddfa5b4077e3fcafc7ef224407",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_1ddedb3f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-30T10:55:23Z",
+      "side": 1,
+      "message": "Don\u0027t log this. There will always be other config and it will add unnecessary noise to logs.",
+      "revId": "144b56c911b36dddfa5b4077e3fcafc7ef224407",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_ddba93e0",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbOtherConfigInfo.java",
+        "patchSetId": 40
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-30T10:55:23Z",
+      "side": 1,
+      "message": "this is troublesome. when there is no other_config, you will fill up these non null values and process them. It will be the case in default setup and you\u0027ll potentially break default functionality.",
+      "range": {
+        "startLine": 13,
+        "startChar": 4,
+        "endLine": 15,
+        "endChar": 64
+      },
+      "revId": "144b56c911b36dddfa5b4077e3fcafc7ef224407",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
