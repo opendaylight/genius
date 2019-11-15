@@ -1,0 +1,225 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_6bf67e90",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "bridgeIid ,rename it to meaning full name probable \"bridgeIntfid\"",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cbf19296",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 151,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "method name \"getLongDatapathId\" change to \"getDataPathId\" .",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_abec16bc",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "two method getStrDatapathId and getLongDatapathId are not required instead club both",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_eb31ee5a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 180,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "instead of unknownTz more meaningful would be \"nonConfigTz\"",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2b38063c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "removeUnknownTzTepIntoTepsNotHosted -\u003e\"removeUnknownTzTepFromTepsNotHosted\"",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_ab1a56c3",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "addRemoveFlag is never set to true in this method.\nvariable Not required.",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4b83c2cb",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 234,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "Vtep is added in this method never removed .addRemoveFlag flag is not required",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2b8646db",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6b6b1e1e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "put the constants in ITMConstants.java",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2b7006db",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 69,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "Instead of Maps holding map as value.create a bean class and store the object reference as value for a ovsNode.\nyou can avoid clearing inner map etc",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_6b003e34",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "place  hardcoded string in constants java class",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_cbfb5245",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "same as above for all hardcoded value",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_eb69eef9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 513,
+      "author": {
+        "id": 5975
+      },
+      "writtenOn": "2016-09-16T13:26:04Z",
+      "side": 1,
+      "message": "Instead of Maps.create a bean class and store it as value for a map",
+      "revId": "b88446460581f92463049aa655686356a7c34935",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
