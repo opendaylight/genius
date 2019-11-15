@@ -1,0 +1,78 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_74a38b9e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-11T10:22:31Z",
+      "side": 1,
+      "message": "Nit: remove whitespace",
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f4b67bdb",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-11T10:22:31Z",
+      "side": 1,
+      "message": "The creation of parentRefs is being used in many places in this class. Move it to a method.",
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_d4bb7fc2",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-11T10:22:31Z",
+      "side": 1,
+      "message": "same comment as before.",
+      "range": {
+        "startLine": 91,
+        "startChar": 12,
+        "endLine": 91,
+        "endChar": 13
+      },
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_b4c40341",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/renderer/ovs/statehelpers/OvsInterfaceStateRemoveHelper.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-08-11T10:22:31Z",
+      "side": 1,
+      "message": "Let us bring the code for isNodePresent argument being passed from InterfaceInventoryStateListener.",
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
