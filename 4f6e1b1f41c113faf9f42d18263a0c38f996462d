@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_7704e817",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 5
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_43c3f656",
+      "range": {
+        "startLine": 135,
+        "startChar": 18,
+        "endLine": 135,
+        "endChar": 22
+      },
+      "revId": "4f6e1b1f41c113faf9f42d18263a0c38f996462d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_a3a3eab0",
         "filename": "itm/itm-impl/src/main/resources/initial/genius-itm-config.xml",
         "patchSetId": 5
@@ -36,6 +60,30 @@
       "writtenOn": "2017-01-05T11:30:53Z",
       "side": 1,
       "message": "should be false",
+      "range": {
+        "startLine": 2,
+        "startChar": 20,
+        "endLine": 2,
+        "endChar": 24
+      },
+      "revId": "4f6e1b1f41c113faf9f42d18263a0c38f996462d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5701ec04",
+        "filename": "itm/itm-impl/src/main/resources/initial/genius-itm-config.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_a3a3eab0",
       "range": {
         "startLine": 2,
         "startChar": 20,
