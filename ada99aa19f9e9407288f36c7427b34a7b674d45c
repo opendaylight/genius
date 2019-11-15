@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "7a6b29fe_6a6274d9",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 670
+      },
+      "writtenOn": "2016-10-22T12:32:55Z",
+      "side": 1,
+      "message": "Can we keep the logic more simple in this block?\nIn this line passing 0 as the key instead of using instructionKey++ seems off, don\u0027t we pass 0 twice?\n\nCan\u0027t we keep the old line intact and simply add something like this, where inPortAction is something similar to what you have below, but using instructionKey++ instead of hardcoded 0:\nif (overrideSplitHorizonProtection) {\n instructions.add(inPortAction);\n}",
+      "revId": "ada99aa19f9e9407288f36c7427b34a7b674d45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a682502_f54a3854",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
         "patchSetId": 8
