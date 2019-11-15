@@ -1,0 +1,270 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_b7b840c9",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-06T06:35:08Z",
+      "side": 1,
+      "message": "That is fine, but since this is a new parameter it needs to be called out explicitly what the default is. Currently it looks like it is being set to true by default. This is a very important point coz it shows that this feature is an opt-in, not opt-out. Retain what you have, just add extra line to explicitly clarify that default is false.",
+      "parentUuid": "1a622d24_f7f11802",
+      "range": {
+        "startLine": 64,
+        "startChar": 22,
+        "endLine": 64,
+        "endChar": 26
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9f30c09f",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 70,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "nitpick: whitespace",
+      "range": {
+        "startLine": 70,
+        "startChar": 75,
+        "endLine": 70,
+        "endChar": 76
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_df2a382b",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: ``true``",
+      "range": {
+        "startLine": 73,
+        "startChar": 82,
+        "endLine": 73,
+        "endChar": 86
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3f21ac4d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: ``false``",
+      "range": {
+        "startLine": 78,
+        "startChar": 39,
+        "endLine": 78,
+        "endChar": 44
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_bfd49c20",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: This will also work better as a table.",
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9fd72023",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "yang changes should mark these fields as deprecated",
+      "range": {
+        "startLine": 86,
+        "startChar": 2,
+        "endLine": 86,
+        "endChar": 23
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_97bd44ba",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-06T06:35:08Z",
+      "side": 1,
+      "message": "Actually no. This is user facing API, nothing can be removed without being deprecated for one release. My understanding is we want to leave the option to not remove them in case needed in future and make them optional. So do a quick check and for now just club these with optional.",
+      "parentUuid": "1a622d24_f780f8f8",
+      "range": {
+        "startLine": 86,
+        "startChar": 2,
+        "endLine": 86,
+        "endChar": 23
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_dfe198ff",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: use ``field`` for all these fields.",
+      "range": {
+        "startLine": 166,
+        "startChar": 26,
+        "endLine": 166,
+        "endChar": 63
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_3fcfec80",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 380,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "Will this be true by default or false? If false, then use false here.",
+      "range": {
+        "startLine": 380,
+        "startChar": 24,
+        "endLine": 380,
+        "endChar": 28
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9fbe00d3",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 384,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: This is not needed as specified in Dependencies.\n\nExplicitly mention that any runtime changes will not be applied till controller restart.",
+      "range": {
+        "startLine": 384,
+        "startChar": 0,
+        "endLine": 384,
+        "endChar": 2
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_bfbbfce3",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 585,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: not needed.",
+      "range": {
+        "startLine": 585,
+        "startChar": 0,
+        "endLine": 585,
+        "endChar": 1
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_5fed88ee",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 587,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "would be good to have file name and parameter specified here.",
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
