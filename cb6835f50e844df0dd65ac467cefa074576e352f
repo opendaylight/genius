@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_955e2944",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Well, I did not see such issue when I ran tox and saw generated html, before uploading on gerrit. But, you are right, in jenkins, html page shows what you said. So, I have now changed sub-points bullets from #. to *.",
+      "parentUuid": "1a622d24_55d2d1d2",
+      "range": {
+        "startLine": 53,
+        "startChar": 0,
+        "endLine": 57,
+        "endChar": 47
+      },
+      "revId": "cb6835f50e844df0dd65ac467cefa074576e352f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_35d755c3",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 6
@@ -36,6 +60,30 @@
       "writtenOn": "2016-12-13T08:01:47Z",
       "side": 1,
       "message": "nitpick: whitespace",
+      "range": {
+        "startLine": 236,
+        "startChar": 79,
+        "endLine": 236,
+        "endChar": 80
+      },
+      "revId": "cb6835f50e844df0dd65ac467cefa074576e352f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_f5c15de5",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 236,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_35d755c3",
       "range": {
         "startLine": 236,
         "startChar": 79,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_55b77186",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_75d8adef",
+      "range": {
+        "startLine": 245,
+        "startChar": 0,
+        "endLine": 245,
+        "endChar": 3
+      },
+      "revId": "cb6835f50e844df0dd65ac467cefa074576e352f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_d5e541a9",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 6
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_35bc7569",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 297,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_d5e541a9",
+      "range": {
+        "startLine": 297,
+        "startChar": 0,
+        "endLine": 297,
+        "endChar": 2
+      },
+      "revId": "cb6835f50e844df0dd65ac467cefa074576e352f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_b5e2459d",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 6
@@ -105,6 +201,30 @@
       "writtenOn": "2016-12-13T08:01:47Z",
       "side": 1,
       "message": "nitpick: whitespace",
+      "range": {
+        "startLine": 344,
+        "startChar": 79,
+        "endLine": 344,
+        "endChar": 80
+      },
+      "revId": "cb6835f50e844df0dd65ac467cefa074576e352f",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_95b0e98c",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_b5e2459d",
       "range": {
         "startLine": 344,
         "startChar": 79,
