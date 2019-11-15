@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_49d60350",
+        "filename": "itm/itm-api/src/main/java/org/opendaylight/genius/itm/globals/ITMConstants.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_a3f539ee",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 1
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_e3da9176",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2016-09-26T13:46:33Z",
       "side": 1,
       "message": "remove this comment. what is CR-100?",
+      "range": {
+        "startLine": 117,
+        "startChar": 12,
+        "endLine": 117,
+        "endChar": 32
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_69d3ff5f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Accepted.",
+      "parentUuid": "7a6b29fe_e3da9176",
       "range": {
         "startLine": 117,
         "startChar": 12,
@@ -100,6 +148,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_496443b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Removed local cache being used in the code. With this change, there is no need to extend ClusteredDataTreeChangeListener.\n\nWill upload new changes soon.",
+      "parentUuid": "7a6b29fe_238ac963",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_c35795c8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -134,6 +200,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_a957d7c8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Removed local cache being used in the code.\nAfter the new change, comment will be invalid.",
+      "parentUuid": "7a6b29fe_321fb9b8",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_1271dd0b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -145,6 +229,24 @@
       "writtenOn": "2016-09-23T20:10:19Z",
       "side": 1,
       "message": "how both these maps (cache) are populated in case of restart of ODL. i assume that you won\u0027t get any notification which will keep the maps empty and lead to undetermined behavior",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_895adbef",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Removed local cache being used in the code.\nAfter the new change, comment will be invalid.",
+      "parentUuid": "7a6b29fe_1271dd0b",
       "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -197,6 +299,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_c96fb390",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_c3c955ad",
+      "range": {
+        "startLine": 82,
+        "startChar": 12,
+        "endLine": 82,
+        "endChar": 16
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_03c7cd96",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -220,6 +346,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_296bc785",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Removed local cache being used in the code.\nAfter the new change, comment will be invalid.",
+      "parentUuid": "7a6b29fe_03c7cd96",
+      "range": {
+        "startLine": 85,
+        "startChar": 16,
+        "endLine": 85,
+        "endChar": 20
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_a3cc19bc",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -231,6 +381,30 @@
       "writtenOn": "2016-09-26T13:46:33Z",
       "side": 1,
       "message": "debug",
+      "range": {
+        "startLine": 94,
+        "startChar": 24,
+        "endLine": 94,
+        "endChar": 28
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_69081fda",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Removed local cache being used in the code.\nAfter the new change, comment will be invalid.",
+      "parentUuid": "7a6b29fe_a3cc19bc",
       "range": {
         "startLine": 94,
         "startChar": 24,
@@ -306,6 +480,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_490ba3d5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 336,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_c3403509",
+      "range": {
+        "startLine": 336,
+        "startChar": 16,
+        "endLine": 336,
+        "endChar": 20
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_6364c1b8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -317,6 +515,30 @@
       "writtenOn": "2016-09-26T13:46:33Z",
       "side": 1,
       "message": "errormsg should be meaningful to user/admin. Map is internal implementation. Should bedebug or change the msg.",
+      "range": {
+        "startLine": 361,
+        "startChar": 16,
+        "endLine": 361,
+        "endChar": 21
+      },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_8943fb11",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_6364c1b8",
       "range": {
         "startLine": 361,
         "startChar": 16,
