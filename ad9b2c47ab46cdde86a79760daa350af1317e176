@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_61f579ca",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_061123ac",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_268547d0",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-14T09:46:37Z",
       "side": 1,
       "message": "may I suggest that you also use \"public @Rule LogRule logRule \u003d new LogRule();\", from , org.opendaylight.infrautils:infrautils-testutils, just before the GuiceRule, here?  I believe you\u0027ll find it adds value in this kind of new style \"component\" test.",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_01762da4",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_268547d0",
       "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_417035a5",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_e6969fef",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_6603cf42",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
         "patchSetId": 1
@@ -64,6 +118,24 @@
       "writtenOn": "2017-02-14T09:46:37Z",
       "side": 1,
       "message": "@Inject ItmManagerRpcService itmManagerRpcService;",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_81b05d44",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_6603cf42",
       "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a1ff61a9",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_a6e657b2",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_06eda38b",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
         "patchSetId": 1
@@ -98,6 +188,24 @@
       "writtenOn": "2017-02-14T09:46:37Z",
       "side": 1,
       "message": "remove this empty method (you don\u0027t have to have an @After just because you have a @Before)",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_417e756c",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_06eda38b",
       "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -121,6 +229,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_012e2d43",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_a67817f3",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_06a48355",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
         "patchSetId": 1
@@ -138,6 +264,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_b75683d0",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_06a48355",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_66b10f8f",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
         "patchSetId": 1
@@ -149,6 +293,24 @@
       "writtenOn": "2017-02-14T09:46:37Z",
       "side": 1,
       "message": "have you tried to avoid this, here and everywhere below?  If at all possible, we should avoid it - I want to remove it from where I used it so far, not see more of it... in this case, unless ItmManagerRpcService does something fancy with background threads, it may be as easy as calling result.get() instead of Thread.sleep() in this line, to make it wait... please try.  BTW, in this context, have a look at the org.opendaylight.infrautils.testutils.RunUntilFailureRule which is useful to convince yourself (locally, never commit), that your test is not flaky, but leaving it running for 1h while you go have lunch...",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_778a5bc0",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Yes, I tried and could remove all sleep except one which was needed otherwise, test was failing.",
+      "parentUuid": "fafc7978_66b10f8f",
       "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
