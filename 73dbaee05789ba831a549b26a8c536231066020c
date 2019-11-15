@@ -381,6 +381,29 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_702629bc",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 4534
+      },
+      "writtenOn": "2016-12-05T08:48:47Z",
+      "side": 1,
+      "message": "would prefer if \u0027optional\u0027 parameters other than ipaddress are marked \u0027deprecated\u0027 parameters,as they will be ignored even if specified",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 45,
+        "endChar": 235
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_cbf4b089",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 2
@@ -551,6 +574,29 @@
       "side": 1,
       "message": "Did you even read my comment? Workflow is part of design. User configuration is Usage. I said don\u0027t duplicate information and add internal details also to workflow if needed. Config update, DTCN notification... how is it not part of workflow?",
       "parentUuid": "1a622d24_eef37008",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9a49578e",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 4534
+      },
+      "writtenOn": "2016-12-05T08:48:47Z",
+      "side": 1,
+      "message": "propose to move to external_ids, and consolidate fields with host config feature",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 63,
+        "endChar": 0
+      },
       "revId": "73dbaee05789ba831a549b26a8c536231066020c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
