@@ -53,6 +53,23 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_7c0c9fed",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 1142,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-16T12:30:38Z",
+      "side": 1,
+      "message": "Implement caching for this.",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_95fe4637",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 5
