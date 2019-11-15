@@ -19,6 +19,208 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_ab6df406",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Refer the documentation guide: https://logs.opendaylight.org/releng/jenkins092/docs-verify-rtd-carbon/485/archives/docs/_build/html/documentation.html \n\nLines should be wrapped at 72-100 characters. I\u0027ve found 75-90 to work well enough.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0b7ea8ae",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Reword it as something like \u0027TEP implementation. Also, OVS and...\u0027",
+      "range": {
+        "startLine": 11,
+        "startChar": 104,
+        "endLine": 11,
+        "endChar": 128
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6b4abc84",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Suggestion: This doesn\u0027t need to be a bullet list. Problem Description works better as paragraph(s) of descriptive text.",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 2
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8b49188e",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Reword it. Need to highlight the problem, which here is that user needs to configure same information twice. Something like \u0027OVS and other TOR switches that support OVSDB can be configured without requring TEP configuration through REST API\u0027",
+      "range": {
+        "startLine": 11,
+        "startChar": 180,
+        "endLine": 11,
+        "endChar": 313
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_eb5d2c4a",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Just mention that these are optional parameters, user not required to configure is implied when we call it optional.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ab121460",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "whitespace",
+      "range": {
+        "startLine": 23,
+        "startChar": 164,
+        "endLine": 23,
+        "endChar": 166
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_fa016b3a",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "The problem description talks about OVS driven configuration of TEPs while this mentions REST. Need to clarify why will user need to configure REST when it is all OVS driven.",
+      "parentUuid": "1a622d24_05417439",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_c249258d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-06T07:33:49Z",
+      "side": 1,
+      "message": "Please call all it out explicitly, it is not clear from reading the doc. What about defaultTransportZone? Will that also required to be created from REST? How is this mandatory requirement being enforced? What if user doesn\u0027t give these mandatory parameters?",
+      "parentUuid": "1a622d24_aeee9889",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0b55081d",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This is implementation detail, not use case. Remove it or reword it as a use case.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6b311c0b",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Reword it. What does this mean? Use term \u0027is disconnected\u0027, unless it means something else.",
+      "range": {
+        "startLine": 29,
+        "startChar": 14,
+        "endLine": 29,
+        "endChar": 33
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_0bd8681c",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 2
@@ -53,6 +255,29 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_2b81e48f",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "which yang? will user have to configure it?",
+      "range": {
+        "startLine": 38,
+        "startChar": 75,
+        "endLine": 38,
+        "endChar": 79
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_abfe9469",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 2
@@ -64,6 +289,29 @@
       "writtenOn": "2016-12-01T06:46:13Z",
       "side": 1,
       "message": "whats the default monitoring interval?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_ab3b34ea",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "will",
+      "range": {
+        "startLine": 42,
+        "startChar": 98,
+        "endLine": 42,
+        "endChar": 102
+      },
       "revId": "73dbaee05789ba831a549b26a8c536231066020c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -87,6 +335,42 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_8b40f857",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "same as above. In fact these 3 would work better as sub-headings than numbered list.\n\nAlso, this point should capture information on what are the parameters in other_config with a sample JSON.",
+      "parentUuid": "1a622d24_cbf4b089",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7a955be3",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "The purpose of JSON here and in REST APIs section is different. REST APIs is a subsection of Usage and captures what user has to give when calling REST API. This section is to captue and highlight changes to yang/json, highlight important parameters. JSON with relevant sections highlighted will make it easier to read/comprehend than lines of text.",
+      "parentUuid": "1a622d24_e5ab98d4",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_2bf2849a",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 2
@@ -98,6 +382,423 @@
       "writtenOn": "2016-12-01T06:46:13Z",
       "side": 1,
       "message": "ITM is currently tied to use DPNIds, with this model if bridgeUUID itself is available at ITM, why should we still use dpnId?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_eb240cc8",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Same question as Faseela, use of DPNID here results in lots of back-and forth conversions between bridgename/bridgeuuid and dpnid. Maybe this can be taken up in a subsequent change, but should be considered here.",
+      "parentUuid": "1a622d24_2bf2849a",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_cb2150b6",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Is this feature going to modify code that creates tunnels, or only going to add TEPs to transportzones? If it is latter, this line is misleading.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_9aa4b758",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "In that case, you don\u0027t need to go into details of what ITM does once TZ is configured. As far as this feature is concerned, once TZ gets configured existing ITM code takes care of rest.",
+      "parentUuid": "1a622d24_25c5905b",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6b18fc84",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Isn\u0027t this being repeated in Workflow section? Revisit this and decide what all you want in here and what in WorkFlow. This should capture what changes are being made. WorkFlow will capture how changes are being effected.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_1a90a7eb",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "The sort of information being captured here fits better in workflow. WorkFlow section is part of design details. configuration from user should be in Usage section. You can make call to keep it in either, but duplication should be avoided.",
+      "parentUuid": "1a622d24_6b363705",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_62581157",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-06T07:33:49Z",
+      "side": 1,
+      "message": "Did you even read my comment? Workflow is part of design. User configuration is Usage. I said don\u0027t duplicate information and add internal details also to workflow if needed. Config update, DTCN notification... how is it not part of workflow?",
+      "parentUuid": "1a622d24_eef37008",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8b175851",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "REvisit this. Adding long text in tables doesn\u0027t work well. Also, looks like you need anothe column in table called \u0027Description\u0027",
+      "range": {
+        "startLine": 88,
+        "startChar": 48,
+        "endLine": 88,
+        "endChar": 94
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_eb0b6c29",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Check the generated output. Formatting is hard to read.",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 105
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_bab6d388",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "It is not. Signature and function name don\u0027t need to be on separate line. You can probably add a code block with method name and javadoc style comment detailing purpose and parameters.",
+      "parentUuid": "1a622d24_254630c0",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_2b060421",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 330,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Not needed. This is internal operational data and user doesn\u0027t need to know to configure teps.",
+      "range": {
+        "startLine": 329,
+        "startChar": 0,
+        "endLine": 330,
+        "endChar": 22
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_0b034810",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "There is already existing CLI for tep addition. How will that work with this feature?",
+      "range": {
+        "startLine": 361,
+        "startChar": 0,
+        "endLine": 361,
+        "endChar": 42
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_daac6f38",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "Yes it will work as is, but how will one use CLI when auto-tunnels are used? Are tep:add etc. still needed or not? Any new CLI needed for this?",
+      "parentUuid": "1a622d24_c5e77ce3",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_66ff9302",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Refer OFTunnels spec on how to capture CLI in spec.",
+      "range": {
+        "startLine": 363,
+        "startChar": 0,
+        "endLine": 363,
+        "endChar": 7
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_7a639b1a",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 363,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-05T08:30:45Z",
+      "side": 1,
+      "message": "But you ARE capturing ovs-vsctl cli showing how to configure tep etc. which is not covered in OVS man. Aim is not to reproduce information from manual but provide sample CLI that user can use.",
+      "parentUuid": "1a622d24_05d174fb",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_46041715",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Work items should ideally be single work items capturing high level and not require sub-sections. Also, they should be in order in which they will be done. breakup should be done in such a way that each work item depends on previous entry in list, or can be done independently.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a609ab2e",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 408,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This should be Yang changes. Don\u0027t need to give details as those are already captured.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_860e2f33",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 409,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This should be \u0027Add listener for OVSDB changes\u0027",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_e6128357",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "\u0027Add code to configure default transport zone during bootup.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_662673bc",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 411,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "reword this work item as per previous comments.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_061a1f6e",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Again, is this feature going to modify tunnel creation logic or only add TEPs to transport zone?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_86258fad",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 422,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Refer OFtunnels spec on what to capture here.",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_c63667e7",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This is not a dependency, this is a usage/workflow/change and already captured.",
+      "range": {
+        "startLine": 426,
+        "startChar": 0,
+        "endLine": 426,
+        "endChar": 2
+      },
       "revId": "73dbaee05789ba831a549b26a8c536231066020c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
