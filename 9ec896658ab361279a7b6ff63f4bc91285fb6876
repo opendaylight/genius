@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_95cbbf1d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/commons/OvsdbExternalIdsInfo.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_23e8dc7b",
+      "range": {
+        "startLine": 52,
+        "startChar": 15,
+        "endLine": 52,
+        "endChar": 30
+      },
+      "revId": "9ec896658ab361279a7b6ff63f4bc91285fb6876",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_03edd88b",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 2
@@ -36,6 +60,30 @@
       "writtenOn": "2017-03-20T06:21:51Z",
       "side": 1,
       "message": "bridgeName",
+      "range": {
+        "startLine": 133,
+        "startChar": 19,
+        "endLine": 133,
+        "endChar": 32
+      },
+      "revId": "9ec896658ab361279a7b6ff63f4bc91285fb6876",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_d571c7e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_03edd88b",
       "range": {
         "startLine": 133,
         "startChar": 19,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_357653d9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_43fec039",
+      "range": {
+        "startLine": 212,
+        "startChar": 12,
+        "endLine": 212,
+        "endChar": 28
+      },
+      "revId": "9ec896658ab361279a7b6ff63f4bc91285fb6876",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_a3fb2c46",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 2
@@ -94,6 +166,30 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_15734fe8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 220,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_a3fb2c46",
+      "range": {
+        "startLine": 220,
+        "startChar": 12,
+        "endLine": 220,
+        "endChar": 28
+      },
+      "revId": "9ec896658ab361279a7b6ff63f4bc91285fb6876",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_83e1c89c",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 2
@@ -105,6 +201,24 @@
       "writtenOn": "2017-03-20T06:17:42Z",
       "side": 1,
       "message": "if constants are on the left hand side, better way of coding, since nullpointers will not happen",
+      "revId": "9ec896658ab361279a7b6ff63f4bc91285fb6876",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7580db8b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_83e1c89c",
       "revId": "9ec896658ab361279a7b6ff63f4bc91285fb6876",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
