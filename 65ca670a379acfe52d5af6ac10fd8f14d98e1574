@@ -65,6 +65,23 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_521875d2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-23T20:10:19Z",
+      "side": 1,
+      "message": "is this listener cluster aware?\nit should implement ClusteredDataTreeChangeListener.\nas far as i know this will make the notification get called only in a single node from the cluster",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_238ac963",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -94,6 +111,40 @@
       "writtenOn": "2016-09-26T13:46:33Z",
       "side": 1,
       "message": "Please revisit all the log messages.",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_321fb9b8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-23T20:10:19Z",
+      "side": 1,
+      "message": "this implementation is not thread safe. there could be potential races when using the internal caches since the insertion and removal from them is not protected.",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1271dd0b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-23T20:10:19Z",
+      "side": 1,
+      "message": "how both these maps (cache) are populated in case of restart of ODL. i assume that you won\u0027t get any notification which will keep the maps empty and lead to undetermined behavior",
       "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -192,6 +243,23 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_5266b551",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-23T20:10:19Z",
+      "side": 1,
+      "message": "this can happen in a failure scenario",
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_435425c9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 7
@@ -255,6 +323,23 @@
         "endLine": 361,
         "endChar": 21
       },
+      "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_527fd5df",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 589,
+      "author": {
+        "id": 3511
+      },
+      "writtenOn": "2016-09-23T20:10:19Z",
+      "side": 1,
+      "message": "you will never get to this code. in case of failure of instantiation this will be the least of your problem ;)",
       "revId": "65ca670a379acfe52d5af6ac10fd8f14d98e1574",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
