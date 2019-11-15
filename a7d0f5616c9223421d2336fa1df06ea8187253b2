@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_4d066187",
+        "filename": "itm/itm-impl/src/main/resources/org/opendaylight/blueprint/itm.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-12T06:06:51Z",
+      "side": 1,
+      "message": "You also need to set update-strategy\u003d\"none\". Refer https://git.opendaylight.org/gerrit/#/c/44386/ for details.",
+      "revId": "a7d0f5616c9223421d2336fa1df06ea8187253b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
