@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_abd30237",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbExternalIdsInfo.java",
+        "patchSetId": 9
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2017-01-31T08:52:26Z",
+      "side": 1,
+      "message": "I feel it may be more appropriate to place this class in under org.opendaylight.genius.itm.commons (create a new package). Placing it under listeners is not a good idea even though it maybe used only by the listener class",
+      "revId": "4c5e61c0df06432904fb4ae76ae602b85d5a6ea2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
