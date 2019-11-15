@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_2aa9a77b",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 256,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "As it was already discussed with Daya/Vishal that these flags would be configurable at startup only. As of now, we can go ahead without support for dynamic changes.",
+      "parentUuid": "1a622d24_6abeffd5",
+      "revId": "4974c4903f3cc113a7f122f4795716509ed80eef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_aa2497af",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 7
@@ -30,6 +48,24 @@
       "writtenOn": "2016-12-15T08:32:35Z",
       "side": 1,
       "message": "You need to specify that ITM tunnels are built for default Transport based on this flag - \"def-tz-auto-tunnel-enabled\".",
+      "revId": "4974c4903f3cc113a7f122f4795716509ed80eef",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_6aba7fc1",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 7
+      },
+      "lineNbr": 288,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Ok, I will write this information in this point.",
+      "parentUuid": "1a622d24_aa2497af",
       "revId": "4974c4903f3cc113a7f122f4795716509ed80eef",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
