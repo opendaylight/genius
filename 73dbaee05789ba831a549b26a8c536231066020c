@@ -145,6 +145,23 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_cb5af04f",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "Question: Why are we talking about configuration from REST when the feature and previous use cases talk about SBI?",
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_fa016b3a",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 2
@@ -334,6 +351,29 @@
         "startChar": 98,
         "endLine": 42,
         "endChar": 102
+      },
+      "revId": "73dbaee05789ba831a549b26a8c536231066020c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_4b36e004",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-01T08:30:50Z",
+      "side": 1,
+      "message": "This reads like a heading but used as a sentence. Like previous one, use text to explain.",
+      "range": {
+        "startLine": 42,
+        "startChar": 3,
+        "endLine": 42,
+        "endChar": 66
       },
       "revId": "73dbaee05789ba831a549b26a8c536231066020c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
