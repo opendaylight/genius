@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fc408b08",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_b35acd27",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_b3712daa",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -30,6 +48,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "we should try to avoid using Thread.sleep() like the plague, and only ressort to it when there really really is no other way, and it\u0027s much much more expensive to change some existing code to find another way.. in this particular case, I don\u0027t know much about ITM, but couldn\u0027t you e.g. block on a Future returned by TepCommandHelper?",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_dc430711",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 245,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_b3712daa",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_3c4e933b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_9307c9c9",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d30dd1e9",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_7c549bc9",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_d30dd1e9",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_b312cd06",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -81,6 +153,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "as above",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_5c4f1734",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_b312cd06",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -122,6 +212,42 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_fc57ebc7",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Here, we need to Keep \"sleep\" because I am here updating network topology node with ExternalIds TEP parameter which in turn hits OvsdbNodeListener add/update/remove methods as per change done in nw-topo \u0027Node\u0027.\nI have even changed OvsdbTestUtil.updateNode() method to return futures and doing get() on it, but still assert in below line fails because get() returns SUCCESS when nw-topo node is updated and function execution continues, but in parallel, change in nw-topo Node hits OvsdbNodeListener which in turns update ITM config DS, which is being checked in below assert lines.\nSo, sleep is needed for this scenario.\n\nOr, another approach could be - not to create/update nw-topo in config DS, just make local Node object and direct call to add/update/remove() methods of OvsdbNodeListener.\nBut for this, I have to either change add/update/remove() methods from \u0027protected\u0027 to \u0027public\u0027 so that i can call them from outside OR I should do class extends to call add/update/remove() methods.\n\nWhat do you comment on it?\nSleep() should be fine in this scenario. It is being used in IFM Unit test as well.",
+      "parentUuid": "fafc7978_13fbd9c1",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_45a4484a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 361,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Tried SsyncEventsWaiter. did not work. assertEqualBeans() still failing.",
+      "parentUuid": "fafc7978_970af887",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_f3f735d1",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -133,6 +259,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a566d427",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 410,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_f3f735d1",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -156,6 +300,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_856910fb",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 426,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_5301e1ad",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_33feddae",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -167,6 +329,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c56f98fa",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 439,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_33feddae",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -190,6 +370,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_257ae4bc",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_733345ab",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d324b161",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -201,6 +399,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_457ba8bd",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 486,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_d324b161",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -224,6 +440,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_e543bc69",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 512,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_1322b951",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_f31e150b",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -235,6 +469,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c546787a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 536,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_f31e150b",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -258,6 +510,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_25614405",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 558,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_33153de5",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d3db114d",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
         "patchSetId": 12
@@ -269,6 +539,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "again",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_055c004a",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 571,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_d3db114d",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -292,6 +580,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_a53414fc",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 592,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Will take care of it.",
+      "parentUuid": "fafc7978_f3e57509",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_13747966",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
         "patchSetId": 12
@@ -303,6 +609,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "return wrTx.submit(), so that the test can await get() Future",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_7c193b21",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_13747966",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -326,6 +650,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_5c1437e8",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_53ef21e9",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_33ec1df3",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
         "patchSetId": 12
@@ -337,6 +679,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "don\u0027t do this.  If you must, use the org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker BUT I now realize that it\u0027s better not to, and just pass the Future back, so the caller can decide if he wants to async wait for it",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_bcd60326",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_33ec1df3",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -360,6 +720,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_c53dd8de",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_93bce9dd",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_738fc52a",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
         "patchSetId": 12
@@ -377,6 +755,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_25282499",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_738fc52a",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_d38031f9",
         "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
         "patchSetId": 12
@@ -388,6 +784,24 @@
       "writtenOn": "2017-03-01T15:57:39Z",
       "side": 1,
       "message": "as above",
+      "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_052360bd",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 12
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_d38031f9",
       "revId": "45f26763a5ad07dc992e912f1c4d109733c30183",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
