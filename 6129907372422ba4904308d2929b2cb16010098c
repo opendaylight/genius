@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_068ace1a",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-10T14:00:41Z",
+      "side": 1,
+      "message": "would any descriptions help here?",
+      "revId": "6129907372422ba4904308d2929b2cb16010098c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e68cea37",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-10T14:00:41Z",
+      "side": 1,
+      "message": "this should move up, checkstyle will complain",
+      "revId": "6129907372422ba4904308d2929b2cb16010098c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a69b0271",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/VtepConfigSchemaListener.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 773
+      },
+      "writtenOn": "2017-02-10T14:00:41Z",
+      "side": 1,
+      "message": "these comments don\u0027t add much value. I know the other ones in here are not part of this patch, but they just distract - like Log, listenerRegsitration, dataBroker - the fields are well named already.",
+      "revId": "6129907372422ba4904308d2929b2cb16010098c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
