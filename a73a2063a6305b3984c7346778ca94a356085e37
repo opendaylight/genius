@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a622d24_222579c2",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-12-06T07:36:30Z",
+      "side": 1,
+      "message": "Please trim this output to relevant sections. You don\u0027t need to dump the whole topology output, unnecessarily padding length of document and making it harder to read.",
+      "range": {
+        "startLine": 76,
+        "startChar": 0,
+        "endLine": 76,
+        "endChar": 22
+      },
+      "revId": "a73a2063a6305b3984c7346778ca94a356085e37",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
