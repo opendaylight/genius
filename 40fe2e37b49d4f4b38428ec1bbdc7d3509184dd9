@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_1effd5ab",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 455,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "removed",
+      "parentUuid": "7a6b29fe_74a38b9e",
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_34a0f342",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
         "patchSetId": 2
@@ -30,6 +48,24 @@
       "writtenOn": "2016-08-11T11:03:54Z",
       "side": 1,
       "message": "1) The name of this method is not quite right. These interfaces are no more \"physical\" than eth0. I think what we are actually trying to determine is whether this is an interface that could theoretically migrate to another node, or, in other words, is the name of the inteface unique.\n2) Neutron interfaces have the three letter prefix you check for followed by the first 11 characters of the neutron port\u0027s UUID. I think it would be considerably safer to check that part too. Especially with provider networks interfaces could theoretically have names that begun with these prefixes. Here is code that does just that (but only for tap, would need to add vhu and tun):\n    public static boolean isNovaPortName(String portName) {\n        //The following is an example of a name given to a tap port by nova\n        //tap4a15de96-d1\n        //01234567890123 (\u003c- byte indexes)\n        final int NEUTRON_PORT_NAME_LEN \u003d 14;\n        final int DASH_IDX \u003d 11;\n\n        if(portName.length() !\u003d NEUTRON_PORT_NAME_LEN) {\n            return false;\n        }\n\n        char[] portChars \u003d portName.toCharArray();\n        if (portChars[0] !\u003d \u0027t\u0027 \u0026\u0026 portChars[1] !\u003d \u0027a\u0027 \u0026\u0026 portChars[2] !\u003d \u0027p\u0027) {\n            return false;\n        }\n\n        for (int i \u003d 3; i \u003c DASH_IDX; i++) {\n            if (-1 \u003d\u003d Character.digit(portChars[i], 16)) {\n                return false;\n            }\n        }\n\n        if (portChars[DASH_IDX] !\u003d \u0027-\u0027) {\n            return false;\n        }\n\n        for (int i \u003d DASH_IDX + 1; i \u003c NEUTRON_PORT_NAME_LEN; i++) {\n            if (-1 \u003d\u003d Character.digit(portChars[i], 16)) {\n                return false;\n            }\n        }\n\n        return true;\n    }",
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_7e2d2946",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 456,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "MethodName renamed and RegEx used to identify tap and other type of ports",
+      "parentUuid": "7a6b29fe_34a0f342",
       "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_fee77910",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Change incoperated",
+      "parentUuid": "7a6b29fe_f4b67bdb",
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_d4bb7fc2",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 2
@@ -64,6 +118,30 @@
       "writtenOn": "2016-08-11T10:22:31Z",
       "side": 1,
       "message": "same comment as before.",
+      "range": {
+        "startLine": 91,
+        "startChar": 12,
+        "endLine": 91,
+        "endChar": 13
+      },
+      "revId": "40fe2e37b49d4f4b38428ec1bbdc7d3509184dd9",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_1eed15f0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7a6b29fe_d4bb7fc2",
       "range": {
         "startLine": 91,
         "startChar": 12,
