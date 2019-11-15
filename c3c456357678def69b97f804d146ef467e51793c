@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_c4cfe654",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-06T07:03:35Z",
+      "side": 1,
+      "message": "These three lines of code is duplicated into multiple places. Can we have method like getRpcErrorResule(String errorMsg) and get it reused ?",
+      "revId": "c3c456357678def69b97f804d146ef467e51793c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_04d6fef0",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 359,
+      "author": {
+        "id": 5278
+      },
+      "writtenOn": "2016-09-06T07:03:35Z",
+      "side": 1,
+      "message": "same comment as before.",
+      "revId": "c3c456357678def69b97f804d146ef467e51793c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
