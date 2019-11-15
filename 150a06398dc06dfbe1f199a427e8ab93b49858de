@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_0e9bf167",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 316,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-15T21:39:06Z",
+      "side": 1,
+      "message": "I believe the fact that you found you still need the Thread.sleep() here is very interesting, and suggest that this is an indication that there is actually a real bug in buildExternalTunnelFromDpns(), which would be worth to dig more into at this opportunity... First, we can see in line 206 it does result.set(... success() ...) - that strikes me as actually wrong, because how can it pretend to be be successful by just ignoring extTunnelResult, what do you think?  Second, it\u0027s probably wrong how it sets success of the result in line 195 for the first extTunnelResult - it should only do this if ALL were succesful, see what I mean?  I believe Guava has some utilities for this kind of thing....",
+      "revId": "150a06398dc06dfbe1f199a427e8ab93b49858de",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
