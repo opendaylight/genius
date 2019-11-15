@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_6fe566a7",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Updated to below comment\n/* Overridding of OVS Split-Horizon Protection */",
+      "parentUuid": "7a6b29fe_cf863adb",
+      "range": {
+        "startLine": 126,
+        "startChar": 7,
+        "endLine": 126,
+        "endChar": 67
+      },
+      "revId": "3f3997ee4db8ee0e06650684a3aab9923c98dd97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_2f6d2e33",
         "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
         "patchSetId": 7
@@ -36,6 +60,30 @@
       "writtenOn": "2016-10-22T04:42:03Z",
       "side": 1,
       "message": "description doesn\u0027t match with field name and causes confusion. description suggests that to enable split horizon protection this should be set to true but actual behavior from field name, which has \u0027override\u0027 suggests otherwise.",
+      "range": {
+        "startLine": 132,
+        "startChar": 25,
+        "endLine": 132,
+        "endChar": 103
+      },
+      "revId": "3f3997ee4db8ee0e06650684a3aab9923c98dd97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_4fe06a96",
+        "filename": "interfacemanager/interfacemanager-api/src/main/yang/odl-interface.yang",
+        "patchSetId": 7
+      },
+      "lineNbr": 132,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Updated to below desciption(inline with field name)\n\n\"represents whether to override OVS split horizon protection on this port.\"",
+      "parentUuid": "7a6b29fe_2f6d2e33",
       "range": {
         "startLine": 132,
         "startChar": 25,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_8ff1e26c",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 619,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Updated",
+      "parentUuid": "7a6b29fe_af793efe",
+      "range": {
+        "startLine": 619,
+        "startChar": 18,
+        "endLine": 619,
+        "endChar": 99
+      },
+      "revId": "3f3997ee4db8ee0e06650684a3aab9923c98dd97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_ef8336ca",
         "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
         "patchSetId": 7
@@ -82,6 +154,30 @@
       "writtenOn": "2016-10-22T04:42:03Z",
       "side": 1,
       "message": "same as above.",
+      "range": {
+        "startLine": 630,
+        "startChar": 18,
+        "endLine": 630,
+        "endChar": 105
+      },
+      "revId": "3f3997ee4db8ee0e06650684a3aab9923c98dd97",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_afee5e89",
+        "filename": "mdsalutil/mdsalutil-api/src/main/java/org/opendaylight/genius/mdsalutil/MDSALUtil.java",
+        "patchSetId": 7
+      },
+      "lineNbr": 630,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "updated",
+      "parentUuid": "7a6b29fe_ef8336ca",
       "range": {
         "startLine": 630,
         "startChar": 18,
