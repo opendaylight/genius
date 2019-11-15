@@ -182,6 +182,29 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_1fe31006",
+        "filename": "docs/specs/itm-tunnel-auto-config.rst",
+        "patchSetId": 13
+      },
+      "lineNbr": 333,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T06:41:08Z",
+      "side": 1,
+      "message": "formatting: use ``ovs-vsctl``",
+      "range": {
+        "startLine": 333,
+        "startChar": 79,
+        "endLine": 333,
+        "endChar": 90
+      },
+      "revId": "bd96f859b5feacdf2dc44fae57f9e00d8eefae26",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3fcfec80",
         "filename": "docs/specs/itm-tunnel-auto-config.rst",
         "patchSetId": 13
