@@ -50,6 +50,52 @@
     },
     {
       "key": {
+        "uuid": "da01753e_20363404",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilImplTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Empty test method can be added to check if ArpUtilTestModule is working fine.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 30
+      },
+      "revId": "5a807a7be9ddce279c50f7107e07de87bca259bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_4063781a",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArpUtilImplTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Class name can be changed ArpUtilTest, to keep it in sync with other modules as well.",
+      "range": {
+        "startLine": 17,
+        "startChar": 13,
+        "endLine": 17,
+        "endChar": 28
+      },
+      "revId": "5a807a7be9ddce279c50f7107e07de87bca259bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da01753e_a6ca3c6c",
         "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArputilTestModule.java",
         "patchSetId": 3
@@ -86,6 +132,29 @@
       "side": 1,
       "message": "Done",
       "parentUuid": "da01753e_a6ca3c6c",
+      "range": {
+        "startLine": 21,
+        "startChar": 13,
+        "endLine": 21,
+        "endChar": 30
+      },
+      "revId": "5a807a7be9ddce279c50f7107e07de87bca259bc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da01753e_60403c57",
+        "filename": "arputil/arputil-impl/src/test/java/org/opendaylight/genius/arputil/test/ArputilTestModule.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Rename to ArpUtilTestModule.",
       "range": {
         "startLine": 21,
         "startChar": 13,
