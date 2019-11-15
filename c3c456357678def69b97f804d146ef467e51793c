@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_314ffb6c",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 110,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Add two new API - getRpcErrorResultForGetDpnIdRpc and getRpcErrorResultForGetPortRpc",
+      "parentUuid": "7a6b29fe_c4cfe654",
+      "revId": "c3c456357678def69b97f804d146ef467e51793c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_04d6fef0",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/rpcservice/InterfaceManagerRpcService.java",
         "patchSetId": 5
