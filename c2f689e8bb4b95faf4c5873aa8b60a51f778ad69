@@ -1,0 +1,302 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a65312a_b4c9e05c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmProvider.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "nitpick: tab to space",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 199,
+        "endChar": 1
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_34ddd015",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "why public? If it is needed by modules/packages other than listener then it should be in a more generic place. if not this should be protected. This applies to other functions in here too.",
+      "range": {
+        "startLine": 52,
+        "startChar": 4,
+        "endLine": 52,
+        "endChar": 10
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_14e254d5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "Avoid datastore read.",
+      "range": {
+        "startLine": 68,
+        "startChar": 38,
+        "endLine": 68,
+        "endChar": 51
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_54ecccc7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "rename to getTransportZoneFromConfig, shorter and get the point across.",
+      "range": {
+        "startLine": 83,
+        "startChar": 32,
+        "endLine": 83,
+        "endChar": 63
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_b4d0c0f8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "Avoid DS reads, esp on Config. ITM code already has listeners for TZ et al. So we should already be having access to this information and shouldn\u0027t need to add new read.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d4d73cec",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "What is CSS?",
+      "range": {
+        "startLine": 125,
+        "startChar": 43,
+        "endLine": 125,
+        "endChar": 46
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_74fe286d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "Can this throw false negatives for teps added through rest/northbound?",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_f4f19896",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "same as above, add a Javadoc explaining what this code intends to do. This seems to be a copy-paste of remove, so most of same comments apply here too.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_943b0438",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "would be better to call it removeVtepFromTZConfig",
+      "range": {
+        "startLine": 302,
+        "startChar": 23,
+        "endLine": 302,
+        "endChar": 46
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_d4457cb4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "what is the else scenario? error, continue? At very least log a trace.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1417f4a4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "not-a-bug-just-observation: Oh boy, I can forsee this log msg confusing users/debuggers down the line. Though nothing much can be done outside of using a different term than Unknow, maybe \u0027Default\u0027 or \u0027Orphan\u0027 or going by other usage in yang, Unhosted.",
+      "range": {
+        "startLine": 368,
+        "startChar": 23,
+        "endLine": 368,
+        "endChar": 30
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_3412f0b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "Use Unknown as we\u0027re calling this default TZ as Unknown TZ. It is being used as noun, not veb.",
+      "range": {
+        "startLine": 379,
+        "startChar": 38,
+        "endLine": 379,
+        "endChar": 45
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_b401e03b",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T07:06:35Z",
+      "side": 1,
+      "message": "don\u0027t use * in imports. please setup your IDE to do this correctly.",
+      "range": {
+        "startLine": 11,
+        "startChar": 17,
+        "endLine": 11,
+        "endChar": 18
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_37baf2e1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2016-10-26T09:19:39Z",
+      "side": 1,
+      "message": "As discussed, this will always be true in case of auto-bridge creation and we will never be able to add it to TZ. Use of CDTCN and ConcurrentHAshMap will help take care of this as well as eliminate reads.",
+      "range": {
+        "startLine": 94,
+        "startChar": 16,
+        "endLine": 94,
+        "endChar": 32
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
