@@ -34,6 +34,60 @@
       "revId": "ada99aa19f9e9407288f36c7427b34a7b674d45c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_15041414",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "There were few decoding issue(during flow installation) faced when pop-vlan and inPortAction Actions were added as a two separate Instructions. As a result, it was required that both of these actions to be part of same action.\n\nIn (createNxOfInPortAction(0,0)), the first parameter presents actionkey value and the second parameter represents the in_port to be set with Zero value.\n\nwhenever, we have pop-vlan action, then action-key is set with 0(pop-vlan) and 1(inPortAction) respectively.",
+      "parentUuid": "7a6b29fe_6a6274d9",
+      "revId": "ada99aa19f9e9407288f36c7427b34a7b674d45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_75574803",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "There were few decoding issue(during flow installation) faced when pop-vlan and inPortAction Actions were added as a two separate Instructions. As a result, it was required that both of these actions to be part of same instruction.\n\nIn (createNxOfInPortAction(0,0)), the first parameter presents actionkey value and the second parameter represents the in_port to be set with Zero value.\n\nwhenever, we have pop-vlan action, then action-key is set with 0(pop-vlan) and 1(inPortAction) respectively.",
+      "parentUuid": "5a682502_15041414",
+      "revId": "ada99aa19f9e9407288f36c7427b34a7b674d45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_756d8804",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/servicebindings/flowbased/utilities/FlowBasedServicesUtils.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 464,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Change incorporated as per suggestion",
+      "parentUuid": "5a682502_f54a3854",
+      "revId": "ada99aa19f9e9407288f36c7427b34a7b674d45c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
