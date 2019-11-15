@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_06c92e26",
+        "filename": "itm/itm-api/src/main/yang/itm-config.yang",
+        "patchSetId": 17
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-10T15:09:33Z",
+      "side": 1,
+      "message": "These will likely be configured through config.xml file than through rest so we\u0027re fine.",
+      "parentUuid": "fafc7978_068ace1a",
+      "revId": "6129907372422ba4904308d2929b2cb16010098c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fafc7978_e68cea37",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 17
@@ -30,6 +48,24 @@
       "writtenOn": "2017-02-10T14:00:41Z",
       "side": 1,
       "message": "this should move up, checkstyle will complain",
+      "revId": "6129907372422ba4904308d2929b2cb16010098c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_c6e606b4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 17
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-02-10T15:09:33Z",
+      "side": 1,
+      "message": "will wait for builds to go. if they fail we can address here, else there are couple more patches where we can fix it. this patch is crucial as disables ITM autoconfig by default.",
+      "parentUuid": "fafc7978_e68cea37",
       "revId": "6129907372422ba4904308d2929b2cb16010098c",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
