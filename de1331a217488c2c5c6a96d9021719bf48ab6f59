@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_1950845d",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-08-14T11:02:49Z",
+      "side": 1,
+      "message": "Just a question...where do these tun ports come from? Not nova, I assume, so I\u0027m just curious about where they come from.",
+      "revId": "de1331a217488c2c5c6a96d9021719bf48ab6f59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_39558050",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/commons/InterfaceManagerCommonUtils.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 462,
+      "author": {
+        "id": 5357
+      },
+      "writtenOn": "2016-08-14T11:02:49Z",
+      "side": 1,
+      "message": "Seems wasteful to me to compile this each time the function is called. Why not compile it once up front?",
+      "revId": "de1331a217488c2c5c6a96d9021719bf48ab6f59",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
