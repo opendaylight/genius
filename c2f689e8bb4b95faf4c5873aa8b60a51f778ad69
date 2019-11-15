@@ -48,6 +48,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_d17bc327",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Yes, moved to IfmConstants.",
+      "parentUuid": "3a65312a_f4c35836",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_34ddd015",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -59,6 +77,30 @@
       "writtenOn": "2016-10-26T07:06:35Z",
       "side": 1,
       "message": "why public? If it is needed by modules/packages other than listener then it should be in a more generic place. if not this should be protected. This applies to other functions in here too.",
+      "range": {
+        "startLine": 52,
+        "startChar": 4,
+        "endLine": 52,
+        "endChar": 10
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_22c0b229",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Made methods protected to restrict access to its package.",
+      "parentUuid": "3a65312a_34ddd015",
       "range": {
         "startLine": 52,
         "startChar": 4,
@@ -117,6 +159,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_b178c72c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Func name changed to getBridgeDpid.",
+      "parentUuid": "3a65312a_74e748e5",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_54ecccc7",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -140,6 +200,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_091d1967",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_54ecccc7",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_b4d0c0f8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -151,6 +229,24 @@
       "writtenOn": "2016-10-26T07:06:35Z",
       "side": 1,
       "message": "Avoid DS reads, esp on Config. ITM code already has listeners for TZ et al. So we should already be having access to this information and shouldn\u0027t need to add new read.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_8920099d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Moved getTransportZoneFromConfigDS() from TepCommandHelper to ItmUtils.java and used it.",
+      "parentUuid": "3a65312a_b4d0c0f8",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -174,6 +270,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_e2c51a3e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Added javadoc for the methods of this class file.",
+      "parentUuid": "3a65312a_54032c73",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_94cdc460",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -185,6 +299,24 @@
       "writtenOn": "2016-10-26T07:06:35Z",
       "side": 1,
       "message": "check with Faseela, we may already have method to do this in IFM. If not add it in this file locally itself. You\u0027re doing the same again.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_518fb323",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 118,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Moved getDpnId() from IfmUtils.java to MDSALUtil.java and then used from there.",
+      "parentUuid": "3a65312a_94cdc460",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -214,6 +346,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c9120158",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_d4d73cec",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_74fe286d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -231,6 +381,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_6208ea91",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "This is the case when TEP is deleted from southbound and its other_config \u0027tzname\u0027 parameter was not configured, so it would be case of default-TZ, and when it is attempted to get object of default TZ from Config DS, which in turn resulted NULL, which is erroneous case, because default TZ is configured on start-up which should never be NULL. If default TZ is deleted from North via rest, then it is wrong configuration.",
+      "parentUuid": "3a65312a_74fe286d",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_f4f19896",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -242,6 +410,24 @@
       "writtenOn": "2016-10-26T07:06:35Z",
       "side": 1,
       "message": "same as above, add a Javadoc explaining what this code intends to do. This seems to be a copy-paste of remove, so most of same comments apply here too.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_82dee60f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 205,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Added javadoc for the methods of this class file.",
+      "parentUuid": "3a65312a_f4f19896",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -271,6 +457,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_e9309dea",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_943b0438",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_d4457cb4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -282,6 +486,24 @@
       "writtenOn": "2016-10-26T07:06:35Z",
       "side": 1,
       "message": "what is the else scenario? error, continue? At very least log a trace.",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_e947fd49",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 335,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_d4457cb4",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -311,6 +533,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_6973edb1",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 368,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_1417f4a4",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_3412f0b4",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -334,6 +574,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_c967a1e9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 379,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_3412f0b4",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_feb5ee31",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
         "patchSetId": 10
@@ -345,6 +603,24 @@
       "writtenOn": "2016-10-27T20:10:59Z",
       "side": 1,
       "message": "since IpPrefix is immutable you can keep a single instance of it in a static member of the class",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_82b706d8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/ItmListenerUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Fixed.",
+      "parentUuid": "3a65312a_feb5ee31",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -374,6 +650,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_ee1c23c4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_b401e03b",
+      "range": {
+        "startLine": 11,
+        "startChar": 17,
+        "endLine": 11,
+        "endChar": 18
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_de6752e9",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 10
@@ -385,6 +685,24 @@
       "writtenOn": "2016-10-27T20:10:59Z",
       "side": 1,
       "message": "add super.close() for cleaner behavior of case of unloading the bundle",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_2ad7f2c2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "No need for this. OvsdbNodeListener extends AsyncDataTreeChangeListenerBase which implements AutoCloseable.",
+      "parentUuid": "3a65312a_de6752e9",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -408,6 +726,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_ff52dd11",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "During creation of the otherConfig in getOvsdbNodeOtherConfigs(), it is not determined whether other-config is parsed from Node in add case or update case. Hence, for proper flow of TEP add case, this trace message is added to help debugging.",
+      "parentUuid": "3a65312a_beab76d5",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_1eb9ca2e",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 10
@@ -425,6 +761,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_3f5d7522",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Please explain more.",
+      "parentUuid": "3a65312a_1eb9ca2e",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_37baf2e1",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 10
@@ -436,6 +790,30 @@
       "writtenOn": "2016-10-26T09:19:39Z",
       "side": 1,
       "message": "As discussed, this will always be true in case of auto-bridge creation and we will never be able to add it to TZ. Use of CDTCN and ConcurrentHAshMap will help take care of this as well as eliminate reads.",
+      "range": {
+        "startLine": 94,
+        "startChar": 16,
+        "endLine": 94,
+        "endChar": 32
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_7f3ecdb9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 94,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Local cache is not implemented and TEP would be added on bridge ADD notification. Local cache with CDTCN and concurrent hashmap would be implemented in performance improvement activity.",
+      "parentUuid": "3a65312a_37baf2e1",
       "range": {
         "startLine": 94,
         "startChar": 16,
@@ -471,6 +849,30 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_bf48655c",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_f7f07acb",
+      "range": {
+        "startLine": 110,
+        "startChar": 12,
+        "endLine": 111,
+        "endChar": 53
+      },
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_deae32e7",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 10
@@ -482,6 +884,24 @@
       "writtenOn": "2016-10-27T20:10:59Z",
       "side": 1,
       "message": "in case when isTzChanged or isDpnBrChnaged are true you will not get to the remove section",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_ff793d94",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 201,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "No need to go to remove section.\nWhen TZ name is changed, in this case, TEP is removed from old TZ and added into new TZ.\nSo, before removing, I try to add TEP into new TZ and if for some issue, I do not get DPN-ID for the bridge on which TEP needs to be added, then I return from function so that it does not remove from old TZ.",
+      "parentUuid": "3a65312a_deae32e7",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -505,6 +925,24 @@
     },
     {
       "key": {
+        "uuid": "3a65312a_5f6f91c5",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 252,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "No, they are used inside function getOvsdbNodeOtherConfigs().",
+      "parentUuid": "3a65312a_5e9b42c9",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "3a65312a_fe5e8e11",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
         "patchSetId": 10
@@ -516,6 +954,24 @@
       "writtenOn": "2016-10-27T20:10:59Z",
       "side": 1,
       "message": "instead of printing in each condition you can add a print of otherConfigInfoObj when you exit the for look",
+      "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3a65312a_1f9cf9bf",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/OvsdbNodeListener.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 290,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "3a65312a_fe5e8e11",
       "revId": "c2f689e8bb4b95faf4c5873aa8b60a51f778ad69",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
