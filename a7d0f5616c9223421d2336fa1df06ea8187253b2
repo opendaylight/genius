@@ -16,6 +16,24 @@
       "revId": "a7d0f5616c9223421d2336fa1df06ea8187253b2",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_8dcfd928",
+        "filename": "itm/itm-impl/src/main/resources/org/opendaylight/blueprint/itm.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_4d066187",
+      "revId": "a7d0f5616c9223421d2336fa1df06ea8187253b2",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
