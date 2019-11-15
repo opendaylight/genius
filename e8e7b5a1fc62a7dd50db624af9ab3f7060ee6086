@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_02c38689",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_1c748b66",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_3c67c7b8",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 5
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "1a622d24_62bcfa06",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_3c67c7b8",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_5c6a8381",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
         "patchSetId": 5
@@ -47,6 +83,24 @@
       "writtenOn": "2017-01-16T12:30:38Z",
       "side": 1,
       "message": "This is not needed.",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_42b9fe13",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cli/TepCommandHelper.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_5c6a8381",
       "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
@@ -88,6 +142,42 @@
     },
     {
       "key": {
+        "uuid": "fafc7978_9508062f",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 1142,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fafc7978_95fe4637",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_35a15aaa",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 1142,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Yes, cache can be implemented for this.\nWould it be fine if we allow to get this code merged first and then we take up this comment as optimization in subsequent code patch wherein we will implement cache to avoid DS read operations.",
+      "parentUuid": "1a622d24_7c0c9fed",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a622d24_bc12b706",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
         "patchSetId": 5
@@ -99,6 +189,24 @@
       "writtenOn": "2017-01-16T12:30:38Z",
       "side": 1,
       "message": "might be better to use ImmutableMap for this.",
+      "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_823e768a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 1300,
+      "author": {
+        "id": 7866
+      },
+      "writtenOn": "2019-11-15T19:59:02Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1a622d24_bc12b706",
       "revId": "e8e7b5a1fc62a7dd50db624af9ab3f7060ee6086",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
