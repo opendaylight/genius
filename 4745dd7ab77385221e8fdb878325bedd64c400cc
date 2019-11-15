@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "7a6b29fe_064c946f",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "Moved this check to updateParentInterface Utility function",
+      "parentUuid": "7a6b29fe_1b9fd1b5",
+      "revId": "4745dd7ab77385221e8fdb878325bedd64c400cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7a6b29fe_7ba6c511",
         "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2016-08-16T06:35:21Z",
       "side": 1,
       "message": "same method is being used in northbound listener...move this to a utility",
+      "revId": "4745dd7ab77385221e8fdb878325bedd64c400cc",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_2678b08e",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 5
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "during north-bound, parent-ref itself is updated and passed to subsequent method.\nDuring south-bound, portName is updated and passed to subsequest. So, different API required",
+      "parentUuid": "7a6b29fe_7ba6c511",
       "revId": "4745dd7ab77385221e8fdb878325bedd64c400cc",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
