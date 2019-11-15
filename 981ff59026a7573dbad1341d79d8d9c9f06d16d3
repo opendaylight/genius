@@ -22,6 +22,30 @@
       "revId": "981ff59026a7573dbad1341d79d8d9c9f06d16d3",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_3a439415",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2019-11-15T20:27:19Z",
+      "side": 1,
+      "message": "In OvsInterfaceStateAddHelper.addState API, below change is done to prefix dpnid for the interfaceName before adding it into interfaceState Operational DS.\n\n        boolean isTunnelInterface \u003d InterfaceManagerCommonUtils.isTunnelInterface(iface);\n        if (!isTunnelInterface \u0026\u0026 fcNodeConnectorNew!\u003dnull \u0026\u0026 interfaceName.equals(fcNodeConnectorNew.getName())) {\n            interfaceName \u003d new StringBuilder(IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId)).append(IfmConstants.OF_URI_SEPARATOR).append(interfaceName).toString();\n        }\n        Interface ifState \u003d InterfaceManagerCommonUtils.addStateEntry(iface, interfaceName, transaction, idManager,\n                physAddress, operStatus, adminStatus, nodeConnectorId);",
+      "parentUuid": "9a561d44_f5bf74f9",
+      "range": {
+        "startLine": 161,
+        "startChar": 78,
+        "endLine": 161,
+        "endChar": 86
+      },
+      "revId": "981ff59026a7573dbad1341d79d8d9c9f06d16d3",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
