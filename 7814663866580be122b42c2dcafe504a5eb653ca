@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7a6b29fe_74e70b13",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceConfigListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-08-11T10:03:35Z",
+      "side": 1,
+      "message": "can this be utility to retrieve parent-refs instead of having the same code everywhere?",
+      "revId": "7814663866580be122b42c2dcafe504a5eb653ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7a6b29fe_f4bafbdf",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/listeners/InterfaceInventoryStateListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 817
+      },
+      "writtenOn": "2016-08-11T10:03:35Z",
+      "side": 1,
+      "message": "can this string builder logic be a utility?",
+      "revId": "7814663866580be122b42c2dcafe504a5eb653ca",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
