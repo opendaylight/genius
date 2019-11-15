@@ -1,0 +1,157 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fafc7978_061123ac",
+        "filename": "itm/itm-impl/pom.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "for possible future upgrades, please do not put this fixed version number here, normally it should get inherited automatically, as it does in other projects using it... in fact I think you automatically get this as a transitive dependency from mdsal-binding-test-utils? You can probably remove the entire dependency, not just the version.  If not, then please let me know so that we can have a closer look why you needed this here.",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_268547d0",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "may I suggest that you also use \"public @Rule LogRule logRule \u003d new LogRule();\", from , org.opendaylight.infrautils:infrautils-testutils, just before the GuiceRule, here?  I believe you\u0027ll find it adds value in this kind of new style \"component\" test.",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_e6969fef",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "please remove \"\u003d null\" from here and the next 40 lines... it\u0027s the default in Java, and explicitly putting this makes this code less readable.. this isn\u0027t C code anymore, and so it shouldn\u0027t look like it either! ;-)",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_6603cf42",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "@Inject ItmManagerRpcService itmManagerRpcService;",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a6e657b2",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 142,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "you technically don\u0027t need to this yourself, because you\u0027re using Guice, you can let it create the ItmManagerRpcService .. as it\u0027s already annotated with @Singleton and @Inject, you should be able to remove this line, and just use @Inject for the respective field in line 137, and it should work.",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_06eda38b",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "remove this empty method (you don\u0027t have to have an @After just because you have a @Before)",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_a67817f3",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "could I suggest that you rename this method?  This does NOT actually set up mocks - the objects you create here are NOT mocks (as in, you don\u0027t use mockito anywhere here, thank god) , and the distinction is kind of important... so call this anything else you like, perhaps createTestData(), or something like that?  Or, even much clearer to people looking at this test in the future, just put all this right into the @Before method - that\u0027s most obviously implicitly documents when this is called, without anyone having to look more closely.",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_06a48355",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "FYI, personally I\u0027ve stopped using JUnit\u0027s assertEquals, and now much prefer using not Hamcrest but the equivalent most modern Google Truth (see https://google.github.io/truth/), where you can just write assertThat(rpcRes.get().isSuccessful()).isTrue(); which \"reads\" nicely!",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fafc7978_66b10f8f",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmManagerRpcServiceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 5867
+      },
+      "writtenOn": "2017-02-14T09:46:37Z",
+      "side": 1,
+      "message": "have you tried to avoid this, here and everywhere below?  If at all possible, we should avoid it - I want to remove it from where I used it so far, not see more of it... in this case, unless ItmManagerRpcService does something fancy with background threads, it may be as easy as calling result.get() instead of Thread.sleep() in this line, to make it wait... please try.  BTW, in this context, have a look at the org.opendaylight.infrautils.testutils.RunUntilFailureRule which is useful to convince yourself (locally, never commit), that your test is not flaky, but leaving it running for 1h while you go have lunch...",
+      "revId": "ad9b2c47ab46cdde86a79760daa350af1317e176",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
