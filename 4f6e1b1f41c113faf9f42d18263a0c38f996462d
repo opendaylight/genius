@@ -22,6 +22,29 @@
       "revId": "4f6e1b1f41c113faf9f42d18263a0c38f996462d",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a622d24_a3a3eab0",
+        "filename": "itm/itm-impl/src/main/resources/initial/genius-itm-config.xml",
+        "patchSetId": 5
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 3276
+      },
+      "writtenOn": "2017-01-05T11:30:53Z",
+      "side": 1,
+      "message": "should be false",
+      "range": {
+        "startLine": 2,
+        "startChar": 20,
+        "endLine": 2,
+        "endChar": 24
+      },
+      "revId": "4f6e1b1f41c113faf9f42d18263a0c38f996462d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
