@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -89,6 +90,7 @@ public class ItmInternalTunnelDeleteWorker {
     private final DirectTunnelUtils directTunnelUtils;
     private final OfEndPointCache ofEndPointCache;
     private final ItmConfig itmConfig;
+    private final TombstonedNodeManager tombstonedNodeManager;
 
     public ItmInternalTunnelDeleteWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
                                          TunnelMonitoringConfig tunnelMonitoringConfig,
@@ -98,7 +100,8 @@ public class ItmInternalTunnelDeleteWorker {
                                          TunnelStateCache tunnelStateCache,
                                          DirectTunnelUtils directTunnelUtils,
                                          OfEndPointCache ofEndPointCache,
-                                         ItmConfig itmConfig) {
+                                         ItmConfig itmConfig,
+                                         TombstonedNodeManager tombstonedNodeManager) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.jobCoordinator = jobCoordinator;
@@ -111,6 +114,7 @@ public class ItmInternalTunnelDeleteWorker {
         this.directTunnelUtils = directTunnelUtils;
         this.ofEndPointCache = ofEndPointCache;
         this.itmConfig = itmConfig;
+        this.tombstonedNodeManager = tombstonedNodeManager;
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -138,6 +142,7 @@ public class ItmInternalTunnelDeleteWorker {
                 LOG.debug("Entries in meshEndPointCache {} for DPN Id{} ", meshedEndPtCache.size(), srcDpn.getDPNID());
                 for (TunnelEndPoints srcTep : srcDpn.nonnullTunnelEndPoints()) {
                     LOG.trace("Processing srcTep {}", srcTep);
+                    Boolean isDpnTombstoned = tombstonedNodeManager.isDpnTombstoned(srcDpn.getDPNID());
                     List<TzMembership> srcTZones = srcTep.nonnullTzMembership();
                     boolean tepDeleteFlag = false;
                     // First, take care of tunnel removal, so run through all other DPNS other than srcDpn
@@ -160,9 +165,12 @@ public class ItmInternalTunnelDeleteWorker {
                                                         + "Destination TEP {} " ,srcTep , dstTep);
                                                 removeTunnelInterfaceFromOvsdb(tx, srcTep, dstTep, srcDpn.getDPNID(),
                                                         dstDpn.getDPNID());
-
+                                                if (isDpnTombstoned) {
+                                                    LOG.trace("Removing tunnelState entry for {} while tombstoned " +
+                                                            "is set {}", srcDpn.getDPNID(), isDpnTombstoned);
+                                                    removeTunnelState(srcTep,dstTep);
+                                                }
                                             }
-
                                         } else {
                                             if (checkIfTrunkExists(dstDpn.getDPNID(), srcDpn.getDPNID(),
                                                 srcTep.getTunnelType(), dataBroker)) {
@@ -411,6 +419,22 @@ public class ItmInternalTunnelDeleteWorker {
                 LOG.error("Cannot Delete Tunnel {} as OVS Bridge Entry is NULL ", iface.getName(), e);
             }
         }
+    }
+
+    private void removeTunnelState(TunnelEndPoints srcTep, TunnelEndPoints dstTep) {
+        String trunkfwdIfName = ItmUtils.getTrunkInterfaceName(srcTep.getInterfaceName(),
+                srcTep.getIpAddress().getIpv4Address().getValue(),
+                dstTep.getIpAddress().getIpv4Address().getValue(),
+                srcTep.getTunnelType().getName());
+        LOG.trace("Removing tunnelstate for {}", trunkfwdIfName);
+        directTunnelUtils.deleteTunnelStateEntry(trunkfwdIfName);
+
+        String trunkRevIfName = ItmUtils.getTrunkInterfaceName(dstTep.getInterfaceName(),
+                dstTep.getIpAddress().getIpv4Address().getValue(),
+                srcTep.getIpAddress().getIpv4Address().getValue(),
+                srcTep.getTunnelType().getName());
+        LOG.trace("Removing tunnelstate for {}", trunkRevIfName);
+        directTunnelUtils.deleteTunnelStateEntry(trunkRevIfName);
     }
 
     private boolean checkIfTepInterfaceExists(Uint64 srcDpnId, Uint64 dstDpnId) {
