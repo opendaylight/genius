@@ -12,6 +12,8 @@ import static org.mockito.Mockito.mock;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
+import org.opendaylight.genius.cloudscaler.rpcservice.TombstonedNodeManagerImpl;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.listeners.internal.DataTreeEventCallbackRegistrarImpl;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
@@ -101,6 +103,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 new SimpleDOMEntityOwnershipService(), dataBrokerTestModule.getBindingToNormalizedNodeCodec());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
+        bind(TombstonedNodeManager.class).to(TombstonedNodeManagerImpl.class);
 
         // Bindings to test infra (fakes & mocks)
         TestIMdsalApiManager mdsalManager = TestIMdsalApiManager.newInstance();
