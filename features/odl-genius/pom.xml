@@ -18,16 +18,16 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius</artifactId>
-  <version>0.6.3-SNAPSHOT</version>
+  <version>0.6.3</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: Impls</name>
 
   <!-- TODO Replace all <properties> by dependencyManagement <scope>import of respective upstream project -->
   <properties>
-    <openflowplugin.version>0.8.3-SNAPSHOT</openflowplugin.version>
-    <ovsdb.version>1.8.3-SNAPSHOT</ovsdb.version>
-    <infrautils.version>1.5.3-SNAPSHOT</infrautils.version>
-    <daexim.version>1.5.3-SNAPSHOT</daexim.version>
+    <openflowplugin.version>0.8.3</openflowplugin.version>
+    <ovsdb.version>1.8.3</ovsdb.version>
+    <infrautils.version>1.5.3</infrautils.version>
+    <daexim.version>1.5.3</daexim.version>
   </properties>
 
   <dependencyManagement>
@@ -53,7 +53,7 @@
     <dependency>
       <groupId>org.opendaylight.serviceutils</groupId>
       <artifactId>odl-serviceutils-srm</artifactId>
-      <version>0.3.3-SNAPSHOT</version>
+      <version>0.3.3</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
@@ -88,21 +88,21 @@
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-southbound</artifactId>
-      <version>0.8.3-SNAPSHOT</version>
+      <version>0.8.3</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-app-forwardingrules-manager</artifactId>
-      <version>0.8.3-SNAPSHOT</version>
+      <version>0.8.3</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-app-reconciliation-framework</artifactId>
-      <version>0.8.3-SNAPSHOT</version>
+      <version>0.8.3</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>

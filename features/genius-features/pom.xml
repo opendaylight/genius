@@ -18,7 +18,7 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>genius-features</artifactId>
-  <version>0.6.3-SNAPSHOT</version>
+  <version>0.6.3</version>
   <name>ODL :: genius :: ${project.artifactId}</name>
   <packaging>feature</packaging>
 
