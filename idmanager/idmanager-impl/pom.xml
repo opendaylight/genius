@@ -12,13 +12,13 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.genius</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>0.6.3-SNAPSHOT</version>
+    <version>0.6.4-SNAPSHOT</version>
     <relativePath>../../commons/binding-parent</relativePath>
   </parent>
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>idmanager-impl</artifactId>
-  <version>0.6.3-SNAPSHOT</version>
+  <version>0.6.4-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
@@ -50,7 +50,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.serviceutils</groupId>
       <artifactId>tools-api</artifactId>
-      <version>0.3.3-SNAPSHOT</version>
+      <version>0.3.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
@@ -59,7 +59,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.daexim</groupId>
       <artifactId>daexim-model</artifactId>
-      <version>1.5.3-SNAPSHOT</version>
+      <version>1.5.4-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
