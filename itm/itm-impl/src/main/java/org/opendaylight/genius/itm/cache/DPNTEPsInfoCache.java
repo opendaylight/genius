@@ -69,9 +69,13 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
         LOG.info("DPNTepsInfo Add Received for {}", dpnTepsInfo.getDPNID());
         String dpnId = dpnTepsInfo.getDPNID().toString();
 
-        Collection<TunnelStateInfo> tunnelStateInfoList;
+        Collection<TunnelStateInfo> tunnelStateInfoList = null;
         try (Acquired lock = directTunnelUtils.lockTunnel(dpnId)) {
-            tunnelStateInfoList = unprocessedNodeConnectorEndPointCache.remove(dpnId);
+            if (tunnelStateInfoList != null) {
+                tunnelStateInfoList = unprocessedNodeConnectorEndPointCache.remove(dpnId);
+            } else {
+                LOG.debug("TunnelStateInfo List for DPN Id {} is null", dpnId);
+            }
         }
 
         if (tunnelStateInfoList != null) {
