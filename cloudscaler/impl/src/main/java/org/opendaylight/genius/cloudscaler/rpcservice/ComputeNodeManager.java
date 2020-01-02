@@ -112,7 +112,7 @@ public class ComputeNodeManager {
                     .filter(otherConfig -> otherConfig.getBridgeOtherConfigKey().equals("dp-desc"))
                     .findFirst();
             if (!otherConfigOptional.isPresent()) {
-                LOG.error("ComputeNodeManager Compute node name is not present in bridge {}", node.getNodeId());
+                LOG.debug("ComputeNodeManager Compute node name is not present in bridge {}", node.getNodeId());
                 return;
             }
             String computeName = otherConfigOptional.get().getBridgeOtherConfigValue();
