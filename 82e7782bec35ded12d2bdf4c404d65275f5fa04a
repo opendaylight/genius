@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce03b29c_8b92ee74",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/DPNTEPsInfoCache.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-01-02T09:30:48Z",
+      "side": 1,
+      "message": "This line is unreachable.",
+      "revId": "82e7782bec35ded12d2bdf4c404d65275f5fa04a",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    }
+  ]
+}
