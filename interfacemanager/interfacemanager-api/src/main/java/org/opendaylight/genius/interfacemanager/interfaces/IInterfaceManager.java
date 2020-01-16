@@ -194,4 +194,6 @@ public interface IInterfaceManager {
     boolean isItmDirectTunnelsEnabled();
 
     Map getBridgeRefEntryMap();
+
+    boolean isItmOfTunnelsEnabled();
 }
