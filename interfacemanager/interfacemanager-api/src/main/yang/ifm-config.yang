@@ -25,5 +25,10 @@ module ifm-config {
           type boolean;
           default false;
        }
+       leaf itm-of-tunnels {
+          description "Enable OF tunnels on ITM Direct Tunnel.";
+          type boolean;
+          default false;
+       }
     }
 }
