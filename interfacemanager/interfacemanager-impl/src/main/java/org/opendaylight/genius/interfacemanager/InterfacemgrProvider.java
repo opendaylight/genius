@@ -894,4 +894,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public Map getBridgeRefEntryMap() {
         return interfaceMetaUtils.getBridgeRefEntryMap();
     }
+
+    @Override
+    public boolean isItmOfTunnelsEnabled() {
+        return ifmConfig.isItmOfTunnels();
+    }
 }
