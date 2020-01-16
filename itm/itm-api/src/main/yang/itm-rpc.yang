@@ -404,5 +404,20 @@ module itm-rpc {
                 type string;
             }
         }
+
+        rpc get-tep-ip {
+            description "used to retrieve local tep ip to use from DPNID";
+            input {
+                leaf dpn-id {
+                    type uint64;
+                    mandatory true;
+                }
+            }
+            output {
+                leaf tep-ip {
+                    type inet:ip-address;
+                }
+            }
+        }
     }
 }
