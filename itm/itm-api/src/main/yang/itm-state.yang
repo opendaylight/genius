@@ -301,4 +301,69 @@ module itm-state {
             }
         }
     }
+
+    container dpn-tep-config {
+        list of-dpn-tep {
+            key "source-dpn-id";
+            leaf source-dpn-id {
+                type uint64;
+                mandatory true;
+            }
+
+            leaf tunnel-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+                mandatory true;
+            }
+
+            leaf of-port-name {
+                type string;
+                mandatory true;
+            }
+
+            leaf tep-ip {
+                type inet:ip-address; //dpnid
+            }
+        }
+    }
+
+    container of-teps-state {
+        config false;
+        list of-tep {
+            key "of-port-name";
+
+            leaf of-port-name {
+                type string;
+            }
+
+            leaf source-dpn-id {
+                type uint64;
+                mandatory true;
+            }
+
+            leaf tunnel-type {
+                type identityref {
+                    base odlif:tunnel-type-base;
+                }
+                mandatory true;
+            }
+
+            leaf tep-ip {
+                type inet:ip-address; //dpnid
+            }
+
+            leaf port-number {
+                type string;
+            }
+
+             leaf if-index {
+                type uint16;
+             }
+
+             leaf of-tep-state {
+                type tunnel-oper-status;
+             }
+        }
+    }
 }
