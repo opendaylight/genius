@@ -9,6 +9,7 @@
 package org.opendaylight.genius.ipv6util.nd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -22,7 +23,6 @@ import org.mockito.Mockito;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
-import org.opendaylight.infrautils.testutils.Asserts;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorRef;
@@ -187,7 +187,7 @@ public class Ipv6NsHelperTest {
         long invalidOfGroupId = -1;
 
         // case: 1 - Invalid OF group ID
-        Asserts.assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             instance.transmitNeighborSolicitationToOfGroup(dpnId, srcMacAddress, srcIpv6Address, targetIpv6Address,
                     invalidOfGroupId);
         });

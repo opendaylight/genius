@@ -9,6 +9,7 @@ package org.opendaylight.genius.infra.tests;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
@@ -16,7 +17,6 @@ import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastor
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
-import static org.opendaylight.infrautils.testutils.Asserts.assertThrows;
 
 import java.util.concurrent.ExecutionException;
 import org.junit.Before;

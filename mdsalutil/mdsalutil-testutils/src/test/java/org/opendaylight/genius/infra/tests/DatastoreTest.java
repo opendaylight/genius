@@ -8,11 +8,11 @@
 package org.opendaylight.genius.infra.tests;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.infrautils.testutils.Asserts;
 
 public class DatastoreTest {
 
@@ -20,11 +20,11 @@ public class DatastoreTest {
     public void testDatastore() {
         assertThat(Datastore.toType(Datastore.CONFIGURATION)).isEqualTo(LogicalDatastoreType.CONFIGURATION);
         assertThat(Datastore.toType(Datastore.OPERATIONAL)).isEqualTo(LogicalDatastoreType.OPERATIONAL);
-        Asserts.assertThrows(NullPointerException.class, () -> Datastore.toType(null));
+        assertThrows(NullPointerException.class, () -> Datastore.toType(null));
 
         assertThat(Datastore.toClass(LogicalDatastoreType.CONFIGURATION)).isEqualTo(Datastore.CONFIGURATION);
         assertThat(Datastore.toClass(LogicalDatastoreType.OPERATIONAL)).isEqualTo(Datastore.OPERATIONAL);
-        Asserts.assertThrows(NullPointerException.class, () -> Datastore.toClass(null));
+        assertThrows(NullPointerException.class, () -> Datastore.toClass(null));
     }
 
 }

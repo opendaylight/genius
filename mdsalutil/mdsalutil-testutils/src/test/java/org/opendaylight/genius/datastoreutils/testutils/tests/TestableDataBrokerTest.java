@@ -8,7 +8,7 @@
 package org.opendaylight.genius.datastoreutils.testutils.tests;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.opendaylight.infrautils.testutils.Asserts.assertThrows;
+import static org.junit.Assert.assertThrows;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;

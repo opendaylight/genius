@@ -151,10 +151,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.infrautils</groupId>
-      <artifactId>infrautils-testutils</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <scope>test</scope>
