@@ -390,7 +390,7 @@ public class TepCommandHelperTest {
         tepCommandHelper.configureTunnelType(transportZone1,"VXLAN");
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZones,true);
+        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZones,true);
     }
 
     @Test

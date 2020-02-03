@@ -743,6 +743,9 @@ public class ItmTepAutoConfigTest {
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
                 tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
 
+        // wait for TransportZoneListener to perform config DS update
+        // for TEP movement through transaction
+        coordinatorEventsWaiter.awaitEventsConsumption();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -756,6 +759,9 @@ public class ItmTepAutoConfigTest {
         ListenableFuture<Void> futures =
                 ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
                         ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker, txRunner);
+        // wait for TransportZoneListener to perform config DS update
+        // for TEP movement through transaction
+        coordinatorEventsWaiter.awaitEventsConsumption();
         futures.get();
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -784,6 +790,8 @@ public class ItmTepAutoConfigTest {
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
                 ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.TZ_NAME);
         Assert.assertNotNull(notHostedPath);
+        // wait for TransportZoneListener to perform DS update
+        coordinatorEventsWaiter.awaitEventsConsumption();
         Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get().getZoneName());
 
@@ -912,6 +920,9 @@ public class ItmTepAutoConfigTest {
         ListenableFuture<Void> futures =
                 ItmTepAutoConfigTestUtil.addTep(ItmTestConstants.NB_TZ_TEP_IP,
                         ItmTestConstants.DEF_BR_DPID, ItmTestConstants.TZ_NAME, false, dataBroker, txRunner);
+        // wait for TransportZoneListener to perform config DS update
+        // for TEP movement through transaction
+        coordinatorEventsWaiter.awaitEventsConsumption();
         futures.get();
 
         IpPrefix subnetMaskObj = ItmUtils.getDummySubnet();
@@ -935,6 +946,10 @@ public class ItmTepAutoConfigTest {
         //verify delete
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet());
+
+        // wait for TransportZoneListener to perform config DS update
+        // for TEP movement through transaction
+        coordinatorEventsWaiter.awaitEventsConsumption();
 
         //check deleted tz moved to notHosted
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
