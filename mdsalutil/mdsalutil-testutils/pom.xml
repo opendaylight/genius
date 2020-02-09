@@ -13,7 +13,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.genius</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>0.7.2-SNAPSHOT</version>
+    <version>0.7.2</version>
     <relativePath>../../commons/binding-parent</relativePath>
   </parent>
 
@@ -37,7 +37,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.serviceutils</groupId>
       <artifactId>tools-testutils</artifactId>
-      <version>0.4.2-SNAPSHOT</version>
+      <version>0.4.2</version>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.yangtools</groupId>
