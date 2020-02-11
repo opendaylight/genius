@@ -148,9 +148,7 @@ public interface NwConstants {
     short ELAN_SMAC_LEARNED_TABLE = 49;
     short ELAN_SMAC_TABLE = 50;
     short ELAN_DMAC_TABLE = 51;
-    short ELAN_LOCAL_DMAC_TABLE = 51;
-    short ELAN_REMOTE_DMAC_TABLE = 52;
-    short ELAN_UNKNOWN_DMAC_TABLE = 53;
+    short ELAN_UNKNOWN_DMAC_TABLE = 52;
     short ELAN_FILTER_EQUALS_TABLE = 55;
     short DHCP_TABLE = 60;
     short SCF_UP_SUB_FILTER_TCP_BASED_TABLE = 70;
