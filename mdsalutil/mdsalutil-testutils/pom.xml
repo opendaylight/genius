@@ -112,5 +112,11 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>sal-test-model</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-binding-dom-adapter</artifactId>
+      <version>5.0.9</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>

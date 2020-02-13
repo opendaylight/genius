@@ -7,20 +7,25 @@
  */
 package org.opendaylight.genius.datastoreutils.hwvtep;
 
-import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public abstract class HwvtepClusteredDataTreeChangeListener<
     T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
-        extends AsyncClusteredDataTreeChangeListenerBase<T, K> {
+        extends AbstractClusteredAsyncDataTreeChangeListener<T> {
 
     private final HwvtepNodeHACache hwvtepNodeHACache;
 
     public HwvtepClusteredDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz,
             HwvtepNodeHACache hwvtepNodeHACache) {
+        super(dataBroker, LogicalDatastoreType.CONFIGURATION,
+                InstanceIdentifier.create(ExternalTunnelList.class).child(ExternalTunnel.class),
+                Executors.newSingleThreadExecutor("HwvtepClusteredDataTreeChangeListener", LOG));
         super(clazz, eventClazz);
         this.hwvtepNodeHACache = hwvtepNodeHACache;
     }
