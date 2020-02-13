@@ -10,7 +10,7 @@ package org.opendaylight.genius.infra.tests;
 import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.infrautils.testutils.Asserts;
 

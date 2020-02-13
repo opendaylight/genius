@@ -7,13 +7,13 @@
  */
 package org.opendaylight.genius.infra;
 
-import org.opendaylight.controller.md.sal.binding.api.BindingTransactionChain;
+import org.opendaylight.mdsal.binding.api.TransactionChain;
 
 /**
  * Implementation of {@link ManagedTransactionChain}, based on {@link ManagedTransactionFactoryImpl}.
  */
 class ManagedTransactionChainImpl extends ManagedTransactionFactoryImpl implements ManagedTransactionChain {
-    ManagedTransactionChainImpl(BindingTransactionChain realTxChain) {
+    ManagedTransactionChainImpl(TransactionChain realTxChain) {
         super(realTxChain);
     }
 }

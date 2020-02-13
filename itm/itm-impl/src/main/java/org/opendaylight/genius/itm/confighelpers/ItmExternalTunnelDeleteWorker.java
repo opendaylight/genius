@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
