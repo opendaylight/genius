@@ -7,22 +7,18 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.TypedReadTransaction;
@@ -30,6 +26,11 @@ import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeInterfaceInfo;
@@ -99,7 +100,7 @@ public final class InterfaceMetaUtils {
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-                bridgeRefEntryIid, dataBroker).orNull();
+                bridgeRefEntryIid, dataBroker).orElse(null);
         if (bridgeRefEntry != null) {
             addBridgeRefEntryToCache(dpId, bridgeRefEntry);
         }
@@ -114,7 +115,7 @@ public final class InterfaceMetaUtils {
         BridgeRefEntryKey bridgeRefEntryKey = new BridgeRefEntryKey(dpId);
         InstanceIdentifier<BridgeRefEntry> bridgeRefEntryIid = InterfaceMetaUtils
                 .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
-        bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker).orNull();
+        bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker).orElse(null);
         if (bridgeRefEntry != null) {
             addBridgeRefEntryToCache(dpId, bridgeRefEntry);
         }
@@ -181,7 +182,7 @@ public final class InterfaceMetaUtils {
 
     private BridgeEntry readBridgeEntryFromConfigDS(
             InstanceIdentifier<BridgeEntry> bridgeEntryInstanceIdentifier) {
-        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, dataBroker).orNull();
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, dataBroker).orElse(null);
     }
 
     public static InstanceIdentifier<BridgeInterfaceEntry> getBridgeInterfaceEntryIdentifier(
@@ -250,12 +251,12 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(InstanceIdentifier<InterfaceParentEntry> intfId) {
-        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfId, dataBroker).orNull();
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfId, dataBroker).orElse(null);
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
             InstanceIdentifier<InterfaceParentEntry> intfId) throws ReadFailedException {
-        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).checkedGet().orNull();
+        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).checkedGet().orElse(null);
     }
 
     public InterfaceChildEntry getInterfaceChildEntryFromConfigDS(
@@ -268,7 +269,7 @@ public final class InterfaceMetaUtils {
 
     public InterfaceChildEntry getInterfaceChildEntryFromConfigDS(
             InstanceIdentifier<InterfaceChildEntry> intfChildIid) {
-        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker).orNull();
+        return IfmUtil.read(LogicalDatastoreType.CONFIGURATION, intfChildIid, dataBroker).orElse(null);
     }
 
     public void createLportTagInterfaceMap(String infName, Integer ifIndex) {
@@ -366,7 +367,7 @@ public final class InterfaceMetaUtils {
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        return tx.read(id).get().toJavaUtil().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
+        return tx.read(id).get().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
     public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
@@ -397,7 +398,7 @@ public final class InterfaceMetaUtils {
         }
         InstanceIdentifier<Node> nodeIid =
                         bridgeRefEntry.getBridgeReference().getValue().firstIdentifierOf(Node.class);
-        com.google.common.base.Optional<Node> optNode =
+        Optional<Node> optNode =
             IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeIid,  dataBroker);
         if (optNode.isPresent()) {
             return optNode.get().getTerminationPoint();
