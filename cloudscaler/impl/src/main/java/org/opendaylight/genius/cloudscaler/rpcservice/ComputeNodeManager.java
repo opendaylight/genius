@@ -16,11 +16,11 @@ import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -96,7 +96,7 @@ public class ComputeNodeManager {
 
     public ComputeNode getComputeNodeFromName(String computeName) throws ReadFailedException {
         InstanceIdentifier<ComputeNode> computeIid = buildComputeNodeIid(computeName);
-        return computeNodeCache.get(computeIid).orNull();
+        return computeNodeCache.get(computeIid).orElse(null);
     }
 
     public void deleteComputeNode(ReadWriteTransaction tx, ComputeNode computeNode) {
@@ -123,7 +123,7 @@ public class ComputeNodeManager {
                     .setDpnid(datapathid)
                     .setNodeid(nodeId)
                     .build();
-            com.google.common.base.Optional<ComputeNode> computeNodeOptional = com.google.common.base.Optional.absent();
+            Optional<ComputeNode> computeNodeOptional = Optional.empty();
             try {
                 computeNodeOptional = computeNodeCache.get(computeIid);
             } catch (ReadFailedException e) {
