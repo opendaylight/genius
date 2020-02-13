@@ -14,19 +14,18 @@ import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.function.Function;
 import javax.inject.Inject;
-
-import org.opendaylight.controller.md.sal.binding.api.BindingTransactionChain;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionChain;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionChainListener;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.Transaction;
+import org.opendaylight.mdsal.binding.api.TransactionChain;
+import org.opendaylight.mdsal.binding.api.TransactionChainListener;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner}. This is based on {@link ManagedTransactionFactoryImpl} but
@@ -93,15 +92,15 @@ public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryIm
 
     @Override
     public <R> R applyWithNewTransactionChainAndClose(Function<ManagedTransactionChain, R> chainConsumer) {
-        try (BindingTransactionChain realTxChain = broker.createTransactionChain(new TransactionChainListener() {
+        try (TransactionChain realTxChain = broker.createTransactionChain(new TransactionChainListener() {
             @Override
-            public void onTransactionChainFailed(TransactionChain<?, ?> chain, AsyncTransaction<?, ?> transaction,
+            public void onTransactionChainFailed(TransactionChain chain, Transaction transaction,
                 Throwable cause) {
                 LOG.error("Error handling a transaction chain", cause);
             }
 
             @Override
-            public void onTransactionChainSuccessful(TransactionChain<?, ?> chain) {
+            public void onTransactionChainSuccessful(TransactionChain chain) {
                 // Nothing to do
             }
         })) {

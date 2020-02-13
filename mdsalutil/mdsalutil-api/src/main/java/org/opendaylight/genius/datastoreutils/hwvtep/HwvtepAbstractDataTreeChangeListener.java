@@ -5,10 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.datastoreutils.hwvtep;
+/*package org.opendaylight.genius.datastoreutils.hwvtep;
 
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
+//import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+//import org.opendaylight.serviceutils.tools.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -55,4 +57,4 @@ public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,
     protected abstract void added(InstanceIdentifier<T> identifier, T add);
 
 
-}
+}*/

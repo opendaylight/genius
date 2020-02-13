@@ -14,15 +14,16 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InterfaceStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<Interface, InterfaceStateListener> {
+        extends AbstractClusteredAsyncDataTreeChangeListener<Interface> {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceStateListener.class);
     private final ManagedNewTransactionRunner txRunner;
     private final EntityOwnershipUtils entityOwnershipUtils;
@@ -44,30 +45,32 @@ public class InterfaceStateListener
                                   final EntityOwnershipUtils entityOwnershipUtils,
                                   @Reference final JobCoordinator coordinator,
                                   final InterfaceManagerCommonUtils interfaceManagerCommonUtils) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+                InstanceIdentifier.create(InterfacesState.class).child(Interface.class),
+                Executors.newSingleThreadExecutor("NodeConnectorStatsImpl", LOG));
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
-    @Override
+    /*@Override
     protected InstanceIdentifier<Interface> getWildCardPath() {
         return InstanceIdentifier.create(InterfacesState.class).child(Interface.class);
-    }
+    }*/
 
     @Override
-    protected void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
+    public void remove(InstanceIdentifier<Interface> key, Interface interfaceStateOld) {
         interfaceManagerCommonUtils.removeFromInterfaceStateCache(interfaceStateOld);
     }
 
     @Override
-    protected void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
+    public void update(InstanceIdentifier<Interface> key, Interface interfaceStateOld, Interface interfaceStateNew) {
         interfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
     }
 
     @Override
-    protected void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
+    public void add(InstanceIdentifier<Interface> key, Interface interfaceStateNew) {
         interfaceManagerCommonUtils.addInterfaceStateToCache(interfaceStateNew);
         if (!Tunnel.class.equals(interfaceStateNew.getType())
             || !entityOwnershipUtils.isEntityOwner(IfmConstants.INTERFACE_CONFIG_ENTITY,
@@ -90,8 +93,8 @@ public class InterfaceStateListener
         });
     }
 
-    @Override
+    /*@Override
     protected InterfaceStateListener getDataTreeChangeListener() {
         return InterfaceStateListener.this;
-    }
+    }*/
 }

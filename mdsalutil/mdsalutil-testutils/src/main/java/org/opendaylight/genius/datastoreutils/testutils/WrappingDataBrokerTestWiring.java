@@ -10,11 +10,11 @@ package org.opendaylight.genius.datastoreutils.testutils;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.Executors;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.test.AbstractBaseDataBrokerTest;
-import org.opendaylight.controller.md.sal.binding.test.AbstractDataBrokerTestCustomizer;
-import org.opendaylight.controller.md.sal.dom.api.DOMDataBroker;
-import org.opendaylight.controller.sal.core.compat.LegacyDOMDataBrokerAdapter;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractBaseDataBrokerTest;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTestCustomizer;
+//import org.opendaylight.mdsal.binding.dom.adapter.BindingDOMDataBrokerAdapter;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 
 /**
  * Legacy (Controller) DataBroker test wiring which wraps an MD-SAL DataBroker.
@@ -34,7 +34,7 @@ public class WrappingDataBrokerTestWiring {
 
                     @Override
                     public DOMDataBroker createDOMDataBroker() {
-                        return new LegacyDOMDataBrokerAdapter(domDataBroker);
+                        return domDataBroker;
                     }
                 };
             }

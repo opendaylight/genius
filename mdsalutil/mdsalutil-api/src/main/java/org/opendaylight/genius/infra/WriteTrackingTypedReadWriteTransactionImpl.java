@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.infra;
 
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
