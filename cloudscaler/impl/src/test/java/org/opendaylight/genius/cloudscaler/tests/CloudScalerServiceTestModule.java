@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.cloudscaler.tests;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.infrautils.caches.CacheProvider;
@@ -15,6 +14,7 @@ import org.opendaylight.infrautils.caches.baseimpl.CacheManagersRegistry;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 
 public class CloudScalerServiceTestModule extends AbstractGuiceJsr250Module {
 

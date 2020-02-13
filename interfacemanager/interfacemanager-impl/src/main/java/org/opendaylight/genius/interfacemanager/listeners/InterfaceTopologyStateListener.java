@@ -18,9 +18,6 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
@@ -33,8 +30,12 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.SouthboundUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InterfaceTopologyStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<OvsdbBridgeAugmentation, InterfaceTopologyStateListener>
+        extends AbstractClusteredAsyncDataTreeChangeListener<OvsdbBridgeAugmentation>
         implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceTopologyStateListener.class);
     private final DataBroker dataBroker;
@@ -74,7 +75,9 @@ public class InterfaceTopologyStateListener
                                           final SouthboundUtils southboundUtils,
                                           final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
                                           @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
-        super(OvsdbBridgeAugmentation.class, InterfaceTopologyStateListener.class);
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(NetworkTopology.class)
+                .child(Topology.class).child(Node.class).augmentation(OvsdbBridgeAugmentation.class).build(),
+                Executors.newSingleThreadExecutor("InterfaceTopologyStateListener", LOG));
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.interfaceMgrProvider = interfaceMgrProvider;
@@ -84,25 +87,18 @@ public class InterfaceTopologyStateListener
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
-        registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
     }
 
     @Override
     public void registerListener() {
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        super.register();
     }
 
     @Override
-    protected InstanceIdentifier<OvsdbBridgeAugmentation> getWildCardPath() {
-        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
-                .augmentation(OvsdbBridgeAugmentation.class).build();
-    }
-
-    @Override
-    protected InterfaceTopologyStateListener getDataTreeChangeListener() {
-        return InterfaceTopologyStateListener.this;
+    public void deregisterListener() {
+        close();
     }
 
     private void runOnlyInOwnerNode(String jobDesc, Runnable job) {
@@ -111,7 +107,7 @@ public class InterfaceTopologyStateListener
     }
 
     @Override
-    protected void remove(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+    public void remove(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                           OvsdbBridgeAugmentation bridgeOld) {
         LOG.debug("Received Remove DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                 identifier, bridgeOld);
@@ -128,7 +124,7 @@ public class InterfaceTopologyStateListener
     }
 
     @Override
-    protected void update(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+    public void update(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                           OvsdbBridgeAugmentation bridgeOld,
                           OvsdbBridgeAugmentation bridgeNew) {
         LOG.debug(
@@ -155,7 +151,7 @@ public class InterfaceTopologyStateListener
     }
 
     @Override
-    protected void add(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
+    public void add(InstanceIdentifier<OvsdbBridgeAugmentation> identifier,
                        OvsdbBridgeAugmentation bridgeNew) {
         LOG.debug("Received Add DataChange Notification for identifier: {}, ovsdbBridgeAugmentation: {}",
                 identifier, bridgeNew);

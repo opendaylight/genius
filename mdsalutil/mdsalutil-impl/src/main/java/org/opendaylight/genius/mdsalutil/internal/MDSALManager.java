@@ -8,11 +8,10 @@
 
 package org.opendaylight.genius.mdsalutil.internal;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningSingleThreadExecutor;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
@@ -20,19 +19,13 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -47,6 +40,14 @@ import org.opendaylight.genius.mdsalutil.GroupInfoKey;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.inject.AbstractLifecycle;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.Table;
@@ -122,9 +123,6 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         int batchInterval = Integer.getInteger("batch.wait.time", 500);
 
         flowBatchingUtils.registerWithBatchManager(new MdSalUtilBatchHandler(dataBroker, batchSize, batchInterval));
-        flowListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
-        flowConfigListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
-        groupListener.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
     }
 
     @Override
@@ -304,14 +302,16 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private class GroupListener extends AsyncClusteredDataTreeChangeListenerBase<Group, GroupListener> {
+    private class GroupListener extends AbstractClusteredAsyncDataTreeChangeListener<Group> {
 
         GroupListener() {
-            super(Group.class, GroupListener.class);
+            super(dataBroker, LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(Nodes.class).child(Node.class)
+                    .augmentation(FlowCapableNode.class).child(Group.class),
+                    Executors.newSingleThreadExecutor("GroupListener", LOG));
         }
 
         @Override
-        protected void remove(InstanceIdentifier<Group> identifier, Group del) {
+        public void remove(InstanceIdentifier<Group> identifier, Group del) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, del);
         }
@@ -326,37 +326,28 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
 
         @Override
-        protected void update(InstanceIdentifier<Group> identifier, Group original, Group update) {
+        public void update(InstanceIdentifier<Group> identifier, Group original, Group update) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, update);
         }
 
         @Override
-        protected void add(InstanceIdentifier<Group> identifier, Group add) {
+        public void add(InstanceIdentifier<Group> identifier, Group add) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             executeNotifyTaskIfRequired(dpId, add);
         }
-
-        @Override
-        protected InstanceIdentifier<Group> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
-                    .child(Group.class);
-        }
-
-        @Override
-        protected GroupListener getDataTreeChangeListener() {
-            return GroupListener.this;
-        }
     }
 
-    private class FlowListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowListener> {
+    private class FlowListener extends AbstractClusteredAsyncDataTreeChangeListener<Flow> {
 
         FlowListener() {
-            super(Flow.class, FlowListener.class);
+            super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class)
+                    .augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class),
+                    Executors.newSingleThreadExecutor("FlowListener", LOG));
         }
 
         @Override
-        protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
+        public void remove(InstanceIdentifier<Flow> identifier, Flow del) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             notifyTaskIfRequired(dpId, del);
         }
@@ -372,61 +363,42 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
 
         @Override
-        protected void update(InstanceIdentifier<Flow> identifier, Flow original, Flow update) {
+        public void update(InstanceIdentifier<Flow> identifier, Flow original, Flow update) {
         }
 
         @Override
-        protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
+        public void add(InstanceIdentifier<Flow> identifier, Flow add) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             notifyTaskIfRequired(dpId, add);
         }
 
-        @Override
-        protected InstanceIdentifier<Flow> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
-                    .child(Table.class).child(Flow.class);
-        }
-
-        @Override
-        protected FlowListener getDataTreeChangeListener() {
-            return FlowListener.this;
-        }
     }
 
-    private class FlowConfigListener extends AsyncClusteredDataTreeChangeListenerBase<Flow, FlowConfigListener> {
+    private class FlowConfigListener extends AbstractClusteredAsyncDataTreeChangeListener<Flow> {
         private final Logger flowLog = LoggerFactory.getLogger(FlowConfigListener.class);
 
         FlowConfigListener() {
-            super(Flow.class, FlowConfigListener.class);
+            super(dataBroker, LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(Nodes.class).child(Node.class)
+                    .augmentation(FlowCapableNode.class).child(Table.class).child(Flow.class),
+                    Executors.newSingleThreadExecutor("FlowConfigListener", LOG));
         }
 
         @Override
-        protected void remove(InstanceIdentifier<Flow> identifier, Flow del) {
+        public void remove(InstanceIdentifier<Flow> identifier, Flow del) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             flowLog.trace("FlowId {} deleted from Table {} on DPN {}",
                 del.getId().getValue(), del.getTableId(), dpId);
         }
 
         @Override
-        protected void update(InstanceIdentifier<Flow> identifier, Flow original, Flow update) {
+        public void update(InstanceIdentifier<Flow> identifier, Flow original, Flow update) {
         }
 
         @Override
-        protected void add(InstanceIdentifier<Flow> identifier, Flow add) {
+        public void add(InstanceIdentifier<Flow> identifier, Flow add) {
             Uint64 dpId = getDpnFromString(identifier.firstKeyOf(Node.class).getId().getValue());
             flowLog.debug("FlowId {} added to Table {} on DPN {}",
                 add.getId().getValue(), add.getTableId(), dpId);
-        }
-
-        @Override
-        protected InstanceIdentifier<Flow> getWildCardPath() {
-            return InstanceIdentifier.create(Nodes.class).child(Node.class).augmentation(FlowCapableNode.class)
-                .child(Table.class).child(Flow.class);
-        }
-
-        @Override
-        protected FlowConfigListener getDataTreeChangeListener() {
-            return FlowConfigListener.this;
         }
     }
 

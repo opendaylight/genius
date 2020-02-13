@@ -8,8 +8,6 @@
 package org.opendaylight.genius.interfacemanager.test;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 import static org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.BatchingUtils.EntityType.DEFAULT_OPERATIONAL;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_1;
 import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTestUtil.DPN_ID_2;
@@ -26,11 +24,13 @@ import static org.opendaylight.genius.interfacemanager.test.InterfaceManagerTest
 import static org.opendaylight.genius.mdsalutil.NwConstants.DEFAULT_EGRESS_SERVICE_INDEX;
 import static org.opendaylight.genius.mdsalutil.NwConstants.VLAN_INTERFACE_INGRESS_TABLE;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import org.junit.After;
@@ -40,10 +40,6 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
@@ -81,6 +77,10 @@ import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.infrautils.testutils.concurrent.TestableQueues;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
@@ -219,7 +219,7 @@ public class InterfaceManagerConfigurationTest {
                 coordinatorEventsWaiter,3, asyncEventsWaiter);
         BridgeRefEntry bridgeRefEntry = IfmUtil
                 .read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
-                .orNull();
+                .orElse(null);
         assertEqualBeans(bridgeRefEntry.getDpid(), DPN_ID_1);
         // FIXME AsyncEventsWaiter does not help in this case, need to enhance -- TODO
         //assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_1), bridgeRefEntry);
@@ -344,9 +344,9 @@ public class InterfaceManagerConfigurationTest {
                 coordinatorEventsWaiter, 5, asyncEventsWaiter);
 
         // Verify if interfaces are deleted from oper/ietf-interfaces-state
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(PARENT_INTERFACE)).get());
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).get());
 
         // 3. Re-create the OF port to proceeed with vlan-member tests
@@ -367,17 +367,17 @@ public class InterfaceManagerConfigurationTest {
 
         // TODO Later use nicer abstraction for DB access here.. see
         // ElanServiceTest
-        Assert.assertEquals(Optional.absent(),
+        Assert.assertEquals(Optional.empty(),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, interfaceChildEntryInstanceIdentifier).get());
 
         // Then
         // a) check if operational/ietf-interfaces-state is deleted for the vlan
         // interface
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(OPERATIONAL, IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).get());
 
         // b) check if lport-tag to interface mapping is deleted
-        /*Assert.assertEquals(Optional.absent(),
+        /*Assert.assertEquals(Optional.empty(),
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL, ifIndexInterfaceInstanceIdentifier).get());*/
     }
 
@@ -392,7 +392,7 @@ public class InterfaceManagerConfigurationTest {
             .getBridgeRefEntryIdentifier(bridgeRefEntryKey);
         // Verify if DPN-ID is updated in corresponding DS and cache
         BridgeRefEntry bridgeRefEntry = IfmUtil.read(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryIid, dataBroker)
-            .orNull();
+            .orElse(null);
         assertEqualBeans(interfaceMetaUtils.getBridgeRefEntryFromCache(DPN_ID_2), bridgeRefEntry);
 
         // 1. Given
@@ -504,9 +504,9 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         // Verify if operational-states are deleted
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get());
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get());
 
         // Delete test
@@ -516,12 +516,12 @@ public class InterfaceManagerConfigurationTest {
 
         // Then
         // a) check if tunnel is deleted from bridge-interface-info
-        Assert.assertEquals(Optional.absent(),
+        Assert.assertEquals(Optional.empty(),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, bridgeInterfaceEntryIid).get());
 
         // b) check if termination end point is deleted in
         // config/network-topology
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION, tpIid).get());
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
     }
 
@@ -622,7 +622,7 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes("test unbind ingress service api",
                 coordinatorEventsWaiter, 2, asyncEventsWaiter);
 
-        Assert.assertEquals(Optional.absent(),
+        Assert.assertEquals(Optional.empty(),
             dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).get());
 
         // check service-state cache is cleaned up
@@ -659,7 +659,7 @@ public class InterfaceManagerConfigurationTest {
         interfaceManager.unbindService(INTERFACE_NAME, ServiceModeEgress.class, serviceInfo);
         waitTillOperationCompletes("test unbind egress service api",
                 coordinatorEventsWaiter, 2, asyncEventsWaiter);
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
             egressDispatcherFlowId).get());
 
         // 12. Test fetching child interfaces of an interface
@@ -896,16 +896,16 @@ public class InterfaceManagerConfigurationTest {
                 coordinatorEventsWaiter, 7, asyncEventsWaiter);
         // 1. Then
         // a)
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
             .read(CONFIGURATION, interfaceChildEntryInstanceIdentifier).get());
 
         // b) check if operational/ietf-interfaces-state is deleted for the vlan interface
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).get());
 
         // FIXME can assert this only once ResourceBatchingManager becomes testable
         // c) check if lport-tag to interface mapping is deleted
-        /*Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
+        /*Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
             ifIndexInterfaceInstanceIdentifier).get());*/
     }
 
