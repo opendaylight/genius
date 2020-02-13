@@ -7,14 +7,14 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
-import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
 import org.opendaylight.genius.mdsalutil.GroupInfoKey;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -24,6 +24,9 @@ import org.opendaylight.genius.mdsalutil.MetaDataUtil;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.genius.mdsalutil.matches.MatchMetadata;
 import org.opendaylight.genius.mdsalutil.matches.MatchVlanVid;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
@@ -40,7 +43,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 
 public final class InterfaceServiceUtil {
 
@@ -53,7 +58,7 @@ public final class InterfaceServiceUtil {
      * @deprecated Use {@link #buildServiceInfo(String, int)}.
      */
     @Deprecated
-    public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
+    public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, Uint8 servicePriority,
             Uint64 cookie, List<Instruction> instructions) {
         return buildServiceInfo(serviceName, servicePriority);
     }
@@ -64,20 +69,20 @@ public final class InterfaceServiceUtil {
      * @deprecated Use {@link #buildServiceInfo(String, int)}.
      */
     @Deprecated
-    public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, int servicePriority,
+    public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, Uint8 servicePriority,
             Uint64 cookie) {
         return buildServiceInfo(serviceName, servicePriority);
     }
 
-    public static ServicesInfo buildServiceInfo(String serviceName, int servicePriority) {
+    public static ServicesInfo buildServiceInfo(String serviceName, Uint8 servicePriority) {
         List<BoundServices> boundService = new ArrayList<>();
-        boundService.add(new BoundServicesBuilder().setServicePriority((short) servicePriority)
+        boundService.add(new BoundServicesBuilder().setServicePriority(servicePriority)
                 .setServiceName(serviceName).build());
         return new ServicesInfoBuilder().setBoundServices(boundService)
                 .withKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
-    public static BoundServices getBoundServices(String serviceName, short servicePriority, int flowPriority,
+    public static BoundServices getBoundServices(String serviceName, Uint8 servicePriority, Uint16 flowPriority,
             Uint64 cookie, List<Instruction> instructions) {
         StypeOpenflowBuilder augBuilder = new StypeOpenflowBuilder().setFlowCookie(cookie).setFlowPriority(flowPriority)
                 .setInstruction(instructions);
@@ -124,10 +129,11 @@ public final class InterfaceServiceUtil {
         matches.add(match);
     }
 
-    public static short getVlanId(String interfaceName, DataBroker broker) {
+    public static short getVlanId(String interfaceName, DataBroker broker) throws ReadFailedException {
         InstanceIdentifier<Interface> id = InstanceIdentifier.builder(Interfaces.class)
                 .child(Interface.class, new InterfaceKey(interfaceName)).build();
-        Optional<Interface> ifInstance = MDSALUtil.read(LogicalDatastoreType.CONFIGURATION, id, broker);
+        Optional<Interface> ifInstance = SingleTransactionDataBroker.syncReadOptional(broker,
+                LogicalDatastoreType.CONFIGURATION, id);
         if (ifInstance.isPresent()) {
             IfL2vlan vlanIface = ifInstance.get().augmentation(IfL2vlan.class);
             return vlanIface.getVlanId() == null ? 0 : vlanIface.getVlanId().getValue().shortValue();

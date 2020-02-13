@@ -15,9 +15,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -25,9 +22,13 @@ import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRe
 import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInterfaceTopologyStateUpdateHelper;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.ovsdb.utils.southbound.utils.SouthboundUtils;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
@@ -39,7 +40,7 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TerminationPointStateListener extends
-        AsyncClusteredDataTreeChangeListenerBase<OvsdbTerminationPointAugmentation, TerminationPointStateListener>
+        AbstractClusteredAsyncDataTreeChangeListener<OvsdbTerminationPointAugmentation>
         implements RecoverableListener {
     private static final Logger LOG = LoggerFactory.getLogger(TerminationPointStateListener.class);
     private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
@@ -61,35 +62,31 @@ public class TerminationPointStateListener extends
                                                      ovsInterfaceTopologyStateUpdateHelper,
                                          final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
                                          @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
+                .child(TerminationPoint.class).augmentation(OvsdbTerminationPointAugmentation.class).build(),
+                Executors.newSingleThreadExecutor("TerminationPointStateListener", LOG));
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.coordinator = coordinator;
         this.interfaceManagerCommonUtils = interfaceManagerCommonUtils;
         this.ovsInterfaceTopologyStateUpdateHelper = ovsInterfaceTopologyStateUpdateHelper;
         this.dataBroker = dataBroker;
-        registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
     }
 
     @Override
     public void registerListener() {
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        super.register();
     }
 
     @Override
-    protected InstanceIdentifier<OvsdbTerminationPointAugmentation> getWildCardPath() {
-        return InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
-                .child(TerminationPoint.class).augmentation(OvsdbTerminationPointAugmentation.class).build();
+    public void deregisterListener() {
+        close();
     }
 
     @Override
-    protected TerminationPointStateListener getDataTreeChangeListener() {
-        return TerminationPointStateListener.this;
-    }
-
-    @Override
-    protected void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+    public void remove(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                           OvsdbTerminationPointAugmentation tpOld) {
         // No ItmDirectTunnels or Internal Tunnel checking is done here as this DTCN only results in removal
         // of interface entry from BFD internal cache. For internal tunnels when ItmDirectTunnel is enabled,
@@ -114,7 +111,7 @@ public class TerminationPointStateListener extends
     }
 
     @Override
-    protected void update(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+    public void update(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                           OvsdbTerminationPointAugmentation tpOld,
                           OvsdbTerminationPointAugmentation tpNew) {
         if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
@@ -171,7 +168,7 @@ public class TerminationPointStateListener extends
     }
 
     @Override
-    protected void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
+    public void add(InstanceIdentifier<OvsdbTerminationPointAugmentation> identifier,
                        OvsdbTerminationPointAugmentation tpNew) {
         if (interfaceMgrProvider.isItmDirectTunnelsEnabled()
             && InterfaceManagerCommonUtils.isTunnelPort(tpNew.getName())

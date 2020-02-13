@@ -23,9 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -42,9 +39,13 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers.OvsInt
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
@@ -61,6 +62,7 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * This Class is a Data Change Listener for FlowCapableNodeConnector updates.
  * This creates an entry in the interface-state OperDS for every node-connector
@@ -73,7 +75,7 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class InterfaceInventoryStateListener
-        extends AsyncClusteredDataTreeChangeListenerBase<FlowCapableNodeConnector, InterfaceInventoryStateListener>
+        extends AbstractClusteredAsyncDataTreeChangeListener<FlowCapableNodeConnector>
         implements RecoverableListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceInventoryStateListener.class);
@@ -106,7 +108,9 @@ public class InterfaceInventoryStateListener
                                            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
                                            @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry,
                                            final InterfacemgrProvider interfacemgrProvider) {
-        super(FlowCapableNodeConnector.class, InterfaceInventoryStateListener.class);
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class).child(NodeConnector.class)
+                        .augmentation(FlowCapableNodeConnector.class),
+                Executors.newSingleThreadExecutor("InterfaceInventoryStateListener", LOG));
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.idManager = idManagerService;
@@ -119,29 +123,22 @@ public class InterfaceInventoryStateListener
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.portNameCache = portNameCache;
         this.interfacemgrProvider = interfacemgrProvider;
-        registerListener();
         serviceRecoveryRegistry.addRecoverableListener(interfaceServiceRecoveryHandler.buildServiceRegistryKey(),
                 this);
     }
 
     @Override
     public void registerListener() {
-        this.registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
+        super.register();
     }
 
     @Override
-    protected InstanceIdentifier<FlowCapableNodeConnector> getWildCardPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class).child(NodeConnector.class)
-                .augmentation(FlowCapableNodeConnector.class);
+    public void deregisterListener() {
+        close();
     }
 
     @Override
-    protected InterfaceInventoryStateListener getDataTreeChangeListener() {
-        return InterfaceInventoryStateListener.this;
-    }
-
-    @Override
-    protected void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
+    public void remove(InstanceIdentifier<FlowCapableNodeConnector> key,
                           FlowCapableNodeConnector flowCapableNodeConnectorOld) {
         String interfaceName = flowCapableNodeConnectorOld.getName();
         EVENT_LOGGER.debug("IFM-InterfaceInventoryState,REMOVE {}", interfaceName);
@@ -182,7 +179,7 @@ public class InterfaceInventoryStateListener
     }
 
     @Override
-    protected void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
+    public void update(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorOld,
         FlowCapableNodeConnector fcNodeConnectorNew) {
         String interfaceName = fcNodeConnectorNew.getName();
         EVENT_LOGGER.debug("IFM-InterfaceInventoryState,UPDATE {},{}", fcNodeConnectorNew.getName(),
@@ -215,7 +212,7 @@ public class InterfaceInventoryStateListener
     }
 
     @Override
-    protected void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
+    public void add(InstanceIdentifier<FlowCapableNodeConnector> key, FlowCapableNodeConnector fcNodeConnectorNew) {
         String interfaceName = fcNodeConnectorNew.getName();
         EVENT_LOGGER.debug("IFM-InterfaceInventoryState,ADD {}", interfaceName);
         if (interfacemgrProvider.isItmDirectTunnelsEnabled()

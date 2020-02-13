@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.cloudscaler.rpcservice;
 
-import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -15,20 +14,21 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.CloudscalerRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ScaleinComputesEndInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ScaleinComputesEndOutput;
@@ -117,11 +117,6 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         this.computeNodeManager = computeNodeManager;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.itmTepClusteredListener = new ItmTepClusteredListener(dataBroker);
-    }
-
-    @PostConstruct
-    public void init() {
-        itmTepClusteredListener.registerListener(LogicalDatastoreType.CONFIGURATION, dataBroker);
     }
 
     @Override
@@ -275,7 +270,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public ListenableFuture<RpcResult<ScaleinComputesTepDeleteOutput>> scaleinComputesTepDelete(
             ScaleinComputesTepDeleteInput input) {
-        ReadOnlyTransaction readTx = this.dataBroker.newReadOnlyTransaction();
+        ReadTransaction readTx = this.dataBroker.newReadOnlyTransaction();
         SettableFuture<RpcResult<ScaleinComputesTepDeleteOutput>> ft = SettableFuture.create();
         Optional<TransportZones> tz;
         try {
@@ -340,36 +335,26 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         return ft;
     }
 
-    class ItmTepClusteredListener extends AsyncClusteredDataTreeChangeListenerBase<Vteps, ItmTepClusteredListener> {
+    class ItmTepClusteredListener extends AbstractClusteredAsyncDataTreeChangeListener<Vteps> {
 
         @Inject
         ItmTepClusteredListener(DataBroker dataBroker) {
-            super(Vteps.class, ItmTepClusteredListener.class);
+            super(dataBroker, LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(TransportZones.class)
+                    .child(TransportZone.class).child(Vteps.class),
+                    Executors.newSingleThreadExecutor("GroupListener", LOG));;
         }
 
         @Override
-        public InstanceIdentifier<Vteps> getWildCardPath() {
-            return InstanceIdentifier.create(TransportZones.class)
-                    .child(TransportZone.class)
-                    .child(Vteps.class);
-        }
-
-        @Override
-        protected void remove(InstanceIdentifier<Vteps> instanceIdentifier, Vteps tep) {
+        public void remove(InstanceIdentifier<Vteps> instanceIdentifier, Vteps tep) {
             tepDeleteTimeStamp.put(tep.getDpnId(), System.currentTimeMillis());
         }
 
         @Override
-        protected void update(InstanceIdentifier<Vteps> instanceIdentifier, Vteps vteps, Vteps t1) {
+        public void update(InstanceIdentifier<Vteps> instanceIdentifier, Vteps vteps, Vteps t1) {
         }
 
         @Override
-        protected void add(InstanceIdentifier<Vteps> instanceIdentifier, Vteps vteps) {
-        }
-
-        @Override
-        protected ItmTepClusteredListener getDataTreeChangeListener() {
-            return ItmTepClusteredListener.this;
+        public void add(InstanceIdentifier<Vteps> instanceIdentifier, Vteps vteps) {
         }
     }
 }

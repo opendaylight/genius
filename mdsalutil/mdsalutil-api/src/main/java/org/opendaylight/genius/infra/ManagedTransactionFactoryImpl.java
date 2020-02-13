@@ -15,11 +15,11 @@ import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.TransactionFactory;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     public <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(
             Class<D> datastoreType, InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction)
             throws E, InterruptedException {
-        try (ReadOnlyTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
+        try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
             TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
             return txFunction.apply(wrappedTx);
         }
@@ -58,7 +58,7 @@ class ManagedTransactionFactoryImpl implements ManagedTransactionFactory {
     public <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(
             Class<D> datastoreType, InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer)
             throws E, InterruptedException {
-        try (ReadOnlyTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
+        try (ReadTransaction realTx = transactionFactory.newReadOnlyTransaction()) {
             TypedReadTransaction<D> wrappedTx = new TypedReadTransactionImpl<>(datastoreType, realTx);
             txConsumer.accept(wrappedTx);
         }

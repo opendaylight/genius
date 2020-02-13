@@ -10,17 +10,17 @@ package org.opendaylight.genius.datastoreutils;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.datastoreutils.TransactionCommitFailedExceptionMapper.SUBMIT_MAPPER;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -76,8 +76,11 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
             throws ReadFailedException {
 
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
-            return tx.read(datastoreType, path).checkedGet();
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("failed", e);
+            return Optional.empty();
         }
     }
 
@@ -114,13 +117,16 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
             throws ReadFailedException {
 
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
-            Optional<T> optionalDataObject = tx.read(datastoreType, path).checkedGet();
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
+            Optional<T> optionalDataObject = tx.read(datastoreType, path).get();
             if (optionalDataObject.isPresent()) {
                 return optionalDataObject.get();
             } else {
                 throw new ExpectedDataObjectNotFoundException(datastoreType, path);
             }
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("failed", e);
+            return null;
         }
     }
 
@@ -164,12 +170,11 @@ public class SingleTransactionDataBroker {
     public static <T extends DataObject> Optional<T> syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
 
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
-            return tx.read(datastoreType, path).checkedGet();
-        } catch (ReadFailedException e) {
-            LOG.error("ReadFailedException while reading data from {} store path {}; returning Optional.absent()",
-                    datastoreType, path, e);
-            return Optional.absent();
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.read(datastoreType, path).get();
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("failed", e);
+            return Optional.empty();
         }
     }
 
@@ -197,7 +202,7 @@ public class SingleTransactionDataBroker {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         ListenableFutures.checkedGet(
-                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(datastoreType, path, data, true)),
+                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.commit()),
                 SUBMIT_MAPPER);
     }
 
@@ -224,7 +229,7 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         ListenableFutures.checkedGet(
-                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(datastoreType, path, data, true)),
+                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.commit()),
                 SUBMIT_MAPPER);
     }
 

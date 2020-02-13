@@ -7,15 +7,15 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -29,11 +29,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -59,6 +54,10 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchInPort;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchTunnelSourceIp;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfaceType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.Interfaces;
@@ -153,7 +152,7 @@ public final class InterfaceManagerCommonUtils {
                 .child(Node.class, new NodeKey(nodeId))
                 .child(NodeConnector.class, new NodeConnectorKey(nodeConnectorId)).build();
 
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker).orNull();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker).orElse(null);
     }
 
     public boolean isNodePresent(ReadTransaction tx, NodeConnectorId nodeConnectorId) throws ReadFailedException {
@@ -192,7 +191,7 @@ public final class InterfaceManagerCommonUtils {
     @Deprecated
     @Nullable
     public Interface getInterfaceFromConfigDS(String interfaceName) {
-        try (ReadOnlyTransaction tx = dataBroker.newReadOnlyTransaction()) {
+        try (ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
             return getInterfaceFromConfigDS(tx, interfaceName);
         } catch (ReadFailedException e) {
             LOG.error("Error retrieving interface {} from config", interfaceName, e);
@@ -261,14 +260,14 @@ public final class InterfaceManagerCommonUtils {
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(String interfaceName) {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(interfaceName), dataBroker).orNull();
+            IfmUtil.buildStateInterfaceId(interfaceName), dataBroker).orElse(null);
     }
 
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(
             TypedReadTransaction<Operational> tx, String interfaceName)
             throws ExecutionException, InterruptedException {
-        return tx.read(IfmUtil.buildStateInterfaceId(interfaceName)).get().orNull();
+        return tx.read(IfmUtil.buildStateInterfaceId(interfaceName)).get().orElse(null);
     }
 
     @Deprecated
@@ -276,7 +275,7 @@ public final class InterfaceManagerCommonUtils {
         .ietf.interfaces.rev140508.interfaces.state.Interface getInterfaceStateFromOperDS(
             InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId) {
-        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orNull();
+        return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ifStateId, dataBroker).orElse(null);
     }
 
     public void addTunnelIngressFlow(TypedWriteTransaction<Configuration> tx, IfTunnel tunnel, Uint64 dpnId,

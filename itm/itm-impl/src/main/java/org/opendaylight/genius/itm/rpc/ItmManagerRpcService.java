@@ -12,7 +12,6 @@ import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListe
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -25,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
@@ -32,9 +32,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -64,6 +61,9 @@ import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults;
 import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.LogLevel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -229,7 +229,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
         Uint64 sourceDpn = input.getSourceDpid();
         Uint64 destinationDpn = input.getDestinationDpid();
-        Optional<InternalTunnel> optTunnel = Optional.absent();
+        Optional<InternalTunnel> optTunnel = Optional.empty();
 
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getDpnTepInterface(sourceDpn, destinationDpn);
@@ -670,7 +670,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
-                    Optional<InternalTunnel> optTunnel = Optional.absent();
+                    Optional<InternalTunnel> optTunnel = Optional.empty();
                     if (interfaceManager.isItmDirectTunnelsEnabled()) {
                         DpnTepInterfaceInfo interfaceInfo =
                                 dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID());

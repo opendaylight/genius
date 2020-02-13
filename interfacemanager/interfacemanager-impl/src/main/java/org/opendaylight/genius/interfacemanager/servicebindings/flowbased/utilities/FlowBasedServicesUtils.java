@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
@@ -22,9 +22,6 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -47,6 +44,9 @@ import org.opendaylight.genius.mdsalutil.matches.MatchMetadata;
 import org.opendaylight.genius.mdsalutil.matches.MatchVlanVid;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.utils.ServiceIndex;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -118,7 +118,7 @@ public final class FlowBasedServicesUtils {
         ServicesInfoKey servicesInfoKey = new ServicesInfoKey(interfaceName, serviceMode);
         InstanceIdentifier.InstanceIdentifierBuilder<ServicesInfo> servicesInfoIdentifierBuilder = InstanceIdentifier
                 .builder(ServiceBindings.class).child(ServicesInfo.class, servicesInfoKey);
-        return tx.read(servicesInfoIdentifierBuilder.build()).get().orNull();
+        return tx.read(servicesInfoIdentifierBuilder.build()).get().orElse(null);
     }
 
     public static NodeConnectorId getNodeConnectorIdFromInterface(String interfaceName,
@@ -723,14 +723,14 @@ public final class FlowBasedServicesUtils {
             throws ReadFailedException {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orNull();
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orElse(null);
     }
 
     public static BoundServicesState getBoundServicesState(TypedReadTransaction<Operational> tx, String interfaceName,
         Class<? extends ServiceModeBase> serviceMode) throws ExecutionException, InterruptedException {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        return tx.read(id).get().orNull();
+        return tx.read(id).get().orElse(null);
     }
 
     public static void addBoundServicesState(TypedWriteTransaction<Operational> tx, String interfaceName,
