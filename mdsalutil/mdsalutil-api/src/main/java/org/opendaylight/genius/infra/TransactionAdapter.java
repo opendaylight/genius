@@ -7,23 +7,23 @@
  */
 package org.opendaylight.genius.infra;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Adapter allowing managed, datastore-constrained transactions to be used with methods expecting
- * generic {@link org.opendaylight.controller.md.sal.binding.api.DataBroker} transactions.
+ * generic {@link org.opendaylight.mdsal.binding.api.DataBroker} transactions.
  *
  * <p>The adapted transactions maintain the following constraints: they cannot be cancelled or
  * submitted (only the transaction manager can do this), and they cannot access a logical datastore

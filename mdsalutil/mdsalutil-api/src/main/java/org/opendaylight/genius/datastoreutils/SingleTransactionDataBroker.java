@@ -10,14 +10,14 @@ package org.opendaylight.genius.datastoreutils;
 import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.datastoreutils.TransactionCommitFailedExceptionMapper.SUBMIT_MAPPER;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
@@ -76,7 +76,7 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
             throws ReadFailedException {
 
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).checkedGet();
         }
     }
@@ -114,7 +114,7 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
             throws ReadFailedException {
 
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
             Optional<T> optionalDataObject = tx.read(datastoreType, path).checkedGet();
             if (optionalDataObject.isPresent()) {
                 return optionalDataObject.get();
@@ -164,12 +164,12 @@ public class SingleTransactionDataBroker {
     public static <T extends DataObject> Optional<T> syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path) {
 
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).checkedGet();
         } catch (ReadFailedException e) {
-            LOG.error("ReadFailedException while reading data from {} store path {}; returning Optional.absent()",
+            LOG.error("ReadFailedException while reading data from {} store path {}; returning Optional.empty()",
                     datastoreType, path, e);
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

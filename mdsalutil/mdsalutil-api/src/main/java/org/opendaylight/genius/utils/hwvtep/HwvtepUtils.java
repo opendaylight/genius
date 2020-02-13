@@ -8,7 +8,7 @@
 
 package org.opendaylight.genius.utils.hwvtep;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.StreamSupport;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadTransaction;
@@ -209,8 +209,8 @@ public final class HwvtepUtils {
                                                    String logicalSwitchName) {
         final InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName));
-        return MDSALUtil.read(broker, datastoreType, iid).orNull();
-    }
+        return MDSALUtil.read(broker, datastoreType, iid).orNull;
+}
 
     /**
      * Retrieves the logical switch.

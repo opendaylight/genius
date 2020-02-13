@@ -10,7 +10,7 @@ package org.opendaylight.genius.itm.tests;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -22,10 +22,10 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
@@ -178,7 +178,7 @@ public class ItmTepAutoConfigTest {
                 defTzTunnelType);
         Assert.assertNotNull(tzonePath);
 
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).get());
     }
 
@@ -238,7 +238,7 @@ public class ItmTepAutoConfigTest {
         itmProvider.createDefaultTransportZone(itmConfigObj);
         coordinatorEventsWaiter.awaitEventsConsumption();
 
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).get());
     }
 
@@ -275,7 +275,7 @@ public class ItmTepAutoConfigTest {
         futures.get();
 
         // check TEP is deleted from default-TZ
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, vtepPath).get());
     }
 
@@ -319,7 +319,7 @@ public class ItmTepAutoConfigTest {
         futures.get();
 
         // check TEP is deleted
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, vtepPath).get());
 
         // for safe side, check TZ is present
@@ -374,7 +374,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(vtepPath);
 
         // check TEP is deleted from default-TZ when TEP-Ip is removed from southbound
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, vtepPath).get());
     }
 
@@ -425,7 +425,7 @@ public class ItmTepAutoConfigTest {
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         // check TEP is deleted from default-TZ when TEP-Ip is removed from southbound
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, vtepPath).get());
     }
 
@@ -461,7 +461,7 @@ public class ItmTepAutoConfigTest {
         // wait for OvsdbNodeListener to perform config DS update through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
 
-        Assert.assertEquals(Optional.absent(),dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(),dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedtzPath).get());
     }
 
@@ -564,7 +564,7 @@ public class ItmTepAutoConfigTest {
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         // check old TEP which was in default-TZ is deleted
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, oldVTepPath).get());
 
         // check TEP is updated and now it is added into TZA transport-zone when tzname is updated
@@ -632,7 +632,7 @@ public class ItmTepAutoConfigTest {
         Assert.assertNotNull(newVTepPath);
 
         // check old TEP having default-bridge-DPID is deleted
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, oldVTepPath).get());
 
         // check TEP is updated with dpnId of br2 when br-name is updated to br2 from southbound
@@ -676,7 +676,7 @@ public class ItmTepAutoConfigTest {
                 ItmTestConstants.NOT_HOSTED_TZ_TEPDPN_ID, ItmTestConstants.NOT_HOSTED_TZ_NAME, dataBroker, txRunner);
         future.get();
 
-        Assert.assertEquals(Optional.absent(),
+        Assert.assertEquals(Optional.empty(),
                 dataBroker.newReadOnlyTransaction()
                         .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get());
     }
@@ -729,7 +729,7 @@ public class ItmTepAutoConfigTest {
                         .checkedGet().get().getZoneName());
 
         // check TZ is removed
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get());
     }
 
@@ -774,7 +774,7 @@ public class ItmTepAutoConfigTest {
         // for TEP movement through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
         //verify delete
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet());
 
         //check deleted tz moved to notHosted
@@ -791,7 +791,7 @@ public class ItmTepAutoConfigTest {
         // for TEP movement through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
 
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
         assertEqualBeans(ExpectedTransportZoneObjects.newTransportZone(),
                 dataBroker.newReadOnlyTransaction()
@@ -842,7 +842,7 @@ public class ItmTepAutoConfigTest {
         // for TEP movement through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
         //verify delete
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet());
 
         //check deleted tz moved to notHosted
@@ -877,7 +877,7 @@ public class ItmTepAutoConfigTest {
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         // verify TZ is moved from notHosted to transport zone and their should be only one vtep in it.
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
         assertEqualBeans(1, dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get()
@@ -925,7 +925,7 @@ public class ItmTepAutoConfigTest {
         // for TEP movement through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
         //verify delete
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet());
 
         //check deleted tz moved to notHosted
@@ -960,7 +960,7 @@ public class ItmTepAutoConfigTest {
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         // verify TZ is moved from notHosted to transport zone and their should be only one vtep in it.
-        Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
+        Assert.assertEquals(Optional.empty(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
         assertEqualBeans(1, dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get()

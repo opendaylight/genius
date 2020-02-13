@@ -9,7 +9,7 @@ package org.opendaylight.genius.mdsalutil.cache;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PreDestroy;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataObjectModification;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.ClusteredDataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataObjectModification;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.api.DataTreeModification;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -88,7 +88,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
                     case WRITE:
                     case SUBTREE_MODIFIED:
                         V dataAfter = rootNode.getDataAfter();
-                        cache.put(keyFunction.apply(path, dataAfter), Optional.fromNullable(dataAfter));
+                        cache.put(keyFunction.apply(path, dataAfter), Optional.ofNullable(dataAfter));
                         added(path, dataAfter);
                         break;
                     case DELETE:

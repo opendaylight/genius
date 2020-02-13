@@ -10,7 +10,7 @@ package org.opendaylight.genius.itm.impl;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OfEndPointCache;
@@ -151,7 +151,7 @@ public class ItmInternalTunnelAddTest {
     Future<RpcResult<AllocateIdOutput>> dstId2Output;
 
     @Mock DataBroker dataBroker;
-    @Mock ReadOnlyTransaction mockReadTx;
+    @Mock ReadTransaction mockReadTx;
     @Mock ReadWriteTransaction mockReadWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock IdManagerService idManagerService;

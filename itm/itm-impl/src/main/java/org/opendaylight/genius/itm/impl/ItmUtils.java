@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.impl;
 
 import static java.util.Collections.emptyList;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
@@ -28,11 +28,11 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -178,7 +178,7 @@ public final class ItmUtils {
     @SuppressWarnings("checkstyle:IllegalCatch")
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker) {
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -827,7 +827,7 @@ public final class ItmUtils {
     public static Node getOvsdbNode(OvsdbBridgeAugmentation bridgeAugmentation,
                                     DataBroker dataBroker) {
         Node ovsdbNode = null;
-        Optional<Node> opOvsdbNode = Optional.absent();
+        Optional<Node> opOvsdbNode = Optional.empty();
         if (bridgeAugmentation != null) {
             InstanceIdentifier<Node> ovsdbNodeIid =
                     (InstanceIdentifier<Node>) bridgeAugmentation.getManagedBy().getValue();
