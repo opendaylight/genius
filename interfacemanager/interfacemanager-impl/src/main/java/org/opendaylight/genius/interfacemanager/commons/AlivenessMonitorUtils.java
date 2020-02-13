@@ -7,27 +7,27 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorProfileCreateInput;
@@ -150,7 +150,7 @@ public final class AlivenessMonitorUtils {
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<MonitorIdInterface> id = InstanceIdentifier.builder(MonitorIdInterfaceMap.class)
                 .child(MonitorIdInterface.class, new MonitorIdInterfaceKey(monitorId)).build();
-        return tx.read(id).get().toJavaUtil().map(MonitorIdInterface::getInterfaceName).orElse(null);
+        return tx.read(id).get().map(MonitorIdInterface::getInterfaceName).orElse(null);
     }
 
     private void removeMonitorIdInterfaceMap(TypedReadWriteTransaction<Operational> tx, Uint32 monitorId)
@@ -274,7 +274,7 @@ public final class AlivenessMonitorUtils {
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<InterfaceMonitorId> id = InstanceIdentifier.builder(InterfaceMonitorIdMap.class)
                 .child(InterfaceMonitorId.class, new InterfaceMonitorIdKey(infName)).build();
-        return tx.read(id).get().toJavaUtil().map(InterfaceMonitorId::getMonitorId).orElse(null);
+        return tx.read(id).get().map(InterfaceMonitorId::getMonitorId).orElse(null);
     }
 
     public Uint32 createMonitorProfile(MonitorProfileCreateInput monitorProfileCreateInput) {

@@ -15,12 +15,12 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
