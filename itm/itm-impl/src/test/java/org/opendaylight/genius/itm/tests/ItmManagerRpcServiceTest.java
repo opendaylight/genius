@@ -10,11 +10,11 @@ package org.opendaylight.genius.itm.tests;
 import static com.google.common.truth.Truth.assertThat;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -22,8 +22,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
@@ -38,6 +36,8 @@ import org.opendaylight.genius.itm.tests.xtend.ExpectedInternalTunnelIdentifierO
 import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
@@ -354,7 +354,7 @@ public class ItmManagerRpcServiceTest {
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
         // check L2GwDevice is deleted from config DS
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get());
     }
 
@@ -367,9 +367,9 @@ public class ItmManagerRpcServiceTest {
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
         // check L2GwMlagDevice is deleted from config DS
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get());
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier2).get());
     }
 
@@ -396,10 +396,10 @@ public class ItmManagerRpcServiceTest {
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
         // check ExternalTunnel From Dpns is deleted from config DS
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, externalTunnelIdentifierNew).get());
         // check iface is removed
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, interfaceIdentifier).get());
     }
 
@@ -419,10 +419,10 @@ public class ItmManagerRpcServiceTest {
         assertThat(removeExternalTunnelEndpoint.get().isSuccessful()).isTrue();
 
         // check ExternalTunnelEndpoint is deleted from config DS
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, externalTunnelIdentifierNew).get());
         // check iface is removed
-        assertThat(Optional.absent()).isEqualTo(dataBroker.newReadOnlyTransaction()
+        assertThat(Optional.empty()).isEqualTo(dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.CONFIGURATION, interfaceIdentifier).get());
     }
 

@@ -9,7 +9,6 @@ package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
 import static org.opendaylight.genius.alivenessmonitor.protocols.AlivenessMonitorAndProtocolsConstants.SEPERATOR;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
@@ -19,6 +18,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -189,7 +189,7 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
     }
 
     private Optional<PhysAddress> getMacAddress(EndpointType source) {
-        Optional<PhysAddress> result = Optional.absent();
+        Optional<PhysAddress> result = Optional.empty();
         if (source instanceof Interface) {
             result = Optional.of(((Interface) source).getMacAddress());
         }

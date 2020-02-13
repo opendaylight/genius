@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.cli;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.annotation.PostConstruct;
@@ -27,14 +27,14 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -151,7 +151,7 @@ public class TepCommandHelper {
     public TransportZone getTransportZone(String transportZoneName) {
         InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(transportZoneName)).build();
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker).orNull();
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker).orElse(null);
     }
 
     /**
@@ -161,7 +161,7 @@ public class TepCommandHelper {
      */
     public TransportZones getAllTransportZones() {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker).orNull();
+        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker).orElse(null);
     }
 
 
