@@ -7,10 +7,10 @@
  */
 package org.opendaylight.genius.infra;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FluentFuture;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
+import java.util.Optional;
 import org.opendaylight.controller.md.sal.common.api.data.AsyncTransaction;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 

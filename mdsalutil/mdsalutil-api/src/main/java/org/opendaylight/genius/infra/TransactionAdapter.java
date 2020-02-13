@@ -89,7 +89,7 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                boolean createMissingParents) {
+                                               boolean createMissingParents) {
             checkStore(store);
             delegate.put(path, data, createMissingParents);
         }
@@ -102,7 +102,7 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                boolean createMissingParents) {
+                                                 boolean createMissingParents) {
             checkStore(store);
             delegate.merge(path, data, createMissingParents);
         }
@@ -125,7 +125,7 @@ public final class TransactionAdapter {
 
         void checkStore(LogicalDatastoreType store) {
             Preconditions.checkArgument(datastoreType.equals(store), "Invalid datastore %s used instead of %s", store,
-                datastoreType);
+                    datastoreType);
         }
 
         @Override
@@ -145,18 +145,18 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
-                InstanceIdentifier<T> path) {
+                                                                                           InstanceIdentifier<T> path) {
             checkStore(store);
             return Futures.makeChecked(delegate.read(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+                    e -> new ReadFailedException("Error reading from the datastore", e));
         }
 
         @Override
         public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
-                InstanceIdentifier<?> path) {
+                                                                  InstanceIdentifier<?> path) {
             checkStore(store);
             return Futures.makeChecked(delegate.exists(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+                    e -> new ReadFailedException("Error reading from the datastore", e));
         }
     }
 }

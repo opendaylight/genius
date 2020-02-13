@@ -9,7 +9,7 @@ package org.opendaylight.genius.networkutils.test;
 
 import static org.mockito.Mockito.mock;
 
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.idmanager.IdManager;
