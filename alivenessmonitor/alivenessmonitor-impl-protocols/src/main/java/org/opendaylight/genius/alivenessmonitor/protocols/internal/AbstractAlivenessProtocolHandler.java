@@ -10,7 +10,7 @@ package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
 import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.base.Strings;
 import com.google.common.primitives.UnsignedBytes;
 import java.util.concurrent.ExecutionException;
@@ -68,7 +68,7 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
         if (!Strings.isNullOrEmpty(macAddress)) {
             return Optional.of(parseMacAddress(macAddress));
         }
-        return Optional.absent();
+        return Optional.empty();
     }
 
     private byte[] parseMacAddress(String macAddress) {

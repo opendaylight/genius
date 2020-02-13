@@ -7,22 +7,23 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.TypedReadTransaction;
@@ -366,7 +367,7 @@ public final class InterfaceMetaUtils {
         throws ExecutionException, InterruptedException {
         InstanceIdentifier<TunnelInstanceInterface> id = InstanceIdentifier.builder(TunnelInstanceInterfaceMap.class)
                 .child(TunnelInstanceInterface.class, new TunnelInstanceInterfaceKey(tunnelInstanceId)).build();
-        return tx.read(id).get().toJavaUtil().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
+        return tx.read(id).get().map(TunnelInstanceInterface::getInterfaceName).orElse(null);
     }
 
     public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
@@ -397,7 +398,7 @@ public final class InterfaceMetaUtils {
         }
         InstanceIdentifier<Node> nodeIid =
                         bridgeRefEntry.getBridgeReference().getValue().firstIdentifierOf(Node.class);
-        com.google.common.base.Optional<Node> optNode =
+        Optional<Node> optNode =
             IfmUtil.read(LogicalDatastoreType.OPERATIONAL, nodeIid,  dataBroker);
         if (optNode.isPresent()) {
             return optNode.get().getTerminationPoint();

@@ -7,14 +7,14 @@
  */
 package org.opendaylight.genius.interfacemanager.globals;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
 import org.opendaylight.genius.mdsalutil.GroupInfoKey;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
