@@ -12,7 +12,7 @@ import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListe
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
+import java.util.Optional;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -32,9 +32,9 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -229,7 +229,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetTunnelInterfaceNameOutput> resultBld = null;
         Uint64 sourceDpn = input.getSourceDpid();
         Uint64 destinationDpn = input.getDestinationDpid();
-        Optional<InternalTunnel> optTunnel = Optional.absent();
+        Optional<InternalTunnel> optTunnel = Optional.empty();
 
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getDpnTepInterface(sourceDpn, destinationDpn);
@@ -670,7 +670,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             for (DPNTEPsInfo teps : meshedDpnList) {
                 TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
                 if (dstIp.equals(firstEndPt.getIpAddress())) {
-                    Optional<InternalTunnel> optTunnel = Optional.absent();
+                    Optional<InternalTunnel> optTunnel = Optional.empty();
                     if (interfaceManager.isItmDirectTunnelsEnabled()) {
                         DpnTepInterfaceInfo interfaceInfo =
                                 dpnTepStateCache.getDpnTepInterface(srcDpn, teps.getDPNID());

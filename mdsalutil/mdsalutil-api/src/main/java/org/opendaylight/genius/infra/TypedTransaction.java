@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.infra;
 
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 abstract class TypedTransaction<D extends Datastore> {
     // Temporarily package protected for TransactionAdapter

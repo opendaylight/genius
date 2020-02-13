@@ -9,7 +9,7 @@ package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.BfdStateCache;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;

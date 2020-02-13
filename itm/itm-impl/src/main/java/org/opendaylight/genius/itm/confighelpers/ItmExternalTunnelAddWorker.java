@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.List;
