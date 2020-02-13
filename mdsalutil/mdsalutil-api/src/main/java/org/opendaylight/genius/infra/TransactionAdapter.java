@@ -95,6 +95,12 @@ public final class TransactionAdapter {
         }
 
         @Override
+        public <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
+         @NonNull InstanceIdentifier<T> path, @NonNull T data) {
+
+        }
+
+        @Override
         public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
             checkStore(store);
             delegate.merge(path, data);
@@ -105,6 +111,11 @@ public final class TransactionAdapter {
                 boolean createMissingParents) {
             checkStore(store);
             delegate.merge(path, data, createMissingParents);
+        }
+
+        @Override
+        public <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path, @NonNull T data) {
+
         }
 
         @Override

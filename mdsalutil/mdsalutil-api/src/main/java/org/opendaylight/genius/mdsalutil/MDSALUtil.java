@@ -7,19 +7,19 @@
  */
 package org.opendaylight.genius.mdsalutil;
 
-import com.google.common.base.Optional;
 import com.google.common.net.InetAddresses;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import java.util.Optional;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.SetFieldCaseBuilder;
@@ -635,7 +635,7 @@ public class MDSALUtil {
                 .child(Node.class, new NodeKey(nodeId))
                 .child(NodeConnector.class,
                         new NodeConnectorKey(nodeConnectorId)).build();
-        return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).toJavaUtil().map(
+        return read(dataBroker, LogicalDatastoreType.OPERATIONAL, ncIdentifier).map(
             nc -> nc.augmentation(FlowCapableNodeConnector.class)).map(FlowCapableNodeConnector::getName).orElse(
                 null);
     }
@@ -643,7 +643,7 @@ public class MDSALUtil {
     public static NodeConnectorId getNodeConnectorId(DataBroker dataBroker,
             NodeConnectorRef ref) {
         return ((Optional<NodeConnector>) read(dataBroker, LogicalDatastoreType.OPERATIONAL,
-                ref.getValue())).toJavaUtil().map(NodeConnector::getId).orElse(null);
+                ref.getValue())).map(NodeConnector::getId).orElse(null);
     }
 
     public static Action createNxOfInPortAction(final int actionKey, final int inPortVal) {
