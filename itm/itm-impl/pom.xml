@@ -56,10 +56,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>blueprint-maven-plugin-annotation</artifactId>
       <optional>true</optional>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>sal-binding-broker-impl</artifactId>
-    </dependency>
+    </dependency>!-->
     <dependency>
       <groupId>org.opendaylight.mdsal.binding.model.ietf</groupId>
       <artifactId>rfc7223</artifactId>

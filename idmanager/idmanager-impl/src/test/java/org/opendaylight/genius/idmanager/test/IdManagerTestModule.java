@@ -7,7 +7,13 @@
  */
 package org.opendaylight.genius.idmanager.test;
 
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
+import static org.mockito.Mockito.mock;
+
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
+import java.util.concurrent.Executors;
+import org.junit.Before;
+import org.junit.Test;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorEventsWaiter;
@@ -19,6 +25,10 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractBaseDataBrokerTest;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTestCustomizer;
+import org.opendaylight.mdsal.binding.dom.adapter.test.ConcurrentDataBrokerTestCustomizer;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 
@@ -26,7 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class IdManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() {
+    protected void configureBindings() throws Exception {
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
@@ -36,7 +46,39 @@ public class IdManagerTestModule extends AbstractGuiceJsr250Module {
         bind(LockListener.class);
         bind(IdPoolListener.class);
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
-        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+
+        /*AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
+            @Override
+            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
+                return new AbstractDataBrokerTestCustomizer() {
+                    @Override
+                    public ListeningExecutorService getCommitCoordinatorExecutor() {
+                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+                    }
+                };
+            }
+        };
+        test.setup();
+        DataBroker dataBroker = test.getDataBroker();*/
+        /***************/
+        AbstractConcurrentDataBrokerTest dataBrokerTest = new AbstractConcurrentDataBrokerTest(false) {};
+        try {
+            dataBrokerTest.setup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        DataBroker dataBroker = dataBrokerTest.getDataBroker();
+
+        /***************/
+
+
+        /*AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
+            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
+             return new ConcurrentDataBrokerTestCustomizer(false);
+            }
+        };
+        test.setup();
+        DataBroker dataBroker = test.getDataBroker();*/
         bind(DataBroker.class).toInstance(dataBroker);
     }
 }

@@ -510,6 +510,7 @@ public class TepCommandHelper {
 
 
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
+
         Optional<TransportZones> tzones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
         TransportZone tzone = new TransportZoneBuilder().withKey(new TransportZoneKey(transportZoneName))
@@ -523,8 +524,15 @@ public class TepCommandHelper {
         }
         tzList.add(tzone);
         TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
+
+        /*InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).child(TransportZone.class, new TransportZoneKey(transportZoneName)).build();
+
+        TransportZone transportZone = new TransportZoneBuilder().setZoneName(transportZoneName)
+                .setTunnelType(tunType)
+                .withKey(new TransportZoneKey(transportZoneName)).build();*/
+
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(LogicalDatastoreType.CONFIGURATION,
-                path, transportZones, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                path, transportZones, true)).get();
 
     }
 
