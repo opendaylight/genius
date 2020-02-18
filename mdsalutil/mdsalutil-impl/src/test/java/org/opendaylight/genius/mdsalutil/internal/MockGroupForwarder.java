@@ -39,7 +39,7 @@ public class MockGroupForwarder extends AbstractMockForwardingRulesManager<Group
     }
 
     private void registerListener(final DataBroker db) {
-        final DataTreeIdentifier<Group> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION,
+        final DataTreeIdentifier<Group> treeId = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
                 getWildCardPath());
         listenerRegistration = db.registerDataTreeChangeListener(treeId, MockGroupForwarder.this);
     }

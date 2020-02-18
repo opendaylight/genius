@@ -524,7 +524,7 @@ public class TepCommandHelper {
         tzList.add(tzone);
         TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(LogicalDatastoreType.CONFIGURATION,
-                path, transportZones, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                path, transportZones, true)).get();
 
     }
 

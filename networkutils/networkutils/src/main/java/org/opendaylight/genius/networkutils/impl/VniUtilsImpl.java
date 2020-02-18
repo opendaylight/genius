@@ -20,7 +20,6 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.networkutils.VniUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -56,7 +55,7 @@ public class VniUtilsImpl implements VniUtils {
 
     @Inject
     public VniUtilsImpl(NetworkConfig networkConfig, IdManagerService idManagerService,
-                    @Reference DataBroker dataBroker) throws ReadFailedException {
+                    @Reference DataBroker dataBroker) throws InterruptedException, ExecutionException {
         this.idManagerService = idManagerService;
         this.dataBroker = dataBroker;
         this.networkConfig = networkConfig;
@@ -85,12 +84,12 @@ public class VniUtilsImpl implements VniUtils {
     }
 
     @Override
-    public Optional<IdPool> getVxlanVniPool() throws ReadFailedException {
+    public Optional<IdPool> getVxlanVniPool() throws ExecutionException, InterruptedException {
         return SingleTransactionDataBroker.syncReadOptional(dataBroker,
                 LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_VNI_POOL_NAME));
     }
 
-    private void validateAndCreateVxlanVniPool() throws ReadFailedException {
+    private void validateAndCreateVxlanVniPool() throws InterruptedException, ExecutionException {
         /*
          * 1. If VNI Pool doesn't exist create it.
          * 2. If VNI Pool exists, but the range value is changed incorrectly
