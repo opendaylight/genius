@@ -8,7 +8,12 @@
 package org.opendaylight.genius.utils.batching;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.*;
+import com.google.common.util.concurrent.FluentFuture;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
+import com.google.common.util.concurrent.SettableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +38,7 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -151,14 +157,14 @@ public class ResourceBatchingManager implements AutoCloseable {
      * @param identifier   identifier to be read
      * @return a CheckFuture containing the result of the read
      */
-    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(
+    public <T extends DataObject> FluentFuture<Optional<T>> read(
             String resourceType, InstanceIdentifier<T> identifier) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             if (pendingModificationByResourceType.get(resourceType).contains(identifier)) {
                 SettableFuture<Optional<T>> readFuture = SettableFuture.create();
                 queue.add(new ActionableReadResource<>(identifier, readFuture));
-                return Futures.makeChecked(readFuture, ReadFailedException.MAPPER);
+                return FluentFuture.from(Futures.makeChecked(readFuture, ReadFailedException.MAPPER));
             } else {
                 ResourceHandler resourceHandler = resourceHandlerMapper.get(resourceType).getRight();
                 try (ReadTransaction tx = resourceHandler.getResourceBroker().newReadOnlyTransaction()) {
@@ -166,7 +172,8 @@ public class ResourceBatchingManager implements AutoCloseable {
                 }
             }
         }
-        return Futures.immediateFailedCheckedFuture(new ReadFailedException(
+
+        return FluentFutures.immediateFailedFluentFuture(new ReadFailedException(
                 "No batch handler was registered for resource " + resourceType));
     }
 
