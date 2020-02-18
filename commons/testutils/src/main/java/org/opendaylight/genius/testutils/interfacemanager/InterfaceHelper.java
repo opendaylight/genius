@@ -8,12 +8,12 @@
 package org.opendaylight.genius.testutils.interfacemanager;
 
 import java.util.Collections;
-
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
+import java.util.concurrent.ExecutionException;
+import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -44,7 +44,8 @@ public final class InterfaceHelper {
     }
 
     public static Interface readInterfaceFromConfigDs(String interfaceName,
-                                                      DataBroker dataBroker) throws ReadFailedException {
+                                                      DataBroker dataBroker) throws
+            ExecutionException, InterruptedException, ExpectedDataObjectNotFoundException {
         return SingleTransactionDataBroker.syncRead(
                 dataBroker,
                 LogicalDatastoreType.CONFIGURATION,

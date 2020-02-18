@@ -68,10 +68,13 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.util.concurrent.FluentFuture;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TepCommandHelperTest {
@@ -165,19 +168,19 @@ public class TepCommandHelperTest {
                 .Interface>
                 ifStateOptionalNew = Optional.of(interfaceTestNew);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalTunnelMonitorInterval)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(optionalTunnelMonitorInterval)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalTunnelMonitorParams)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(optionalTunnelMonitorParams)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorParamsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(optionalVteps)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(optionalVteps)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,vtepsIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(ifStateOptional)).when(mockReadTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(ifStateOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.OPERATIONAL,interfaceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(ifStateOptionalNew)).when(mockReadTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(ifStateOptionalNew)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,interfaceIdentifierNew);
 
         unprocessedTunnelsStateCache = new UnprocessedTunnelsStateCache();
@@ -231,8 +234,8 @@ public class TepCommandHelperTest {
                 interval, false, null);
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
-        doReturn(FluentFuture.from(Futures.immediateCheckedFuture(CommitInfo.empty()))).when(mockWriteTx).commit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
+        doReturn(FluentFuture.from(FluentFutures.immediateFluentFuture(CommitInfo.empty()))).when(mockWriteTx).commit();
     }
 
     @Test
@@ -254,9 +257,9 @@ public class TepCommandHelperTest {
         transportZoneNew = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType2)
                 .setDeviceVteps(deviceVtepsList).setVteps(vtepsList).build();
 
-        doReturn(Futures.immediateCheckedFuture(Optional.of(transportZoneNew))).when(mockReadTx).read(
+        doReturn(FluentFutures.immediateFluentFuture(Optional.of(transportZoneNew))).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
+        lenient().doReturn(FluentFutures.immediateFluentFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
         try {
@@ -278,9 +281,9 @@ public class TepCommandHelperTest {
 
         Optional<TransportZone> optionalTransportZone = Optional.of(transportZoneNew);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(optionalTransportZone)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
+        lenient().doReturn(FluentFutures.immediateFluentFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
 
@@ -309,7 +312,7 @@ public class TepCommandHelperTest {
 
     @Test
     public void testConfigureTunnelType() throws ExecutionException, InterruptedException {
-        doReturn(Futures.immediateCheckedFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
         tepCommandHelper.configureTunnelType(transportZone1, "VXLAN");
@@ -394,7 +397,7 @@ public class TepCommandHelperTest {
     @Test
     public void testBuildTepsTunnelTypeGre() {
 
-        doReturn(Futures.immediateCheckedFuture(Optional.of(transportZoneNew))).when(mockReadTx).read(
+        doReturn(FluentFutures.immediateFluentFuture(Optional.of(transportZoneNew))).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION, transportZoneIdentifier);
 
         try {
@@ -413,7 +416,7 @@ public class TepCommandHelperTest {
     @Test
     public void testBuildTepsTransportZoneAbsent() throws TepException {
 
-        doReturn(Futures.immediateCheckedFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZoneIdentifier);
 
         tepCommandHelper.createLocalCache(dpId1,tepIp1,transportZone1);
@@ -442,7 +445,7 @@ public class TepCommandHelperTest {
 
         optionalTransportZones = Optional.of(transportZonesNew);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
         String output = null;
@@ -465,7 +468,7 @@ public class TepCommandHelperTest {
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         optionalTransportZones = Optional.of(transportZones);
 
-        doReturn(Futures.immediateCheckedFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(optionalTransportZones)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
         try {
