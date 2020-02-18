@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
-
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;

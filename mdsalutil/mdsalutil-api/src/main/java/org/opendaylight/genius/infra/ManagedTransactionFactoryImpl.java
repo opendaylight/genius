@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;

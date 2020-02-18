@@ -108,7 +108,8 @@ public class InterfaceInventoryStateListener
                                            final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
                                            @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry,
                                            final InterfacemgrProvider interfacemgrProvider) {
-        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class).child(NodeConnector.class)
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class)
+                        .child(Node.class).child(NodeConnector.class)
                         .augmentation(FlowCapableNodeConnector.class),
                 Executors.newSingleThreadExecutor("InterfaceInventoryStateListener", LOG));
         this.dataBroker = dataBroker;
