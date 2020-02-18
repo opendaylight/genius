@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.binding.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.networkutils.RDUtils;
@@ -22,6 +21,7 @@ import org.opendaylight.genius.networkutils.VniUtils;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class NetworkUtilTest extends AbstractConcurrentDataBrokerTest {
     private @Inject RDUtils  rdUtils;
 
     @Test
-    public void testDefaultVniPoolCreated() throws ReadFailedException {
+    public void testDefaultVniPoolCreated() throws ReadFailedException , InterruptedException, ExecutionException {
         IdPool idPool = vniUtils.getVxlanVniPool().get();
         assertThat(idPool.getPoolName()).isEqualTo(NwConstants.ODL_VNI_POOL_NAME);
     }
@@ -55,7 +55,7 @@ public class NetworkUtilTest extends AbstractConcurrentDataBrokerTest {
     }
 
     @Test
-    public void testDefaultRDPoolCreated() throws ReadFailedException {
+    public void testDefaultRDPoolCreated() throws ReadFailedException, ExecutionException, InterruptedException {
         IdPool idPool = rdUtils.getRDPool().get();
         assertThat(idPool.getPoolName()).isEqualTo(NwConstants.ODL_RD_POOL_NAME);
     }

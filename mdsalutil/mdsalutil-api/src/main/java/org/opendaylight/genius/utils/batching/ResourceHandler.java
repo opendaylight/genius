@@ -21,8 +21,9 @@ public interface ResourceHandler {
     void delete(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifer, Object vrfEntry,
             List<SubTransaction> transactionObjects);
 
-    void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original,
-            Object update, List<SubTransaction> transactionObjects);
+    void update(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update, List<SubTransaction> transactionObjects);
+
+    void updateContainer(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier, Object original, Object update, List<SubTransaction> transactionObjects);
 
     LogicalDatastoreType getDatastoreType();
 
