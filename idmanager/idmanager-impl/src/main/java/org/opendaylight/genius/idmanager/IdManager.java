@@ -157,7 +157,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             try {
                 idPoolsOptional = singleTxDB.syncReadOptional(LogicalDatastoreType.CONFIGURATION, idPoolsInstance);
                 break;
-            } catch (ReadFailedException e) {
+            } catch (ExecutionException e) {
                 LOG.error("Failed to read the id pools due to error. Retrying again...", e);
             }
             Thread.sleep(2000);
@@ -562,7 +562,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     private ReleaseIdOutputBuilder releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
-            throws ReadFailedException, IdManagerException {
+            throws IdManagerException, ReadFailedException {
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
         LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
         CountDownLatch latch = idUtils.getReleaseIdLatch(idLatchKey);
