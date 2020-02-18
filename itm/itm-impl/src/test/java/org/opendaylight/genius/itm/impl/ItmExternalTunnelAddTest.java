@@ -12,7 +12,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +37,7 @@ import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistr
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -162,7 +162,7 @@ public class ItmExternalTunnelAddTest {
 
     @Mock DataBroker dataBroker;
     @Mock JobCoordinator jobCoordinator;
-    @Mock ReadOnlyTransaction mockReadTx;
+    @Mock ReadTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock TypedWriteTransaction<Datastore.Configuration> typedWriteTransaction;
     @Mock TypedReadWriteTransaction<Datastore.Configuration> typedReadWriteTransaction;
@@ -283,7 +283,7 @@ public class ItmExternalTunnelAddTest {
 
         lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
         doReturn("phy0").when(itmConfig).getPortname();
         doReturn(Uint16.valueOf(100)).when(itmConfig).getVlanId();
     }

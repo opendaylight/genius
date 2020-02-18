@@ -14,8 +14,6 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -180,8 +177,9 @@ public final class ItmUtils {
                                                           InstanceIdentifier<T> path, DataBroker broker) {
         try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException | ExecutionException e) {
+            LOG.error("Read failed ", e);
+            return Optional.empty();
         }
     }
 
@@ -191,49 +189,49 @@ public final class ItmUtils {
      *
      * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
      */
-    @Deprecated
+    /*@Deprecated
     public static <T extends DataObject> void asyncWrite(LogicalDatastoreType datastoreType,
                                                          InstanceIdentifier<T> path, T data, DataBroker broker,
                                                          FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
-    }
+        Futures.addCallback(tx.commit(),callback, MoreExecutors.directExecutor());
+    }*/
 
     /**
      * Asynchronous non-blocking update to data store.
      *
      * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
      */
-    @Deprecated
+    /*@Deprecated
     public static <T extends DataObject> void asyncUpdate(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, T data, DataBroker broker,
                                                           FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
-    }
+        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
+    }*/
 
     /**
      * Asynchronous non-blocking single delete to data store.
      *
      * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
      */
-    @Deprecated
+    /*@Deprecated
     public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path, DataBroker broker,
                                                           FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
-    }
+        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
+    }*/
 
     /**
      * Asynchronous non-blocking bulk delete to data store.
      *
      * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
      */
-    @Deprecated
+    /*@Deprecated
     public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,
                                                               final LogicalDatastoreType datastoreType,
                                                               List<InstanceIdentifier<T>> pathList,
@@ -243,9 +241,9 @@ public final class ItmUtils {
             for (InstanceIdentifier<T> path : pathList) {
                 tx.delete(datastoreType, path);
             }
-            Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
+            Futures.addCallback(tx.commit(), callback ,MoreExecutors.directExecutor());
         }
-    }
+    }*/
 
     //ITM cleanup:portname and vlanId are removed, causes change in generated
     //interface name: This has upgrade impact
@@ -536,7 +534,7 @@ public final class ItmUtils {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(datastoreType, path, data, true);
         try {
-            tx.submit().get();
+            tx.commit().get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("ITMUtils:SyncWrite , Error writing to datastore (path, data) : ({}, {})", path, data);
             throw new RuntimeException(e.getMessage(), e);

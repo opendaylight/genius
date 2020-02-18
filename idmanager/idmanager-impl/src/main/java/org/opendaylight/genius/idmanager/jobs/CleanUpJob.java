@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdManagerException;
@@ -23,7 +24,6 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
@@ -65,7 +65,7 @@ public class CleanUpJob implements Callable<List<ListenableFuture<Void>>> {
     }
 
     private void cleanupExcessIds()
-            throws IdManagerException, ReadFailedException, TransactionCommitFailedException {
+            throws IdManagerException, TransactionCommitFailedException, ExecutionException , InterruptedException {
         // We can update the availableCount here... and update it in DS using IdHolderSyncJob
         long totalAvailableIdCount = idLocalPool.getAvailableIds().getAvailableIdCount()
                 + idLocalPool.getReleasedIds().getAvailableIdCount();

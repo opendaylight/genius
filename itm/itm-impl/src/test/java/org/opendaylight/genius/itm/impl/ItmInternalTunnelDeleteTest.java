@@ -67,6 +67,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
@@ -142,21 +143,21 @@ public class ItmInternalTunnelDeleteTest {
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
         internalTunnelOptional = Optional.of(internalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadWriteTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(internalTunnelOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
@@ -211,7 +212,7 @@ public class ItmInternalTunnelDeleteTest {
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockReadWriteTx).commit();
         doReturn(true).when(mockReadWriteTx).cancel();
         lenient().doReturn(false).when(itmConfig).isUseOfTunnels();
     }
@@ -230,7 +231,7 @@ public class ItmInternalTunnelDeleteTest {
 
         Optional<DpnEndpoints> dpnEndpointsOptional = Optional.of(dpnEndpoints);
 
-        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+        lenient().doReturn(FluentFutures.immediateFluentFuture(dpnEndpointsOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
 
         itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
