@@ -20,5 +20,5 @@ public interface VniUtils {
 
     void releaseVNI(String vniKey) throws ExecutionException, InterruptedException;
 
-    Optional<IdPool> getVxlanVniPool() throws ReadFailedException;
+    Optional<IdPool> getVxlanVniPool() throws ReadFailedException, ExecutionException, InterruptedException;
 }

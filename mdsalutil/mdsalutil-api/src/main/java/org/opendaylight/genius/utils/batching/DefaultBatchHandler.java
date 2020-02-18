@@ -51,6 +51,26 @@ public class DefaultBatchHandler implements ResourceHandler {
     }
 
     @Override
+    public void updateContainer(WriteTransaction tx, LogicalDatastoreType logicalDatastoreType,
+                       InstanceIdentifier identifier, Object original, Object update,
+                                List<SubTransaction> transactionObjects) {
+        if (update != null && !(update instanceof DataObject)) {
+            return;
+        }
+        if (logicalDatastoreType != getDatastoreType()) {
+            return;
+        }
+
+        SubTransaction subTransaction = new SubTransactionImpl();
+        subTransaction.setAction(SubTransaction.UPDATE);
+        subTransaction.setInstance(update);
+        subTransaction.setInstanceIdentifier(identifier);
+        transactionObjects.add(subTransaction);
+
+        tx.merge(logicalDatastoreType, identifier, (DataObject) update);
+    }
+
+    @Override
     public void create(WriteTransaction tx, final LogicalDatastoreType logicalDatastoreType,
             final InstanceIdentifier identifier, final Object data, List<SubTransaction> transactionObjects) {
         if (data != null && !(data instanceof DataObject)) {

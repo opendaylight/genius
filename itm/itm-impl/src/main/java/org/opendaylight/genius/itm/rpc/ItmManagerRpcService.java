@@ -821,8 +821,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
                     //TO DO: add retry if it fails
                     FluentFuture<Void> future = retryingTxRunner
-                            .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(path, deviceVtep,
-                                    true));
+                            .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(path, deviceVtep));
 
                     future.addCallback(new FutureCallback<Void>() {
 
@@ -896,7 +895,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 FluentFuture<Void> future =
                     retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                         tx -> {
-                            tx.put(path, deviceVtep, true);
+                            tx.put(path, deviceVtep);
                             if (nodeId.size() == 2) {
                                 LOG.trace("second node-id {}", nodeId.get(1));
                                 DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
@@ -908,7 +907,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                                         .setIpAddress(hwIp).setNodeId(nodeId.get(1))
                                         .setTopologyId(input.getTopologyId()).build();
                                 LOG.trace("writing {}", deviceVtep2);
-                                tx.put(path2, deviceVtep2, true);
+                                tx.put(path2, deviceVtep2);
                             }
                         });
                 future.addCallback(new FutureCallback<Void>() {
