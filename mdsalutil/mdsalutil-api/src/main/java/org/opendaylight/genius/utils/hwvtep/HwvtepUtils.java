@@ -11,18 +11,17 @@ package org.opendaylight.genius.utils.hwvtep;
 import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.StreamSupport;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
@@ -88,7 +87,8 @@ public final class HwvtepUtils {
     }
 
     @Deprecated
-    public static FluentFuture<? extends @NonNull CommitInfo> addLogicalSwitch(DataBroker broker, LogicalDatastoreType logicalDatastoreType,
+    public static FluentFuture<? extends @NonNull CommitInfo> addLogicalSwitch(DataBroker broker,
+                                                          LogicalDatastoreType logicalDatastoreType,
                                                           NodeId nodeId,
                                                           LogicalSwitches logicalSwitch) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
@@ -209,10 +209,10 @@ public final class HwvtepUtils {
      */
     @Deprecated
     public static LogicalSwitches getLogicalSwitch(DataBroker broker, LogicalDatastoreType datastoreType, NodeId nodeId,
-                                                   String logicalSwitchName) {
+        String logicalSwitchName) throws ExecutionException, InterruptedException {
         final InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName));
-        return MDSALUtil.read(broker, datastoreType, iid).orElse(null);
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -249,10 +249,11 @@ public final class HwvtepUtils {
      * @return the physical port termination point
      */
     public static TerminationPoint getPhysicalPortTerminationPoint(DataBroker broker,
-            LogicalDatastoreType datastoreType, NodeId nodeId, String portName) {
+            LogicalDatastoreType datastoreType, NodeId nodeId, String portName) throws ExecutionException,
+            InterruptedException {
         TerminationPointKey tpKey = new TerminationPointKey(new TpId(portName));
         InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createTerminationPointId(nodeId, tpKey);
-        return MDSALUtil.read(broker, datastoreType, iid).orElse(null);
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -266,12 +267,14 @@ public final class HwvtepUtils {
      *            virtual network id
      * @return the logical switches
      */
-    public static LogicalSwitches getLogicalSwitches(DataBroker broker, String hwVtepNodeId, String vni) {
+    public static LogicalSwitches getLogicalSwitches(DataBroker broker, String hwVtepNodeId, String vni)
+            throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(hwVtepNodeId);
         InstanceIdentifier<LogicalSwitches> logicalSwitchesIdentifier = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(vni));
 
-        return MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, logicalSwitchesIdentifier).orElse(null);
+        return SingleTransactionDataBroker.syncReadOptional(broker, LogicalDatastoreType.CONFIGURATION,
+                logicalSwitchesIdentifier).orElse(null);
     }
 
     /**
@@ -328,13 +331,14 @@ public final class HwvtepUtils {
      * @return the physical locator
      */
     public static HwvtepPhysicalLocatorAugmentation getPhysicalLocator(DataBroker broker,
-            LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
+            LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) throws
+            ExecutionException, InterruptedException {
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
                 .createHwvtepPhysicalLocatorAugmentation(phyLocatorIp);
         InstanceIdentifier<HwvtepPhysicalLocatorAugmentation> iid = HwvtepSouthboundUtils
                 .createPhysicalLocatorInstanceIdentifier(nodeId, phyLocatorAug)
                 .augmentation(HwvtepPhysicalLocatorAugmentation.class);
-        return MDSALUtil.read(broker, datastoreType, iid).orElse(null);
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -634,10 +638,11 @@ public final class HwvtepUtils {
      */
     @Deprecated
     public static RemoteMcastMacs getRemoteMcastMac(DataBroker broker, LogicalDatastoreType datastoreType,
-                                                    NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey) {
+                                                    NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey)
+            throws ExecutionException, InterruptedException {
         final InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils
                 .createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey);
-        return MDSALUtil.read(broker, datastoreType, iid).orElse(null);
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -873,8 +878,9 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #getHwVtepNode(TypedReadTransaction, NodeId)}.
      */
     @Deprecated
-    public static Node getHwVtepNode(DataBroker dataBroker, LogicalDatastoreType datastoreType, NodeId nodeId) {
-        return MDSALUtil.read(dataBroker, datastoreType,
+    public static Node getHwVtepNode(DataBroker dataBroker, LogicalDatastoreType datastoreType, NodeId nodeId)
+            throws ExecutionException, InterruptedException {
+        return SingleTransactionDataBroker.syncReadOptional(dataBroker, datastoreType,
                 HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)).orElse(null);
     }
 
@@ -956,7 +962,8 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #getDbVersion(TypedReadTransaction, NodeId)}.
      */
     @Deprecated
-    public static String getDbVersion(DataBroker broker, NodeId nodeId) {
+    public static String getDbVersion(DataBroker broker, NodeId nodeId) throws ExecutionException,
+            InterruptedException {
         Node hwvtepNode = getHwVtepNode(broker, LogicalDatastoreType.OPERATIONAL, nodeId);
         String dbVersion = "";
         if (hwvtepNode != null) {

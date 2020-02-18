@@ -7,13 +7,10 @@
  */
 package org.opendaylight.genius.infra;
 
-import com.google.common.util.concurrent.CheckedFuture;
-import java.util.Optional;
-
 import com.google.common.util.concurrent.FluentFuture;
+import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -33,8 +30,7 @@ class WriteTrackingReadWriteTransaction extends WriteTrackingWriteTransaction im
     }
 
     @Override
-    public FluentFuture<Boolean> exists(LogicalDatastoreType store,
-                                                             InstanceIdentifier<?> path) {
+    public FluentFuture<Boolean> exists(LogicalDatastoreType store, InstanceIdentifier<?> path) {
         return ((ReadWriteTransaction) delegate()).exists(store, path);
     }
 }
