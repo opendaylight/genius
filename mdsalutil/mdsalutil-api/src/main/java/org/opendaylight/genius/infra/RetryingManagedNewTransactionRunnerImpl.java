@@ -159,7 +159,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         return Objects.requireNonNull(delegate.callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
             "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
             .catchingAsync(Exception.class, exception -> {
-                // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+                // as per AsyncWriteTransaction.commit()'s JavaDoc re. retries
                 if (isRetriableException(exception) && tries - 1 > 0) {
                     return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                 } else {
@@ -182,7 +182,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
                  delegate.callWithNewWriteOnlyTransactionAndSubmit(txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null");
         return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
-            // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+            // as per AsyncWriteTransaction.commit()'s JavaDoc re. retries
             if (tries - 1 > 0) {
                 return callWithNewWriteOnlyTransactionAndSubmit(txRunner, tries - 1);
             } else {
@@ -206,7 +206,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         return Objects.requireNonNull(delegate.callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
                 .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
-                    // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+                    // as per AsyncWriteTransaction.commit()'s JavaDoc re. retries
                     if (tries - 1 > 0) {
                         return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                     } else {

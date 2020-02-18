@@ -46,7 +46,6 @@ import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNode;
@@ -720,10 +719,10 @@ public final class FlowBasedServicesUtils {
     public static BoundServicesState getBoundServicesState(ReadTransaction tx,
                                                            String interfaceName,
                                                            Class<? extends ServiceModeBase> serviceMode)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orElse(null);
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).get().orElse(null);
     }
 
     public static BoundServicesState getBoundServicesState(TypedReadTransaction<Operational> tx, String interfaceName,

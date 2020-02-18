@@ -6,11 +6,9 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 /*package org.opendaylight.genius.infra;
-
 /*import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -144,19 +142,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
         }
 
         @Override
-        public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
-                                                                                           InstanceIdentifier<T> path) {
-            checkStore(store);
-            return Futures.makeChecked(delegate.read(path),
-                    e -> new ReadFailedException("Error reading from the datastore", e));
-        }
-
-        @Override
-        public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
+        public FluentFuture<Boolean> exists(LogicalDatastoreType store,
                                                                   InstanceIdentifier<?> path) {
             checkStore(store);
-            return Futures.makeChecked(delegate.exists(path),
-                    e -> new ReadFailedException("Error reading from the datastore", e));
+            return FluentFuture.from(delegate.exists(path));
         }
     }
 }*/

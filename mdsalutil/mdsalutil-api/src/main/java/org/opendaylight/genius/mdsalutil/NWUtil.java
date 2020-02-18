@@ -18,7 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import org.apache.commons.net.util.SubnetUtils;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -161,11 +163,11 @@ public final class NWUtil {
     /**
      * Returns the ids of the currently operative DPNs.
      */
-    public static List<Uint64> getOperativeDPNs(DataBroker dataBroker) {
+    public static List<Uint64> getOperativeDPNs(DataBroker dataBroker) throws ExecutionException, InterruptedException {
         List<Uint64> result = new LinkedList<>();
         InstanceIdentifier<Nodes> nodesInstanceIdentifier = InstanceIdentifier.builder(Nodes.class).build();
-        Optional<Nodes> nodesOptional = MDSALUtil.read(dataBroker, LogicalDatastoreType.OPERATIONAL,
-                                                       nodesInstanceIdentifier);
+        Optional<Nodes> nodesOptional = SingleTransactionDataBroker.syncReadOptional(dataBroker,
+                LogicalDatastoreType.OPERATIONAL, nodesInstanceIdentifier);
         if (!nodesOptional.isPresent()) {
             return result;
         }

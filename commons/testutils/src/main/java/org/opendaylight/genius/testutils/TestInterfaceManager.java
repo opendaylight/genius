@@ -12,16 +12,16 @@ import static org.opendaylight.yangtools.testutils.mockito.MoreAnswers.realOrExc
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import org.mockito.Mockito;
-import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.testutils.interfacemanager.InterfaceHelper;
 import org.opendaylight.genius.testutils.interfacemanager.InterfaceStateHelper;
 import org.opendaylight.genius.testutils.interfacemanager.TunnelInterfaceDetails;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
@@ -58,10 +58,10 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
     }
 
     public void addInterfaceInfo(InterfaceInfo interfaceInfo)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         interfaceInfos.put(interfaceInfo.getInterfaceName(), interfaceInfo);
         if (optDataBroker.isPresent()) {
-            // Can't use ifPresent() here because of checked exception from tx.submit().checkedGet();
+            // Can't use ifPresent() here because of checked exception from tx.commit().get();
             DataBroker dataBroker = optDataBroker.get();
             ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
 
@@ -85,12 +85,12 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
     }
 
     public void addTunnelInterface(TunnelInterfaceDetails tunnelInterfaceDetails)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         InterfaceInfo interfaceInfo = tunnelInterfaceDetails.getInterfaceInfo();
         interfaceInfos.put(interfaceInfo.getInterfaceName(), interfaceInfo);
 
         if (optDataBroker.isPresent()) {
-            // Can't use ifPresent() here because of checked exception from tx.submit().checkedGet();
+            // Can't use ifPresent() here because of checked exception from tx.commit().get();
             DataBroker dataBroker = optDataBroker.get();
 
             Interface iface = InterfaceHelper.buildVxlanTunnelInterfaceFromInfo(tunnelInterfaceDetails);
@@ -103,7 +103,7 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
             tx.put(LogicalDatastoreType.OPERATIONAL,
                     InterfaceStateHelper.buildStateInterfaceIid(interfaceInfo.getInterfaceName()),
                     InterfaceStateHelper.buildStateFromInterfaceInfo(interfaceInfo));
-            tx.submit().checkedGet();
+            tx.commit().get();
             externalInterfaces.put(interfaceInfo.getInterfaceName(), true);
             addInterface(iface);
         }
