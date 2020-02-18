@@ -256,14 +256,14 @@ public class InterfaceManagerConfigurationTest {
                         new InterfaceChildEntryKey(INTERFACE_NAME));
         assertEqualBeans(ExpectedInterfaceChildEntry.interfaceChildEntry(INTERFACE_NAME),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
-                        interfaceChildEntryInstanceIdentifier).checkedGet().get());
+                        interfaceChildEntryInstanceIdentifier).get());
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the vlan interface
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
             .interfaces.state.Interface ifaceState =
                 dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-                IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
+                IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).get();
 
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
             INTERFACE_NAME, Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString(),
@@ -276,7 +276,7 @@ public class InterfaceManagerConfigurationTest {
                 .builder(IfIndexesInterfaceMap.class)
                 .child(IfIndexInterface.class, new IfIndexInterfaceKey(ifaceState.getIfIndex())).build();
         Assert.assertEquals(INTERFACE_NAME, dataBroker.newReadOnlyTransaction()
-                .read(OPERATIONAL, ifIndexInterfaceInstanceIdentifier).checkedGet().get().getInterfaceName());*/
+                .read(OPERATIONAL, ifIndexInterfaceInstanceIdentifier).get().getInterfaceName());*/
 
         // c) check expected flow entries were created in Interface Ingress
         // Table
@@ -290,7 +290,7 @@ public class InterfaceManagerConfigurationTest {
                 .build();
 
         flowAssertTestUtils.assertFlowsInAnyOrder(ExpectedFlowEntries.newIngressFlow(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).checkedGet().get());
+                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, ingressFlowInstanceId).get());
 
         // d) check if default egress service is bound on the interface
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = InstanceIdentifier
@@ -298,7 +298,7 @@ public class InterfaceManagerConfigurationTest {
                 .child(ServicesInfo.class, new ServicesInfoKey(INTERFACE_NAME, ServiceModeEgress.class))
                 .child(BoundServices.class, new BoundServicesKey(DEFAULT_EGRESS_SERVICE_INDEX)).build();
         assertEqualBeans(ExpectedServicesInfo.newboundService(), dataBroker.newReadOnlyTransaction()
-                .read(CONFIGURATION, boundServicesInstanceIdentifier).checkedGet().get());
+                .read(CONFIGURATION, boundServicesInstanceIdentifier).get());
 
         // Test all RPCs related to vlan-interfaces
         checkVlanRpcs();
@@ -315,7 +315,7 @@ public class InterfaceManagerConfigurationTest {
         // Then
         // a) check if operational/ietf-interfaces-state is updated for vlan interface
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
+            IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), INTERFACE_NAME, Interface
             .OperStatus.Down, L2vlan.class, DPN_ID_1.toString(),
                 ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
@@ -332,7 +332,7 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes("disable interface op state", coordinatorEventsWaiter, 2, asyncEventsWaiter);
 
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).checkedGet().get();
+            IfmUtil.buildStateInterfaceId(INTERFACE_NAME)).get();
         // Verify if operational/ietf-interface-state is marked down
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
             INTERFACE_NAME, Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString(),
@@ -416,7 +416,7 @@ public class InterfaceManagerConfigurationTest {
         // TODO Later use nicer abstraction for DB access here.. see
         // ElanServiceTest
         assertEqualBeans(InterfaceMeta.newBridgeInterface(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, bridgeInterfaceEntryIid).checkedGet().get());
+                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, bridgeInterfaceEntryIid).get());
 
         // Then
         // a) check if termination end point is created in
@@ -441,7 +441,7 @@ public class InterfaceManagerConfigurationTest {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
             .interfaces.state.Interface ifaceState =
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-                IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+                IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
             TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString(),
                 ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
@@ -466,7 +466,7 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get();
         // Verify if operational/ietf-interface-state is still up
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
             TUNNEL_INTERFACE_NAME, Interface.OperStatus.Up, Tunnel.class, DPN_ID_2.toString(),
@@ -477,7 +477,7 @@ public class InterfaceManagerConfigurationTest {
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
 
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get();
         // Verify if operational/ietf-interface-state is marked down
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
             TUNNEL_INTERFACE_NAME, Interface.OperStatus.Down, Tunnel.class, DPN_ID_2.toString(),
@@ -488,7 +488,7 @@ public class InterfaceManagerConfigurationTest {
         InterfaceManagerTestUtil.removeNode(dataBroker);
         waitTillOperationCompletes(coordinatorEventsWaiter, asyncEventsWaiter);
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).checkedGet().get();
+            IfmUtil.buildStateInterfaceId(TUNNEL_INTERFACE_NAME)).get();
         // Verify if operational/ietf-interface-state is marked unknown
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(),
             TUNNEL_INTERFACE_NAME, Interface.OperStatus.Unknown, Tunnel.class, DPN_ID_2.toString(),
@@ -607,7 +607,7 @@ public class InterfaceManagerConfigurationTest {
             .child(Table.class, new TableKey(NwConstants.LPORT_DISPATCHER_TABLE)).child(Flow.class,
                 lportDispatcherFlowKey).build();
         flowAssertTestUtils.assertFlowsInAnyOrder(ExpectedFlowEntries.newLportDispatcherFlow(),
-                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).checkedGet().get());
+                dataBroker.newReadOnlyTransaction().read(CONFIGURATION, lportDispatcherFlowId).get());
 
         // check whether service-binding state cache is populated
         assertEqualBeans(ExpectedBoundServiceState.newBoundServiceState(), FlowBasedServicesUtils
@@ -646,10 +646,10 @@ public class InterfaceManagerConfigurationTest {
 
         // FIXME the extend file getting generated had some import issues, will revist  later
         //assertEqualBeans(null,
-        //    dataBroker.newReadOnlyTransaction().read(CONFIGURATION, egressDispatcherFlowId).checkedGet().get());
+        //    dataBroker.newReadOnlyTransaction().read(CONFIGURATION, egressDispatcherFlowId).get());
 
         Assert.assertNotNull(dataBroker.newReadOnlyTransaction().read(CONFIGURATION,
-            egressDispatcherFlowId).checkedGet().get());
+            egressDispatcherFlowId).get());
 
         //10. test check whether service is bound on egress
         Assert.assertTrue(interfaceManager.isServiceBoundOnInterfaceForEgress(NwConstants.EGRESS_ACL_SERVICE_INDEX,
@@ -687,7 +687,7 @@ public class InterfaceManagerConfigurationTest {
 
         //assertEqualBeans(ExpectedInterfaceConfig.newVlanInterfaceConfig(INTERFACE_NAME_1, null),
         //    dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil.buildId(
-        //        INTERFACE_NAME_1)).checkedGet().get());
+        //        INTERFACE_NAME_1)).get());
 
         // 17. Update Parent Refs for VLAN interface
         // FIXME Make IInterfaceManager truly async
@@ -697,7 +697,7 @@ public class InterfaceManagerConfigurationTest {
 
         assertEqualBeans(ExpectedInterfaceConfig.newVlanInterfaceConfig(INTERFACE_NAME_1, PARENT_INTERFACE_1),
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
-                .buildId(INTERFACE_NAME_1)).checkedGet().get());
+                .buildId(INTERFACE_NAME_1)).get());
 
         // 18. Test creation of external l2vlan interfaces
         // FIXME Make IInterfaceManager truly async
@@ -709,7 +709,7 @@ public class InterfaceManagerConfigurationTest {
         // to do proper assertion
         //Assert.assertNotNull(dataBroker
         //    .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
-        //    .buildId(INTERFACE_NAME_2)).checkedGet().get().augmentation(IfExternal.class));
+        //    .buildId(INTERFACE_NAME_2)).get().augmentation(IfExternal.class));
 
         // 19. update parent-refs
         //interfaceManager.updateInterfaceParentRef(INTERFACE_NAME_2, PARENT_INTERFACE_2, true);
@@ -717,7 +717,7 @@ public class InterfaceManagerConfigurationTest {
                 coordinatorEventsWaiter, 4, asyncEventsWaiter);
         Assert.assertEquals(PARENT_INTERFACE_2, dataBroker
             .newReadOnlyTransaction().read(LogicalDatastoreType.CONFIGURATION, IfmUtil
-                .buildId(INTERFACE_NAME_2)).checkedGet().get().augmentation(ParentRefs.class).getParentInterface());
+                .buildId(INTERFACE_NAME_2)).get().augmentation(ParentRefs.class).getParentInterface());
 
         // 20. get list of vlan interfaces
         // FIXME need to wait for https://git.opendaylight.org/gerrit/#/c/54811/ this to land
@@ -856,14 +856,14 @@ public class InterfaceManagerConfigurationTest {
                 new InterfaceChildEntryKey(TRUNK_INTERFACE_NAME));
         assertEqualBeans(ExpectedInterfaceChildEntry.interfaceChildEntry(TRUNK_INTERFACE_NAME),
                 dataBroker.newReadOnlyTransaction().read(CONFIGURATION, interfaceChildEntryInstanceIdentifier)
-                        .checkedGet().get());
+                        .get());
 
         // Then
         // a) check if operational/ietf-interfaces-state is populated for the vlan interface
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
             .interfaces.state.Interface ifaceState =
             dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-                IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();
+                IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), TRUNK_INTERFACE_NAME,
                 Interface.OperStatus.Up, L2vlan.class, DPN_ID_1.toString(),
                 ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
@@ -874,7 +874,7 @@ public class InterfaceManagerConfigurationTest {
             IfIndexesInterfaceMap.class).child(
             IfIndexInterface.class, new IfIndexInterfaceKey(ifaceState.getIfIndex())).build();
         Assert.assertEquals(TRUNK_INTERFACE_NAME, dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            ifIndexInterfaceInstanceIdentifier).checkedGet().get().getInterfaceName());*/
+            ifIndexInterfaceInstanceIdentifier).get().getInterfaceName());*/
 
         //Update test
         // i) vlan member interface admin-state updated
@@ -886,7 +886,7 @@ public class InterfaceManagerConfigurationTest {
         //Then
         // a) check if operational/ietf-interfaces-state is updated for vlan interface
         ifaceState = dataBroker.newReadOnlyTransaction().read(OPERATIONAL,
-            IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).checkedGet().get();
+            IfmUtil.buildStateInterfaceId(TRUNK_INTERFACE_NAME)).get();
         assertEqualBeans(ExpectedInterfaceState.newInterfaceState(ifaceState.getIfIndex(), TRUNK_INTERFACE_NAME,
             Interface.OperStatus.Down, L2vlan.class, DPN_ID_1.toString(),
                 ifaceState.getStatistics().getDiscontinuityTime()), ifaceState);
@@ -940,6 +940,6 @@ public class InterfaceManagerConfigurationTest {
             entryBuilder.setInterfaceType(interfaceType);
         }
         tx.put(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build(), true);
-        tx.submit().checkedGet();
+        tx.commit().get();
     }
 }

@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.itm.tests;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,7 @@ public final class OvsdbTestUtil {
         return connectionInfo;
     }
 
-    public static CheckedFuture<Void, TransactionCommitFailedException> createNode(
+    public static FluentFuture<Void> createNode(
         ConnectionInfo connectionInfo, String tepIp, String tzName, DataBroker dataBroker)
         throws Exception {
         final InstanceIdentifier<Node> iid = SouthboundUtils.createInstanceIdentifier(connectionInfo);
@@ -119,16 +119,16 @@ public final class OvsdbTestUtil {
 
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         transaction.put(LogicalDatastoreType.OPERATIONAL, iid, ovsdbNode, true);
-        return transaction.submit();
+        return transaction.commit();
     }
 
-    public static CheckedFuture<Void, TransactionCommitFailedException> updateNode(
+    public static FluentFuture<Void> updateNode(
         ConnectionInfo connectionInfo, String tepIp, String tzName, String brName,
         DataBroker dataBroker) throws Exception {
         final InstanceIdentifier<Node> iid = SouthboundUtils.createInstanceIdentifier(connectionInfo);
 
         Node oldOvsdbNode = dataBroker.newReadOnlyTransaction()
-            .read(LogicalDatastoreType.OPERATIONAL, iid).checkedGet().get();
+            .read(LogicalDatastoreType.OPERATIONAL, iid).get();
 
         // build Node using its builder class
         NodeBuilder nodeBuilder = new NodeBuilder();
@@ -190,10 +190,10 @@ public final class OvsdbTestUtil {
         //ReadWriteTransaction transaction = dataBroker.newReadWriteTransaction();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
         transaction.put(LogicalDatastoreType.OPERATIONAL, iid, ovsdbNode, true);
-        return transaction.submit();
+        return transaction.commit();
     }
 
-    public static CheckedFuture<Void, TransactionCommitFailedException> addBridgeIntoNode(
+    public static FluentFuture<Void> addBridgeIntoNode(
         ConnectionInfo connectionInfo, String bridgeName, String dpid, DataBroker dataBroker) throws Exception {
         NodeId ovsdbNodeId = SouthboundUtils.createNodeId(connectionInfo.getRemoteIp(),
             connectionInfo.getRemotePort());
@@ -218,6 +218,6 @@ public final class OvsdbTestUtil {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.OPERATIONAL, bridgeIid,
             bridgeNode, true);
-        return tx.submit();
+        return tx.commit();
     }
 }

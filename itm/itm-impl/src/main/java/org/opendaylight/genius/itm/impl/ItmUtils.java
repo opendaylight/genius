@@ -197,7 +197,7 @@ public final class ItmUtils {
                                                          FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
+        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
     }
 
     /**
@@ -211,7 +211,7 @@ public final class ItmUtils {
                                                           FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
+        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
     }
 
     /**
@@ -225,7 +225,7 @@ public final class ItmUtils {
                                                           FutureCallback<Void> callback) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.delete(datastoreType, path);
-        Futures.addCallback(tx.submit(), callback, MoreExecutors.directExecutor());
+        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
     }
 
     /**
@@ -243,7 +243,7 @@ public final class ItmUtils {
             for (InstanceIdentifier<T> path : pathList) {
                 tx.delete(datastoreType, path);
             }
-            Futures.addCallback(tx.submit(), callback ,MoreExecutors.directExecutor());
+            Futures.addCallback(tx.commit(), callback ,MoreExecutors.directExecutor());
         }
     }
 
@@ -536,7 +536,7 @@ public final class ItmUtils {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
         tx.put(datastoreType, path, data, true);
         try {
-            tx.submit().get();
+            tx.commit().get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("ITMUtils:SyncWrite , Error writing to datastore (path, data) : ({}, {})", path, data);
             throw new RuntimeException(e.getMessage(), e);
