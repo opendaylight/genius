@@ -92,6 +92,8 @@ public class ItmExternalTunnelAddWorker {
                 ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(),
                         extIp.stringValue(), tunType, trunkInterfaceName);
                 tx.merge(path, tnl, true);
+                ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
+
             }
         }
     }

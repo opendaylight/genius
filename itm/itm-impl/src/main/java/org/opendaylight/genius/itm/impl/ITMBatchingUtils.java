@@ -71,6 +71,13 @@ public final class ITMBatchingUtils {
         getQueue(entityType).add(ActionableResources.update(path, data));
     }
 
+    public static <T extends DataObject> void updateContainer(InstanceIdentifier<T> path, T data,
+                                                              EntityType entityType) {
+        LOG.debug("Adding to the Queue to batch the update DS Operation - Id {} data {}", path, data);
+        getQueue(entityType).add(ActionableResources.updateContainer(path, data));
+    }
+
+
     public static <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
         LOG.debug("Adding to the Queue to batch the write DS Operation - Id {} data {}", path, data);
         getQueue(entityType).add(ActionableResources.create(path, data));

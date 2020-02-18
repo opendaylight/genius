@@ -46,6 +46,12 @@ class InterfaceBatchHandler implements ResourceHandler {
     }
 
     @Override
+    public void updateContainer(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier
+            identifier, Object original, Object update, List<SubTransaction> transactionObjects) {
+        //no-op
+    }
+
+    @Override
     public void create(WriteTransaction tx, LogicalDatastoreType datastoreType, InstanceIdentifier identifier,
             Object data, List<SubTransaction> transactionObjects) {
         if (data != null && !(data instanceof DataObject)) {

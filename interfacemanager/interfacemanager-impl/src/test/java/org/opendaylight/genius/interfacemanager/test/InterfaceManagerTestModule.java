@@ -9,9 +9,10 @@ package org.opendaylight.genius.interfacemanager.test;
 
 import static org.mockito.Mockito.mock;
 
-import java.net.UnknownHostException;
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
+import java.util.concurrent.Executors;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
@@ -47,6 +48,8 @@ import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractBaseDataBrokerTest;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTestCustomizer;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
@@ -69,13 +72,24 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws UnknownHostException {
+    protected void configureBindings() throws  Exception {
         // Bindings for services from this project
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
 
-        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
-        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
+        AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
+            @Override
+            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
+                return new AbstractDataBrokerTestCustomizer() {
+                    @Override
+                    public ListeningExecutorService getCommitCoordinatorExecutor() {
+                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+                    }
+                };
+            }
+        };
+        test.setup();
+        DataBroker dataBroker = test.getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
         bind(DataTreeEventCallbackRegistrar.class).toInstance(mock(DataTreeEventCallbackRegistrar.class));
         bind(ManagedNewTransactionRunner.class).toInstance(mock(ManagedNewTransactionRunner.class));
@@ -94,7 +108,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
-                new SimpleDOMEntityOwnershipService(), dataBrokerTestModule.getBindingToNormalizedNodeCodec());
+                new SimpleDOMEntityOwnershipService(),
+                test.getDataBrokerTestCustomizer().getBindingToNormalized());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));

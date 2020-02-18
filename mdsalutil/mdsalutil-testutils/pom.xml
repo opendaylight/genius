@@ -70,7 +70,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>mockito-core</artifactId>
       <scope>compile</scope>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>sal-binding-broker-impl</artifactId>
       <scope>compile</scope>
@@ -80,7 +80,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>sal-binding-broker-impl</artifactId>
       <type>test-jar</type>
       <scope>compile</scope>
-    </dependency>
+    </dependency>!-->
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>jobcoordinator-impl</artifactId>

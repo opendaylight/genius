@@ -18,7 +18,7 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-class MdSalUtilBatchHandler implements ResourceHandler {
+class MdSalUtilBatchHandler implements ResourceHandler{
     private final DataBroker dataBroker;
     private final int batchSize;
     private final int batchInterval;
@@ -41,6 +41,13 @@ class MdSalUtilBatchHandler implements ResourceHandler {
         tx.merge(datastoreType, identifier, (DataObject) update, true);
 
         buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
+    }
+
+    @Override
+    public void updateContainer(WriteTransaction tx, LogicalDatastoreType datastoreType,
+                                InstanceIdentifier identifier, Object original,
+                                Object update, List<SubTransaction>transactionObjects) {
+        //no-op
     }
 
     @Override
