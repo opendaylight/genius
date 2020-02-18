@@ -8,7 +8,9 @@
 package org.opendaylight.genius.testutils.interfacemanager;
 
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
+import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
@@ -44,7 +46,8 @@ public final class InterfaceHelper {
     }
 
     public static Interface readInterfaceFromConfigDs(String interfaceName,
-                                                      DataBroker dataBroker) throws ReadFailedException {
+                                                      DataBroker dataBroker) throws
+            ExecutionException, InterruptedException, ExpectedDataObjectNotFoundException {
         return SingleTransactionDataBroker.syncRead(
                 dataBroker,
                 LogicalDatastoreType.CONFIGURATION,

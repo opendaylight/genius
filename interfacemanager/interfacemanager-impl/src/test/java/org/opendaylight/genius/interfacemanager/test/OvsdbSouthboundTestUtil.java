@@ -22,6 +22,7 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IetfInetUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
@@ -100,7 +101,7 @@ public class OvsdbSouthboundTestUtil {
         return new NodeId(uri);
     }
 
-    public static void createBridge(DataBroker dataBroker) throws TransactionCommitFailedException {
+    public static void createBridge(DataBroker dataBroker) throws ExecutionException, InterruptedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid = createInstanceIdentifier("192.168.56.101", 6640, ovsdbBridgeName);
         final InstanceIdentifier<OvsdbBridgeAugmentation> ovsdbBridgeIid = bridgeIid.builder()
@@ -115,10 +116,11 @@ public class OvsdbSouthboundTestUtil {
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid, bridgeCreateAugmentationBuilder.build(), true);
-        tx.submit().checkedGet();
+        tx.commit().get();
     }
 
-    public static void updateBridge(DataBroker dataBroker, String datapathId) throws TransactionCommitFailedException {
+    public static void updateBridge(DataBroker dataBroker, String datapathId)
+            throws ExecutionException, InterruptedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid = createInstanceIdentifier("192.168.56.101", 6640, ovsdbBridgeName);
         final InstanceIdentifier<OvsdbBridgeAugmentation> ovsdbBridgeIid = bridgeIid.builder()
@@ -133,10 +135,10 @@ public class OvsdbSouthboundTestUtil {
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid, bridgeCreateAugmentationBuilder.build(), true);
-        tx.submit().checkedGet();
+        tx.commit().get();
     }
 
-    public static void deleteBridge(DataBroker dataBroker) throws TransactionCommitFailedException {
+    public static void deleteBridge(DataBroker dataBroker) throws ExecutionException, InterruptedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid = createInstanceIdentifier("192.168.56.101", 6640, ovsdbBridgeName);
         final InstanceIdentifier<OvsdbBridgeAugmentation> ovsdbBridgeIid = bridgeIid.builder()
@@ -144,7 +146,7 @@ public class OvsdbSouthboundTestUtil {
         LOG.debug("Built with the intent to delete bridge data {}", bridgeIid.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.delete(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid);
-        tx.submit().checkedGet();
+        tx.commit().get();
     }
 
     public static InstanceIdentifier<Node> createInstanceIdentifier(NodeId nodeId) {
@@ -199,7 +201,7 @@ public class OvsdbSouthboundTestUtil {
 
     public static void createTerminationPoint(DataBroker dataBroker, String interfaceName,
                                               Class<? extends InterfaceTypeBase> type, String externalId) throws
-        TransactionCommitFailedException {
+            ExecutionException, InterruptedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid =
             createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
@@ -223,12 +225,12 @@ public class OvsdbSouthboundTestUtil {
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(OPERATIONAL, tpId, tpBuilder.build(), true);
-        tx.submit().checkedGet();
+        tx.commit().get();
     }
 
     public static void updateTerminationPoint(DataBroker dataBroker, String interfaceName,
                                               Class<? extends InterfaceTypeBase> type) throws
-        TransactionCommitFailedException {
+            ExecutionException, InterruptedException {
         final OvsdbBridgeName ovsdbBridgeName = new OvsdbBridgeName("s2");
         final InstanceIdentifier<Node> bridgeIid =
             createInstanceIdentifier("192.168.56.101", 6640,  ovsdbBridgeName);
@@ -249,7 +251,7 @@ public class OvsdbSouthboundTestUtil {
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(OPERATIONAL, tpId, tpBuilder.build(), true);
-        tx.submit().checkedGet();
+        tx.commit().get();
     }
 
     public static NodeKey createNodeKey(String ip, Integer port) {

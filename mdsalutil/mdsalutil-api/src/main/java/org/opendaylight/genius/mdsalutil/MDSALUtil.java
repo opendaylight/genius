@@ -560,11 +560,7 @@ public class MDSALUtil {
     @Deprecated
     public static <T extends DataObject> Optional<T> read(DataBroker broker, LogicalDatastoreType datastoreType,
                                                           InstanceIdentifier<T> path) {
-        try {
             return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, path);
-        } catch (ReadFailedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

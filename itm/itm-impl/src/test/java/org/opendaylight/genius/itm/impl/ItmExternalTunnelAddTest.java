@@ -283,7 +283,7 @@ public class ItmExternalTunnelAddTest {
 
         lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
         doReturn("phy0").when(itmConfig).getPortname();
         doReturn(Uint16.valueOf(100)).when(itmConfig).getVlanId();
     }

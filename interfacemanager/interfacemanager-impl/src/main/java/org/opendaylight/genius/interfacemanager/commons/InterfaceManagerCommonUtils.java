@@ -155,11 +155,12 @@ public final class InterfaceManagerCommonUtils {
         return IfmUtil.read(LogicalDatastoreType.OPERATIONAL, ncIdentifier, dataBroker).orElse(null);
     }
 
-    public boolean isNodePresent(ReadTransaction tx, NodeConnectorId nodeConnectorId) throws ReadFailedException {
+    public boolean isNodePresent(ReadTransaction tx, NodeConnectorId nodeConnectorId) throws
+            ExecutionException, InterruptedException {
         NodeId nodeID = IfmUtil.getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(nodeID)).build();
-        return tx.exists(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).checkedGet();
+        return tx.exists(LogicalDatastoreType.OPERATIONAL, nodeInstanceIdentifier).get();
     }
 
     public static InstanceIdentifier<Interface> getInterfaceIdentifier(InterfaceKey interfaceKey) {
@@ -193,20 +194,21 @@ public final class InterfaceManagerCommonUtils {
     public Interface getInterfaceFromConfigDS(String interfaceName) {
         try (ReadTransaction tx = dataBroker.newReadOnlyTransaction()) {
             return getInterfaceFromConfigDS(tx, interfaceName);
-        } catch (ReadFailedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             LOG.error("Error retrieving interface {} from config", interfaceName, e);
             throw new RuntimeException("Error retrieving interface " + interfaceName + " from config", e);
         }
     }
 
     @Nullable
-    public Interface getInterfaceFromConfigDS(ReadTransaction tx, String interfaceName) throws ReadFailedException {
+    public Interface getInterfaceFromConfigDS(ReadTransaction tx, String interfaceName) throws
+            ExecutionException, InterruptedException {
         Interface iface = interfaceConfigMap.get(interfaceName);
         if (iface != null) {
             return iface;
         }
         InstanceIdentifier<Interface> interfaceId = getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        Optional<Interface> interfaceOptional = tx.read(LogicalDatastoreType.CONFIGURATION, interfaceId).checkedGet();
+        Optional<Interface> interfaceOptional = tx.read(LogicalDatastoreType.CONFIGURATION, interfaceId).get();
         if (interfaceOptional.isPresent()) {
             iface = interfaceOptional.get();
         }
@@ -219,7 +221,7 @@ public final class InterfaceManagerCommonUtils {
     }
 
     public Interface getInterfaceFromConfigDS(ReadTransaction tx, InterfaceKey interfaceKey)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         return getInterfaceFromConfigDS(tx, interfaceKey.getName());
     }
 

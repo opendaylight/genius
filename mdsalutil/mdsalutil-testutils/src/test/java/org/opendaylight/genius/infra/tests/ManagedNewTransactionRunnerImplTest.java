@@ -23,8 +23,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncWriteTransaction;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.DataBrokerFailuresImpl;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -32,6 +30,8 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import  org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -64,7 +64,7 @@ public class ManagedNewTransactionRunnerImplTest {
 
     @Before
     public void beforeTest() {
-        testableDataBroker = new DataBrokerFailuresImpl(new DataBrokerTestModule(true).getDataBroker());
+        testableDataBroker = new DataBrokerFailuresImpl(new AbstractDataBrokerTest().getDataBroker());
         managedNewTransactionRunner = createManagedNewTransactionRunnerToTest(testableDataBroker);
         singleTransactionDataBroker = new SingleTransactionDataBroker(testableDataBroker);
     }
@@ -172,7 +172,7 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testCallWithNewWriteOnlyTransactionAndSubmitPutButLaterException() throws Exception {
         assertTrue(assertThrows(ExecutionException.class,
             () -> {
-                managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(writeTx -> {
+                managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(writeTx -> {
                     writeTx.put(LogicalDatastoreType.OPERATIONAL, TEST_PATH, newTestDataObject());
                     // We now throw an arbitrary kind of checked (not unchecked!) exception here
                     throw new IOException("something didn't quite go as expected...");
@@ -180,7 +180,7 @@ public class ManagedNewTransactionRunnerImplTest {
                 fail("This should have led to an ExecutionException!");
             }).getCause() instanceof IOException);
         assertThat(
-            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isAbsent();
+            singleTransactionDataBroker.syncReadOptional(LogicalDatastoreType.OPERATIONAL, TEST_PATH)).isNull();
     }
 
     @Test
@@ -385,27 +385,27 @@ public class ManagedNewTransactionRunnerImplTest {
     public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCommit() {
         assertThrows(ExecutionException.class,
             () -> managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                AsyncWriteTransaction::commit).get());
+                WriteTransaction::commit).get());
     }
 
     @Test
     public void testCallWithNewReadWriteTransactionAndSubmitCannotCommit() {
         assertThrows(ExecutionException.class,
             () -> managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
-                AsyncWriteTransaction::commit).get());
+                WriteTransaction::commit).get());
     }
 
     @Test
     public void testCallWithNewWriteOnlyTransactionAndSubmitCannotCancel() {
         assertThrows(ExecutionException.class,
             () -> managedNewTransactionRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                AsyncWriteTransaction::cancel).get());
+                WriteTransaction::cancel).get());
     }
 
     @Test
     public void testCallWithNewReadWriteTransactionAndSubmitCannotCancel() {
         assertThrows(ExecutionException.class,
             () -> managedNewTransactionRunner.callWithNewReadWriteTransactionAndSubmit(
-                AsyncWriteTransaction::cancel).get());
+                WriteTransaction::cancel).get());
     }
 }

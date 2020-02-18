@@ -85,7 +85,7 @@ public class VniUtilsImpl implements VniUtils {
     }
 
     @Override
-    public Optional<IdPool> getVxlanVniPool() throws ReadFailedException {
+    public Optional<IdPool> getVxlanVniPool() throws ExecutionException, InterruptedException {
         return SingleTransactionDataBroker.syncReadOptional(dataBroker,
                 LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_VNI_POOL_NAME));
     }
