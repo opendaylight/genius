@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.interfaces;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
@@ -74,7 +75,8 @@ public interface IInterfaceManager {
      * @return The interface information.
      * @throws ReadFailedException if an exception occurs while reading from the datastore.
      */
-    Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName) throws ReadFailedException;
+    Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName)
+            throws ReadFailedException, ExecutionException, InterruptedException;
 
     /**
      * Create a VLAN interface.
@@ -135,7 +137,8 @@ public interface IInterfaceManager {
      * @return The child interfaces.
      * @throws ReadFailedException if an exception occurs while reading from the datastore.
      */
-    List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws ReadFailedException;
+    List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface)
+            throws ReadFailedException, ExecutionException, InterruptedException;
 
     /**
      * Determine whether an interface is external.
@@ -155,7 +158,8 @@ public interface IInterfaceManager {
      * @return {@code true} if the interface is external, {@code false} if it isn't.
      * @throws ReadFailedException if an exception occurs while reading from the datastore.
      */
-    boolean isExternalInterface(ReadTransaction tx, String interfaceName) throws ReadFailedException;
+    boolean isExternalInterface(ReadTransaction tx, String interfaceName)
+            throws ReadFailedException, ExecutionException, InterruptedException;
 
     String getPortNameForInterface(NodeConnectorId nodeConnectorId, String interfaceName);
 
