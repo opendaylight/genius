@@ -47,6 +47,7 @@ import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
@@ -74,8 +75,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         // Bindings for external services to "real" implementations
         // Bindings to test infra (fakes & mocks)
 
-        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
-        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
+        DataBroker dataBroker = new AbstractDataBrokerTest().getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
         bind(DataTreeEventCallbackRegistrar.class).toInstance(mock(DataTreeEventCallbackRegistrar.class));
         bind(ManagedNewTransactionRunner.class).toInstance(mock(ManagedNewTransactionRunner.class));
@@ -94,7 +94,8 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(InterfaceManagerService.class).to(InterfaceManagerServiceImpl.class);
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
-                new SimpleDOMEntityOwnershipService(), dataBrokerTestModule.getBindingToNormalizedNodeCodec());
+                new SimpleDOMEntityOwnershipService(),
+                new DataBrokerTestModule(false).getBindingToNormalizedNodeCodec());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));

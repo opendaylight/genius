@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.cloudscaler.tests;
 
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.caches.baseimpl.CacheManagersRegistry;
@@ -15,12 +14,13 @@ import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistr
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 
 public class CloudScalerServiceTestModule extends AbstractGuiceJsr250Module {
 
     @Override
     protected void configureBindings() {
-        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
+        DataBroker dataBroker = new AbstractDataBrokerTest().getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
         bind(CacheManagersRegistry.class).to(CacheManagersRegistryImpl.class);
         bind(CacheProvider.class).to(GuavaCacheProvider.class);

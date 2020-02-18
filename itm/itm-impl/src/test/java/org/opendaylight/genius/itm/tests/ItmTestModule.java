@@ -40,6 +40,7 @@ import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
@@ -89,7 +90,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
         DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
-        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
+        DataBroker dataBroker = new AbstractDataBrokerTest().getDataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
         DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar =
                 new DataTreeEventCallbackRegistrarImpl(dataBroker);

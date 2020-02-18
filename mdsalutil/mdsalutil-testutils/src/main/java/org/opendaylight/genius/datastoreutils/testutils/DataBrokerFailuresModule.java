@@ -8,9 +8,8 @@
 package org.opendaylight.genius.datastoreutils.testutils;
 
 import com.google.inject.AbstractModule;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTest;
 
 /**
  * Guice Module which correctly binds the {@link DataBrokerFailures}.
