@@ -5,19 +5,15 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-/*package org.opendaylight.genius.infra;
-
-/*import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+package org.opendaylight.genius.infra;
+import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
 import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -29,7 +25,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * submitted (only the transaction manager can do this), and they cannot access a logical datastore
  * other than the one they were created for.
  */
-/*@Deprecated
+    @Deprecated
     public final class TransactionAdapter {
     private TransactionAdapter() {
     }
@@ -40,7 +36,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
      * @param datastoreTx The transaction to adapt.
      * @return The adapted transaction.
      */
-  /*  public static ReadWriteTransaction toReadWriteTransaction(
+    public static ReadWriteTransaction toReadWriteTransaction(
             TypedReadWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedReadWriteTransactionImpl) {
             TypedReadWriteTransactionImpl nonSubmitCancelableDatastoreReadWriteTransaction =
@@ -59,7 +55,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
      * @param datastoreTx The transaction to adapt.
      * @return The adapted transaction.
      */
-    /*public static WriteTransaction toWriteTransaction(TypedWriteTransaction<? extends Datastore> datastoreTx) {
+    public static WriteTransaction toWriteTransaction(TypedWriteTransaction<? extends Datastore> datastoreTx) {
         if (datastoreTx instanceof TypedWriteTransactionImpl) {
             TypedWriteTransactionImpl nonSubmitCancelableDatastoreWriteTransaction =
                     (TypedWriteTransactionImpl) datastoreTx;
@@ -95,6 +91,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
         }
 
         @Override
+        public <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path, @NonNull T data) {
+            /////
+        }
+
+        @Override
         public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
             checkStore(store);
             delegate.merge(path, data);
@@ -105,6 +106,11 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
                                                  boolean createMissingParents) {
             checkStore(store);
             delegate.merge(path, data, createMissingParents);
+        }
+
+        @Override
+        public <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path, @NonNull T data) {
+            //////
         }
 
         @Override
@@ -144,19 +150,15 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
         }
 
         @Override
-        public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
-                                                                                           InstanceIdentifier<T> path) {
-            checkStore(store);
-            return Futures.makeChecked(delegate.read(path),
-                    e -> new ReadFailedException("Error reading from the datastore", e));
+        public @NonNull <T extends DataObject> FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path) {
+            return null;
         }
 
         @Override
-        public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
+        public FluentFuture<Boolean> exists(LogicalDatastoreType store,
                                                                   InstanceIdentifier<?> path) {
             checkStore(store);
-            return Futures.makeChecked(delegate.exists(path),
-                    e -> new ReadFailedException("Error reading from the datastore", e));
+            return FluentFuture.from(delegate.exists(path));
         }
     }
-}*/
+}

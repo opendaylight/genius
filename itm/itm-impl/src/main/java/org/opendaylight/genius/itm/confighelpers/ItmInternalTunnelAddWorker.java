@@ -142,7 +142,7 @@ public final class ItmInternalTunnelAddWorker {
     private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn,
         DirectTunnelUtils directTunnelUtils) throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
-        InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
+        InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.create(DpnEndpoints.class) ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(new DPNTEPsInfoBuilder(dpn)
             .setDstId(directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
@@ -382,8 +382,8 @@ public final class ItmInternalTunnelAddWorker {
 
     private static void updateDpnTepInterfaceInfoToConfig(DpnTepsState dpnTeps) {
         LOG.debug("Updating CONFIGURATION datastore with DPN-Teps {} ", dpnTeps);
-        InstanceIdentifier<DpnTepsState> dpnTepsII = InstanceIdentifier.builder(DpnTepsState.class).build() ;
-        ITMBatchingUtils.update(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        InstanceIdentifier<DpnTepsState> dpnTepsII = InstanceIdentifier.create(DpnTepsState.class);
+        ITMBatchingUtils.updateContainer(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     private void addTunnelConfiguration(Interface iface, String ofTunnelPortName)

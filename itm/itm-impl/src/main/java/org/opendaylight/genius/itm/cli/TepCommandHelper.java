@@ -33,7 +33,6 @@ import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -509,7 +508,8 @@ public class TepCommandHelper {
         tunType = ItmUtils.TUNNEL_TYPE_MAP.get(tunnelType);
 
 
-        InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
+        InstanceIdentifier<TransportZones> path = InstanceIdentifier.create(TransportZones.class);
+
         Optional<TransportZones> tzones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
         TransportZone tzone = new TransportZoneBuilder().withKey(new TransportZoneKey(transportZoneName))
@@ -523,8 +523,16 @@ public class TepCommandHelper {
         }
         tzList.add(tzone);
         TransportZones transportZones = new TransportZonesBuilder().setTransportZone(tzList).build();
+
+        /*InstanceIdentifier<TransportZone> path = InstanceIdentifier.builder(TransportZones.class).
+        child(TransportZone.class, new TransportZoneKey(transportZoneName)).build();
+
+        TransportZone transportZone = new TransportZoneBuilder().setZoneName(transportZoneName)
+                .setTunnelType(tunType)
+                .withKey(new TransportZoneKey(transportZoneName)).build();*/
+
         txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.put(LogicalDatastoreType.CONFIGURATION,
-                path, transportZones, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                path, transportZones)).get();
 
     }
 
