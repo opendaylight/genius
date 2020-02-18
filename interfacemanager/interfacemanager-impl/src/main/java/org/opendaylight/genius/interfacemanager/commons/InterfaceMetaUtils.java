@@ -30,7 +30,6 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeInterfaceInfo;
@@ -228,7 +227,7 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx, String interfaceName)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
         InterfaceParentEntry interfaceParentEntry = getInterfaceParentEntryFromConfigDS(tx, interfaceParentEntryKey);
         return interfaceParentEntry;
@@ -243,7 +242,7 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
-            InterfaceParentEntryKey interfaceParentEntryKey) throws ReadFailedException {
+            InterfaceParentEntryKey interfaceParentEntryKey) throws ExecutionException, InterruptedException {
         InstanceIdentifier<InterfaceParentEntry> intfParentIid =
                 getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
 
@@ -255,8 +254,8 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
-            InstanceIdentifier<InterfaceParentEntry> intfId) throws ReadFailedException {
-        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).checkedGet().orElse(null);
+            InstanceIdentifier<InterfaceParentEntry> intfId) throws ExecutionException, InterruptedException {
+        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).get().orElse(null);
     }
 
     public InterfaceChildEntry getInterfaceChildEntryFromConfigDS(

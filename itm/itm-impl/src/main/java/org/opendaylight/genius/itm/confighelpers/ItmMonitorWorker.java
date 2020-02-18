@@ -120,7 +120,7 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
 
 
     private void toggleForDirectEnabled(DpnsTeps dpnTeps, TypedWriteTransaction<Datastore.Configuration> tx)
-            throws ReadFailedException, InterruptedException, ExecutionException {
+            throws InterruptedException, ExecutionException {
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());

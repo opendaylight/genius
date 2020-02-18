@@ -157,7 +157,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             try {
                 idPoolsOptional = singleTxDB.syncReadOptional(LogicalDatastoreType.CONFIGURATION, idPoolsInstance);
                 break;
-            } catch (ReadFailedException e) {
+            } catch (ExecutionException e) {
                 LOG.error("Failed to read the id pools due to error. Retrying again...", e);
             }
             Thread.sleep(2000);
@@ -304,7 +304,8 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     private List<Uint32> allocateIdFromLocalPool(String parentPoolName, String localPoolName,
-            String idKey, long size) throws OperationFailedException, IdManagerException {
+            String idKey, long size) throws OperationFailedException, IdManagerException, ExecutionException,
+            InterruptedException {
         LOG.debug("Allocating id from local pool {}. Parent pool {}. Idkey {}", localPoolName, parentPoolName, idKey);
         String uniqueIdKey = idUtils.getUniqueKey(parentPoolName, idKey);
         CompletableFuture<List<Uint32>> futureIdValues = new CompletableFuture<>();
@@ -562,7 +563,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
     }
 
     private ReleaseIdOutputBuilder releaseIdFromLocalPool(String parentPoolName, String localPoolName, String idKey)
-            throws ReadFailedException, IdManagerException {
+            throws IdManagerException, ReadFailedException, ExecutionException, InterruptedException{
         String idLatchKey = idUtils.getUniqueKey(parentPoolName, idKey);
         LOG.debug("Releasing ID {} from pool {}", idKey, localPoolName);
         CountDownLatch latch = idUtils.getReleaseIdLatch(idLatchKey);
@@ -687,7 +688,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private List<Uint32> checkForIdInIdEntries(String parentPoolName, String idKey, String uniqueIdKey,
             CompletableFuture<List<Uint32>> futureIdValues, boolean hasExistingFutureIdValues)
-            throws IdManagerException, ReadFailedException {
+            throws IdManagerException, InterruptedException , ExecutionException{
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         InstanceIdentifier<IdEntries> existingId = idUtils.getIdEntry(parentIdPoolInstanceIdentifier, idKey);
         idUtils.lock(lockManager, uniqueIdKey);
@@ -727,7 +728,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                         updateLocalIdPoolCache(childIdPoolOpt.get(), parentPoolName);
                     }
                 }
-                catch (ReadFailedException ex) {
+                catch (ExecutionException | InterruptedException ex) {
                     LOG.debug("Failed to read id pool {} due to {}", localPoolName, ex.getMessage());
                 }
                 if (localPool.get(parentPoolName) == null) {
