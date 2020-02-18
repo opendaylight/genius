@@ -20,7 +20,6 @@ import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.networkutils.RDUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -56,7 +55,7 @@ public class RDUtilsImpl implements RDUtils {
 
     @Inject
     public RDUtilsImpl(NetworkConfig networkConfig, IdManagerService idManagerService,
-                       @Reference DataBroker dataBroker) throws ReadFailedException {
+                       @Reference DataBroker dataBroker) throws InterruptedException, ExecutionException {
         this.idManagerService = idManagerService;
         this.dataBroker = dataBroker;
         this.networkConfig = networkConfig;
@@ -110,12 +109,12 @@ public class RDUtilsImpl implements RDUtils {
     }
 
     @Override
-    public Optional<IdPool> getRDPool() throws ReadFailedException {
+    public Optional<IdPool> getRDPool() throws ExecutionException, InterruptedException {
         return SingleTransactionDataBroker.syncReadOptional(dataBroker,
                 LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
     }
 
-    private void validateAndCreateRDPool() throws ReadFailedException {
+    private void validateAndCreateRDPool() throws InterruptedException, ExecutionException {
         long lowLimit = 0L;
         Uint32 highConfig = networkConfig.getOpendaylightRdCount();
         long highLimit = highConfig == null ? 0 : highConfig.toJava();

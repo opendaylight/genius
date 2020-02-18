@@ -14,11 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
-import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.PopVlanActionCaseBuilder;
@@ -559,12 +559,8 @@ public class MDSALUtil {
      */
     @Deprecated
     public static <T extends DataObject> Optional<T> read(DataBroker broker, LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path) {
-        try {
-            return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, path);
-        } catch (ReadFailedException e) {
-            throw new RuntimeException(e);
-        }
+           InstanceIdentifier<T> path) throws ExecutionException, InterruptedException {
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, path);
     }
 
     /**
@@ -627,7 +623,8 @@ public class MDSALUtil {
                 ncId.getValue().lastIndexOf(':')));
     }
 
-    public static String getInterfaceName(NodeConnectorRef ref, DataBroker dataBroker) {
+    public static String getInterfaceName(NodeConnectorRef ref, DataBroker dataBroker)
+            throws ExecutionException,  InterruptedException {
         NodeConnectorId nodeConnectorId = getNodeConnectorId(dataBroker, ref);
         NodeId nodeId = getNodeIdFromNodeConnectorId(nodeConnectorId);
         InstanceIdentifier<NodeConnector> ncIdentifier = InstanceIdentifier
@@ -641,7 +638,7 @@ public class MDSALUtil {
     }
 
     public static NodeConnectorId getNodeConnectorId(DataBroker dataBroker,
-            NodeConnectorRef ref) {
+            NodeConnectorRef ref) throws ExecutionException,  InterruptedException {
         return ((Optional<NodeConnector>) read(dataBroker, LogicalDatastoreType.OPERATIONAL,
                 ref.getValue())).map(NodeConnector::getId).orElse(null);
     }

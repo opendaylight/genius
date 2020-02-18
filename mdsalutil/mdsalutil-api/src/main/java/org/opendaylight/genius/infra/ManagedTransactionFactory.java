@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
-
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;

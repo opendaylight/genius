@@ -9,10 +9,12 @@ package org.opendaylight.genius.infra;
 
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncTransaction;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.Transaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+
+//import org.opendaylight.controller.md.sal.common.api.data.AsyncTransaction;
 
 /**
  * Read transaction which is specific to a single logical datastore (configuration or operational). Designed for use
@@ -23,7 +25,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @param <D> The logical datastore handled by the transaction.
  */
 public interface TypedReadTransaction<D extends Datastore>
-        extends AsyncTransaction<InstanceIdentifier<?>, DataObject> {
+        extends Transaction {
     /**
      * Reads an object from the given path.
      *

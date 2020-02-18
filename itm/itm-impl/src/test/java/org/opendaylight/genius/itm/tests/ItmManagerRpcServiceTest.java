@@ -314,7 +314,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnelEndpoint is added in config DS
         assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),
                 dataBroker.newReadOnlyTransaction()
-                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
+                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).get().get());
     }
 
     @Test
@@ -327,7 +327,7 @@ public class ItmManagerRpcServiceTest {
 
         // check L2GwDevice is added in config DS
         assertEqualBeans(ExpectedDeviceVtepsObjects.newDeviceVtepsObject(),  dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).checkedGet().get());
+                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get().get());
     }
 
     @Test
@@ -340,9 +340,9 @@ public class ItmManagerRpcServiceTest {
 
         // check L2GwMlagDevice is added in config DS
         assertEqualBeans(ExpectedDeviceVtepsObjects.newDeviceVtepsObject(), dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).checkedGet().get());
+                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get().get());
         assertEqualBeans(ExpectedDeviceVtepsObjects.newDeviceVtepsObject2(), dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier2).checkedGet().get());
+                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier2).get().get());
     }
 
     @Test
@@ -384,7 +384,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnel From Dpns is added in config DS
         assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),
                 dataBroker.newReadOnlyTransaction()
-                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
+                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).get().get());
     }
 
     @Test
@@ -436,7 +436,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnel From Dpns is added in config DS
         assertEqualBeans(ExpectedInternalTunnelIdentifierObjects.newInternalTunnelObjVxLanOneToTwo(),
             dataBroker.newReadOnlyTransaction()
-                    .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier).checkedGet().get());
+                    .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier).get().get());
     }
 
     @Test
@@ -450,7 +450,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnel From Dpns is added in config DS
         assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnel2ForRpcTest(),
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType
-                    .CONFIGURATION,externalTunnelIdentifier2).checkedGet().get());
+                    .CONFIGURATION,externalTunnelIdentifier2).get().get());
 
         // check for interfaceName
         assertThat(ItmTestConstants.PARENT_INTERFACE_NAME).isEqualTo(rpcRes.get().getResult().getInterfaceName());
