@@ -12,7 +12,7 @@ import static org.opendaylight.infrautils.testutils.Asserts.assertThrows;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Test;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataBroker;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
