@@ -18,8 +18,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.CheckedFuture;
-import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,11 +33,11 @@ import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.FlowKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.groups.Group;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -275,14 +274,13 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
+    public FluentFuture<Void> installFlow(FlowEntity flowEntity) {
         storeFlow(flowEntity);
-        return Futures.immediateCheckedFuture(null);
+        return FluentFutures.immediateNullFluentFuture();
     }
 
     @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId,
-            FlowEntity flowEntity) {
+    public FluentFuture<Void> installFlow(Uint64 dpId, FlowEntity flowEntity) {
         // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
         return installFlow(flowEntity);
     }

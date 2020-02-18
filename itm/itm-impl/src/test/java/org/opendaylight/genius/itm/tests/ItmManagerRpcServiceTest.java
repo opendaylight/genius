@@ -28,6 +28,7 @@ import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeLi
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
@@ -156,9 +157,15 @@ public class ItmManagerRpcServiceTest {
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifier = InstanceIdentifier.create(TunnelList.class)
             .child(InternalTunnel.class, new InternalTunnelKey(ItmTestConstants.DP_ID_2, ItmTestConstants.DP_ID_1,
                     ItmTestConstants.TUNNEL_TYPE_VXLAN));
-    InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).build();
+    //InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).build();
+
+
+    InstanceIdentifier<DPNTEPsInfo> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class, new DPNTEPsInfoKey(ItmTestConstants.DP_ID_1)).build();
+
     InstanceIdentifier<Interface> interfaceIdentifier;
-    InstanceIdentifier<TransportZones> transportZonesIdentifier = InstanceIdentifier.create(TransportZones.class);
+
+    InstanceIdentifier<TransportZone> transportZonesIdentifier = InstanceIdentifier.builder(TransportZones.class).child (TransportZone.class, new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
+
     InstanceIdentifier<DeviceVteps> deviceVtepsIdentifier = InstanceIdentifier.builder(TransportZones.class)
             .child(TransportZone.class, new TransportZoneKey(ItmTestConstants.TZ_NAME))
             .child(DeviceVteps.class, deviceVtepKey).build();
@@ -173,7 +180,17 @@ public class ItmManagerRpcServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        //////db,txrunner
+
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+
+
+        /*if (dataBroker != null)
+        {
+            String errMsg = "present db :" + txRunner;
+            throw new NullPointerException(errMsg);
+        }*/
+
         deviceVteps = new DeviceVtepsBuilder().setIpAddress(ItmTestConstants.IP_ADDRESS_3).withKey(new DeviceVtepsKey(
             ItmTestConstants.IP_ADDRESS_3,ItmTestConstants.SOURCE_DEVICE))
             .setNodeId(ItmTestConstants.SOURCE_DEVICE).setTopologyId(ItmTestConstants.DESTINATION_DEVICE).build();
@@ -197,8 +214,9 @@ public class ItmManagerRpcServiceTest {
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(ItmTestConstants.DP_ID_1)
                 .withKey(new DPNTEPsInfoKey(ItmTestConstants.DP_ID_1)).setUp(true)
                 .setTunnelEndPoints(tunnelEndPointsListVxlan).build();
-        cfgdDpnListVxlan.add(dpntePsInfoVxlan);
-        dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
+        //cfgdDpnListVxlan.add(dpntePsInfoVxlan);
+        //dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
+
         internalTunnel = new InternalTunnelBuilder()
                 .setTunnelInterfaceNames(Collections.singletonList(ItmTestConstants.PARENT_INTERFACE_NAME))
                 .setDestinationDPN(ItmTestConstants.DP_ID_2).setSourceDPN(ItmTestConstants.DP_ID_1)
@@ -250,8 +268,8 @@ public class ItmManagerRpcServiceTest {
         transportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
-        transportZoneList.add(transportZone);
-        transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
+        //transportZoneList.add(transportZone);
+        //transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
 
         // build external tunnel objects
         externalTunnel = new ExternalTunnelBuilder().setSourceDevice(ItmTestConstants.DP_ID_1.toString())
@@ -271,16 +289,25 @@ public class ItmManagerRpcServiceTest {
         syncWrite(externalTunnelIdentifier, externalTunnel);
         syncWrite(externalTunnelIdentifier2, externalTunnel2);
 
-        // commit internal tunnel into config DS
+        /*if (dataBroker != null)
+        {
+            String errMsg = "present db :" + internalTunnelIdentifier + "  present 2" + internalTunnel ;
+            throw new NullPointerException(errMsg);
+        }*/
+
+        // commit internal tunnel into config DS.
         syncWrite(internalTunnelIdentifier, internalTunnel);
 
+
         // commit dpnEndpoints into config DS
-        syncWrite(dpnEndpointsIdentifier, dpnEndpoints);
+
+        syncWrite(dpnEndpointsIdentifier, dpntePsInfoVxlan);
 
         // wait for completion of ITM config DS default-TZ creation task of DJC
         coordinatorEventsWaiter.awaitEventsConsumption();
         // commit TZ into config DS
-        syncWrite(transportZonesIdentifier, transportZones);
+
+        syncWrite(transportZonesIdentifier, transportZone);
     }
 
     @Test
@@ -314,7 +341,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnelEndpoint is added in config DS
         assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),
                 dataBroker.newReadOnlyTransaction()
-                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
+                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).get().get());
     }
 
     @Test
@@ -327,7 +354,7 @@ public class ItmManagerRpcServiceTest {
 
         // check L2GwDevice is added in config DS
         assertEqualBeans(ExpectedDeviceVtepsObjects.newDeviceVtepsObject(),  dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).checkedGet().get());
+                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get().get());
     }
 
     @Test
@@ -340,9 +367,9 @@ public class ItmManagerRpcServiceTest {
 
         // check L2GwMlagDevice is added in config DS
         assertEqualBeans(ExpectedDeviceVtepsObjects.newDeviceVtepsObject(), dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).checkedGet().get());
+                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get().get());
         assertEqualBeans(ExpectedDeviceVtepsObjects.newDeviceVtepsObject2(), dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier2).checkedGet().get());
+                .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier2).get().get());
     }
 
     @Test
@@ -384,7 +411,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnel From Dpns is added in config DS
         assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),
                 dataBroker.newReadOnlyTransaction()
-                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).checkedGet().get());
+                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).get().get());
     }
 
     @Test
@@ -436,7 +463,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnel From Dpns is added in config DS
         assertEqualBeans(ExpectedInternalTunnelIdentifierObjects.newInternalTunnelObjVxLanOneToTwo(),
             dataBroker.newReadOnlyTransaction()
-                    .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier).checkedGet().get());
+                    .read(LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifier).get().get());
     }
 
     @Test
@@ -450,7 +477,7 @@ public class ItmManagerRpcServiceTest {
         // check ExternalTunnel From Dpns is added in config DS
         assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnel2ForRpcTest(),
             dataBroker.newReadOnlyTransaction().read(LogicalDatastoreType
-                    .CONFIGURATION,externalTunnelIdentifier2).checkedGet().get());
+                    .CONFIGURATION,externalTunnelIdentifier2).get().get());
 
         // check for interfaceName
         assertThat(ItmTestConstants.PARENT_INTERFACE_NAME).isEqualTo(rpcRes.get().getResult().getInterfaceName());
