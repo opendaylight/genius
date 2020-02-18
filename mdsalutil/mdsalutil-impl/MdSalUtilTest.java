@@ -145,7 +145,7 @@ public class MdSalUtilTest extends AbstractConcurrentDataBrokerTest {
         writeTx.put(LogicalDatastoreType.OPERATIONAL, flowNodeIdentifier, nodeBuilder.build());
         writeTx.put(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(Nodes.class), nodes);
         writeTx.put(LogicalDatastoreType.CONFIGURATION, flowNodeIdentifier, nodeBuilder.build());
-        assertCommit(writeTx.submit());
+        assertCommit(writeTx.commit());
     }
 
     // Methods to test the install Flow and Group

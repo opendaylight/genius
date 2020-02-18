@@ -176,7 +176,7 @@ public class IdManagerTest {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(localPoolName), childPool);
-        tx.submit().get();
+        tx.commit().get();
 
         AllocateIdInput allocateIdInput2 = new AllocateIdInputBuilder().setIdKey(TEST_KEY1).setPoolName(ID_POOL_NAME)
                 .build();
@@ -244,7 +244,7 @@ public class IdManagerTest {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(localPoolName), childPool);
-        tx.submit().get();
+        tx.commit().get();
         // Wait for the changes to be available on the caches.
         asyncEventsWaiter.awaitEventsConsumption();
         requestIdsConcurrently(false);
@@ -296,7 +296,7 @@ public class IdManagerTest {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(localPoolName), childPool);
-        tx.submit().get();
+        tx.commit().get();
         requestIdsConcurrently(true);
         coordinatorEventsWaiter.awaitEventsConsumption();
 

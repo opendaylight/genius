@@ -39,7 +39,8 @@ public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListe
 
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final ListenerRegistration<CacheBridgeRefEntryListener> registration;
-    private final DataTreeIdentifier<BridgeRefEntry> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.OPERATIONAL,
+    private final DataTreeIdentifier<BridgeRefEntry> treeId =
+            DataTreeIdentifier.create(LogicalDatastoreType.OPERATIONAL,
             InstanceIdentifier.create(BridgeRefInfo.class).child(BridgeRefEntry.class));
 
     @Inject
