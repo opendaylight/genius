@@ -18,7 +18,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.immutables.value.internal.$guava$.collect.$FluentIterable;
 import org.junit.ComparisonFailure;
 import org.mockito.Mockito;
 import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
@@ -274,17 +276,15 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         deleteBucket(dpId, groupId, bucketId);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(FlowEntity flowEntity) {
         storeFlow(flowEntity);
-        return Futures.immediateCheckedFuture(null);
+        return null;
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId,
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(Uint64 dpId,
             FlowEntity flowEntity) {
         // TODO should dpId be considered here? how? Copy clone FlowEntity and change its dpId?
-        return installFlow(flowEntity);
+        return (FluentFuture<Void>) installFlow(flowEntity);
     }
 
     private static final class InternalFlowKey {

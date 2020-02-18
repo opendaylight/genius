@@ -14,6 +14,8 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
@@ -220,26 +222,27 @@ public final class InterfaceManagerTestUtil {
         return tpIid;
     }
 
-    static void deleteInterfaceConfig(DataBroker dataBroker, String ifaceName) throws TransactionCommitFailedException {
+    static void deleteInterfaceConfig(DataBroker dataBroker, String ifaceName)
+            throws ExecutionException, InterruptedException {
         InstanceIdentifier<Interface> vlanInterfaceEnabledInterfaceInstanceIdentifier = IfmUtil.buildId(
                 ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.delete(CONFIGURATION, vlanInterfaceEnabledInterfaceInstanceIdentifier);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void updateInterfaceAdminState(DataBroker dataBroker, String ifaceName, boolean isEnabled)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         InstanceIdentifier<Interface> vlanInterfaceEnabledInterfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
         InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifaceName)).setName(ifaceName)
             .setEnabled(isEnabled);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(CONFIGURATION, vlanInterfaceEnabledInterfaceInstanceIdentifier, builder.build());
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void updateTunnelMonitoringAttributes(DataBroker dataBroker, String ifaceName)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         InstanceIdentifier<Interface> tunnelInstanceIdentifier = IfmUtil.buildId(ifaceName);
         InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifaceName)).setName(ifaceName);
         IfTunnel tunnel = new IfTunnelBuilder().setMonitorProtocol(TunnelMonitoringTypeBfd.class)
@@ -247,13 +250,13 @@ public final class InterfaceManagerTestUtil {
         builder.addAugmentation(IfTunnel.class, tunnel);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(CONFIGURATION, tunnelInstanceIdentifier, builder.build());
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
 
     static void putInterfaceConfig(DataBroker dataBroker, String ifaceName, ParentRefs parentRefs,
                                           Class<? extends InterfaceType> ifType)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         Interface interfaceInfo;
         if (!Tunnel.class.equals(ifType)) {
             interfaceInfo = InterfaceManagerTestUtil.buildInterface(ifaceName, ifaceName, true, ifType,
@@ -265,58 +268,59 @@ public final class InterfaceManagerTestUtil {
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void putVlanInterfaceConfig(DataBroker dataBroker, String ifaceName, String parentRefs,
-                                              IfL2vlan.L2vlanMode l2vlanMode) throws TransactionCommitFailedException {
+                                              IfL2vlan.L2vlanMode l2vlanMode)
+            throws ExecutionException, InterruptedException {
         Interface interfaceInfo = InterfaceManagerTestUtil.buildInterface(ifaceName, ifaceName,
                 true, L2vlan.class, parentRefs, l2vlanMode);
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void createFlowCapableNodeConnector(DataBroker dataBroker, String interfaceName,
                                                Class<? extends InterfaceType> ifType)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         Uint64 dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
                 .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, true);
         tx.put(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector, true);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void updateFlowCapableNodeConnectorState(DataBroker dataBroker, String interfaceName,
-            Class<? extends InterfaceType> ifType, boolean isLive) throws TransactionCommitFailedException {
+            Class<? extends InterfaceType> ifType, boolean isLive) throws ExecutionException, InterruptedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         Uint64 dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
             .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, isLive);
         tx.merge(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector, true);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void removeFlowCapableNodeConnectorState(DataBroker dataBroker, Class<? extends InterfaceType> ifType)
-            throws TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         Uint64 dpnId = Tunnel.class.equals(ifType) ? DPN_ID_2 : DPN_ID_1;
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         tx.delete(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo));
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
 
-    static void removeNode(DataBroker dataBroker) throws TransactionCommitFailedException {
+    static void removeNode(DataBroker dataBroker) throws ExecutionException, InterruptedException {
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         InstanceIdentifier<Node> nodeInstanceIdentifier = InstanceIdentifier.builder(Nodes.class)
             .child(Node.class, new NodeKey(IfmUtil.buildDpnNodeId(DPN_ID_2))).build();
         tx.delete(OPERATIONAL,nodeInstanceIdentifier);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 
     static void waitTillOperationCompletes(JobCoordinatorCountedEventsWaiter coordinatorEventsWaiter,
