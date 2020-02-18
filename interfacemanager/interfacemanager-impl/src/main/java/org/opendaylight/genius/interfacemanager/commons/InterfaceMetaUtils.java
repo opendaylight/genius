@@ -227,7 +227,7 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx, String interfaceName)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(interfaceName);
         InterfaceParentEntry interfaceParentEntry = getInterfaceParentEntryFromConfigDS(tx, interfaceParentEntryKey);
         return interfaceParentEntry;
@@ -242,7 +242,7 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
-            InterfaceParentEntryKey interfaceParentEntryKey) throws ReadFailedException {
+            InterfaceParentEntryKey interfaceParentEntryKey) throws ExecutionException, InterruptedException {
         InstanceIdentifier<InterfaceParentEntry> intfParentIid =
                 getInterfaceParentEntryIdentifier(interfaceParentEntryKey);
 
@@ -254,8 +254,8 @@ public final class InterfaceMetaUtils {
     }
 
     public InterfaceParentEntry getInterfaceParentEntryFromConfigDS(ReadTransaction tx,
-            InstanceIdentifier<InterfaceParentEntry> intfId) throws ReadFailedException {
-        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).checkedGet().orNull();
+            InstanceIdentifier<InterfaceParentEntry> intfId) throws ExecutionException, InterruptedException {
+        return tx.read(LogicalDatastoreType.CONFIGURATION, intfId).get().orNull();
     }
 
     public InterfaceChildEntry getInterfaceChildEntryFromConfigDS(

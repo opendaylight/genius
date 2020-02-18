@@ -9,14 +9,12 @@ package org.opendaylight.genius.infra;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -144,19 +142,17 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
-                InstanceIdentifier<T> path) {
+        public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
+                                                                     InstanceIdentifier<T> path) {
             checkStore(store);
-            return Futures.makeChecked(delegate.read(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+            return FluentFuture.from(delegate.read(path));
         }
 
         @Override
-        public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
-                InstanceIdentifier<?> path) {
+        public FluentFuture<Boolean> exists(LogicalDatastoreType store,
+                                                                  InstanceIdentifier<?> path) {
             checkStore(store);
-            return Futures.makeChecked(delegate.exists(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+            return FluentFuture.from(delegate.exists(path));
         }
     }
 }

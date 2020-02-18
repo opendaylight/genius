@@ -13,7 +13,6 @@ import static org.opendaylight.infrautils.utils.concurrent.Executors.newListenin
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -31,7 +30,6 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
@@ -437,22 +435,16 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return Uint64.valueOf(split[1]);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
-        return Futures.makeChecked(installFlowInternal(flowEntity),
-            t -> new TransactionCommitFailedException("installFlow failed", t));
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(FlowEntity flowEntity) {
+        return installFlowInternal(flowEntity);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId, Flow flowEntity) {
-        return Futures.makeChecked(installFlowInternal(dpId, flowEntity),
-            t -> new TransactionCommitFailedException("installFlow failed", t));
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(Uint64 dpId, Flow flowEntity) {
+        return installFlowInternal(dpId, flowEntity);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId, FlowEntity flowEntity) {
-        return Futures.makeChecked(installFlowInternal(dpId, flowEntity.getFlowBuilder().build()),
-            t -> new TransactionCommitFailedException("installFlow failed", t));
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(Uint64 dpId, FlowEntity flowEntity) {
+        return installFlowInternal(dpId, flowEntity.getFlowBuilder().build());
     }
 
     @Override
@@ -485,16 +477,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return future;
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(Uint64 dpId, Flow flowEntity) {
-        return Futures.makeChecked(removeFlowNewInternal(dpId, flowEntity),
-            t -> new TransactionCommitFailedException("removeFlow failed", t));
+    public FluentFuture<Void> fluentFuture(Uint64 dpId, Flow flowEntity) {
+        return removeFlowNewInternal(dpId, flowEntity);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(FlowEntity flowEntity) {
-        return Futures.makeChecked(removeFlowInternal(flowEntity),
-            t -> new TransactionCommitFailedException("removeFlow failed", t));
+    public FluentFuture<Void> fluentFuture(FlowEntity flowEntity) {
+        return removeFlowInternal(flowEntity);
     }
 
     @Override
@@ -640,7 +628,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
         try {
             return singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION, groupInstanceId).isPresent();
-        } catch (ReadFailedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             LOG.warn("Exception while reading group {} for Node {}", groupId, nodeDpn.key());
         }
         return false;
@@ -664,7 +652,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
             Optional<Flow> flowOptional = singleTxDb.syncReadOptional(LogicalDatastoreType.CONFIGURATION,
                     flowInstanceId);
             return flowOptional.isPresent();
-        } catch (ReadFailedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             LOG.warn("Exception while reading flow {} for dpn {}", flowKey, dpId);
         }
         return false;

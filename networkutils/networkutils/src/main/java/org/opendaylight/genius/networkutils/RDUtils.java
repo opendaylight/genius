@@ -21,5 +21,5 @@ public interface RDUtils {
 
     void releaseRD(String rdKey) throws ExecutionException, InterruptedException;
 
-    Optional<IdPool> getRDPool() throws ReadFailedException;
+    Optional<IdPool> getRDPool() throws ReadFailedException, ExecutionException, InterruptedException;
 }

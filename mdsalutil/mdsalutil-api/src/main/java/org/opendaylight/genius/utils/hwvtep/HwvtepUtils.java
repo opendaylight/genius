@@ -81,7 +81,7 @@ public final class HwvtepUtils {
                                                           LogicalSwitches logicalSwitch) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putLogicalSwitch(transaction,LogicalDatastoreType.CONFIGURATION, nodeId, logicalSwitch);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     @Deprecated
@@ -90,7 +90,7 @@ public final class HwvtepUtils {
                                                           LogicalSwitches logicalSwitch) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putLogicalSwitch(transaction,logicalDatastoreType, nodeId, logicalSwitch);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -160,7 +160,7 @@ public final class HwvtepUtils {
                                                              String logicalSwitchName) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteLogicalSwitch(transaction, nodeId, logicalSwitchName);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -351,7 +351,7 @@ public final class HwvtepUtils {
                                                             List<RemoteUcastMacs> lstRemoteUcastMacs) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putRemoteUcastMacs(transaction, nodeId, lstRemoteUcastMacs);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -441,7 +441,7 @@ public final class HwvtepUtils {
                                                               String logicalSwitchName, MacAddress mac) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteUcastMac(transaction, nodeId, logicalSwitchName, mac);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -492,7 +492,7 @@ public final class HwvtepUtils {
                                                                String logicalSwitchName, List<MacAddress> lstMac) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteUcastMacs(transaction, nodeId, logicalSwitchName, lstMac);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -546,7 +546,7 @@ public final class HwvtepUtils {
                                                             List<RemoteMcastMacs> lstRemoteMcastMacs) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putRemoteMcastMacs(transaction, nodeId, lstRemoteMcastMacs);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -674,7 +674,7 @@ public final class HwvtepUtils {
                                                               RemoteMcastMacsKey remoteMcastMacsKey) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMac(transaction, nodeId, remoteMcastMacsKey);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -722,7 +722,7 @@ public final class HwvtepUtils {
                                                                List<RemoteMcastMacsKey> lstRemoteMcastMacsKey) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMacs(transaction, nodeId, lstRemoteMcastMacsKey);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**

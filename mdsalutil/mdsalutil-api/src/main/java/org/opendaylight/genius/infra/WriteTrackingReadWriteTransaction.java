@@ -8,10 +8,9 @@
 package org.opendaylight.genius.infra;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -25,14 +24,14 @@ class WriteTrackingReadWriteTransaction extends WriteTrackingWriteTransaction im
     }
 
     @Override
-    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
+    public <T extends DataObject> FluentFuture<Optional<T>> read(LogicalDatastoreType store,
             InstanceIdentifier<T> path) {
-        return ((ReadWriteTransaction) delegate()).read(store, path);
+        return read(store, path);
     }
 
     @Override
-    public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
+    public FluentFuture<Boolean> exists(LogicalDatastoreType store,
             InstanceIdentifier<?> path) {
-        return ((ReadWriteTransaction) delegate()).exists(store, path);
+        return  delegate().exists(store, path);
     }
 }

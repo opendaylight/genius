@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -20,7 +21,6 @@ import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
@@ -103,7 +103,7 @@ public class ComputeNodeManager {
         tx.delete(LogicalDatastoreType.CONFIGURATION, buildComputeNodeIid(computeNode.getComputeName()));
     }
 
-    public void add(@NonNull Node node) throws TransactionCommitFailedException {
+    public void add(@NonNull Node node) throws ExecutionException, InterruptedException {
         OvsdbBridgeAugmentation bridgeAugmentation = node.augmentation(OvsdbBridgeAugmentation.class);
         if (bridgeAugmentation != null && bridgeAugmentation.getBridgeOtherConfigs() != null) {
             Uint64 datapathid = getDpnIdFromBridge(bridgeAugmentation);
@@ -154,10 +154,11 @@ public class ComputeNodeManager {
     }
 
     public void putComputeDetailsInConfigDatastore(InstanceIdentifier<ComputeNode> computeIid,
-                                                    ComputeNode computeNode) throws TransactionCommitFailedException {
+                                                    ComputeNode computeNode)
+            throws ExecutionException, InterruptedException {
         ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         tx.put(LogicalDatastoreType.CONFIGURATION, computeIid, computeNode);
-        tx.submit().checkedGet();
+        tx.commit().get();
         dpnIdVsComputeNode.put(computeNode.getDpnid(), computeNode);
         //LOG.info("Write comute node details {}", computeNode);
     }

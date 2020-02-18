@@ -9,7 +9,7 @@ package org.opendaylight.genius.utils.batching;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
@@ -36,6 +37,7 @@ import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -154,23 +156,23 @@ public class ResourceBatchingManager implements AutoCloseable {
      * @param identifier   identifier to be read
      * @return a CheckFuture containing the result of the read
      */
-    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(
+    public <T extends DataObject> FluentFuture<Optional<T>> read(
             String resourceType, InstanceIdentifier<T> identifier) {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             if (pendingModificationByResourceType.get(resourceType).contains(identifier)) {
                 SettableFuture<Optional<T>> readFuture = SettableFuture.create();
                 queue.add(new ActionableReadResource<>(identifier, readFuture));
-                return Futures.makeChecked(readFuture, ReadFailedException.MAPPER);
+                return FluentFuture.from(Futures.makeChecked(readFuture, ReadFailedException.MAPPER));
             } else {
                 ResourceHandler resourceHandler = resourceHandlerMapper.get(resourceType).getRight();
                 try (ReadOnlyTransaction tx = resourceHandler.getResourceBroker().newReadOnlyTransaction()) {
-                    return tx.read(resourceHandler.getDatastoreType(), identifier);
+                    return (FluentFuture<Optional<T>>) tx.read(resourceHandler.getDatastoreType(), identifier);
                 }
             }
         }
-        return Futures.immediateFailedCheckedFuture(new ReadFailedException(
-                "No batch handler was registered for resource " + resourceType));
+        return FluentFuture.from(Futures.immediateFailedCheckedFuture(new ReadFailedException(
+                "No batch handler was registered for resource " + resourceType)));
     }
 
     public ListenableFuture<Void> merge(ShardResource shardResource, InstanceIdentifier<?> identifier,
@@ -385,7 +387,7 @@ public class ResourceBatchingManager implements AutoCloseable {
             }
 
             long start = System.currentTimeMillis();
-            ListenableFuture<Void> futures = tx.submit();
+            ListenableFuture<Void> futures = tx.commit();
 
             try {
                 futures.get();
@@ -417,7 +419,7 @@ public class ResourceBatchingManager implements AutoCloseable {
                             LOG.error("Unable to determine Action for transaction object with id {}",
                                     object.getInstanceIdentifier());
                     }
-                    ListenableFuture<Void> futureOperation = writeTransaction.submit();
+                    FluentFuture<? extends @NonNull CommitInfo> futureOperation = writeTransaction.commit();
                     try {
                         futureOperation.get();
                         if (txMap.containsKey(object)) {

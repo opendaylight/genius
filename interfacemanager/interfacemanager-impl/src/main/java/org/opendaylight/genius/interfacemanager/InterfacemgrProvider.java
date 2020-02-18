@@ -28,6 +28,7 @@ import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -376,7 +377,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
     @Override
     public Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         return interfaceManagerCommonUtils.getInterfaceFromConfigDS(tx, new InterfaceKey(interfaceName));
     }
 
@@ -438,7 +439,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             return SingleTransactionDataBroker
                     .syncReadOptional(dataBroker, LogicalDatastoreType.CONFIGURATION, boundServicesIId).isPresent();
-        } catch (ReadFailedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             LOG.warn("Error while reading [{}]", boundServicesIId, e);
             return false;
         }
@@ -544,7 +545,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws ReadFailedException {
+    public List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws
+            ExecutionException, InterruptedException {
         InterfaceParentEntry parentEntry = interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(tx, parentInterface);
         if (parentEntry == null) {
             LOG.debug("No parent entry found for {}", parentInterface);
@@ -579,7 +581,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public boolean isExternalInterface(ReadTransaction tx, String interfaceName) throws ReadFailedException {
+    public boolean isExternalInterface(ReadTransaction tx, String interfaceName) throws
+            ExecutionException, InterruptedException {
         return isExternalInterface(getInterfaceInfoFromConfigDataStore(tx, interfaceName));
     }
 
@@ -702,7 +705,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         try {
             node = SingleTransactionDataBroker.syncRead(
                                         dataBroker, LogicalDatastoreType.OPERATIONAL, nodeIid);
-        } catch (ReadFailedException e) {
+        } catch (ExecutionException | InterruptedException | ExpectedDataObjectNotFoundException e) {
             LOG.error("Failed to read Node for {} ", nodeIid, e);
             return null;
         }

@@ -24,7 +24,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -720,10 +719,10 @@ public final class FlowBasedServicesUtils {
     public static BoundServicesState getBoundServicesState(ReadTransaction tx,
                                                            String interfaceName,
                                                            Class<? extends ServiceModeBase> serviceMode)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orNull();
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).get().orNull();
     }
 
     public static BoundServicesState getBoundServicesState(TypedReadTransaction<Operational> tx, String interfaceName,
