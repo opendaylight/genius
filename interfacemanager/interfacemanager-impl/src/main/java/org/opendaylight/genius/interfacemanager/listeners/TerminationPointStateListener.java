@@ -62,8 +62,9 @@ public class TerminationPointStateListener extends
                                                      ovsInterfaceTopologyStateUpdateHelper,
                                          final InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
                                          @Reference final ServiceRecoveryRegistry serviceRecoveryRegistry) {
-        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
-                .child(TerminationPoint.class).augmentation(OvsdbTerminationPointAugmentation.class).build(),
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.builder(NetworkTopology.class)
+                        .child(Topology.class).child(Node.class)
+                        .child(TerminationPoint.class).augmentation(OvsdbTerminationPointAugmentation.class).build(),
                 Executors.newSingleThreadExecutor("TerminationPointStateListener", LOG));
         this.interfaceMgrProvider = interfaceMgrProvider;
         this.entityOwnershipUtils = entityOwnershipUtils;
