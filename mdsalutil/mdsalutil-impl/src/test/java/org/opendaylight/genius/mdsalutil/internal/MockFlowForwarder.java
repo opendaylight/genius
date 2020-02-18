@@ -41,7 +41,7 @@ public class MockFlowForwarder extends AbstractMockForwardingRulesManager<Flow> 
     }
 
     private void registerListener(final DataBroker db) {
-        final DataTreeIdentifier<Flow> treeId = new DataTreeIdentifier<>(LogicalDatastoreType.CONFIGURATION,
+        final DataTreeIdentifier<Flow> treeId = DataTreeIdentifier.create(LogicalDatastoreType.CONFIGURATION,
                 getWildCardPath());
         listenerRegistration = db.registerDataTreeChangeListener(treeId, MockFlowForwarder.this);
     }

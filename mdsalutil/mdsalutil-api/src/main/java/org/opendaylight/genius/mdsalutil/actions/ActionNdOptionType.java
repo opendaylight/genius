@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.actions;
 
 import java.util.Collections;
-
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.openflowplugin.extension.api.ExtensionAugment;
 import org.opendaylight.openflowplugin.extension.api.GroupingLooseResolver;
