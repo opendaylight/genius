@@ -15,6 +15,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,7 +28,6 @@ import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
-import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.CloudscalerRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ScaleinComputesEndInput;
@@ -84,7 +84,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
     private final DataBroker dataBroker;
     private final ComputeNodeManager computeNodeManager;
     private final ManagedNewTransactionRunner txRunner;
-    private final ItmTepClusteredListener itmTepClusteredListener;
+    //private final ItmTepClusteredListener itmTepClusteredListener;
 
     //The following timestamp is not persisted across reboots
     //upon reboot the timestamp will have a default value of that system timestamp
@@ -116,7 +116,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         this.dataBroker = dataBroker;
         this.computeNodeManager = computeNodeManager;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-        this.itmTepClusteredListener = new ItmTepClusteredListener(dataBroker);
+        //this.itmTepClusteredListener = new ItmTepClusteredListener(dataBroker);
     }
 
     @Override
@@ -127,8 +127,8 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         input.getScaleinComputeNames().forEach(s -> tombstoneTheNode(s, tx, true));
         input.getScaleinComputeNames().forEach(s -> LOG.info("Cloudscaler scalein-start {}", s));
         try {
-            tx.submit().checkedGet();
-        } catch (TransactionCommitFailedException e) {
+            tx.commit().get();
+        } catch (InterruptedException | ExecutionException e) {
             LOG.error("Failed to tombstone all the nodes ", e);
             ft.set(RpcResultBuilder.<ScaleinComputesStartOutput>failed().withError(RpcError.ErrorType.APPLICATION,
                             "Failed to tombstone all the nodes " + e.getMessage()).build());
@@ -146,8 +146,8 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         input.getRecoverComputeNames().forEach(s -> tombstoneTheNode(s, tx, false));
         input.getRecoverComputeNames().forEach(s -> LOG.info("Cloudscaler scalein-recover {}", s));
         try {
-            tx.submit().checkedGet();
-        } catch (TransactionCommitFailedException e) {
+            tx.commit().get();
+        } catch (InterruptedException | ExecutionException e) {
             LOG.error("Failed to recover all the nodes ", e);
             ft.set(RpcResultBuilder.<ScaleinComputesRecoverOutput>failed().withError(RpcError.ErrorType.APPLICATION,
                             "Failed to recover all the nodes " + e.getMessage()).build());
@@ -275,8 +275,8 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         Optional<TransportZones> tz;
         try {
             tz = readTx.read(LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.create(TransportZones.class))
-                    .checkedGet();
-        } catch (ReadFailedException e) {
+                    .get();
+        } catch (InterruptedException | ExecutionException e) {
             LOG.error("Cloudscaler Failed to read the transport zone {}", e.getMessage());
             ft.set(RpcResultBuilder.<ScaleinComputesTepDeleteOutput>failed().withError(RpcError.ErrorType.APPLICATION,
                     "Failed to read the transport zone " + e.getMessage()).build());
@@ -341,7 +341,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         ItmTepClusteredListener(DataBroker dataBroker) {
             super(dataBroker, LogicalDatastoreType.OPERATIONAL,InstanceIdentifier.create(TransportZones.class)
                     .child(TransportZone.class).child(Vteps.class),
-                    Executors.newSingleThreadExecutor("GroupListener", LOG));;
+                    Executors.newSingleThreadExecutor("ItmTepClusteredListener", LOG));
         }
 
         @Override

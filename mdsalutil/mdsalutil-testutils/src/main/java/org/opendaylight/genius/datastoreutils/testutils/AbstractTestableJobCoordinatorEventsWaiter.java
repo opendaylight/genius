@@ -13,7 +13,6 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.function.Supplier;
 import javax.inject.Inject;
-
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
