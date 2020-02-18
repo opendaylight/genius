@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -120,7 +119,7 @@ public class ItmMonitorWorker implements Callable<List<ListenableFuture<Void>>> 
 
 
     private void toggleForDirectEnabled(DpnsTeps dpnTeps, TypedWriteTransaction<Datastore.Configuration> tx)
-            throws ReadFailedException, InterruptedException, ExecutionException {
+            throws ReadFailedException {
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());
