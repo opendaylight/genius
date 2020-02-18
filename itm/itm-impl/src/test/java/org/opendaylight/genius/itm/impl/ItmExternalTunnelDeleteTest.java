@@ -34,6 +34,7 @@ import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
@@ -140,7 +141,7 @@ public class ItmExternalTunnelDeleteTest {
     InstanceIdentifier<ExternalTunnel> path ;
 
     @Mock DataBroker dataBroker;
-    @Mock ReadOnlyTransaction mockReadTx;
+    @Mock ReadTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock TypedWriteTransaction<Datastore.Configuration> typedWriteTransaction;
@@ -256,7 +257,7 @@ public class ItmExternalTunnelDeleteTest {
 
         lenient().doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         lenient().doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
         doReturn("phy0").when(itmConfig).getPortname();
         doReturn(Uint16.valueOf(100)).when(itmConfig).getVlanId();
     }
