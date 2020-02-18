@@ -75,7 +75,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
         requireNonNull(cacheProvider, "cacheProvider");
         cache = CacheBuilder.newBuilder().build(new CacheLoader<K, Optional<V>>() {
             @Override
-            public Optional<V> load(K key) throws ReadFailedException {
+            public Optional<V> load(K key) throws ReadFailedException, ExecutionException, InterruptedException  {
                 return broker.syncReadOptional(datastoreType, instanceIdFunction.apply(key));
             }
         });
