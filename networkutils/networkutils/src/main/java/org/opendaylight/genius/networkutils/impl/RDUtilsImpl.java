@@ -110,7 +110,7 @@ public class RDUtilsImpl implements RDUtils {
     }
 
     @Override
-    public Optional<IdPool> getRDPool() throws ReadFailedException {
+    public Optional<IdPool> getRDPool() throws ExecutionException, InterruptedException {
         return SingleTransactionDataBroker.syncReadOptional(dataBroker,
                 LogicalDatastoreType.CONFIGURATION, buildIdPoolInstanceIdentifier(NwConstants.ODL_RD_POOL_NAME));
     }

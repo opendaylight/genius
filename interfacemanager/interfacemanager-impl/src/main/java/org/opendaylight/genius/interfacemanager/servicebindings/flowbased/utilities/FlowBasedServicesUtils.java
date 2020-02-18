@@ -720,10 +720,10 @@ public final class FlowBasedServicesUtils {
     public static BoundServicesState getBoundServicesState(ReadTransaction tx,
                                                            String interfaceName,
                                                            Class<? extends ServiceModeBase> serviceMode)
-            throws ReadFailedException {
+            throws ExecutionException, InterruptedException {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName, serviceMode)).build();
-        return tx.read(LogicalDatastoreType.OPERATIONAL, id).checkedGet().orElse(null);
+        return tx.read(LogicalDatastoreType.OPERATIONAL, id).get().orElse(null);
     }
 
     public static BoundServicesState getBoundServicesState(TypedReadTransaction<Operational> tx, String interfaceName,

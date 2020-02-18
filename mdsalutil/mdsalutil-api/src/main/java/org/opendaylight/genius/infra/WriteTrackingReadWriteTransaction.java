@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.infra;
 
-import com.google.common.util.concurrent.CheckedFuture;
 import java.util.Optional;
 
 import com.google.common.util.concurrent.FluentFuture;
@@ -33,8 +32,7 @@ class WriteTrackingReadWriteTransaction extends WriteTrackingWriteTransaction im
     }
 
     @Override
-    public FluentFuture<Boolean> exists(LogicalDatastoreType store,
-                                                             InstanceIdentifier<?> path) {
+    public FluentFuture<Boolean> exists(LogicalDatastoreType store, InstanceIdentifier<?> path) {
         return ((ReadWriteTransaction) delegate()).exists(store, path);
     }
 }
