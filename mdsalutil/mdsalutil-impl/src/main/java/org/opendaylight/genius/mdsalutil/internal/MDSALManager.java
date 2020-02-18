@@ -13,7 +13,6 @@ import static org.opendaylight.infrautils.utils.concurrent.Executors.newListenin
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -437,22 +436,16 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return Uint64.valueOf(split[1]);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(FlowEntity flowEntity) {
-        return Futures.makeChecked(installFlowInternal(flowEntity),
-            t -> new TransactionCommitFailedException("installFlow failed", t));
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(FlowEntity flowEntity) {
+        return installFlowInternal(flowEntity);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId, Flow flowEntity) {
-        return Futures.makeChecked(installFlowInternal(dpId, flowEntity),
-            t -> new TransactionCommitFailedException("installFlow failed", t));
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(Uint64 dpId, Flow flowEntity) {
+        return installFlowInternal(dpId, flowEntity);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> installFlow(Uint64 dpId, FlowEntity flowEntity) {
-        return Futures.makeChecked(installFlowInternal(dpId, flowEntity.getFlowBuilder().build()),
-            t -> new TransactionCommitFailedException("installFlow failed", t));
+    public FluentFuture<Void> addCallBackForInstallFlowAndReturn(Uint64 dpId, FlowEntity flowEntity) {
+        return installFlowInternal(dpId, flowEntity.getFlowBuilder().build());
     }
 
     @Override
@@ -485,16 +478,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return future;
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(Uint64 dpId, Flow flowEntity) {
-        return Futures.makeChecked(removeFlowNewInternal(dpId, flowEntity),
-            t -> new TransactionCommitFailedException("removeFlow failed", t));
+    public FluentFuture<Void> fluentFuture(Uint64 dpId, Flow flowEntity) {
+        return removeFlowNewInternal(dpId, flowEntity);
     }
 
-    @Override
-    public CheckedFuture<Void, TransactionCommitFailedException> removeFlow(FlowEntity flowEntity) {
-        return Futures.makeChecked(removeFlowInternal(flowEntity),
-            t -> new TransactionCommitFailedException("removeFlow failed", t));
+    public FluentFuture<Void> fluentFuture(FlowEntity flowEntity) {
+        return removeFlowInternal(flowEntity);
     }
 
     @Override

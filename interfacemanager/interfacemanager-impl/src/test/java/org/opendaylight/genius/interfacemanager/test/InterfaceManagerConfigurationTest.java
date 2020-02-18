@@ -940,6 +940,6 @@ public class InterfaceManagerConfigurationTest {
             entryBuilder.setInterfaceType(interfaceType);
         }
         tx.put(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build(), true);
-        tx.submit().checkedGet();
+        tx.submit().get();
     }
 }

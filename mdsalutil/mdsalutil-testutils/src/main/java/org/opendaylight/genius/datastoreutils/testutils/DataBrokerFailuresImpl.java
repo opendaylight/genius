@@ -126,8 +126,8 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         }
     }
 
-    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> handleRead(
-            BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, CheckedFuture<Optional<T>, ReadFailedException>>
+    public <T extends DataObject> FluentFuture<Optional<T>> handleRead(
+            BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, FluentFuture<Optional<T>>>
                 readMethod,
             LogicalDatastoreType store, InstanceIdentifier<T> path) {
         if (howManyFailingReads.decrementAndGet() == -1) {
@@ -136,7 +136,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         if (readException == null) {
             return readMethod.apply(store, path);
         } else {
-            return Futures.immediateFailedCheckedFuture(readException);
+            return FluentFuture.from(Futures.immediateFailedFuture(readException));
         }
     }
 

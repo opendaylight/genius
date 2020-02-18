@@ -9,7 +9,6 @@ package org.opendaylight.genius.infra;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import org.eclipse.jdt.annotation.NonNull;
@@ -144,19 +143,14 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
-                InstanceIdentifier<T> path) {
-            checkStore(store);
-            return Futures.makeChecked(delegate.read(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+        public @NonNull FluentFuture<? extends CommitInfo> commit() {
+            throw new UnsupportedOperationException("Error reading from the datastore");
         }
 
+
         @Override
-        public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
-                InstanceIdentifier<?> path) {
-            checkStore(store);
-            return Futures.makeChecked(delegate.exists(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+        public @NonNull FluentFuture<? extends CommitInfo> commit() {
+            throw new UnsupportedOperationException("Error reading from the datastore");
         }
     }
 }

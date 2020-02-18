@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -154,10 +155,11 @@ public class ComputeNodeManager {
     }
 
     public void putComputeDetailsInConfigDatastore(InstanceIdentifier<ComputeNode> computeIid,
-                                                    ComputeNode computeNode) throws TransactionCommitFailedException {
+                                                    ComputeNode computeNode)
+            throws ExecutionException, InterruptedException {
         ReadWriteTransaction tx = dataBroker.newReadWriteTransaction();
         tx.put(LogicalDatastoreType.CONFIGURATION, computeIid, computeNode);
-        tx.submit().checkedGet();
+        tx.submit().get();
         dpnIdVsComputeNode.put(computeNode.getDpnid(), computeNode);
         //LOG.info("Write comute node details {}", computeNode);
     }

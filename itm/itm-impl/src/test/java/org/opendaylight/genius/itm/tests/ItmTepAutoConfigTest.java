@@ -11,7 +11,7 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -337,7 +337,7 @@ public class ItmTepAutoConfigTest {
         // OvsdbNodeListener would be automatically listen on Node to add TEP
         ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
                 ItmTestConstants.LOCALHOST_IP);
-        CheckedFuture<Void, TransactionCommitFailedException> future =
+        FluentFuture<Void> future =
                 OvsdbTestUtil.createNode(connInfo,tepIp,ITMConstants.DEFAULT_TRANSPORT_ZONE,dataBroker);
         future.get();
 
@@ -385,7 +385,7 @@ public class ItmTepAutoConfigTest {
         // OvsdbNodeListener would be automatically listen on Node to add TEP
         ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
                 ItmTestConstants.LOCALHOST_IP);
-        CheckedFuture<Void, TransactionCommitFailedException> future = OvsdbTestUtil.createNode(
+        FluentFuture<Void> future = OvsdbTestUtil.createNode(
                 connInfo, tepIp, ItmTestConstants.TZ_NAME, dataBroker);
         future.get();
 
@@ -434,7 +434,7 @@ public class ItmTepAutoConfigTest {
         // create Network topology node
         ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
                 ItmTestConstants.LOCALHOST_IP);
-        CheckedFuture<Void, TransactionCommitFailedException> future = OvsdbTestUtil.createNode(
+        FluentFuture<Void> future = OvsdbTestUtil.createNode(
                 connInfo, ItmTestConstants.NOT_HOSTED_TZ_TEP_IP, ItmTestConstants.NOT_HOSTED_TZ_NAME,
                 dataBroker);
         future.get();
@@ -475,7 +475,7 @@ public class ItmTepAutoConfigTest {
         // OvsdbNodeListener would be automatically listen on Node to add TEP
         ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
                 ItmTestConstants.LOCALHOST_IP);
-        CheckedFuture<Void, TransactionCommitFailedException> future = OvsdbTestUtil.createNode(
+        FluentFuture<Void> future = OvsdbTestUtil.createNode(
                 connInfo, tepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
         future.get();
 
@@ -520,7 +520,7 @@ public class ItmTepAutoConfigTest {
         // OvsdbNodeListener would be automatically listen on Node to add TEP
         ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
                 ItmTestConstants.LOCALHOST_IP);
-        CheckedFuture<Void, TransactionCommitFailedException> future = OvsdbTestUtil.createNode(
+        FluentFuture<Void> future = OvsdbTestUtil.createNode(
                 connInfo, tepIp, ITMConstants.DEFAULT_TRANSPORT_ZONE, dataBroker);
         future.get();
 
@@ -581,7 +581,7 @@ public class ItmTepAutoConfigTest {
         // OvsdbNodeListener would be automatically listen on Node to add TEP
         ConnectionInfo connInfo = OvsdbTestUtil.getConnectionInfo(ItmTestConstants.OVSDB_CONN_PORT,
                 ItmTestConstants.LOCALHOST_IP);
-        CheckedFuture<Void, TransactionCommitFailedException> future = OvsdbTestUtil.createNode(
+        FluentFuture<Void> future = OvsdbTestUtil.createNode(
                 connInfo, tepIp, ItmTestConstants.TZ_NAME, dataBroker);
         future.get();
 
