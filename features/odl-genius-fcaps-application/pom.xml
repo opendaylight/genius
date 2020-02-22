@@ -18,7 +18,7 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-fcaps-application</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.9.0-SNAPSHOT</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: fcapsapp</name>
 
@@ -27,42 +27,42 @@
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-southbound</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-app-forwardingrules-manager</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-app-reconciliation-framework</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>0.11.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>odl-infrautils-inject</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.8.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>odl-genius-api</artifactId>
-      <version>0.8.0-SNAPSHOT</version>
+      <version>0.9.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>odl-infrautils-metrics</artifactId>
-      <version>1.7.0-SNAPSHOT</version>
+      <version>1.8.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
