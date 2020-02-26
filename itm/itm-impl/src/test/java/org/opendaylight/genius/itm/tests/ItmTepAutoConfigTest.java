@@ -73,6 +73,8 @@ public class ItmTepAutoConfigTest {
 
     TransportZone transportZone;
     RetryingManagedNewTransactionRunner txRunner;
+    private static final int RETRY = 3;
+    private static final int INTERVAL = 500;
 
     private @Inject DataBroker dataBroker;
     private @Inject JobCoordinatorEventsWaiter coordinatorEventsWaiter;
@@ -941,8 +943,16 @@ public class ItmTepAutoConfigTest {
                 ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.TZ_NAME);
 
         Assert.assertNotNull(notHostedPath);
-        Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet().get().getZoneName());
+        Optional<TepsInNotHostedTransportZone> tepNotHostedTZ = null;
+        for (int i=0; i<RETRY; i++) {
+            tepNotHostedTZ = dataBroker.newReadOnlyTransaction()
+                    .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet();
+            if (tepNotHostedTZ.isPresent()) {
+                break;
+            }
+            Thread.sleep(INTERVAL);
+        }
+        Assert.assertEquals(ItmTestConstants.TZ_NAME, tepNotHostedTZ.get().getZoneName());
 
         //create vtepList form unknownVtepList
         List<Vteps> vtepsList = new ArrayList<>();
@@ -976,11 +986,20 @@ public class ItmTepAutoConfigTest {
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         // verify TZ is moved from notHosted to transport zone and their should be only one vtep in it.
+
+        Optional<TransportZone> transzone = null;
+        for (int i=0; i<RETRY; i++) {
+            transzone = dataBroker.newReadOnlyTransaction()
+                    .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet();
+            if (transzone.isPresent()) {
+                break;
+            }
+            Thread.sleep(INTERVAL);
+        }
+
         Assert.assertEquals(Optional.absent(), dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).checkedGet());
-        assertEqualBeans(1, dataBroker.newReadOnlyTransaction()
-                .read(LogicalDatastoreType.CONFIGURATION, tzonePath).checkedGet().get().getSubnets().get(0)
-                .getVteps().size());
+        assertEqualBeans(1, transzone.get().getSubnets().get(0).getVteps().size());
     }
 }
 
