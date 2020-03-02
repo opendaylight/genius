@@ -187,7 +187,10 @@ public class TunnelInventoryStateListener extends
             return;
         }
 
-        if (fcNodeConnectorNew.getReason() == PortReason.Delete || !directTunnelUtils.isEntityOwner()) {
+        if (fcNodeConnectorNew.getReason() == PortReason.Delete
+                || fcNodeConnectorNew.getReason() == PortReason.Update || !directTunnelUtils.isEntityOwner()) {
+            EVENT_LOGGER.debug("ITM-TunnelInventoryState,UPDATE with reason {}, is entity owner? {}",
+                    fcNodeConnectorNew.getReason(), directTunnelUtils.isEntityOwner());
             return;
         }
         LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
