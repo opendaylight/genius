@@ -159,7 +159,10 @@ public class TunnelInventoryStateListener extends
             LOG.debug("Node Connector Update {} Interface is not a internal tunnel I/f, so no-op", portName);
             return;
         }
-        if (fcNodeConnectorNew.getReason() == PortReason.Delete || !directTunnelUtils.isEntityOwner()) {
+        if (fcNodeConnectorNew.getReason() == PortReason.Delete
+                || fcNodeConnectorNew.getReason() == PortReason.Update || !directTunnelUtils.isEntityOwner()) {
+            EVENT_LOGGER.debug("ITM-TunnelInventoryState,UPDATE with reason {}, is entity owner? {}",
+                    fcNodeConnectorNew.getReason(), directTunnelUtils.isEntityOwner());
             return;
         }
         LOG.debug("Received NodeConnector Update Event: {}, {}, {}", key, fcNodeConnectorOld, fcNodeConnectorNew);
