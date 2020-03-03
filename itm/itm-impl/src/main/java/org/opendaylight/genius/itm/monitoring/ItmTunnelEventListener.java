@@ -221,7 +221,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
                 Uint64 srcDpId = internalTunnel.getSourceDPN();
                 Uint64 dstDpId = internalTunnel.getDestinationDPN();
                 String tunnelType = ItmUtils.convertTunnelTypetoString(internalTunnel.getTransportType());
-                if (!isTunnelInterfaceUp(add)) {
+                if (add.getOperState() == TunnelOperStatus.Down) {
                     LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcDpn: {} and dstDpn: {} for tunnelType: "
                                       + "{}", srcDpId, dstDpId, tunnelType);
                     String alarmText = getInternalAlarmText(srcDpId.toString(), dstDpId.toString(), tunnelType);
@@ -239,7 +239,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
                         dstNode = "openflow:" + externalTunnel.getDestinationDevice();
                     }
                     String tunnelType = ItmUtils.convertTunnelTypetoString(externalTunnel.getTransportType());
-                    if (!isTunnelInterfaceUp(add)) {
+                    if (add.getOperState() == TunnelOperStatus.Down) {
                         LOG.trace("ITM Tunnel State during tep add is DOWN b/w srcNode: {} and dstNode: {} for "
                                           + "tunnelType: {}", srcNode, dstNode, tunnelType);
                         String alarmText = getExternalAlarmText(srcNode, dstNode, tunnelType);
