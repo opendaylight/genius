@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "672e126d_2110961e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-04T05:21:29Z",
+      "side": 1,
+      "message": "Please change the copyright year",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "764d4fd9_76a52877",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-04T05:21:29Z",
+      "side": 1,
+      "message": "The return value can be just checked for an empty array and no need for null as it will be taken care within the method",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7885ab24_fcad93f8",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-04T05:21:29Z",
+      "side": 1,
+      "message": "CheckedGet is deprecated. We are in the process of removing them. So, dont use them.",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "78989bc9_fc3df91a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-04T05:21:29Z",
+      "side": 1,
+      "message": "If its empty can we just log it here and return the empty array to be consistent with the above",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bae4c6bf_1a47b995",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 437
+      },
+      "writtenOn": "2020-03-04T05:21:29Z",
+      "side": 1,
+      "message": "There should already be some method to do this. Can we re-use ?",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
