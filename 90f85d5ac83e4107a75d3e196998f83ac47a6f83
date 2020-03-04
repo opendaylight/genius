@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "de7b0abf_958628f6",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-03-04T09:48:18Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "672e126d_2110961e",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "764d4fd9_76a52877",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
         "patchSetId": 1
@@ -33,6 +51,24 @@
       "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "42c18e45_0370bae7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-03-04T09:48:18Z",
+      "side": 1,
+      "message": "I made this intentionally to differentiate between empty cache and cache with no unknown tunnels. I\u0027ll change according to your comment.",
+      "parentUuid": "764d4fd9_76a52877",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     },
     {
       "key": {
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "ee9c961e_a36d9241",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-03-04T09:48:18Z",
+      "side": 1,
+      "message": "I\u0027ll check with Karthika and change it.",
+      "parentUuid": "7885ab24_fcad93f8",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "78989bc9_fc3df91a",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
         "patchSetId": 1
@@ -70,6 +124,24 @@
     },
     {
       "key": {
+        "uuid": "4342adda_6af051a4",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-03-04T09:48:18Z",
+      "side": 1,
+      "message": "ok. I\u0027ll change it.",
+      "parentUuid": "78989bc9_fc3df91a",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bae4c6bf_1a47b995",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
         "patchSetId": 1
@@ -84,6 +156,24 @@
       "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6a9b2cbd_c7474c09",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/recovery/impl/EosChangeEventHandler.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 134,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-03-04T09:48:18Z",
+      "side": 1,
+      "message": "Each place the similar changes are done locally but none of them are same so a separate method is not created.",
+      "parentUuid": "bae4c6bf_1a47b995",
+      "revId": "90f85d5ac83e4107a75d3e196998f83ac47a6f83",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
