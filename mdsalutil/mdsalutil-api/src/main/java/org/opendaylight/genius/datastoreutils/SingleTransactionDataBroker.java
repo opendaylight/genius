@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.datastoreutils.TransactionCommitFailedExceptionMapper.SUBMIT_MAPPER;
 
 import com.google.common.base.Optional;
+import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
@@ -255,4 +256,13 @@ public class SingleTransactionDataBroker {
                 runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(datastoreType, path)), SUBMIT_MAPPER);
     }
 
+    public static <T extends DataObject> Boolean doesExists(
+            DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path)
+            throws ReadFailedException {
+        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+            return tx.exists(datastoreType, path).get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new ReadFailedException(e.getMessage(), e);
+        }
+    }
 }
