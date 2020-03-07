@@ -5,14 +5,12 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collection;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -31,7 +29,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This class listens for bridgeRefEntry creation/removal/update in Operational
  * DS and update the bridgeRefEntryCache as per changes in DS.
- *
  */
 @Singleton
 public class CacheBridgeRefEntryListener implements ClusteredDataTreeChangeListener<BridgeRefEntry> {

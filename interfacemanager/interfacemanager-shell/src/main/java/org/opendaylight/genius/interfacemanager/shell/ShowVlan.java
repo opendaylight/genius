@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.shell;
 
 import java.util.List;
-
 import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;

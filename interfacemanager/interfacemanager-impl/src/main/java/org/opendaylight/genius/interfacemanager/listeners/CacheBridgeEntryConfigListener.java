@@ -12,7 +12,6 @@ import java.util.Collection;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.controller.md.sal.binding.api.ClusteredDataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
@@ -31,7 +30,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This class listens for bridgeEntry creation/removal/update in Configuration
  * DS and update the bridgeEntryCache as per changes in DS.
- *
  */
 @Singleton
 public class CacheBridgeEntryConfigListener implements ClusteredDataTreeChangeListener<BridgeEntry> {

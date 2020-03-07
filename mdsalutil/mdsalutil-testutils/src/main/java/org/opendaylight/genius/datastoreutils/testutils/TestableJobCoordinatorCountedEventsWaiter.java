@@ -10,11 +10,8 @@ package org.opendaylight.genius.datastoreutils.testutils;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
-
-
 
 @Singleton
 public class TestableJobCoordinatorCountedEventsWaiter extends AbstractTestableJobCoordinatorEventsWaiter

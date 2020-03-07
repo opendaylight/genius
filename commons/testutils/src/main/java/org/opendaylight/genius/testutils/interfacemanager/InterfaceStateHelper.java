@@ -9,10 +9,8 @@ package org.opendaylight.genius.testutils.interfacemanager;
 
 import com.google.common.collect.Lists;
 import java.math.BigInteger;
-
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Other;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.InterfacesState;

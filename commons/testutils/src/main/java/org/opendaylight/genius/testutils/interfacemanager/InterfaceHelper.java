@@ -8,7 +8,6 @@
 package org.opendaylight.genius.testutils.interfacemanager;
 
 import java.util.Collections;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;

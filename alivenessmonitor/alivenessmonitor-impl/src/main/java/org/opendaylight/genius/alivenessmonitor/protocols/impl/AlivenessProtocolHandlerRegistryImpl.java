@@ -11,7 +11,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
@@ -26,7 +25,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author Michael Vorburger.ch
  */
-
 @Singleton
 @Service(classes = AlivenessProtocolHandlerRegistry.class)
 public class AlivenessProtocolHandlerRegistryImpl implements AlivenessProtocolHandlerRegistry {

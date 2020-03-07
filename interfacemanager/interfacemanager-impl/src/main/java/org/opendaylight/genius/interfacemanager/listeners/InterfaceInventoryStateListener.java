@@ -12,7 +12,6 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.base.Function;
 import com.google.common.util.concurrent.ListenableFuture;
-
 import com.google.common.util.concurrent.MoreExecutors;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;

@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.mockito.Mockito.mock;
 
 import java.net.UnknownHostException;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
 import org.opendaylight.daexim.DataImportBootReady;

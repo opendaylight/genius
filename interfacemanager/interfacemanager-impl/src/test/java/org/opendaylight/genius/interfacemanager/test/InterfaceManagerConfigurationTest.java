@@ -34,7 +34,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

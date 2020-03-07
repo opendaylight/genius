@@ -14,7 +14,6 @@ import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.function.Function;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;

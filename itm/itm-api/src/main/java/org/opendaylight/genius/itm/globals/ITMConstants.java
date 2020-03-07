@@ -8,7 +8,6 @@
 package org.opendaylight.genius.itm.globals;
 
 import java.math.BigInteger;
-
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
 

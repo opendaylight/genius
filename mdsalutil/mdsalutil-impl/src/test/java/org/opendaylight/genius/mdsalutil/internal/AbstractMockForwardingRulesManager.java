@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsalutil.internal;
 
 import java.util.Collection;
-
 import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.controller.md.sal.binding.api.DataTreeModification;
 import org.opendaylight.yangtools.yang.binding.DataObject;

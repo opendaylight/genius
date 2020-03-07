@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.diagstatus;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
