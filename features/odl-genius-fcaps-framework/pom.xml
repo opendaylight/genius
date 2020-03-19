@@ -18,7 +18,7 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius-fcaps-framework</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.8.1-SNAPSHOT</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: fcapsframework</name>
 
@@ -27,7 +27,7 @@
       <dependency>
         <groupId>org.opendaylight.infrautils</groupId>
         <artifactId>infrautils-artifacts</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.1-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
