@@ -15,12 +15,12 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries.
@@ -159,7 +159,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         return Objects.requireNonNull(delegate.callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner),
             "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
             .catchingAsync(Exception.class, exception -> {
-                // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+                // as per AsyncWriteTransaction.commit()'s JavaDoc re. retries
                 if (isRetriableException(exception) && tries - 1 > 0) {
                     return callWithNewReadWriteTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                 } else {
@@ -182,7 +182,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
                  delegate.callWithNewWriteOnlyTransactionAndSubmit(txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null");
         return Futures.catchingAsync(future, OptimisticLockFailedException.class, optimisticLockFailedException -> {
-            // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+            // as per AsyncWriteTransaction.commit()'s JavaDoc re. retries
             if (tries - 1 > 0) {
                 return callWithNewWriteOnlyTransactionAndSubmit(txRunner, tries - 1);
             } else {
@@ -206,7 +206,7 @@ class RetryingManagedNewTransactionRunnerImpl implements ManagedNewTransactionRu
         return Objects.requireNonNull(delegate.callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner),
                 "delegate.callWithNewWriteOnlyTransactionAndSubmit() == null")
                 .catchingAsync(OptimisticLockFailedException.class, optimisticLockFailedException -> {
-                    // as per AsyncWriteTransaction.submit()'s JavaDoc re. retries
+                    // as per AsyncWriteTransaction.commit()'s JavaDoc re. retries
                     if (tries - 1 > 0) {
                         return callWithNewWriteOnlyTransactionAndSubmit(datastoreType, txRunner, tries - 1);
                     } else {

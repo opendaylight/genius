@@ -20,19 +20,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.TOP_FOO_KEY;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.USES_ONE_KEY;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.complexUsesAugment;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.path;
 import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUtils.topLevelList;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ListeningScheduledExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.Uninterruptibles;
 import java.time.Duration;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -42,11 +40,6 @@ import java.util.function.Function;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.binding.test.ConstantSchemaAbstractDataBrokerTest;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar.NextAction;
@@ -54,13 +47,14 @@ import org.opendaylight.genius.datastoreutils.listeners.internal.DataTreeEventCa
 import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
-import org.opendaylight.mdsal.binding.spec.reflect.BindingReflections;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.augment.rev140709.TreeComplexUsesAugment;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.list.rev140701.TwoLevelList;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.list.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.binding.YangModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +81,7 @@ public class DataTreeEventCallbackRegistrarTest {
     public DataTreeEventCallbackRegistrarTest() throws Exception {
         // Argument true to make sure we use the multi-threaded DataTreeChangeListenerExecutor
         // because otherwise we hit a deadlock :( with this test!
-        ConstantSchemaAbstractDataBrokerTest dataBrokerTest = new ConstantSchemaAbstractDataBrokerTest(true) {
+        /*ConstantSchemaAbstractDataBrokerTest dataBrokerTest = new ConstantSchemaAbstractDataBrokerTest(true) {
             @Override
             protected Set<YangModuleInfo> getModuleInfos() throws Exception {
                 return ImmutableSet.of(BindingReflections.getModuleInfo(TwoLevelList.class),
@@ -97,7 +91,13 @@ public class DataTreeEventCallbackRegistrarTest {
 
         dataBrokerTest.setup();
         db = dataBrokerTest.getDataBroker();
+        db1 = new SingleTransactionDataBroker(db);*/
+        AbstractConcurrentDataBrokerTest dataBrokerTest =
+                new AbstractConcurrentDataBrokerTest(true) {};
+        dataBrokerTest.setup();
+        db = dataBrokerTest.getDataBroker();
         db1 = new SingleTransactionDataBroker(db);
+
     }
 
     @Test
@@ -200,7 +200,7 @@ public class DataTreeEventCallbackRegistrarTest {
         AtomicBoolean timedOut = new AtomicBoolean(false);
         dataTreeEventCallbackRegistrar.onAdd(OPERATIONAL, FOO_PATH, topLevelList -> { /* NOOP */ },
                 Duration.ofMillis(50), iid -> {
-                if (iid.equals(new DataTreeIdentifier<>(OPERATIONAL, FOO_PATH))) {
+                if (iid.equals(DataTreeIdentifier.create(OPERATIONAL, FOO_PATH))) {
                     timedOut.set(true);
                 }
             }

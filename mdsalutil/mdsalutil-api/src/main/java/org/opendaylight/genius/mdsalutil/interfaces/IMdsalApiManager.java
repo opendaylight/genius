@@ -7,10 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.interfaces;
 
-import com.google.common.util.concurrent.CheckedFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -31,7 +30,7 @@ public interface IMdsalApiManager {
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
      */
     @Deprecated
-    CheckedFuture<Void,TransactionCommitFailedException> installFlow(FlowEntity flowEntity);
+    FluentFuture<Void> installFlow(FlowEntity flowEntity);
 
     /**
      * Adds a flow.
@@ -39,7 +38,7 @@ public interface IMdsalApiManager {
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, Uint64, Flow)}.
      */
     @Deprecated
-    CheckedFuture<Void,TransactionCommitFailedException> installFlow(Uint64 dpId, Flow flowEntity);
+    FluentFuture<Void> installFlow(Uint64 dpId, Flow flowEntity);
 
     /**
      * Adds a flow.
@@ -47,7 +46,7 @@ public interface IMdsalApiManager {
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
      */
     @Deprecated
-    CheckedFuture<Void,TransactionCommitFailedException> installFlow(Uint64 dpId, FlowEntity flowEntity);
+    FluentFuture<Void> installFlow(Uint64 dpId, FlowEntity flowEntity);
 
     /**
      * Adds the given flow.
@@ -80,7 +79,7 @@ public interface IMdsalApiManager {
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
      */
     @Deprecated
-    CheckedFuture<Void,TransactionCommitFailedException> removeFlow(FlowEntity flowEntity);
+    FluentFuture<Void> removeFlow(FlowEntity flowEntity);
 
     /**
      * Removes a flow.
@@ -88,7 +87,7 @@ public interface IMdsalApiManager {
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, Uint64, Flow)}.
      */
     @Deprecated
-    CheckedFuture<Void,TransactionCommitFailedException> removeFlow(Uint64 dpId, Flow flowEntity);
+    FluentFuture<Void> removeFlow(Uint64 dpId, Flow flowEntity);
 
     /**
      * Removes the given flow.
