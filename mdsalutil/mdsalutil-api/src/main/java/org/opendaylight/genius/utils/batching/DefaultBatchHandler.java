@@ -9,9 +9,9 @@
 package org.opendaylight.genius.utils.batching;
 
 import java.util.List;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -48,6 +48,26 @@ public class DefaultBatchHandler implements ResourceHandler {
         transactionObjects.add(subTransaction);
 
         tx.merge(logicalDatastoreType, identifier, (DataObject) update, true);
+    }
+
+    @Override
+    public void updateContainer(WriteTransaction tx, LogicalDatastoreType logicalDatastoreType,
+                       InstanceIdentifier identifier, Object original, Object update,
+                                List<SubTransaction> transactionObjects) {
+        if (update != null && !(update instanceof DataObject)) {
+            return;
+        }
+        if (logicalDatastoreType != getDatastoreType()) {
+            return;
+        }
+
+        SubTransaction subTransaction = new SubTransactionImpl();
+        subTransaction.setAction(SubTransaction.UPDATE);
+        subTransaction.setInstance(update);
+        subTransaction.setInstanceIdentifier(identifier);
+        transactionObjects.add(subTransaction);
+
+        tx.merge(logicalDatastoreType, identifier, (DataObject) update);
     }
 
     @Override

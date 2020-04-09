@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.infra;
 
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.AsyncTransaction;
+import org.opendaylight.mdsal.binding.api.Transaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -20,7 +20,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @see WriteTransaction
  */
 public interface TypedWriteTransaction<D extends Datastore> extends
-        AsyncTransaction<InstanceIdentifier<?>, DataObject> {
+        Transaction {
     /**
      * Writes an object to the given path.
      *
