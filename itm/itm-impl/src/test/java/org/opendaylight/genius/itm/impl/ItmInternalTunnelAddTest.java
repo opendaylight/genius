@@ -10,10 +10,9 @@ package org.opendaylight.genius.itm.impl;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import org.junit.After;
@@ -21,10 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.OfEndPointCache;
@@ -37,6 +32,10 @@ import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -66,6 +65,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
@@ -151,7 +151,7 @@ public class ItmInternalTunnelAddTest {
     Future<RpcResult<AllocateIdOutput>> dstId2Output;
 
     @Mock DataBroker dataBroker;
-    @Mock ReadOnlyTransaction mockReadTx;
+    @Mock ReadTransaction mockReadTx;
     @Mock ReadWriteTransaction mockReadWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock IdManagerService idManagerService;
@@ -180,13 +180,13 @@ public class ItmInternalTunnelAddTest {
         dstId1Output = RpcResultBuilder.success(expectedDstID1).buildFuture();
         dstId2Output = RpcResultBuilder.success(expectedDstID2).buildFuture();
 
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+        doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorParamsInstanceIdentifier);
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+        doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, tunnelMonitorIntervalIdentifier);
 
         directTunnelUtils = new DirectTunnelUtils(idManagerService, mdsalApiManager, entityOwnershipUtils, itmConfig);
@@ -248,7 +248,7 @@ public class ItmInternalTunnelAddTest {
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
-        doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        doReturn(FluentFutures.immediateNullFluentFuture()).when(mockReadWriteTx).commit();
         doReturn(true).when(mockReadWriteTx).cancel();
 
     }
@@ -284,9 +284,9 @@ public class ItmInternalTunnelAddTest {
 
         //Add some verifications
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
-                internalTunnel1,true);
+                internalTunnel1, true);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2,
-                internalTunnel2,true);
+                internalTunnel2, true);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
                 dpnEndpointsVxlan);
     }
@@ -321,9 +321,9 @@ public class ItmInternalTunnelAddTest {
         itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListGre, meshDpnListGre);
 
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
-                internalTunnel1,true);
+                internalTunnel1, true);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
-                internalTunnel2,true);
+                internalTunnel2, true);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
                 dpnEndpointsGre);
     }
@@ -359,9 +359,9 @@ public class ItmInternalTunnelAddTest {
         itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre);
 
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
-                internalTunnel1,true);
+                internalTunnel1, true);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
-                internalTunnel2,true);
+                internalTunnel2, true);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
                 dpnEndpointsVxlan);
     }
