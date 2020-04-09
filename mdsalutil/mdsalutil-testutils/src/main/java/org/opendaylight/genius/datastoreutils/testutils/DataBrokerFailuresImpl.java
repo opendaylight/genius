@@ -7,27 +7,26 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.Futures;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ForwardingDataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ForwardingReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ForwardingWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.spi.ForwardingDataBroker;
+import org.opendaylight.mdsal.binding.spi.ForwardingReadWriteTransaction;
+import org.opendaylight.mdsal.binding.spi.ForwardingWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -126,8 +125,8 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         }
     }
 
-    public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> handleRead(
-            BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, CheckedFuture<Optional<T>, ReadFailedException>>
+    public <T extends DataObject> FluentFuture<Optional<T>> handleRead(
+            BiFunction<LogicalDatastoreType, InstanceIdentifier<T>, FluentFuture<Optional<T>>>
                 readMethod,
             LogicalDatastoreType store, InstanceIdentifier<T> path) {
         if (howManyFailingReads.decrementAndGet() == -1) {
@@ -136,7 +135,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
         if (readException == null) {
             return readMethod.apply(store, path);
         } else {
-            return Futures.immediateFailedCheckedFuture(readException);
+            return FluentFuture.from(Futures.immediateFailedFuture(readException));
         }
     }
 
@@ -144,7 +143,7 @@ public class DataBrokerFailuresImpl extends ForwardingDataBroker implements Data
     public ReadWriteTransaction newReadWriteTransaction() {
         return new ForwardingReadWriteTransaction(delegate.newReadWriteTransaction()) {
             @Override
-            public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(
+            public <T extends DataObject> FluentFuture<Optional<T>> read(
                     LogicalDatastoreType store, InstanceIdentifier<T> path) {
                 return handleRead(super::read, store, path);
             }

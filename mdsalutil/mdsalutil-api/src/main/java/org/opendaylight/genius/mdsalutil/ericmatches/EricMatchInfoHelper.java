@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.ericmatches;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
