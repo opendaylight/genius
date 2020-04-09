@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.pmcounters;
 
 import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningScheduledThreadPool;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -17,6 +16,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,9 +27,6 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.genius.datastoreutils.AsyncClusteredDataTreeChangeListenerBase;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceChildCache;
 import org.opendaylight.genius.interfacemanager.listeners.PortNameCache;
@@ -39,6 +36,10 @@ import org.opendaylight.infrautils.metrics.Labeled;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
 import org.opendaylight.infrautils.metrics.MetricProvider;
 import org.opendaylight.infrautils.utils.UncheckedCloseable;
+import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetFlowStatisticsOutput;
@@ -62,7 +63,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListenerBase<Node, NodeConnectorStatsImpl> {
+public class NodeConnectorStatsImpl extends AbstractClusteredAsyncDataTreeChangeListener<Node> {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeConnectorStatsImpl.class);
 
@@ -88,25 +89,16 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
                                   final InterfaceChildCache interfaceChildCache,
                                   final IfmConfig ifmConfigObj,
                                   final @Reference  MetricProvider metricProvider) {
-        super(Node.class, NodeConnectorStatsImpl.class);
+        super(dataBroker, LogicalDatastoreType.OPERATIONAL,
+                InstanceIdentifier.create(Nodes.class).child(Node.class),
+                Executors.newSingleThreadExecutor("NodeConnectorStatsImpl", LOG));
         this.opendaylightDirectStatisticsService = opendaylightDirectStatisticsService;
         this.entityOwnershipUtils = entityOwnershipUtils;
         this.portNameCache = portNameCache;
         this.interfaceChildCache = interfaceChildCache;
         this.ifmConfig = ifmConfigObj;
         this.metricProvider = metricProvider;
-        registerListener(LogicalDatastoreType.OPERATIONAL, dataBroker);
         portStatExecutorService = newListeningScheduledThreadPool(THREAD_POOL_SIZE, "Port Stats Request Task", LOG);
-    }
-
-    @Override
-    public InstanceIdentifier<Node> getWildCardPath() {
-        return InstanceIdentifier.create(Nodes.class).child(Node.class);
-    }
-
-    @Override
-    protected NodeConnectorStatsImpl getDataTreeChangeListener() {
-        return NodeConnectorStatsImpl.this;
     }
 
     @Override
@@ -414,7 +406,7 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     }
 
     @Override
-    protected void remove(InstanceIdentifier<Node> identifier, Node node) {
+    public void remove(InstanceIdentifier<Node> identifier, Node node) {
         NodeId nodeId = node.getId();
         String dpId = nodeId.getValue().split(":")[1];
         if (nodes.contains(dpId)) {
@@ -435,12 +427,12 @@ public class NodeConnectorStatsImpl extends AsyncClusteredDataTreeChangeListener
     }
 
     @Override
-    protected void update(InstanceIdentifier<Node> identifier, Node original, Node update) {
+    public void update(InstanceIdentifier<Node> identifier, Node original, Node update) {
         // TODO Auto-generated method stub
     }
 
     @Override
-    protected void add(InstanceIdentifier<Node> identifier, Node node) {
+    public void add(InstanceIdentifier<Node> identifier, Node node) {
         NodeId nodeId = node.getId();
         if (entityOwnershipUtils.isEntityOwner(IfmConstants.SERVICE_ENTITY_TYPE, nodeId.getValue())) {
             LOG.trace("Locally connected switch {}",nodeId.getValue());

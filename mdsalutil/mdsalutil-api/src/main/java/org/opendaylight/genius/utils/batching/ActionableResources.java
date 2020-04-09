@@ -51,4 +51,10 @@ public final class ActionableResources {
             final InstanceIdentifier<T> path, final T data) {
         return new ActionableResourceImpl(identifier, path, ActionableResource.DELETE, data, null);
     }
+
+    public static <T extends DataObject> @NonNull ActionableResource updateContainer(final
+        InstanceIdentifier<T> path, final T newData) {
+        return new ActionableResourceImpl(path, ActionableResource.UPDATECONTAINER, requireNonNull(newData),
+                null);
+    }
 }
