@@ -6,31 +6,27 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 package org.opendaylight.genius.infra;
-
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.CheckedFuture;
 import com.google.common.util.concurrent.FluentFuture;
-import com.google.common.util.concurrent.Futures;
+import java.util.Optional;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 /**
  * Adapter allowing managed, datastore-constrained transactions to be used with methods expecting
- * generic {@link org.opendaylight.controller.md.sal.binding.api.DataBroker} transactions.
+ * generic {@link org.opendaylight.mdsal.binding.api.DataBroker} transactions.
  *
  * <p>The adapted transactions maintain the following constraints: they cannot be cancelled or
  * submitted (only the transaction manager can do this), and they cannot access a logical datastore
  * other than the one they were created for.
  */
-@Deprecated
-public final class TransactionAdapter {
+    @Deprecated
+    public final class TransactionAdapter {
     private TransactionAdapter() {
     }
 
@@ -89,9 +85,14 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                boolean createMissingParents) {
+                                               boolean createMissingParents) {
             checkStore(store);
             delegate.put(path, data, createMissingParents);
+        }
+
+        @Override
+        public <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path, @NonNull T data) {
+            /////
         }
 
         @Override
@@ -102,9 +103,14 @@ public final class TransactionAdapter {
 
         @Override
         public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                boolean createMissingParents) {
+                                                 boolean createMissingParents) {
             checkStore(store);
             delegate.merge(path, data, createMissingParents);
+        }
+
+        @Override
+        public <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store, @NonNull InstanceIdentifier<T> path, @NonNull T data) {
+            //////
         }
 
         @Override
@@ -125,7 +131,7 @@ public final class TransactionAdapter {
 
         void checkStore(LogicalDatastoreType store) {
             Preconditions.checkArgument(datastoreType.equals(store), "Invalid datastore %s used instead of %s", store,
-                datastoreType);
+                    datastoreType);
         }
 
         @Override
@@ -144,19 +150,17 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public <T extends DataObject> CheckedFuture<Optional<T>, ReadFailedException> read(LogicalDatastoreType store,
-                InstanceIdentifier<T> path) {
+        public @NonNull <T extends DataObject> FluentFuture<Optional<T>> read(@NonNull LogicalDatastoreType store,
+                                                                              @NonNull InstanceIdentifier<T> path) {
             checkStore(store);
-            return Futures.makeChecked(delegate.read(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+            return FluentFuture.from(delegate.read(path));
         }
 
         @Override
-        public CheckedFuture<Boolean, ReadFailedException> exists(LogicalDatastoreType store,
-                InstanceIdentifier<?> path) {
+        public FluentFuture<Boolean> exists(LogicalDatastoreType store,
+                                                                  InstanceIdentifier<?> path) {
             checkStore(store);
-            return Futures.makeChecked(delegate.exists(path),
-                e -> new ReadFailedException("Error reading from the datastore", e));
+            return FluentFuture.from(delegate.exists(path));
         }
     }
 }
