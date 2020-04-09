@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;

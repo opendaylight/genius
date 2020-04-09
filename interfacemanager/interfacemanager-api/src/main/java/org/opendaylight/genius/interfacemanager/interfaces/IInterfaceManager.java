@@ -10,13 +10,14 @@ package org.opendaylight.genius.interfacemanager.interfaces;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.controller.md.sal.binding.api.ReadTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
@@ -74,7 +75,8 @@ public interface IInterfaceManager {
      * @return The interface information.
      * @throws ReadFailedException if an exception occurs while reading from the datastore.
      */
-    Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName) throws ReadFailedException;
+    Interface getInterfaceInfoFromConfigDataStore(ReadTransaction tx, String interfaceName)
+            throws ReadFailedException, ExecutionException, InterruptedException;
 
     /**
      * Create a VLAN interface.
@@ -135,7 +137,8 @@ public interface IInterfaceManager {
      * @return The child interfaces.
      * @throws ReadFailedException if an exception occurs while reading from the datastore.
      */
-    List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface) throws ReadFailedException;
+    List<Interface> getChildInterfaces(ReadTransaction tx, String parentInterface)
+            throws ReadFailedException, ExecutionException, InterruptedException;
 
     /**
      * Determine whether an interface is external.
@@ -155,7 +158,8 @@ public interface IInterfaceManager {
      * @return {@code true} if the interface is external, {@code false} if it isn't.
      * @throws ReadFailedException if an exception occurs while reading from the datastore.
      */
-    boolean isExternalInterface(ReadTransaction tx, String interfaceName) throws ReadFailedException;
+    boolean isExternalInterface(ReadTransaction tx, String interfaceName)
+            throws ReadFailedException, ExecutionException, InterruptedException;
 
     String getPortNameForInterface(NodeConnectorId nodeConnectorId, String interfaceName);
 
