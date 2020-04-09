@@ -11,11 +11,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,10 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
@@ -44,6 +39,10 @@ import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -102,6 +101,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelFromDpnsInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInputBuilder;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
@@ -178,7 +178,7 @@ public class ItmManagerRpcServiceTest {
 
     @Mock DataBroker dataBroker;
     @Mock JobCoordinator jobCoordinator;
-    @Mock ReadOnlyTransaction mockReadTx;
+    @Mock ReadTransaction mockReadTx;
     @Mock WriteTransaction mockWriteTx;
     @Mock IMdsalApiManager mdsalApiManager;
     @Mock ItmConfig itmConfig;
@@ -206,17 +206,17 @@ public class ItmManagerRpcServiceTest {
         dpnEndpointsOptional = Optional.of(dpnEndpoints);
         transportZonesOptional = Optional.of(transportZones);
 
-        doReturn(Futures.immediateCheckedFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,externalTunnelIdentifier);
-        doReturn(Futures.immediateCheckedFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(externalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,externalTunnelIdentifier1);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(internalTunnelOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,internalTunnelIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx).read(
+        lenient().doReturn(FluentFutures.immediateFluentFuture(internalTunnelOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,internalTunnelIdentifierNew);
-        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+        lenient().doReturn(FluentFutures.immediateFluentFuture(dpnEndpointsOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
-        doReturn(Futures.immediateCheckedFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(transportZonesOptional)).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,transportZonesIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
@@ -302,7 +302,7 @@ public class ItmManagerRpcServiceTest {
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockWriteTx).submit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
     }
 
     @Test
@@ -315,7 +315,7 @@ public class ItmManagerRpcServiceTest {
     @Ignore
     @Test
     public void testGetInternalOrExternalInterfaceNameExtTunnelAbsent() {
-        doReturn(Futures.immediateCheckedFuture(Optional.absent())).when(mockReadTx).read(LogicalDatastoreType
+        doReturn(FluentFutures.immediateFluentFuture(Optional.empty())).when(mockReadTx).read(LogicalDatastoreType
                 .CONFIGURATION,externalTunnelIdentifier);
 
         itmManagerRpcService.getInternalOrExternalInterfaceName(getInternalOrExternalInterfaceNameInput);
@@ -341,14 +341,14 @@ public class ItmManagerRpcServiceTest {
     public void testAddL2GwDevice() {
         itmManagerRpcService.addL2GwDevice(addL2GwDeviceInput);
 
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier, deviceVteps, true);
+        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier, deviceVteps);
     }
 
     @Test
     public void testAddL2GwMlagDevice() {
         itmManagerRpcService.addL2GwMlagDevice(addL2GwMlagDeviceInput);
 
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier, deviceVteps, true);
+        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier, deviceVteps);
     }
 
     @Test

@@ -11,20 +11,15 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -41,6 +36,10 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.caches.baseimpl.internal.CacheManagersRegistryImpl;
 import org.opendaylight.infrautils.caches.guava.internal.GuavaCacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -67,6 +66,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
@@ -114,7 +114,7 @@ public class ItmInternalTunnelDeleteTest {
             .build();
 
     @Mock DataBroker dataBroker;
-    @Mock ReadOnlyTransaction mockReadTx;
+    @Mock ReadTransaction mockReadTx;
     @Mock ReadWriteTransaction mockReadWriteTx;
     @Mock IdManagerService idManagerService;
     @Mock IMdsalApiManager mdsalApiManager;
@@ -142,21 +142,21 @@ public class ItmInternalTunnelDeleteTest {
         tunnelMonitorIntervalOptional = Optional.of(tunnelMonitorInterval);
         internalTunnelOptional = Optional.of(internalTunnel);
 
-        doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorParamsOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorParamsOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorParamsInstanceIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorIntervalOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(tunnelMonitorIntervalOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION,
                         tunnelMonitorIntervalIdentifier);
-        doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadTx)
+        doReturn(FluentFutures.immediateFluentFuture(internalTunnelOptional)).when(mockReadTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
-        lenient().doReturn(Futures.immediateCheckedFuture(internalTunnelOptional)).when(mockReadWriteTx)
+        lenient().doReturn(FluentFutures.immediateFluentFuture(internalTunnelOptional)).when(mockReadWriteTx)
                 .read(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifier);
 
         DPNTEPsInfoCache dpntePsInfoCache =
@@ -211,7 +211,7 @@ public class ItmInternalTunnelDeleteTest {
 
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockReadWriteTx).when(dataBroker).newReadWriteTransaction();
-        lenient().doReturn(Futures.immediateCheckedFuture(null)).when(mockReadWriteTx).submit();
+        lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockReadWriteTx).commit();
         doReturn(true).when(mockReadWriteTx).cancel();
         lenient().doReturn(false).when(itmConfig).isUseOfTunnels();
     }
@@ -230,7 +230,7 @@ public class ItmInternalTunnelDeleteTest {
 
         Optional<DpnEndpoints> dpnEndpointsOptional = Optional.of(dpnEndpoints);
 
-        lenient().doReturn(Futures.immediateCheckedFuture(dpnEndpointsOptional)).when(mockReadTx).read(
+        lenient().doReturn(FluentFutures.immediateFluentFuture(dpnEndpointsOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
 
         itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);

@@ -7,25 +7,33 @@
  */
 package org.opendaylight.genius.datastoreutils.hwvtep;
 
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
-import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+//import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
+
+import java.util.concurrent.ExecutorService;
 import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.serviceutils.tools.listener.AbstractAsyncDataTreeChangeListener;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
+//import org.opendaylight.genius.datastoreutils.AsyncDataTreeChangeListenerBase;
+
+
 public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,K extends DataTreeChangeListener<T>>
-        extends AsyncDataTreeChangeListenerBase<T,K> {
+        extends AbstractAsyncDataTreeChangeListener<T> {
 
     private final HwvtepNodeHACache hwvtepNodeHACache;
 
-    public HwvtepAbstractDataTreeChangeListener(Class<T> clazz, Class<K> eventClazz,
-            HwvtepNodeHACache hwvtepNodeHACache) {
-        super(clazz, eventClazz);
+    public HwvtepAbstractDataTreeChangeListener(DataBroker dataBroker,DataTreeIdentifier dataTreeIdentifier,
+                                                ExecutorService executorService, HwvtepNodeHACache hwvtepNodeHACache) {
+        super(dataBroker, dataTreeIdentifier, executorService);
         this.hwvtepNodeHACache = hwvtepNodeHACache;
     }
 
     @Override
-    protected void remove(InstanceIdentifier<T> identifier, T del) {
+    public void remove(InstanceIdentifier<T> identifier, T del) {
         if (hwvtepNodeHACache.isHAEnabledDevice(identifier)) {
             return;
         }
@@ -33,7 +41,7 @@ public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,
     }
 
     @Override
-    protected void update(InstanceIdentifier<T> identifier, T original, T update) {
+    public void update(InstanceIdentifier<T> identifier, T original, T update) {
         if (hwvtepNodeHACache.isHAEnabledDevice(identifier)) {
             return;
         }
@@ -41,7 +49,7 @@ public abstract class HwvtepAbstractDataTreeChangeListener<T extends DataObject,
     }
 
     @Override
-    protected void add(InstanceIdentifier<T> identifier, T add) {
+    public void add(InstanceIdentifier<T> identifier, T add) {
         if (hwvtepNodeHACache.isHAEnabledDevice(identifier)) {
             return;
         }

@@ -26,6 +26,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>yang-binding</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.opendaylight.mdsal</groupId>
+      <artifactId>mdsal-common-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.opendaylight.ovsdb</groupId>
       <artifactId>southbound-api</artifactId>
       <version>${genius.ovsdb.version}</version>
@@ -46,10 +50,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>org.opendaylight.openflowplugin.model</groupId>
       <artifactId>model-flow-service</artifactId>
     </dependency>
-    <dependency>
+    <!--<dependency>
       <groupId>org.opendaylight.controller</groupId>
       <artifactId>sal-binding-broker-impl</artifactId>
-    </dependency>
+    </dependency>!-->
     <dependency>
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>

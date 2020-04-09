@@ -10,12 +10,12 @@ package org.opendaylight.genius.itm.impl;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.utils.batching.ActionableResource;
 import org.opendaylight.genius.utils.batching.ActionableResources;
 import org.opendaylight.genius.utils.batching.DefaultBatchHandler;
 import org.opendaylight.genius.utils.batching.ResourceBatchingManager;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -70,6 +70,13 @@ public final class ITMBatchingUtils {
         LOG.debug("Adding to the Queue to batch the update DS Operation - Id {} data {}", path, data);
         getQueue(entityType).add(ActionableResources.update(path, data));
     }
+
+    public static <T extends DataObject> void updateContainer(InstanceIdentifier<T> path, T data,
+                                                              EntityType entityType) {
+        LOG.debug("Adding to the Queue to batch the update DS Operation - Id {} data {}", path, data);
+        getQueue(entityType).add(ActionableResources.updateContainer(path, data));
+    }
+
 
     public static <T extends DataObject> void write(InstanceIdentifier<T> path, T data, EntityType entityType) {
         LOG.debug("Adding to the Queue to batch the write DS Operation - Id {} data {}", path, data);
