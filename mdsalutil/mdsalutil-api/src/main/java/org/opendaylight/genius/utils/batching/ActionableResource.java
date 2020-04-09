@@ -16,6 +16,8 @@ public interface ActionableResource {
     short UPDATE = 2;
     short DELETE = 3;
     short READ = 4;
+    // MDSAL-534 Merge,Put with no create_missing_parents flag
+    short UPDATE_CONTAINER = 5;
 
     InstanceIdentifier<?> getInstanceIdentifier();
 
