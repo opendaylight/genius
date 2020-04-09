@@ -17,8 +17,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeIdentifier;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -120,6 +120,8 @@ public interface DataTreeEventCallbackRegistrar {
     /**
      * Call back when expected instance was added or updated, with implicit {@link NextAction#UNREGISTER}.
      * See {@link #onAddOrUpdate(LogicalDatastoreType, InstanceIdentifier, BiFunction)} for more details.
+     * @param <T>
+     *            DataObject subclass
      */
     default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
                                                  BiConsumer<@Nullable T, T> callback) {

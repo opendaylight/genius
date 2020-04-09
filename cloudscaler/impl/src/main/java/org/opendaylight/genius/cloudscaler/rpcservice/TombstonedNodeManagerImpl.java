@@ -16,13 +16,12 @@ import java.util.stream.Collectors;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.mdsalutil.cache.InstanceIdDataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ComputeNodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.compute.nodes.ComputeNode;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -78,7 +77,7 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
     }
 
     @Override
-    public boolean isDpnTombstoned(Uint64 dpnId) throws ReadFailedException {
+    public boolean isDpnTombstoned(Uint64 dpnId)  {
         if (dpnId == null) {
             return false;
         }
@@ -95,14 +94,9 @@ public class TombstonedNodeManagerImpl implements TombstonedNodeManager {
     }
 
     @Override
-    public List<Uint64> filterTombStoned(List<Uint64> dpns) throws ReadFailedException {
+    public List<Uint64> filterTombStoned(List<Uint64> dpns) {
         return dpns.stream().filter((dpn) -> {
-            try {
-                return !isDpnTombstoned(dpn);
-            } catch (ReadFailedException e) {
-                LOG.error("Failed to read {}", dpn);
-                return true;
-            }
+            return !isDpnTombstoned(dpn);
         }).collect(Collectors.toList());
     }
 }

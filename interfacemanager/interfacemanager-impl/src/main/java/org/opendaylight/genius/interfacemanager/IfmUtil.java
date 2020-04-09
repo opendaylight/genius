@@ -7,28 +7,25 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.GRE_TRUNK_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.LOGICAL_GROUP_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.BooleanUtils;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -50,6 +47,9 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldVlanVid;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelDestinationIp;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetTunnelSourceIp;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
@@ -213,7 +213,7 @@ public final class IfmUtil {
     @Deprecated
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
             InstanceIdentifier<T> path, DataBroker broker) {
-        try (ReadOnlyTransaction tx = broker.newReadOnlyTransaction()) {
+        try (ReadTransaction tx = broker.newReadOnlyTransaction()) {
             return tx.read(datastoreType, path).get();
         } catch (InterruptedException | ExecutionException e) {
             LOG.error("Cannot read identifier", e);
