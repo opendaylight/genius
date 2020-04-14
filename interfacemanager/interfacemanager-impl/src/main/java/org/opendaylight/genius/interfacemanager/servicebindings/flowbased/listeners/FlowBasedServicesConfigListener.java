@@ -239,7 +239,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         coordinator.enqueueJob(serviceKey.getInterfaceName(), configWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    private class RendererConfigAddWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererConfigAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final String interfaceName;
         Class<? extends ServiceModeBase> serviceMode;
         FlowBasedServicesConfigAddable flowBasedServicesAddable;
@@ -282,7 +282,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         }
     }
 
-    private class RendererConfigRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererConfigRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final String interfaceName;
         Class<? extends ServiceModeBase> serviceMode;
         FlowBasedServicesConfigRemovable flowBasedServicesConfigRemovable;

@@ -37,7 +37,7 @@ import org.opendaylight.infrautils.testutils.RunUntilFailureRule;
  */
 public class TestableJobCoordinatorEventsWaiterTest {
 
-    private static class TestCallable implements Callable<List<ListenableFuture<Void>>> {
+    private static class TestCallable implements Callable<List<? extends ListenableFuture<?>>> {
 
         boolean wasCalled = false;
         AtomicInteger invocationCount = new AtomicInteger();

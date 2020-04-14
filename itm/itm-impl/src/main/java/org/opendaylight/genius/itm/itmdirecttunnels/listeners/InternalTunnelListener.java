@@ -64,7 +64,7 @@ public class InternalTunnelListener extends AbstractSyncDataTreeChangeListener<I
         return "tun" + internalTunnel.getSourceDPN() + internalTunnel.getDestinationDPN();
     }
 
-    private static class RendererInternalTunnelDeleteWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class RendererInternalTunnelDeleteWorker implements Callable<List<? extends ListenableFuture<?>>> {
         final InstanceIdentifier<InternalTunnel> key;
         final InternalTunnel internalTunnel;
 

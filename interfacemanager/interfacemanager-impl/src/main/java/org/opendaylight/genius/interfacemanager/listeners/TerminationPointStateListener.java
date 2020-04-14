@@ -181,7 +181,7 @@ public class TerminationPointStateListener extends
         update(identifier, null, tpNew);
     }
 
-    private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         OvsdbTerminationPointAugmentation terminationPointNew;
 
         RendererStateUpdateWorker(OvsdbTerminationPointAugmentation tpNew) {
@@ -194,7 +194,7 @@ public class TerminationPointStateListener extends
         }
     }
 
-    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         OvsdbTerminationPointAugmentation terminationPointOld;
 
         RendererStateRemoveWorker(OvsdbTerminationPointAugmentation tpNew) {

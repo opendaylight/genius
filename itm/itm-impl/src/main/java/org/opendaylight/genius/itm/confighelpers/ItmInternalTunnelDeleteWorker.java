@@ -332,7 +332,7 @@ public class ItmInternalTunnelDeleteWorker {
         jobCoordinator.enqueueJob(logicTunnelName, addWorker);
     }
 
-    private static class ItmTunnelAggregationDeleteWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class ItmTunnelAggregationDeleteWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
         private final String logicTunnelName;
         private final Uint64 srcDpnId;

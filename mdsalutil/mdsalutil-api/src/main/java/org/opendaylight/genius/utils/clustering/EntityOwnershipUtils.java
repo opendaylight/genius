@@ -132,7 +132,7 @@ public class EntityOwnershipUtils {
      * @param job the job task
      */
     public void runOnlyInOwnerNode(String entityType, String entityName, JobCoordinator coordinator,
-            String jobKey, String jobDesc, Callable<List<ListenableFuture<Void>>> job) {
+            String jobKey, String jobDesc, Callable<List<? extends ListenableFuture<?>>> job) {
         final Entity entity = new Entity(entityType, entityName);
         coordinator.enqueueJob(getEntityIdentifierString(entityType, entityName), () -> {
             if (isEntityOwner(entity)) {

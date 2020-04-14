@@ -405,7 +405,7 @@ public class ItmTunnelAggregationHelper {
         tx.merge(id, ifaceBuilderChild.build(), CREATE_MISSING_PARENTS);
     }
 
-    private class TunnelAggregationUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelAggregationUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
         private final Interface ifStateOrigin;
         private final Interface ifStateUpdated;

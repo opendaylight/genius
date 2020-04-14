@@ -19,7 +19,7 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTepsNotHostedRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+public class ItmTepsNotHostedRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepsNotHostedRemoveWorker.class);
 

@@ -64,7 +64,7 @@ public class InterfaceConfigListener extends AbstractSyncDataTreeChangeListener<
         }
     }
 
-    private static class RendererConfigDeleteWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class RendererConfigDeleteWorker implements Callable<List<? extends ListenableFuture<?>>> {
         final InstanceIdentifier<Interface> key;
         final Interface interfaceNew;
 

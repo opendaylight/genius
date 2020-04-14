@@ -176,7 +176,7 @@ public class TerminationPointStateListener
         transaction.merge(LogicalDatastoreType.OPERATIONAL, stateTnlII, stateTnlBuilder.build(), false);
     }
 
-    private class RendererTunnelStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererTunnelStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final OvsdbTerminationPointAugmentation terminationPointNew;
 
         RendererTunnelStateUpdateWorker(OvsdbTerminationPointAugmentation tpNew) {
@@ -191,7 +191,7 @@ public class TerminationPointStateListener
         }
     }
 
-    private class RendererTunnelStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererTunnelStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final OvsdbTerminationPointAugmentation terminationPointOld;
 
         RendererTunnelStateRemoveWorker(OvsdbTerminationPointAugmentation tpNew) {

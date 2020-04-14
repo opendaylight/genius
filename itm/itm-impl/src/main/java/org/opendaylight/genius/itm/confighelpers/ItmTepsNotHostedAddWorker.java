@@ -18,7 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTepsNotHostedAddWorker implements Callable<List<ListenableFuture<Void>>> {
+public class ItmTepsNotHostedAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepsNotHostedAddWorker.class);
     private final  List<UnknownVteps> vtepsList;

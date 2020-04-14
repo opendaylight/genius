@@ -166,7 +166,7 @@ public class InterfaceTopologyStateListener
         });
     }
 
-    private class RendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererStateAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
 
@@ -200,7 +200,7 @@ public class InterfaceTopologyStateListener
         }
     }
 
-    private class RendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
 
@@ -238,7 +238,7 @@ public class InterfaceTopologyStateListener
         }
     }
 
-    private class RendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         OvsdbBridgeAugmentation bridgeNew;
         OvsdbBridgeAugmentation bridgeOld;
