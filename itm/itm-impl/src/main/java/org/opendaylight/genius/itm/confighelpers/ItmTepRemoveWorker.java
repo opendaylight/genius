@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+public class ItmTepRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepRemoveWorker.class);
 

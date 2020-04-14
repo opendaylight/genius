@@ -82,7 +82,7 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
         }
     }
 
-    private static class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class RendererStateInterfaceBindWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final String iface;
         final Uint64 dpnId;
         final FlowBasedServicesStateAddable flowBasedServicesStateAddable;

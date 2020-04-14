@@ -236,7 +236,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         return ifState;
     }
 
-    private static class VlanMemberStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class VlanMemberStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final ManagedNewTransactionRunner txRunner;
         private final InterfaceManagerCommonUtils interfaceManagerCommonUtils;
         private final Uint64 dpId;

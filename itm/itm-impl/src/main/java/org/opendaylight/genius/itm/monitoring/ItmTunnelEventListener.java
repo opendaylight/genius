@@ -206,7 +206,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         return alarmText.toString();
     }
 
-    private class ItmTunnelAddAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class ItmTunnelAddAlarmWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final StateTunnelList add;
 
         ItmTunnelAddAlarmWorker(StateTunnelList tnlIface) {
@@ -251,7 +251,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private class ItmTunnelRemoveAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class ItmTunnelRemoveAlarmWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final StateTunnelList del;
 
         ItmTunnelRemoveAlarmWorker(StateTunnelList tnlIface) {
@@ -286,7 +286,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private class ItmTunnelUpdateAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class ItmTunnelUpdateAlarmWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final StateTunnelList update;
         private final StateTunnelList original;
 
@@ -357,7 +357,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private static class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<StateTunnelList> identifier;
         private final StateTunnelList add;
         private final TunnelOperStatus operStatus;

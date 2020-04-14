@@ -425,7 +425,7 @@ public class TunnelInventoryStateListener extends
         return futures;
     }
 
-    private class TunnelInterfaceStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelInterfaceStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
@@ -454,7 +454,7 @@ public class TunnelInventoryStateListener extends
         }
     }
 
-    private class TunnelInterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelInterfaceStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final NodeConnectorId nodeConnectorId;
         private final FlowCapableNodeConnector flowCapableNodeConnector;
         private final String interfaceName;

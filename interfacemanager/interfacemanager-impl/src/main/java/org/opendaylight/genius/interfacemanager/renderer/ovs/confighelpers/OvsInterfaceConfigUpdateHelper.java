@@ -197,7 +197,7 @@ public class OvsInterfaceConfigUpdateHelper {
         return newAug != null && !newAug.equals(oldAug);
     }
 
-    private static class VlanMemberStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class VlanMemberStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
         private final ManagedNewTransactionRunner txRunner;
         private final OperStatus operStatus;

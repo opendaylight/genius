@@ -761,7 +761,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         coordinator.enqueueJob(interfaceName, parentRefUpdateWorker, IfmConstants.JOB_MAX_RETRIES);
     }
 
-    public class ParentRefUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    public class ParentRefUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         String interfaceName;
         String parentInterfaceName;
         Boolean readInterfaceBeforeWrite;

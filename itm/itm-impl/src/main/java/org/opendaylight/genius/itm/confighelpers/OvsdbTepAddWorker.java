@@ -16,7 +16,7 @@ import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OvsdbTepAddWorker implements Callable<List<ListenableFuture<Void>>> {
+public class OvsdbTepAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OvsdbTepAddWorker.class) ;
 

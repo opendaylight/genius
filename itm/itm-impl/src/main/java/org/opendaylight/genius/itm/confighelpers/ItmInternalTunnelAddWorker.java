@@ -292,7 +292,7 @@ public final class ItmInternalTunnelAddWorker {
         return logicTunnelGroupName;
     }
 
-    private static class ItmTunnelAggregationWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class ItmTunnelAggregationWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
         private final String logicTunnelGroupName;
         private final Uint64 srcDpnId;

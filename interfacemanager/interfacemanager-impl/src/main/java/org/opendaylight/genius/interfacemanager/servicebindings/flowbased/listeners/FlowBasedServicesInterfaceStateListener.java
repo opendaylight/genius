@@ -112,7 +112,7 @@ public class FlowBasedServicesInterfaceStateListener extends AbstractClusteredSy
         close();
     }
 
-    private class RendererStateInterfaceBindWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class RendererStateInterfaceBindWorker implements Callable<List<? extends ListenableFuture<?>>> {
         Interface iface;
         FlowBasedServicesStateAddable flowBasedServicesStateAddable;
         Class<? extends ServiceModeBase> serviceMode;

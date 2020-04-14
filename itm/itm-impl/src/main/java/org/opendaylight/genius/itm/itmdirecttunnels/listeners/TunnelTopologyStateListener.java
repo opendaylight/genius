@@ -234,7 +234,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         }
     }
 
-    private class TunnelRendererStateAddWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelRendererStateAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid;
         private final OvsdbBridgeAugmentation bridgeNew;
 
@@ -271,7 +271,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         }
     }
 
-    private class TunnelRendererStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelRendererStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         private final OvsdbBridgeAugmentation bridgeNew;
 
@@ -289,7 +289,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         }
     }
 
-    private class TunnelRendererStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelRendererStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<OvsdbBridgeAugmentation> instanceIdentifier;
         private final OvsdbBridgeAugmentation bridgeNew;
         private final OvsdbBridgeAugmentation bridgeOld;

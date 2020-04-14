@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 
-public class TunnelStateAddWorkerForNodeConnector implements Callable<List<ListenableFuture<Void>>> {
+public class TunnelStateAddWorkerForNodeConnector implements Callable<List<? extends ListenableFuture<?>>> {
     private final TunnelStateAddWorker tunnelStateAddWorker;
     private final TunnelStateInfo tunnelStateInfo;
 

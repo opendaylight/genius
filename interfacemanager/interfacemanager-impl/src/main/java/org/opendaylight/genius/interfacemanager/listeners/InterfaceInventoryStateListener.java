@@ -319,7 +319,7 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    private class InterfaceStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class InterfaceStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
@@ -355,7 +355,7 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    private class InterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class InterfaceStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final NodeConnectorId nodeConnectorIdNew;
         private NodeConnectorId nodeConnectorIdOld;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
