@@ -45,6 +45,7 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
+import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
@@ -437,15 +438,27 @@ public class InterfaceInventoryStateListener
                         InterfaceManagerCommonUtils.deleteStateEntry(operTx, interfaceName);
                         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
                             .Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
-
-                        if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
-                            // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
-                            // monitoring
-                            interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
-                            return Optional.of((InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>,
-                                ExecutionException>) confTx -> handleTunnelMonitoringRemoval(confTx, dpId,
-                                iface.getName(),
-                                iface.augmentation(IfTunnel.class)));
+                        if (iface != null) {
+                            if (InterfaceManagerCommonUtils.isTunnelInterface(iface)) {
+                                // If this interface is a tunnel interface, remove the tunnel ingress flow and stop LLDP
+                                // monitoring
+                                //interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
+                                return Optional.of((InterruptibleCheckedConsumer<TypedReadWriteTransaction<Configuration>,
+                                    ExecutionException>) confTx -> handleTunnelMonitoringRemoval(confTx, dpId,
+                                    iface.getName(),
+                                    iface.augmentation(IfTunnel.class)));
+                            }
+                        } else {
+                            // External tunnel managed by controller.
+                            // Remove tunnel lport mapping when config interface is not present
+                            org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces
+                                    .state.Interface interfaceState =
+                                            interfaceManagerCommonUtils.getInterfaceState(interfaceName);
+                            if (interfaceState.getType().isAssignableFrom(Tunnel.class)) {
+                                interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
+                                interfaceManagerCommonUtils.deleteDpnToInterface(dpId, interfaceName, operTx);
+                                return Optional.empty();
+                            }
                         }
                         // remove ingress flow only for northbound configured interfaces
                         // skip this check for non-unique ports(Ex: br-int,br-ex)
