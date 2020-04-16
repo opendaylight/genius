@@ -186,8 +186,10 @@ public final class OvsInterfaceConfigRemoveHelper {
         // delete bridge to tunnel interface mappings
         interfaceMetaUtils.deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeInterfaceEntries, bridgeEntryIid,
                 interfaceName);
-        int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, operTx);
+        //int lportTag = interfaceMetaUtils.removeLportTagInterfaceMap(operTx, interfaceName);
+        org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+                ifState = cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel, operTx);
+        int lportTag = (ifState != null) ? ifState.getIfIndex() : IfmUtil.INVALID_ID;
         // stop LLDP monitoring for the tunnel interface
         alivenessMonitorUtils.stopLLDPMonitoring(ifTunnel, interfaceName);
 
