@@ -106,7 +106,7 @@ import org.slf4j.LoggerFactory;
 public final class IfmUtil {
     private static final Logger LOG = LoggerFactory.getLogger(IfmUtil.class);
     private static final Pattern GENERATE_MAC_PATTERN = Pattern.compile("(.{2})");
-    private static final int INVALID_ID = 0;
+    public static final int INVALID_ID = 0;
 
     private IfmUtil() {
         throw new IllegalStateException("Utility class");
