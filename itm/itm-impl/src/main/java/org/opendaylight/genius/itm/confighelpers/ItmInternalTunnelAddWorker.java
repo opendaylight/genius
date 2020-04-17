@@ -8,10 +8,9 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -19,11 +18,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -40,6 +37,9 @@ import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -142,7 +142,7 @@ public final class ItmInternalTunnelAddWorker {
     private static void updateDpnTepInfoToConfig(TypedWriteTransaction<Configuration> tx, DPNTEPsInfo dpn,
         DirectTunnelUtils directTunnelUtils) throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
-        InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.builder(DpnEndpoints.class).build() ;
+        InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.create(DpnEndpoints.class) ;
         List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
         dpnList.add(new DPNTEPsInfoBuilder(dpn)
             .setDstId(directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
@@ -292,7 +292,7 @@ public final class ItmInternalTunnelAddWorker {
         return logicTunnelGroupName;
     }
 
-    private static class ItmTunnelAggregationWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class ItmTunnelAggregationWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
         private final String logicTunnelGroupName;
         private final Uint64 srcDpnId;
@@ -382,8 +382,8 @@ public final class ItmInternalTunnelAddWorker {
 
     private static void updateDpnTepInterfaceInfoToConfig(DpnTepsState dpnTeps) {
         LOG.debug("Updating CONFIGURATION datastore with DPN-Teps {} ", dpnTeps);
-        InstanceIdentifier<DpnTepsState> dpnTepsII = InstanceIdentifier.builder(DpnTepsState.class).build() ;
-        ITMBatchingUtils.update(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
+        InstanceIdentifier<DpnTepsState> dpnTepsII = InstanceIdentifier.create(DpnTepsState.class);
+        ITMBatchingUtils.updateContainer(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
     private void addTunnelConfiguration(Interface iface, String ofTunnelPortName)

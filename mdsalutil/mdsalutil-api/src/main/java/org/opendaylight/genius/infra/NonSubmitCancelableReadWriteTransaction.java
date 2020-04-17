@@ -8,7 +8,7 @@
 package org.opendaylight.genius.infra;
 
 import com.google.common.util.concurrent.FluentFuture;
-import org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 
 /**
