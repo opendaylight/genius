@@ -10,7 +10,6 @@ package org.opendaylight.genius.itm.diagstatus;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
