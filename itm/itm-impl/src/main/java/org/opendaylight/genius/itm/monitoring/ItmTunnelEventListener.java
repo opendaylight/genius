@@ -18,8 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.management.JMException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -27,7 +25,9 @@ import org.opendaylight.genius.itm.cache.UnprocessedTunnelsStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractSyncDataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.serviceutils.tools.listener.AbstractSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
@@ -206,7 +206,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         return alarmText.toString();
     }
 
-    private class ItmTunnelAddAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class ItmTunnelAddAlarmWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final StateTunnelList add;
 
         ItmTunnelAddAlarmWorker(StateTunnelList tnlIface) {
@@ -251,7 +251,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private class ItmTunnelRemoveAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class ItmTunnelRemoveAlarmWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final StateTunnelList del;
 
         ItmTunnelRemoveAlarmWorker(StateTunnelList tnlIface) {
@@ -286,7 +286,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private class ItmTunnelUpdateAlarmWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class ItmTunnelUpdateAlarmWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final StateTunnelList update;
         private final StateTunnelList original;
 
@@ -357,7 +357,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
         }
     }
 
-    private static class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<ListenableFuture<Void>>> {
+    private static class ItmTunnelStatusOutOfOrderEventWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<StateTunnelList> identifier;
         private final StateTunnelList add;
         private final TunnelOperStatus operStatus;
