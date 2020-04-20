@@ -21,7 +21,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LocalPoolDeleteJob implements Callable<List<ListenableFuture<Void>>> {
+public class LocalPoolDeleteJob implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolDeleteJob.class);
 

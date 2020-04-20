@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UpdateIdEntryJob implements Callable<List<ListenableFuture<Void>>> {
+public class UpdateIdEntryJob implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(UpdateIdEntryJob.class);
 

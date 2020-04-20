@@ -11,10 +11,10 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries on transaction failure
@@ -24,7 +24,8 @@ import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
  * <h3>Details about the threading model used by this class</h3>
  *
  * <p>This class runs the first attempt to call the delegated {@link ManagedNewTransactionRunner},
- * which typically is a {@link ManagedNewTransactionRunnerImpl} which safely invokes {@link WriteTransaction#submit()},
+ * which typically is a {@link ManagedNewTransactionRunnerImpl} which safely invokes
+ * {@link WriteTransaction#commit()} ,
  * in the using application's thread (like a {@link MoreExecutors#directExecutor()} would, if this were an
  * {@link Executor}, which it's not).
  *
