@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
-
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -38,7 +37,7 @@ import org.opendaylight.infrautils.testutils.RunUntilFailureRule;
  */
 public class TestableJobCoordinatorEventsWaiterTest {
 
-    private static class TestCallable implements Callable<List<ListenableFuture<Void>>> {
+    private static class TestCallable implements Callable<List<? extends ListenableFuture<?>>> {
 
         boolean wasCalled = false;
         AtomicInteger invocationCount = new AtomicInteger();

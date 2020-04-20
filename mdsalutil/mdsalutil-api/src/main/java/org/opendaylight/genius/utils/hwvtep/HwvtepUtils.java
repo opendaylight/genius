@@ -8,22 +8,24 @@
 
 package org.opendaylight.genius.utils.hwvtep;
 
-import static org.opendaylight.controller.md.sal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
+import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.StreamSupport;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
+import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
-import org.opendaylight.genius.mdsalutil.MDSALUtil;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.CommitInfo;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.IetfYangUtil;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -77,20 +79,21 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #addLogicalSwitch(TypedWriteTransaction, NodeId, LogicalSwitches)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> addLogicalSwitch(DataBroker broker, NodeId nodeId,
-                                                          LogicalSwitches logicalSwitch) {
+    public static FluentFuture<? extends @NonNull CommitInfo> addLogicalSwitch(DataBroker broker, NodeId nodeId,
+                                                      LogicalSwitches logicalSwitch) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putLogicalSwitch(transaction,LogicalDatastoreType.CONFIGURATION, nodeId, logicalSwitch);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     @Deprecated
-    public static ListenableFuture<Void> addLogicalSwitch(DataBroker broker, LogicalDatastoreType logicalDatastoreType,
+    public static FluentFuture<? extends @NonNull CommitInfo> addLogicalSwitch(DataBroker broker,
+                                                          LogicalDatastoreType logicalDatastoreType,
                                                           NodeId nodeId,
                                                           LogicalSwitches logicalSwitch) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putLogicalSwitch(transaction,logicalDatastoreType, nodeId, logicalSwitch);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -156,11 +159,11 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #deleteLogicalSwitch(TypedWriteTransaction, NodeId, String)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> deleteLogicalSwitch(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> deleteLogicalSwitch(DataBroker broker, NodeId nodeId,
                                                              String logicalSwitchName) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteLogicalSwitch(transaction, nodeId, logicalSwitchName);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -206,10 +209,10 @@ public final class HwvtepUtils {
      */
     @Deprecated
     public static LogicalSwitches getLogicalSwitch(DataBroker broker, LogicalDatastoreType datastoreType, NodeId nodeId,
-                                                   String logicalSwitchName) {
+        String logicalSwitchName) throws ExecutionException, InterruptedException {
         final InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName));
-        return MDSALUtil.read(broker, datastoreType, iid).orNull();
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -226,7 +229,7 @@ public final class HwvtepUtils {
         final InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils
             .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(logicalSwitchName));
         try {
-            return tx.read(iid).get().orNull();
+            return tx.read(iid).get().orElse(null);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Error reading logical switch " + iid, e);
         }
@@ -246,10 +249,11 @@ public final class HwvtepUtils {
      * @return the physical port termination point
      */
     public static TerminationPoint getPhysicalPortTerminationPoint(DataBroker broker,
-            LogicalDatastoreType datastoreType, NodeId nodeId, String portName) {
+            LogicalDatastoreType datastoreType, NodeId nodeId, String portName) throws ExecutionException,
+            InterruptedException {
         TerminationPointKey tpKey = new TerminationPointKey(new TpId(portName));
         InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createTerminationPointId(nodeId, tpKey);
-        return MDSALUtil.read(broker, datastoreType, iid).orNull();
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -263,12 +267,14 @@ public final class HwvtepUtils {
      *            virtual network id
      * @return the logical switches
      */
-    public static LogicalSwitches getLogicalSwitches(DataBroker broker, String hwVtepNodeId, String vni) {
+    public static LogicalSwitches getLogicalSwitches(DataBroker broker, String hwVtepNodeId, String vni)
+            throws ExecutionException, InterruptedException {
         NodeId nodeId = new NodeId(hwVtepNodeId);
         InstanceIdentifier<LogicalSwitches> logicalSwitchesIdentifier = HwvtepSouthboundUtils
                 .createLogicalSwitchesInstanceIdentifier(nodeId, new HwvtepNodeName(vni));
 
-        return MDSALUtil.read(broker, LogicalDatastoreType.CONFIGURATION, logicalSwitchesIdentifier).orNull();
+        return SingleTransactionDataBroker.syncReadOptional(broker, LogicalDatastoreType.CONFIGURATION,
+                logicalSwitchesIdentifier).orElse(null);
     }
 
     /**
@@ -325,13 +331,14 @@ public final class HwvtepUtils {
      * @return the physical locator
      */
     public static HwvtepPhysicalLocatorAugmentation getPhysicalLocator(DataBroker broker,
-            LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) {
+            LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) throws
+            ExecutionException, InterruptedException {
         HwvtepPhysicalLocatorAugmentation phyLocatorAug = HwvtepSouthboundUtils
                 .createHwvtepPhysicalLocatorAugmentation(phyLocatorIp);
         InstanceIdentifier<HwvtepPhysicalLocatorAugmentation> iid = HwvtepSouthboundUtils
                 .createPhysicalLocatorInstanceIdentifier(nodeId, phyLocatorAug)
                 .augmentation(HwvtepPhysicalLocatorAugmentation.class);
-        return MDSALUtil.read(broker, datastoreType, iid).orNull();
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -347,11 +354,11 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #addRemoteUcastMacs(TypedWriteTransaction, NodeId, Iterable)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> addRemoteUcastMacs(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> addRemoteUcastMacs(DataBroker broker, NodeId nodeId,
                                                             List<RemoteUcastMacs> lstRemoteUcastMacs) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putRemoteUcastMacs(transaction, nodeId, lstRemoteUcastMacs);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -437,11 +444,11 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #deleteRemoteUcastMac(TypedWriteTransaction, NodeId, String, MacAddress)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> deleteRemoteUcastMac(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> deleteRemoteUcastMac(DataBroker broker, NodeId nodeId,
                                                               String logicalSwitchName, MacAddress mac) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteUcastMac(transaction, nodeId, logicalSwitchName, mac);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -488,11 +495,11 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #deleteRemoteUcastMacs(TypedWriteTransaction, NodeId, String, Iterable)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> deleteRemoteUcastMacs(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> deleteRemoteUcastMacs(DataBroker broker, NodeId nodeId,
                                                                String logicalSwitchName, List<MacAddress> lstMac) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteUcastMacs(transaction, nodeId, logicalSwitchName, lstMac);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -542,11 +549,11 @@ public final class HwvtepUtils {
      *            the lst remote mcast macs
      * @return the listenable future
      */
-    public static ListenableFuture<Void> addRemoteMcastMacs(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> addRemoteMcastMacs(DataBroker broker, NodeId nodeId,
                                                             List<RemoteMcastMacs> lstRemoteMcastMacs) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         putRemoteMcastMacs(transaction, nodeId, lstRemoteMcastMacs);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -631,10 +638,11 @@ public final class HwvtepUtils {
      */
     @Deprecated
     public static RemoteMcastMacs getRemoteMcastMac(DataBroker broker, LogicalDatastoreType datastoreType,
-                                                    NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey) {
+                                                    NodeId nodeId, RemoteMcastMacsKey remoteMcastMacsKey)
+            throws ExecutionException, InterruptedException {
         final InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils
                 .createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey);
-        return MDSALUtil.read(broker, datastoreType, iid).orNull();
+        return SingleTransactionDataBroker.syncReadOptional(broker, datastoreType, iid).orElse(null);
     }
 
     /**
@@ -651,7 +659,7 @@ public final class HwvtepUtils {
         final InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils
             .createRemoteMcastMacsInstanceIdentifier(nodeId, remoteMcastMacsKey);
         try {
-            return tx.read(iid).get().orNull();
+            return tx.read(iid).get().orElse(null);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Error reading remote multicast MAC " + iid, e);
         }
@@ -670,11 +678,11 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #deleteRemoteMcastMac(TypedWriteTransaction, NodeId, RemoteMcastMacsKey)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> deleteRemoteMcastMac(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> deleteRemoteMcastMac(DataBroker broker, NodeId nodeId,
                                                               RemoteMcastMacsKey remoteMcastMacsKey) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMac(transaction, nodeId, remoteMcastMacsKey);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -718,11 +726,11 @@ public final class HwvtepUtils {
      *            the lst remote mcast macs key
      * @return the listenable future
      */
-    public static ListenableFuture<Void> deleteRemoteMcastMacs(DataBroker broker, NodeId nodeId,
+    public static FluentFuture<? extends @NonNull CommitInfo> deleteRemoteMcastMacs(DataBroker broker, NodeId nodeId,
                                                                List<RemoteMcastMacsKey> lstRemoteMcastMacsKey) {
         WriteTransaction transaction = broker.newWriteOnlyTransaction();
         deleteRemoteMcastMacs(transaction, nodeId, lstRemoteMcastMacsKey);
-        return transaction.submit();
+        return transaction.commit();
     }
 
     /**
@@ -870,9 +878,10 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #getHwVtepNode(TypedReadTransaction, NodeId)}.
      */
     @Deprecated
-    public static Node getHwVtepNode(DataBroker dataBroker, LogicalDatastoreType datastoreType, NodeId nodeId) {
-        return MDSALUtil.read(dataBroker, datastoreType,
-                HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)).orNull();
+    public static Node getHwVtepNode(DataBroker dataBroker, LogicalDatastoreType datastoreType, NodeId nodeId)
+            throws ExecutionException, InterruptedException {
+        return SingleTransactionDataBroker.syncReadOptional(dataBroker, datastoreType,
+                HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)).orElse(null);
     }
 
     /**
@@ -884,7 +893,7 @@ public final class HwvtepUtils {
      */
     public static Node getHwVtepNode(TypedReadTransaction<? extends Datastore> tx, NodeId nodeId) {
         try {
-            return tx.read(HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)).get().orNull();
+            return tx.read(HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)).get().orElse(null);
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Failed to read hwvtep node", e);
         }
@@ -907,7 +916,7 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #addUcastMacs(TypedWriteTransaction, String, Iterable, String, IpAddress)}.
      */
     @Deprecated
-    public static ListenableFuture<Void> installUcastMacs(DataBroker broker,
+    public static FluentFuture<? extends @NonNull CommitInfo> installUcastMacs(DataBroker broker,
                                                           String deviceNodeId, List<PhysAddress> macAddresses,
                                                           String logicalSwitchName, IpAddress remoteVtepIp) {
         NodeId nodeId = new NodeId(deviceNodeId);
@@ -953,7 +962,8 @@ public final class HwvtepUtils {
      * @deprecated Use {@link #getDbVersion(TypedReadTransaction, NodeId)}.
      */
     @Deprecated
-    public static String getDbVersion(DataBroker broker, NodeId nodeId) {
+    public static String getDbVersion(DataBroker broker, NodeId nodeId) throws ExecutionException,
+            InterruptedException {
         Node hwvtepNode = getHwVtepNode(broker, LogicalDatastoreType.OPERATIONAL, nodeId);
         String dbVersion = "";
         if (hwvtepNode != null) {
