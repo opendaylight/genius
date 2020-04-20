@@ -11,10 +11,10 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
-import org.opendaylight.controller.md.sal.common.api.data.OptimisticLockFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 
 /**
  * Implementation of {@link ManagedNewTransactionRunner} with automatic transparent retries on transaction failure

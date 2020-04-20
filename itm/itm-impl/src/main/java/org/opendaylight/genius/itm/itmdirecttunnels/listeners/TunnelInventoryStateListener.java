@@ -20,9 +20,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -45,7 +42,10 @@ import org.opendaylight.genius.itm.utils.TunnelStateInfo;
 import org.opendaylight.genius.itm.utils.TunnelStateInfoBuilder;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
-import org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredSyncDataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
+import org.opendaylight.serviceutils.tools.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
@@ -425,7 +425,7 @@ public class TunnelInventoryStateListener extends
         return futures;
     }
 
-    private class TunnelInterfaceStateUpdateWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelInterfaceStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final InstanceIdentifier<FlowCapableNodeConnector> key;
         private final FlowCapableNodeConnector fcNodeConnectorOld;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
@@ -454,7 +454,7 @@ public class TunnelInventoryStateListener extends
         }
     }
 
-    private class TunnelInterfaceStateRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+    private class TunnelInterfaceStateRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final NodeConnectorId nodeConnectorId;
         private final FlowCapableNodeConnector flowCapableNodeConnector;
         private final String interfaceName;

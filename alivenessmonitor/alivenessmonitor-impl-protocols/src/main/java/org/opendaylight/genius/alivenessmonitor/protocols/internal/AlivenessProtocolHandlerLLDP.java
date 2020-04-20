@@ -9,7 +9,6 @@ package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
 import static org.opendaylight.infrautils.utils.concurrent.LoggingFutures.addErrorLogging;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.nio.charset.Charset;
@@ -17,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
