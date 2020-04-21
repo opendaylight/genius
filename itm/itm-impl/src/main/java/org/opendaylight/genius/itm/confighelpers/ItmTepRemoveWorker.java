@@ -9,11 +9,11 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
-import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -30,7 +30,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ItmTepRemoveWorker implements Callable<List<ListenableFuture<Void>>> {
+public class ItmTepRemoveWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepRemoveWorker.class);
 

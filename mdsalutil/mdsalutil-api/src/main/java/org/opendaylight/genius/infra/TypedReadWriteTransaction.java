@@ -12,7 +12,7 @@ package org.opendaylight.genius.infra;
  * for use with {@link ManagedNewTransactionRunner} (it doesn’t support explicit cancel or commit operations).
  *
  * @param <D> The logical datastore handled by the transaction.
- * @see org.opendaylight.controller.md.sal.binding.api.ReadWriteTransaction
+ * @see org.opendaylight.mdsal.binding.api.ReadWriteTransaction
  */
 public interface TypedReadWriteTransaction<D extends Datastore>
         extends TypedReadTransaction<D>, TypedWriteTransaction<D> {

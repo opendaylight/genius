@@ -14,7 +14,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                      interface="org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService" />
 
     <reference id="dataBroker"
-               interface="org.opendaylight.controller.md.sal.binding.api.DataBroker" />
+               interface="org.opendaylight.mdsal.binding.api.DataBroker" />
 
     <reference id="entityOwnershipService"
                interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService" />

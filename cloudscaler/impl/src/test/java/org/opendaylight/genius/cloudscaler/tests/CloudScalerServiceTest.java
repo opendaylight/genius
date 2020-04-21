@@ -8,8 +8,8 @@
 package org.opendaylight.genius.cloudscaler.tests;
 
 import static org.junit.Assert.assertTrue;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.CONFIGURATION;
-import static org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType.OPERATIONAL;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
+import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -27,8 +27,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
 import org.opendaylight.genius.cloudscaler.api.ScaleInConstants;
 import org.opendaylight.genius.cloudscaler.rpcservice.CloudscalerRpcServiceImpl;
 import org.opendaylight.genius.cloudscaler.rpcservice.ComputeNodeManager;
@@ -37,6 +35,7 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ComputeNodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ScaleinComputesRecoverInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ScaleinComputesRecoverOutput;
@@ -177,7 +176,7 @@ public class CloudScalerServiceTest {
     }
 
     @Test public void testBridgeAdd()
-            throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException, TransactionCommitFailedException {
 
         dataBroker.syncWrite(OPERATIONAL, buildNodeId(NODEID1), buildNode(NODEID1, COMPUTE1, DPN1_DATAPATHID));
         dataBroker.syncWrite(OPERATIONAL, buildNodeId(NODEID2), buildNode(NODEID2, COMPUTE2, DPN2_DATAPATHID));
@@ -187,7 +186,7 @@ public class CloudScalerServiceTest {
     }
 
     @Test public void testScaleinComputesStartRpc()
-            throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException, TransactionCommitFailedException {
         testBridgeAdd();
         ListenableFuture<RpcResult<ScaleinComputesStartOutput>> ft = scaleInRpcManager.scaleinComputesStart(
                 new ScaleinComputesStartInputBuilder().setScaleinComputeNames(
@@ -209,7 +208,7 @@ public class CloudScalerServiceTest {
     }
 
     @Test public void testScaleinComputesRecoverRpc()
-            throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException, TransactionCommitFailedException {
 
         testScaleinComputesStartRpc();
 
@@ -224,7 +223,7 @@ public class CloudScalerServiceTest {
     }
 
     @Test public void testIsDpnTombstonedApi()
-            throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException, TransactionCommitFailedException {
 
         testScaleinComputesStartRpc();
         assertTrue("Dpn 1 should be marked as tombstoned", tombstonedNodeManager.isDpnTombstoned(DPN1));
@@ -232,7 +231,7 @@ public class CloudScalerServiceTest {
     }
 
     @Test public void testfilterTombstoned()
-            throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException, TransactionCommitFailedException {
 
         testScaleinComputesStartRpc();
         List<Uint64> filtered = tombstonedNodeManager.filterTombStoned(Lists.newArrayList(DPN1, DPN2, DPN3, DPN4));
@@ -241,7 +240,7 @@ public class CloudScalerServiceTest {
     }
 
     @Test public void testRecoveryCallback()
-            throws ExecutionException, InterruptedException, ReadFailedException, TransactionCommitFailedException {
+            throws ExecutionException, InterruptedException, TransactionCommitFailedException {
 
         Set<Uint64> nodesRecoverd = new HashSet<>();
         tombstonedNodeManager.addOnRecoveryCallback((dpnId) -> {

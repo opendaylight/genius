@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.idmanager;
 
-import com.google.common.base.Optional;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import org.eclipse.jdt.annotation.NonNull;
@@ -65,7 +65,7 @@ public class ReleasedIdHolder implements IdHolder {
     @Override
     public Optional<Long> allocateId() {
         long curTimeSec = System.currentTimeMillis() / 1000;
-        Optional<Long> allocatedId = Optional.absent();
+        Optional<Long> allocatedId = Optional.empty();
         if (isIdAvailable(curTimeSec)) {
             Long count = availableIdCount.decrementAndGet();
             if (count < 0L) {
