@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.datastoreutils;
 
-import org.opendaylight.controller.md.sal.common.api.data.TransactionCommitFailedException;
+import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yangtools.util.concurrent.ExceptionMapper;
 
 /**

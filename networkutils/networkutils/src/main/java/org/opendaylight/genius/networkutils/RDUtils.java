@@ -8,10 +8,9 @@
 
 package org.opendaylight.genius.networkutils;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-
-import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 
 
@@ -21,5 +20,5 @@ public interface RDUtils {
 
     void releaseRD(String rdKey) throws ExecutionException, InterruptedException;
 
-    Optional<IdPool> getRDPool() throws ReadFailedException;
+    Optional<IdPool> getRDPool() throws ReadFailedException, ExecutionException, InterruptedException;
 }

@@ -5,7 +5,8 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package org.opendaylight.genius.datastoreutils;
+
+/*package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Preconditions;
 import java.util.Collection;
@@ -29,11 +30,13 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+*/
 /**
  * Deprecated DS listener.
  * @deprecated Please use
  * {@link org.opendaylight.serviceutils.tools.mdsal.listener.AbstractAsyncDataTreeChangeListener} instead of this!
- */
+ *//*
+
 @Deprecated
 public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K extends DataTreeChangeListener<T>>
         implements DataTreeChangeListener<T>, ChainableDataTreeChangeListener<T>, AutoCloseable {
@@ -93,7 +96,8 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         listenerRegistration = db.registerDataTreeChangeListener(treeId, getDataTreeChangeListener());
     }
 
-    /**
+    */
+/**
      * Subclasses override this and place initialization logic here, notably
      * calls to registerListener(). Note that the overriding method MUST repeat
      * the PostConstruct annotation, because JSR 250 specifies that lifecycle
@@ -103,7 +107,8 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
      * in a subclass without repeating the annotation, but this is wrong and not
      * JSR 250 compliant, and while working in BP, then causes issues e.g. when
      * wiring with Guice for tests, so do always repeat it.)
-     */
+     *//*
+
     @PostConstruct
     protected void init() {
     }
@@ -185,3 +190,4 @@ public abstract class AsyncDataTreeChangeListenerBase<T extends DataObject, K ex
         }
     }
 }
+*/
