@@ -8,7 +8,7 @@
 package org.opendaylight.genius.datastoreutils.testutils;
 
 import java.util.Collection;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 
 /**
  * DataTreeChangeListener useful for testing in asynchronous scenarios.

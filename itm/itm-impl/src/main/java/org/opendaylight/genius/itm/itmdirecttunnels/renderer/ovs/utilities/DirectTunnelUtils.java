@@ -569,7 +569,7 @@ public final class DirectTunnelUtils {
     }
 
     public void updateBfdConfiguration(Uint64 srcDpnId, RemoteDpns remoteDpn,
-                                       com.google.common.base.@NonNull Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
+                                       Optional<OvsBridgeRefEntry> ovsBridgeRefEntry) {
         if (ovsBridgeRefEntry.isPresent()) {
             LOG.debug("creating bridge interface on dpn {}", srcDpnId);
             InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =

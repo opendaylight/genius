@@ -7,9 +7,13 @@
  */
 package org.opendaylight.genius.datastoreutils.testutils;
 
+import com.google.common.util.concurrent.ListeningExecutorService;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.AbstractModule;
-import org.opendaylight.controller.md.sal.binding.api.DataBroker;
-import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
+import java.util.concurrent.Executors;
+import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractBaseDataBrokerTest;
+import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTestCustomizer;
 
 /**
  * Guice Module which correctly binds the {@link DataBrokerFailures}.
@@ -18,14 +22,26 @@ import org.opendaylight.controller.md.sal.binding.test.DataBrokerTestModule;
  */
 public class DataBrokerFailuresModule extends AbstractModule {
 
-    private final DataBroker realDataBroker;
+    private DataBroker realDataBroker;
 
     public DataBrokerFailuresModule(DataBroker realDataBroker) {
         this.realDataBroker = realDataBroker;
     }
 
-    public DataBrokerFailuresModule() {
-        this(DataBrokerTestModule.dataBroker());
+    public DataBrokerFailuresModule() throws Exception {
+        AbstractBaseDataBrokerTest dataBrokerTest = new AbstractBaseDataBrokerTest() {
+            @Override
+            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
+                return new AbstractDataBrokerTestCustomizer() {
+                    @Override
+                    public ListeningExecutorService getCommitCoordinatorExecutor() {
+                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
+                    }
+                };
+            }
+        };
+        dataBrokerTest.setup();
+        this.realDataBroker = dataBrokerTest.getDataBroker();
     }
 
     @Override

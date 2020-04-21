@@ -12,9 +12,9 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import org.opendaylight.controller.md.sal.binding.api.DataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.testutils.infra.AutoCloseableModule;
-import org.opendaylight.serviceutils.tools.mdsal.listener.ChainableDataTreeChangeListener;
+import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
+import org.opendaylight.serviceutils.tools.listener.ChainableDataTreeChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

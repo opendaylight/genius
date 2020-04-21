@@ -6,6 +6,7 @@
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
 
+/*
 package org.opendaylight.genius.datastoreutils;
 
 import com.google.common.base.Preconditions;
@@ -31,12 +32,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+*/
 /**
  * Deprecated DS listener.
  * @deprecated Please use
  * {@link org.opendaylight.serviceutils.tools.mdsal.listener.AbstractClusteredAsyncDataTreeChangeListener}
  *     instead of this!
- */
+ *//*
+
 @Deprecated
 public abstract class AsyncClusteredDataTreeChangeListenerBase
     <T extends DataObject, K extends ClusteredDataTreeChangeListener<T>>
@@ -174,3 +177,4 @@ public abstract class AsyncClusteredDataTreeChangeListenerBase
         }
     }
 }
+*/

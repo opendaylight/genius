@@ -7,11 +7,11 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import com.google.common.base.Optional;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
@@ -92,6 +92,8 @@ public class ItmExternalTunnelAddWorker {
                 ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(),
                         extIp.stringValue(), tunType, trunkInterfaceName);
                 tx.merge(path, tnl, true);
+                ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
+
             }
         }
     }
